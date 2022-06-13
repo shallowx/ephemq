@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>shallow-broker</artifactId>
-    <name>shallow-broker</name>
+    <artifactId>shallow-client</artifactId>
+    <name>shallow-client</name>
     <packaging>jar</packaging>
 
     <properties>
