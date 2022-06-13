@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <inceptionYear>2022</inceptionYear>
+
+    <groupId>org.shallow</groupId>
+    <artifactId>shallow</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>shallow-tool</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git@github.com:shallow-rs/shallow.git</connection>
+        <developerConnection>scm:git@github.com:shallow-rs/shallow.git</developerConnection>
+        <url>git@github.com:shallow-rs/shallow.git</url>
+        <tag>shallow-all-${version}</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://www.mit-license.org/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Shallow</name>
+        <url>https://github.com/shallow-rs</url>
+    </organization>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/shallow-rs/shallow/issues</url>
+    </issueManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.test.skip>false</maven.test.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <java.version>17</java.version>
+        <maven.compiler.version>17</maven.compiler.version>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+</project>
