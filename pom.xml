@@ -13,6 +13,7 @@
 
     <modules>
         <module>shallow-tool</module>
+        <module>shallow-broker</module>
     </modules>
 
     <scm>
