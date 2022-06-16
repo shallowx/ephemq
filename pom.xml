@@ -17,6 +17,7 @@
         <module>shallow-client</module>
         <module>shallow-remote</module>
         <module>shallow-benchmark</module>
+        <module>shallow-example</module>
     </modules>
 
     <scm>
