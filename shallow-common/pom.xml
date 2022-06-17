@@ -9,8 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>shallow-example</artifactId>
-    <name>shallow-example</name>
+    <artifactId>shallow-common</artifactId>
+    <packaging>jar</packaging>
+    <name>shallow-common</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

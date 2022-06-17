@@ -18,6 +18,7 @@
         <module>shallow-remote</module>
         <module>shallow-benchmark</module>
         <module>shallow-example</module>
+        <module>shallow-common</module>
     </modules>
 
     <scm>
