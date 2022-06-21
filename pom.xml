@@ -8,12 +8,12 @@
 
     <groupId>org.shallow</groupId>
     <artifactId>shallow</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>shallow-tool</module>
         <module>shallow-broker</module>
+        <module>shallow-tool</module>
         <module>shallow-client</module>
         <module>shallow-remote</module>
         <module>shallow-benchmark</module>
@@ -48,11 +48,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.version>17</maven.compiler.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <maven.test.skip>false</maven.test.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <java.version>17</java.version>
-        <maven.compiler.version>17</maven.compiler.version>
-        <maven.compiler.target>17</maven.compiler.target>
         <junit.version>4.13.2</junit.version>
     </properties>
 
@@ -72,4 +73,18 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.version}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
