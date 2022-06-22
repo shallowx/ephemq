@@ -29,7 +29,7 @@ public abstract class InternalLoggerFactory {
     private static InternalLoggerFactory useSlf4JLoggerFactory(String name) {
         try {
             InternalLoggerFactory f = Slf4JLoggerFactory.getInstanceWithNopCheck();
-            f.newInstance(name).debug("Using SLF4J as the default logging framework");
+            f.newLogger(name).debug("Using SLF4J as the default logging framework");
             return f;
         } catch (LinkageError ignore) {
             return null;
@@ -42,7 +42,7 @@ public abstract class InternalLoggerFactory {
     private static InternalLoggerFactory useLog4J2LoggerFactory(String name) {
         try {
             InternalLoggerFactory f = Log4J2LoggerFactory.INSTANCE;
-            f.newInstance(name).debug("Using Log4J2 as the default logging framework");
+            f.newLogger(name).debug("Using Log4J2 as the default logging framework");
             return f;
         } catch (LinkageError ignore) {
             return null;
@@ -55,7 +55,7 @@ public abstract class InternalLoggerFactory {
     private static InternalLoggerFactory useLog4JLoggerFactory(String name) {
         try {
             InternalLoggerFactory f = Log4JLoggerFactory.INSTANCE;
-            f.newInstance(name).debug("Using Log4J as the default logging framework");
+            f.newLogger(name).debug("Using Log4J as the default logging framework");
             return f;
         } catch (LinkageError ignore) {
             return null;
@@ -67,7 +67,7 @@ public abstract class InternalLoggerFactory {
 
     private static InternalLoggerFactory useJdkLoggerFactory(String name) {
         InternalLoggerFactory f = JdkLoggerFactory.INSTANCE;
-        f.newInstance(name).debug("Using java.util.logging as the default logging framework");
+        f.newLogger(name).debug("Using java.util.logging as the default logging framework");
         return f;
     }
 
@@ -78,10 +78,19 @@ public abstract class InternalLoggerFactory {
         return defaultFactory;
     }
 
-    public static InternalLogger getInstance(String name) {
-        return getDefaultFactory().newInstance(name);
+    public static void setDefaultFactory(InternalLoggerFactory defaultFactory) {
+        InternalLoggerFactory.defaultFactory = ObjectUtil.checkNotNull(defaultFactory, "defaultFactory");
     }
 
-    protected abstract InternalLogger newInstance(String name);
+
+    public static InternalLogger getLogger(Class<?> clazz) {
+        return getLogger(clazz.getName());
+    }
+
+    public static InternalLogger getLogger(String name) {
+        return getDefaultFactory().newLogger(name);
+    }
+
+    protected abstract InternalLogger newLogger(String name);
 
 }

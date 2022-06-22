@@ -15,7 +15,7 @@ public class Slf4JLoggerFactory extends InternalLoggerFactory {
     }
 
     @Override
-    public InternalLogger newInstance(String name) {
+    public InternalLogger newLogger(String name) {
         return wrapLogger(LoggerFactory.getLogger(name));
     }
 

@@ -205,7 +205,7 @@ public abstract class AbstractInternalLogger implements InternalLogger, Serializ
     }
 
     protected Object readResolve() throws ObjectStreamException {
-        return InternalLoggerFactory.getInstance(name());
+        return InternalLoggerFactory.getLogger(name());
     }
 
     @Override
