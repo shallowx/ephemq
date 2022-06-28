@@ -12,7 +12,7 @@ public class ShallowAdmin {
 
     private ShallowClient client;
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         System.out.println( "Hello World!" );
     }
 
