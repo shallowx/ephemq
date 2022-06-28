@@ -20,7 +20,7 @@ public class ShallowAdmin {
         List<SubCommand> commands = new LinkedList<>();
     }
 
-    private static SubCommand findSubCmdLine(final String name, List<SubCommand> commands) {
+    private static SubCommand getCmdLine(final String name, List<SubCommand> commands) {
         Objects.requireNonNull(name, "command name cannot be empty");
         for (SubCommand cmd : commands) {
             if (name.equals(cmd.name())) {
