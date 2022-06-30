@@ -10,10 +10,11 @@ import java.util.Properties;
 
 public class Shallow {
     public static void main( String[] args ) {
-        System.out.println( "Hello World!" );
+        start();
     }
 
     private static void start() {
+
     }
 
     private static void createShallowServer(String[] args) throws Exception {
