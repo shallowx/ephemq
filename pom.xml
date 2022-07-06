@@ -56,6 +56,8 @@
         <java.version>17</java.version>
         <junit.version>4.13.2</junit.version>
         <protobuf.version>3.19.4</protobuf.version>
+        <shallow.version>1.0.0-SNAPSHOT</shallow.version>
+        <netty.version>4.1.77.Final</netty.version>
     </properties>
 
     <dependencyManagement>
@@ -63,22 +65,22 @@
             <dependency>
                 <groupId>org.shallow</groupId>
                 <artifactId>shallow-client</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
                 <artifactId>shallow-broker</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
                 <artifactId>shallow-common</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
                 <artifactId>shallow-remote</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.protobuf</groupId>
@@ -94,7 +96,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
-                <version>4.1.77.Final</version>
+                <version>${netty.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

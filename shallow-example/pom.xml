@@ -18,6 +18,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.shallow</groupId>
+            <artifactId>shallow-broker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.shallow</groupId>
+            <artifactId>shallow-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
