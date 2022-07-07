@@ -1,0 +1,5 @@
+package org.shallow.codec;
+
+public final class ShallowPacket {
+
+}
