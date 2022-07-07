@@ -5,6 +5,14 @@ option java_package = "org.shallow.proto";
 option java_outer_classname = "ShallowProto";
 option java_multiple_files = true;
 
+message ClusterMetadata {
+  int32 id = 1;
+  string name = 2;
+  string ip = 3;
+  int32 port = 4;
+  string registerTime = 5;
+}
+
 message TopicMetadata {
   int32 id = 1;
   string name = 2;

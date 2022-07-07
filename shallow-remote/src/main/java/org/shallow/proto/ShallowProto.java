@@ -15,6 +15,11 @@ public final class ShallowProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_ClusterMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shallow_protobuf_TopicMetadata_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -28,17 +33,25 @@ public final class ShallowProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rshallow.proto\022\020shallow.protobuf\":\n\rTop" +
-      "icMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\017\n\007" +
-      "version\030\003 \001(\005B#\n\021org.shallow.protoB\014Shal" +
-      "lowProtoP\001b\006proto3"
+      "\n\rshallow.proto\022\020shallow.protobuf\"[\n\017Clu" +
+      "sterMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\n" +
+      "\n\002ip\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\024\n\014registerTime" +
+      "\030\005 \001(\t\":\n\rTopicMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004n" +
+      "ame\030\002 \001(\t\022\017\n\007version\030\003 \001(\005B#\n\021org.shallo" +
+      "w.protoB\014ShallowProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_shallow_protobuf_TopicMetadata_descriptor =
+    internal_static_shallow_protobuf_ClusterMetadata_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_ClusterMetadata_descriptor,
+        new java.lang.String[] { "Id", "Name", "Ip", "Port", "RegisterTime", });
+    internal_static_shallow_protobuf_TopicMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_shallow_protobuf_TopicMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_TopicMetadata_descriptor,
