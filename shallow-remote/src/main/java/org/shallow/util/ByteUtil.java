@@ -20,6 +20,10 @@ public final class ByteUtil {
         }
     }
 
+    public static <T> T defaultIfNull(T t, T defaultValue) {
+        return t != null ? t : defaultValue;
+    }
+
     public static boolean release(ByteBuf buf) {
         if (buf == null) {
             return Boolean.FALSE;
