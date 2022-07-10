@@ -1,4 +1,160 @@
 package org.shallow.codec;
 
-public final class ShallowDecoder {
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.CompositeByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.DecoderException;
+
+import static java.lang.Integer.MAX_VALUE;
+import static org.shallow.codec.ShallowDecoder.State.*;
+import static org.shallow.codec.ShallowPacket.*;
+
+public final class ShallowDecoder extends ChannelInboundHandlerAdapter {
+
+    private static final int DISCARD_READ_BODY_THRESHOLD = 3;
+    enum State {
+        READ_MAGIC_NUMBER, READ_FRAME_LENGTH, READ_FRAME_COMPLETED
+    }
+
+    private ByteBuf whole;
+    private boolean invalidChannel;
+    private State state = READ_MAGIC_NUMBER;
+    private int writeFrameBytes;
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof final ByteBuf read) {
+            if (invalidChannel) {
+                read.release();
+                return;
+            }
+
+            ByteBuf buf = null;
+            try {
+                buf = whole(ctx.alloc(), read);
+                while (!ctx.isRemoved() && buf.isReadable()) {
+                    final ShallowPacket packet = decode(buf);
+                    if (packet == null) {
+                        break;
+                    }
+                    ctx.fireChannelRead(packet);
+                }
+            } catch (Throwable cause) {
+                invalidChannel = true;
+                throw cause;
+            } finally {
+              if (buf != null) {
+                  buf.release();
+              }
+              buf = whole;
+              if (buf != null && (!buf.isReadable() || invalidChannel)) {
+                  whole = null;
+                  buf.release();
+              }
+            }
+        } else {
+            ctx.fireChannelRead(msg);
+        }
+    }
+
+    private ShallowPacket decode(ByteBuf buf) {
+        switch (state) {
+            case READ_MAGIC_NUMBER: {
+                if (!buf.isReadable()) {
+                    return null;
+                }
+                final byte magic = buf.getByte(buf.readerIndex());
+                if (magic != MAGIC_NUMBER) {
+                    throw new DecoderException("invalid magic number:" + magic);
+                }
+                state = READ_FRAME_LENGTH;
+            }
+            case READ_FRAME_LENGTH: {
+                if (!buf.isReadable(4)) {
+                    return null;
+                }
+                final int frame = buf.getUnsignedMedium(buf.readerIndex() + 1);
+                if (frame < HEADER_LENGTH) {
+                    throw new DecoderException("invalid frame number:" + frame);
+                }
+                writeFrameBytes = frame;
+                state = READ_FRAME_COMPLETED;
+            }
+            case READ_FRAME_COMPLETED:{
+                if (!buf.isReadable(writeFrameBytes)) {
+                    return null;
+                }
+                buf.skipBytes(4);
+                final short version = buf.readShort();
+                final byte command = buf.readByte();
+                final byte state = buf.readByte();
+                final int answer = buf.readInt();
+                final byte serialization = buf.readByte();
+                final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - HEADER_LENGTH);
+
+                this.state = READ_MAGIC_NUMBER;
+                return newPacket(version, state, answer, serialization, command, body);
+            }
+            default:{
+                throw new DecoderException("invalid decode state:" + state);
+            }
+        }
+    }
+
+    private ByteBuf whole(ByteBufAllocator alloc, ByteBuf read) {
+        final ByteBuf buf = whole;
+        if (buf == null) {
+            return whole = read;
+        }
+
+        final CompositeByteBuf composite;
+        if (buf instanceof CompositeByteBuf && buf.refCnt() == 1) {
+            composite = (CompositeByteBuf) buf;
+            if (composite.writerIndex() != composite.capacity()) {
+                composite.capacity(composite.writerIndex());
+            }
+        } else {
+            composite = newComposite(alloc, buf);
+        }
+        composite.addFlattenedComponents(true, read);
+        return whole = composite;
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        if (whole instanceof final CompositeByteBuf buf) {
+            if (buf.toComponentIndex(buf.readerIndex()) > DISCARD_READ_BODY_THRESHOLD) {
+                whole = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
+            }
+        }
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        if (whole != null) {
+            whole.release();
+            whole = null;
+        }
+        ctx.fireChannelInactive();
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        final ByteBuf buf = whole;
+        if (buf != null) {
+            whole = null;
+            if (buf.isReadable()) {
+                ctx.fireChannelRead(buf);
+                ctx.fireChannelReadComplete();
+            } else {
+                buf.release();
+            }
+        }
+    }
+
+    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
+        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
+    }
 }

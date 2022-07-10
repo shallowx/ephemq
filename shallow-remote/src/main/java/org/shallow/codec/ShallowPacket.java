@@ -1,18 +1,20 @@
 package org.shallow.codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 
 import static org.shallow.util.ByteUtil.byteToString;
+import static org.shallow.util.ByteUtil.defaultIfNull;
 
 public final class ShallowPacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
-    public static final byte HEADER_LENGTH = 10;
-    public static final int MAX_FRAME_LENGTH = 4194314;
+    public static final byte HEADER_LENGTH = 13;
+    public static final int MAX_FRAME_LENGTH = 4194317;
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
 
-    private static final Recycler<ShallowPacket> RECYCLER = new Recycler<ShallowPacket>() {
+    private static final Recycler<ShallowPacket> RECYCLER = new Recycler<>() {
         @Override
         protected ShallowPacket newObject(Handle<ShallowPacket> handle) {
             return new ShallowPacket(handle);
@@ -23,8 +25,22 @@ public final class ShallowPacket extends AbstractReferenceCounted {
     private byte state;
     private int answer;
     private byte serialization;
+    private byte command;
     private ByteBuf body;
     private final Recycler.Handle<ShallowPacket> handle;
+
+    public static ShallowPacket newPacket(short version, byte state, int answer, byte serialization, byte command, ByteBuf body) {
+        final ShallowPacket packet = RECYCLER.get();
+        packet.setRefCnt(1);
+        packet.version = version;
+        packet.state = state;
+        packet.answer = answer;
+        packet.serialization = serialization;
+        packet.command = command;
+        packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
+
+        return packet;
+    }
 
     private ShallowPacket(Recycler.Handle<ShallowPacket> handle) {
         this.handle = handle;
@@ -34,7 +50,7 @@ public final class ShallowPacket extends AbstractReferenceCounted {
         return answer;
     }
 
-    public int version() {
+    public short version() {
         return version;
     }
 
@@ -48,6 +64,10 @@ public final class ShallowPacket extends AbstractReferenceCounted {
 
     public ByteBuf body() {
         return body;
+    }
+
+    public byte command() {
+        return command;
     }
 
     @Override
@@ -80,6 +100,7 @@ public final class ShallowPacket extends AbstractReferenceCounted {
                 ", version=" + version +
                 ", serialization=" + serialization +
                 ", state=" + state +
+                ", command=" + command +
                 ", body=" + byteToString(body, -1) +
                 '}';
     }
