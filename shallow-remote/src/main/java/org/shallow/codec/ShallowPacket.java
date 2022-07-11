@@ -6,8 +6,8 @@ import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 
-import static org.shallow.util.ByteUtil.byteToString;
-import static org.shallow.util.ByteUtil.defaultIfNull;
+import static org.shallow.util.ByteUtils.byteToString;
+import static org.shallow.util.ByteUtils.defaultIfNull;
 
 public final class ShallowPacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
