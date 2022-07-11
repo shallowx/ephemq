@@ -9,22 +9,22 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
 
-import static org.shallow.codec.ShallowPacket.*;
+import static org.shallow.codec.MessagePacket.*;
 
 @ChannelHandler.Sharable
-public final class ShallowEncoder extends ChannelOutboundHandlerAdapter {
+public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
-    private static final ShallowEncoder ENCODER = new ShallowEncoder();
+    private static final MessageEncoder ENCODER = new MessageEncoder();
 
-    private ShallowEncoder() {}
+    private MessageEncoder() {}
 
-    public static ShallowEncoder encoder() {
+    public static MessageEncoder instance() {
         return ENCODER;
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (msg instanceof final ShallowPacket packet) {
+        if (msg instanceof final MessagePacket packet) {
             final short version = packet.version();
             final byte state = packet.state();
             final int answer = packet.answer();

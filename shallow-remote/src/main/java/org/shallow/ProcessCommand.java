@@ -1,6 +1,6 @@
 package org.shallow;
 
-public interface ShallowCommand {
+public interface ProcessCommand {
     interface Server {
         byte CREATE_TOPIC = 1;
         byte DELETE_TOPIC = 2;

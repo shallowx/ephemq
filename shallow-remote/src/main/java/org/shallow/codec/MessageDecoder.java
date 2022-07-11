@@ -8,25 +8,25 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
 
 import static java.lang.Integer.MAX_VALUE;
-import static org.shallow.codec.ShallowDecoder.State.*;
-import static org.shallow.codec.ShallowPacket.*;
+import static org.shallow.codec.MessageDecoder.State.*;
+import static org.shallow.codec.MessagePacket.*;
 
-public final class ShallowDecoder extends ChannelInboundHandlerAdapter {
+public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     private static final int DISCARD_READ_BODY_THRESHOLD = 3;
     enum State {
-        READ_MAGIC_NUMBER, READ_FRAME_LENGTH, READ_FRAME_COMPLETED
+        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
     }
 
     private ByteBuf whole;
-    private boolean invalidChannel;
+    private boolean invalid;
     private State state = READ_MAGIC_NUMBER;
     private int writeFrameBytes;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final ByteBuf read) {
-            if (invalidChannel) {
+            if (invalid) {
                 read.release();
                 return;
             }
@@ -35,21 +35,21 @@ public final class ShallowDecoder extends ChannelInboundHandlerAdapter {
             try {
                 buf = whole(ctx.alloc(), read);
                 while (!ctx.isRemoved() && buf.isReadable()) {
-                    final ShallowPacket packet = decode(buf);
+                    final MessagePacket packet = decode(buf);
                     if (packet == null) {
                         break;
                     }
                     ctx.fireChannelRead(packet);
                 }
             } catch (Throwable cause) {
-                invalidChannel = true;
+                invalid = true;
                 throw cause;
             } finally {
               if (buf != null) {
                   buf.release();
               }
               buf = whole;
-              if (buf != null && (!buf.isReadable() || invalidChannel)) {
+              if (buf != null && (!buf.isReadable() || invalid)) {
                   whole = null;
                   buf.release();
               }
@@ -59,7 +59,7 @@ public final class ShallowDecoder extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private ShallowPacket decode(ByteBuf buf) {
+    private MessagePacket decode(ByteBuf buf) {
         switch (state) {
             case READ_MAGIC_NUMBER: {
                 if (!buf.isReadable()) {
@@ -69,9 +69,9 @@ public final class ShallowDecoder extends ChannelInboundHandlerAdapter {
                 if (magic != MAGIC_NUMBER) {
                     throw new DecoderException("invalid magic number:" + magic);
                 }
-                state = READ_FRAME_LENGTH;
+                state = READ_MESSAGE_LENGTH;
             }
-            case READ_FRAME_LENGTH: {
+            case READ_MESSAGE_LENGTH: {
                 if (!buf.isReadable(4)) {
                     return null;
                 }
@@ -80,9 +80,9 @@ public final class ShallowDecoder extends ChannelInboundHandlerAdapter {
                     throw new DecoderException("invalid frame number:" + frame);
                 }
                 writeFrameBytes = frame;
-                state = READ_FRAME_COMPLETED;
+                state = READ_MESSAGE_COMPLETED;
             }
-            case READ_FRAME_COMPLETED:{
+            case READ_MESSAGE_COMPLETED:{
                 if (!buf.isReadable(writeFrameBytes)) {
                     return null;
                 }

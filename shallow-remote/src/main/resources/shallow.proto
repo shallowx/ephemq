@@ -2,7 +2,7 @@ syntax="proto3";
 
 package shallow.protobuf;
 option java_package = "org.shallow.proto";
-option java_outer_classname = "ShallowProto";
+option java_outer_classname = "MessageMetadataProto";
 option java_multiple_files = true;
 
 message ClusterMetadata {
