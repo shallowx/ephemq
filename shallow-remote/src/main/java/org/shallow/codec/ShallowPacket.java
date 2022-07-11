@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
+import io.netty.util.ReferenceCounted;
 
 import static org.shallow.util.ByteUtil.byteToString;
 import static org.shallow.util.ByteUtil.defaultIfNull;
@@ -82,6 +83,18 @@ public final class ShallowPacket extends AbstractReferenceCounted {
     @Override
     public ShallowPacket retain() {
         super.retain();
+        return this;
+    }
+
+    @Override
+    public ShallowPacket retain(int increment) {
+        super.retain(increment);
+        return this;
+    }
+
+    @Override
+    public ReferenceCounted touch() {
+        super.touch();
         return this;
     }
 
