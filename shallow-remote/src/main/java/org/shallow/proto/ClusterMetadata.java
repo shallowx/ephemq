@@ -100,13 +100,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return org.shallow.proto.ShallowProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
+    return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return org.shallow.proto.ShallowProto.internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable
+    return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             org.shallow.proto.ClusterMetadata.class, org.shallow.proto.ClusterMetadata.Builder.class);
   }
@@ -452,13 +452,13 @@ private static final long serialVersionUID = 0L;
       org.shallow.proto.ClusterMetadataOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.shallow.proto.ShallowProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
+      return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.shallow.proto.ShallowProto.internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable
+      return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.shallow.proto.ClusterMetadata.class, org.shallow.proto.ClusterMetadata.Builder.class);
     }
@@ -497,7 +497,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return org.shallow.proto.ShallowProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
+      return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
     }
 
     @java.lang.Override

@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.StandardCharsets;
 
-public final class ByteUtils {
-    private ByteUtils() {}
+public final class ByteUtil {
+    private ByteUtil() {}
 
     public static String byteToString(ByteBuf buf, int maxLength) {
         if (buf == null) {

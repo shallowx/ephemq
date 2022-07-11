@@ -3,8 +3,8 @@
 
 package org.shallow.proto;
 
-public final class ShallowProto {
-  private ShallowProto() {}
+public final class MessageMetadataProto {
+  private MessageMetadataProto() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
@@ -37,8 +37,8 @@ public final class ShallowProto {
       "sterMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\n" +
       "\n\002ip\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\024\n\014registerTime" +
       "\030\005 \001(\t\":\n\rTopicMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004n" +
-      "ame\030\002 \001(\t\022\017\n\007version\030\003 \001(\005B#\n\021org.shallo" +
-      "w.protoB\014ShallowProtoP\001b\006proto3"
+      "ame\030\002 \001(\t\022\017\n\007version\030\003 \001(\005B+\n\021org.shallo" +
+      "w.protoB\024MessageMetadataProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

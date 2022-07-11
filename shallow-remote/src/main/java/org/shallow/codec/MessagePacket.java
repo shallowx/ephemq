@@ -6,19 +6,19 @@ import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 
-import static org.shallow.util.ByteUtils.byteToString;
-import static org.shallow.util.ByteUtils.defaultIfNull;
+import static org.shallow.util.ByteUtil.byteToString;
+import static org.shallow.util.ByteUtil.defaultIfNull;
 
-public final class ShallowPacket extends AbstractReferenceCounted {
+public final class MessagePacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
     public static final byte HEADER_LENGTH = 13;
     public static final int MAX_FRAME_LENGTH = 4194317;
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
 
-    private static final Recycler<ShallowPacket> RECYCLER = new Recycler<>() {
+    private static final Recycler<MessagePacket> RECYCLER = new Recycler<>() {
         @Override
-        protected ShallowPacket newObject(Handle<ShallowPacket> handle) {
-            return new ShallowPacket(handle);
+        protected MessagePacket newObject(Handle<MessagePacket> handle) {
+            return new MessagePacket(handle);
         }
     };
 
@@ -28,10 +28,10 @@ public final class ShallowPacket extends AbstractReferenceCounted {
     private byte serialization;
     private byte command;
     private ByteBuf body;
-    private final Recycler.Handle<ShallowPacket> handle;
+    private final Recycler.Handle<MessagePacket> handle;
 
-    public static ShallowPacket newPacket(short version, byte state, int answer, byte serialization, byte command, ByteBuf body) {
-        final ShallowPacket packet = RECYCLER.get();
+    public static MessagePacket newPacket(short version, byte state, int answer, byte serialization, byte command, ByteBuf body) {
+        final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
         packet.version = version;
         packet.state = state;
@@ -43,7 +43,7 @@ public final class ShallowPacket extends AbstractReferenceCounted {
         return packet;
     }
 
-    private ShallowPacket(Recycler.Handle<ShallowPacket> handle) {
+    private MessagePacket(Recycler.Handle<MessagePacket> handle) {
         this.handle = handle;
     }
 
@@ -81,13 +81,13 @@ public final class ShallowPacket extends AbstractReferenceCounted {
     }
 
     @Override
-    public ShallowPacket retain() {
+    public MessagePacket retain() {
         super.retain();
         return this;
     }
 
     @Override
-    public ShallowPacket retain(int increment) {
+    public MessagePacket retain(int increment) {
         super.retain(increment);
         return this;
     }
@@ -99,7 +99,7 @@ public final class ShallowPacket extends AbstractReferenceCounted {
     }
 
     @Override
-    public ShallowPacket touch(Object hint) {
+    public MessagePacket touch(Object hint) {
         if (body != null) {
             body.touch(hint);
         }
