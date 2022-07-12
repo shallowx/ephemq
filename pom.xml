@@ -58,6 +58,7 @@
         <protobuf.version>3.19.4</protobuf.version>
         <shallow.version>1.0.0-SNAPSHOT</shallow.version>
         <netty.version>4.1.77.Final</netty.version>
+        <fastuyil.core.version>8.5.8</fastuyil.core.version>
     </properties>
 
     <dependencyManagement>
@@ -92,6 +93,11 @@
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>it.unimi.dsi</groupId>
+                <artifactId>fastutil-core</artifactId>
+                <version>${fastuyil.core.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>

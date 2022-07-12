@@ -1,4 +1,4 @@
-package org.shallow;
+package org.shallow.processor;
 
 import io.netty.buffer.ByteBuf;
 
