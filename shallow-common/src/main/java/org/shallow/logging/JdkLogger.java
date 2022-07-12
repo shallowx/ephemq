@@ -1,11 +1,13 @@
 package org.shallow.logging;
 
+import java.io.Serial;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 class JdkLogger extends AbstractInternalLogger {
 
+    @Serial
     private static final long serialVersionUID = -1767272577989225979L;
 
     final transient Logger logger;

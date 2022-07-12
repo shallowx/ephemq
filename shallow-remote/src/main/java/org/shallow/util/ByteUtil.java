@@ -4,11 +4,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.ObjectUtil.isNull;
+
 public final class ByteUtil {
     private ByteUtil() {}
 
     public static String byteToString(ByteBuf buf, int maxLength) {
-        if (buf == null) {
+        if (isNull(buf)) {
             return null;
         }
         int length = buf.readableBytes();
@@ -21,11 +24,11 @@ public final class ByteUtil {
     }
 
     public static <T> T defaultIfNull(T t, T defaultValue) {
-        return t != null ? t : defaultValue;
+        return isNotNull(t) ? t : defaultValue;
     }
 
     public static boolean release(ByteBuf buf) {
-        if (buf == null) {
+        if (isNull(buf)) {
             return Boolean.FALSE;
         }
         return buf.release();

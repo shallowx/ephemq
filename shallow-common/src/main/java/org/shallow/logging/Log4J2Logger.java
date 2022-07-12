@@ -101,19 +101,12 @@ class Log4J2Logger extends ExtendedLoggerWrapper implements InternalLogger {
     }
 
     private static Level toLevel(InternalLogLevel level) {
-        switch (level) {
-            case INFO:
-                return Level.INFO;
-            case DEBUG:
-                return Level.DEBUG;
-            case WARN:
-                return Level.WARN;
-            case ERROR:
-                return Level.ERROR;
-            case TRACE:
-                return Level.TRACE;
-            default:
-                throw new Error();
-        }
+        return switch (level) {
+            case INFO -> Level.INFO;
+            case DEBUG -> Level.DEBUG;
+            case WARN -> Level.WARN;
+            case ERROR -> Level.ERROR;
+            case TRACE -> Level.TRACE;
+        };
     }
 }

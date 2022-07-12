@@ -3,8 +3,11 @@ package org.shallow.logging;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import java.io.Serial;
+
 class Log4JLogger extends AbstractInternalLogger {
 
+    @Serial
     private static final long serialVersionUID = 2851357342488183058L;
 
     final transient Logger logger;
