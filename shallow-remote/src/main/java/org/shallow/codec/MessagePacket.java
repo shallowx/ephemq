@@ -6,6 +6,7 @@ import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 
+import static org.shallow.ObjectUtil.isNotNull;
 import static org.shallow.util.ByteUtil.byteToString;
 import static org.shallow.util.ByteUtil.defaultIfNull;
 
@@ -23,9 +24,9 @@ public final class MessagePacket extends AbstractReferenceCounted {
     };
 
     private short version;
-    private byte state;
-    private int answer;
-    private byte serialization;
+    private byte state; // req: -1 ; resp:response code
+    private int answer; // opaque
+    private byte serialization; // default: -1
     private byte command;
     private ByteBuf body;
     private final Recycler.Handle<MessagePacket> handle;
@@ -42,6 +43,8 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
         return packet;
     }
+
+
 
     private MessagePacket(Recycler.Handle<MessagePacket> handle) {
         this.handle = handle;
@@ -73,7 +76,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     protected void deallocate() {
-        if (body != null) {
+        if (isNotNull(body)) {
             body.readByte();
             body = null;
         }
@@ -100,7 +103,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     public MessagePacket touch(Object hint) {
-        if (body != null) {
+        if (isNotNull(body)) {
             body.touch(hint);
         }
         return this;

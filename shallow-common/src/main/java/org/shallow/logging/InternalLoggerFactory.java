@@ -2,6 +2,9 @@ package org.shallow.logging;
 
 import org.shallow.ObjectUtil;
 
+import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.ObjectUtil.isNull;
+
 public abstract class InternalLoggerFactory {
 
     private static volatile InternalLoggerFactory defaultFactory;
@@ -9,17 +12,17 @@ public abstract class InternalLoggerFactory {
     @SuppressWarnings("UnusedCatchParameter")
     private static InternalLoggerFactory newDefaultFactory(String name) {
         InternalLoggerFactory f = useSlf4JLoggerFactory(name);
-        if (f != null) {
+        if (isNotNull(f)) {
             return f;
         }
 
         f = useLog4J2LoggerFactory(name);
-        if (f != null) {
+        if (isNotNull(f)) {
             return f;
         }
 
         f = useLog4JLoggerFactory(name);
-        if (f != null) {
+        if (isNotNull(f)) {
             return f;
         }
 
@@ -72,7 +75,7 @@ public abstract class InternalLoggerFactory {
     }
 
     public static InternalLoggerFactory getDefaultFactory() {
-        if (defaultFactory == null) {
+        if (isNull(defaultFactory)) {
             defaultFactory = newDefaultFactory(InternalLoggerFactory.class.getName());
         }
         return defaultFactory;
