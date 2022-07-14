@@ -10,7 +10,7 @@ import static org.shallow.ObjectUtil.isNull;
 public final class ByteUtil {
     private ByteUtil() {}
 
-    public static String byteToString(ByteBuf buf, int maxLength) {
+    public static String bufToString(ByteBuf buf, int maxLength) {
         if (isNull(buf)) {
             return null;
         }
