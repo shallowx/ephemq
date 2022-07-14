@@ -62,6 +62,13 @@ public final class ObjectUtil {
         }
         return i;
     }
+    public static int checkNegative(int i, String name) {
+        if (i >= INT_ZERO) {
+            throw new IllegalArgumentException(name + " : " + i + " (expected: < 0)");
+        }
+        return i;
+    }
+
 
     public static long checkPositive(long l, String name) {
         if (l <= LONG_ZERO) {

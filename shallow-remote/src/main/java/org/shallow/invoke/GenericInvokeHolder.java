@@ -1,6 +1,7 @@
 package org.shallow.invoke;
 
 import io.netty.util.Recycler;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
@@ -15,11 +16,11 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
     private int rejoin;
 
     public GenericInvokeHolder() {
-        this(null);
+        this(2048);
     }
 
-    public GenericInvokeHolder(Int2ObjectMap<Holder> holders) {
-        this.holders = holders;
+    public GenericInvokeHolder(int capacity) {
+        this.holders = new Int2ObjectLinkedOpenHashMap<>(capacity);
     }
 
     @Override

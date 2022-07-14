@@ -27,14 +27,14 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         if (msg instanceof final MessagePacket packet) {
             final short version = packet.version();
             final byte state = packet.state();
-            final int answer = packet.answer();
+            final int rejoin = packet.rejoin();
             final byte command = packet.command();
             final byte serialization = packet.serialization();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;
             try {
-                 header = encodeHeader(ctx.alloc(), version, state, command, answer, serialization, body.readableBytes());
+                 header = encodeHeader(ctx.alloc(), version, state, command, rejoin, serialization, body.readableBytes());
             } catch (Throwable cause) {
                 body.release();
                 throw cause;
@@ -47,7 +47,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         }
     }
 
-    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int answer, byte serialization, int body) {
+    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int rejoin, byte serialization, int body) {
         if (body > MAX_BODY_LENGTH) {
             throw new EncoderException("too large body:" + body + "bytes, limit:" + MAX_BODY_LENGTH + "bytes");
         }
@@ -58,7 +58,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         header.writeShort(version);
         header.writeByte(command);
         header.writeByte(state);
-        header.writeInt(answer);
+        header.writeInt(rejoin);
         header.writeByte(serialization);
 
         return header;

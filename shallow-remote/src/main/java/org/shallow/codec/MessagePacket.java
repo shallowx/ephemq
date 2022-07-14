@@ -7,7 +7,7 @@ import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 
 import static org.shallow.ObjectUtil.isNotNull;
-import static org.shallow.util.ByteUtil.byteToString;
+import static org.shallow.util.ByteUtil.bufToString;
 import static org.shallow.util.ByteUtil.defaultIfNull;
 
 public final class MessagePacket extends AbstractReferenceCounted {
@@ -25,18 +25,23 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     private short version;
     private byte state; // req: -1 ; resp:response code
-    private int answer; // opaque
+    private int rejoin; // opaque
     private byte serialization; // default: -1
     private byte command;
     private ByteBuf body;
     private final Recycler.Handle<MessagePacket> handle;
 
-    public static MessagePacket newPacket(short version, byte state, int answer, byte serialization, byte command, ByteBuf body) {
+    public static MessagePacket newPacket(int rejoin, byte command, ByteBuf body) {
+       return newPacket((short) -1, (byte) -1, rejoin, (byte) -1, command, body);
+    }
+
+
+    public static MessagePacket newPacket(short version, byte state, int rejoin, byte serialization, byte command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
         packet.version = version;
         packet.state = state;
-        packet.answer = answer;
+        packet.rejoin = rejoin;
         packet.serialization = serialization;
         packet.command = command;
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
@@ -44,14 +49,12 @@ public final class MessagePacket extends AbstractReferenceCounted {
         return packet;
     }
 
-
-
     private MessagePacket(Recycler.Handle<MessagePacket> handle) {
         this.handle = handle;
     }
 
-    public int answer() {
-        return answer;
+    public int rejoin() {
+        return rejoin;
     }
 
     public short version() {
@@ -112,12 +115,12 @@ public final class MessagePacket extends AbstractReferenceCounted {
     @Override
     public String toString() {
         return "ShallowPacket{" +
-                "answer=" + answer +
+                "rejoin=" + rejoin +
                 ", version=" + version +
                 ", serialization=" + serialization +
                 ", state=" + state +
                 ", command=" + command +
-                ", body=" + byteToString(body, -1) +
+                ", body=" + bufToString(body, -1) +
                 '}';
     }
 }
