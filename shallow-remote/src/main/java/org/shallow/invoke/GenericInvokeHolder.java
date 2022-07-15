@@ -39,7 +39,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
             return 0;
         }
 
-        int nextRejoin = nextRejoin();
+        var nextRejoin = nextRejoin();
         holders.put(nextRejoin, Holder.newHolder(expires, rejoin));
         return nextRejoin;
     }
@@ -68,7 +68,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
             return 0;
         }
 
-        int whole = 0;
+        var whole = 0;
         ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
         while(iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
