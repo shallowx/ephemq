@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import static org.shallow.ObjectUtil.checkNotNull;
 import static org.shallow.ObjectUtil.isNull;
 import static org.shallow.RemoteException.of;
-import static org.shallow.util.ByteUtil.bufToString;
+import static org.shallow.util.ByteUtil.buf2String;
 import static org.shallow.util.NetworkUtil.newFailurePacket;
 import static org.shallow.util.NetworkUtil.newSuccessPacket;
 
@@ -33,6 +33,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
 
     private static final int FAILURE_BODY_LIMIT = 64;
+    private static final int INT_ZERO = 0;
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
     private ProcessorAware processor;
 
@@ -51,7 +52,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         if (msg instanceof final MessagePacket packet) {
             try {
                 final int command = packet.command();
-                if (command > 0) {
+                if (command > INT_ZERO) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Read message packet - [{}] form remote address - [{}]", packet, ctx.channel().remoteAddress());
                     }
@@ -71,7 +72,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final int command = packet.command();
         final int answer = packet.rejoin();
         final int length = packet.body().readableBytes();
-        final InvokeRejoin<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokeRejoin<>((buf, cause) -> {
+        final InvokeRejoin<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeRejoin<>((buf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
                 return;
             }
@@ -101,17 +102,17 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final int rejoin = packet.rejoin();
         final int length = packet.body().readableBytes();
 
-        if (command == 0 && logger.isDebugEnabled()) {
+        if (command == INT_ZERO && logger.isDebugEnabled()) {
             logger.debug("[processResponse] - <{}> command is invalid: command={} rejoin={} length={}", ctx.channel().remoteAddress(), command, rejoin, length);
             return;
         }
         final ByteBuf body = packet.body().retain();
         final boolean consumed;
         try {
-            if (command == 0) {
+            if (command == INT_ZERO) {
                 consumed = holder.consume(rejoin, r -> r.success(body.retain()));
             } else {
-                final String message = bufToString(body, FAILURE_BODY_LIMIT);
+                final String message = buf2String(body, FAILURE_BODY_LIMIT);
                 final RemoteException cause = of(command, message);
                 consumed = holder.consume(rejoin, r -> r.failure(cause));
             }
@@ -147,7 +148,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
             final EventExecutor executor = ctx.executor();
             scheduleExpiredTask(executor);
-            if (rejoin != 0 && !promise.isVoid()) {
+            if (rejoin != INT_ZERO && !promise.isVoid()) {
                 promise.addListener(f -> {
                    Throwable cause = f.cause();
                    if (isNull(cause)) {
@@ -181,26 +182,26 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         executor.schedule(new Runnable() {
             @Override
             public void run() {
-                int processHolders = 0;
-                int processInvokes = 0;
-                int remnantHolders = 0;
-                int remnantInvokes = 0;
+                var processHolder = INT_ZERO;
+                var processInvoker = INT_ZERO;
+                var remnantHolder = INT_ZERO;
+                var remnantInvoker = INT_ZERO;
                 final Iterator<InvokeHolder<ByteBuf>> iterator = wholeHolders.iterator();
                 while (iterator.hasNext()) {
-                    final InvokeHolder<ByteBuf> holder = iterator.next();
-                    processHolders++;
-                    processInvokes += holder.consumeWholeVerbExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke hold timeout")), null);
+                    final var holder = iterator.next();
+                    processHolder++;
+                    processInvoker += holder.consumeWholeVerbExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke hold timeout")), null);
                     if (holder.isEmpty()) {
                         iterator.remove();
                         continue;
                     }
 
-                    remnantHolders++;
-                    remnantInvokes += holder.size();
+                    remnantHolder++;
+                    remnantInvoker += holder.size();
                 }
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("[scheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolders, processInvokes, remnantHolders, remnantInvokes);
+                    logger.debug("[scheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
                 }
 
                 if (!wholeHolders.isEmpty()) {

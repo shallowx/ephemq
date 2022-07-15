@@ -14,6 +14,7 @@ import static org.shallow.ObjectUtil.isNotNull;
 public class ConnectDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConnectDuplexHandler.class);
 
+    private static final int INT_ZERO = 0;
     private final long heartPeriodMS;
     private final long idleTimeoutMs;
     private Future<?> heartFuture;
@@ -24,23 +25,23 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
     private long heartLastUpdateTime;
 
     public ConnectDuplexHandler(long heartPeriodMS, long idleTimeoutMs) {
-        this.heartPeriodMS = StrictMath.max(heartPeriodMS, 0);
-        this.idleTimeoutMs = StrictMath.max(idleTimeoutMs, 0);
+        this.heartPeriodMS = StrictMath.max(heartPeriodMS, INT_ZERO);
+        this.idleTimeoutMs = StrictMath.max(idleTimeoutMs, INT_ZERO);
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         heartLastUpdateTime = lastReadTime = lastWriteTime = System.currentTimeMillis();
-        if (heartPeriodMS > 0) {
+        if (heartPeriodMS > INT_ZERO) {
             heartFuture = ctx.executor().schedule(new Runnable() {
                 @Override
                 public void run() {
                     final long now = System.currentTimeMillis();
                     final long delay = heartPeriodMS - (now - StrictMath.min(lastReadTime, lastWriteTime));
-                    if (delay > 0) {
+                    if (delay > INT_ZERO) {
                         heartFuture = ctx.executor().schedule(this, delay, TimeUnit.MICROSECONDS);
                     } else {
-                        ctx.writeAndFlush(MessagePacket.newPacket(0, (byte) 0, null));
+                        ctx.writeAndFlush(MessagePacket.newPacket(INT_ZERO, (byte) INT_ZERO, null));
                         heartLastUpdateTime = lastWriteTime = now;
                         heartFuture = ctx.executor().schedule(this, heartPeriodMS, TimeUnit.MICROSECONDS);
                     }
@@ -48,13 +49,13 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
             }, heartPeriodMS, TimeUnit.MICROSECONDS);
         }
 
-        if (idleTimeoutMs > 0) {
+        if (idleTimeoutMs > INT_ZERO) {
             idleFuture = ctx.executor().schedule(new Runnable() {
                 @Override
                 public void run() {
                     final long now = System.currentTimeMillis();
                     final long delay = idleTimeoutMs - (now - StrictMath.min(lastReadTime, lastWriteTime));
-                    if (delay > 0) {
+                    if (delay > INT_ZERO) {
                         idleFuture = ctx.executor().schedule(this, delay, TimeUnit.MICROSECONDS);
                     } else {
                         ctx.close();
@@ -79,18 +80,18 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (idleTimeoutMs > 0 || heartPeriodMS > 0) {
+        if (idleTimeoutMs > INT_ZERO || heartPeriodMS > INT_ZERO) {
             lastReadTime = System.currentTimeMillis();
         }
 
         if (msg instanceof final MessagePacket packet) {
             final int command = packet.command();
             final int rejoin = packet.rejoin();
-            if (command <= 0 && rejoin == 0) {
-                if (command == 0 && heartPeriodMS == 0) {
+            if (command <= INT_ZERO && rejoin == INT_ZERO) {
+                if (command == INT_ZERO && heartPeriodMS == INT_ZERO) {
                     long now = System.currentTimeMillis();
                     if (now - heartLastUpdateTime > 1000) {
-                        ctx.writeAndFlush(MessagePacket.newPacket(0, (byte) 0, null));
+                        ctx.writeAndFlush(MessagePacket.newPacket(INT_ZERO, (byte) INT_ZERO, null));
                         heartLastUpdateTime = lastWriteTime = now;
                     }
                 }
@@ -103,7 +104,7 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (idleTimeoutMs > 0 || heartPeriodMS > 0) {
+        if (idleTimeoutMs > INT_ZERO || heartPeriodMS > INT_ZERO) {
             lastWriteTime = System.currentTimeMillis();
         }
         ctx.write(msg, promise);
