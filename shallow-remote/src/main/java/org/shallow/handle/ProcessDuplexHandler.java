@@ -18,7 +18,9 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.AwareInvocation;
 import org.shallow.processor.ProcessorAware;
 
+import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.shallow.ObjectUtil.checkNotNull;
 import static org.shallow.ObjectUtil.isNull;
@@ -158,13 +160,54 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                    }
                 });
             }
+            ctx.write(packet, promise);
         } else {
             ctx.write(msg, promise);
         }
     }
 
     private void scheduleExpiredTask(EventExecutor executor) {
+        if (holder.isEmpty()) {
+            return;
+        }
 
+        final Set<InvokeHolder<ByteBuf>> wholeHolders = WHOLE_INVOKE_HOLDER.get();
+        if (!wholeHolders.isEmpty()) {
+            wholeHolders.add(holder);
+            return;
+        }
+
+        wholeHolders.add(holder);
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                int processHolders = 0;
+                int processInvokes = 0;
+                int remnantHolders = 0;
+                int remnantInvokes = 0;
+                final Iterator<InvokeHolder<ByteBuf>> iterator = wholeHolders.iterator();
+                while (iterator.hasNext()) {
+                    final InvokeHolder<ByteBuf> holder = iterator.next();
+                    processHolders++;
+                    processInvokes += holder.consumeWholeVerbExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke hold timeout")), null);
+                    if (holder.isEmpty()) {
+                        iterator.remove();
+                        continue;
+                    }
+
+                    remnantHolders++;
+                    remnantInvokes += holder.size();
+                }
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("[scheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolders, processInvokes, remnantHolders, remnantInvokes);
+                }
+
+                if (!wholeHolders.isEmpty()) {
+                    executor.schedule(this, 1, TimeUnit.SECONDS);
+                }
+            }
+        }, 1, TimeUnit.SECONDS);
     }
 
     @Override
