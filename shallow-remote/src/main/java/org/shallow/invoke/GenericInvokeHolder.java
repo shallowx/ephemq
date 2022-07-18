@@ -74,7 +74,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
             Holder holder = iterator.next().getValue();
             boolean valid = holder.isValid();
 
-            if (isNotNull(expired) && valid && holder.expires > expired) {
+            if (isNotNull(expired) && valid && holder.expired > expired) {
                 continue;
             }
 
@@ -111,7 +111,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
             }
         };
 
-        private long expires;
+        private long expired;
         private InvokeRejoin<?> rejoin;
         private final Recycler.Handle<Holder> handle;
 
@@ -119,9 +119,9 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
             this.handle = handle;
         }
 
-        private static Holder newHolder(long expires, InvokeRejoin<?> rejoin) {
+        private static Holder newHolder(long expired, InvokeRejoin<?> rejoin) {
             Holder instance = RECYCLER.get();
-            instance.expires = expires;
+            instance.expired = expired;
             instance.rejoin = rejoin;
             return instance;
         }

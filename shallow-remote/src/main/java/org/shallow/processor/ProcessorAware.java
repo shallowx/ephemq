@@ -9,5 +9,5 @@ public interface ProcessorAware extends Aware{
 
     default void onActive(ChannelHandlerContext ctx){}
 
-    void process(Channel channel, int command, ByteBuf data, InvokeRejoin<ByteBuf> rejoin);
+    void process(Channel channel, byte command, ByteBuf data, InvokeRejoin<ByteBuf> rejoin);
 }

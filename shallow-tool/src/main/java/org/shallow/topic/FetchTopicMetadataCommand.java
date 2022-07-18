@@ -1,0 +1,28 @@
+package org.shallow.topic;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.shallow.ShallowClient;
+import org.shallow.SubCommand;
+
+public class FetchTopicMetadataCommand implements SubCommand {
+    @Override
+    public String name() {
+        return "TopicList";
+    }
+
+    @Override
+    public String desc() {
+        return "fetch the topic metadata";
+    }
+
+    @Override
+    public Options buildOptions(Options options) {
+        return null;
+    }
+
+    @Override
+    public void execute(CommandLine cmdLine, Options options, ShallowClient client) throws Exception {
+
+    }
+}

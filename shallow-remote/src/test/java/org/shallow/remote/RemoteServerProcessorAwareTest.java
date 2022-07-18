@@ -14,7 +14,7 @@ public class RemoteServerProcessorAwareTest implements ProcessorAware {
     }
 
     @Override
-    public void process(Channel channel, int command, ByteBuf data, InvokeRejoin<ByteBuf> rejoin) {
+    public void process(Channel channel, byte command, ByteBuf data, InvokeRejoin<ByteBuf> rejoin) {
         switch (command) {
             case 1 -> {
                 System.out.println();

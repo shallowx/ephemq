@@ -21,7 +21,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
 
     private byte command;
     private ByteBuf data;
-    private long expires;
+    private long expired;
     private InvokeRejoin<ByteBuf> rejoin;
 
     private final Recycler.Handle<AwareInvocation> handle;
@@ -36,7 +36,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
         invocation.setRefCnt(1);
         invocation.command = command;
         invocation.rejoin = rejoin;
-        invocation.expires = expires;
+        invocation.expired = expires;
         invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
         return invocation;
@@ -50,8 +50,8 @@ public class AwareInvocation extends AbstractReferenceCounted {
         return data;
     }
 
-    public long expires() {
-        return expires;
+    public long expired() {
+        return expired;
     }
 
     public InvokeRejoin<ByteBuf> rejoin() {

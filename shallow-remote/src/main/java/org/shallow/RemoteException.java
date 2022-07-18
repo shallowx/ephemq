@@ -4,7 +4,7 @@ import static org.shallow.ObjectUtil.checkNegative;
 
 public final class RemoteException extends RuntimeException {
 
-    private byte command;
+    private final byte command;
 
     public static RemoteException of(byte command, String error) {
         command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;

@@ -69,7 +69,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     }
 
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
-        final int command = packet.command();
+        final byte command = packet.command();
         final int answer = packet.rejoin();
         final int length = packet.body().readableBytes();
         final InvokeRejoin<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeRejoin<>((buf, cause) -> {
@@ -86,7 +86,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
         final ByteBuf body = packet.body().retain();
         try {
-            processor.process(ctx.channel(), answer, body, rejoin);
+            processor.process(ctx.channel(), command, body, rejoin);
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
                 logger.error("[processRequest] <{}> invoke processor error - command={}, rejoin={}, body length={}",
@@ -135,7 +135,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final AwareInvocation invocation) {
-            final int rejoin = holder.hold(invocation.expires(), invocation.rejoin());
+            final int rejoin = holder.hold(invocation.expired(), invocation.rejoin());
             final MessagePacket packet;
             try {
                 packet = MessagePacket.newPacket(rejoin, invocation.command(),  invocation.data().retain());

@@ -54,7 +54,7 @@ public class GenericInvokeRejoin<V> implements InvokeRejoin<V> {
 
     private void onCompleted(V v, Throwable cause) {
        if (isNotNull(invoker)) {
-           invoker.onCompleted(v, cause);
+           invoker.operationCompleted(v, cause);
        }
     }
 }
