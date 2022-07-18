@@ -3,21 +3,60 @@ package org.shallow;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
+import org.reflections.Reflections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import static org.shallow.ObjectUtil.checkNotNull;
 
 public class ShallowAdmin {
 
-    private ShallowClient client;
+    private static ShallowClient client;
+    private static final List<SubCommand> SUB_COMMANDS = new LinkedList<>();
 
     public static void main(String[] args) {
-
+        main0(args);
     }
 
     private static void main0(String[] args) {
-        List<SubCommand> commands = new LinkedList<>();
+        try {
+            initCommand();
+        } catch (Exception e) {
+            System.err.printf("%s", e);
+        }
+    }
+
+    private static void initCommand() throws Exception {
+       String packageName = SubCommand.class.getPackageName();
+        Reflections f = new Reflections(packageName);
+        Set<Class<? extends  SubCommand>> classes = f.getSubTypesOf(SubCommand.class);
+        for (Class<?> c : classes) {
+            Object bean = c.getDeclaredConstructor().newInstance();
+            if (bean instanceof SubCommand) {
+                addCommand((SubCommand) bean);
+            }
+        }
+    }
+
+    private static void addCommand(SubCommand command) {
+        SUB_COMMANDS.add(command);
+    }
+
+    private SubCommand acquireCommand(final String name) {
+        checkNotNull(name, "command is null");
+        if (SUB_COMMANDS.isEmpty()) {
+            return null;
+        }
+
+        for (SubCommand command : SUB_COMMANDS) {
+            if (command.name().equalsIgnoreCase(name)) {
+                return command;
+            }
+        }
+
+        return null;
     }
 
     private static SubCommand getCmdLine(final String name, List<SubCommand> commands) {
