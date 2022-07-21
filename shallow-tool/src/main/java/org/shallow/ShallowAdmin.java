@@ -6,15 +6,14 @@ import org.apache.commons.cli.Options;
 import org.reflections.Reflections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
+import static org.shallow.AdminUtils.*;
 import static org.shallow.ObjectUtil.checkNotNull;
 
 public class ShallowAdmin {
 
     private static ShallowClient client;
-    private static final List<SubCommand> SUB_COMMANDS = new LinkedList<>();
 
     public static void main(String[] args) {
         main0(args);
@@ -22,50 +21,44 @@ public class ShallowAdmin {
 
     private static void main0(String[] args) {
         try {
-            initCommand();
+           final List<SubCommand> commands = initCommand();
+
         } catch (Exception e) {
-            System.err.printf("%s", e);
+            System.err.printf("%s [%s] ERROR %s - %s \n", newDate(), currentThread(), className(ShallowAdmin.class), e);
         }
     }
 
-    private static void initCommand() throws Exception {
-       String packageName = SubCommand.class.getPackageName();
+    private static List<SubCommand> initCommand() throws Exception {
+        final List<SubCommand> commands = new LinkedList<>();
+
+        String packageName = SubCommand.class.getPackageName();
         Reflections f = new Reflections(packageName);
         Set<Class<? extends  SubCommand>> classes = f.getSubTypesOf(SubCommand.class);
         for (Class<?> c : classes) {
             Object bean = c.getDeclaredConstructor().newInstance();
             if (bean instanceof SubCommand) {
-                addCommand((SubCommand) bean);
+                addCommand((SubCommand) bean, commands);
             }
         }
+        return commands;
     }
 
-    private static void addCommand(SubCommand command) {
-        SUB_COMMANDS.add(command);
+    private static void addCommand(SubCommand command, List<SubCommand> commands) {
+        commands.add(command);
     }
 
-    private SubCommand acquireCommand(final String name) {
+    private SubCommand acquireCommand(final String name, List<SubCommand> commands) {
         checkNotNull(name, "command is null");
-        if (SUB_COMMANDS.isEmpty()) {
+        if (commands.isEmpty()) {
             return null;
         }
 
-        for (SubCommand command : SUB_COMMANDS) {
+        for (SubCommand command : commands) {
             if (command.name().equalsIgnoreCase(name)) {
                 return command;
             }
         }
 
-        return null;
-    }
-
-    private static SubCommand getCmdLine(final String name, List<SubCommand> commands) {
-        Objects.requireNonNull(name, "command name cannot be empty");
-        for (SubCommand cmd : commands) {
-            if (name.equals(cmd.name())) {
-                return cmd;
-            }
-        }
         return null;
     }
 
