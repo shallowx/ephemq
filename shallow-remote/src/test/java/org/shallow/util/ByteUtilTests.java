@@ -17,7 +17,7 @@ public class ByteUtilTests {
         final ByteBuf data = Unpooled.copiedBuffer("test-string", StandardCharsets.UTF_8);
         String r = buf2String(data, data.readableBytes());
         Assert.assertEquals(isNull(r) ? 0 : r.length(), data.readableBytes());
-        Assert.assertTrue(release(data));
+        release(data);
     }
 
     @Test
@@ -26,7 +26,7 @@ public class ByteUtilTests {
         final ByteBuf buf = string2Buf(var);
 
         Assert.assertEquals(var.length(), isNull(buf) ? 0 : buf.readableBytes());
-        Assert.assertTrue(release(buf));
+        release(buf);
     }
 
     @Test

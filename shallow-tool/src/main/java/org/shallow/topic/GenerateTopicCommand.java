@@ -2,7 +2,7 @@ package org.shallow.topic;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.shallow.ShallowClient;
+import org.shallow.Client;
 import org.shallow.SubCommand;
 
 public class GenerateTopicCommand implements SubCommand {
@@ -22,7 +22,7 @@ public class GenerateTopicCommand implements SubCommand {
     }
 
     @Override
-    public void execute(CommandLine cmdLine, Options options, ShallowClient client) throws Exception {
+    public void execute(CommandLine cmdLine, Options options, Client client) throws Exception {
 
     }
 }

@@ -131,6 +131,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 whole = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
             }
         }
+        ctx.fireChannelReadComplete();
     }
 
     @Override

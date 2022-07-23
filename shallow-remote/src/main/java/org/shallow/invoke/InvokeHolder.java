@@ -7,9 +7,10 @@ public interface InvokeHolder<V> {
 
     boolean isEmpty();
 
-    int hold(long expires, InvokeRejoin<V> rejoin);
+    int hold(long expires, InvokeAnswer<V> rejoin);
 
-    boolean consume(int rejoin, Consumer<InvokeRejoin<V>> consumer);
+    boolean consume(int rejoin, Consumer<InvokeAnswer<V>> consumer);
 
-    int consumeWholeVerbExpired(Consumer<InvokeRejoin<V>> consumer, Long expired);
+    int consumeExpired(Consumer<InvokeAnswer<V>> consumer);
+    int consumeWhole(Consumer<InvokeAnswer<V>> consumer);
 }

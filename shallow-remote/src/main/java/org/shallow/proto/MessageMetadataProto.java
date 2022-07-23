@@ -39,6 +39,16 @@ public final class MessageMetadataProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_TopicMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_CreateTopicAnswer_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_CreateTopicAnswer_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_CreateTopicRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -58,9 +68,10 @@ public final class MessageMetadataProto {
       "\030\002 \001(\005\"X\n\014NodeMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004na" +
       "me\030\002 \001(\t\022\n\n\002ip\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\024\n\014re" +
       "gisterTime\030\005 \001(\t\":\n\rTopicMetadata\022\n\n\002id\030" +
-      "\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\017\n\007version\030\003 \001(\005B+\n\021" +
-      "org.shallow.protoB\024MessageMetadataProtoP" +
-      "\001b\006proto3"
+      "\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\017\n\007version\030\003 \001(\005\" \n\021" +
+      "CreateTopicAnswer\022\013\n\003ack\030\001 \001(\t\"\"\n\022Create" +
+      "TopicRequest\022\014\n\004name\030\001 \001(\tB+\n\021org.shallo" +
+      "w.protoB\024MessageMetadataProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -96,6 +107,18 @@ public final class MessageMetadataProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_TopicMetadata_descriptor,
         new java.lang.String[] { "Id", "Name", "Version", });
+    internal_static_shallow_protobuf_CreateTopicAnswer_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_shallow_protobuf_CreateTopicAnswer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_CreateTopicAnswer_descriptor,
+        new java.lang.String[] { "Ack", });
+    internal_static_shallow_protobuf_CreateTopicRequest_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_CreateTopicRequest_descriptor,
+        new java.lang.String[] { "Name", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

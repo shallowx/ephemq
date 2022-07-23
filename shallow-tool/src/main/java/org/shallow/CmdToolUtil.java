@@ -3,7 +3,7 @@ package org.shallow;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AdminUtils {
+public class CmdToolUtil {
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 
     public static String newDate() {

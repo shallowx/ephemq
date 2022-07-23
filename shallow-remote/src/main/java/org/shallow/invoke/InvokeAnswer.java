@@ -1,6 +1,9 @@
 package org.shallow.invoke;
 
-public interface InvokeRejoin<V> {
+public interface InvokeAnswer<V> {
+
+    String SUCCESS = "SUCCESS";
+    String FAILURE = "FAILURE";
 
     boolean isCompleted();
 

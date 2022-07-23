@@ -24,18 +24,25 @@ public final class ByteUtil {
         }
     }
 
+    public static int bufLength(ByteBuf buf) {
+        return buf == null ? 0 : buf.readableBytes();
+    }
+
     public static ByteBuf string2Buf(String data) {
         return isNull(data) ? null : Unpooled.copiedBuffer(data, StandardCharsets.UTF_8);
+    }
+
+    public static ByteBuf retainBuf(ByteBuf buf) {
+        return buf == null ? null : buf.retain();
     }
 
     public static <T> T defaultIfNull(T t, T defaultValue) {
         return isNotNull(t) ? t : defaultValue;
     }
 
-    public static boolean release(ByteBuf buf) {
-        if (isNull(buf)) {
-            return Boolean.FALSE;
-        }
-        return buf.release();
+    public static void release(ByteBuf buf) {
+       if (isNotNull(buf)) {
+           buf.release();
+       }
     }
 }

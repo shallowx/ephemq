@@ -1,6 +1,6 @@
 package org.shallow.invoke;
 
 @FunctionalInterface
-public interface Invoker<V> {
+public interface Callback<V> {
     void operationCompleted(V v, Throwable cause);
 }

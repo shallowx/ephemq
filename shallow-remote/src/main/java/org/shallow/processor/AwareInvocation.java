@@ -5,7 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
-import org.shallow.invoke.InvokeRejoin;
+import org.shallow.invoke.InvokeAnswer;
 
 import static org.shallow.ObjectUtil.*;
 import static org.shallow.util.ByteUtil.defaultIfNull;
@@ -22,7 +22,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
     private byte command;
     private ByteBuf data;
     private long expired;
-    private InvokeRejoin<ByteBuf> rejoin;
+    private InvokeAnswer<ByteBuf> answer;
 
     private final Recycler.Handle<AwareInvocation> handle;
 
@@ -30,12 +30,16 @@ public class AwareInvocation extends AbstractReferenceCounted {
         this.handle = handle;
     }
 
-    public AwareInvocation newInvocation(byte command, ByteBuf data, long expires, InvokeRejoin<ByteBuf> rejoin) {
-        checkPositive(command, "command");
+    public static  AwareInvocation newInvocation(byte command, ByteBuf data) {
+       return newInvocation(command, data, 0, null);
+    }
+
+    public static  AwareInvocation newInvocation(byte command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
+        checkPositive(command, "Command");
         final AwareInvocation invocation = RECYCLER.get();
         invocation.setRefCnt(1);
         invocation.command = command;
-        invocation.rejoin = rejoin;
+        invocation.answer = answer;
         invocation.expired = expires;
         invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
@@ -54,8 +58,8 @@ public class AwareInvocation extends AbstractReferenceCounted {
         return expired;
     }
 
-    public InvokeRejoin<ByteBuf> rejoin() {
-        return rejoin;
+    public InvokeAnswer<ByteBuf> answer() {
+        return answer;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
             data.release();
             data = null;
         }
-        rejoin = null;
+        answer = null;
         handle.recycle(this);
     }
 

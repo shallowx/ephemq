@@ -24,23 +24,22 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     private short version;
     private byte state; // req: -1 ; resp:response code
-    private int rejoin; // opaque
+    private int answer; // opaque
     private byte serialization; // default: -1
-    private byte command;
+    private byte command; //opcode
     private ByteBuf body;
     private final Recycler.Handle<MessagePacket> handle;
 
-    public static MessagePacket newPacket(int rejoin, byte command, ByteBuf body) {
-       return newPacket((short) -1, (byte) -1, rejoin, (byte) -1, command, body);
+    public static MessagePacket newPacket(int answer, byte command, ByteBuf body) {
+       return newPacket((short) -1, (byte) -1, answer, (byte) -1, command, body);
     }
 
-
-    public static MessagePacket newPacket(short version, byte state, int rejoin, byte serialization, byte command, ByteBuf body) {
+    public static MessagePacket newPacket(short version, byte state, int answer, byte serialization, byte command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
         packet.version = version;
         packet.state = state;
-        packet.rejoin = rejoin;
+        packet.answer = answer;
         packet.serialization = serialization;
         packet.command = command;
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
@@ -52,8 +51,8 @@ public final class MessagePacket extends AbstractReferenceCounted {
         this.handle = handle;
     }
 
-    public int rejoin() {
-        return rejoin;
+    public int answer() {
+        return answer;
     }
 
     public short version() {
@@ -79,7 +78,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
     @Override
     protected void deallocate() {
         if (isNotNull(body)) {
-            body.readByte();
+            body.release();
             body = null;
         }
         handle.recycle(this);
@@ -113,13 +112,14 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     public String toString() {
+        String data = buf2String(body.retain(), body.readableBytes());
         return "ShallowPacket{" +
-                "rejoin=" + rejoin +
+                "answer=" + answer +
                 ", version=" + version +
                 ", serialization=" + serialization +
                 ", state=" + state +
                 ", command=" + command +
-                ", body=" + buf2String(body, -1) +
+               ", body=" + (data == null ? null : data.trim())  +
                 '}';
     }
 }
