@@ -28,3 +28,11 @@ message TopicMetadata {
   string name = 2;
   int32 version = 3;
 }
+
+message CreateTopicAnswer {
+  string ack = 1;
+}
+
+message CreateTopicRequest{
+  string name = 1;
+}

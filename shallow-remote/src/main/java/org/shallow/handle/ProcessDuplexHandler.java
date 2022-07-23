@@ -10,35 +10,34 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import org.shallow.RemoteException;
 import org.shallow.codec.MessagePacket;
 import org.shallow.invoke.GenericInvokeHolder;
-import org.shallow.invoke.GenericInvokeRejoin;
+import org.shallow.invoke.GenericInvokeAnswer;
 import org.shallow.invoke.InvokeHolder;
-import org.shallow.invoke.InvokeRejoin;
+import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.AwareInvocation;
 import org.shallow.processor.ProcessorAware;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static org.shallow.ObjectUtil.checkNotNull;
-import static org.shallow.ObjectUtil.isNull;
+import static org.shallow.ObjectUtil.*;
 import static org.shallow.RemoteException.of;
 import static org.shallow.util.ByteUtil.buf2String;
-import static org.shallow.util.NetworkUtil.newFailurePacket;
-import static org.shallow.util.NetworkUtil.newSuccessPacket;
+import static org.shallow.util.NetworkUtil.*;
 
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
 
-    private static final int FAILURE_BODY_LIMIT = 64;
+    private static final int FAILURE_CONTENT_LIMIT = 64;
     private static final int INT_ZERO = 0;
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
     private ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
-        this.processor = checkNotNull(processor, "[Constructor] - process must be not null");
+        this.processor = checkNotNull(processor, "[Constructor] - Process must be not null");
     }
 
     @Override
@@ -51,11 +50,12 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             try {
-                final int command = packet.command();
+                if (logger.isInfoEnabled()) {
+                    logger.info("Read message packet - [{}] form remote address - [{}]", packet, switchAddress(ctx.channel()));
+                }
+
+                final byte command = packet.command();
                 if (command > INT_ZERO) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Read message packet - [{}] form remote address - [{}]", packet, ctx.channel().remoteAddress());
-                    }
                     processRequest(ctx, packet);
                 } else {
                     processResponse(ctx, packet);
@@ -70,64 +70,68 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
         final byte command = packet.command();
-        final int answer = packet.rejoin();
+        final int answer = packet.answer();
         final int length = packet.body().readableBytes();
-        final InvokeRejoin<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeRejoin<>((buf, cause) -> {
+        final InvokeAnswer<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
                 return;
             }
 
             if (isNull(cause)) {
-                ctx.writeAndFlush(newSuccessPacket(answer, buf == null ? null : buf.retain()));
+                ctx.writeAndFlush(newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
             } else {
                 ctx.writeAndFlush(newFailurePacket(answer, cause));
             }
         });
 
-        final ByteBuf body = packet.body().retain();
+        final ByteBuf buf = packet.body().retain();
         try {
-            processor.process(ctx.channel(), command, body, rejoin);
+            processor.process(ctx.channel(), command, buf, rejoin);
         } catch (Throwable cause) {
-            if (logger.isErrorEnabled()) {
-                logger.error("[processRequest] <{}> invoke processor error - command={}, rejoin={}, body length={}",
+            if (logger.isInfoEnabled()) {
+                logger.info("[ProcessRequest] <{}> invoke processor error - command={}, rejoin={}, body length={}",
                         ctx.channel().remoteAddress(), command, rejoin, length, cause);
             }
+            if (isNotNull(rejoin)) {
+                rejoin.failure(cause);
+            }
         } finally {
-            body.release();
+            buf.release();
         }
     }
 
     private void processResponse(ChannelHandlerContext ctx, MessagePacket packet) {
         final byte command = packet.command();
-        final int rejoin = packet.rejoin();
-        final int length = packet.body().readableBytes();
-
-        if (command == INT_ZERO && logger.isDebugEnabled()) {
-            logger.debug("[processResponse] - <{}> command is invalid: command={} rejoin={} length={}", ctx.channel().remoteAddress(), command, rejoin, length);
+        final int answer = packet.answer();
+        if (answer == INT_ZERO) {
+            if (logger.isInfoEnabled()) {
+                logger.info("[ProcessResponse] - <{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()), command, answer);
+            }
             return;
         }
-        final ByteBuf body = packet.body().retain();
+
+        final ByteBuf buf = packet.body().retain();
         final boolean consumed;
         try {
             if (command == INT_ZERO) {
-                consumed = holder.consume(rejoin, r -> r.success(body.retain()));
+                consumed = holder.consume(answer, r -> r.success(buf.retain()));
             } else {
-                final String message = buf2String(body, FAILURE_BODY_LIMIT);
+                final String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
                 final RemoteException cause = of(command, message);
-                consumed = holder.consume(rejoin, r -> r.failure(cause));
+                consumed = holder.consume(answer, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
             if (logger.isWarnEnabled()) {
-                logger.warn("[processResponse] - <{}> invoke not found: command={} rejoin={} length={}", ctx.channel().remoteAddress(), command, rejoin, length);
+                logger.warn("[ProcessResponse] - <{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(), command, answer);
             }
             return;
         } finally {
-            body.release();
+            buf.release();
         }
 
         if (!consumed) {
             if (logger.isWarnEnabled()) {
-                logger.warn("[processResponse] - <{}> invoke not found: command={} rejoin={} length={}", ctx.channel().remoteAddress(), command, rejoin, length);
+                logger.warn("[ProcessResponse] - <{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(), command, answer);
             }
         }
     }
@@ -135,12 +139,12 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final AwareInvocation invocation) {
-            final int rejoin = holder.hold(invocation.expired(), invocation.rejoin());
+            final int answer = holder.hold(invocation.expired(), invocation.answer());
             final MessagePacket packet;
             try {
-                packet = MessagePacket.newPacket(rejoin, invocation.command(),  invocation.data().retain());
+                packet = MessagePacket.newPacket(answer, invocation.command(),  invocation.data().retain());
             } catch (Throwable cause) {
-                holder.consume(rejoin, r -> r.failure(cause));
+                holder.consume(answer, r -> r.failure(cause));
                 throw cause;
             } finally {
                 invocation.release();
@@ -148,16 +152,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
             final EventExecutor executor = ctx.executor();
             scheduleExpiredTask(executor);
-            if (rejoin != INT_ZERO && !promise.isVoid()) {
+            if (answer != INT_ZERO && !promise.isVoid()) {
                 promise.addListener(f -> {
                    Throwable cause = f.cause();
                    if (isNull(cause)) {
                        return;
                    }
                    if (executor.inEventLoop()) {
-                       holder.consume(rejoin, r -> r.failure(cause));
+                       holder.consume(answer, r -> r.failure(cause));
                    } else {
-                       executor.execute(() -> holder.consume(rejoin, r -> r.failure(cause)));
+                       executor.execute(() -> holder.consume(answer, r -> r.failure(cause)));
                    }
                 });
             }
@@ -190,7 +194,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 while (iterator.hasNext()) {
                     final var holder = iterator.next();
                     processHolder++;
-                    processInvoker += holder.consumeWholeVerbExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke hold timeout")), null);
+                    processInvoker += holder.consumeExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke hold timeout")));
                     if (holder.isEmpty()) {
                         iterator.remove();
                         continue;
@@ -200,8 +204,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                     remnantInvoker += holder.size();
                 }
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("[scheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
+                if (logger.isInfoEnabled()) {
+                    logger.info("[ScheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
                 }
 
                 if (!wholeHolders.isEmpty()) {
@@ -213,16 +217,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        final int whole = holder.consumeWholeVerbExpired(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke timeout")), null);
-        if (logger.isDebugEnabled()) {
-            logger.debug("[handlerRemoved] - consume whole without expired, whole={}", whole);
+        final int whole = holder.consumeWhole(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke timeout")));
+        if (logger.isInfoEnabled()) {
+            logger.info("[HandlerRemoved] - consume whole invoke, whole={}", whole);
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (logger.isErrorEnabled()) {
-            logger.error("[exceptionCaught] <{}> caught {}", ctx.channel().remoteAddress(), cause);
+        if (logger.isInfoEnabled()) {
+            logger.info("[ExceptionCaught] <{}> caught {}", switchAddress(ctx.channel()), cause);
         }
         ctx.close();
     }
@@ -230,7 +234,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final FastThreadLocal<Set<InvokeHolder<ByteBuf>>> WHOLE_INVOKE_HOLDER = new FastThreadLocal<>() {
         @Override
         protected Set<InvokeHolder<ByteBuf>> initialValue() throws Exception {
-            return new ObjectArraySet<>();
+            return new HashSet<>();
         }
     };
 }

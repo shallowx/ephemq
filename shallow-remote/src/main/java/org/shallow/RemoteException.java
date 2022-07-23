@@ -18,12 +18,12 @@ public final class RemoteException extends RuntimeException {
 
     public RemoteException(byte command, String error) {
         super(error);
-        this.command = (byte) checkNegative(command, "command");
+        this.command = (byte) checkNegative(command, "Command");
     }
 
     public RemoteException(byte command, String error, Throwable cause) {
         super(error, cause);
-        this.command = (byte) checkNegative(command, "command");
+        this.command = (byte) checkNegative(command, "Command");
     }
 
     public byte getCommand() {
@@ -38,5 +38,6 @@ public final class RemoteException extends RuntimeException {
     public interface Failure {
         byte UNKNOWN_EXCEPTION = 1;
         byte INVOKE_TIMEOUT_EXCEPTION = 2;
+        byte UNSUPPORTED_EXCEPTION = 2;
     }
 }

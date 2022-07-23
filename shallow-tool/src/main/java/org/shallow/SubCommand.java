@@ -7,5 +7,5 @@ public interface SubCommand {
     String name();
     String desc();
     Options buildOptions(final Options options);
-    void execute(final CommandLine cmdLine, final Options options, final ShallowClient client) throws Exception;
+    void execute(final CommandLine cmdLine, final Options options, final Client client) throws Exception;
 }

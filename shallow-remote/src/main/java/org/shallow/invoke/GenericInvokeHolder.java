@@ -13,7 +13,7 @@ import static org.shallow.ObjectUtil.isNull;
 public class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
     private final Int2ObjectMap<Holder> holders;
-    private int rejoin;
+    private int offset;
 
     public GenericInvokeHolder() {
         this(2048);
@@ -34,23 +34,23 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
     }
 
     @Override
-    public int hold(long expires, InvokeRejoin<V> rejoin) {
-        if (isNull(rejoin)) {
+    public int hold(long expires, InvokeAnswer<V> answer) {
+        if (isNull(answer)) {
             return 0;
         }
 
-        var nextRejoin = nextRejoin();
-        holders.put(nextRejoin, Holder.newHolder(expires, rejoin));
-        return nextRejoin;
+        var nextOffset = nextOffset();
+        holders.put(nextOffset, Holder.newHolder(expires, answer));
+        return nextOffset;
     }
 
     @Override
-    public boolean consume(int rejoin, Consumer<InvokeRejoin<V>> consumer) {
-        if (rejoin == 0) {
+    public boolean consume(int answer, Consumer<InvokeAnswer<V>> consumer) {
+        if (answer == 0) {
             return false;
         }
 
-        Holder holder = holders.get(rejoin);
+        Holder holder = holders.remove(answer);
         if (isNull(holder)) {
             return false;
         }
@@ -63,7 +63,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
     }
 
     @Override
-    public int consumeWholeVerbExpired(Consumer<InvokeRejoin<V>> consumer, Long expired) {
+    public int consumeWhole(Consumer<InvokeAnswer<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }
@@ -73,11 +73,6 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         while(iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
             boolean valid = holder.isValid();
-
-            if (isNotNull(expired) && valid && holder.expired > expired) {
-                continue;
-            }
-
             if (valid && isNotNull(consumer)) {
                 doConsume(holder, consumer);
             }
@@ -89,18 +84,50 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         return whole;
     }
 
-    private void doConsume(Holder holder, Consumer<InvokeRejoin<V>> consumer) {
+
+    @Override
+    public int consumeExpired(Consumer<InvokeAnswer<V>> consumer) {
+        if (isEmpty()) {
+            return 0;
+        }
+
+        long now = System.currentTimeMillis();
+
+        var whole = 0;
+        ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
+        while(iterator.hasNext()) {
+            Holder holder = iterator.next().getValue();
+            boolean valid = holder.isValid();
+
+            if (valid) {
+                if (holder.expired > now) {
+                    continue;
+                }
+
+                if (isNotNull(consumer)) {
+                    doConsume(holder, consumer);
+                }
+            }
+
+            iterator.remove();
+            holder.recycle();
+            whole++;
+        }
+        return whole;
+    }
+
+    private void doConsume(Holder holder, Consumer<InvokeAnswer<V>> consumer) {
         @SuppressWarnings("unchecked")
-        InvokeRejoin<V> rejoin = (InvokeRejoin<V>) holder.rejoin;
+        InvokeAnswer<V> answer = (InvokeAnswer<V>) holder.answer;
         try {
-            consumer.accept(rejoin);
+            consumer.accept(answer);
         } catch (Throwable cause) {
-            rejoin.failure(cause);
+            answer.failure(cause);
         }
     }
 
-    private int nextRejoin() {
-        return ++rejoin == 0 ? ++rejoin : rejoin;
+    private int nextOffset() {
+        return ++offset == 0 ? ++offset : offset;
     }
 
     private static final class Holder {
@@ -112,27 +139,27 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         };
 
         private long expired;
-        private InvokeRejoin<?> rejoin;
+        private InvokeAnswer<?> answer;
         private final Recycler.Handle<Holder> handle;
 
         public Holder(Recycler.Handle<Holder> handle) {
             this.handle = handle;
         }
 
-        private static Holder newHolder(long expired, InvokeRejoin<?> rejoin) {
+        private static Holder newHolder(long expired, InvokeAnswer<?> answer) {
             Holder instance = RECYCLER.get();
             instance.expired = expired;
-            instance.rejoin = rejoin;
+            instance.answer = answer;
             return instance;
         }
 
         private void recycle() {
-            this.rejoin = null;
+            this.answer = null;
             handle.recycle(this);
         }
 
         private boolean isValid() {
-            return isNotNull(rejoin) && !rejoin.isCompleted();
+            return isNotNull(answer) && !answer.isCompleted();
         }
     }
 }

@@ -8,12 +8,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.shallow.AdminUtils.*;
+import static org.shallow.CmdToolUtil.*;
 import static org.shallow.ObjectUtil.checkNotNull;
 
-public class ShallowAdmin {
+public class ShallowCmdLineTool {
 
-    private static ShallowClient client;
+    private static Client client;
 
     public static void main(String[] args) {
         main0(args);
@@ -24,7 +24,7 @@ public class ShallowAdmin {
            final List<SubCommand> commands = initCommand();
 
         } catch (Exception e) {
-            System.err.printf("%s [%s] ERROR %s - %s \n", newDate(), currentThread(), className(ShallowAdmin.class), e);
+            System.err.printf("%s [%s] ERROR %s - %s \n", newDate(), currentThread(), className(ShallowCmdLineTool.class), e);
         }
     }
 

@@ -1,0 +1,109 @@
+package org.shallow.invoke;
+
+import com.google.protobuf.Message;
+import com.google.protobuf.MessageLite;
+import com.google.protobuf.Parser;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.Promise;
+import org.shallow.ClientConfig;
+import org.shallow.processor.AwareInvocation;
+import org.shallow.processor.ProcessCommand;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.shallow.ObjectUtil.isNull;
+import static org.shallow.util.ByteUtil.release;
+import static org.shallow.util.ByteUtil.retainBuf;
+import static org.shallow.util.ProtoBufUtil.proto2Buf;
+import static org.shallow.util.ProtoBufUtil.readProto;
+
+@SuppressWarnings("all")
+public class OperationInvoker<T extends MessageLite> implements ProcessCommand.Server {
+
+    private final ClientChannel clientChannel;
+    private final Semaphore semaphore;
+
+    public OperationInvoker(ClientChannel channel, ClientConfig config) {
+        this.clientChannel = channel;
+        this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
+    }
+
+    public void invoke(byte command, int timeoutMs, Promise<?> promise, MessageLite request, Class<?> clz) {
+       try {
+           Callback<ByteBuf> answer = assembleInvokeCallback(promise, assembleParser(clz));
+           ByteBuf buf = assembleInvokeData(clientChannel.allocator(), request);
+           invoke0(command, buf, timeoutMs, answer);
+       } catch (Exception e) {
+           tryFailure(promise, e);
+       }
+   }
+
+   @SuppressWarnings("all")
+   private Parser assembleParser(Class<?> clz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        final Method defaultInstance = clz.getDeclaredMethod("getDefaultInstance");
+        Message defaultInst = (Message) defaultInstance.invoke(null);
+       return defaultInst.getParserForType();
+   }
+
+    private void invoke0(byte command, ByteBuf content, long timeoutMs, Callback<ByteBuf> invoker) {
+        try {
+            long now = System.currentTimeMillis();
+            final Channel channel = clientChannel.channel();;
+            if (semaphore.tryAcquire(timeoutMs, TimeUnit.MICROSECONDS)) {
+                if (invoker == null) {
+                    ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
+                    channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content)), promise);
+                } else {
+                    long expired = timeoutMs + now;
+                    InvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
+                        semaphore.release();
+                        invoker.operationCompleted(buf, cause);
+                    });
+                    channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), expired, answer));
+                }
+            } else {
+                throw new TimeoutException("Semaphore acquire timeout: " + timeoutMs + "ms");
+            }
+        } catch (Throwable t) {
+            if (invoker != null) {
+                invoker.operationCompleted(null, new RuntimeException(String.format("Failed to invoke channel, address=%s command=%s", clientChannel.address(), command)));
+            }
+        } finally {
+            release(content);
+        }
+    }
+
+    private ByteBuf assembleInvokeData(ByteBufAllocator alloc, MessageLite lite) {
+        try {
+            return proto2Buf(alloc, lite);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
+
+    private <T> Callback<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
+        return promise == null ? null : (buf, cause) -> {
+            if (isNull(cause)) {
+                try {
+                    promise.trySuccess(readProto(buf, parser));
+                } catch (Throwable t) {
+                    promise.tryFailure(t);
+                }
+            } else {
+                promise.tryFailure(cause);
+            }
+        };
+    }
+
+    private static void tryFailure(Promise<?> promise, Throwable t) {
+        if (promise != null) {
+            promise.tryFailure(t);
+        }
+    }
+}

@@ -27,29 +27,30 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         if (msg instanceof final MessagePacket packet) {
             final short version = packet.version();
             final byte state = packet.state();
-            final int rejoin = packet.rejoin();
+            final int answer = packet.answer();
             final byte command = packet.command();
             final byte serialization = packet.serialization();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;
             try {
-                 header = encodeHeader(ctx.alloc(), version, state, command, rejoin, serialization, body.readableBytes());
+                 header = encodeHeader(ctx.alloc(), version, state, command, answer, serialization, body.readableBytes());
             } catch (Throwable cause) {
                 body.release();
                 throw cause;
             } finally {
                 packet.release();
             }
+
             writeBuf(ctx, promise, header, body);
         } else {
             ctx.write(msg, promise);
         }
     }
 
-    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int rejoin, byte serialization, int body) {
+    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int answer, byte serialization, int body) {
         if (body > MAX_BODY_LENGTH) {
-            throw new EncoderException("too large body:" + body + "bytes, limit:" + MAX_BODY_LENGTH + "bytes");
+            throw new EncoderException("Too large body:" + body + "bytes, limit:" + MAX_BODY_LENGTH + "bytes");
         }
 
         final ByteBuf header = alloc.ioBuffer(HEADER_LENGTH);
@@ -58,14 +59,14 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         header.writeShort(version);
         header.writeByte(command);
         header.writeByte(state);
-        header.writeInt(rejoin);
+        header.writeInt(answer);
         header.writeByte(serialization);
 
         return header;
     }
 
     private void writeBuf(ChannelHandlerContext ctx, ChannelPromise promise, ByteBuf header, ByteBuf body) {
-        if (body.isReadable()) {
+        if (!body.isReadable()) {
             body.release();
             ctx.write(header, promise);
             return;

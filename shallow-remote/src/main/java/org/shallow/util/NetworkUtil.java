@@ -1,15 +1,99 @@
 package org.shallow.util;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ServerChannel;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import org.shallow.RemoteException;
 import org.shallow.codec.MessagePacket;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ThreadFactory;
+
+import static org.shallow.ObjectUtil.checkPositive;
+import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.util.ByteUtil.string2Buf;
 
 public final class NetworkUtil {
 
-    public static MessagePacket newSuccessPacket(int rejoin, ByteBuf body) {
-        return MessagePacket.newPacket(rejoin, (byte) 0, body);
+    private static final int INT_ZERO = 0;
+
+    public static MessagePacket newSuccessPacket(int answer, ByteBuf body) {
+        return MessagePacket.newPacket(answer, (byte) INT_ZERO, body);
     }
 
-    public static MessagePacket newFailurePacket(int rejoin, Throwable cause) {
-        return null;
+    public static MessagePacket newFailurePacket(int answer, Throwable cause) {
+        if (cause instanceof RemoteException e) {
+            return MessagePacket.newPacket(answer, e.getCommand(), string2Buf(e.getMessage()));
+        }
+        return MessagePacket.newPacket(answer,RemoteException.Failure.UNKNOWN_EXCEPTION, string2Buf(cause == null ? null : cause.getClass().getSimpleName()));
+    }
+
+    public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
+        final int size = addresses == null ? INT_ZERO : addresses.size();
+        if (checkPositive(size, "bootstrap address") > INT_ZERO) {
+            List<SocketAddress> answers = new LinkedList<>();
+            for (String address : addresses) {
+                SocketAddress socketAddress = switchSocketAddress(address);
+                if (isNotNull(socketAddress)) {
+                    answers.add(socketAddress);
+                }
+            }
+            return answers;
+        }
+       return null;
+    }
+
+    public static SocketAddress switchSocketAddress(String address) {
+        int index = address.lastIndexOf(":");
+        if (index < INT_ZERO) {
+            return null;
+        }
+
+        String host = address.substring(0, index);
+        int port;
+        try {
+            port = Integer.parseInt(address.substring(index + 1));
+        } catch (Exception e) {
+            return null;
+        }
+        return switchSocketAddress(host, port);
+    }
+
+    public static SocketAddress switchSocketAddress(String host, int port) {
+        host = host == null ? null : host.trim();
+        if (host == null || host.isEmpty() || port < INT_ZERO || port > 0xFFFF) {
+            return null;
+        }
+        return InetSocketAddress.createUnresolved(host, port);
+    }
+
+    public static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name) {
+        ThreadFactory f = new DefaultThreadFactory(name);
+        return epoll && Epoll.isAvailable() ? new EpollEventLoopGroup(threads, f) : new NioEventLoopGroup(threads, f);
+    }
+
+    public static Class<? extends Channel> preferChannelClass(boolean epoll) {
+        return epoll && Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class;
+    }
+
+    public static Class<? extends ServerChannel> preferServerChannelClass(boolean epoll) {
+        return epoll && Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
+    }
+
+    public static String switchAddress(Channel channel) {
+        return ((channel == null ? null : channel.remoteAddress()) == null ? null : channel.remoteAddress().toString());
     }
 }

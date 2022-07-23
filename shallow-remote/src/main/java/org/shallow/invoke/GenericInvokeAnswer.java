@@ -1,32 +1,34 @@
 package org.shallow.invoke;
 
+import io.netty.util.ReferenceCountUtil;
+
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import static io.netty.util.ReferenceCountUtil.release;
 import static org.shallow.ObjectUtil.checkNotNull;
 import static org.shallow.ObjectUtil.isNotNull;
 
-public class GenericInvokeRejoin<V> implements InvokeRejoin<V> {
+public class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicIntegerFieldUpdater<GenericInvokeRejoin> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokeRejoin.class, "completed");
+    private static final AtomicIntegerFieldUpdater<GenericInvokeAnswer> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokeAnswer.class, "completed");
 
     private static final int EXPECT = 0;
     private static final int UPDATE = 1;
 
     private volatile int completed;
-    private final Invoker<V> invoker;
+    private final Callback<V> callback;
 
-    public GenericInvokeRejoin() {
+    public GenericInvokeAnswer() {
         this(null);
     }
 
-    public GenericInvokeRejoin(Invoker<V> invoker) {
-        this.invoker = invoker;
+    public GenericInvokeAnswer(Callback<V> callback) {
+        this.callback = callback;
     }
 
     @Override
     public boolean isCompleted() {
-        return completed == UPDATE;
+        return completed != EXPECT;
     }
 
     @Override
@@ -38,13 +40,13 @@ public class GenericInvokeRejoin<V> implements InvokeRejoin<V> {
             }
             return  false;
         } finally {
-          release(v);
+            ReferenceCountUtil.release(v);
         }
     }
 
     @Override
     public boolean failure(Throwable cause) {
-        checkNotNull(cause, "cause must be not null");
+        checkNotNull(cause, "Throwable cause must be not null");
         if (UPDATER.compareAndSet(this, EXPECT , UPDATE)) {
             onCompleted(null, cause);
             return true;
@@ -53,8 +55,8 @@ public class GenericInvokeRejoin<V> implements InvokeRejoin<V> {
     }
 
     private void onCompleted(V v, Throwable cause) {
-       if (isNotNull(invoker)) {
-           invoker.operationCompleted(v, cause);
+       if (isNotNull(callback)) {
+           callback.operationCompleted(v, cause);
        }
     }
 }

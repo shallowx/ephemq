@@ -2,10 +2,10 @@ package org.shallow.topic;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.shallow.ShallowClient;
+import org.shallow.Client;
 import org.shallow.SubCommand;
 
-public class FetchTopicMetadataCommand implements SubCommand {
+public class TopicMetadataCommand implements SubCommand {
     @Override
     public String name() {
         return "TopicList";
@@ -22,7 +22,7 @@ public class FetchTopicMetadataCommand implements SubCommand {
     }
 
     @Override
-    public void execute(CommandLine cmdLine, Options options, ShallowClient client) throws Exception {
+    public void execute(CommandLine cmdLine, Options options, Client client) throws Exception {
 
     }
 }
