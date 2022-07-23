@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import static org.shallow.ObjectUtil.checkNotNull;
 
-@SuppressWarnings("all")
 public class ClientChannel{
 
     private final String name;

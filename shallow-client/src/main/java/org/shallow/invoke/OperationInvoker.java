@@ -23,8 +23,7 @@ import static org.shallow.util.ByteUtil.retainBuf;
 import static org.shallow.util.ProtoBufUtil.proto2Buf;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
-@SuppressWarnings("all")
-public class OperationInvoker<T extends MessageLite> implements ProcessCommand.Server {
+public class OperationInvoker implements ProcessCommand.Server {
 
     private final ClientChannel clientChannel;
     private final Semaphore semaphore;
@@ -36,6 +35,7 @@ public class OperationInvoker<T extends MessageLite> implements ProcessCommand.S
 
     public void invoke(byte command, int timeoutMs, Promise<?> promise, MessageLite request, Class<?> clz) {
        try {
+           @SuppressWarnings("unchecked")
            Callback<ByteBuf> answer = assembleInvokeCallback(promise, assembleParser(clz));
            ByteBuf buf = assembleInvokeData(clientChannel.allocator(), request);
            invoke0(command, buf, timeoutMs, answer);
@@ -44,7 +44,7 @@ public class OperationInvoker<T extends MessageLite> implements ProcessCommand.S
        }
    }
 
-   @SuppressWarnings("all")
+   @SuppressWarnings("rawtypes")
    private Parser assembleParser(Class<?> clz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final Method defaultInstance = clz.getDeclaredMethod("getDefaultInstance");
         Message defaultInst = (Message) defaultInstance.invoke(null);
