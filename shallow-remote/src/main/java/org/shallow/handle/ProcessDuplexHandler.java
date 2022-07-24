@@ -6,27 +6,26 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import org.shallow.ObjectUtil;
 import org.shallow.RemoteException;
 import org.shallow.codec.MessagePacket;
-import org.shallow.invoke.GenericInvokeHolder;
 import org.shallow.invoke.GenericInvokeAnswer;
-import org.shallow.invoke.InvokeHolder;
+import org.shallow.invoke.GenericInvokeHolder;
 import org.shallow.invoke.InvokeAnswer;
+import org.shallow.invoke.InvokeHolder;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.processor.AwareInvocation;
 import org.shallow.processor.ProcessorAware;
+import org.shallow.util.ByteUtil;
+import org.shallow.util.NetworkUtil;
+import org.shallow.processor.AwareInvocation;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static org.shallow.ObjectUtil.*;
 import static org.shallow.RemoteException.of;
-import static org.shallow.util.ByteUtil.buf2String;
-import static org.shallow.util.NetworkUtil.*;
 
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
@@ -37,7 +36,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
-        this.processor = checkNotNull(processor, "[Constructor] - Process must be not null");
+        this.processor = ObjectUtil.checkNotNull(processor, "[Constructor] - Process must be not null");
     }
 
     @Override
@@ -51,7 +50,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         if (msg instanceof final MessagePacket packet) {
             try {
                 if (logger.isInfoEnabled()) {
-                    logger.info("Read message packet - [{}] form remote address - [{}]", packet, switchAddress(ctx.channel()));
+                    logger.info("Read message packet - [{}] form remote address - [{}]", packet, NetworkUtil.switchAddress(ctx.channel()));
                 }
 
                 final byte command = packet.command();
@@ -77,10 +76,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 return;
             }
 
-            if (isNull(cause)) {
-                ctx.writeAndFlush(newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
+            if (ObjectUtil.isNull(cause)) {
+                ctx.writeAndFlush(NetworkUtil.newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
             } else {
-                ctx.writeAndFlush(newFailurePacket(answer, cause));
+                ctx.writeAndFlush(NetworkUtil.newFailurePacket(answer, cause));
             }
         });
 
@@ -92,7 +91,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 logger.info("[ProcessRequest] <{}> invoke processor error - command={}, rejoin={}, body length={}",
                         ctx.channel().remoteAddress(), command, rejoin, length, cause);
             }
-            if (isNotNull(rejoin)) {
+            if (ObjectUtil.isNotNull(rejoin)) {
                 rejoin.failure(cause);
             }
         } finally {
@@ -105,7 +104,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final int answer = packet.answer();
         if (answer == INT_ZERO) {
             if (logger.isInfoEnabled()) {
-                logger.info("[ProcessResponse] - <{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()), command, answer);
+                logger.info("[ProcessResponse] - <{}> command is invalid: command={} answer={} ", NetworkUtil.switchAddress(ctx.channel()), command, answer);
             }
             return;
         }
@@ -116,7 +115,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             if (command == INT_ZERO) {
                 consumed = holder.consume(answer, r -> r.success(buf.retain()));
             } else {
-                final String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
+                final String message = ByteUtil.buf2String(buf, FAILURE_CONTENT_LIMIT);
                 final RemoteException cause = of(command, message);
                 consumed = holder.consume(answer, r -> r.failure(cause));
             }
@@ -155,7 +154,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             if (answer != INT_ZERO && !promise.isVoid()) {
                 promise.addListener(f -> {
                    Throwable cause = f.cause();
-                   if (isNull(cause)) {
+                   if (ObjectUtil.isNull(cause)) {
                        return;
                    }
                    if (executor.inEventLoop()) {
@@ -226,7 +225,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (logger.isInfoEnabled()) {
-            logger.info("[ExceptionCaught] <{}> caught {}", switchAddress(ctx.channel()), cause);
+            logger.info("[ExceptionCaught] <{}> caught {}", NetworkUtil.switchAddress(ctx.channel()), cause);
         }
         ctx.close();
     }

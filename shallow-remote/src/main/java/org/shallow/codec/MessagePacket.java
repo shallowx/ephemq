@@ -5,8 +5,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
+import org.shallow.ObjectUtil;
 
-import static org.shallow.ObjectUtil.isNotNull;
 import static org.shallow.util.ByteUtil.*;
 
 public final class MessagePacket extends AbstractReferenceCounted {
@@ -77,7 +77,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     protected void deallocate() {
-        if (isNotNull(body)) {
+        if (ObjectUtil.isNotNull(body)) {
             body.release();
             body = null;
         }
@@ -104,7 +104,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     public MessagePacket touch(Object hint) {
-        if (isNotNull(body)) {
+        if (ObjectUtil.isNotNull(body)) {
             body.touch(hint);
         }
         return this;

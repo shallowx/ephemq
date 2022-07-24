@@ -12,9 +12,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import org.shallow.ObjectUtil;
 import org.shallow.RemoteException;
 import org.shallow.codec.MessagePacket;
 
+import javax.naming.OperationNotSupportedException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
@@ -23,12 +25,15 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 import static org.shallow.ObjectUtil.checkPositive;
-import static org.shallow.ObjectUtil.isNotNull;
-import static org.shallow.util.ByteUtil.string2Buf;
 
 public final class NetworkUtil {
 
     private static final int INT_ZERO = 0;
+
+    private NetworkUtil() throws OperationNotSupportedException {
+        // Unused
+        throw new OperationNotSupportedException();
+    }
 
     public static MessagePacket newSuccessPacket(int answer, ByteBuf body) {
         return MessagePacket.newPacket(answer, (byte) INT_ZERO, body);
@@ -36,18 +41,18 @@ public final class NetworkUtil {
 
     public static MessagePacket newFailurePacket(int answer, Throwable cause) {
         if (cause instanceof RemoteException e) {
-            return MessagePacket.newPacket(answer, e.getCommand(), string2Buf(e.getMessage()));
+            return MessagePacket.newPacket(answer, e.getCommand(), ByteUtil.string2Buf(e.getMessage()));
         }
-        return MessagePacket.newPacket(answer,RemoteException.Failure.UNKNOWN_EXCEPTION, string2Buf(cause == null ? null : cause.getClass().getSimpleName()));
+        return MessagePacket.newPacket(answer,RemoteException.Failure.UNKNOWN_EXCEPTION, ByteUtil.string2Buf(cause == null ? null : cause.getClass().getSimpleName()));
     }
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
         final int size = addresses == null ? INT_ZERO : addresses.size();
-        if (checkPositive(size, "bootstrap address") > INT_ZERO) {
+        if (ObjectUtil.checkPositive(size, "bootstrap address") > INT_ZERO) {
             List<SocketAddress> answers = new LinkedList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);
-                if (isNotNull(socketAddress)) {
+                if (ObjectUtil.isNotNull(socketAddress)) {
                     answers.add(socketAddress);
                 }
             }

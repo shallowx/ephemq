@@ -3,8 +3,7 @@ package org.shallow.consumer;
 import io.netty.buffer.ByteBuf;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-
-import static org.shallow.util.ByteUtil.buf2String;
+import org.shallow.util.ByteUtil;
 
 @FunctionalInterface
 public interface MessageListener {
@@ -12,7 +11,7 @@ public interface MessageListener {
 
     MessageListener ACTIVE = (topic, queue, message) -> {
         if (logger.isDebugEnabled()) {
-            logger.debug("topic=%s queue=%s message=%s", topic, queue, buf2String(message, message.readableBytes()));
+            logger.debug("topic=%s queue=%s message=%s", topic, queue, ByteUtil.buf2String(message, message.readableBytes()));
         }
     };
 

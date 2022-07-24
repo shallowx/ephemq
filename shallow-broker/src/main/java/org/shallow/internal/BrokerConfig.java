@@ -1,15 +1,19 @@
-package org.shallow.core;
+package org.shallow.internal;
 
-import org.shallow.metadata.MappingConstants;
+import org.shallow.MappedFileConstants;
 
 import java.util.Properties;
 
 import static org.shallow.TypeUtil.*;
+import static org.shallow.TypeUtil.object2String;
 
 public class BrokerConfig {
 
     private final Properties config;
 
+    private static final String SERVER_ID = "shallow.server.id";
+    private static final String CLUSTER_NAME = "shallow.cluster.name";
+    private static final String CLUSTER_NODE_ROLE = "shallow.cluster.node.role";
     private static final String IO_THREAD_WHOLES = "shallow.io.thread.wholes";
     private static final String WORK_THREAD_WHOLES = "shallow.network.thread.wholes";
     private static final String OS_IS_EPOLL_PREFER= "shallow.os.epoll.prefer";
@@ -17,7 +21,9 @@ public class BrokerConfig {
     private static final String EXPOSED_HOST = "shallow.exposed.host";
     private static final String EXPOSED_PORT = "shallow.exposed.port";
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
-    private static final String TOPICS_METADATA_DIRECTORY = "shallow.topics.metadata.directory";
+    private static final String METADATA_WORK_DIRECTORY = "shallow.metadata.work.directory";
+    private static final String TOPICS_METADATA_EXPIRED_TIME_MS = "shallow.topics.metadata.expired.time.ms";
+    private static final String CLUSTERS_METADATA_EXPIRED_TIME_MS = "shallow.clusters.metadata.expired.time.ms";
 
     public static BrokerConfig exchange(Properties properties) {
         return new BrokerConfig(properties);
@@ -29,6 +35,10 @@ public class BrokerConfig {
 
     private int availableProcessor() {
         return Runtime.getRuntime().availableProcessors();
+    }
+
+    public String obtainServerId() {
+        return object2String(config.getOrDefault(SERVER_ID, "shallow"));
     }
 
     public int obtainIoThreadWholes(){
@@ -51,8 +61,8 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(EXPOSED_HOST, "127.0.0.1"));
     }
 
-    public String obtainTopicsMetadataDirectory(){
-        return object2String(config.getOrDefault(TOPICS_METADATA_DIRECTORY, MappingConstants.DIRECTORY));
+    public String obtainMetadataWorkDirectory(){
+        return object2String(config.getOrDefault(METADATA_WORK_DIRECTORY, MappedFileConstants.DIRECTORY));
     }
 
     public int obtainExposedPort(){
@@ -61,5 +71,21 @@ public class BrokerConfig {
 
     public boolean isNetworkLoggingDebugEnabled() {
         return object2Boolean(config.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
+    }
+
+    public long obtainTopicsMetadataExpiredTimeMS() {
+        return object2Long(config.getOrDefault(TOPICS_METADATA_EXPIRED_TIME_MS, 20000L));
+    }
+
+    public long obtainClustersMetadataExpiredTimeMS() {
+        return object2Long(config.getOrDefault(CLUSTERS_METADATA_EXPIRED_TIME_MS, 20000L));
+    }
+
+    public String obtainCLusterNodeRole(){
+        return object2String(config.getOrDefault(CLUSTER_NODE_ROLE, "broker"));
+    }
+
+    public String obtainCLusterName(){
+        return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 }

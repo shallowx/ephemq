@@ -1,5 +1,6 @@
 package org.shallow;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -10,7 +11,9 @@ public final class ObjectUtil {
     private static final long LONG_ZERO = 0L;
     private static final int INT_ZERO = 0;
 
-    private ObjectUtil() {
+    private ObjectUtil() throws OperationNotSupportedException {
+        // Unused.
+        throw new OperationNotSupportedException();
     }
 
     public static <T> T checkNotNull(T arg, String text) {

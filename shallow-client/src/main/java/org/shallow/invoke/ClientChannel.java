@@ -4,11 +4,10 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.ClientConfig;
+import org.shallow.ObjectUtil;
 
 import java.net.SocketAddress;
 import java.util.Objects;
-import java.util.concurrent.Semaphore;
-import static org.shallow.ObjectUtil.checkNotNull;
 
 public class ClientChannel{
 
@@ -18,9 +17,9 @@ public class ClientChannel{
     private final OperationInvoker invoker;
 
     public ClientChannel(Channel channel, ClientConfig config, SocketAddress address) {
-        this.channel = checkNotNull(channel, "Channel cannot be null");
-        this.name = checkNotNull(channel.id().asLongText(), "Name cannot be null");
-        this.address = checkNotNull(address, "Socket address cannot be null");
+        this.channel = ObjectUtil.checkNotNull(channel, "Channel cannot be null");
+        this.name = ObjectUtil.checkNotNull(channel.id().asLongText(), "Name cannot be null");
+        this.address = ObjectUtil.checkNotNull(address, "Socket address cannot be null");
         this.invoker = new OperationInvoker(this, config);
     }
 

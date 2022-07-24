@@ -2,8 +2,8 @@ package org.shallow;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.shallow.core.BrokerConfig;
-import org.shallow.core.BrokerServer;
+import org.shallow.internal.BrokerConfig;
+import org.shallow.internal.BrokerServer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -13,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
-import static org.shallow.TypeUtil.*;
 
 public class Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Server.class);
@@ -103,17 +102,17 @@ public class Server {
         Object invoke;
         try {
             switch (type) {
-                case "int", "Integer" -> invoke = object2Int(method.invoke(config));
-                case "long", "Long" -> invoke = object2Long(method.invoke(config));
-                case "double", "Double" -> invoke = object2Double(method.invoke(config));
-                case "float", "Float" -> invoke = object2Float(method.invoke(config));
-                case "boolean", "Boolean" -> invoke = object2Boolean(method.invoke(config));
-                case "String" -> invoke = object2String(method.invoke(config));
+                case "int", "Integer" -> invoke = TypeUtil.object2Int(method.invoke(config));
+                case "long", "Long" -> invoke = TypeUtil.object2Long(method.invoke(config));
+                case "double", "Double" -> invoke = TypeUtil.object2Double(method.invoke(config));
+                case "float", "Float" -> invoke = TypeUtil.object2Float(method.invoke(config));
+                case "boolean", "Boolean" -> invoke = TypeUtil.object2Boolean(method.invoke(config));
+                case "String" -> invoke = TypeUtil.object2String(method.invoke(config));
                 default -> throw new OperationNotSupportedException("Not support type");
             }
             sb.append(String.format("\t%s=%s", name, invoke)).append("\n");
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(String.format("Failed to check config type, type:%s name:%s error:%s", type, name, e));
         }
     }
 }

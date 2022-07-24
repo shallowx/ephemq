@@ -4,7 +4,8 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.shallow.core.BrokerConfig;
+import org.shallow.internal.BrokerConfig;
+import org.shallow.internal.BrokerManager;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -20,10 +21,12 @@ public final class BrokerSocketServer {
     private  EventLoopGroup bossGroup;
     private  EventLoopGroup workGroup;
     private  ChannelFuture closedFuture;
+    private final BrokerManager manager;
 
-    public BrokerSocketServer(BrokerConfig config) {
+    public BrokerSocketServer(BrokerConfig config, BrokerManager manager) {
         this.config = config;
-        this.serverChannelInitializer = new ServerChannelInitializer(config);
+        this.manager = manager;
+        this.serverChannelInitializer = new ServerChannelInitializer(config, manager);
     }
 
     public void start() throws Exception {

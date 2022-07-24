@@ -1,5 +1,6 @@
 package org.shallow;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.Arrays;
 import static org.shallow.ObjectUtil.checkNotNull;
 
@@ -48,8 +49,9 @@ public final class StringUtil {
         HEX2B['f'] = (byte) 15;
     }
 
-    private StringUtil() {
+    private StringUtil() throws OperationNotSupportedException {
         // Unused.
+        throw new OperationNotSupportedException();
     }
 
     public static String simpleClassName(Object o) {

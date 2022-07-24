@@ -1,8 +1,9 @@
-package org.shallow;
+package org.shallow.internal;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import org.shallow.ClientConfig;
 import org.shallow.codec.MessageDecoder;
 import org.shallow.codec.MessageEncoder;
 import org.shallow.handle.ConnectDuplexHandler;

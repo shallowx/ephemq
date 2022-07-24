@@ -18,7 +18,6 @@ import static org.shallow.util.NetworkUtil.switchSocketAddress;
 
 public class ClientTests {
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testClientStart() throws Exception {
         ClientConfig clientConfig = new ClientConfig();

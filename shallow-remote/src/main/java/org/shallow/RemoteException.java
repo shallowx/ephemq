@@ -1,7 +1,5 @@
 package org.shallow;
 
-import static org.shallow.ObjectUtil.checkNegative;
-
 public final class RemoteException extends RuntimeException {
 
     private final byte command;
@@ -18,12 +16,12 @@ public final class RemoteException extends RuntimeException {
 
     public RemoteException(byte command, String error) {
         super(error);
-        this.command = (byte) checkNegative(command, "Command");
+        this.command = (byte) ObjectUtil.checkNegative(command, "Command");
     }
 
     public RemoteException(byte command, String error, Throwable cause) {
         super(error, cause);
-        this.command = (byte) checkNegative(command, "Command");
+        this.command = (byte) ObjectUtil.checkNegative(command, "Command");
     }
 
     public byte getCommand() {

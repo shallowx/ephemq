@@ -9,11 +9,10 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
+import org.shallow.pool.ChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.pool.ChannelPoolFactory;
 
-import static org.shallow.ObjectUtil.checkNotNull;
 import static org.shallow.util.NetworkUtil.*;
 
 public class Client {
@@ -28,7 +27,7 @@ public class Client {
 
     public Client(String name, ClientConfig config) {
         this.name = name;
-        this.config = checkNotNull(config, "Client config cannot be null");
+        this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
     }
 
     public void start() {

@@ -8,10 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.shallow.CmdToolUtil.*;
-import static org.shallow.ObjectUtil.checkNotNull;
+import static org.shallow.util.CmdToolUtil.*;
 
-public class ShallowCmdLineTool {
+public class CmdLineTool {
 
     private static Client client;
 
@@ -24,7 +23,7 @@ public class ShallowCmdLineTool {
            final List<SubCommand> commands = initCommand();
 
         } catch (Exception e) {
-            System.err.printf("%s [%s] ERROR %s - %s \n", newDate(), currentThread(), className(ShallowCmdLineTool.class), e);
+            System.err.printf("%s [%s] ERROR %s - %s \n", newDate(), currentThread(), className(CmdLineTool.class), e);
         }
     }
 
@@ -48,7 +47,7 @@ public class ShallowCmdLineTool {
     }
 
     private SubCommand acquireCommand(final String name, List<SubCommand> commands) {
-        checkNotNull(name, "command is null");
+        ObjectUtil.checkNotNull(name, "command is null");
         if (commands.isEmpty()) {
             return null;
         }

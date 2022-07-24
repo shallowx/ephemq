@@ -7,17 +7,19 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.shallow.ClientChannelInitializer;
+import org.shallow.internal.ClientChannelInitializer;
 import org.shallow.ClientConfig;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.ObjectUtil;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.util.NetworkUtil;
+import org.shallow.invoke.ClientChannel;
+
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.shallow.ObjectUtil.*;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 
 public class DynamicChannelPool implements ShallowChannelPool {
@@ -41,7 +43,7 @@ public class DynamicChannelPool implements ShallowChannelPool {
     }
 
     private List<SocketAddress> constructBootstrap() {
-        return checkNotNull(switchSocketAddress(config.getBootstrapSocketAddress()), "Bootstrap address cannot be null");
+        return ObjectUtil.checkNotNull(NetworkUtil.switchSocketAddress(config.getBootstrapSocketAddress()), "Bootstrap address cannot be null");
     }
 
     private void constructChannel(SocketAddress address) {
@@ -61,9 +63,9 @@ public class DynamicChannelPool implements ShallowChannelPool {
     @Override
     public Future<ClientChannel> acquire(SocketAddress address) {
         Future<ClientChannel> future;
-        if (isNull(address)) {
+        if (ObjectUtil.isNull(address)) {
             future = randomAcquire();
-            if (isNotNull(future)) {
+            if (ObjectUtil.isNotNull(future)) {
                 return future;
             }
 

@@ -6,12 +6,10 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
+import org.shallow.ObjectUtil;
 
 import static java.lang.Integer.MAX_VALUE;
-import static org.shallow.ObjectUtil.isNotNull;
-import static org.shallow.ObjectUtil.isNull;
 import static org.shallow.codec.MessageDecoder.State.*;
-import static org.shallow.codec.MessagePacket.*;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
@@ -38,7 +36,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 buf = whole(ctx.alloc(), read);
                 while (!ctx.isRemoved() && buf.isReadable()) {
                     final MessagePacket packet = decode(buf);
-                    if (isNull(packet)) {
+                    if (ObjectUtil.isNull(packet)) {
                         break;
                     }
                     ctx.fireChannelRead(packet);
@@ -47,11 +45,11 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 invalid = true;
                 throw cause;
             } finally {
-              if (isNotNull(buf)) {
+              if (ObjectUtil.isNotNull(buf)) {
                   buf.release();
               }
               buf = whole;
-              if (isNotNull(buf) && (!buf.isReadable() || invalid)) {
+              if (ObjectUtil.isNotNull(buf) && (!buf.isReadable() || invalid)) {
                   whole = null;
                   buf.release();
               }
@@ -68,7 +66,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     return null;
                 }
                 final byte magic = buf.getByte(buf.readerIndex());
-                if (magic != MAGIC_NUMBER) {
+                if (magic != MessagePacket.MAGIC_NUMBER) {
                     throw new DecoderException("invalid magic number:" + magic);
                 }
                 state = READ_MESSAGE_LENGTH;
@@ -78,7 +76,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     return null;
                 }
                 final int frame = buf.getUnsignedMedium(buf.readerIndex() + 1);
-                if (frame < HEADER_LENGTH) {
+                if (frame < MessagePacket.HEADER_LENGTH) {
                     throw new DecoderException("invalid frame number:" + frame);
                 }
                 writeFrameBytes = frame;
@@ -94,10 +92,10 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 final byte state = buf.readByte();
                 final int answer = buf.readInt();
                 final byte serialization = buf.readByte();
-                final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - HEADER_LENGTH);
+                final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
 
                 this.state = READ_MAGIC_NUMBER;
-                return newPacket(version, state, answer, serialization, command, body);
+                return MessagePacket.newPacket(version, state, answer, serialization, command, body);
             }
             default:{
                 throw new DecoderException("invalid decode state:" + state);
@@ -107,7 +105,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     private ByteBuf whole(ByteBufAllocator alloc, ByteBuf read) {
         final ByteBuf buf = whole;
-        if (isNull(buf)) {
+        if (ObjectUtil.isNull(buf)) {
             return whole = read;
         }
 
@@ -136,7 +134,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (isNotNull(whole)) {
+        if (ObjectUtil.isNotNull(whole)) {
             whole.release();
             whole = null;
         }
@@ -146,7 +144,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         final ByteBuf buf = whole;
-        if (isNotNull(buf)) {
+        if (ObjectUtil.isNotNull(buf)) {
             whole = null;
             if (buf.isReadable()) {
                 ctx.fireChannelRead(buf);

@@ -2,17 +2,20 @@ package org.shallow.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.shallow.ObjectUtil;
 
+import javax.naming.OperationNotSupportedException;
 import java.nio.charset.StandardCharsets;
 
-import static org.shallow.ObjectUtil.isNotNull;
-import static org.shallow.ObjectUtil.isNull;
-
 public final class ByteUtil {
-    private ByteUtil() {}
+
+    private ByteUtil() throws OperationNotSupportedException {
+        // Unused
+        throw new OperationNotSupportedException();
+    }
 
     public static String buf2String(ByteBuf buf, int maxLength) {
-        if (isNull(buf)) {
+        if (ObjectUtil.isNull(buf)) {
             return null;
         }
         int length = buf.readableBytes();
@@ -29,7 +32,7 @@ public final class ByteUtil {
     }
 
     public static ByteBuf string2Buf(String data) {
-        return isNull(data) ? null : Unpooled.copiedBuffer(data, StandardCharsets.UTF_8);
+        return ObjectUtil.isNull(data) ? null : Unpooled.copiedBuffer(data, StandardCharsets.UTF_8);
     }
 
     public static ByteBuf retainBuf(ByteBuf buf) {
@@ -37,11 +40,11 @@ public final class ByteUtil {
     }
 
     public static <T> T defaultIfNull(T t, T defaultValue) {
-        return isNotNull(t) ? t : defaultValue;
+        return ObjectUtil.isNotNull(t) ? t : defaultValue;
     }
 
     public static void release(ByteBuf buf) {
-       if (isNotNull(buf)) {
+       if (ObjectUtil.isNotNull(buf)) {
            buf.release();
        }
     }
