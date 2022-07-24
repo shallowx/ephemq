@@ -13,6 +13,7 @@ public interface ProcessCommand {
                     case 3 -> "UPDATE_TOPIC";
                     case 4 -> "FETCH_CLUSTER_INFO";
                     case 5 -> "FETCH_TOPIC_INFO";
+                    case 6 -> "CLUSTER_NODE_JOIN";
                     default -> throw new IllegalStateException("Unexpected client command: " + command);
                 };
             }
@@ -23,6 +24,7 @@ public interface ProcessCommand {
         byte UPDATE_TOPIC = 3;
         byte FETCH_CLUSTER_INFO = 4;
         byte FETCH_TOPIC_INFO = 5;
+        byte CLUSTER_NODE_JOIN = 6;
 
        default String obtain(byte command) {
            return null;

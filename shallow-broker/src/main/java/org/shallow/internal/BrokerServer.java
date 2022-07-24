@@ -1,11 +1,11 @@
-package org.shallow.core;
+package org.shallow.internal;
 
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.remote.BrokerSocketServer;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+
 
 public final class BrokerServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerServer.class);
@@ -13,10 +13,13 @@ public final class BrokerServer {
     private final BrokerSocketServer socketServer;
     private final BrokerConfig config;
     private final CountDownLatch latch;
+    private final BrokerManager manager;
+
 
     public BrokerServer(BrokerConfig config) {
         this.config = config;
-        this.socketServer = new BrokerSocketServer(config);
+        this.manager = new DefaultBrokerManager(config);
+        this.socketServer = new BrokerSocketServer(config, manager);
         this.latch = new CountDownLatch(1);
     }
 
@@ -36,10 +39,14 @@ public final class BrokerServer {
             latch.countDown();
         }, "socket-server-start").start();
         future.get();
+
+        manager.start();
+
         latch.await();
     }
 
     public void shutdownGracefully() throws Exception {
+        manager.shutdownGracefully();
         socketServer.shutdownGracefully();
     }
 }

@@ -9,8 +9,6 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
 
-import static org.shallow.codec.MessagePacket.*;
-
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
@@ -49,13 +47,13 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     }
 
     private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int answer, byte serialization, int body) {
-        if (body > MAX_BODY_LENGTH) {
-            throw new EncoderException("Too large body:" + body + "bytes, limit:" + MAX_BODY_LENGTH + "bytes");
+        if (body > MessagePacket.MAX_BODY_LENGTH) {
+            throw new EncoderException("Too large body:" + body + "bytes, limit:" + MessagePacket.MAX_BODY_LENGTH + "bytes");
         }
 
-        final ByteBuf header = alloc.ioBuffer(HEADER_LENGTH);
-        header.writeByte(MAGIC_NUMBER);
-        header.writeMedium(body + HEADER_LENGTH);
+        final ByteBuf header = alloc.ioBuffer(MessagePacket.HEADER_LENGTH);
+        header.writeByte(MessagePacket.MAGIC_NUMBER);
+        header.writeMedium(body + MessagePacket.HEADER_LENGTH);
         header.writeShort(version);
         header.writeByte(command);
         header.writeByte(state);

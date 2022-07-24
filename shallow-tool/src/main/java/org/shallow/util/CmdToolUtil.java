@@ -1,9 +1,16 @@
-package org.shallow;
+package org.shallow.util;
 
+import javax.naming.OperationNotSupportedException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CmdToolUtil {
+
+    private CmdToolUtil() throws OperationNotSupportedException {
+        // Unused
+        throw new OperationNotSupportedException();
+    }
+
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 
     public static String newDate() {

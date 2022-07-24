@@ -1,6 +1,12 @@
 package org.shallow;
 
+import javax.naming.OperationNotSupportedException;
+
 public class TypeUtil {
+
+    private TypeUtil() throws OperationNotSupportedException {
+        throw new OperationNotSupportedException();
+    }
 
     public static String object2String(Object v) {
         return (String) v;

@@ -8,11 +8,17 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
 import static org.shallow.util.ByteUtil.release;
 
 public class ProtoBufUtil {
+
+    private ProtoBufUtil() throws OperationNotSupportedException {
+        // Unused
+        throw new OperationNotSupportedException();
+    }
 
     public static <T> T readProto(ByteBuf buf, Parser<T> parser) throws InvalidProtocolBufferException {
         int length = buf.readInt();
