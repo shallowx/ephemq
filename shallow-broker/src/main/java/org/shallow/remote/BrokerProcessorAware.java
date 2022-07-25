@@ -61,7 +61,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case FETCH_TOPIC_INFO -> {}
                 default -> {
                     if (logger.isInfoEnabled()) {
-                        logger.info("[Server process] <{}> - not supported command [{}]", switchAddress(channel), command);
+                        logger.info("[Broker server process] <{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }

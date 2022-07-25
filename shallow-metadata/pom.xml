@@ -20,6 +20,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.shallow</groupId>
+            <artifactId>shallow-remote</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>${caffine.version}</version>
