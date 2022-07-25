@@ -53,4 +53,24 @@ public interface ProcessCommand {
            return null;
        }
     }
+
+    interface NameServer {
+
+        NameServer ACTIVE = new NameServer() {
+            @Override
+            public String obtain(byte command) {
+                return switch (command) {
+                    case 1 -> "REGISTER_NODE";
+                    case 2 -> "OFFLINE";
+                    default -> throw new IllegalStateException("Unexpected server command: " + command);
+                };
+            }
+        };
+
+        byte REGISTER_NODE = 1;
+        byte OFFLINE = 2;
+        default String obtain(byte command) {
+            return null;
+        }
+    }
 }
