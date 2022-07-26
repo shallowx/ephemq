@@ -4,6 +4,11 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/infra.png)
 
+- Broker: accept command(eg: query、storage)、message storage、message push、pull message
+- Client: producer & consumer
+- Nameserver: broker register
+- Metrics: CPU、JVM、message、semaphore
+
 # Environment
 
 - Jdk version: Jdk17+
