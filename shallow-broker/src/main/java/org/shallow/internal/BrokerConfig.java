@@ -1,7 +1,5 @@
 package org.shallow.internal;
 
-import org.shallow.MappedFileConstants;
-
 import java.util.Properties;
 
 import static org.shallow.TypeUtil.*;
@@ -59,10 +57,6 @@ public class BrokerConfig {
 
     public String obtainExposedHost(){
         return object2String(config.getOrDefault(EXPOSED_HOST, "127.0.0.1"));
-    }
-
-    public String obtainMetadataWorkDirectory(){
-        return object2String(config.getOrDefault(METADATA_WORK_DIRECTORY, MappedFileConstants.DIRECTORY));
     }
 
     public int obtainExposedPort(){

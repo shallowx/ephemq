@@ -1,4 +1,4 @@
-package org.shallow.remote;
+package org.shallow.network;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

@@ -3,19 +3,18 @@ package org.shallow.topic;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
-import org.shallow.AbstractMetadataProvider;
-import org.shallow.MappedFileConstants;
-import org.shallow.MetadataAPI;
-import org.shallow.MetadataProvider;
+import org.shallow.internal.AbstractMetadataProvider;
+import org.shallow.internal.MappedFileConstants;
+import org.shallow.internal.MetadataAPI;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import java.util.List;
 
 import static org.shallow.JsonUtil.object2Json;
-import static org.shallow.MappedFileConstants.TOPICS;
+import static org.shallow.internal.MappedFileConstants.TOPICS;
 
-public class TopicMetadataProvider extends AbstractMetadataProvider<TopicMetadata> implements MetadataProvider<TopicMetadata> {
+public class TopicMetadataProvider extends AbstractMetadataProvider<TopicMetadata> {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicMetadataProvider.class);
 
     private final EventExecutor write2FileExecutor;

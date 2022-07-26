@@ -1,7 +1,8 @@
-package org.shallow.remote;
+package org.shallow.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import org.shallow.internal.MetaManager;
 import org.shallow.RemoteException;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
@@ -16,6 +17,12 @@ public class MetaProcessorAware implements ProcessorAware, ProcessCommand.NameSe
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaProcessorAware.class);
 
+    private final MetaManager metaManager;
+
+    public MetaProcessorAware(MetaManager metaManager) {
+        this.metaManager = metaManager;
+    }
+
     @Override
     public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
@@ -24,14 +31,14 @@ public class MetaProcessorAware implements ProcessorAware, ProcessCommand.NameSe
                 case OFFLINE -> {}
                 default -> {
                     if (logger.isInfoEnabled()) {
-                        logger.info("[Name server process] <{}> - not supported command [{}]", switchAddress(channel), command);
+                        logger.info("[Nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }
             }
     } catch (Throwable cause) {
         if (logger.isErrorEnabled()) {
-            logger.error("#");
+            logger.error("[Nameserver process]<{}> - command [{}]", switchAddress(channel), command);
         }
         answerFailed(answer, cause);
     }
