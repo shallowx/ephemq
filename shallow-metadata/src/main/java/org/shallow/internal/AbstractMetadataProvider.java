@@ -1,8 +1,9 @@
-package org.shallow;
+package org.shallow.internal;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -55,4 +56,10 @@ public abstract class AbstractMetadataProvider<T> {
     protected abstract T load(String key);
 
     protected abstract String switchMetadata(List<T> t);
+
+    protected abstract Future<Boolean> append(T t);
+
+    protected abstract Future<Boolean> delete(T t);
+
+    protected abstract T acquire(String key);
 }

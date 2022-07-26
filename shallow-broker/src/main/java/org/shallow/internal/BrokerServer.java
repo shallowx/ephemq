@@ -2,7 +2,7 @@ package org.shallow.internal;
 
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.remote.BrokerSocketServer;
+import org.shallow.network.BrokerSocketServer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 

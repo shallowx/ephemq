@@ -1,4 +1,4 @@
-package org.shallow.remote;
+package org.shallow.network;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.shallow.handle.ProcessDuplexHandler;
@@ -6,11 +6,11 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessorAware;
 
-public class MetaServiceDuplexHandler extends ProcessDuplexHandler {
+public class ServiceDuplexHandler extends ProcessDuplexHandler {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaServiceDuplexHandler.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceDuplexHandler.class);
 
-    public MetaServiceDuplexHandler(ProcessorAware processor) {
+    public ServiceDuplexHandler(ProcessorAware processor) {
         super(processor);
     }
 
