@@ -3,6 +3,9 @@ package org.shallow.network;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.Promise;
 import org.shallow.RemoteException;
 import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
@@ -10,9 +13,11 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
-import org.shallow.proto.CreateTopicAnswer;
-import org.shallow.proto.CreateTopicRequest;
+import org.shallow.proto.server.CreateTopicRequest;
+import org.shallow.proto.server.CreateTopicResponse;
+
 import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.NetworkUtil.switchAddress;
 import static org.shallow.util.ProtoBufUtil.proto2Buf;
 import static org.shallow.util.ProtoBufUtil.readProto;
@@ -29,8 +34,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
     @Override
     public void onActive(ChannelHandlerContext ctx) {
-        if (logger.isInfoEnabled()) {
-            logger.info("Obtain remote active address <{}>", ctx.channel().remoteAddress());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Obtain remote active address <{}>", ctx.channel().remoteAddress());
         }
     }
 
@@ -40,24 +45,44 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             switch (command) {
                 case CREATE_TOPIC -> {
                     final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
-                    final String topic = request.getName();
+                    final String topic = request.getTopic();
+                    final int partitions = request.getPartitions();
+                    final int latency = request.getLatency();
 
-                    final CreateTopicAnswer response = CreateTopicAnswer
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("[Broker server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
+                    }
+
+                    final CreateTopicResponse response = CreateTopicResponse
                             .newBuilder()
-                            .setAck(InvokeAnswer.SUCCESS)
+                            .setAck(1)
+                            .setLatency(latency)
+                            .setTopic(topic)
+                            .setPartitions(partitions)
                             .build();
 
-                    if (isNotNull(answer)) {
-                        answer.success(proto2Buf(channel.alloc(), response));
-                    }
+                    Promise<Object> promise = newImmediatePromise();
+                    promise.addListener(new GenericFutureListener<Future< Object>>() {
+                        @Override
+                        public void operationComplete(Future<Object> f) throws Exception {
+                            if (f.isSuccess()) {
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), response));
+                                }
+                            } else {
+                                answerFailed(answer, f.cause());
+                            }
+                        }
+                    });
+                    promise.trySuccess(null);
                 }
                 case DELETE_TOPIC -> {}
                 case UPDATE_TOPIC -> {}
                 case FETCH_CLUSTER_INFO -> {}
                 case FETCH_TOPIC_INFO -> {}
                 default -> {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("[Broker server process] <{}> - not supported command [{}]", switchAddress(channel), command);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("[Broker server process] <{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }
@@ -75,4 +100,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             answer.failure(cause);
         }
     }
+
+
 }

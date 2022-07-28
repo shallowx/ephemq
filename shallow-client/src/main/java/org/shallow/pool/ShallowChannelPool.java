@@ -8,5 +8,6 @@ import java.net.SocketAddress;
 
 public interface ShallowChannelPool {
     Future<ClientChannel> acquire(SocketAddress address);
+    Future<ClientChannel> acquire();
     Promise<ClientChannel> assemblePromise(Channel channel);
 }

@@ -3,6 +3,7 @@ package org.shallow.network;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import org.shallow.internal.MetaConfig;
 import org.shallow.internal.MetaManager;
 import org.shallow.codec.MessageDecoder;
 import org.shallow.codec.MessageEncoder;
@@ -15,19 +16,19 @@ public class MetaServerChannelInitializer extends ChannelInitializer<SocketChann
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaServerChannelInitializer.class);
 
     private final MetaManager metaManager;
+    private final MetaConfig config;
 
-    public MetaServerChannelInitializer(MetaManager metaManager) {
+    public MetaServerChannelInitializer(MetaConfig config, MetaManager metaManager) {
         this.metaManager = metaManager;
+        this.config = config;
     }
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-
-
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
-        pipeline.addLast("service-handler", new MetaServiceDuplexHandler(new MetaProcessorAware(metaManager)));
+        pipeline.addLast("service-handler", new MetaServiceDuplexHandler(new MetaProcessorAware(config, metaManager)));
     }
 }

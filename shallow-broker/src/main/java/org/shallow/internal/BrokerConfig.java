@@ -10,8 +10,8 @@ public class BrokerConfig {
     private final Properties config;
 
     private static final String SERVER_ID = "shallow.server.id";
-    private static final String CLUSTER_NAME = "shallow.cluster.name";
-    private static final String CLUSTER_NODE_ROLE = "shallow.cluster.node.role";
+    private static final String CLUSTER_NAME = "shallow.cluster";
+    private static final String CLUSTER_NODE_ROLE = "shallow.node.role";
     private static final String IO_THREAD_WHOLES = "shallow.io.thread.wholes";
     private static final String WORK_THREAD_WHOLES = "shallow.network.thread.wholes";
     private static final String OS_IS_EPOLL_PREFER= "shallow.os.epoll.prefer";
@@ -19,9 +19,7 @@ public class BrokerConfig {
     private static final String EXPOSED_HOST = "shallow.exposed.host";
     private static final String EXPOSED_PORT = "shallow.exposed.port";
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
-    private static final String METADATA_WORK_DIRECTORY = "shallow.metadata.work.directory";
-    private static final String TOPICS_METADATA_EXPIRED_TIME_MS = "shallow.topics.metadata.expired.time.ms";
-    private static final String CLUSTERS_METADATA_EXPIRED_TIME_MS = "shallow.clusters.metadata.expired.time.ms";
+    private static final String SHALLOW_NAMESERVER_URL = "shallow.namespace.url";
 
     public static BrokerConfig exchange(Properties properties) {
         return new BrokerConfig(properties);
@@ -35,15 +33,15 @@ public class BrokerConfig {
         return Runtime.getRuntime().availableProcessors();
     }
 
-    public String obtainServerId() {
+    public String getServerId() {
         return object2String(config.getOrDefault(SERVER_ID, "shallow"));
     }
 
-    public int obtainIoThreadWholes(){
+    public int getIoThreadWholes(){
         return object2Int(config.getOrDefault(IO_THREAD_WHOLES, 1));
     }
 
-    public int obtainNetworkThreadWholes(){
+    public int getNetworkThreadWholes(){
         return object2Int(config.getOrDefault(WORK_THREAD_WHOLES, availableProcessor()));
     }
 
@@ -51,35 +49,19 @@ public class BrokerConfig {
         return object2Boolean(config.getOrDefault(OS_IS_EPOLL_PREFER, false));
     }
 
-    public int obtainSocketWriteHighWaterMark(){
+    public int getSocketWriteHighWaterMark(){
         return object2Int(config.getOrDefault(SOCKET_WRITE_HIGH_WATER_MARK, 20 * 1024 * 1024));
     }
 
-    public String obtainExposedHost(){
+    public String getExposedHost(){
         return object2String(config.getOrDefault(EXPOSED_HOST, "127.0.0.1"));
     }
 
-    public int obtainExposedPort(){
+    public int getExposedPort(){
         return object2Int(config.getOrDefault(EXPOSED_PORT, 7730));
     }
 
     public boolean isNetworkLoggingDebugEnabled() {
         return object2Boolean(config.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
-    }
-
-    public long obtainTopicsMetadataExpiredTimeMS() {
-        return object2Long(config.getOrDefault(TOPICS_METADATA_EXPIRED_TIME_MS, 20000L));
-    }
-
-    public long obtainClustersMetadataExpiredTimeMS() {
-        return object2Long(config.getOrDefault(CLUSTERS_METADATA_EXPIRED_TIME_MS, 20000L));
-    }
-
-    public String obtainCLusterNodeRole(){
-        return object2String(config.getOrDefault(CLUSTER_NODE_ROLE, "broker"));
-    }
-
-    public String obtainCLusterName(){
-        return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 }

@@ -15,15 +15,25 @@ public final class ServerProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_FetchClusterRequest_descriptor;
+    internal_static_shallow_protobuf_CreateTopicRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_FetchClusterRequest_fieldAccessorTable;
+      internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_FetchClusterResponse_descriptor;
+    internal_static_shallow_protobuf_CreateTopicResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_FetchClusterResponse_fieldAccessorTable;
+      internal_static_shallow_protobuf_CreateTopicResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_DelTopicRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_DelTopicRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_DelTopicResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_DelTopicResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -34,29 +44,44 @@ public final class ServerProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\014server.proto\022\020shallow.protobuf\032\rshallo" +
-      "w.proto\"4\n\023FetchClusterRequest\022\014\n\004name\030\001" +
-      " \001(\t\022\017\n\007version\030\002 \001(\005\"G\n\024FetchClusterRes" +
-      "ponse\022/\n\010_cluster\030\001 \001(\0132\035.shallow.protob" +
-      "uf.ClusterInfoB)\n\030org.shallow.proto.serv" +
-      "erB\013ServerProtoP\001b\006proto3"
+      "w.proto\"H\n\022CreateTopicRequest\022\r\n\005topic\030\001" +
+      " \001(\t\022\022\n\npartitions\030\002 \001(\005\022\017\n\007latency\030\003 \001(" +
+      "\005\"V\n\023CreateTopicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n" +
+      "\005topic\030\002 \001(\t\022\022\n\npartitions\030\003 \001(\005\022\017\n\007late" +
+      "ncy\030\004 \001(\005\" \n\017DelTopicRequest\022\r\n\005topic\030\001 " +
+      "\001(\t\".\n\020DelTopicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n\005" +
+      "topic\030\002 \001(\tB)\n\030org.shallow.proto.serverB" +
+      "\013ServerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           org.shallow.proto.MessageMetadataProto.getDescriptor(),
         });
-    internal_static_shallow_protobuf_FetchClusterRequest_descriptor =
+    internal_static_shallow_protobuf_CreateTopicRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_shallow_protobuf_FetchClusterRequest_fieldAccessorTable = new
+    internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_FetchClusterRequest_descriptor,
-        new java.lang.String[] { "Name", "Version", });
-    internal_static_shallow_protobuf_FetchClusterResponse_descriptor =
+        internal_static_shallow_protobuf_CreateTopicRequest_descriptor,
+        new java.lang.String[] { "Topic", "Partitions", "Latency", });
+    internal_static_shallow_protobuf_CreateTopicResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_shallow_protobuf_FetchClusterResponse_fieldAccessorTable = new
+    internal_static_shallow_protobuf_CreateTopicResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_FetchClusterResponse_descriptor,
-        new java.lang.String[] { "Cluster", });
+        internal_static_shallow_protobuf_CreateTopicResponse_descriptor,
+        new java.lang.String[] { "Ack", "Topic", "Partitions", "Latency", });
+    internal_static_shallow_protobuf_DelTopicRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_shallow_protobuf_DelTopicRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_DelTopicRequest_descriptor,
+        new java.lang.String[] { "Topic", });
+    internal_static_shallow_protobuf_DelTopicResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_shallow_protobuf_DelTopicResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_DelTopicResponse_descriptor,
+        new java.lang.String[] { "Ack", "Topic", });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

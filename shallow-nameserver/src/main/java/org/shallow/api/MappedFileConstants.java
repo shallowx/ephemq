@@ -1,4 +1,4 @@
-package org.shallow.internal;
+package org.shallow.api;
 
 public class MappedFileConstants {
     public static final String TOPICS = "topics.json";

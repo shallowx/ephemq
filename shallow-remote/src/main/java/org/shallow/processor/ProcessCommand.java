@@ -6,7 +6,7 @@ public interface ProcessCommand {
 
         Server ACTIVE = new Server() {
             @Override
-            public String obtain(byte command) {
+            public String get(byte command) {
                 return switch (command) {
                     case 1 -> "CREATE_TOPIC";
                     case 2 -> "DELETE_TOPIC";
@@ -26,7 +26,7 @@ public interface ProcessCommand {
         byte FETCH_TOPIC_INFO = 5;
         byte CLUSTER_NODE_JOIN = 6;
 
-       default String obtain(byte command) {
+       default String get(byte command) {
            return null;
        }
     }
@@ -35,7 +35,7 @@ public interface ProcessCommand {
 
         Client ACTIVE = new Client() {
             @Override
-            public String obtain(byte command) {
+            public String get(byte command) {
                 return switch (command) {
                     case 1 -> "RECEIVE_MESSAGE";
                     case 2 -> "TOPIC_CHANGED";
@@ -49,7 +49,7 @@ public interface ProcessCommand {
         byte TOPIC_CHANGED = 2;
         byte CLUSTER_CHANGED = 3;
 
-       default String obtain(byte command) {
+       default String get(byte command) {
            return null;
        }
     }
@@ -58,7 +58,7 @@ public interface ProcessCommand {
 
         NameServer ACTIVE = new NameServer() {
             @Override
-            public String obtain(byte command) {
+            public String get(byte command) {
                 return switch (command) {
                     case 1 -> "REGISTER_NODE";
                     case 2 -> "OFFLINE";
@@ -69,7 +69,7 @@ public interface ProcessCommand {
 
         byte REGISTER_NODE = 1;
         byte OFFLINE = 2;
-        default String obtain(byte command) {
+        default String get(byte command) {
             return null;
         }
     }

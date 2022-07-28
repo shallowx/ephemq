@@ -8,7 +8,7 @@ import org.shallow.ObjectUtil;
 import org.shallow.RemoteException;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.pool.ChannelPoolFactory;
+import org.shallow.pool.DefaultChannelPoolFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.util.NetworkUtil;
 import org.shallow.invoke.ClientChannel;
@@ -27,7 +27,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
 
     @Override
     public void onActive(ChannelHandlerContext ctx) {
-        Promise<ClientChannel> promise = ChannelPoolFactory.INSTANCE.obtainChannelPool().assemblePromise(ctx.channel());
+        Promise<ClientChannel> promise = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(ctx.channel());
         if (ObjectUtil.isNotNull(promise)) {
             promise.setSuccess(clientChannel);
         }
@@ -48,7 +48,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("[Client process] <{}> code:[{}] process error", NetworkUtil.switchAddress(channel), ProcessCommand.Client.ACTIVE.obtain(command));
+                logger.error("[Client process] <{}> code:[{}] process error", NetworkUtil.switchAddress(channel), ProcessCommand.Client.ACTIVE.get(command));
             }
         }
     }

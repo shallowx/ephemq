@@ -7,11 +7,24 @@ option java_package = "org.shallow.proto.server";
 option java_outer_classname = "ServerProto";
 option java_multiple_files = true;
 
-message FetchClusterRequest{
-  string name = 1;
-  int32 version = 2;
+message CreateTopicRequest {
+   string topic = 1;
+   int32 partitions = 2;
+   int32 latency = 3;
 }
 
-message FetchClusterResponse{
-  ClusterInfo _cluster = 1;
+message CreateTopicResponse {
+  int32 ack = 1;
+  string topic = 2;
+  int32 partitions = 3;
+  int32 latency = 4;
+}
+
+message DelTopicRequest {
+  string topic = 1;
+}
+
+message DelTopicResponse {
+  int32 ack = 1;
+  string topic = 2;
 }

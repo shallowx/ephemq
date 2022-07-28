@@ -1,4 +1,4 @@
-package org.shallow.internal;
+package org.shallow.api;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -7,6 +7,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.time.Duration;
 import java.util.List;
 

@@ -19,7 +19,7 @@ public class Server {
 
     public static void main( String[] args ) {
         try {
-            start(createShallowServer(args));
+            start(newServer(args));
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Start server failed", e);
@@ -33,7 +33,7 @@ public class Server {
         return server;
     }
 
-    private static BrokerServer createShallowServer(String[] args) throws Exception {
+    private static BrokerServer newServer(String[] args) throws Exception {
         Options options = buildCommandOptions();
         CommandLine cmdLine = parseCmdLine(args, options, new DefaultParser());
 
@@ -81,8 +81,8 @@ public class Server {
 
         for (Method method : methods) {
             final String name = method.getName();
-            if (name.startsWith("obtain")) {
-                option = name.substring(6);
+            if (name.startsWith("get")) {
+                option = name.substring(3);
                 checkReturnType(method, config, sb, option);
             }
 

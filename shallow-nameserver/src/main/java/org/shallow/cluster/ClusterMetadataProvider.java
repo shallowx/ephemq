@@ -3,16 +3,16 @@ package org.shallow.cluster;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
-import org.shallow.internal.AbstractMetadataProvider;
-import org.shallow.internal.MappedFileConstants;
-import org.shallow.internal.MetadataAPI;
+import org.shallow.api.AbstractMetadataProvider;
+import org.shallow.api.MappedFileConstants;
+import org.shallow.api.MetadataAPI;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import java.util.List;
 
 import static org.shallow.JsonUtil.object2Json;
-import static org.shallow.internal.MappedFileConstants.CLUSTERS;
+import static org.shallow.api.MappedFileConstants.CLUSTERS;
 
 public class ClusterMetadataProvider extends AbstractMetadataProvider<ClusterMetadata>{
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterMetadataProvider.class);

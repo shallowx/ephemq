@@ -1,4 +1,4 @@
-package org.shallow.internal;
+package org.shallow.api;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.shallow.internal.MappedFileConstants.*;
+import static org.shallow.api.MappedFileConstants.*;
 import static org.shallow.ObjectUtil.isNull;
 
 public class MetadataAPI {

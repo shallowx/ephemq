@@ -70,11 +70,11 @@ public class OperationInvoker implements ProcessCommand.Server {
                     channel.writeAndFlush(AwareInvocation.newInvocation(command, ByteUtil.retainBuf(content), expired, answer));
                 }
             } else {
-                throw new TimeoutException("Semaphore acquire timeout: " + timeoutMs + "ms");
+                throw new TimeoutException("[Invoke0] - semaphore acquire timeout: " + timeoutMs + "ms");
             }
         } catch (Throwable t) {
             if (ObjectUtil.isNotNull(callback)) {
-                callback.operationCompleted(null, new RuntimeException(String.format("Failed to invoke channel, address=%s command=%s", clientChannel.address(), command)));
+                callback.operationCompleted(null, new RuntimeException(String.format("[Invoke0] - failed to invoke channel, address=%s command=%s", clientChannel.address(), command)));
             }
         } finally {
             ByteUtil.release(content);
@@ -86,7 +86,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             return ProtoBufUtil.proto2Buf(alloc, lite);
         } catch (Throwable cause) {
             final String type = ObjectUtil.isNull(lite) ? null : lite.getClass().getSimpleName();
-            throw new RuntimeException("[assembleInvokeData] - failed to assemble messageLite type:{" + type + "}", cause);
+            throw new RuntimeException("[AssembleInvokeData] - failed to assemble messageLite type:{" + type + "}", cause);
         }
     }
 

@@ -12,6 +12,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.ImmediateEventExecutor;
+import io.netty.util.concurrent.Promise;
 import org.shallow.ObjectUtil;
 import org.shallow.RemoteException;
 import org.shallow.codec.MessagePacket;
@@ -100,5 +102,9 @@ public final class NetworkUtil {
 
     public static String switchAddress(Channel channel) {
         return ((channel == null ? null : channel.remoteAddress()) == null ? null : channel.remoteAddress().toString());
+    }
+
+    public static  <T> Promise<T> newImmediatePromise() {
+        return ImmediateEventExecutor.INSTANCE.newPromise();
     }
 }

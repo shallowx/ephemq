@@ -4,25 +4,26 @@
 package org.shallow.proto.server;
 
 /**
- * Protobuf type {@code shallow.protobuf.FetchClusterResponse}
+ * Protobuf type {@code shallow.protobuf.DelTopicResponse}
  */
-public final class FetchClusterResponse extends
+public final class DelTopicResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:shallow.protobuf.FetchClusterResponse)
-    FetchClusterResponseOrBuilder {
+    // @@protoc_insertion_point(message_implements:shallow.protobuf.DelTopicResponse)
+    DelTopicResponseOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use FetchClusterResponse.newBuilder() to construct.
-  private FetchClusterResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use DelTopicResponse.newBuilder() to construct.
+  private DelTopicResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private FetchClusterResponse() {
+  private DelTopicResponse() {
+    topic_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new FetchClusterResponse();
+    return new DelTopicResponse();
   }
 
   @java.lang.Override
@@ -30,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private FetchClusterResponse(
+  private DelTopicResponse(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -48,17 +49,15 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            org.shallow.proto.ClusterInfo.Builder subBuilder = null;
-            if (Cluster_ != null) {
-              subBuilder = Cluster_.toBuilder();
-            }
-            Cluster_ = input.readMessage(org.shallow.proto.ClusterInfo.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(Cluster_);
-              Cluster_ = subBuilder.buildPartial();
-            }
+          case 8: {
 
+            ack_ = input.readInt32();
+            break;
+          }
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            topic_ = s;
             break;
           }
           default: {
@@ -82,41 +81,64 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterResponse_descriptor;
+    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_DelTopicResponse_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterResponse_fieldAccessorTable
+    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_DelTopicResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            org.shallow.proto.server.FetchClusterResponse.class, org.shallow.proto.server.FetchClusterResponse.Builder.class);
+            org.shallow.proto.server.DelTopicResponse.class, org.shallow.proto.server.DelTopicResponse.Builder.class);
   }
 
-  public static final int _CLUSTER_FIELD_NUMBER = 1;
-  private org.shallow.proto.ClusterInfo Cluster_;
+  public static final int ACK_FIELD_NUMBER = 1;
+  private int ack_;
   /**
-   * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-   * @return Whether the cluster field is set.
+   * <code>int32 ack = 1;</code>
+   * @return The ack.
    */
   @java.lang.Override
-  public boolean hasCluster() {
-    return Cluster_ != null;
+  public int getAck() {
+    return ack_;
+  }
+
+  public static final int TOPIC_FIELD_NUMBER = 2;
+  private volatile java.lang.Object topic_;
+  /**
+   * <code>string topic = 2;</code>
+   * @return The topic.
+   */
+  @java.lang.Override
+  public java.lang.String getTopic() {
+    java.lang.Object ref = topic_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      topic_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-   * @return The cluster.
+   * <code>string topic = 2;</code>
+   * @return The bytes for topic.
    */
   @java.lang.Override
-  public org.shallow.proto.ClusterInfo getCluster() {
-    return Cluster_ == null ? org.shallow.proto.ClusterInfo.getDefaultInstance() : Cluster_;
-  }
-  /**
-   * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-   */
-  @java.lang.Override
-  public org.shallow.proto.ClusterInfoOrBuilder getClusterOrBuilder() {
-    return getCluster();
+  public com.google.protobuf.ByteString
+      getTopicBytes() {
+    java.lang.Object ref = topic_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      topic_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -133,8 +155,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (Cluster_ != null) {
-      output.writeMessage(1, getCluster());
+    if (ack_ != 0) {
+      output.writeInt32(1, ack_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
     }
     unknownFields.writeTo(output);
   }
@@ -145,9 +170,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (Cluster_ != null) {
+    if (ack_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getCluster());
+        .computeInt32Size(1, ack_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -159,16 +187,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof org.shallow.proto.server.FetchClusterResponse)) {
+    if (!(obj instanceof org.shallow.proto.server.DelTopicResponse)) {
       return super.equals(obj);
     }
-    org.shallow.proto.server.FetchClusterResponse other = (org.shallow.proto.server.FetchClusterResponse) obj;
+    org.shallow.proto.server.DelTopicResponse other = (org.shallow.proto.server.DelTopicResponse) obj;
 
-    if (hasCluster() != other.hasCluster()) return false;
-    if (hasCluster()) {
-      if (!getCluster()
-          .equals(other.getCluster())) return false;
-    }
+    if (getAck()
+        != other.getAck()) return false;
+    if (!getTopic()
+        .equals(other.getTopic())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -180,78 +207,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasCluster()) {
-      hash = (37 * hash) + _CLUSTER_FIELD_NUMBER;
-      hash = (53 * hash) + getCluster().hashCode();
-    }
+    hash = (37 * hash) + ACK_FIELD_NUMBER;
+    hash = (53 * hash) + getAck();
+    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+    hash = (53 * hash) + getTopic().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(byte[] data)
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(java.io.InputStream input)
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseDelimitedFrom(java.io.InputStream input)
+  public static org.shallow.proto.server.DelTopicResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseDelimitedFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static org.shallow.proto.server.FetchClusterResponse parseFrom(
+  public static org.shallow.proto.server.DelTopicResponse parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -264,7 +291,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(org.shallow.proto.server.FetchClusterResponse prototype) {
+  public static Builder newBuilder(org.shallow.proto.server.DelTopicResponse prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -280,26 +307,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code shallow.protobuf.FetchClusterResponse}
+   * Protobuf type {@code shallow.protobuf.DelTopicResponse}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:shallow.protobuf.FetchClusterResponse)
-      org.shallow.proto.server.FetchClusterResponseOrBuilder {
+      // @@protoc_insertion_point(builder_implements:shallow.protobuf.DelTopicResponse)
+      org.shallow.proto.server.DelTopicResponseOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterResponse_descriptor;
+      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_DelTopicResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterResponse_fieldAccessorTable
+      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_DelTopicResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.shallow.proto.server.FetchClusterResponse.class, org.shallow.proto.server.FetchClusterResponse.Builder.class);
+              org.shallow.proto.server.DelTopicResponse.class, org.shallow.proto.server.DelTopicResponse.Builder.class);
     }
 
-    // Construct using org.shallow.proto.server.FetchClusterResponse.newBuilder()
+    // Construct using org.shallow.proto.server.DelTopicResponse.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -317,29 +344,27 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (ClusterBuilder_ == null) {
-        Cluster_ = null;
-      } else {
-        Cluster_ = null;
-        ClusterBuilder_ = null;
-      }
+      ack_ = 0;
+
+      topic_ = "";
+
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterResponse_descriptor;
+      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_DelTopicResponse_descriptor;
     }
 
     @java.lang.Override
-    public org.shallow.proto.server.FetchClusterResponse getDefaultInstanceForType() {
-      return org.shallow.proto.server.FetchClusterResponse.getDefaultInstance();
+    public org.shallow.proto.server.DelTopicResponse getDefaultInstanceForType() {
+      return org.shallow.proto.server.DelTopicResponse.getDefaultInstance();
     }
 
     @java.lang.Override
-    public org.shallow.proto.server.FetchClusterResponse build() {
-      org.shallow.proto.server.FetchClusterResponse result = buildPartial();
+    public org.shallow.proto.server.DelTopicResponse build() {
+      org.shallow.proto.server.DelTopicResponse result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -347,13 +372,10 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public org.shallow.proto.server.FetchClusterResponse buildPartial() {
-      org.shallow.proto.server.FetchClusterResponse result = new org.shallow.proto.server.FetchClusterResponse(this);
-      if (ClusterBuilder_ == null) {
-        result.Cluster_ = Cluster_;
-      } else {
-        result.Cluster_ = ClusterBuilder_.build();
-      }
+    public org.shallow.proto.server.DelTopicResponse buildPartial() {
+      org.shallow.proto.server.DelTopicResponse result = new org.shallow.proto.server.DelTopicResponse(this);
+      result.ack_ = ack_;
+      result.topic_ = topic_;
       onBuilt();
       return result;
     }
@@ -392,18 +414,22 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.shallow.proto.server.FetchClusterResponse) {
-        return mergeFrom((org.shallow.proto.server.FetchClusterResponse)other);
+      if (other instanceof org.shallow.proto.server.DelTopicResponse) {
+        return mergeFrom((org.shallow.proto.server.DelTopicResponse)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(org.shallow.proto.server.FetchClusterResponse other) {
-      if (other == org.shallow.proto.server.FetchClusterResponse.getDefaultInstance()) return this;
-      if (other.hasCluster()) {
-        mergeCluster(other.getCluster());
+    public Builder mergeFrom(org.shallow.proto.server.DelTopicResponse other) {
+      if (other == org.shallow.proto.server.DelTopicResponse.getDefaultInstance()) return this;
+      if (other.getAck() != 0) {
+        setAck(other.getAck());
+      }
+      if (!other.getTopic().isEmpty()) {
+        topic_ = other.topic_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -420,11 +446,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      org.shallow.proto.server.FetchClusterResponse parsedMessage = null;
+      org.shallow.proto.server.DelTopicResponse parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (org.shallow.proto.server.FetchClusterResponse) e.getUnfinishedMessage();
+        parsedMessage = (org.shallow.proto.server.DelTopicResponse) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -434,123 +460,111 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private org.shallow.proto.ClusterInfo Cluster_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.shallow.proto.ClusterInfo, org.shallow.proto.ClusterInfo.Builder, org.shallow.proto.ClusterInfoOrBuilder> ClusterBuilder_;
+    private int ack_ ;
     /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     * @return Whether the cluster field is set.
+     * <code>int32 ack = 1;</code>
+     * @return The ack.
      */
-    public boolean hasCluster() {
-      return ClusterBuilder_ != null || Cluster_ != null;
+    @java.lang.Override
+    public int getAck() {
+      return ack_;
     }
     /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     * @return The cluster.
+     * <code>int32 ack = 1;</code>
+     * @param value The ack to set.
+     * @return This builder for chaining.
      */
-    public org.shallow.proto.ClusterInfo getCluster() {
-      if (ClusterBuilder_ == null) {
-        return Cluster_ == null ? org.shallow.proto.ClusterInfo.getDefaultInstance() : Cluster_;
-      } else {
-        return ClusterBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     */
-    public Builder setCluster(org.shallow.proto.ClusterInfo value) {
-      if (ClusterBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        Cluster_ = value;
-        onChanged();
-      } else {
-        ClusterBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     */
-    public Builder setCluster(
-        org.shallow.proto.ClusterInfo.Builder builderForValue) {
-      if (ClusterBuilder_ == null) {
-        Cluster_ = builderForValue.build();
-        onChanged();
-      } else {
-        ClusterBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     */
-    public Builder mergeCluster(org.shallow.proto.ClusterInfo value) {
-      if (ClusterBuilder_ == null) {
-        if (Cluster_ != null) {
-          Cluster_ =
-            org.shallow.proto.ClusterInfo.newBuilder(Cluster_).mergeFrom(value).buildPartial();
-        } else {
-          Cluster_ = value;
-        }
-        onChanged();
-      } else {
-        ClusterBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     */
-    public Builder clearCluster() {
-      if (ClusterBuilder_ == null) {
-        Cluster_ = null;
-        onChanged();
-      } else {
-        Cluster_ = null;
-        ClusterBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
-     */
-    public org.shallow.proto.ClusterInfo.Builder getClusterBuilder() {
+    public Builder setAck(int value) {
       
+      ack_ = value;
       onChanged();
-      return getClusterFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
+     * <code>int32 ack = 1;</code>
+     * @return This builder for chaining.
      */
-    public org.shallow.proto.ClusterInfoOrBuilder getClusterOrBuilder() {
-      if (ClusterBuilder_ != null) {
-        return ClusterBuilder_.getMessageOrBuilder();
+    public Builder clearAck() {
+      
+      ack_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object topic_ = "";
+    /**
+     * <code>string topic = 2;</code>
+     * @return The topic.
+     */
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
       } else {
-        return Cluster_ == null ?
-            org.shallow.proto.ClusterInfo.getDefaultInstance() : Cluster_;
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.shallow.protobuf.ClusterInfo _cluster = 1;</code>
+     * <code>string topic = 2;</code>
+     * @return The bytes for topic.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.shallow.proto.ClusterInfo, org.shallow.proto.ClusterInfo.Builder, org.shallow.proto.ClusterInfoOrBuilder> 
-        getClusterFieldBuilder() {
-      if (ClusterBuilder_ == null) {
-        ClusterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            org.shallow.proto.ClusterInfo, org.shallow.proto.ClusterInfo.Builder, org.shallow.proto.ClusterInfoOrBuilder>(
-                getCluster(),
-                getParentForChildren(),
-                isClean());
-        Cluster_ = null;
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
       }
-      return ClusterBuilder_;
+    }
+    /**
+     * <code>string topic = 2;</code>
+     * @param value The topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopic(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      topic_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTopic() {
+      
+      topic_ = getDefaultInstance().getTopic();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 2;</code>
+     * @param value The bytes for topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopicBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      topic_ = value;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -565,41 +579,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:shallow.protobuf.FetchClusterResponse)
+    // @@protoc_insertion_point(builder_scope:shallow.protobuf.DelTopicResponse)
   }
 
-  // @@protoc_insertion_point(class_scope:shallow.protobuf.FetchClusterResponse)
-  private static final org.shallow.proto.server.FetchClusterResponse DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:shallow.protobuf.DelTopicResponse)
+  private static final org.shallow.proto.server.DelTopicResponse DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new org.shallow.proto.server.FetchClusterResponse();
+    DEFAULT_INSTANCE = new org.shallow.proto.server.DelTopicResponse();
   }
 
-  public static org.shallow.proto.server.FetchClusterResponse getDefaultInstance() {
+  public static org.shallow.proto.server.DelTopicResponse getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<FetchClusterResponse>
-      PARSER = new com.google.protobuf.AbstractParser<FetchClusterResponse>() {
+  private static final com.google.protobuf.Parser<DelTopicResponse>
+      PARSER = new com.google.protobuf.AbstractParser<DelTopicResponse>() {
     @java.lang.Override
-    public FetchClusterResponse parsePartialFrom(
+    public DelTopicResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new FetchClusterResponse(input, extensionRegistry);
+      return new DelTopicResponse(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<FetchClusterResponse> parser() {
+  public static com.google.protobuf.Parser<DelTopicResponse> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<FetchClusterResponse> getParserForType() {
+  public com.google.protobuf.Parser<DelTopicResponse> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public org.shallow.proto.server.FetchClusterResponse getDefaultInstanceForType() {
+  public org.shallow.proto.server.DelTopicResponse getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

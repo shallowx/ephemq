@@ -4,26 +4,26 @@
 package org.shallow.proto.server;
 
 /**
- * Protobuf type {@code shallow.protobuf.FetchClusterRequest}
+ * Protobuf type {@code shallow.protobuf.CreateTopicRequest}
  */
-public final class FetchClusterRequest extends
+public final class CreateTopicRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:shallow.protobuf.FetchClusterRequest)
-    FetchClusterRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:shallow.protobuf.CreateTopicRequest)
+    CreateTopicRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use FetchClusterRequest.newBuilder() to construct.
-  private FetchClusterRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use CreateTopicRequest.newBuilder() to construct.
+  private CreateTopicRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private FetchClusterRequest() {
-    name_ = "";
+  private CreateTopicRequest() {
+    topic_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new FetchClusterRequest();
+    return new CreateTopicRequest();
   }
 
   @java.lang.Override
@@ -31,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private FetchClusterRequest(
+  private CreateTopicRequest(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -52,12 +52,17 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            name_ = s;
+            topic_ = s;
             break;
           }
           case 16: {
 
-            version_ = input.readInt32();
+            partitions_ = input.readInt32();
+            break;
+          }
+          case 24: {
+
+            latency_ = input.readInt32();
             break;
           }
           default: {
@@ -81,64 +86,75 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterRequest_descriptor;
+    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_CreateTopicRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterRequest_fieldAccessorTable
+    return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            org.shallow.proto.server.FetchClusterRequest.class, org.shallow.proto.server.FetchClusterRequest.Builder.class);
+            org.shallow.proto.server.CreateTopicRequest.class, org.shallow.proto.server.CreateTopicRequest.Builder.class);
   }
 
-  public static final int NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object name_;
+  public static final int TOPIC_FIELD_NUMBER = 1;
+  private volatile java.lang.Object topic_;
   /**
-   * <code>string name = 1;</code>
-   * @return The name.
+   * <code>string topic = 1;</code>
+   * @return The topic.
    */
   @java.lang.Override
-  public java.lang.String getName() {
-    java.lang.Object ref = name_;
+  public java.lang.String getTopic() {
+    java.lang.Object ref = topic_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      name_ = s;
+      topic_ = s;
       return s;
     }
   }
   /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
+   * <code>string topic = 1;</code>
+   * @return The bytes for topic.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getNameBytes() {
-    java.lang.Object ref = name_;
+      getTopicBytes() {
+    java.lang.Object ref = topic_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      name_ = b;
+      topic_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int VERSION_FIELD_NUMBER = 2;
-  private int version_;
+  public static final int PARTITIONS_FIELD_NUMBER = 2;
+  private int partitions_;
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
+   * <code>int32 partitions = 2;</code>
+   * @return The partitions.
    */
   @java.lang.Override
-  public int getVersion() {
-    return version_;
+  public int getPartitions() {
+    return partitions_;
+  }
+
+  public static final int LATENCY_FIELD_NUMBER = 3;
+  private int latency_;
+  /**
+   * <code>int32 latency = 3;</code>
+   * @return The latency.
+   */
+  @java.lang.Override
+  public int getLatency() {
+    return latency_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -155,11 +171,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
     }
-    if (version_ != 0) {
-      output.writeInt32(2, version_);
+    if (partitions_ != 0) {
+      output.writeInt32(2, partitions_);
+    }
+    if (latency_ != 0) {
+      output.writeInt32(3, latency_);
     }
     unknownFields.writeTo(output);
   }
@@ -170,12 +189,16 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
     }
-    if (version_ != 0) {
+    if (partitions_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, version_);
+        .computeInt32Size(2, partitions_);
+    }
+    if (latency_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, latency_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -187,15 +210,17 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof org.shallow.proto.server.FetchClusterRequest)) {
+    if (!(obj instanceof org.shallow.proto.server.CreateTopicRequest)) {
       return super.equals(obj);
     }
-    org.shallow.proto.server.FetchClusterRequest other = (org.shallow.proto.server.FetchClusterRequest) obj;
+    org.shallow.proto.server.CreateTopicRequest other = (org.shallow.proto.server.CreateTopicRequest) obj;
 
-    if (!getName()
-        .equals(other.getName())) return false;
-    if (getVersion()
-        != other.getVersion()) return false;
+    if (!getTopic()
+        .equals(other.getTopic())) return false;
+    if (getPartitions()
+        != other.getPartitions()) return false;
+    if (getLatency()
+        != other.getLatency()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -207,78 +232,80 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getVersion();
+    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+    hash = (53 * hash) + getTopic().hashCode();
+    hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitions();
+    hash = (37 * hash) + LATENCY_FIELD_NUMBER;
+    hash = (53 * hash) + getLatency();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(byte[] data)
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(java.io.InputStream input)
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.shallow.proto.server.CreateTopicRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseDelimitedFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static org.shallow.proto.server.FetchClusterRequest parseFrom(
+  public static org.shallow.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -291,7 +318,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(org.shallow.proto.server.FetchClusterRequest prototype) {
+  public static Builder newBuilder(org.shallow.proto.server.CreateTopicRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -307,26 +334,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code shallow.protobuf.FetchClusterRequest}
+   * Protobuf type {@code shallow.protobuf.CreateTopicRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:shallow.protobuf.FetchClusterRequest)
-      org.shallow.proto.server.FetchClusterRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:shallow.protobuf.CreateTopicRequest)
+      org.shallow.proto.server.CreateTopicRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterRequest_descriptor;
+      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_CreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterRequest_fieldAccessorTable
+      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.shallow.proto.server.FetchClusterRequest.class, org.shallow.proto.server.FetchClusterRequest.Builder.class);
+              org.shallow.proto.server.CreateTopicRequest.class, org.shallow.proto.server.CreateTopicRequest.Builder.class);
     }
 
-    // Construct using org.shallow.proto.server.FetchClusterRequest.newBuilder()
+    // Construct using org.shallow.proto.server.CreateTopicRequest.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -344,9 +371,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      name_ = "";
+      topic_ = "";
 
-      version_ = 0;
+      partitions_ = 0;
+
+      latency_ = 0;
 
       return this;
     }
@@ -354,17 +383,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_FetchClusterRequest_descriptor;
+      return org.shallow.proto.server.ServerProto.internal_static_shallow_protobuf_CreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
-    public org.shallow.proto.server.FetchClusterRequest getDefaultInstanceForType() {
-      return org.shallow.proto.server.FetchClusterRequest.getDefaultInstance();
+    public org.shallow.proto.server.CreateTopicRequest getDefaultInstanceForType() {
+      return org.shallow.proto.server.CreateTopicRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public org.shallow.proto.server.FetchClusterRequest build() {
-      org.shallow.proto.server.FetchClusterRequest result = buildPartial();
+    public org.shallow.proto.server.CreateTopicRequest build() {
+      org.shallow.proto.server.CreateTopicRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -372,10 +401,11 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public org.shallow.proto.server.FetchClusterRequest buildPartial() {
-      org.shallow.proto.server.FetchClusterRequest result = new org.shallow.proto.server.FetchClusterRequest(this);
-      result.name_ = name_;
-      result.version_ = version_;
+    public org.shallow.proto.server.CreateTopicRequest buildPartial() {
+      org.shallow.proto.server.CreateTopicRequest result = new org.shallow.proto.server.CreateTopicRequest(this);
+      result.topic_ = topic_;
+      result.partitions_ = partitions_;
+      result.latency_ = latency_;
       onBuilt();
       return result;
     }
@@ -414,22 +444,25 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.shallow.proto.server.FetchClusterRequest) {
-        return mergeFrom((org.shallow.proto.server.FetchClusterRequest)other);
+      if (other instanceof org.shallow.proto.server.CreateTopicRequest) {
+        return mergeFrom((org.shallow.proto.server.CreateTopicRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(org.shallow.proto.server.FetchClusterRequest other) {
-      if (other == org.shallow.proto.server.FetchClusterRequest.getDefaultInstance()) return this;
-      if (!other.getName().isEmpty()) {
-        name_ = other.name_;
+    public Builder mergeFrom(org.shallow.proto.server.CreateTopicRequest other) {
+      if (other == org.shallow.proto.server.CreateTopicRequest.getDefaultInstance()) return this;
+      if (!other.getTopic().isEmpty()) {
+        topic_ = other.topic_;
         onChanged();
       }
-      if (other.getVersion() != 0) {
-        setVersion(other.getVersion());
+      if (other.getPartitions() != 0) {
+        setPartitions(other.getPartitions());
+      }
+      if (other.getLatency() != 0) {
+        setLatency(other.getLatency());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -446,11 +479,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      org.shallow.proto.server.FetchClusterRequest parsedMessage = null;
+      org.shallow.proto.server.CreateTopicRequest parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (org.shallow.proto.server.FetchClusterRequest) e.getUnfinishedMessage();
+        parsedMessage = (org.shallow.proto.server.CreateTopicRequest) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -460,109 +493,140 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object name_ = "";
+    private java.lang.Object topic_ = "";
     /**
-     * <code>string name = 1;</code>
-     * @return The name.
+     * <code>string topic = 1;</code>
+     * @return The topic.
      */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        name_ = s;
+        topic_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
      */
     public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        name_ = b;
+        topic_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string name = 1;</code>
-     * @param value The name to set.
+     * <code>string topic = 1;</code>
+     * @param value The topic to set.
      * @return This builder for chaining.
      */
-    public Builder setName(
+    public Builder setTopic(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      name_ = value;
+      topic_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string name = 1;</code>
+     * <code>string topic = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearName() {
+    public Builder clearTopic() {
       
-      name_ = getDefaultInstance().getName();
+      topic_ = getDefaultInstance().getTopic();
       onChanged();
       return this;
     }
     /**
-     * <code>string name = 1;</code>
-     * @param value The bytes for name to set.
+     * <code>string topic = 1;</code>
+     * @param value The bytes for topic to set.
      * @return This builder for chaining.
      */
-    public Builder setNameBytes(
+    public Builder setTopicBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      name_ = value;
+      topic_ = value;
       onChanged();
       return this;
     }
 
-    private int version_ ;
+    private int partitions_ ;
     /**
-     * <code>int32 version = 2;</code>
-     * @return The version.
+     * <code>int32 partitions = 2;</code>
+     * @return The partitions.
      */
     @java.lang.Override
-    public int getVersion() {
-      return version_;
+    public int getPartitions() {
+      return partitions_;
     }
     /**
-     * <code>int32 version = 2;</code>
-     * @param value The version to set.
+     * <code>int32 partitions = 2;</code>
+     * @param value The partitions to set.
      * @return This builder for chaining.
      */
-    public Builder setVersion(int value) {
+    public Builder setPartitions(int value) {
       
-      version_ = value;
+      partitions_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 version = 2;</code>
+     * <code>int32 partitions = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearVersion() {
+    public Builder clearPartitions() {
       
-      version_ = 0;
+      partitions_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int latency_ ;
+    /**
+     * <code>int32 latency = 3;</code>
+     * @return The latency.
+     */
+    @java.lang.Override
+    public int getLatency() {
+      return latency_;
+    }
+    /**
+     * <code>int32 latency = 3;</code>
+     * @param value The latency to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLatency(int value) {
+      
+      latency_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 latency = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLatency() {
+      
+      latency_ = 0;
       onChanged();
       return this;
     }
@@ -579,41 +643,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:shallow.protobuf.FetchClusterRequest)
+    // @@protoc_insertion_point(builder_scope:shallow.protobuf.CreateTopicRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:shallow.protobuf.FetchClusterRequest)
-  private static final org.shallow.proto.server.FetchClusterRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:shallow.protobuf.CreateTopicRequest)
+  private static final org.shallow.proto.server.CreateTopicRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new org.shallow.proto.server.FetchClusterRequest();
+    DEFAULT_INSTANCE = new org.shallow.proto.server.CreateTopicRequest();
   }
 
-  public static org.shallow.proto.server.FetchClusterRequest getDefaultInstance() {
+  public static org.shallow.proto.server.CreateTopicRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<FetchClusterRequest>
-      PARSER = new com.google.protobuf.AbstractParser<FetchClusterRequest>() {
+  private static final com.google.protobuf.Parser<CreateTopicRequest>
+      PARSER = new com.google.protobuf.AbstractParser<CreateTopicRequest>() {
     @java.lang.Override
-    public FetchClusterRequest parsePartialFrom(
+    public CreateTopicRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new FetchClusterRequest(input, extensionRegistry);
+      return new CreateTopicRequest(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<FetchClusterRequest> parser() {
+  public static com.google.protobuf.Parser<CreateTopicRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<FetchClusterRequest> getParserForType() {
+  public com.google.protobuf.Parser<CreateTopicRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public org.shallow.proto.server.FetchClusterRequest getDefaultInstanceForType() {
+  public org.shallow.proto.server.CreateTopicRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

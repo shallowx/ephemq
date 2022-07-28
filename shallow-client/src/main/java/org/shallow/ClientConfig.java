@@ -8,12 +8,13 @@ public class ClientConfig {
 
     private boolean isEpollPrefer = false;
     private int workThreadWholes = availableProcessor();
-    private long connectTimeOutMs = 30_000;
+    private long connectTimeOutMs = 5000;
     private int channelPoolCapacity = 1;
     private int dnsTtlMinExpiredMs = 30;
     private int dnsTtlMaxExpiredSeconds = 300;
     private int negativeTtlSeconds = 30;
     private int ChannelInvokerSemaphore = 2000;
+    private int defaultInvokeExpiredMs = 2000;
 
     private int availableProcessor() {
         return Runtime.getRuntime().availableProcessors();
@@ -89,5 +90,13 @@ public class ClientConfig {
 
     public void setChannelInvokerSemaphore(int channelInvokerSemaphore) {
         ChannelInvokerSemaphore = channelInvokerSemaphore;
+    }
+
+    public int getDefaultInvokeExpiredMs() {
+        return defaultInvokeExpiredMs;
+    }
+
+    public void setDefaultInvokeExpiredMs(int defaultInvokeExpiredMs) {
+        this.defaultInvokeExpiredMs = defaultInvokeExpiredMs;
     }
 }

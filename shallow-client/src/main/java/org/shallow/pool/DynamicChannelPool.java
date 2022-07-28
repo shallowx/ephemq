@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.shallow.ObjectUtil.isNull;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 
 public class DynamicChannelPool implements ShallowChannelPool {
@@ -61,9 +62,14 @@ public class DynamicChannelPool implements ShallowChannelPool {
     }
 
     @Override
+    public Future<ClientChannel> acquire() {
+        return acquire(null);
+    }
+
+    @Override
     public Future<ClientChannel> acquire(SocketAddress address) {
         Future<ClientChannel> future;
-        if (ObjectUtil.isNull(address)) {
+        if (isNull(address)) {
             future = randomAcquire();
             if (ObjectUtil.isNotNull(future)) {
                 return future;

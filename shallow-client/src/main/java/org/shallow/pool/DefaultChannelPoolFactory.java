@@ -3,9 +3,9 @@ package org.shallow.pool;
 import io.netty.bootstrap.Bootstrap;
 import org.shallow.ClientConfig;
 
-public class ChannelPoolFactory {
+public final class DefaultChannelPoolFactory {
 
-    public static final ChannelPoolFactory INSTANCE = new ChannelPoolFactory();
+    public static final DefaultChannelPoolFactory INSTANCE = new DefaultChannelPoolFactory();
     private ShallowChannelPool pool;
 
     public ShallowChannelPool newChannelPool(Bootstrap bootstrap, ClientConfig config) {
@@ -17,7 +17,7 @@ public class ChannelPoolFactory {
         return pool;
     }
 
-    public ShallowChannelPool obtainChannelPool() {
+    public ShallowChannelPool acquireChannelPool() {
         return pool;
     }
 }

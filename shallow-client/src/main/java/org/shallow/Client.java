@@ -9,9 +9,10 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.shallow.pool.ChannelPoolFactory;
+import org.shallow.pool.DefaultChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.pool.ShallowChannelHealthChecker;
 
 import static org.shallow.util.NetworkUtil.*;
 
@@ -24,10 +25,16 @@ public class Client {
 
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
+    private final ShallowChannelHealthChecker healthChecker;
 
     public Client(String name, ClientConfig config) {
+        this(name, config, null);
+    }
+
+    public Client(String name, ClientConfig config, ShallowChannelHealthChecker healthChecker) {
         this.name = name;
         this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
+        this.healthChecker = healthChecker;
     }
 
     public void start() {
@@ -54,7 +61,7 @@ public class Client {
                 .option(ChannelOption.SO_RCVBUF, 65536)
                 .resolver(new RoundRobinDnsAddressResolverGroup(drb));
 
-        ChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config);
+        DefaultChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config, healthChecker);
     }
 
     public void shutdownGracefully() {

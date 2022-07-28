@@ -4,29 +4,29 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.shallow.internal.BrokerConfig;
-import org.shallow.internal.BrokerManager;
+import org.shallow.internal.MetaConfig;
+import org.shallow.internal.MetaManager;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import static org.shallow.util.NetworkUtil.newEventLoopGroup;
 import static org.shallow.util.NetworkUtil.preferServerChannelClass;
 
-public final class BrokerSocketServer {
+public class MetaSocketServer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerSocketServer.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaSocketServer.class);
 
-    private final BrokerConfig config;
-    private final ServerChannelInitializer serverChannelInitializer;
-    private  EventLoopGroup bossGroup;
+    private final MetaConfig config;
+    private final MetaServerChannelInitializer serverChannelInitializer;
+    private EventLoopGroup bossGroup;
     private  EventLoopGroup workGroup;
-    private  ChannelFuture closedFuture;
-    private final BrokerManager manager;
+    private ChannelFuture closedFuture;
+    private final MetaManager manager;
 
-    public BrokerSocketServer(BrokerConfig config, BrokerManager manager) {
+    public MetaSocketServer(MetaConfig config, MetaManager manager) {
         this.config = config;
         this.manager = manager;
-        this.serverChannelInitializer = new ServerChannelInitializer(config, manager);
+        this.serverChannelInitializer = new MetaServerChannelInitializer(config, manager);
     }
 
     public void start() throws Exception {
@@ -57,7 +57,7 @@ public final class BrokerSocketServer {
                         logger.info("Socket server is listening at {}", f.channel().localAddress());
                     } else  {
                         if (logger.isErrorEnabled()) {
-                            logger.error("Socket server start failed", f.cause());
+                            logger.info("Socket server start failed", f.cause());
                         }
                     }
                 }).sync();

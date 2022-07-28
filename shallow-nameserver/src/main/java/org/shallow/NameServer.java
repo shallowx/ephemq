@@ -3,9 +3,10 @@ package org.shallow;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
 import org.shallow.internal.MetaConfig;
+import org.shallow.internal.MetaServer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.network.MetadataSocketServer;
+import org.shallow.network.MetaSocketServer;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.BufferedInputStream;
@@ -19,7 +20,7 @@ public class NameServer {
 
     public static void main( String[] args ) {
         try {
-            start(createShallowServer(args));
+            start(newMetaServer(args));
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Start server failed", e);
@@ -28,12 +29,12 @@ public class NameServer {
         }
     }
 
-    private static MetadataSocketServer start(MetadataSocketServer server) throws Exception {
+    private static MetaServer start(MetaServer server) throws Exception {
         server.start();
         return server;
     }
 
-    private static MetadataSocketServer createShallowServer(String[] args) throws Exception {
+    private static MetaServer newMetaServer(String[] args) throws Exception {
         Options options = buildCommandOptions();
         CommandLine cmdLine = parseCmdLine(args, options, new DefaultParser());
 
@@ -51,7 +52,7 @@ public class NameServer {
         final MetaConfig config = MetaConfig.exchange(properties);
         checkAndPrintConfig(config);
 
-        final MetadataSocketServer server = new MetadataSocketServer(config);
+        final MetaServer server = new MetaServer(config);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHook<>(() -> {
             server.shutdownGracefully();
@@ -81,8 +82,8 @@ public class NameServer {
 
         for (Method method : methods) {
             final String name = method.getName();
-            if (name.startsWith("obtain")) {
-                option = name.substring(6);
+            if (name.startsWith("get")) {
+                option = name.substring(3);
                 checkReturnType(method, config, sb, option);
             }
 
