@@ -6,7 +6,7 @@ import org.shallow.internal.MetaConfig;
 import org.shallow.internal.MetaServer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.network.MetaSocketServer;
+import org.shallow.util.TypeUtil;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.BufferedInputStream;
@@ -29,6 +29,7 @@ public class NameServer {
         }
     }
 
+    @SuppressWarnings("all")
     private static MetaServer start(MetaServer server) throws Exception {
         server.start();
         return server;

@@ -2,8 +2,8 @@ package org.shallow.internal;
 
 import java.util.Properties;
 
-import static org.shallow.TypeUtil.*;
-import static org.shallow.TypeUtil.object2String;
+import static org.shallow.util.TypeUtil.*;
+import static org.shallow.util.TypeUtil.object2String;
 
 public class BrokerConfig {
 
@@ -20,6 +20,7 @@ public class BrokerConfig {
     private static final String EXPOSED_PORT = "shallow.exposed.port";
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
     private static final String SHALLOW_NAMESERVER_URL = "shallow.namespace.url";
+    private static final String SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT = "shallow.internal.channel.pool.limit";
 
     public static BrokerConfig exchange(Properties properties) {
         return new BrokerConfig(properties);
@@ -64,4 +65,13 @@ public class BrokerConfig {
     public boolean isNetworkLoggingDebugEnabled() {
         return object2Boolean(config.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
     }
+
+    public int getInternalChannelPoolLimit() {
+        return object2Int(config.getOrDefault(SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT, 1));
+    }
+
+    public String getNameserverUrl() {
+        return object2String(config.getOrDefault(SHALLOW_NAMESERVER_URL, "127.0.0.1:9100"));
+    }
+
 }

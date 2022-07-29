@@ -12,14 +12,15 @@ import java.nio.file.Path;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.shallow.api.MappedFileConstants.*;
-import static org.shallow.ObjectUtil.isNull;
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
 
-public class MetadataAPI {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataAPI.class);
+public class MetaMappedFileAPI {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaMappedFileAPI.class);
 
     private final String workDirectory;
 
-    public MetadataAPI(String workDirectory) {
+    public MetaMappedFileAPI(String workDirectory) {
         this.workDirectory = isNull(workDirectory) ? DIRECTORY : workDirectory;
     }
 
@@ -39,7 +40,7 @@ public class MetadataAPI {
         }
     }
 
-    public String assemblesPath(String path) {
+    private String assemblesPath(String path) {
         return workDirectory + "/" + path;
     }
 
@@ -56,40 +57,46 @@ public class MetadataAPI {
         return promise;
     }
 
-    public void modify(String path, String content, Promise<Boolean> promise, Type type) {
+    public void modify(String path, String content, Type type, Promise<Boolean> modifyPromise) {
         try {
+            path = assemblesPath(path);
             switch (type) {
-                case APPEND -> doAdd(path, content, promise);
-                case DELETE -> doDelete(path, content, promise);
-                default -> throw new OperationNotSupportedException("[modify] - Not supported modify type<" + type.name() +">");
+                case APPEND -> doAdd(path, content, modifyPromise);
+                case DELETE -> doDelete(path, content, modifyPromise);
+                default -> throw new OperationNotSupportedException("[Modify] - Not supported modify type<" + type.name() +">");
             }
-        } catch (Exception e) {
+        } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error(e.getMessage(), e);
+                logger.error(t.getMessage(), t);
             }
-            promise.trySuccess(false);
+            if (isNotNull(modifyPromise)) {
+                modifyPromise.tryFailure(t);
+            }
         }
     }
 
-    private void doAdd(String path, String content, final Promise<Boolean> promise) {
-        write2File(path, content, promise);
+    private void doAdd(String path, String content, Promise<Boolean> modifyPromise) {
+        write2File(path, content, modifyPromise);
     }
 
-    private void doDelete(String path, String content, final Promise<Boolean> promise) {
-        write2File(path, content, promise);
+    private void doDelete(String path, String content, Promise<Boolean> modifyPromise) {
+        write2File(path, content, modifyPromise);
     }
 
-    private void write2File(String path, String content, final Promise<Boolean> promise) {
+    private void write2File(String path, String content, Promise<Boolean> modifyPromise) {
         Path of = Path.of(path);
         try {
             if (Files.isWritable(of)) {
                 Files.writeString(of, content, UTF_8);
-                promise.trySuccess(true);
+                modifyPromise.trySuccess(true);
             } else {
-                promise.tryFailure(new RuntimeException(String.format("Failed to write to file. path:%s content:%s", path, content)));
+                modifyPromise.tryFailure(new RuntimeException("[write2File] - failed to write to file, retry"));
             }
         } catch (Throwable t) {
-            promise.tryFailure(t);
+            if (logger.isErrorEnabled()) {
+                logger.error(t.getMessage(), t);
+            }
+            modifyPromise.tryFailure(t);
         }
     }
 

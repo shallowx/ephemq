@@ -1,8 +1,8 @@
-package org.shallow;
+package org.shallow.util;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.Arrays;
-import static org.shallow.ObjectUtil.checkNotNull;
+import static org.shallow.util.ObjectUtil.checkNotNull;
 
 public final class StringUtil {
 

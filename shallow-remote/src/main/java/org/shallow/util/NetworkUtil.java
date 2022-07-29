@@ -11,10 +11,7 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
-import org.shallow.ObjectUtil;
+import io.netty.util.concurrent.*;
 import org.shallow.RemoteException;
 import org.shallow.codec.MessagePacket;
 
@@ -26,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-import static org.shallow.ObjectUtil.checkPositive;
+import static org.shallow.util.ObjectUtil.checkPositive;
 
 public final class NetworkUtil {
 
@@ -90,6 +87,15 @@ public final class NetworkUtil {
     public static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name) {
         ThreadFactory f = new DefaultThreadFactory(name);
         return epoll && Epoll.isAvailable() ? new EpollEventLoopGroup(threads, f) : new NioEventLoopGroup(threads, f);
+    }
+
+    public static EventExecutorGroup newEventExecutorGroup(int threads, String groupName) {
+        if (threads == 0) {
+            threads = Runtime.getRuntime().availableProcessors();
+        }
+
+        ThreadFactory f = new DefaultThreadFactory(groupName);
+        return new DefaultEventExecutorGroup(threads, f);
     }
 
     public static Class<? extends Channel> preferChannelClass(boolean epoll) {

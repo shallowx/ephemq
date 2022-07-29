@@ -1,11 +1,11 @@
 package org.shallow.invoke;
 
-import io.netty.util.ReferenceCountUtil;
+import io.netty.util.ReferenceCounted;
 
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import static io.netty.util.ReferenceCountUtil.release;
-import static org.shallow.ObjectUtil.checkNotNull;
-import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.checkNotNull;
+import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 
@@ -40,7 +40,9 @@ public class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
             }
             return  false;
         } finally {
-            ReferenceCountUtil.release(v);
+            if (v instanceof ReferenceCounted buf) {
+                release(buf);
+            }
         }
     }
 

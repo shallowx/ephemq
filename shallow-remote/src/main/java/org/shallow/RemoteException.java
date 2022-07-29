@@ -1,5 +1,7 @@
 package org.shallow;
 
+import org.shallow.util.ObjectUtil;
+
 public final class RemoteException extends RuntimeException {
 
     private final byte command;

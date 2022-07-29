@@ -3,13 +3,14 @@ package org.shallow.handle;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import org.shallow.ObjectUtil;
 import org.shallow.codec.MessagePacket;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class ConnectDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConnectDuplexHandler.class);
@@ -67,12 +68,12 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        if (ObjectUtil.isNotNull(heartFuture)){
+        if (isNotNull(heartFuture)){
             heartFuture.cancel(false);
             heartFuture = null;
         }
 
-        if (ObjectUtil.isNotNull(idleFuture)){
+        if (isNotNull(idleFuture)){
             idleFuture.cancel(false);
             idleFuture = null;
         }

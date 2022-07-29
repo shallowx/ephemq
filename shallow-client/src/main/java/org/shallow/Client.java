@@ -13,6 +13,7 @@ import org.shallow.pool.DefaultChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.ShallowChannelHealthChecker;
+import org.shallow.util.ObjectUtil;
 
 import static org.shallow.util.NetworkUtil.*;
 

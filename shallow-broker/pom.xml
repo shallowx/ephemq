@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>org.shallow</groupId>
-            <artifactId>shallow-remote</artifactId>
+            <artifactId>shallow-client</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>

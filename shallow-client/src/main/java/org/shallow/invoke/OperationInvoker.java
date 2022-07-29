@@ -9,12 +9,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
-import org.shallow.ObjectUtil;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
-import org.shallow.util.ByteUtil;
-import org.shallow.util.ProtoBufUtil;
 import org.shallow.processor.AwareInvocation;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +19,13 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
+import static org.shallow.util.ByteUtil.release;
+import static org.shallow.util.ByteUtil.retainBuf;
+import static org.shallow.util.ProtoBufUtil.proto2Buf;
+import static org.shallow.util.ProtoBufUtil.readProto;
 
 public class OperationInvoker implements ProcessCommand.Server {
 
@@ -58,43 +62,46 @@ public class OperationInvoker implements ProcessCommand.Server {
             long now = System.currentTimeMillis();
             final Channel channel = clientChannel.channel();;
             if (semaphore.tryAcquire(timeoutMs, TimeUnit.MICROSECONDS)) {
-                if (ObjectUtil.isNull(callback)) {
+                if (isNull(callback)) {
                     ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                    channel.writeAndFlush(AwareInvocation.newInvocation(command, ByteUtil.retainBuf(content)), promise);
+                    channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content)), promise);
                 } else {
                     long expired = timeoutMs + now;
                     InvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
                         semaphore.release();
                         callback.operationCompleted(buf, cause);
                     });
-                    channel.writeAndFlush(AwareInvocation.newInvocation(command, ByteUtil.retainBuf(content), expired, answer));
+                    channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), expired, answer));
                 }
             } else {
                 throw new TimeoutException("[Invoke0] - semaphore acquire timeout: " + timeoutMs + "ms");
             }
         } catch (Throwable t) {
-            if (ObjectUtil.isNotNull(callback)) {
-                callback.operationCompleted(null, new RuntimeException(String.format("[Invoke0] - failed to invoke channel, address=%s command=%s", clientChannel.address(), command)));
+            RuntimeException exception = new RuntimeException(String.format("[Invoke0] - failed to invoke channel, address=%s command=%s", clientChannel.address(), command));
+            if (isNotNull(callback)) {
+                callback.operationCompleted(null, exception);
+            } else {
+                throw exception;
             }
         } finally {
-            ByteUtil.release(content);
+            release(content);
         }
     }
 
     private ByteBuf assembleInvokeData(ByteBufAllocator alloc, MessageLite lite) {
         try {
-            return ProtoBufUtil.proto2Buf(alloc, lite);
+            return proto2Buf(alloc, lite);
         } catch (Throwable cause) {
-            final String type = ObjectUtil.isNull(lite) ? null : lite.getClass().getSimpleName();
+            final String type = isNull(lite) ? null : lite.getClass().getSimpleName();
             throw new RuntimeException("[AssembleInvokeData] - failed to assemble messageLite type:{" + type + "}", cause);
         }
     }
 
     private <T> Callback<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
-        return ObjectUtil.isNull(promise) ? null : (buf, cause) -> {
-            if (ObjectUtil.isNull(cause)) {
+        return isNull(promise) ? null : (buf, cause) -> {
+            if (isNull(cause)) {
                 try {
-                    promise.trySuccess(ProtoBufUtil.readProto(buf, parser));
+                    promise.trySuccess(readProto(buf, parser));
                 } catch (Throwable t) {
                     promise.tryFailure(t);
                 }
@@ -105,7 +112,7 @@ public class OperationInvoker implements ProcessCommand.Server {
     }
 
     private static void tryFailure(Promise<?> promise, Throwable t) {
-        if (ObjectUtil.isNotNull(promise)) {
+        if (isNotNull(promise)) {
             promise.tryFailure(t);
         }
     }

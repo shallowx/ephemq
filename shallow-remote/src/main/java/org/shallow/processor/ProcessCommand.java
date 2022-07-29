@@ -62,6 +62,8 @@ public interface ProcessCommand {
                 return switch (command) {
                     case 1 -> "REGISTER_NODE";
                     case 2 -> "OFFLINE";
+                    case 3 -> "NEW_TOPIC";
+                    case 4 -> "DELETE_TOPIC";
                     default -> throw new IllegalStateException("Unexpected server command: " + command);
                 };
             }
@@ -69,6 +71,8 @@ public interface ProcessCommand {
 
         byte REGISTER_NODE = 1;
         byte OFFLINE = 2;
+        byte NEW_TOPIC = 3;
+        byte REMOVE_TOPIC = 4;
         default String get(byte command) {
             return null;
         }

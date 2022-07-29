@@ -1,8 +1,12 @@
 package org.shallow.network;
 
+import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.Promise;
 import org.shallow.internal.MetaConfig;
 import org.shallow.internal.MetaManager;
 import org.shallow.RemoteException;
@@ -11,9 +15,15 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
+import org.shallow.proto.server.CreateTopicRequest;
+import org.shallow.proto.server.DelTopicRequest;
+import org.shallow.topic.TopicMetadataProvider;
 
-import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.NetworkUtil.switchAddress;
+import static org.shallow.util.ProtoBufUtil.proto2Buf;
+import static org.shallow.util.ProtoBufUtil.readProto;
 
 public class MetaProcessorAware implements ProcessorAware, ProcessCommand.NameServer {
 
@@ -21,25 +31,88 @@ public class MetaProcessorAware implements ProcessorAware, ProcessCommand.NameSe
 
     private final MetaManager metaManager;
     private final MetaConfig config;
+    private final EventExecutor commandEventExecutor;
 
     public MetaProcessorAware(MetaConfig config, MetaManager metaManager) {
         this.metaManager = metaManager;
         this.config = config;
+        this.commandEventExecutor = metaManager.commandEventExecutorGroup().next();
     }
 
     @Override
-    public void onActive(ChannelHandlerContext ctx) {
+    public void onActive(Channel channel, EventExecutor executor) {
         if (logger.isDebugEnabled()) {
-            logger.debug("[onActive] - active channel<{}>", ctx.channel());
+            logger.debug("[onActive] - active channel<{}>", channel);
         }
-        ProcessorAware.super.onActive(ctx);
+        ProcessorAware.super.onActive(channel, executor);
     }
 
     @Override
     public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
             switch (command) {
-                case REGISTER_NODE -> {}
+                case NEW_TOPIC -> {
+                    try {
+                        final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            try {
+                                final String topic = request.getTopic();
+                                final int partitions = request.getPartitions();
+                                final int latency = request.getLatency();
+
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("[Meta server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
+                                }
+
+                                Promise<MessageLite> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                                    if (f.isSuccess()) {
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, f.cause());
+                                    }
+                                });
+
+                                TopicMetadataProvider topicMetadataProvider = metaManager.getTopicMetadataProvider();
+                                topicMetadataProvider.write2Cache(topic, partitions, latency, promise);
+                            } catch (Throwable e) {
+                                answerFailed(answer, e);
+                            }
+                        });
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
+                case REMOVE_TOPIC -> {
+                    try {
+                        final DelTopicRequest request = readProto(data, DelTopicRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            try {
+                                final String topic = request.getTopic();
+
+                                Promise<MessageLite> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                                    if (f.isSuccess()) {
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, f.cause());
+                                    }
+                                });
+
+                                TopicMetadataProvider topicMetadataProvider = metaManager.getTopicMetadataProvider();
+                                topicMetadataProvider.delFromCache(topic, promise);
+                            } catch (Throwable e) {
+                                answerFailed(answer, e);
+                            }
+                        });
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
                 case OFFLINE -> {}
                 default -> {
                     if (logger.isDebugEnabled()) {

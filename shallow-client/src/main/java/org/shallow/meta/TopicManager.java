@@ -29,7 +29,7 @@ public class TopicManager implements ProcessCommand.Server {
         this.config = config;
     }
 
-    public Promise<CreateTopicResponse> createTopic(String topic, int partitions, int latency) {
+    public Promise<CreateTopicResponse> createTopic(byte command, String topic, int partitions, int latency) {
         CreateTopicRequest request = CreateTopicRequest.newBuilder()
                 .setTopic(topic)
                 .setLatency(latency)
@@ -39,18 +39,18 @@ public class TopicManager implements ProcessCommand.Server {
         Promise<CreateTopicResponse> promise = newImmediatePromise();
 
         ClientChannel channel = acquire();
-        channel.invoker().invoke(ProcessCommand.Server.CREATE_TOPIC, config.getDefaultInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
+        channel.invoker().invoke(command, config.getDefaultInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
 
         return promise;
     }
 
-    public Promise<DelTopicResponse> delTopic(String topic) {
+    public Promise<DelTopicResponse> delTopic(byte command, String topic) {
         DelTopicRequest request = DelTopicRequest.newBuilder().setTopic(topic).build();
 
         Promise<DelTopicResponse> promise = newImmediatePromise();
 
         ClientChannel channel = acquire();
-        channel.invoker().invoke(ProcessCommand.Server.DELETE_TOPIC, config.getDefaultInvokeExpiredMs(), promise, request, DelTopicResponse.class);
+        channel.invoker().invoke(command, config.getDefaultInvokeExpiredMs(), promise, request, DelTopicResponse.class);
 
         return promise;
     }

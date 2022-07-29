@@ -7,8 +7,8 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.util.function.Consumer;
 
-import static org.shallow.ObjectUtil.isNotNull;
-import static org.shallow.ObjectUtil.isNull;
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
 
 public class GenericInvokeHolder<V> implements InvokeHolder<V> {
 

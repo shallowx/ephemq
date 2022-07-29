@@ -15,10 +15,9 @@ public final class MetaServer {
     private final CountDownLatch latch;
     private final MetaManager manager;
 
-
     public MetaServer(MetaConfig config) {
         this.config = config;
-        this.manager = new DefaultMetaManager();
+        this.manager = new DefaultMetaManager(config);
         this.socketServer = new MetaSocketServer(config, manager);
         this.latch = new CountDownLatch(1);
     }

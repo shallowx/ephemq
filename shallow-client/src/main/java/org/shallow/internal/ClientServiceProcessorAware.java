@@ -2,9 +2,8 @@ package org.shallow.internal;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.shallow.ObjectUtil;
 import org.shallow.RemoteException;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -14,6 +13,8 @@ import org.shallow.util.NetworkUtil;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.processor.ProcessorAware;
+
+import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class ClientServiceProcessorAware implements ProcessorAware, ProcessCommand.Client {
 
@@ -26,9 +27,9 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
     }
 
     @Override
-    public void onActive(ChannelHandlerContext ctx) {
-        Promise<ClientChannel> promise = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(ctx.channel());
-        if (ObjectUtil.isNotNull(promise)) {
+    public void onActive(Channel channel, EventExecutor executor) {
+        Promise<ClientChannel> promise = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(channel);
+        if (isNotNull(promise)) {
             promise.setSuccess(clientChannel);
         }
     }
@@ -41,7 +42,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                 case TOPIC_CHANGED -> {}
                 case CLUSTER_CHANGED -> {}
                 default -> {
-                    if (ObjectUtil.isNotNull(answer)) {
+                    if (isNotNull(answer)) {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,"Unsupported command exception <" + command + ">"));
                     }
                 }

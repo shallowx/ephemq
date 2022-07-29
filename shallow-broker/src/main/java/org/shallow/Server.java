@@ -6,6 +6,7 @@ import org.shallow.internal.BrokerConfig;
 import org.shallow.internal.BrokerServer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.util.TypeUtil;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.BufferedInputStream;

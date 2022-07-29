@@ -1,4 +1,4 @@
-package org.shallow;
+package org.shallow.util;
 
 import javax.naming.OperationNotSupportedException;
 

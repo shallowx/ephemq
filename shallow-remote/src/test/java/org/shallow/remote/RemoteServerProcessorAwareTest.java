@@ -2,15 +2,15 @@ package org.shallow.remote;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.EventExecutor;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.processor.ProcessorAware;
 
 public class RemoteServerProcessorAwareTest implements ProcessorAware {
 
     @Override
-    public void onActive(ChannelHandlerContext ctx) {
-        ProcessorAware.super.onActive(ctx);
+    public void onActive(Channel channel, EventExecutor executor) {
+        ProcessorAware.super.onActive(channel, executor);
     }
 
     @Override

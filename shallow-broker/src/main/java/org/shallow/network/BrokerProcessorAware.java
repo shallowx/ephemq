@@ -2,7 +2,7 @@ package org.shallow.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
@@ -11,12 +11,13 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.Topic2NameserverManager;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.server.CreateTopicRequest;
 import org.shallow.proto.server.CreateTopicResponse;
 
-import static org.shallow.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.NetworkUtil.switchAddress;
 import static org.shallow.util.ProtoBufUtil.proto2Buf;
@@ -33,9 +34,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     @Override
-    public void onActive(ChannelHandlerContext ctx) {
+    public void onActive(Channel channel, EventExecutor executor) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Obtain remote active address <{}>", ctx.channel().remoteAddress());
+            logger.debug("Obtain remote active address <{}>", channel.remoteAddress());
         }
     }
 
@@ -44,37 +45,32 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             switch (command) {
                 case CREATE_TOPIC -> {
-                    final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
-                    final String topic = request.getTopic();
-                    final int partitions = request.getPartitions();
-                    final int latency = request.getLatency();
+                    try {
+                        final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
+                        final String topic = request.getTopic();
+                        final int partitions = request.getPartitions();
+                        final int latency = request.getLatency();
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("[Broker server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
-                    }
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("[Broker server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
+                        }
 
-                    final CreateTopicResponse response = CreateTopicResponse
-                            .newBuilder()
-                            .setAck(1)
-                            .setLatency(latency)
-                            .setTopic(topic)
-                            .setPartitions(partitions)
-                            .build();
-
-                    Promise<Object> promise = newImmediatePromise();
-                    promise.addListener(new GenericFutureListener<Future< Object>>() {
-                        @Override
-                        public void operationComplete(Future<Object> f) throws Exception {
+                        Promise<CreateTopicResponse> promise = newImmediatePromise();
+                        promise.addListener((GenericFutureListener<Future<Object>>) f -> {
                             if (f.isSuccess()) {
                                 if (isNotNull(answer)) {
-                                    answer.success(proto2Buf(channel.alloc(), response));
+                                    answer.success(proto2Buf(channel.alloc(), promise.get()));
                                 }
                             } else {
                                 answerFailed(answer, f.cause());
                             }
-                        }
-                    });
-                    promise.trySuccess(null);
+                        });
+
+                        Topic2NameserverManager topic2NameserverManager = manager.getTopic2NameserverManager();
+                        topic2NameserverManager.write2Nameserver(topic, partitions, latency, promise);
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
                 }
                 case DELETE_TOPIC -> {}
                 case UPDATE_TOPIC -> {}
@@ -100,6 +96,4 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             answer.failure(cause);
         }
     }
-
-
 }

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.ClientConfig;
-import org.shallow.ObjectUtil;
+import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
 import java.util.Objects;

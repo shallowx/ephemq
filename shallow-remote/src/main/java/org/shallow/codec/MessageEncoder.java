@@ -8,6 +8,9 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
+import org.shallow.util.ByteUtil;
+
+import static org.shallow.util.ByteUtil.release;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
@@ -34,7 +37,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
             try {
                  header = encodeHeader(ctx.alloc(), version, state, command, answer, serialization, body.readableBytes());
             } catch (Throwable cause) {
-                body.release();
+                release(body);
                 throw cause;
             } finally {
                 packet.release();

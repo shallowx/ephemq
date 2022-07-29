@@ -5,9 +5,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
-import org.shallow.ObjectUtil;
 import org.shallow.invoke.InvokeAnswer;
-import org.shallow.util.ByteUtil;
+
+import static org.shallow.util.ObjectUtil.checkPositive;
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ByteUtil.defaultIfNull;
 
 public class AwareInvocation extends AbstractReferenceCounted {
 
@@ -34,13 +36,14 @@ public class AwareInvocation extends AbstractReferenceCounted {
     }
 
     public static  AwareInvocation newInvocation(byte command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
-        ObjectUtil.checkPositive(command, "Command");
+        checkPositive(command, "Command");
+
         final AwareInvocation invocation = RECYCLER.get();
         invocation.setRefCnt(1);
         invocation.command = command;
         invocation.answer = answer;
         invocation.expired = expires;
-        invocation.data = ByteUtil.defaultIfNull(data, Unpooled.EMPTY_BUFFER);
+        invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
         return invocation;
     }
@@ -63,7 +66,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
 
     @Override
     protected void deallocate() {
-        if (ObjectUtil.isNotNull(data)) {
+        if (isNotNull(data)) {
             data.release();
             data = null;
         }
@@ -85,7 +88,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
 
     @Override
     public AwareInvocation touch(Object hint) {
-        if (ObjectUtil.isNotNull(data)) {
+        if (isNotNull(data)) {
             data.touch(hint);
         }
         return this;

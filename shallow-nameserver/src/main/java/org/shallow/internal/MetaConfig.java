@@ -2,7 +2,7 @@ package org.shallow.internal;
 
 import java.util.Properties;
 
-import static org.shallow.TypeUtil.*;
+import static org.shallow.util.TypeUtil.*;
 
 public class MetaConfig {
     private final Properties config;
@@ -16,6 +16,7 @@ public class MetaConfig {
     private static final String EXPOSED_HOST = "shallow.nameserver.exposed.host";
     private static final String EXPOSED_PORT = "shallow.nameserver.exposed.port";
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.nameserver.logging.debug.enabled";
+    private static final String WORK_DIRECTORY = "shallow.nameserver.work.directory";
 
     public static MetaConfig exchange(Properties properties) {
         return new MetaConfig(properties);
@@ -59,5 +60,9 @@ public class MetaConfig {
 
     public boolean isNetworkLoggingDebugEnabled() {
         return object2Boolean(config.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
+    }
+
+    public String getWorkDirectory() {
+        return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow"));
     }
 }

@@ -1,6 +1,6 @@
 package org.shallow.logging;
 
-import org.shallow.ObjectUtil;
+import org.shallow.util.ObjectUtil;
 
 public abstract class InternalLoggerFactory {
 

@@ -6,10 +6,12 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
-import org.shallow.ObjectUtil;
 
 import static java.lang.Integer.MAX_VALUE;
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.codec.MessageDecoder.State.*;
+import static org.shallow.util.ByteUtil.release;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
@@ -27,7 +29,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final ByteBuf read) {
             if (invalid) {
-                read.release();
+                release(read);
                 return;
             }
 
@@ -36,7 +38,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 buf = whole(ctx.alloc(), read);
                 while (!ctx.isRemoved() && buf.isReadable()) {
                     final MessagePacket packet = decode(buf);
-                    if (ObjectUtil.isNull(packet)) {
+                    if (isNull(packet)) {
                         break;
                     }
                     ctx.fireChannelRead(packet);
@@ -45,13 +47,12 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 invalid = true;
                 throw cause;
             } finally {
-              if (ObjectUtil.isNotNull(buf)) {
-                  buf.release();
-              }
+              release(buf);
+
               buf = whole;
-              if (ObjectUtil.isNotNull(buf) && (!buf.isReadable() || invalid)) {
+              if (isNotNull(buf) && (!buf.isReadable() || invalid)) {
                   whole = null;
-                  buf.release();
+                  release(buf);
               }
             }
         } else {
@@ -105,7 +106,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     private ByteBuf whole(ByteBufAllocator alloc, ByteBuf read) {
         final ByteBuf buf = whole;
-        if (ObjectUtil.isNull(buf)) {
+        if (isNull(buf)) {
             return whole = read;
         }
 
@@ -134,8 +135,8 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (ObjectUtil.isNotNull(whole)) {
-            whole.release();
+        if (isNotNull(whole)) {
+            release(whole);
             whole = null;
         }
         ctx.fireChannelInactive();
@@ -144,13 +145,13 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         final ByteBuf buf = whole;
-        if (ObjectUtil.isNotNull(buf)) {
+        if (isNotNull(buf)) {
             whole = null;
             if (buf.isReadable()) {
                 ctx.fireChannelRead(buf);
                 ctx.fireChannelReadComplete();
             } else {
-                buf.release();
+                release(buf);
             }
         }
     }

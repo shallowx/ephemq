@@ -1,7 +1,7 @@
 package org.shallow.logging;
 
-import org.shallow.ObjectUtil;
-import org.shallow.StringUtil;
+import org.shallow.util.ObjectUtil;
+import org.shallow.util.StringUtil;
 
 import java.io.ObjectStreamException;
 import java.io.Serial;
