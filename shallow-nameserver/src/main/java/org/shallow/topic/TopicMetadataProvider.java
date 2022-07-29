@@ -42,7 +42,9 @@ public class TopicMetadataProvider {
         this.cacheExecutor = cacheExecutor;
         this.apiExecutor = apiExecutor;
 
-        this.topicsCache = Caffeine.newBuilder().refreshAfterWrite(1000, TimeUnit.MICROSECONDS)
+        this.topicsCache = Caffeine.newBuilder()
+                .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
+                .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
                     @Override
                     public @Nullable List<PartitionInfo> load(String key) throws Exception {
