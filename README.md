@@ -9,6 +9,10 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 - Nameserver: broker register
 - Metrics: CPU、JVM、message、semaphore
 
+# Latency
+
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/latency.png)
+
 # Environment
 
 - Jdk version: Jdk17+
