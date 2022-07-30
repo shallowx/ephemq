@@ -21,12 +21,12 @@ public class TopicTests {
         client.start();
 
         TopicManager topicManager = new TopicManager(clientConfig);
-        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "test-create", 1, 1);
+        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "test-multiple", 1, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.SECONDS);
 
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getLatency(), 1);
-        Assert.assertEquals(response.getTopic(), "test-create");
+        Assert.assertEquals(response.getTopic(), "test-multiple");
         Assert.assertEquals(response.getPartitions(), 1);
         Assert.assertEquals(response.getAck(), 1);
 

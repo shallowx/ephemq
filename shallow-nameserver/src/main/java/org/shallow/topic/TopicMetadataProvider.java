@@ -17,10 +17,12 @@ import org.shallow.meta.PartitionInfo;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 import org.shallow.util.Ack;
+import org.shallow.util.JsonUtil;
 import org.shallow.util.NetworkUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.api.MappedFileConstants.TOPICS;
@@ -35,14 +37,14 @@ public class TopicMetadataProvider {
     private final EventExecutor cacheExecutor;
     private final EventExecutor apiExecutor;
     private final MetaMappedFileAPI api;
-    private final LoadingCache<String, List<PartitionInfo>> topicsCache;
+    private final LoadingCache<String, List<PartitionInfo>> topicsInfoCache;
 
     public TopicMetadataProvider(MetaMappedFileAPI api, EventExecutor cacheExecutor, EventExecutor apiExecutor, long expired) {
         this.api = api;
         this.cacheExecutor = cacheExecutor;
         this.apiExecutor = apiExecutor;
 
-        this.topicsCache = Caffeine.newBuilder()
+        this.topicsInfoCache = Caffeine.newBuilder()
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
@@ -67,8 +69,9 @@ public class TopicMetadataProvider {
 
     private void doWrite2Cache(String topic, int partitions, int latency, Promise<MessageLite> promise) {
         try {
-            topicsCache.put(topic, assemblePartitions(topic, partitions, latency));
-            String content = "json";
+            topicsInfoCache.put(topic, assemblePartitions(topic, partitions, latency));
+            final Map<String, List<PartitionInfo>> topicInfoMeta = getAllTopics();
+            final String content = JsonUtil.object2Json(topicInfoMeta);
 
             Promise<Boolean> modifyPromise = newImmediatePromise();
             modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
@@ -95,7 +98,7 @@ public class TopicMetadataProvider {
                     .build());
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("[doWrite2Cache] - Failed to write content to file, content<{}>", topic);
+                logger.error("[doWrite2Cache] - Failed to write content to file, content<{}>, cause:{}", topic, t);
             }
             promise.tryFailure(t);
         }
@@ -122,39 +125,41 @@ public class TopicMetadataProvider {
 
     private void doDelFromCache(String topic, Promise<MessageLite> promise) {
         try {
-            topicsCache.invalidate(topic);
+            topicsInfoCache.invalidate(topic);
+            getAllTopics().entrySet().removeIf(k -> k.getKey().equals(topic));
+            final String content = JsonUtil.object2Json(getAllTopics());
 
-            Promise<Boolean> modifyPromise = newImmediatePromise();
+            final Promise<Boolean> modifyPromise = newImmediatePromise();
             modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
                 if (f.isSuccess()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("[doDelFromCache] - del topic<{}> from file successfully", topic);
                     }
                 } else {
-                    api.modify(TOPICS, topic, DELETE, null);
+                    api.modify(TOPICS, content, DELETE, null);
                 }
             });
 
             if (apiExecutor.inEventLoop()) {
-                api.modify(TOPICS, topic, DELETE, modifyPromise);
+                api.modify(TOPICS, content, DELETE, modifyPromise);
             } else {
-                apiExecutor.execute(() -> api.modify(TOPICS, topic, DELETE, modifyPromise));
+                apiExecutor.execute(() -> api.modify(TOPICS, content, DELETE, modifyPromise));
             }
 
             promise.trySuccess(DelTopicResponse.newBuilder().build());
         } catch (Throwable t)  {
             if (logger.isErrorEnabled()) {
-                logger.error("[delFromCache] - Failed to del topic from file, content<{}>", topic);
+                logger.error("[delFromCache] - Failed to del topic from file, topic<{}>", topic);
             }
             promise.tryFailure(t);
         }
     }
 
     public Map<String, List<PartitionInfo>> getAllTopics() {
-        return topicsCache.asMap();
+        return topicsInfoCache.asMap();
     }
 
     public List<PartitionInfo> getTopicInfo(String topic) {
-        return topicsCache.get(topic);
+        return topicsInfoCache.get(topic);
     }
 }
