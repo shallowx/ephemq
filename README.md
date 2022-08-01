@@ -13,6 +13,10 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/latency.png)
 
+# Asynchronous thread model
+
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/thread_model.png)
+
 # Environment
 
 - Jdk version: Jdk17+
