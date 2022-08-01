@@ -2,8 +2,8 @@ package org.shallow;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.shallow.internal.MetaConfig;
-import org.shallow.internal.MetaServer;
+import org.shallow.internal.MetadataConfig;
+import org.shallow.internal.MetadataServer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.util.TypeUtil;
@@ -30,12 +30,12 @@ public class NameServer {
     }
 
     @SuppressWarnings("all")
-    private static MetaServer start(MetaServer server) throws Exception {
+    private static MetadataServer start(MetadataServer server) throws Exception {
         server.start();
         return server;
     }
 
-    private static MetaServer newMetaServer(String[] args) throws Exception {
+    private static MetadataServer newMetaServer(String[] args) throws Exception {
         Options options = buildCommandOptions();
         CommandLine cmdLine = parseCmdLine(args, options, new DefaultParser());
 
@@ -50,10 +50,10 @@ public class NameServer {
             }
         }
 
-        final MetaConfig config = MetaConfig.exchange(properties);
+        final MetadataConfig config = MetadataConfig.exchange(properties);
         checkAndPrintConfig(config);
 
-        final MetaServer server = new MetaServer(config);
+        final MetadataServer server = new MetadataServer(config);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHook<>(() -> {
             server.shutdownGracefully();
@@ -76,8 +76,8 @@ public class NameServer {
         return options;
     }
 
-    private static void checkAndPrintConfig(MetaConfig config) {
-        final Method[] methods = MetaConfig.class.getDeclaredMethods();
+    private static void checkAndPrintConfig(MetadataConfig config) {
+        final Method[] methods = MetadataConfig.class.getDeclaredMethods();
         StringBuilder sb = new StringBuilder("Print the nameserver startup options: \n");
         String option;
 
@@ -99,7 +99,7 @@ public class NameServer {
         }
     }
 
-    private static void checkReturnType(Method method, MetaConfig config, StringBuilder sb, String name) {
+    private static void checkReturnType(Method method, MetadataConfig config, StringBuilder sb, String name) {
         String type = method.getReturnType().getSimpleName();
         Object invoke;
         try {

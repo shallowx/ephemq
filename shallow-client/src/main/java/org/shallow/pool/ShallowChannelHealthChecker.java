@@ -5,7 +5,7 @@ import org.shallow.invoke.ClientChannel;
 
 public interface ShallowChannelHealthChecker {
 
-    ShallowChannelHealthChecker ACTIVE = f -> f != null && (!f.isDone() || (f.isSuccess() && f.getNow().isActive()));
+    ShallowChannelHealthChecker ACTIVE = f -> f != null && (f.isSuccess() && f.getNow().isActive());
 
     boolean isHealthy(Future<ClientChannel> future);
 }

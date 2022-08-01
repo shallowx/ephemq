@@ -3,22 +3,22 @@ package org.shallow.internal;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.shallow.api.MetaMappedFileAPI;
+import org.shallow.api.MappedFileAPI;
 import org.shallow.cluster.ClusterMetadataProvider;
 import org.shallow.topic.TopicMetadataProvider;
 import org.shallow.util.NetworkUtil;
 
-public class DefaultMetaManager implements MetaManager{
+public class DefaultMetadataManager implements MetadataManager {
 
-    private final MetaConfig config;
-    private final MetaMappedFileAPI api;
+    private final MetadataConfig config;
+    private final MappedFileAPI api;
     private final TopicMetadataProvider topicMetadataProvider;
     private final ClusterMetadataProvider clusterMetadataProvider;
     private final EventExecutorGroup commandEventExecutorGroup;
 
-    public DefaultMetaManager(MetaConfig config) {
+    public DefaultMetadataManager(MetadataConfig config) {
         this.config = config;
-        this.api = new MetaMappedFileAPI(config.getWorkDirectory());
+        this.api = new MappedFileAPI(config.getWorkDirectory());
         this.topicMetadataProvider = new TopicMetadataProvider(api,
                 new DefaultEventExecutor(new DefaultThreadFactory("topic-cache-provider")),
                 new DefaultEventExecutor(new DefaultThreadFactory("topic-file-provider")),

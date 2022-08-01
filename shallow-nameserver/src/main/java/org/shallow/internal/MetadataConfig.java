@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import static org.shallow.util.TypeUtil.*;
 
-public class MetaConfig {
+public class MetadataConfig {
     private final Properties config;
 
     private static final String SERVER_ID = "shallow.nameserver.id";
@@ -18,11 +18,11 @@ public class MetaConfig {
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.nameserver.logging.debug.enabled";
     private static final String WORK_DIRECTORY = "shallow.nameserver.work.directory";
 
-    public static MetaConfig exchange(Properties properties) {
-        return new MetaConfig(properties);
+    public static MetadataConfig exchange(Properties properties) {
+        return new MetadataConfig(properties);
     }
 
-    private MetaConfig(Properties config) {
+    private MetadataConfig(Properties config) {
         this.config = config;
     }
 

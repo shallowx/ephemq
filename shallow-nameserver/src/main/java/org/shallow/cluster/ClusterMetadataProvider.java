@@ -1,7 +1,7 @@
 package org.shallow.cluster;
 
 import io.netty.util.concurrent.EventExecutor;
-import org.shallow.api.MetaMappedFileAPI;
+import org.shallow.api.MappedFileAPI;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -10,9 +10,9 @@ public class ClusterMetadataProvider {
 
     private final EventExecutor cacheExecutor;
     private final EventExecutor apiExecutor;
-    private final MetaMappedFileAPI api;
+    private final MappedFileAPI api;
 
-    public ClusterMetadataProvider(MetaMappedFileAPI api, EventExecutor cacheExecutor, EventExecutor apiExecutor, long expired) {
+    public ClusterMetadataProvider(MappedFileAPI api, EventExecutor cacheExecutor, EventExecutor apiExecutor, long expired) {
         this.api = api;
         this.cacheExecutor = cacheExecutor;
         this.apiExecutor = apiExecutor;

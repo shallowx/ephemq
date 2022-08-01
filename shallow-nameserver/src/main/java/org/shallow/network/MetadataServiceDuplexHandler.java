@@ -6,11 +6,11 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessorAware;
 
-public class MetaServiceDuplexHandler extends ProcessDuplexHandler {
+public class MetadataServiceDuplexHandler extends ProcessDuplexHandler {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaServiceDuplexHandler.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataServiceDuplexHandler.class);
 
-    public MetaServiceDuplexHandler(ProcessorAware processor) {
+    public MetadataServiceDuplexHandler(ProcessorAware processor) {
         super(processor);
     }
 

@@ -4,29 +4,29 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.shallow.internal.MetaConfig;
-import org.shallow.internal.MetaManager;
+import org.shallow.internal.MetadataConfig;
+import org.shallow.internal.MetadataManager;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import static org.shallow.util.NetworkUtil.newEventLoopGroup;
 import static org.shallow.util.NetworkUtil.preferServerChannelClass;
 
-public class MetaSocketServer {
+public class MetadataSocketServer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaSocketServer.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataSocketServer.class);
 
-    private final MetaConfig config;
-    private final MetaServerChannelInitializer serverChannelInitializer;
+    private final MetadataConfig config;
+    private final MetadataServerChannelInitializer serverChannelInitializer;
     private EventLoopGroup bossGroup;
     private  EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
-    private final MetaManager manager;
+    private final MetadataManager manager;
 
-    public MetaSocketServer(MetaConfig config, MetaManager manager) {
+    public MetadataSocketServer(MetadataConfig config, MetadataManager manager) {
         this.config = config;
         this.manager = manager;
-        this.serverChannelInitializer = new MetaServerChannelInitializer(config, manager);
+        this.serverChannelInitializer = new MetadataServerChannelInitializer(config, manager);
     }
 
     public void start() throws Exception {

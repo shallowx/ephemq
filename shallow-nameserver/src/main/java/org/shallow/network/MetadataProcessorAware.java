@@ -7,8 +7,8 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.shallow.internal.MetaConfig;
-import org.shallow.internal.MetaManager;
+import org.shallow.internal.MetadataConfig;
+import org.shallow.internal.MetadataManager;
 import org.shallow.RemoteException;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
@@ -25,15 +25,15 @@ import static org.shallow.util.NetworkUtil.switchAddress;
 import static org.shallow.util.ProtoBufUtil.proto2Buf;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
-public class MetaProcessorAware implements ProcessorAware, ProcessCommand.NameServer {
+public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.NameServer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaProcessorAware.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataProcessorAware.class);
 
-    private final MetaManager metaManager;
-    private final MetaConfig config;
+    private final MetadataManager metaManager;
+    private final MetadataConfig config;
     private final EventExecutor commandEventExecutor;
 
-    public MetaProcessorAware(MetaConfig config, MetaManager metaManager) {
+    public MetadataProcessorAware(MetadataConfig config, MetadataManager metaManager) {
         this.metaManager = metaManager;
         this.config = config;
         this.commandEventExecutor = metaManager.commandEventExecutorGroup().next();

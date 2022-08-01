@@ -2,23 +2,22 @@ package org.shallow.internal;
 
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.network.MetaSocketServer;
+import org.shallow.network.MetadataSocketServer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
+public final class MetadataServer {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataServer.class);
 
-public final class MetaServer {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetaServer.class);
-
-    private final MetaSocketServer socketServer;
-    private final MetaConfig config;
+    private final MetadataSocketServer socketServer;
+    private final MetadataConfig config;
     private final CountDownLatch latch;
-    private final MetaManager manager;
+    private final MetadataManager manager;
 
-    public MetaServer(MetaConfig config) {
+    public MetadataServer(MetadataConfig config) {
         this.config = config;
-        this.manager = new DefaultMetaManager(config);
-        this.socketServer = new MetaSocketServer(config, manager);
+        this.manager = new DefaultMetadataManager(config);
+        this.socketServer = new MetadataSocketServer(config, manager);
         this.latch = new CountDownLatch(1);
     }
 

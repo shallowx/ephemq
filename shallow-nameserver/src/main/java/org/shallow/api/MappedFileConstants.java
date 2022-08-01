@@ -1,6 +1,6 @@
 package org.shallow.api;
 
-public class MappedFileConstants {
+public final class MappedFileConstants {
     public static final String TOPICS = "topics.json";
     public static final String CLUSTERS = "clusters.json";
     public static final String DIRECTORY = "/tmp/shallow";

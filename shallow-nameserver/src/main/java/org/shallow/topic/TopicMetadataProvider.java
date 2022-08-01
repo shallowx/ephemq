@@ -9,20 +9,16 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.shallow.api.MappedFileConstants;
-import org.shallow.api.MetaMappedFileAPI;
+import org.shallow.api.MappedFileAPI;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.PartitionInfo;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
-import org.shallow.util.Ack;
 import org.shallow.util.JsonUtil;
-import org.shallow.util.NetworkUtil;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.api.MappedFileConstants.TOPICS;
@@ -36,10 +32,10 @@ public class TopicMetadataProvider {
 
     private final EventExecutor cacheExecutor;
     private final EventExecutor apiExecutor;
-    private final MetaMappedFileAPI api;
+    private final MappedFileAPI api;
     private final LoadingCache<String, List<PartitionInfo>> topicsInfoCache;
 
-    public TopicMetadataProvider(MetaMappedFileAPI api, EventExecutor cacheExecutor, EventExecutor apiExecutor, long expired) {
+    public TopicMetadataProvider(MappedFileAPI api, EventExecutor cacheExecutor, EventExecutor apiExecutor, long expired) {
         this.api = api;
         this.cacheExecutor = cacheExecutor;
         this.apiExecutor = apiExecutor;
@@ -79,6 +75,7 @@ public class TopicMetadataProvider {
                     if (logger.isDebugEnabled()) {
                         logger.debug("[doWrite2Cache] - write content to file successfully, content<{}>", content);
                     }
+
                     promise.trySuccess(CreateTopicResponse.newBuilder()
                             .setTopic(topic)
                             .setAck(SUCCESS)
@@ -86,7 +83,7 @@ public class TopicMetadataProvider {
                             .setPartitions(partitions)
                             .build());
                 } else {
-                    api.modify(TOPICS, content, APPEND, null);
+                    promise.tryFailure(f.cause());
                 }
             });
 
