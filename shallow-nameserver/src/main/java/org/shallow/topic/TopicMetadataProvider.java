@@ -51,7 +51,7 @@ public class TopicMetadataProvider {
                 });
     }
 
-    public void write2Cache(String topic, int partitions, int latency, Promise<MessageLite> promise) {
+    public void write2CacheAndFile(String topic, int partitions, int latency, Promise<MessageLite> promise) {
         try {
             if (cacheExecutor.inEventLoop()) {
                 doWrite2Cache(topic, partitions, latency, promise);
@@ -67,13 +67,13 @@ public class TopicMetadataProvider {
         try {
             topicsInfoCache.put(topic, assemblePartitions(topic, partitions, latency));
             final Map<String, List<PartitionInfo>> topicInfoMeta = getAllTopics();
-            final String content = JsonUtil.object2Json(topicInfoMeta);
+            final String topcis = JsonUtil.object2Json(topicInfoMeta);
 
-            Promise<Boolean> modifyPromise = newImmediatePromise();
+            final Promise<Boolean> modifyPromise = newImmediatePromise();
             modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
                 if (f.isSuccess()) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("[doWrite2Cache] - write content to file successfully, content<{}>", content);
+                        logger.debug("[doWrite2Cache] - write topic info to file successfully, content<{}>", topcis);
                     }
 
                     promise.trySuccess(CreateTopicResponse.newBuilder()
@@ -88,13 +88,13 @@ public class TopicMetadataProvider {
             });
 
             if (apiExecutor.inEventLoop()) {
-                api.modify(TOPICS, content, APPEND, modifyPromise);
+                api.modify(TOPICS, topcis, APPEND, modifyPromise);
             } else {
-                apiExecutor.execute(() -> api.modify(TOPICS, content, APPEND, modifyPromise));
+                apiExecutor.execute(() -> api.modify(TOPICS, topcis, APPEND, modifyPromise));
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("[doWrite2Cache] - Failed to write content to file, content<{}>, cause:{}", topic, t);
+                logger.error("[doWrite2Cache] - Failed to write topic info to file, content<{}>, cause:{}", topic, t);
             }
             promise.tryFailure(t);
         }
@@ -123,7 +123,7 @@ public class TopicMetadataProvider {
         try {
             topicsInfoCache.invalidate(topic);
             getAllTopics().entrySet().removeIf(k -> k.getKey().equals(topic));
-            final String content = JsonUtil.object2Json(getAllTopics());
+            final String topics = JsonUtil.object2Json(getAllTopics());
 
             final Promise<Boolean> modifyPromise = newImmediatePromise();
             modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
@@ -132,14 +132,14 @@ public class TopicMetadataProvider {
                         logger.debug("[doDelFromCache] - del topic<{}> from file successfully", topic);
                     }
                 } else {
-                    api.modify(TOPICS, content, DELETE, null);
+                    api.modify(TOPICS, topics, DELETE, null);
                 }
             });
 
             if (apiExecutor.inEventLoop()) {
-                api.modify(TOPICS, content, DELETE, modifyPromise);
+                api.modify(TOPICS, topics, DELETE, modifyPromise);
             } else {
-                apiExecutor.execute(() -> api.modify(TOPICS, content, DELETE, modifyPromise));
+                apiExecutor.execute(() -> api.modify(TOPICS, topics, DELETE, modifyPromise));
             }
 
             promise.trySuccess(DelTopicResponse.newBuilder().build());

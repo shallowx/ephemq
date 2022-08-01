@@ -39,6 +39,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -55,9 +56,17 @@ private static final long serialVersionUID = 0L;
             name_ = s;
             break;
           }
-          case 16: {
-
-            version_ = input.readInt32();
+          case 18: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              metadata_ = com.google.protobuf.MapField.newMapField(
+                  MetadataDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000001;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, org.shallow.proto.NodeMetadata>
+            metadata__ = input.readMessage(
+                MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            metadata_.getMutableMap().put(
+                metadata__.getKey(), metadata__.getValue());
             break;
           }
           default: {
@@ -84,6 +93,18 @@ private static final long serialVersionUID = 0L;
     return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 2:
+        return internalGetMetadata();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -130,15 +151,85 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int VERSION_FIELD_NUMBER = 2;
-  private int version_;
+  public static final int METADATA_FIELD_NUMBER = 2;
+  private static final class MetadataDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, org.shallow.proto.NodeMetadata> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, org.shallow.proto.NodeMetadata>newDefaultInstance(
+                org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_MetadataEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                org.shallow.proto.NodeMetadata.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.String, org.shallow.proto.NodeMetadata> metadata_;
+  private com.google.protobuf.MapField<java.lang.String, org.shallow.proto.NodeMetadata>
+  internalGetMetadata() {
+    if (metadata_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          MetadataDefaultEntryHolder.defaultEntry);
+    }
+    return metadata_;
+  }
+
+  public int getMetadataCount() {
+    return internalGetMetadata().getMap().size();
+  }
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+
+  @java.lang.Override
+  public boolean containsMetadata(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetMetadata().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getMetadataMap()} instead.
    */
   @java.lang.Override
-  public int getVersion() {
-    return version_;
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> getMetadata() {
+    return getMetadataMap();
+  }
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> getMetadataMap() {
+    return internalGetMetadata().getMap();
+  }
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  @java.lang.Override
+
+  public org.shallow.proto.NodeMetadata getMetadataOrDefault(
+      java.lang.String key,
+      org.shallow.proto.NodeMetadata defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> map =
+        internalGetMetadata().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  @java.lang.Override
+
+  public org.shallow.proto.NodeMetadata getMetadataOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> map =
+        internalGetMetadata().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -158,9 +249,12 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (version_ != 0) {
-      output.writeInt32(2, version_);
-    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetMetadata(),
+        MetadataDefaultEntryHolder.defaultEntry,
+        2);
     unknownFields.writeTo(output);
   }
 
@@ -173,9 +267,15 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (version_ != 0) {
+    for (java.util.Map.Entry<java.lang.String, org.shallow.proto.NodeMetadata> entry
+         : internalGetMetadata().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, org.shallow.proto.NodeMetadata>
+      metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, version_);
+          .computeMessageSize(2, metadata__);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -194,8 +294,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (getVersion()
-        != other.getVersion()) return false;
+    if (!internalGetMetadata().equals(
+        other.internalGetMetadata())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -209,8 +309,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getVersion();
+    if (!internalGetMetadata().getMap().isEmpty()) {
+      hash = (37 * hash) + METADATA_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetMetadata().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -318,6 +420,28 @@ private static final long serialVersionUID = 0L;
       return org.shallow.proto.MessageMetadataProto.internal_static_shallow_protobuf_ClusterMetadata_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMutableMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -346,8 +470,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       name_ = "";
 
-      version_ = 0;
-
+      internalGetMutableMetadata().clear();
       return this;
     }
 
@@ -374,8 +497,10 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.ClusterMetadata buildPartial() {
       org.shallow.proto.ClusterMetadata result = new org.shallow.proto.ClusterMetadata(this);
+      int from_bitField0_ = bitField0_;
       result.name_ = name_;
-      result.version_ = version_;
+      result.metadata_ = internalGetMetadata();
+      result.metadata_.makeImmutable();
       onBuilt();
       return result;
     }
@@ -428,9 +553,8 @@ private static final long serialVersionUID = 0L;
         name_ = other.name_;
         onChanged();
       }
-      if (other.getVersion() != 0) {
-        setVersion(other.getVersion());
-      }
+      internalGetMutableMetadata().mergeFrom(
+          other.internalGetMetadata());
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -459,6 +583,7 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object name_ = "";
     /**
@@ -536,34 +661,134 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int version_ ;
-    /**
-     * <code>int32 version = 2;</code>
-     * @return The version.
-     */
-    @java.lang.Override
-    public int getVersion() {
-      return version_;
+    private com.google.protobuf.MapField<
+        java.lang.String, org.shallow.proto.NodeMetadata> metadata_;
+    private com.google.protobuf.MapField<java.lang.String, org.shallow.proto.NodeMetadata>
+    internalGetMetadata() {
+      if (metadata_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
+      return metadata_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, org.shallow.proto.NodeMetadata>
+    internalGetMutableMetadata() {
+      onChanged();;
+      if (metadata_ == null) {
+        metadata_ = com.google.protobuf.MapField.newMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
+      if (!metadata_.isMutable()) {
+        metadata_ = metadata_.copy();
+      }
+      return metadata_;
+    }
+
+    public int getMetadataCount() {
+      return internalGetMetadata().getMap().size();
     }
     /**
-     * <code>int32 version = 2;</code>
-     * @param value The version to set.
-     * @return This builder for chaining.
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
-    public Builder setVersion(int value) {
-      
-      version_ = value;
-      onChanged();
+
+    @java.lang.Override
+    public boolean containsMetadata(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMetadata().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMetadataMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> getMetadata() {
+      return getMetadataMap();
+    }
+    /**
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> getMetadataMap() {
+      return internalGetMetadata().getMap();
+    }
+    /**
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
+    @java.lang.Override
+
+    public org.shallow.proto.NodeMetadata getMetadataOrDefault(
+        java.lang.String key,
+        org.shallow.proto.NodeMetadata defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> map =
+          internalGetMetadata().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
+    @java.lang.Override
+
+    public org.shallow.proto.NodeMetadata getMetadataOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> map =
+          internalGetMetadata().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public Builder clearMetadata() {
+      internalGetMutableMetadata().getMutableMap()
+          .clear();
       return this;
     }
     /**
-     * <code>int32 version = 2;</code>
-     * @return This builder for chaining.
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
-    public Builder clearVersion() {
-      
-      version_ = 0;
-      onChanged();
+
+    public Builder removeMetadata(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableMetadata().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata>
+    getMutableMetadata() {
+      return internalGetMutableMetadata().getMutableMap();
+    }
+    /**
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
+    public Builder putMetadata(
+        java.lang.String key,
+        org.shallow.proto.NodeMetadata value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+      internalGetMutableMetadata().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
+
+    public Builder putAllMetadata(
+        java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata> values) {
+      internalGetMutableMetadata().getMutableMap()
+          .putAll(values);
       return this;
     }
     @java.lang.Override

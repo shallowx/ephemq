@@ -21,8 +21,7 @@ public class ClientTests {
         client.start();
 
         ShallowChannelPool pool = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool();
-        Future<ClientChannel> future = pool.acquire(switchSocketAddress("127.0.0.1", 7730));
-        ClientChannel clientChannel = future.get();
+        ClientChannel clientChannel = pool.acquireHealthyOrNew(switchSocketAddress("127.0.0.1", 7730));
 
         Assert.assertNotNull(clientChannel);
 

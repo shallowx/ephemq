@@ -15,7 +15,6 @@ public final class BrokerServer {
     private final CountDownLatch latch;
     private final BrokerManager manager;
 
-
     public BrokerServer(BrokerConfig config) {
         this.config = config;
         this.manager = new DefaultBrokerManager(config);

@@ -15,26 +15,6 @@ public final class MessageMetadataProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_ClusterInfo_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_ClusterInfo_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_ClusterInfo_NodesEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_ClusterMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_NodeMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_NodeMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shallow_protobuf_TopicMetadata_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -44,6 +24,21 @@ public final class MessageMetadataProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_PartitionMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_ClusterMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_ClusterMetadata_MetadataEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_ClusterMetadata_MetadataEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_NodeMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_NodeMetadata_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -53,61 +48,53 @@ public final class MessageMetadataProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rshallow.proto\022\020shallow.protobuf\"\310\001\n\013Cl" +
-      "usterInfo\0222\n\007cluster\030\001 \001(\0132!.shallow.pro" +
-      "tobuf.ClusterMetadata\0227\n\005nodes\030\002 \003(\0132(.s" +
-      "hallow.protobuf.ClusterInfo.NodesEntry\032L" +
-      "\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\013" +
-      "2\036.shallow.protobuf.NodeMetadata:\0028\001\"0\n\017" +
-      "ClusterMetadata\022\014\n\004name\030\001 \001(\t\022\017\n\007version" +
-      "\030\002 \001(\005\"X\n\014NodeMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004na" +
-      "me\030\002 \001(\t\022\n\n\002ip\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\024\n\014re" +
-      "gisterTime\030\005 \001(\t\":\n\rTopicMetadata\022\n\n\002id\030" +
-      "\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\017\n\007version\030\003 \001(\005\"D\n\021" +
-      "PartitionMetadata\022\n\n\002id\030\001 \001(\005\022\022\n\npartiti" +
-      "ons\030\002 \001(\005\022\017\n\007latency\030\003 \001(\005B+\n\021org.shallo" +
-      "w.protoB\024MessageMetadataProtoP\001b\006proto3"
+      "\n\rshallow.proto\022\020shallow.protobuf\":\n\rTop" +
+      "icMetadata\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\017\n\007" +
+      "version\030\003 \001(\005\"D\n\021PartitionMetadata\022\n\n\002id" +
+      "\030\001 \001(\005\022\022\n\npartitions\030\002 \001(\005\022\017\n\007latency\030\003 " +
+      "\001(\005\"\263\001\n\017ClusterMetadata\022\014\n\004name\030\001 \001(\t\022A\n" +
+      "\010metadata\030\002 \003(\0132/.shallow.protobuf.Clust" +
+      "erMetadata.MetadataEntry\032O\n\rMetadataEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132\036.shallow." +
+      "protobuf.NodeMetadata:\0028\001\"8\n\014NodeMetadat" +
+      "a\022\014\n\004name\030\001 \001(\t\022\014\n\004host\030\002 \001(\t\022\014\n\004port\030\003 " +
+      "\001(\005B+\n\021org.shallow.protoB\024MessageMetadat" +
+      "aProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_shallow_protobuf_ClusterInfo_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_shallow_protobuf_ClusterInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_ClusterInfo_descriptor,
-        new java.lang.String[] { "Cluster", "Nodes", });
-    internal_static_shallow_protobuf_ClusterInfo_NodesEntry_descriptor =
-      internal_static_shallow_protobuf_ClusterInfo_descriptor.getNestedTypes().get(0);
-    internal_static_shallow_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_ClusterInfo_NodesEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
-    internal_static_shallow_protobuf_ClusterMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_ClusterMetadata_descriptor,
-        new java.lang.String[] { "Name", "Version", });
-    internal_static_shallow_protobuf_NodeMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_shallow_protobuf_NodeMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_NodeMetadata_descriptor,
-        new java.lang.String[] { "Id", "Name", "Ip", "Port", "RegisterTime", });
     internal_static_shallow_protobuf_TopicMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_shallow_protobuf_TopicMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_TopicMetadata_descriptor,
         new java.lang.String[] { "Id", "Name", "Version", });
     internal_static_shallow_protobuf_PartitionMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_shallow_protobuf_PartitionMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PartitionMetadata_descriptor,
         new java.lang.String[] { "Id", "Partitions", "Latency", });
+    internal_static_shallow_protobuf_ClusterMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_shallow_protobuf_ClusterMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_ClusterMetadata_descriptor,
+        new java.lang.String[] { "Name", "Metadata", });
+    internal_static_shallow_protobuf_ClusterMetadata_MetadataEntry_descriptor =
+      internal_static_shallow_protobuf_ClusterMetadata_descriptor.getNestedTypes().get(0);
+    internal_static_shallow_protobuf_ClusterMetadata_MetadataEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_ClusterMetadata_MetadataEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_shallow_protobuf_NodeMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_shallow_protobuf_NodeMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_NodeMetadata_descriptor,
+        new java.lang.String[] { "Name", "Host", "Port", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

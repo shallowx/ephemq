@@ -7,7 +7,7 @@ import org.shallow.invoke.ClientChannel;
 import java.net.SocketAddress;
 
 public interface ShallowChannelPool {
-    Future<ClientChannel> acquire(SocketAddress address);
     Future<ClientChannel> acquire();
+    ClientChannel acquireHealthyOrNew(SocketAddress address);
     Promise<ClientChannel> assemblePromise(Channel channel);
 }

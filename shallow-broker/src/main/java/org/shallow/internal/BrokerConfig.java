@@ -11,7 +11,6 @@ public class BrokerConfig {
 
     private static final String SERVER_ID = "shallow.server.id";
     private static final String CLUSTER_NAME = "shallow.cluster";
-    private static final String CLUSTER_NODE_ROLE = "shallow.node.role";
     private static final String IO_THREAD_WHOLES = "shallow.io.thread.wholes";
     private static final String WORK_THREAD_WHOLES = "shallow.network.thread.wholes";
     private static final String OS_IS_EPOLL_PREFER= "shallow.os.epoll.prefer";
@@ -21,7 +20,6 @@ public class BrokerConfig {
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
     private static final String SHALLOW_NAMESERVER_URL = "shallow.namespace.url";
     private static final String SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT = "shallow.internal.channel.pool.limit";
-
     public static BrokerConfig exchange(Properties properties) {
         return new BrokerConfig(properties);
     }
@@ -74,4 +72,7 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(SHALLOW_NAMESERVER_URL, "127.0.0.1:9100"));
     }
 
+    public String getClusterName() {
+        return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
+    }
 }

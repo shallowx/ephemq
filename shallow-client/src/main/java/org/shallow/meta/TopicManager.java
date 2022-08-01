@@ -1,6 +1,5 @@
 package org.shallow.meta;
 
-import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
 import org.shallow.invoke.ClientChannel;
@@ -13,8 +12,6 @@ import org.shallow.proto.server.CreateTopicRequest;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicRequest;
 import org.shallow.proto.server.DelTopicResponse;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 
@@ -38,7 +35,7 @@ public class TopicManager implements ProcessCommand.Server {
 
         Promise<CreateTopicResponse> promise = newImmediatePromise();
 
-        ClientChannel channel = acquire();
+        ClientChannel channel = pool.acquireHealthyOrNew(null);
         channel.invoker().invoke(command, config.getDefaultInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
 
         return promise;
@@ -49,17 +46,10 @@ public class TopicManager implements ProcessCommand.Server {
 
         Promise<DelTopicResponse> promise = newImmediatePromise();
 
-        ClientChannel channel = acquire();
+        ClientChannel channel = pool.acquireHealthyOrNew(null);
         channel.invoker().invoke(command, config.getDefaultInvokeExpiredMs(), promise, request, DelTopicResponse.class);
 
         return promise;
     }
 
-    private ClientChannel acquire() {
-        try {
-            return pool.acquire().get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
-        } catch (Throwable t) {
-            throw new RuntimeException("[Acquire] - failed to acquire random channel from pool", t);
-        }
-    }
 }

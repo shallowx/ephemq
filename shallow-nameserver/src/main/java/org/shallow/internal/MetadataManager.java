@@ -1,6 +1,7 @@
 package org.shallow.internal;
 
 import io.netty.util.concurrent.EventExecutorGroup;
+import org.shallow.cluster.ClusterMetadataProvider;
 import org.shallow.topic.TopicMetadataProvider;
 
 public interface MetadataManager {
@@ -9,5 +10,6 @@ public interface MetadataManager {
 
     TopicMetadataProvider getTopicMetadataProvider();
 
+    ClusterMetadataProvider getClusterMetadataProvider();
     EventExecutorGroup commandEventExecutorGroup();
 }

@@ -7,6 +7,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import org.shallow.cluster.ClusterMetadataProvider;
 import org.shallow.internal.MetadataConfig;
 import org.shallow.internal.MetadataManager;
 import org.shallow.RemoteException;
@@ -15,8 +16,10 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
+import org.shallow.proto.NodeMetadata;
 import org.shallow.proto.server.CreateTopicRequest;
 import org.shallow.proto.server.DelTopicRequest;
+import org.shallow.proto.server.RegisterNodeRequest;
 import org.shallow.topic.TopicMetadataProvider;
 
 import static org.shallow.util.ObjectUtil.isNotNull;
@@ -29,14 +32,14 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataProcessorAware.class);
 
-    private final MetadataManager metaManager;
-    private final MetadataConfig config;
     private final EventExecutor commandEventExecutor;
+    private final TopicMetadataProvider topicMetadataProvider;
+    private final ClusterMetadataProvider clusterMetadataProvider;
 
     public MetadataProcessorAware(MetadataConfig config, MetadataManager metaManager) {
-        this.metaManager = metaManager;
-        this.config = config;
         this.commandEventExecutor = metaManager.commandEventExecutorGroup().next();
+        this.topicMetadataProvider = metaManager.getTopicMetadataProvider();
+        this.clusterMetadataProvider = metaManager.getClusterMetadataProvider();
     }
 
     @Override
@@ -75,8 +78,7 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                     }
                                 });
 
-                                TopicMetadataProvider topicMetadataProvider = metaManager.getTopicMetadataProvider();
-                                topicMetadataProvider.write2Cache(topic, partitions, latency, promise);
+                                topicMetadataProvider.write2CacheAndFile(topic, partitions, latency, promise);
                             } catch (Throwable e) {
                                 answerFailed(answer, e);
                             }
@@ -103,7 +105,6 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                     }
                                 });
 
-                                TopicMetadataProvider topicMetadataProvider = metaManager.getTopicMetadataProvider();
                                 topicMetadataProvider.delFromCache(topic, promise);
                             } catch (Throwable e) {
                                 answerFailed(answer, e);
@@ -113,7 +114,28 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         answerFailed(answer, e);
                     }
                 }
-                case OFFLINE -> {}
+                case REGISTER_NODE -> {
+                    try {
+                        final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            final NodeMetadata node = request.getMetadata();
+                            Promise<MessageLite> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                                if (f.isSuccess()) {
+                                    if (isNotNull(answer)) {
+                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                    }
+                                } else {
+                                    answerFailed(answer, f.cause());
+                                }
+                            });
+
+                            clusterMetadataProvider.write2CacheAndFile(request.getCluster(), node.getName(), node.getHost(), node.getPort(), promise);
+                        });
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("[Nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);

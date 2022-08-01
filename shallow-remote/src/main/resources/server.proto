@@ -28,3 +28,10 @@ message DelTopicResponse {
   int32 ack = 1;
   string topic = 2;
 }
+
+message RegisterNodeRequest {
+  string cluster = 1;
+  NodeMetadata metadata = 2;
+}
+
+message RegisterNodeResponse {}

@@ -3,7 +3,6 @@ package org.shallow.processor;
 
 public interface ProcessCommand {
     interface Server {
-
         Server ACTIVE = new Server() {
             @Override
             public String get(byte command) {
@@ -25,14 +24,12 @@ public interface ProcessCommand {
         byte FETCH_CLUSTER_INFO = 4;
         byte FETCH_TOPIC_INFO = 5;
         byte CLUSTER_NODE_JOIN = 6;
-
        default String get(byte command) {
            return null;
        }
     }
 
     interface Client {
-
         Client ACTIVE = new Client() {
             @Override
             public String get(byte command) {
@@ -48,14 +45,12 @@ public interface ProcessCommand {
         byte RECEIVE_MESSAGE = 1;
         byte TOPIC_CHANGED = 2;
         byte CLUSTER_CHANGED = 3;
-
        default String get(byte command) {
            return null;
        }
     }
 
     interface NameServer {
-
         NameServer ACTIVE = new NameServer() {
             @Override
             public String get(byte command) {

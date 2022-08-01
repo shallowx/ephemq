@@ -34,6 +34,16 @@ public final class ServerProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_DelTopicResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_RegisterNodeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_RegisterNodeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_RegisterNodeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -50,8 +60,11 @@ public final class ServerProto {
       "\005topic\030\002 \001(\t\022\022\n\npartitions\030\003 \001(\005\022\017\n\007late" +
       "ncy\030\004 \001(\005\" \n\017DelTopicRequest\022\r\n\005topic\030\001 " +
       "\001(\t\".\n\020DelTopicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n\005" +
-      "topic\030\002 \001(\tB)\n\030org.shallow.proto.serverB" +
-      "\013ServerProtoP\001b\006proto3"
+      "topic\030\002 \001(\t\"X\n\023RegisterNodeRequest\022\017\n\007cl" +
+      "uster\030\001 \001(\t\0220\n\010metadata\030\002 \001(\0132\036.shallow." +
+      "protobuf.NodeMetadata\"\026\n\024RegisterNodeRes" +
+      "ponseB)\n\030org.shallow.proto.serverB\013Serve" +
+      "rProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -82,6 +95,18 @@ public final class ServerProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_DelTopicResponse_descriptor,
         new java.lang.String[] { "Ack", "Topic", });
+    internal_static_shallow_protobuf_RegisterNodeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_shallow_protobuf_RegisterNodeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_RegisterNodeRequest_descriptor,
+        new java.lang.String[] { "Cluster", "Metadata", });
+    internal_static_shallow_protobuf_RegisterNodeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_RegisterNodeResponse_descriptor,
+        new java.lang.String[] { });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

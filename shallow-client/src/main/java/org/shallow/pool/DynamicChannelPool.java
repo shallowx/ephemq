@@ -18,6 +18,7 @@ import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
@@ -61,12 +62,20 @@ public class DynamicChannelPool implements ShallowChannelPool {
     }
 
     @Override
-    public Future<ClientChannel> acquire() {
-        return acquire(null);
+    public ClientChannel acquireHealthyOrNew(SocketAddress address) {
+        try {
+            return acquireHealthyOrNew0(address).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
+        } catch (Throwable t) {
+            throw new RuntimeException("[Acquire] - failed to acquire random channel from pool", t);
+        }
     }
 
     @Override
-    public Future<ClientChannel> acquire(SocketAddress address) {
+    public Future<ClientChannel> acquire() {
+        return acquireHealthyOrNew0(null);
+    }
+
+    private Future<ClientChannel> acquireHealthyOrNew0(SocketAddress address) {
         Future<ClientChannel> future;
         if (isNull(address)) {
             future = randomAcquire();

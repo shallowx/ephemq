@@ -20,8 +20,36 @@ public interface ClusterMetadataOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>int32 version = 2;</code>
-   * @return The version.
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
    */
-  int getVersion();
+  int getMetadataCount();
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  boolean containsMetadata(
+      java.lang.String key);
+  /**
+   * Use {@link #getMetadataMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata>
+  getMetadata();
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  java.util.Map<java.lang.String, org.shallow.proto.NodeMetadata>
+  getMetadataMap();
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+
+  org.shallow.proto.NodeMetadata getMetadataOrDefault(
+      java.lang.String key,
+      org.shallow.proto.NodeMetadata defaultValue);
+  /**
+   * <code>map&lt;string, .shallow.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+
+  org.shallow.proto.NodeMetadata getMetadataOrThrow(
+      java.lang.String key);
 }

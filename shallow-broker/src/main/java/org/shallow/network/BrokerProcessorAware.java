@@ -11,7 +11,7 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.meta.Topic2NameserverManager;
+import org.shallow.metadata.Topic2NameserverManager;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.server.CreateTopicRequest;

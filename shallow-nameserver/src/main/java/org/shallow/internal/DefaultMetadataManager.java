@@ -47,6 +47,7 @@ public class DefaultMetadataManager implements MetadataManager {
         return topicMetadataProvider;
     }
 
+    @Override
     public ClusterMetadataProvider getClusterMetadataProvider() {
         return clusterMetadataProvider;
     }

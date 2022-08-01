@@ -4,24 +4,14 @@ import java.net.SocketAddress;
 import java.util.Objects;
 
 public class Node {
-    private int id;
     private String name;
     private SocketAddress socketAddress;
     private long registerTime;
 
-    public Node(int id, String name, SocketAddress socketAddress, long registerTime) {
-        this.id = id;
+    public Node(String name, SocketAddress socketAddress, long registerTime) {
         this.name = name;
         this.socketAddress = socketAddress;
         this.registerTime = registerTime;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -51,21 +41,19 @@ public class Node {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node)) return false;
-        Node node1 = (Node) o;
-        return getId() == node1.getId() && getName().equals(node1.getName()) && getSocketAddress().equals(node1.getSocketAddress());
+        if (!(o instanceof Node node)) return false;
+        return Objects.equals(getName(), node.getName()) && Objects.equals(getSocketAddress(), node.getSocketAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getSocketAddress());
+        return Objects.hash(getName(), getSocketAddress());
     }
 
     @Override
     public String toString() {
         return "Node{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", socketAddress=" + socketAddress +
                 ", registerTime=" + registerTime +
                 '}';

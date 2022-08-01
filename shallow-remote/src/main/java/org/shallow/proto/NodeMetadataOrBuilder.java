@@ -8,50 +8,32 @@ public interface NodeMetadataOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 id = 1;</code>
-   * @return The id.
-   */
-  int getId();
-
-  /**
-   * <code>string name = 2;</code>
+   * <code>string name = 1;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <code>string name = 2;</code>
+   * <code>string name = 1;</code>
    * @return The bytes for name.
    */
   com.google.protobuf.ByteString
       getNameBytes();
 
   /**
-   * <code>string ip = 3;</code>
-   * @return The ip.
+   * <code>string host = 2;</code>
+   * @return The host.
    */
-  java.lang.String getIp();
+  java.lang.String getHost();
   /**
-   * <code>string ip = 3;</code>
-   * @return The bytes for ip.
+   * <code>string host = 2;</code>
+   * @return The bytes for host.
    */
   com.google.protobuf.ByteString
-      getIpBytes();
+      getHostBytes();
 
   /**
-   * <code>int32 port = 4;</code>
+   * <code>int32 port = 3;</code>
    * @return The port.
    */
   int getPort();
-
-  /**
-   * <code>string registerTime = 5;</code>
-   * @return The registerTime.
-   */
-  java.lang.String getRegisterTime();
-  /**
-   * <code>string registerTime = 5;</code>
-   * @return The bytes for registerTime.
-   */
-  com.google.protobuf.ByteString
-      getRegisterTimeBytes();
 }

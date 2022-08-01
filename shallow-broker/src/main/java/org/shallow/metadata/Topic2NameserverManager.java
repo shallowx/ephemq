@@ -1,4 +1,4 @@
-package org.shallow.meta;
+package org.shallow.metadata;
 
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
@@ -6,6 +6,8 @@ import org.shallow.ShutdownHook;
 import org.shallow.internal.BrokerManager;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.TopicInfo;
+import org.shallow.meta.TopicManager;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 
