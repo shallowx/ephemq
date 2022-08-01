@@ -79,6 +79,12 @@ public class TopicMetadataProvider {
                     if (logger.isDebugEnabled()) {
                         logger.debug("[doWrite2Cache] - write content to file successfully, content<{}>", content);
                     }
+                    promise.trySuccess(CreateTopicResponse.newBuilder()
+                            .setTopic(topic)
+                            .setAck(SUCCESS)
+                            .setLatency(latency)
+                            .setPartitions(partitions)
+                            .build());
                 } else {
                     api.modify(TOPICS, content, APPEND, null);
                 }
@@ -89,13 +95,6 @@ public class TopicMetadataProvider {
             } else {
                 apiExecutor.execute(() -> api.modify(TOPICS, content, APPEND, modifyPromise));
             }
-
-            promise.trySuccess(CreateTopicResponse.newBuilder()
-                    .setTopic(topic)
-                    .setAck(SUCCESS)
-                    .setLatency(latency)
-                    .setPartitions(partitions)
-                    .build());
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("[doWrite2Cache] - Failed to write content to file, content<{}>, cause:{}", topic, t);
