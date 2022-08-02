@@ -67,8 +67,8 @@ public class ClusterMetadataProvider {
                     Set<CacheNode> exceptionCache = inactiveNodes.get(cacheNode.cluster);
                     exceptionCache.add(cacheNode);
 
-                    if (logger.isInfoEnabled()) {
-                        logger.info("[activeTask] - the node<{}> was inactive and then transfer to inactive inspection task", cacheNode);
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("[activeTask] - the node<{}> was inactive and then transfer to inactive inspection task", cacheNode);
                     }
                     return true;
                 }
