@@ -65,7 +65,7 @@ public interface ProcessCommand {
         };
 
         byte REGISTER_NODE = 1;
-        byte OFFLINE = 2;
+        byte HEART_BEAT = 2;
         byte NEW_TOPIC = 3;
         byte REMOVE_TOPIC = 4;
         default String get(byte command) {

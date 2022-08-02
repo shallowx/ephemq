@@ -2,6 +2,7 @@ package org.shallow;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
+import org.shallow.hook.ShutdownHook;
 import org.shallow.internal.MetadataConfig;
 import org.shallow.internal.MetadataServer;
 import org.shallow.logging.InternalLogger;
@@ -55,7 +56,7 @@ public class NameServer {
 
         final MetadataServer server = new MetadataServer(config);
 
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>(() -> {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>("nameserver", () -> {
             server.shutdownGracefully();
             return  null;
         }));

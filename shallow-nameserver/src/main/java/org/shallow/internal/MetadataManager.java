@@ -1,8 +1,8 @@
 package org.shallow.internal;
 
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.shallow.cluster.ClusterMetadataProvider;
-import org.shallow.topic.TopicMetadataProvider;
+import org.shallow.provider.ClusterMetadataProvider;
+import org.shallow.provider.TopicMetadataProvider;
 
 public interface MetadataManager {
     void start() throws Exception;

@@ -4,7 +4,7 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.Objects;
 
-public class PartitionInfo {
+public class Partition {
 
     private int id;
     private int partitions;
@@ -14,10 +14,10 @@ public class PartitionInfo {
     private List<String> latencies;
     private List<SocketAddress> latenciesAddress;
 
-    public PartitionInfo() {
+    public Partition() {
     }
 
-    public PartitionInfo(int id, int partitions, int latency, String leader, SocketAddress leaderAddress, List<String> latencies, List<SocketAddress> latenciesAddress) {
+    public Partition(int id, int partitions, int latency, String leader, SocketAddress leaderAddress, List<String> latencies, List<SocketAddress> latenciesAddress) {
         this.id = id;
         this.partitions = partitions;
         this.latency = latency;
@@ -86,7 +86,7 @@ public class PartitionInfo {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PartitionInfo that)) return false;
+        if (!(o instanceof Partition that)) return false;
         return getId() == that.getId();
     }
 

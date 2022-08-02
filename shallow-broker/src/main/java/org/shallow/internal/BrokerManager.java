@@ -1,6 +1,6 @@
 package org.shallow.internal;
 
-import org.shallow.metadata.Cluster2NameManager;
+import org.shallow.metadata.Cluster2NameserverManager;
 import org.shallow.metadata.Topic2NameserverManager;
 import org.shallow.meta.TopicManager;
 
@@ -11,5 +11,5 @@ public interface BrokerManager {
     NameserverInternalClient getInternalClient();
     TopicManager getTopicManager();
     Topic2NameserverManager getTopic2NameserverManager();
-    Cluster2NameManager getCluster2NameManager();
+    Cluster2NameserverManager getCluster2NameManager();
 }

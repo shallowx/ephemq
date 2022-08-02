@@ -20,6 +20,8 @@ public class BrokerConfig {
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
     private static final String SHALLOW_NAMESERVER_URL = "shallow.namespace.url";
     private static final String SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT = "shallow.internal.channel.pool.limit";
+    private static final String NODE_HEART_SEND_INTERVAL_TIME_MS = "shallow.node.send.heart.interval.time.ms";
+
     public static BrokerConfig exchange(Properties properties) {
         return new BrokerConfig(properties);
     }
@@ -74,5 +76,9 @@ public class BrokerConfig {
 
     public String getClusterName() {
         return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
+    }
+
+    public int getHeartSendIntervalTimeMs() {
+        return object2Int(config.getOrDefault(NODE_HEART_SEND_INTERVAL_TIME_MS, 30000));
     }
 }

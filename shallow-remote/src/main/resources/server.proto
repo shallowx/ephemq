@@ -35,3 +35,15 @@ message RegisterNodeRequest {
 }
 
 message RegisterNodeResponse {}
+
+message HeartBeatRequest{
+  string cluster = 1;
+  NodeMetadata metadata = 2;
+}
+
+message HeartBeatResponse {
+  string cluster = 1;
+  string host = 2;
+  int32 port = 3;
+  bool keep = 4;
+}

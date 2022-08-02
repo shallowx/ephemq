@@ -40,6 +40,9 @@ public final class MetadataServer {
 
         manager.start();
 
+        if (logger.isInfoEnabled()){
+            logger.info("The nameserver started successfully");
+        }
         latch.await();
     }
 

@@ -37,7 +37,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
-        this.processor = checkNotNull(processor, "[Constructor] - Process must be not null");
+        this.processor = checkNotNull(processor, "[constructor] - process cannot be empty");
     }
 
     @Override
@@ -205,7 +205,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 }
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("[ScheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
+                    logger.debug("[scheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
                 }
 
                 if (!wholeHolders.isEmpty()) {

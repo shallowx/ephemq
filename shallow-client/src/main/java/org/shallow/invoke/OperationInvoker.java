@@ -7,12 +7,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.AwareInvocation;
+import org.shallow.util.NetworkUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,6 +22,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.util.ByteUtil.release;
@@ -37,6 +40,10 @@ public class OperationInvoker implements ProcessCommand.Server {
     public OperationInvoker(ClientChannel channel, ClientConfig config) {
         this.clientChannel = channel;
         this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
+    }
+
+    public void invoke(byte command, int timeoutMs, MessageLite request, Class<?> clz) {
+        invoke(command, timeoutMs, newImmediatePromise(), request, clz);
     }
 
     public void invoke(byte command, int timeoutMs, Promise<?> promise, MessageLite request, Class<?> clz) {

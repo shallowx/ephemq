@@ -1,10 +1,10 @@
 package org.shallow.meta;
 
-public class ClusterInfo {
+public class Cluster {
     private String name;
     private Node node;
 
-    public ClusterInfo(String name, Node node) {
+    public Cluster(String name, Node node) {
         this.name = name;
         this.node = node;
     }

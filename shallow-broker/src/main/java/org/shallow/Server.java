@@ -2,12 +2,11 @@ package org.shallow;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
+import org.shallow.hook.ShutdownHook;
 import org.shallow.internal.BrokerConfig;
 import org.shallow.internal.BrokerServer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.util.TypeUtil;
-
 import javax.naming.OperationNotSupportedException;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -17,6 +16,7 @@ import java.util.Properties;
 
 import static org.shallow.util.TypeUtil.*;
 
+@SuppressWarnings("all")
 public class Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Server.class);
 
@@ -56,7 +56,7 @@ public class Server {
 
         final BrokerServer server = new BrokerServer(config);
 
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>(() -> {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>("broker server", () -> {
             server.shutdownGracefully();
             return  null;
         }));

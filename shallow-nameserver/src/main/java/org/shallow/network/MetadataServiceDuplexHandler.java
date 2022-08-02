@@ -17,7 +17,7 @@ public class MetadataServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (logger.isDebugEnabled()) {
-            logger.debug("[channelInactive] - Clean inactive channel");
+            logger.debug("[channelInactive] - clean inactive channel");
         }
         super.channelInactive(ctx);
     }
@@ -25,7 +25,7 @@ public class MetadataServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (logger.isDebugEnabled()) {
-            logger.debug("[channelInactive] - Clean exception caught channel");
+            logger.debug("[channelInactive] - clean exception caught channel");
         }
         ctx.close();
     }

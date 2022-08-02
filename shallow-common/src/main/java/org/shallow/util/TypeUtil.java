@@ -5,6 +5,7 @@ import javax.naming.OperationNotSupportedException;
 public class TypeUtil {
 
     private TypeUtil() throws OperationNotSupportedException {
+        //unused
         throw new OperationNotSupportedException();
     }
 

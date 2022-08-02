@@ -12,7 +12,7 @@ public final class ObjectUtil {
     private static final int INT_ZERO = 0;
 
     private ObjectUtil() throws OperationNotSupportedException {
-        // Unused.
+        // unused.
         throw new OperationNotSupportedException();
     }
 

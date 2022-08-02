@@ -3,11 +3,13 @@ package org.shallow.util;
 import com.google.gson.*;
 
 import javax.naming.OperationNotSupportedException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsonUtil {
 
     private JsonUtil() throws OperationNotSupportedException {
-        //Unused
+        //unused
         throw new OperationNotSupportedException();
     }
 

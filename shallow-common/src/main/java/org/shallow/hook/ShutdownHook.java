@@ -1,4 +1,4 @@
-package org.shallow;
+package org.shallow.hook;
 
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -10,17 +10,19 @@ public class ShutdownHook<V> extends Thread{
 
     private volatile boolean stopped = false;
     private final Callable<V> callback;
+    private String name;
 
-    public ShutdownHook(Callable<V> callback) {
-        super("Server shutdownHook");
+    public ShutdownHook(String name ,Callable<V> callback) {
+        super(name);
         this.callback = callback;
+        this.name = name;
     }
 
     @Override
     public void run() {
         synchronized (this) {
             if (logger.isInfoEnabled()) {
-                logger.info("Server shutdownHooke was invoked");
+                logger.info("The {} shutdownHook was invoked", name);
             }
             if (!stopped) {
                 this.stopped = true;

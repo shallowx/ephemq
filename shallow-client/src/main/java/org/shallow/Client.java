@@ -63,6 +63,10 @@ public class Client {
                 .resolver(new RoundRobinDnsAddressResolverGroup(drb));
 
         DefaultChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config, healthChecker);
+
+        if (logger.isInfoEnabled()) {
+            logger.info("The client<{}> started successfully", name);
+        }
     }
 
     public void shutdownGracefully() {

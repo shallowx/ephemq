@@ -1,24 +1,22 @@
-package org.shallow.topic;
+package org.shallow.provider;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.protobuf.MessageLite;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.api.MappedFileAPI;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.meta.PartitionInfo;
+import org.shallow.meta.Partition;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 import org.shallow.util.JsonUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.api.MappedFileConstants.TOPICS;
@@ -33,20 +31,20 @@ public class TopicMetadataProvider {
     private final EventExecutor cacheExecutor;
     private final EventExecutor apiExecutor;
     private final MappedFileAPI api;
-    private final LoadingCache<String, List<PartitionInfo>> topicsInfoCache;
+    private final LoadingCache<String, List<Partition>> topicsCache;
 
-    public TopicMetadataProvider(MappedFileAPI api, EventExecutor cacheExecutor, EventExecutor apiExecutor, long expired) {
+    public TopicMetadataProvider(MappedFileAPI api, EventExecutorGroup group) {
         this.api = api;
-        this.cacheExecutor = cacheExecutor;
-        this.apiExecutor = apiExecutor;
+        this.cacheExecutor = group.next();
+        this.apiExecutor = group.next();
 
-        this.topicsInfoCache = Caffeine.newBuilder()
+        this.topicsCache = Caffeine.newBuilder()
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
                     @Override
-                    public @Nullable List<PartitionInfo> load(String key) throws Exception {
-                        return null;
+                    public @Nullable List<Partition> load(String key) throws Exception {
+                        return new CopyOnWriteArrayList<>();
                     }
                 });
     }
@@ -65,8 +63,8 @@ public class TopicMetadataProvider {
 
     private void doWrite2Cache(String topic, int partitions, int latency, Promise<MessageLite> promise) {
         try {
-            topicsInfoCache.put(topic, assemblePartitions(topic, partitions, latency));
-            final Map<String, List<PartitionInfo>> topicInfoMeta = getAllTopics();
+            topicsCache.put(topic, assemblePartitions(topic, partitions, latency));
+            final Map<String, List<Partition>> topicInfoMeta = getAllTopics();
             final String topcis = JsonUtil.object2Json(topicInfoMeta);
 
             final Promise<Boolean> modifyPromise = newImmediatePromise();
@@ -100,8 +98,8 @@ public class TopicMetadataProvider {
         }
     }
 
-    private List<PartitionInfo> assemblePartitions(String topic, int partitions, int latency) {
-        return List.of(new PartitionInfo(0, 1, 1, "node1", null, null, null));
+    private List<Partition> assemblePartitions(String topic, int partitions, int latency) {
+        return List.of(new Partition(0, 1, 1, "node1", null, null, null));
     }
 
     public void delFromCache(String topic, Promise<MessageLite> promise) {
@@ -121,7 +119,7 @@ public class TopicMetadataProvider {
 
     private void doDelFromCache(String topic, Promise<MessageLite> promise) {
         try {
-            topicsInfoCache.invalidate(topic);
+            topicsCache.invalidate(topic);
             getAllTopics().entrySet().removeIf(k -> k.getKey().equals(topic));
             final String topics = JsonUtil.object2Json(getAllTopics());
 
@@ -151,11 +149,11 @@ public class TopicMetadataProvider {
         }
     }
 
-    public Map<String, List<PartitionInfo>> getAllTopics() {
-        return topicsInfoCache.asMap();
+    public Map<String, List<Partition>> getAllTopics() {
+        return topicsCache.asMap();
     }
 
-    public List<PartitionInfo> getTopicInfo(String topic) {
-        return topicsInfoCache.get(topic);
+    public List<Partition> getTopicInfo(String topic) {
+        return topicsCache.get(topic);
     }
 }

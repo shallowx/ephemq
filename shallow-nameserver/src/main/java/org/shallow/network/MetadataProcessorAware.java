@@ -7,7 +7,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.shallow.cluster.ClusterMetadataProvider;
+import org.shallow.provider.ClusterMetadataProvider;
 import org.shallow.internal.MetadataConfig;
 import org.shallow.internal.MetadataManager;
 import org.shallow.RemoteException;
@@ -20,7 +20,7 @@ import org.shallow.proto.NodeMetadata;
 import org.shallow.proto.server.CreateTopicRequest;
 import org.shallow.proto.server.DelTopicRequest;
 import org.shallow.proto.server.RegisterNodeRequest;
-import org.shallow.topic.TopicMetadataProvider;
+import org.shallow.provider.TopicMetadataProvider;
 
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
@@ -64,7 +64,7 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                 final int latency = request.getLatency();
 
                                 if (logger.isDebugEnabled()) {
-                                    logger.debug("[Meta server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
+                                    logger.debug("[meta server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
                                 }
 
                                 Promise<MessageLite> promise = newImmediatePromise();
@@ -87,6 +87,7 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         answerFailed(answer, e);
                     }
                 }
+
                 case REMOVE_TOPIC -> {
                     try {
                         final DelTopicRequest request = readProto(data, DelTopicRequest.parser());
@@ -114,6 +115,7 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         answerFailed(answer, e);
                     }
                 }
+
                 case REGISTER_NODE -> {
                     try {
                         final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
@@ -136,16 +138,38 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         answerFailed(answer, e);
                     }
                 }
+
+                case HEART_BEAT -> {
+                    try {
+                        final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            final NodeMetadata node = request.getMetadata();
+                            Promise<MessageLite> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                                if (f.isSuccess()) {
+                                    if (isNotNull(answer)) {
+                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                    }
+                                } else {
+                                    answerFailed(answer, f.cause());
+                                }
+                            });
+                            clusterMetadataProvider.keepHearBeat(request.getCluster(), node.getName(),node.getHost(), node.getPort(), promise);
+                        });
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
                 default -> {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("[Nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);
+                        logger.debug("[nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }
             }
     } catch (Throwable cause) {
         if (logger.isErrorEnabled()) {
-            logger.error("[Nameserver process]<{}> - command [{}]", switchAddress(channel), command);
+            logger.error("[nameserver process]<{}> - command [{}]", switchAddress(channel), command);
         }
         answerFailed(answer, cause);
     }

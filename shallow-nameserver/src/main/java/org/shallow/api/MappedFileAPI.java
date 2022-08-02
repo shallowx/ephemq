@@ -47,8 +47,8 @@ public class MappedFileAPI {
         try {
             path = assemblesPath(path);
             switch (type) {
-                case APPEND -> doAdd(path, content, modifyPromise);
-                case DELETE -> doDelete(path, content, modifyPromise);
+                case APPEND -> append(path, content, modifyPromise);
+                case DELETE -> delete(path, content, modifyPromise);
                 default -> throw new OperationNotSupportedException("[Modify] - Not supported modify type<" + type.name() +">");
             }
         } catch (Throwable t) {
@@ -61,11 +61,11 @@ public class MappedFileAPI {
         }
     }
 
-    private void doAdd(String path, String content, Promise<Boolean> modifyPromise) {
+    private void append(String path, String content, Promise<Boolean> modifyPromise) {
         write2File(path, content, modifyPromise);
     }
 
-    private void doDelete(String path, String content, Promise<Boolean> modifyPromise) {
+    private void delete(String path, String content, Promise<Boolean> modifyPromise) {
         write2File(path, content, modifyPromise);
     }
 

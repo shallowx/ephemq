@@ -6,12 +6,10 @@ import java.util.Objects;
 public class Node {
     private String name;
     private SocketAddress socketAddress;
-    private long registerTime;
 
-    public Node(String name, SocketAddress socketAddress, long registerTime) {
+    public Node(String name, SocketAddress socketAddress) {
         this.name = name;
         this.socketAddress = socketAddress;
-        this.registerTime = registerTime;
     }
 
     public String getName() {
@@ -28,14 +26,6 @@ public class Node {
 
     public void setSocketAddress(SocketAddress socketAddress) {
         this.socketAddress = socketAddress;
-    }
-
-    public long getRegisterTime() {
-        return registerTime;
-    }
-
-    public void setRegisterTime(long registerTime) {
-        this.registerTime = registerTime;
     }
 
     @Override
@@ -55,7 +45,6 @@ public class Node {
         return "Node{" +
                 "name='" + name + '\'' +
                 ", socketAddress=" + socketAddress +
-                ", registerTime=" + registerTime +
                 '}';
     }
 }

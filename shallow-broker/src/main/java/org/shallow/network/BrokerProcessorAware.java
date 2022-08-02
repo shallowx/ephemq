@@ -36,7 +36,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Obtain remote active address <{}>", channel.remoteAddress());
+            logger.debug("Get remote active address <{}>", channel.remoteAddress());
         }
     }
 
@@ -52,7 +52,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         final int latency = request.getLatency();
 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("[Broker server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
+                            logger.debug("[broker server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
                         }
 
                         Promise<CreateTopicResponse> promise = newImmediatePromise();
@@ -78,14 +78,14 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case FETCH_TOPIC_INFO -> {}
                 default -> {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("[Broker server process] <{}> - not supported command [{}]", switchAddress(channel), command);
+                        logger.debug("[broker server process] <{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }
             }
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
-                logger.error("[Broker server process]<{}> - command [{}]", switchAddress(channel), command);
+                logger.error("[broker server process]<{}> - command [{}]", switchAddress(channel), command);
             }
             answerFailed(answer, cause);
         }

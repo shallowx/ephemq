@@ -2,11 +2,10 @@ package org.shallow.metadata;
 
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
-import org.shallow.ShutdownHook;
 import org.shallow.internal.BrokerManager;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.meta.TopicInfo;
+import org.shallow.meta.Topic;
 import org.shallow.meta.TopicManager;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
@@ -19,7 +18,7 @@ import static org.shallow.processor.ProcessCommand.NameServer.REMOVE_TOPIC;
 
 public class Topic2NameserverManager {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ShutdownHook.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Topic2NameserverManager.class);
 
     private final ClientConfig config;
     private final BrokerManager manager;
@@ -29,7 +28,7 @@ public class Topic2NameserverManager {
         this.manager = manager;
     }
 
-    public Map<String, TopicInfo> getTopicMetadata(String topic) {
+    public Map<String, Topic> getTopicMetadata(String topic) {
         return null;
     }
 

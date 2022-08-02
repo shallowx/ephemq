@@ -4,7 +4,7 @@ import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.ClientConfig;
-import org.shallow.metadata.Cluster2NameManager;
+import org.shallow.metadata.Cluster2NameserverManager;
 import org.shallow.metadata.Topic2NameserverManager;
 import org.shallow.meta.TopicManager;
 
@@ -15,9 +15,10 @@ import static org.shallow.util.ObjectUtil.isNotNull;
 public class DefaultBrokerManager implements BrokerManager {
 
     private final BrokerConfig config;
-    private final NameserverInternalClient internalClient;
+    private final NameserverInternalClient nameserverInternalClient;
+    private final BrokerInternalClient brokerInternalClient;
     private final Topic2NameserverManager topic2NameserverManager;
-    private Cluster2NameManager cluster2NameManager;
+    private Cluster2NameserverManager cluster2NameManager;
     private TopicManager topicManager;
     private final ClientConfig clientConfig;
 
@@ -27,8 +28,8 @@ public class DefaultBrokerManager implements BrokerManager {
         clientConfig = new ClientConfig();
         clientConfig.setChannelPoolCapacity(config.getInternalChannelPoolLimit());
         clientConfig.setBootstrapSocketAddress(Arrays.stream(config.getNameserverUrl().split(",")).toList());
-        this.internalClient = new NameserverInternalClient("broker-internal", clientConfig);
-
+        this.nameserverInternalClient = new NameserverInternalClient("nameserver-internal-client", clientConfig);
+        this.brokerInternalClient = new BrokerInternalClient("broker-internal-client", clientConfig);
         this.topic2NameserverManager = new Topic2NameserverManager(clientConfig, this);
     }
 
@@ -38,9 +39,10 @@ public class DefaultBrokerManager implements BrokerManager {
 
     @Override
     public void start() throws Exception {
-        internalClient.start();
+        nameserverInternalClient.start();
+        brokerInternalClient.start();
 
-        this.cluster2NameManager = new Cluster2NameManager(this, clientConfig, config);
+        this.cluster2NameManager = new Cluster2NameserverManager(this, clientConfig, config);
         cluster2NameManager.start();
 
         this.topicManager = new TopicManager(clientConfig);
@@ -48,7 +50,7 @@ public class DefaultBrokerManager implements BrokerManager {
 
     @Override
     public NameserverInternalClient getInternalClient() {
-        return internalClient;
+        return nameserverInternalClient;
     }
 
     @Override
@@ -62,14 +64,18 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public Cluster2NameManager getCluster2NameManager() {
+    public Cluster2NameserverManager getCluster2NameManager() {
         return cluster2NameManager;
     }
 
     @Override
     public void shutdownGracefully() throws Exception {
-        if (isNotNull(internalClient)) {
-            internalClient.shutdownGracefully();
+        if (isNotNull(nameserverInternalClient)) {
+            nameserverInternalClient.shutdownGracefully();
+        }
+
+        if (isNotNull(brokerInternalClient)) {
+            brokerInternalClient.shutdownGracefully();
         }
     }
 }

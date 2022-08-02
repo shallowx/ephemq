@@ -6,7 +6,6 @@ import org.shallow.network.BrokerSocketServer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
-
 public final class BrokerServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerServer.class);
 
@@ -41,6 +40,9 @@ public final class BrokerServer {
 
         manager.start();
 
+        if (logger.isInfoEnabled()){
+            logger.info("The broker server started successfully");
+        }
         latch.await();
     }
 
