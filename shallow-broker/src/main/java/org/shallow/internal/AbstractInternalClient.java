@@ -6,7 +6,7 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.ShallowChannelHealthChecker;
 
-public abstract class AbstractInternalClient extends Client {
+public abstract class AbstractInternalClient extends Client implements ClientListener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(AbstractInternalClient.class);
 

@@ -1,30 +1,33 @@
 package org.shallow.metadata;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.ClientConfig;
 import org.shallow.internal.BrokerConfig;
 import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.Node;
 import org.shallow.pool.DefaultChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.proto.NodeMetadata;
-import org.shallow.proto.server.HeartBeatRequest;
-import org.shallow.proto.server.HeartBeatResponse;
-import org.shallow.proto.server.RegisterNodeRequest;
-import org.shallow.proto.server.RegisterNodeResponse;
-import org.shallow.util.NetworkUtil;
+import org.shallow.proto.server.*;
 
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import static org.shallow.processor.ProcessCommand.NameServer.HEART_BEAT;
-import static org.shallow.processor.ProcessCommand.NameServer.REGISTER_NODE;
+import static org.shallow.processor.ProcessCommand.NameServer.*;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.NetworkUtil.switchSocketAddress;
 import static org.shallow.util.ObjectUtil.isNull;
 
 public class Cluster2NameserverManager {
@@ -35,19 +38,30 @@ public class Cluster2NameserverManager {
     private final ClientConfig clientConfig;
     private final ShallowChannelPool pool;
     private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heart-single-pool"));
+    private final LoadingCache<String, Set<Node>> nodeCaches;
 
     public Cluster2NameserverManager(BrokerManager manager, ClientConfig clientConfig, BrokerConfig config) {
         this.manager = manager;
         this.config = config;
         this.clientConfig = clientConfig;
         this.pool = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool();
+        this.nodeCaches = Caffeine.newBuilder().build(new CacheLoader<>() {
+            @Override
+            public @Nullable Set<Node> load(String key) throws Exception {
+                return queryFromNameserver(key);
+            }
+        });
     }
 
     public void start() throws Exception {
         final String[] address = config.getNameserverUrl().split(",");
-        final List<SocketAddress> socketAddresses = NetworkUtil.switchSocketAddress(List.of(address));
+        final List<SocketAddress> socketAddresses = switchSocketAddress(List.of(address));
 
         register2Nameserver(socketAddresses);
+
+        // start populating the cluster node cache information
+        nodeCaches.get(config.getClusterName());
+
         scheduledExecutor.scheduleWithFixedDelay(() -> {
             doHeartBeat(socketAddresses);
         }, 5, config.getHeartSendIntervalTimeMs(), TimeUnit.MILLISECONDS);
@@ -104,6 +118,28 @@ public class Cluster2NameserverManager {
             promise.tryFailure(e);
         }
         return promise;
+    }
+
+    private Set<Node> queryFromNameserver(String cluster) {
+        final QueryClusterNodeRequest request = QueryClusterNodeRequest
+                .newBuilder()
+                .setCluster(cluster)
+                .build();
+        try {
+            ClientChannel requestChannel = pool.acquireWithRandomly();
+
+            final Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
+            requestChannel.invoker().invoke(QUERY_CLUSTER_IFO, clientConfig.getDefaultInvokeExpiredMs(), promise, request, QueryClusterNodeResponse.class);
+
+            final QueryClusterNodeResponse response = promise.get(clientConfig.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+            final List<NodeMetadata> nodes = response.getNodesList();
+            return response.getNodesList()
+                    .stream()
+                    .map(p -> new Node(p.getName(), switchSocketAddress(p.getHost(), p.getPort())))
+                    .collect(Collectors.toSet());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void doHeartBeat(List<SocketAddress> socketAddresses) {

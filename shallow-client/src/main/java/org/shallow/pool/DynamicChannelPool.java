@@ -66,13 +66,17 @@ public class DynamicChannelPool implements ShallowChannelPool {
         try {
             return acquireHealthyOrNew0(address).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
         } catch (Throwable t) {
-            throw new RuntimeException("[Acquire] - failed to acquire random channel from pool", t);
+            throw new RuntimeException("[Acquire] - failed to acquire health channel from pool", t);
         }
     }
 
     @Override
-    public Future<ClientChannel> acquire() {
-        return acquireHealthyOrNew0(null);
+    public ClientChannel acquireWithRandomly() {
+        try {
+            return acquireHealthyOrNew0(null).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
+        } catch (Throwable t) {
+            throw new RuntimeException("[Acquire] - failed to acquire random health channel from pool", t);
+        }
     }
 
     private Future<ClientChannel> acquireHealthyOrNew0(SocketAddress address) {

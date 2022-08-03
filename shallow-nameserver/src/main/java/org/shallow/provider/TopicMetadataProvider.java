@@ -3,19 +3,25 @@ package org.shallow.provider;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.reflect.TypeToken;
 import com.google.protobuf.MessageLite;
 import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.units.qual.A;
 import org.shallow.api.MappedFileAPI;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.Partition;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
+import org.shallow.proto.server.QueryTopicInfoResponse;
+import org.shallow.proto.server.RegisterNodeResponse;
 import org.shallow.util.JsonUtil;
+import org.shallow.util.NetworkUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +30,7 @@ import static org.shallow.api.MappedFileConstants.Type.APPEND;
 import static org.shallow.api.MappedFileConstants.Type.DELETE;
 import static org.shallow.util.Ack.SUCCESS;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.ObjectUtil.isNull;
 
 public class TopicMetadataProvider {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicMetadataProvider.class);
@@ -47,9 +54,13 @@ public class TopicMetadataProvider {
                         return new CopyOnWriteArrayList<>();
                     }
                 });
+
+        this.populate();
+
+        cacheExecutor.scheduleWithFixedDelay(() -> scheduleWrite2File(), 60000, 60000, TimeUnit.MILLISECONDS);
     }
 
-    public void write2CacheAndFile(String topic, int partitions, int latency, Promise<MessageLite> promise) {
+    public void write2CacheAndFile(String topic, int partitions, int latency, Promise<CreateTopicResponse> promise) {
         try {
             if (cacheExecutor.inEventLoop()) {
                 doWrite2Cache(topic, partitions, latency, promise);
@@ -61,7 +72,7 @@ public class TopicMetadataProvider {
         }
     }
 
-    private void doWrite2Cache(String topic, int partitions, int latency, Promise<MessageLite> promise) {
+    private void doWrite2Cache(String topic, int partitions, int latency, Promise<CreateTopicResponse> promise) {
         try {
             topicsCache.put(topic, assemblePartitions(topic, partitions, latency));
             final Map<String, List<Partition>> topicInfoMeta = getAllTopics();
@@ -102,7 +113,7 @@ public class TopicMetadataProvider {
         return List.of(new Partition(0, 1, 1, "node1", null, null, null));
     }
 
-    public void delFromCache(String topic, Promise<MessageLite> promise) {
+    public void delFromCache(String topic, Promise<DelTopicResponse> promise) {
         try {
             if (cacheExecutor.inEventLoop()) {
                 doDelFromCache(topic, promise);
@@ -117,7 +128,7 @@ public class TopicMetadataProvider {
         }
     }
 
-    private void doDelFromCache(String topic, Promise<MessageLite> promise) {
+    private void doDelFromCache(String topic, Promise<DelTopicResponse> promise) {
         try {
             topicsCache.invalidate(topic);
             getAllTopics().entrySet().removeIf(k -> k.getKey().equals(topic));
@@ -140,7 +151,11 @@ public class TopicMetadataProvider {
                 apiExecutor.execute(() -> api.modify(TOPICS, topics, DELETE, modifyPromise));
             }
 
-            promise.trySuccess(DelTopicResponse.newBuilder().build());
+            promise.trySuccess(DelTopicResponse
+                    .newBuilder()
+                    .setTopic(topic)
+                    .setAck(SUCCESS)
+                    .build());
         } catch (Throwable t)  {
             if (logger.isErrorEnabled()) {
                 logger.error("[delFromCache] - Failed to del topic from file, topic<{}>", topic);
@@ -149,11 +164,31 @@ public class TopicMetadataProvider {
         }
     }
 
+    private void populate() {
+        final String partitions = api.read(TOPICS);
+        final Map<String, List<Partition>> topics = JsonUtil.json2Object(partitions,
+                new TypeToken<Map<String, List<Partition>>>() {}.getType());
+
+        topicsCache.putAll(topics);
+    }
+
+    private void scheduleWrite2File() {
+        final ConcurrentMap<String, List<Partition>> topics = topicsCache.asMap();
+        final String content = JsonUtil.object2Json(topics);
+        api.modify(TOPICS, content, APPEND, newImmediatePromise());
+    }
+
     public Map<String, List<Partition>> getAllTopics() {
         return topicsCache.asMap();
     }
 
     public List<Partition> getTopicInfo(String topic) {
         return topicsCache.get(topic);
+    }
+
+    // TODO
+    public void queryTopicInfo(String topic, Promise<QueryTopicInfoResponse> promise) {
+        QueryTopicInfoResponse.Builder builder = QueryTopicInfoResponse.newBuilder();
+        promise.trySuccess(builder.build());
     }
 }

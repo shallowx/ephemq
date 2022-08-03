@@ -9,10 +9,8 @@ public interface ProcessCommand {
                 return switch (command) {
                     case 1 -> "CREATE_TOPIC";
                     case 2 -> "DELETE_TOPIC";
-                    case 3 -> "UPDATE_TOPIC";
-                    case 4 -> "FETCH_CLUSTER_INFO";
-                    case 5 -> "FETCH_TOPIC_INFO";
-                    case 6 -> "CLUSTER_NODE_JOIN";
+                    case 3 -> "FETCH_CLUSTER_INFO";
+                    case 4 -> "FETCH_TOPIC_INFO";
                     default -> throw new IllegalStateException("Unexpected client command: " + command);
                 };
             }
@@ -20,10 +18,8 @@ public interface ProcessCommand {
 
         byte CREATE_TOPIC = 1;
         byte DELETE_TOPIC = 2;
-        byte UPDATE_TOPIC = 3;
-        byte FETCH_CLUSTER_INFO = 4;
-        byte FETCH_TOPIC_INFO = 5;
-        byte CLUSTER_NODE_JOIN = 6;
+        byte FETCH_CLUSTER_INFO = 3;
+        byte FETCH_TOPIC_INFO = 4;
        default String get(byte command) {
            return null;
        }
@@ -59,6 +55,8 @@ public interface ProcessCommand {
                     case 2 -> "OFFLINE";
                     case 3 -> "NEW_TOPIC";
                     case 4 -> "DELETE_TOPIC";
+                    case 5 -> "QUERY_CLUSTER_NODE";
+                    case 6 -> "QUERY_TOPIC_INFO";
                     default -> throw new IllegalStateException("Unexpected server command: " + command);
                 };
             }
@@ -68,6 +66,8 @@ public interface ProcessCommand {
         byte HEART_BEAT = 2;
         byte NEW_TOPIC = 3;
         byte REMOVE_TOPIC = 4;
+        byte QUERY_CLUSTER_IFO = 5;
+        byte QUERY_TOPIC_INFO = 6;
         default String get(byte command) {
             return null;
         }

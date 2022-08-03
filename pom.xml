@@ -61,6 +61,7 @@
         <shallow.version>1.0.0-SNAPSHOT</shallow.version>
         <netty.version>4.1.77.Final</netty.version>
         <fastuyil.core.version>8.5.8</fastuyil.core.version>
+        <caffine.version>3.1.1</caffine.version>
         <gson.version>2.9.0</gson.version>
     </properties>
 
@@ -121,6 +122,11 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffine.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

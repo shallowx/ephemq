@@ -1,9 +1,12 @@
 package org.shallow.util;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import org.shallow.meta.Partition;
 
 import javax.naming.OperationNotSupportedException;
-import java.util.HashMap;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 
 public class JsonUtil {
@@ -23,5 +26,9 @@ public class JsonUtil {
 
     public static Object json2Object(String content, Class<?> clz) {
         return gson.fromJson(content, clz);
+    }
+
+    public static <T> T json2Object(String content, Type type) {
+        return gson.fromJson(content, type);
     }
 }

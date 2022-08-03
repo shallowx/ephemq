@@ -6,15 +6,15 @@ option java_outer_classname = "MessageMetadataProto";
 option java_multiple_files = true;
 
 message TopicMetadata {
-  int32 id = 1;
-  string name = 2;
-  int32 version = 3;
+  string name = 1;
+  map<int32, PartitionMetadata> partitions = 2;
 }
 
 message PartitionMetadata {
   int32 id = 1;
-  int32 partitions = 2;
-  int32 latency = 3;
+  int32 latency = 2;
+  string leader = 3;
+  repeated string replicas = 4;
 }
 
 message ClusterMetadata {

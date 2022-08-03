@@ -3,7 +3,7 @@ package org.shallow.pool;
 import io.netty.bootstrap.Bootstrap;
 import org.shallow.ClientConfig;
 
-public final class DefaultChannelPoolFactory {
+public class DefaultChannelPoolFactory {
 
     public static final DefaultChannelPoolFactory INSTANCE = new DefaultChannelPoolFactory();
     private ShallowChannelPool pool;

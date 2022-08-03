@@ -28,8 +28,8 @@ public class DefaultBrokerManager implements BrokerManager {
         clientConfig = new ClientConfig();
         clientConfig.setChannelPoolCapacity(config.getInternalChannelPoolLimit());
         clientConfig.setBootstrapSocketAddress(Arrays.stream(config.getNameserverUrl().split(",")).toList());
-        this.nameserverInternalClient = new NameserverInternalClient("nameserver-internal-client", clientConfig);
-        this.brokerInternalClient = new BrokerInternalClient("broker-internal-client", clientConfig);
+        this.nameserverInternalClient = new NameserverInternalClient("nameserver-internal-client", clientConfig, this);
+        this.brokerInternalClient = new BrokerInternalClient("broker-internal-client", clientConfig, this);
         this.topic2NameserverManager = new Topic2NameserverManager(clientConfig, this);
     }
 

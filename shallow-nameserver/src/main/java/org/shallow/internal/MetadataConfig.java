@@ -20,6 +20,7 @@ public class MetadataConfig {
     private static final String NODE_HEART_DELAY_TIME_MS = "shallow.nameserver.check.heart.delay.time.ms";
     private static final String NODE_HEART_INTERVAL_TIME_MS = "shallow.nameserver.heart.max.interval.time.ms";
     private static final String NODE_LAST_AVAILABLE_TIME_MS = "shallow.nameserver.check.last.available.time.ms";
+    private static final String SHALLOW_NAMESERVER_CONTROLLER = "shallow.nameserver.controller";
 
     public static MetadataConfig exchange(Properties properties) {
         return new MetadataConfig(properties);
@@ -79,6 +80,10 @@ public class MetadataConfig {
     }
 
     public int getHearCheckLastAvailableTimeMs() {
-        return object2Int(config.getOrDefault(NODE_HEART_INTERVAL_TIME_MS, 120000));
+        return object2Int(config.getOrDefault(NODE_LAST_AVAILABLE_TIME_MS, 120000));
+    }
+
+    public boolean isController() {
+        return object2Boolean(config.getOrDefault(SHALLOW_NAMESERVER_CONTROLLER, false));
     }
 }

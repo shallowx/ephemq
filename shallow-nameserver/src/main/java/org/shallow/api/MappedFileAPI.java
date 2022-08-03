@@ -6,11 +6,13 @@ import org.shallow.logging.InternalLoggerFactory;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.shallow.api.MappedFileConstants.*;
+import static org.shallow.util.JsonUtil.json2Object;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 
@@ -55,6 +57,7 @@ public class MappedFileAPI {
             if (logger.isErrorEnabled()) {
                 logger.error(t.getMessage(), t);
             }
+
             if (isNotNull(modifyPromise)) {
                 modifyPromise.tryFailure(t);
             }
@@ -83,6 +86,15 @@ public class MappedFileAPI {
                 logger.error(t.getMessage(), t);
             }
             modifyPromise.tryFailure(t);
+        }
+    }
+
+    public String read(String path) {
+        try {
+            final Path of = Path.of(assemblesPath(path));
+            return Files.readString(of, UTF_8);
+        } catch (Throwable t) {
+            throw new RuntimeException("[Read] - failed to read partition information, cause: %s", t);
         }
     }
 

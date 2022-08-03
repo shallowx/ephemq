@@ -3,19 +3,27 @@ package org.shallow.provider;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.protobuf.MessageLite;
+import com.google.common.reflect.TypeToken;
 import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.api.MappedFileAPI;
 import org.shallow.internal.MetadataConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.proto.NodeMetadata;
 import org.shallow.proto.server.HeartBeatResponse;
+import org.shallow.proto.server.QueryClusterNodeResponse;
 import org.shallow.proto.server.RegisterNodeResponse;
+import org.shallow.util.JsonUtil;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import static org.shallow.api.MappedFileConstants.CLUSTERS;
+import static org.shallow.api.MappedFileConstants.TOPICS;
 import static org.shallow.api.MappedFileConstants.Type.APPEND;
 import static org.shallow.util.DateUtil.date2String;
 import static org.shallow.util.DateUtil.date2TimeMillis;
@@ -57,9 +65,12 @@ public class ClusterMetadataProvider {
                         return new CopyOnWriteArraySet<>();
                     }
                 });
+
+        cacheExecutor.scheduleWithFixedDelay(() -> scheduleWrite2File(), 60000, 60000, TimeUnit.MILLISECONDS);
     }
 
     public void start() throws Exception{
+        this.populate();
         final Runnable activeTask = () -> checkNodeHeartAndHandleIfActiveOrNot(activeNodes, (now, cacheNode) -> {
             try {
                 long lastHeartTime = date2TimeMillis(cacheNode.lastHeartTime);
@@ -72,8 +83,7 @@ public class ClusterMetadataProvider {
                     }
                     return true;
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             return false;
         });
         cacheExecutor.scheduleWithFixedDelay(activeTask,0, config.getCheckHeartDelayTimeMs(), TimeUnit.MILLISECONDS);
@@ -95,15 +105,13 @@ public class ClusterMetadataProvider {
                 if (interval > config.getHearCheckLastAvailableTimeMs()) {
                     return true;
                 }
-
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             return false;
         });
         cacheExecutor.scheduleWithFixedDelay(inactiveTask,1000, config.getCheckHeartDelayTimeMs(), TimeUnit.MILLISECONDS);
     }
 
-    public void keepHearBeat(String cluster, String name, String host, int port,Promise<MessageLite> promise) {
+    public void keepHearBeat(String cluster, String name, String host, int port,Promise<HeartBeatResponse> promise) {
         if (cacheExecutor.inEventLoop()) {
             doKeepHeartBeat(cluster, name, host, port, promise);
         } else {
@@ -111,7 +119,7 @@ public class ClusterMetadataProvider {
         }
     }
 
-    private void doKeepHeartBeat(String cluster, String name, String host, int port,Promise<MessageLite> promise) {
+    private void doKeepHeartBeat(String cluster, String name, String host, int port,Promise<HeartBeatResponse> promise) {
        final Set<CacheNode> cacheNodes = activeNodes.get(cluster);
        final HeartBeatResponse.Builder builder = HeartBeatResponse.newBuilder()
                .setCluster(config.getServerId())
@@ -128,15 +136,41 @@ public class ClusterMetadataProvider {
 
        final CacheNode cacheNode = cacheNodes.stream().filter(node -> node.name.equals(name)).findFirst().orElse(null);
        if (cacheNode == null) {
-           promise.trySuccess(builder.setKeep(false).build());
+           promise.tryFailure(cause);
            return;
        }
-
        cacheNode.lastHeartTime = date2String(new Date());
-       promise.trySuccess(builder.setKeep(true).build());
+       promise.trySuccess(builder.build());
     }
 
-    public void write2CacheAndFile(String cluster, String name, String host, int port, Promise<MessageLite> promise) {
+    public void queryActiveNodes(String cluster, Promise<QueryClusterNodeResponse> promise) {
+        if (cacheExecutor.inEventLoop()) {
+            doQueryActiveNodes(cluster, promise);
+        } else {
+            cacheExecutor.execute(() -> doQueryActiveNodes(cluster, promise));
+        }
+    }
+
+    private void doQueryActiveNodes(String cluster, Promise<QueryClusterNodeResponse> promise) {
+        final Set<CacheNode> nodes = activeNodes.get(cluster);
+        QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
+        if (nodes.isEmpty()) {
+            promise.trySuccess(builder.build());
+            return;
+        }
+
+        List<NodeMetadata> nodeMetadatas = nodes.stream()
+                .map(p -> NodeMetadata.newBuilder()
+                        .setName(p.name)
+                        .setHost(p.host)
+                        .setPort(p.port)
+                        .build())
+                .collect(Collectors.toList());
+
+        promise.trySuccess(builder.addAllNodes(nodeMetadatas).build());
+    }
+
+    public void write2CacheAndFile(String cluster, String name, String host, int port, Promise<RegisterNodeResponse> promise) {
         if (cacheExecutor.inEventLoop()) {
             doWrite2CacheAndFile(cluster, name, host, port, promise);
         } else {
@@ -144,7 +178,7 @@ public class ClusterMetadataProvider {
         }
     }
 
-    private void doWrite2CacheAndFile(String cluster, String name, String host, int port, Promise<MessageLite> promise) {
+    private void doWrite2CacheAndFile(String cluster, String name, String host, int port, Promise<RegisterNodeResponse> promise) {
         final Set<CacheNode> clusterNodes = activeNodes.get(cluster);
         final Date now = new Date();
         final String time = date2String(now);
@@ -221,24 +255,37 @@ public class ClusterMetadataProvider {
         }
     }
 
+    private void populate() {
+        final String partitions = api.read(CLUSTERS);
+        final Map<String, Set<CacheNode>> topics = JsonUtil.json2Object(partitions,
+                new TypeToken<Map<String, List<CacheNode>>>() {}.getType());
+
+        inactiveNodes.putAll(topics);
+    }
+
+    private void scheduleWrite2File() {
+        final ConcurrentMap<String, Set<CacheNode>> topics = inactiveNodes.asMap();
+        final String content = JsonUtil.object2Json(topics);
+        api.modify(TOPICS, content, APPEND, newImmediatePromise());
+    }
+
     @FunctionalInterface
     interface HeartFunction<T, E, R> {
         R accept(T t, E e);
     }
 
     public void shutdownGracefully() {
+
         cacheExecutor.shutdownGracefully();
         apiExecutor.shutdownGracefully();
     }
 
-    private class CacheNode {
+    private static class CacheNode {
         private String cluster;
         private String name;
         private String host;
         private int port;
         private String registerTime;
-
-        transient
         private String lastHeartTime;
 
         public CacheNode(String cluster, String name, String host, int port, String registerTime, String lastHeartTime) {

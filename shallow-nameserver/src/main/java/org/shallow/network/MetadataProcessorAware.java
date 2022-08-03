@@ -1,12 +1,12 @@
 package org.shallow.network;
 
-import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import org.shallow.proto.server.*;
 import org.shallow.provider.ClusterMetadataProvider;
 import org.shallow.internal.MetadataConfig;
 import org.shallow.internal.MetadataManager;
@@ -17,11 +17,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.NodeMetadata;
-import org.shallow.proto.server.CreateTopicRequest;
-import org.shallow.proto.server.DelTopicRequest;
-import org.shallow.proto.server.RegisterNodeRequest;
 import org.shallow.provider.TopicMetadataProvider;
-
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.NetworkUtil.switchAddress;
@@ -67,8 +63,8 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                     logger.debug("[meta server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
                                 }
 
-                                Promise<MessageLite> promise = newImmediatePromise();
-                                promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                                Promise<CreateTopicResponse> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
                                     if (f.isSuccess()) {
                                         if (isNotNull(answer)) {
                                             answer.success(proto2Buf(channel.alloc(), promise.get()));
@@ -95,7 +91,7 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                             try {
                                 final String topic = request.getTopic();
 
-                                Promise<MessageLite> promise = newImmediatePromise();
+                                Promise<DelTopicResponse> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<Object>>) f -> {
                                     if (f.isSuccess()) {
                                         if (isNotNull(answer)) {
@@ -121,8 +117,8 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
                         commandEventExecutor.execute(() -> {
                             final NodeMetadata node = request.getMetadata();
-                            Promise<MessageLite> promise = newImmediatePromise();
-                            promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                            Promise<RegisterNodeResponse> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<RegisterNodeResponse>>) f -> {
                                 if (f.isSuccess()) {
                                     if (isNotNull(answer)) {
                                         answer.success(proto2Buf(channel.alloc(), promise.get()));
@@ -144,8 +140,8 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
                         commandEventExecutor.execute(() -> {
                             final NodeMetadata node = request.getMetadata();
-                            Promise<MessageLite> promise = newImmediatePromise();
-                            promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                            Promise<HeartBeatResponse> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<HeartBeatResponse>>) f -> {
                                 if (f.isSuccess()) {
                                     if (isNotNull(answer)) {
                                         answer.success(proto2Buf(channel.alloc(), promise.get()));
@@ -160,6 +156,51 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         answerFailed(answer, e);
                     }
                 }
+
+                case QUERY_CLUSTER_IFO -> {
+                    try {
+                        final QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            final String cluster = request.getCluster();
+                            Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<QueryClusterNodeResponse>>) f -> {
+                                if (f.isSuccess()) {
+                                    if (isNotNull(answer)) {
+                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                    }
+                                } else {
+                                    answerFailed(answer, f.cause());
+                                }
+                            });
+                            clusterMetadataProvider.queryActiveNodes(cluster, promise);
+                        });
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
+
+                case QUERY_TOPIC_INFO -> {
+                    try {
+                        final QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            final String topic = request.getTopic();
+                            Promise<QueryTopicInfoResponse> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<QueryTopicInfoResponse>>) f -> {
+                                if (f.isSuccess()) {
+                                    if (isNotNull(answer)) {
+                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                    }
+                                } else {
+                                    answerFailed(answer, f.cause());
+                                }
+                            });
+                            topicMetadataProvider.getTopicInfo(topic);
+                        });
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
+
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("[nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);

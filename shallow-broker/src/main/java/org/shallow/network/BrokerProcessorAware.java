@@ -16,6 +16,8 @@ import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.server.CreateTopicRequest;
 import org.shallow.proto.server.CreateTopicResponse;
+import org.shallow.proto.server.DelTopicRequest;
+import org.shallow.proto.server.DelTopicResponse;
 
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
@@ -72,9 +74,31 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         answerFailed(answer, e);
                     }
                 }
-                case DELETE_TOPIC -> {}
-                case UPDATE_TOPIC -> {}
-                case FETCH_CLUSTER_INFO -> {}
+                case DELETE_TOPIC -> {
+                    try {
+                        final DelTopicRequest request = readProto(data, DelTopicRequest.parser());
+                        final String topic = request.getTopic();
+
+                        Promise<DelTopicResponse> promise = newImmediatePromise();
+                        promise.addListener((GenericFutureListener<Future<DelTopicResponse>>) f -> {
+                            if (f.isSuccess()) {
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                }
+                            } else {
+                                answerFailed(answer, f.cause());
+                            }
+                        });
+
+                        Topic2NameserverManager topic2NameserverManager = manager.getTopic2NameserverManager();
+                        topic2NameserverManager.delFormNameserver(topic, promise);
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
+                case FETCH_CLUSTER_INFO -> {
+
+                }
                 case FETCH_TOPIC_INFO -> {}
                 default -> {
                     if (logger.isDebugEnabled()) {
