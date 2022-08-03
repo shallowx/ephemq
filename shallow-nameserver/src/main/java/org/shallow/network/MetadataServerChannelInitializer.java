@@ -16,11 +16,9 @@ public class MetadataServerChannelInitializer extends ChannelInitializer<SocketC
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataServerChannelInitializer.class);
 
     private final MetadataManager metaManager;
-    private final MetadataConfig config;
 
     public MetadataServerChannelInitializer(MetadataConfig config, MetadataManager metaManager) {
         this.metaManager = metaManager;
-        this.config = config;
     }
 
     @Override
@@ -29,6 +27,6 @@ public class MetadataServerChannelInitializer extends ChannelInitializer<SocketC
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
-        pipeline.addLast("service-handler", new MetadataServiceDuplexHandler(new MetadataProcessorAware(config, metaManager)));
+        pipeline.addLast("service-handler", new MetadataServiceDuplexHandler(new MetadataProcessorAware(metaManager)));
     }
 }

@@ -8,7 +8,6 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.proto.server.*;
 import org.shallow.provider.ClusterMetadataProvider;
-import org.shallow.internal.MetadataConfig;
 import org.shallow.internal.MetadataManager;
 import org.shallow.RemoteException;
 import org.shallow.invoke.InvokeAnswer;
@@ -32,7 +31,7 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
     private final TopicMetadataProvider topicMetadataProvider;
     private final ClusterMetadataProvider clusterMetadataProvider;
 
-    public MetadataProcessorAware(MetadataConfig config, MetadataManager metaManager) {
+    public MetadataProcessorAware(MetadataManager metaManager) {
         this.commandEventExecutor = metaManager.commandEventExecutorGroup().next();
         this.topicMetadataProvider = metaManager.getTopicMetadataProvider();
         this.clusterMetadataProvider = metaManager.getClusterMetadataProvider();
@@ -59,10 +58,6 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                 final int partitions = request.getPartitions();
                                 final int latency = request.getLatency();
 
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("[meta server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
-                                }
-
                                 Promise<CreateTopicResponse> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
                                     if (f.isSuccess()) {
@@ -79,8 +74,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                 answerFailed(answer, e);
                             }
                         });
-                    } catch (Exception e) {
-                        answerFailed(answer, e);
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
                     }
                 }
 
@@ -107,8 +105,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                 answerFailed(answer, e);
                             }
                         });
-                    } catch (Exception e) {
-                        answerFailed(answer, e);
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
                     }
                 }
 
@@ -130,8 +131,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
 
                             clusterMetadataProvider.write2CacheAndFile(request.getCluster(), node.getName(), node.getHost(), node.getPort(), promise);
                         });
-                    } catch (Exception e) {
-                        answerFailed(answer, e);
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
                     }
                 }
 
@@ -152,8 +156,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                             });
                             clusterMetadataProvider.keepHearBeat(request.getCluster(), node.getName(),node.getHost(), node.getPort(), promise);
                         });
-                    } catch (Exception e) {
-                        answerFailed(answer, e);
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
                     }
                 }
 
@@ -174,8 +181,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                             });
                             clusterMetadataProvider.queryActiveNodes(cluster, promise);
                         });
-                    } catch (Exception e) {
-                        answerFailed(answer, e);
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
                     }
                 }
 
@@ -196,21 +206,24 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                             });
                             topicMetadataProvider.getTopicInfo(topic);
                         });
-                    } catch (Exception e) {
-                        answerFailed(answer, e);
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
                     }
                 }
 
                 default -> {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("[nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("[nameserver process]<{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }
             }
     } catch (Throwable cause) {
         if (logger.isErrorEnabled()) {
-            logger.error("[nameserver process]<{}> - command [{}]", switchAddress(channel), command);
+            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
         }
         answerFailed(answer, cause);
     }

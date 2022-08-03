@@ -79,7 +79,7 @@ public class MappedFileAPI {
                 Files.writeString(of, content, UTF_8);
                 modifyPromise.trySuccess(true);
             } else {
-                modifyPromise.tryFailure(new RuntimeException("[Write2File] - failed to write to file, try again later"));
+                modifyPromise.tryFailure(new RuntimeException(String.format("[Write2File] - failed to write to file<%s>, content=%s, try again later", of, content)));
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
@@ -90,11 +90,11 @@ public class MappedFileAPI {
     }
 
     public String read(String path) {
+        final Path of = Path.of(assemblesPath(path));
         try {
-            final Path of = Path.of(assemblesPath(path));
             return Files.readString(of, UTF_8);
         } catch (Throwable t) {
-            throw new RuntimeException("[Read] - failed to read partition information, cause: %s", t);
+            throw new RuntimeException(String.format("[Read] - failed to read partition information from file<%s>, cause: %s", of, t));
         }
     }
 
