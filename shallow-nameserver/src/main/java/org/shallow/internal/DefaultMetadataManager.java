@@ -26,6 +26,7 @@ public class DefaultMetadataManager implements MetadataManager {
     @Override
     public void start() throws Exception {
         api.start();
+        topicMetadataProvider.start();
         clusterMetadataProvider.start();
     }
 

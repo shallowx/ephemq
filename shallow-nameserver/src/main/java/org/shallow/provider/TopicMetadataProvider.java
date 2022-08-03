@@ -30,6 +30,7 @@ import static org.shallow.api.MappedFileConstants.Type.APPEND;
 import static org.shallow.api.MappedFileConstants.Type.DELETE;
 import static org.shallow.util.Ack.SUCCESS;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 
 public class TopicMetadataProvider {
@@ -54,10 +55,11 @@ public class TopicMetadataProvider {
                         return new CopyOnWriteArrayList<>();
                     }
                 });
-
-        this.populate();
-
         cacheExecutor.scheduleWithFixedDelay(() -> scheduleWrite2File(), 60000, 60000, TimeUnit.MILLISECONDS);
+    }
+
+    public void start() {
+        this.populate();
     }
 
     public void write2CacheAndFile(String topic, int partitions, int latency, Promise<CreateTopicResponse> promise) {
@@ -168,8 +170,9 @@ public class TopicMetadataProvider {
         final String partitions = api.read(TOPICS);
         final Map<String, List<Partition>> topics = JsonUtil.json2Object(partitions,
                 new TypeToken<Map<String, List<Partition>>>() {}.getType());
-
-        topicsCache.putAll(topics);
+        if (isNotNull(topics) && !topics.isEmpty()) {
+            topicsCache.putAll(topics);
+        }
     }
 
     private void scheduleWrite2File() {

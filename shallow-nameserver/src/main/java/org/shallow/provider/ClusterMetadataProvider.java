@@ -29,6 +29,7 @@ import static org.shallow.util.DateUtil.date2String;
 import static org.shallow.util.DateUtil.date2TimeMillis;
 import static org.shallow.util.JsonUtil.object2Json;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class ClusterMetadataProvider {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterMetadataProvider.class);
@@ -257,10 +258,11 @@ public class ClusterMetadataProvider {
 
     private void populate() {
         final String partitions = api.read(CLUSTERS);
-        final Map<String, Set<CacheNode>> topics = JsonUtil.json2Object(partitions,
+        final Map<String, Set<CacheNode>> clusters = JsonUtil.json2Object(partitions,
                 new TypeToken<Map<String, List<CacheNode>>>() {}.getType());
-
-        inactiveNodes.putAll(topics);
+        if (isNotNull(clusters) && !clusters.isEmpty()) {
+            inactiveNodes.putAll(clusters);
+        }
     }
 
     private void scheduleWrite2File() {
