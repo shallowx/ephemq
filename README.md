@@ -1,13 +1,13 @@
 # Architecture
 
-Shallow is a distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability
+Shallow is a distributed messaging and streaming platform on based memory with low latency, high performance and reliability, trillion-level capacity and flexible scalability
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/infra.png)
 
-- Broker: accept command(eg: query、storage)、message storage、message push、pull message
-- Client: producer & consumer
-- Nameserver: broker register
-- Metrics: CPU、JVM、message、semaphore
+- Broker: Process command...
+- Client: Producer & Consumer...
+- Nameserver: Cluster management、Metadata management...
+- Metrics & Monitoring: CPU、JVM、Thread、Cluster、Metadata、Network...
 
 # Latency
 
@@ -18,7 +18,7 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/thread_model.png)
 
 # Nameserver
-- Leader election protocol: raft
+- Leader election protocol: Raft
 - Function: Cluster management、Metadata management
 - Nameserver admin: VUI(Visual User Interface)
 
@@ -28,4 +28,4 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 
 - Jdk version: Jdk17+
 - Memory size: 64G (the better)
-- CPU:  at least 16C (the better: 32C or 64C)
+- CPU: at least 16C (the better: 32C or 64C)
