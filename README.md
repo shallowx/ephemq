@@ -2,7 +2,7 @@
 
 Shallow is a distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability
 
-![image](https://github.com/shallow-rs/shallow/blob/main/doc/infra.png)
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/infra.png)
 
 - Broker: accept command(eg: query、storage)、message storage、message push、pull message
 - Client: producer & consumer
@@ -11,15 +11,15 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 
 # Latency
 
-![image](https://github.com/shallow-rs/shallow/blob/main/doc/latency.png)
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/latency.png)
 
 # Asynchronous thread model
 
-![image](https://github.com/shallow-rs/shallow/blob/main/doc/thread_model.png)
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/thread_model.png)
 
 # Nameserver
 
-![image](https://github.com/shallow-rs/shallow/blob/main/doc/nameserver_architecture.png)
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/nameserver_architecture.png)
 
 # Environment
 
