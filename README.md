@@ -18,6 +18,9 @@ Shallow is a distributed messaging and streaming platform with low latency, high
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/thread_model.png)
 
 # Nameserver
+- Leader election protocol: raft
+- Function: Cluster management、Metadata management
+- Nameserver admin: VUI(Visual User Interface)
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/nameserver_architecture.png)
 
