@@ -37,7 +37,6 @@ public class Cluster2NameserverManager {
     private final BrokerConfig config;
     private final ClientConfig clientConfig;
     private final ShallowChannelPool pool;
-    private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heart-single-pool"));
     private final LoadingCache<String, Set<Node>> nodeCaches;
 
     public Cluster2NameserverManager(BrokerManager manager, ClientConfig clientConfig, BrokerConfig config) {
@@ -59,12 +58,10 @@ public class Cluster2NameserverManager {
 
         register2Nameserver(socketAddresses);
 
-        // start populating the cluster node cache information
+        // start populating the cluster node cache information from file</workDirectory/cluster.json>
         nodeCaches.get(config.getClusterName());
 
-        scheduledExecutor.scheduleWithFixedDelay(() -> {
-            doHeartBeat(socketAddresses);
-        }, 5, config.getHeartSendIntervalTimeMs(), TimeUnit.MILLISECONDS);
+        new HeartBeat(socketAddresses);
     }
 
     public void register2Nameserver(List<SocketAddress> socketAddresses) throws Exception {
@@ -132,7 +129,6 @@ public class Cluster2NameserverManager {
             requestChannel.invoker().invoke(QUERY_CLUSTER_IFO, clientConfig.getDefaultInvokeExpiredMs(), promise, request, QueryClusterNodeResponse.class);
 
             final QueryClusterNodeResponse response = promise.get(clientConfig.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS);
-            final List<NodeMetadata> nodes = response.getNodesList();
             return response.getNodesList()
                     .stream()
                     .map(p -> new Node(p.getName(), switchSocketAddress(p.getHost(), p.getPort())))
@@ -142,34 +138,52 @@ public class Cluster2NameserverManager {
         }
     }
 
-    private void doHeartBeat(List<SocketAddress> socketAddresses) {
-        final SocketAddress address = socketAddresses.parallelStream().findAny().orElse(null);
-        NodeMetadata nodeMetadata = NodeMetadata
-                .newBuilder()
-                .setName(config.getServerId())
-                .setHost(config.getExposedHost())
-                .setPort(config.getExposedPort())
-                .build();
+    private class HeartBeat {
+        private final List<SocketAddress> addresses;
+        private final ScheduledExecutorService heartBeatTaskExecutor =
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heart-single-pool"));
 
-        HeartBeatRequest request = HeartBeatRequest
-                .newBuilder()
-                .setCluster(config.getClusterName())
-                .setMetadata(nodeMetadata)
-                .build();
+        public HeartBeat(List<SocketAddress> socketAddresses) {
+            this.addresses = socketAddresses;
 
-        Promise<HeartBeatResponse> promise = newImmediatePromise();
-        promise.addListener((GenericFutureListener<Future<HeartBeatResponse>>) future -> {
-            if (!future.isSuccess()) {
-                // alert to organization group
-            } else {
-                if (logger.isDebugEnabled()) {
-                    HeartBeatResponse response = future.get(clientConfig.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS);
-                    logger.debug("[doHeartBeta] - keep heartbeat with nameserver<cluster={} host={} port={}> successfully", response.getCluster(), response.getHost(), response.getPort());
+            heartBeatTaskExecutor.scheduleWithFixedDelay(() -> {
+                registerHeartBeatScheduledTask(addresses);
+            }, 5000, config.getHeartSendIntervalTimeMs(), TimeUnit.MILLISECONDS);
+        }
+
+        private void registerHeartBeatScheduledTask(List<SocketAddress> socketAddresses) {
+
+            final SocketAddress address = socketAddresses.parallelStream().findAny().orElse(null);
+            NodeMetadata nodeMetadata = NodeMetadata
+                    .newBuilder()
+                    .setName(config.getServerId())
+                    .setHost(config.getExposedHost())
+                    .setPort(config.getExposedPort())
+                    .build();
+
+            HeartBeatRequest request = HeartBeatRequest
+                    .newBuilder()
+                    .setCluster(config.getClusterName())
+                    .setMetadata(nodeMetadata)
+                    .build();
+
+            Promise<HeartBeatResponse> promise = newImmediatePromise();
+            promise.addListener((GenericFutureListener<Future<HeartBeatResponse>>) future -> {
+                if (!future.isSuccess()) {
+                    // alert to organization group
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("[doHeartBeta] - failed to keep nameserver, trg again later");
+                    }
+                } else {
+                    if (logger.isDebugEnabled()) {
+                        HeartBeatResponse response = future.get(clientConfig.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+                        logger.debug("[doHeartBeta] - keep heartbeat with nameserver<cluster={} host={} port={}> successfully", response.getCluster(), response.getHost(), response.getPort());
+                    }
                 }
-            }
-        });
+            });
 
-        ClientChannel requestChannel = pool.acquireHealthyOrNew(address);
-        requestChannel.invoker().invoke(HEART_BEAT, clientConfig.getDefaultInvokeExpiredMs(), promise, request, HeartBeatResponse.class);
+            ClientChannel requestChannel = pool.acquireHealthyOrNew(address);
+            requestChannel.invoker().invoke(HEART_BEAT, clientConfig.getDefaultInvokeExpiredMs(), promise, request, HeartBeatResponse.class);
+        }
     }
 }

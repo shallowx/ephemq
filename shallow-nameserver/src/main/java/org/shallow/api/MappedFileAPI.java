@@ -1,6 +1,7 @@
 package org.shallow.api;
 
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
+import org.shallow.internal.MetadataConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.shallow.api.MappedFileConstants.*;
@@ -20,9 +22,13 @@ public class MappedFileAPI {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MappedFileAPI.class);
 
     private final String workDirectory;
+    private final EventExecutor taskExecutor;
+    private final MetadataConfig config;
 
-    public MappedFileAPI(String workDirectory) {
+    public MappedFileAPI(String workDirectory, EventExecutorGroup group, MetadataConfig config) {
         this.workDirectory = isNull(workDirectory) ? DIRECTORY : workDirectory;
+        this.taskExecutor = group.next();
+        this.config = config;
     }
 
     public void start() throws IOException {
@@ -45,47 +51,55 @@ public class MappedFileAPI {
         return workDirectory + "/" + path;
     }
 
-    public void modify(String path, String content, Type type, Promise<Boolean> modifyPromise) {
+    public void modify(String path, String content, Type type) {
         try {
             path = assemblesPath(path);
             switch (type) {
-                case APPEND -> append(path, content, modifyPromise);
-                case DELETE -> delete(path, content, modifyPromise);
+                case APPEND -> append(path, content);
+                case DELETE -> delete(path, content);
                 default -> throw new OperationNotSupportedException("[Modify] - Not supported modify type<" + type.name() +">");
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(t.getMessage(), t);
             }
-
-            if (isNotNull(modifyPromise)) {
-                modifyPromise.tryFailure(t);
-            }
         }
     }
 
-    private void append(String path, String content, Promise<Boolean> modifyPromise) {
-        write2File(path, content, modifyPromise);
+    private void append(String path, String content) {
+        Promise<Void> promise = taskExecutor.newPromise();
+        promise.addListener((GenericFutureListener<Future<Void>>) f -> {
+            if (!f.isSuccess()) {
+                taskExecutor.schedule(() -> append(path, content), config.getWriteFileScheduleDelayMs(), TimeUnit.MILLISECONDS);
+            }
+        });
+
+        write2File(path, content, promise);
     }
 
-    private void delete(String path, String content, Promise<Boolean> modifyPromise) {
-        write2File(path, content, modifyPromise);
+    private void delete(String path, String content) {
+        Promise<Void> promise = taskExecutor.newPromise();
+        promise.addListener((GenericFutureListener<Future<Void>>) f -> {
+            if (!f.isSuccess()) {
+                taskExecutor.schedule(() -> delete(path, content), config.getWriteFileScheduleDelayMs(), TimeUnit.MILLISECONDS);
+            }
+        });
+
+        write2File(path, content, promise);
     }
 
-    private void write2File(String path, String content, Promise<Boolean> modifyPromise) {
+    private void write2File(String path, String content, Promise<Void> promise) {
         Path of = Path.of(path);
         try {
             if (Files.isWritable(of)) {
                 Files.writeString(of, content, UTF_8);
-                modifyPromise.trySuccess(true);
-            } else {
-                modifyPromise.tryFailure(new RuntimeException(String.format("[Write2File] - failed to write to file<%s>, content=%s, try again later", of, content)));
             }
+            promise.trySuccess(null);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(t.getMessage(), t);
             }
-            modifyPromise.tryFailure(t);
+            promise.tryFailure(t);
         }
     }
 

@@ -17,7 +17,7 @@ public class DefaultMetadataManager implements MetadataManager {
 
     public DefaultMetadataManager(MetadataConfig config) {
         this.config = config;
-        this.api = new MappedFileAPI(config.getWorkDirectory());
+        this.api = new MappedFileAPI(config.getWorkDirectory(), newEventExecutorGroup(1, "api-provider"), config);
         this.topicMetadataProvider = new TopicMetadataProvider(api, newEventExecutorGroup(2, "topic-provider"));
         this.clusterMetadataProvider = new ClusterMetadataProvider(config, api, newEventExecutorGroup(2, "cluster-provider"));
         this.commandEventExecutorGroup = newEventExecutorGroup(1, "command");

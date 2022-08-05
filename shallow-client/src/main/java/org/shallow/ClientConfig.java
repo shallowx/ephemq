@@ -8,7 +8,7 @@ public class ClientConfig {
 
     private boolean isEpollPrefer = false;
     private int workThreadWholes = availableProcessor();
-    private long connectTimeOutMs = 30000;
+    private long connectTimeOutMs = 5000;
     private int channelPoolCapacity = 1;
     private int dnsTtlMinExpiredMs = 30;
     private int dnsTtlMaxExpiredSeconds = 300;

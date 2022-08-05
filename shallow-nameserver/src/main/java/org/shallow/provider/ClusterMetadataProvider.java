@@ -23,12 +23,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.shallow.api.MappedFileConstants.CLUSTERS;
-import static org.shallow.api.MappedFileConstants.TOPICS;
 import static org.shallow.api.MappedFileConstants.Type.APPEND;
 import static org.shallow.util.DateUtil.date2String;
 import static org.shallow.util.DateUtil.date2TimeMillis;
 import static org.shallow.util.JsonUtil.object2Json;
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class ClusterMetadataProvider {
@@ -66,8 +64,6 @@ public class ClusterMetadataProvider {
                         return new CopyOnWriteArraySet<>();
                     }
                 });
-
-        cacheExecutor.scheduleWithFixedDelay(() -> scheduleWrite2File(), 60000, 60000, TimeUnit.MILLISECONDS);
     }
 
     public void start() throws Exception{
@@ -110,6 +106,8 @@ public class ClusterMetadataProvider {
             return false;
         });
         cacheExecutor.scheduleWithFixedDelay(inactiveTask,1000, config.getCheckHeartDelayTimeMs(), TimeUnit.MILLISECONDS);
+
+        cacheExecutor.scheduleWithFixedDelay(this::scheduleWrite2File, config.getCheckHeartDelayTimeMs(), config.getHeartMaxIntervalTimeMs(), TimeUnit.MILLISECONDS);
     }
 
     public void keepHearBeat(String cluster, String name, String host, int port,Promise<HeartBeatResponse> promise) {
@@ -188,28 +186,18 @@ public class ClusterMetadataProvider {
 
         final String nodes = object2Json(getAllClusters());
         try {
-            final Promise<Boolean> modifyPromise = newImmediatePromise();
-            modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
-                if (f.isSuccess()) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("[doWrite2CacheAndFile] - write node info to file successfully, content<{}>", nodes);
-                    }
-                    promise.trySuccess(RegisterNodeResponse.newBuilder().build());
-                } else {
-                    promise.tryFailure(f.cause());
-                }
-            });
-
             if (apiExecutor.inEventLoop()) {
-                api.modify(CLUSTERS, nodes, APPEND, modifyPromise);
+                api.modify(CLUSTERS, nodes, APPEND);
             } else {
-                apiExecutor.execute(() -> api.modify(CLUSTERS, nodes, APPEND, modifyPromise));
+                apiExecutor.execute(() -> api.modify(CLUSTERS, nodes, APPEND));
             }
+
+            promise.trySuccess(RegisterNodeResponse.newBuilder().build());
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("[doWrite2CacheAndFile] - failed to write node info to file, host={} port={}, cause:{}", host, port, t);
             }
-        promise.tryFailure(t);
+            promise.tryFailure(t);
       }
     }
 
@@ -266,9 +254,13 @@ public class ClusterMetadataProvider {
     }
 
     private void scheduleWrite2File() {
-        final ConcurrentMap<String, Set<CacheNode>> topics = inactiveNodes.asMap();
-        final String content = JsonUtil.object2Json(topics);
-        api.modify(TOPICS, content, APPEND, newImmediatePromise());
+        final ConcurrentMap<String, Set<CacheNode>> clusters = activeNodes.asMap();
+        if (clusters.isEmpty()) {
+            return;
+        }
+
+        final String content = JsonUtil.object2Json(clusters);
+        api.modify(CLUSTERS, content, APPEND);
     }
 
     @FunctionalInterface
@@ -277,7 +269,6 @@ public class ClusterMetadataProvider {
     }
 
     public void shutdownGracefully() {
-
         cacheExecutor.shutdownGracefully();
         apiExecutor.shutdownGracefully();
     }

@@ -9,6 +9,7 @@ import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.units.qual.A;
 import org.shallow.api.MappedFileAPI;
+import org.shallow.internal.MetadataConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.Partition;
@@ -55,11 +56,11 @@ public class TopicMetadataProvider {
                         return new CopyOnWriteArrayList<>();
                     }
                 });
-        cacheExecutor.scheduleWithFixedDelay(() -> scheduleWrite2File(), 60000, 60000, TimeUnit.MILLISECONDS);
     }
 
     public void start() {
         this.populate();
+        cacheExecutor.scheduleWithFixedDelay(this::scheduleWrite2File, 60000, 60000, TimeUnit.MILLISECONDS);
     }
 
     public void write2CacheAndFile(String topic, int partitions, int latency, Promise<CreateTopicResponse> promise) {
@@ -77,32 +78,23 @@ public class TopicMetadataProvider {
     private void doWrite2Cache(String topic, int partitions, int latency, Promise<CreateTopicResponse> promise) {
         try {
             topicsCache.put(topic, assemblePartitions(topic, partitions, latency));
+
             final Map<String, List<Partition>> topicInfoMeta = getAllTopics();
-            final String topcis = JsonUtil.object2Json(topicInfoMeta);
-
-            final Promise<Boolean> modifyPromise = newImmediatePromise();
-            modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
-                if (f.isSuccess()) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("[doWrite2Cache] - write topic info to file successfully, content<{}>", topcis);
-                    }
-
-                    promise.trySuccess(CreateTopicResponse.newBuilder()
-                            .setTopic(topic)
-                            .setAck(SUCCESS)
-                            .setLatency(latency)
-                            .setPartitions(partitions)
-                            .build());
-                } else {
-                    promise.tryFailure(f.cause());
-                }
-            });
+            final String topics = JsonUtil.object2Json(topicInfoMeta);
 
             if (apiExecutor.inEventLoop()) {
-                api.modify(TOPICS, topcis, APPEND, modifyPromise);
+                api.modify(TOPICS, topics, APPEND);
             } else {
-                apiExecutor.execute(() -> api.modify(TOPICS, topcis, APPEND, modifyPromise));
+                apiExecutor.execute(() -> api.modify(TOPICS, topics, APPEND));
             }
+
+            promise.trySuccess(CreateTopicResponse.newBuilder()
+                    .setTopic(topic)
+                    .setAck(SUCCESS)
+                    .setLatency(latency)
+                    .setPartitions(partitions)
+                    .build());
+
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("[doWrite2Cache] - Failed to write topic info to file, content<{}>, cause:{}", topic, t);
@@ -136,21 +128,10 @@ public class TopicMetadataProvider {
             getAllTopics().entrySet().removeIf(k -> k.getKey().equals(topic));
             final String topics = JsonUtil.object2Json(getAllTopics());
 
-            final Promise<Boolean> modifyPromise = newImmediatePromise();
-            modifyPromise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
-                if (f.isSuccess()) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("[doDelFromCache] - del topic<{}> from file successfully", topic);
-                    }
-                } else {
-                    api.modify(TOPICS, topics, DELETE, null);
-                }
-            });
-
             if (apiExecutor.inEventLoop()) {
-                api.modify(TOPICS, topics, DELETE, modifyPromise);
+                api.modify(TOPICS, topics, DELETE);
             } else {
-                apiExecutor.execute(() -> api.modify(TOPICS, topics, DELETE, modifyPromise));
+                apiExecutor.execute(() -> api.modify(TOPICS, topics, DELETE));
             }
 
             promise.trySuccess(DelTopicResponse
@@ -177,8 +158,11 @@ public class TopicMetadataProvider {
 
     private void scheduleWrite2File() {
         final ConcurrentMap<String, List<Partition>> topics = topicsCache.asMap();
+        if (topics.isEmpty()) {
+            return;
+        }
         final String content = JsonUtil.object2Json(topics);
-        api.modify(TOPICS, content, APPEND, newImmediatePromise());
+        api.modify(TOPICS, content, APPEND);
     }
 
     public Map<String, List<Partition>> getAllTopics() {

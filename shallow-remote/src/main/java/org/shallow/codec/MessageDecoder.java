@@ -66,20 +66,24 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 if (!buf.isReadable()) {
                     return null;
                 }
+
                 final byte magic = buf.getByte(buf.readerIndex());
                 if (magic != MessagePacket.MAGIC_NUMBER) {
                     throw new DecoderException("invalid magic number:" + magic);
                 }
+
                 state = READ_MESSAGE_LENGTH;
             }
             case READ_MESSAGE_LENGTH: {
                 if (!buf.isReadable(4)) {
                     return null;
                 }
+
                 final int frame = buf.getUnsignedMedium(buf.readerIndex() + 1);
                 if (frame < MessagePacket.HEADER_LENGTH) {
                     throw new DecoderException("invalid frame number:" + frame);
                 }
+
                 writeFrameBytes = frame;
                 state = READ_MESSAGE_COMPLETED;
             }
@@ -88,6 +92,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     return null;
                 }
                 buf.skipBytes(4);
+
                 final short version = buf.readShort();
                 final byte command = buf.readByte();
                 final byte state = buf.readByte();
@@ -96,6 +101,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
 
                 this.state = READ_MAGIC_NUMBER;
+
                 return MessagePacket.newPacket(version, state, answer, serialization, command, body);
             }
             default:{
@@ -119,6 +125,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         } else {
             composite = newComposite(alloc, buf);
         }
+
         composite.addFlattenedComponents(true, read);
         return whole = composite;
     }
@@ -130,6 +137,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 whole = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
             }
         }
+
         ctx.fireChannelReadComplete();
     }
 
@@ -139,6 +147,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
             release(whole);
             whole = null;
         }
+
         ctx.fireChannelInactive();
     }
 
