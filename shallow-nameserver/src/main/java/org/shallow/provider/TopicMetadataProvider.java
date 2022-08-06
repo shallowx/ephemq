@@ -8,8 +8,10 @@ import com.google.protobuf.MessageLite;
 import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.units.qual.A;
+import org.shallow.RemoteException;
 import org.shallow.api.MappedFileAPI;
 import org.shallow.internal.MetadataConfig;
+import org.shallow.listener.TopicListener;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.Partition;
@@ -41,11 +43,13 @@ public class TopicMetadataProvider {
     private final EventExecutor apiExecutor;
     private final MappedFileAPI api;
     private final LoadingCache<String, List<Partition>> topicsCache;
+    private final TopicListener listener;
 
-    public TopicMetadataProvider(MappedFileAPI api, EventExecutorGroup group) {
+    public TopicMetadataProvider(MappedFileAPI api, EventExecutorGroup group, TopicListener topicListener) {
         this.api = api;
         this.cacheExecutor = group.next();
         this.apiExecutor = group.next();
+        this.listener = topicListener;
 
         this.topicsCache = Caffeine.newBuilder()
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
@@ -77,6 +81,11 @@ public class TopicMetadataProvider {
 
     private void doWrite2Cache(String topic, int partitions, int latency, Promise<CreateTopicResponse> promise) {
         try {
+
+            if (!topicsCache.get(topic).isEmpty()) {
+                throw new IllegalArgumentException("The topic<"+ topic +"> already exists");
+            }
+
             topicsCache.put(topic, assemblePartitions(topic, partitions, latency));
 
             final Map<String, List<Partition>> topicInfoMeta = getAllTopics();

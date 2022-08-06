@@ -1,5 +1,7 @@
 package org.shallow.internal;
 
+import io.netty.util.concurrent.ScheduledFuture;
+
 import java.util.Properties;
 
 import static org.shallow.util.TypeUtil.*;
@@ -9,6 +11,7 @@ public class MetadataConfig {
 
     private static final String SERVER_ID = "shallow.nameserver.id";
     private static final String CLUSTER_NAME = "shallow.nameserver.cluster";
+    private static final String CLUSTER_URL = "shallow.nameserver.cluster.url";
     private static final String IO_THREAD_WHOLES = "shallow.nameserver.io.thread.wholes";
     private static final String WORK_THREAD_WHOLES = "shallow.nameserver.network.thread.wholes";
     private static final String OS_IS_EPOLL_PREFER= "shallow.nameserver.os.epoll.prefer";
@@ -20,8 +23,8 @@ public class MetadataConfig {
     private static final String NODE_HEART_DELAY_TIME_MS = "shallow.nameserver.check.heart.delay.ms";
     private static final String NODE_HEART_INTERVAL_TIME_MS = "shallow.nameserver.heart.max.interval.ms";
     private static final String NODE_LAST_AVAILABLE_TIME_MS = "shallow.nameserver.check.last.available.ms";
-    private static final String SHALLOW_NAMESERVER_CONTROLLER = "shallow.nameserver.controller";
-    private static final String SHALLOW_NAMESERVER_WRITE_FILE_SCHEDULE_DELAY_TIME_MS = "shallow.nameserver.write.file.schedule.delay.ms";
+    private static final String WRITE_FILE_SCHEDULE_DELAY_TIME_MS = "shallow.nameserver.write.file.schedule.delay.ms";
+    private static final String RETRY_LEADER_ELECT_SCHEDULED_DELAY_MS = "shallow.nameserver.retry.leader.elect.scheduled.delay.ms";
 
     public static MetadataConfig exchange(Properties properties) {
         return new MetadataConfig(properties);
@@ -84,11 +87,15 @@ public class MetadataConfig {
         return object2Int(config.getOrDefault(NODE_LAST_AVAILABLE_TIME_MS, 120000));
     }
 
-    public boolean isController() {
-        return object2Boolean(config.getOrDefault(SHALLOW_NAMESERVER_CONTROLLER, false));
+    public int getWriteFileScheduleDelayMs() {
+        return object2Int(config.getOrDefault(WRITE_FILE_SCHEDULE_DELAY_TIME_MS, 3000));
     }
 
-    public int getWriteFileScheduleDelayMs() {
-        return object2Int(config.getOrDefault(SHALLOW_NAMESERVER_WRITE_FILE_SCHEDULE_DELAY_TIME_MS, 3000));
+    public int getRetryLeaderElectScheduledDelayMs() {
+        return object2Int(config.getOrDefault(RETRY_LEADER_ELECT_SCHEDULED_DELAY_MS, 500));
+    }
+
+    public String getClusterUrl() {
+        return object2String(config.getOrDefault(CLUSTER_URL, "127.0.0.1:9100"));
     }
 }

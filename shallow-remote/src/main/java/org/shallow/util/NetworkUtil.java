@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
+import static org.shallow.util.ByteUtil.string2Buf;
 import static org.shallow.util.ObjectUtil.checkPositive;
 
 public final class NetworkUtil {
@@ -40,9 +41,9 @@ public final class NetworkUtil {
 
     public static MessagePacket newFailurePacket(int answer, Throwable cause) {
         if (cause instanceof RemoteException e) {
-            return MessagePacket.newPacket(answer, e.getCommand(), ByteUtil.string2Buf(e.getMessage()));
+            return MessagePacket.newPacket(answer, e.getCommand(), string2Buf(e.getMessage()));
         }
-        return MessagePacket.newPacket(answer,RemoteException.Failure.UNKNOWN_EXCEPTION, ByteUtil.string2Buf(cause == null ? null : cause.getClass().getSimpleName()));
+        return MessagePacket.newPacket(answer, RemoteException.Failure.UNKNOWN_EXCEPTION, string2Buf(cause == null ? null : cause.getMessage()));
     }
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {

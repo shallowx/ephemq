@@ -1,5 +1,7 @@
 package org.shallow.meta;
 
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
 import org.shallow.invoke.ClientChannel;
@@ -34,8 +36,7 @@ public class TopicManager implements ProcessCommand.Server {
                 .build();
 
         Promise<CreateTopicResponse> promise = newImmediatePromise();
-
-        ClientChannel channel = pool.acquireHealthyOrNew(null);
+        ClientChannel channel = pool.acquireWithRandomly();
         channel.invoker().invoke(command, config.getDefaultInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
 
         return promise;
@@ -46,7 +47,7 @@ public class TopicManager implements ProcessCommand.Server {
 
         Promise<DelTopicResponse> promise = newImmediatePromise();
 
-        ClientChannel channel = pool.acquireHealthyOrNew(null);
+        ClientChannel channel = pool.acquireWithRandomly();
         channel.invoker().invoke(command, config.getDefaultInvokeExpiredMs(), promise, request, DelTopicResponse.class);
 
         return promise;

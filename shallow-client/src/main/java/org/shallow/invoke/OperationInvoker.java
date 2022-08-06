@@ -67,14 +67,14 @@ public class OperationInvoker implements ProcessCommand.Server {
     private void invoke0(byte command, ByteBuf content, long timeoutMs, Callback<ByteBuf> callback) {
         try {
             long now = System.currentTimeMillis();
-            final Channel channel = clientChannel.channel();;
-            if (semaphore.tryAcquire(timeoutMs, TimeUnit.MICROSECONDS)) {
+            final Channel channel = clientChannel.channel();
+            if (semaphore.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
                 if (isNull(callback)) {
                     ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
                     channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content)), promise);
                 } else {
                     long expired = timeoutMs + now;
-                    InvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
+                    GenericInvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
                         semaphore.release();
                         callback.operationCompleted(buf, cause);
                     });

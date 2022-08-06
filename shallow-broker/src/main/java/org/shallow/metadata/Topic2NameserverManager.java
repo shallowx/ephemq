@@ -1,8 +1,8 @@
 package org.shallow.metadata;
 
 import io.netty.util.concurrent.Promise;
-import org.shallow.ClientConfig;
 import org.shallow.internal.BrokerManager;
+import org.shallow.internal.config.Client2NameserverConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.Topic;
@@ -20,10 +20,10 @@ public class Topic2NameserverManager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Topic2NameserverManager.class);
 
-    private final ClientConfig config;
+    private final Client2NameserverConfig config;
     private final BrokerManager manager;
 
-    public Topic2NameserverManager(ClientConfig config, BrokerManager manager) {
+    public Topic2NameserverManager(Client2NameserverConfig config, BrokerManager manager) {
         this.config = config;
         this.manager = manager;
     }
@@ -36,7 +36,7 @@ public class Topic2NameserverManager {
         final TopicManager topicManager = manager.getTopicManager();
         try {
             Promise<CreateTopicResponse> responsePromise = topicManager.createTopic(NEW_TOPIC, topic, partitions, latency);
-            promise.trySuccess(responsePromise.get(config.getConnectTimeOutMs(), TimeUnit.MILLISECONDS));
+            promise.trySuccess(responsePromise.get(config.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS));
         } catch (Throwable t) {
             promise.tryFailure(new RuntimeException(String.format("[write2Nameserver] - failed to create topic: topic<%s> partitions<%s> latency<%s>", topic, partitions, latency), t));
         }
@@ -46,7 +46,7 @@ public class Topic2NameserverManager {
         final TopicManager topicManager = manager.getTopicManager();
         try {
             Promise<DelTopicResponse> responsePromise = topicManager.delTopic(REMOVE_TOPIC, topic);
-            promise.trySuccess(responsePromise.get(config.getConnectTimeOutMs(), TimeUnit.MILLISECONDS));
+            promise.trySuccess(responsePromise.get(config.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS));
         } catch (Throwable t) {
             promise.tryFailure(new RuntimeException(String.format("[write2Nameserver] - failed to create topic: topic<%s>", topic), t));
         }

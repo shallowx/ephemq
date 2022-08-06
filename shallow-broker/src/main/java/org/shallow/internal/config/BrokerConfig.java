@@ -1,4 +1,4 @@
-package org.shallow.internal;
+package org.shallow.internal.config;
 
 import java.util.Properties;
 
@@ -18,7 +18,7 @@ public class BrokerConfig {
     private static final String EXPOSED_HOST = "shallow.exposed.host";
     private static final String EXPOSED_PORT = "shallow.exposed.port";
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
-    private static final String SHALLOW_NAMESERVER_URL = "shallow.namespace.url";
+    private static final String SHALLOW_NAMESERVER_URL = "shallow.nameserver.url";
     private static final String SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT = "shallow.internal.channel.pool.limit";
     private static final String NODE_HEART_SEND_INTERVAL_TIME_MS = "shallow.node.send.heart.interval.time.ms";
 

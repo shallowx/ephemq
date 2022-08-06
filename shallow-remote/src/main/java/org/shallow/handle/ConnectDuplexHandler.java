@@ -40,14 +40,14 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
                     final long now = System.currentTimeMillis();
                     final long delay = heartPeriodMs - (now - StrictMath.min(lastReadTime, lastWriteTime));
                     if (delay > INT_ZERO) {
-                        heartFuture = ctx.executor().schedule(this, delay, TimeUnit.MICROSECONDS);
+                        heartFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
                         ctx.writeAndFlush(MessagePacket.newPacket(INT_ZERO, (byte) INT_ZERO, null));
                         heartLastUpdateTime = lastWriteTime = now;
-                        heartFuture = ctx.executor().schedule(this, heartPeriodMs, TimeUnit.MICROSECONDS);
+                        heartFuture = ctx.executor().schedule(this, heartPeriodMs, TimeUnit.MILLISECONDS);
                     }
                 }
-            }, heartPeriodMs, TimeUnit.MICROSECONDS);
+            }, heartPeriodMs, TimeUnit.MILLISECONDS);
         }
 
         if (idleTimeoutMs > INT_ZERO) {
@@ -57,12 +57,12 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
                     final long now = System.currentTimeMillis();
                     final long delay = idleTimeoutMs - (now - StrictMath.min(lastReadTime, lastWriteTime));
                     if (delay > INT_ZERO) {
-                        idleFuture = ctx.executor().schedule(this, delay, TimeUnit.MICROSECONDS);
+                        idleFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
                         ctx.close();
                     }
                 }
-            }, idleTimeoutMs, TimeUnit.MICROSECONDS);
+            }, idleTimeoutMs, TimeUnit.MILLISECONDS);
         }
     }
 

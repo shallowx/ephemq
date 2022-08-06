@@ -1,5 +1,6 @@
 package org.shallow.internal;
 
+import org.shallow.internal.client.Client2Nameserver;
 import org.shallow.metadata.Cluster2NameserverManager;
 import org.shallow.metadata.Topic2NameserverManager;
 import org.shallow.meta.TopicManager;
@@ -8,7 +9,7 @@ import org.shallow.meta.TopicManager;
 public interface BrokerManager {
     void start() throws Exception;
     void shutdownGracefully() throws Exception;
-    NameserverInternalClient getInternalClient();
+    Client2Nameserver getInternalClient();
     TopicManager getTopicManager();
     Topic2NameserverManager getTopic2NameserverManager();
     Cluster2NameserverManager getCluster2NameManager();

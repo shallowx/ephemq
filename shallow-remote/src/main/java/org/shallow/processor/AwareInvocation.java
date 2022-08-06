@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
+import org.shallow.invoke.GenericInvokeAnswer;
 import org.shallow.invoke.InvokeAnswer;
 
 import static org.shallow.util.ObjectUtil.checkPositive;
@@ -23,7 +24,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
     private byte command;
     private ByteBuf data;
     private long expired;
-    private InvokeAnswer<ByteBuf> answer;
+    private GenericInvokeAnswer<ByteBuf> answer;
 
     private final Recycler.Handle<AwareInvocation> handle;
 
@@ -35,7 +36,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
        return newInvocation(command, data, 0, null);
     }
 
-    public static  AwareInvocation newInvocation(byte command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
+    public static  AwareInvocation newInvocation(byte command, ByteBuf data, long expires, GenericInvokeAnswer<ByteBuf> answer) {
         checkPositive(command, "Command");
 
         final AwareInvocation invocation = RECYCLER.get();
@@ -60,7 +61,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
         return expired;
     }
 
-    public InvokeAnswer<ByteBuf> answer() {
+    public GenericInvokeAnswer<ByteBuf> answer() {
         return answer;
     }
 

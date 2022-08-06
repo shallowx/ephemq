@@ -22,10 +22,5 @@
             <groupId>org.shallow</groupId>
             <artifactId>shallow-remote</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>

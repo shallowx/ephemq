@@ -2,6 +2,7 @@ package org.shallow.handle;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
@@ -31,7 +32,7 @@ import static org.shallow.util.NetworkUtil.*;
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
 
-    private static final int FAILURE_CONTENT_LIMIT = 64;
+    private static final int FAILURE_CONTENT_LIMIT = 1024 * 1024 * 4;
     private static final int INT_ZERO = 0;
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
     private ProcessorAware processor;
@@ -55,6 +56,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 }
 
                 final byte command = packet.command();
+                logger.info("command:{}", command);
                 if (command > INT_ZERO) {
                     processRequest(ctx, packet);
                 } else {
@@ -80,7 +82,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             if (isNull(cause)) {
                 ctx.writeAndFlush(newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
             } else {
-                ctx.writeAndFlush(newFailurePacket(answer, cause));
+                ChannelFuture future = ctx.writeAndFlush(newFailurePacket(answer, cause));
+                if (future.isSuccess()) {
+                    logger.info("success, channel<{}>", future.channel().toString());
+                }
             }
         });
 
@@ -152,6 +157,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
             final EventExecutor executor = ctx.executor();
             scheduleExpiredTask(executor);
+
             if (answer != INT_ZERO && !promise.isVoid()) {
                 promise.addListener(f -> {
                    Throwable cause = f.cause();

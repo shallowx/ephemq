@@ -23,12 +23,12 @@ public class TopicTests {
         client.start();
 
         TopicManager topicManager = new TopicManager(clientConfig);
-        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "test-mark", 1, 1);
+        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "test-timeout", 1, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getLatency(), 1);
-        Assert.assertEquals(response.getTopic(), "test-mark");
+        Assert.assertEquals(response.getTopic(), "test-timeout");
         Assert.assertEquals(response.getPartitions(), 1);
         Assert.assertEquals(response.getAck(), 1);
 

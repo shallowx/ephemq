@@ -72,8 +72,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
         while(iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
-            boolean valid = holder.isValid();
-            if (valid && isNotNull(consumer)) {
+            if (holder.isValid() && isNotNull(consumer)) {
                 doConsume(holder, consumer);
             }
 
@@ -99,14 +98,12 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
             Holder holder = iterator.next().getValue();
             boolean valid = holder.isValid();
 
-            if (valid) {
-                if (holder.expired > now) {
-                    continue;
-                }
+            if (valid && holder.expired > now) {
+                continue;
+            }
 
-                if (isNotNull(consumer)) {
-                    doConsume(holder, consumer);
-                }
+            if (valid && isNotNull(consumer)) {
+                doConsume(holder, consumer);
             }
 
             iterator.remove();
@@ -118,7 +115,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
     private void doConsume(Holder holder, Consumer<InvokeAnswer<V>> consumer) {
         @SuppressWarnings("unchecked")
-        InvokeAnswer<V> answer = (InvokeAnswer<V>) holder.answer;
+        InvokeAnswer<V> answer = (GenericInvokeAnswer<V>) holder.answer;
         try {
             consumer.accept(answer);
         } catch (Throwable cause) {

@@ -1,5 +1,6 @@
 package org.shallow.internal;
 
+import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.network.BrokerSocketServer;

@@ -1,7 +1,8 @@
-package org.shallow.internal;
+package org.shallow.internal.client;
 
 import org.shallow.Client;
 import org.shallow.ClientConfig;
+import org.shallow.internal.ClientListener;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.ShallowChannelHealthChecker;

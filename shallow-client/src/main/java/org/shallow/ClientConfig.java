@@ -14,7 +14,7 @@ public class ClientConfig {
     private int dnsTtlMaxExpiredSeconds = 300;
     private int negativeTtlSeconds = 30;
     private int ChannelInvokerSemaphore = 2000;
-    private int defaultInvokeExpiredMs = 5000;
+    private int defaultInvokeExpiredMs = 10000;
 
     private int availableProcessor() {
         return Runtime.getRuntime().availableProcessors();

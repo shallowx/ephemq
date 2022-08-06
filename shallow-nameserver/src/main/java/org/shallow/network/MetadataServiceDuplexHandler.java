@@ -24,6 +24,11 @@ public class MetadataServiceDuplexHandler extends ProcessDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+
+        if (logger.isErrorEnabled()) {
+            logger.error(cause.getMessage(), cause);
+        }
+
         if (logger.isDebugEnabled()) {
             logger.debug("[channelInactive] - clean exception caught channel");
         }

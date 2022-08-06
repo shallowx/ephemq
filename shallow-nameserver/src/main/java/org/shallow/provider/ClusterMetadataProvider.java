@@ -8,6 +8,7 @@ import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.api.MappedFileAPI;
 import org.shallow.internal.MetadataConfig;
+import org.shallow.listener.ClusterListener;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.NodeMetadata;
@@ -15,6 +16,7 @@ import org.shallow.proto.server.HeartBeatResponse;
 import org.shallow.proto.server.QueryClusterNodeResponse;
 import org.shallow.proto.server.RegisterNodeResponse;
 import org.shallow.util.JsonUtil;
+import org.shallow.util.NetworkUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
@@ -27,6 +29,7 @@ import static org.shallow.api.MappedFileConstants.Type.APPEND;
 import static org.shallow.util.DateUtil.date2String;
 import static org.shallow.util.DateUtil.date2TimeMillis;
 import static org.shallow.util.JsonUtil.object2Json;
+import static org.shallow.util.NetworkUtil.switchSocketAddress;
 import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class ClusterMetadataProvider {
@@ -35,15 +38,17 @@ public class ClusterMetadataProvider {
     private final EventExecutor cacheExecutor;
     private final EventExecutor apiExecutor;
     private final MappedFileAPI api;
+    private final ClusterListener listener;
     private final MetadataConfig config;
     private final LoadingCache<String, Set<CacheNode>> activeNodes;
     private final LoadingCache<String, Set<CacheNode>> inactiveNodes;
 
-    public ClusterMetadataProvider(MetadataConfig config, MappedFileAPI api, EventExecutorGroup group) {
+    public ClusterMetadataProvider(MetadataConfig config, MappedFileAPI api, EventExecutorGroup group, ClusterListener listener) {
         this.api = api;
         this.cacheExecutor = group.next();
         this.apiExecutor = group.next();
         this.config = config;
+        this.listener = listener;
 
         this.activeNodes = Caffeine.newBuilder()
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
@@ -179,6 +184,7 @@ public class ClusterMetadataProvider {
 
     private void doWrite2CacheAndFile(String cluster, String name, String host, int port, Promise<RegisterNodeResponse> promise) {
         final Set<CacheNode> clusterNodes = activeNodes.get(cluster);
+
         final Date now = new Date();
         final String time = date2String(now);
         clusterNodes.add(new CacheNode(cluster, name, host, port, time, time));
@@ -198,7 +204,9 @@ public class ClusterMetadataProvider {
                 logger.error("[doWrite2CacheAndFile] - failed to write node info to file, host={} port={}, cause:{}", host, port, t);
             }
             promise.tryFailure(t);
-      }
+        }
+
+        listener.onJoin(name, host, port);
     }
 
     public Map<String, Set<CacheNode>> getAllClusters() {

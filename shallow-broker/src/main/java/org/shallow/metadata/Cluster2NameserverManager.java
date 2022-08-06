@@ -5,9 +5,9 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.shallow.ClientConfig;
-import org.shallow.internal.BrokerConfig;
+import org.shallow.internal.config.BrokerConfig;
 import org.shallow.internal.BrokerManager;
+import org.shallow.internal.config.Client2NameserverConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -35,11 +35,11 @@ public class Cluster2NameserverManager {
 
     private final BrokerManager manager;
     private final BrokerConfig config;
-    private final ClientConfig clientConfig;
+    private final Client2NameserverConfig clientConfig;
     private final ShallowChannelPool pool;
     private final LoadingCache<String, Set<Node>> nodeCaches;
 
-    public Cluster2NameserverManager(BrokerManager manager, ClientConfig clientConfig, BrokerConfig config) {
+    public Cluster2NameserverManager(BrokerManager manager, Client2NameserverConfig clientConfig, BrokerConfig config) {
         this.manager = manager;
         this.config = config;
         this.clientConfig = clientConfig;
@@ -61,7 +61,7 @@ public class Cluster2NameserverManager {
         // start populating the cluster node cache information from file</workDirectory/cluster.json>
         nodeCaches.get(config.getClusterName());
 
-        new HeartBeat(socketAddresses);
+        new Heartbeat(socketAddresses);
     }
 
     public void register2Nameserver(List<SocketAddress> socketAddresses) throws Exception {
@@ -80,16 +80,16 @@ public class Cluster2NameserverManager {
                         logger.info("The node<name={} host={} port={}> join the cluster<{}> successfully", config.getServerId(), host, port, config.getClusterName());
                     }
                 } else {
-                    throw new RuntimeException(String.format("The node<name=%s host=%s port=%s> failed to join the cluster<%s>", config.getServerId(), host, port, config.getClusterName()));
+                    throw new RuntimeException(String.format("The node<name=%s host=%s port=%s> failed to join the cluster<%s>. cause: %s", config.getServerId(), host, port, config.getClusterName(), f.cause()));
                 }
             });
             write2Nameserver(socketAddresses, host, port, promise);
         }).start();
 
         try {
-            promise.get(clientConfig.getDefaultInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+            promise.get(clientConfig.getDefaultInvokeExpiredMs(), TimeUnit.SECONDS);
         } catch (Exception e) {
-            throw new RuntimeException(String.format("The node<name=%s host=%s port=%s> failed to join the cluster<%s>", config.getServerId(), host, port, config.getClusterName()));
+            throw new RuntimeException(String.format("The node<name=%s host=%s port=%s> failed to join the cluster<%s>. cause: %s", config.getServerId(), host, port, config.getClusterName(), e));
         }
     }
 
@@ -138,20 +138,20 @@ public class Cluster2NameserverManager {
         }
     }
 
-    private class HeartBeat {
+    private class Heartbeat {
         private final List<SocketAddress> addresses;
         private final ScheduledExecutorService heartBeatTaskExecutor =
                 Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heart-single-pool"));
 
-        public HeartBeat(List<SocketAddress> socketAddresses) {
+        public Heartbeat(List<SocketAddress> socketAddresses) {
             this.addresses = socketAddresses;
 
             heartBeatTaskExecutor.scheduleWithFixedDelay(() -> {
-                registerHeartBeatScheduledTask(addresses);
+                registerHeartbeatScheduledTask(addresses);
             }, 5000, config.getHeartSendIntervalTimeMs(), TimeUnit.MILLISECONDS);
         }
 
-        private void registerHeartBeatScheduledTask(List<SocketAddress> socketAddresses) {
+        private void registerHeartbeatScheduledTask(List<SocketAddress> socketAddresses) {
 
             final SocketAddress address = socketAddresses.parallelStream().findAny().orElse(null);
             NodeMetadata nodeMetadata = NodeMetadata
@@ -172,7 +172,7 @@ public class Cluster2NameserverManager {
                 if (!future.isSuccess()) {
                     // alert to organization group
                     if (logger.isWarnEnabled()) {
-                        logger.warn("[doHeartBeta] - failed to keep nameserver, trg again later");
+                        logger.warn("[doHeartBeta] - failed to keep nameserver, trg again later. cause:{}", future.cause());
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
@@ -183,7 +183,7 @@ public class Cluster2NameserverManager {
             });
 
             ClientChannel requestChannel = pool.acquireHealthyOrNew(address);
-            requestChannel.invoker().invoke(HEART_BEAT, clientConfig.getDefaultInvokeExpiredMs(), promise, request, HeartBeatResponse.class);
+            requestChannel.invoker().invoke(HEARTBEAT, clientConfig.getDefaultInvokeExpiredMs(), promise, request, HeartBeatResponse.class);
         }
     }
 }

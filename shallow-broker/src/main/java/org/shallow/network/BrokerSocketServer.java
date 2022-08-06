@@ -4,7 +4,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.shallow.internal.BrokerConfig;
+import org.shallow.internal.config.BrokerConfig;
 import org.shallow.internal.BrokerManager;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;

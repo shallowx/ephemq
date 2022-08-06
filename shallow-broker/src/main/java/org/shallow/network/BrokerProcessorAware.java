@@ -58,10 +58,10 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         }
 
                         Promise<CreateTopicResponse> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                        promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
                             if (f.isSuccess()) {
                                 if (isNotNull(answer)) {
-                                    answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                    answer.success(proto2Buf(channel.alloc(), f.get()));
                                 }
                             } else {
                                 answerFailed(answer, f.cause());
@@ -83,7 +83,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         promise.addListener((GenericFutureListener<Future<DelTopicResponse>>) f -> {
                             if (f.isSuccess()) {
                                 if (isNotNull(answer)) {
-                                    answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                    answer.success(proto2Buf(channel.alloc(), f.get()));
                                 }
                             } else {
                                 answerFailed(answer, f.cause());

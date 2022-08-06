@@ -3,7 +3,10 @@ package org.shallow.internal;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
-import org.shallow.ClientConfig;
+import org.shallow.internal.client.Client2Broker;
+import org.shallow.internal.client.Client2Nameserver;
+import org.shallow.internal.config.BrokerConfig;
+import org.shallow.internal.config.Client2NameserverConfig;
 import org.shallow.metadata.Cluster2NameserverManager;
 import org.shallow.metadata.Topic2NameserverManager;
 import org.shallow.meta.TopicManager;
@@ -15,21 +18,22 @@ import static org.shallow.util.ObjectUtil.isNotNull;
 public class DefaultBrokerManager implements BrokerManager {
 
     private final BrokerConfig config;
-    private final NameserverInternalClient nameserverInternalClient;
-    private final BrokerInternalClient brokerInternalClient;
+    private final Client2Nameserver nameserverInternalClient;
+    private final Client2Broker brokerInternalClient;
     private final Topic2NameserverManager topic2NameserverManager;
     private Cluster2NameserverManager cluster2NameManager;
     private TopicManager topicManager;
-    private final ClientConfig clientConfig;
+    private final Client2NameserverConfig clientConfig;
 
     public DefaultBrokerManager(BrokerConfig config) {
         this.config = config;
 
-        clientConfig = new ClientConfig();
+        clientConfig = new Client2NameserverConfig();
         clientConfig.setChannelPoolCapacity(config.getInternalChannelPoolLimit());
         clientConfig.setBootstrapSocketAddress(Arrays.stream(config.getNameserverUrl().split(",")).toList());
-        this.nameserverInternalClient = new NameserverInternalClient("nameserver-internal-client", clientConfig, this);
-        this.brokerInternalClient = new BrokerInternalClient("broker-internal-client", clientConfig, this);
+
+        this.nameserverInternalClient = new Client2Nameserver("nameserver-internal-client", clientConfig, this);
+        this.brokerInternalClient = new Client2Broker("broker-internal-client", clientConfig, this);
         this.topic2NameserverManager = new Topic2NameserverManager(clientConfig, this);
     }
 
@@ -49,7 +53,7 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public NameserverInternalClient getInternalClient() {
+    public Client2Nameserver getInternalClient() {
         return nameserverInternalClient;
     }
 

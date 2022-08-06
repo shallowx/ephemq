@@ -1,11 +1,17 @@
 package org.shallow.network;
 
+import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import org.shallow.nraft.LeaderElector;
+import org.shallow.proto.elector.RaftHeartbeatRequest;
+import org.shallow.proto.elector.RaftHeartbeatResponse;
+import org.shallow.proto.elector.VoteRequest;
+import org.shallow.proto.elector.VoteResponse;
 import org.shallow.proto.server.*;
 import org.shallow.provider.ClusterMetadataProvider;
 import org.shallow.internal.MetadataManager;
@@ -30,11 +36,13 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
     private final EventExecutor commandEventExecutor;
     private final TopicMetadataProvider topicMetadataProvider;
     private final ClusterMetadataProvider clusterMetadataProvider;
+    private final LeaderElector leaderElector;
 
     public MetadataProcessorAware(MetadataManager metaManager) {
         this.commandEventExecutor = metaManager.commandEventExecutorGroup().next();
         this.topicMetadataProvider = metaManager.getTopicMetadataProvider();
         this.clusterMetadataProvider = metaManager.getClusterMetadataProvider();
+        this.leaderElector = metaManager.getLeaderElector();
     }
 
     @Override
@@ -58,11 +66,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                                 final int partitions = request.getPartitions();
                                 final int latency = request.getLatency();
 
-                                Promise<CreateTopicResponse> promise = newImmediatePromise();
+                                final Promise<CreateTopicResponse> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
                                     if (f.isSuccess()) {
                                         if (isNotNull(answer)) {
-                                            answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                            answer.success(proto2Buf(channel.alloc(), f.get()));
                                         }
                                     } else {
                                         answerFailed(answer, f.cause());
@@ -89,11 +97,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                             try {
                                 final String topic = request.getTopic();
 
-                                Promise<DelTopicResponse> promise = newImmediatePromise();
-                                promise.addListener((GenericFutureListener<Future<Object>>) f -> {
+                                final Promise<DelTopicResponse> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<DelTopicResponse>>) f -> {
                                     if (f.isSuccess()) {
                                         if (isNotNull(answer)) {
-                                            answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                            answer.success(proto2Buf(channel.alloc(), f.get()));
                                         }
                                     } else {
                                         answerFailed(answer, f.cause());
@@ -118,11 +126,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
                         commandEventExecutor.execute(() -> {
                             final NodeMetadata node = request.getMetadata();
-                            Promise<RegisterNodeResponse> promise = newImmediatePromise();
+                            final Promise<RegisterNodeResponse> promise = newImmediatePromise();
                             promise.addListener((GenericFutureListener<Future<RegisterNodeResponse>>) f -> {
                                 if (f.isSuccess()) {
                                     if (isNotNull(answer)) {
-                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                        answer.success(proto2Buf(channel.alloc(), f.get()));
                                     }
                                 } else {
                                     answerFailed(answer, f.cause());
@@ -139,16 +147,16 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                     }
                 }
 
-                case HEART_BEAT -> {
+                case HEARTBEAT -> {
                     try {
                         final RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
                         commandEventExecutor.execute(() -> {
                             final NodeMetadata node = request.getMetadata();
-                            Promise<HeartBeatResponse> promise = newImmediatePromise();
+                            final Promise<HeartBeatResponse> promise = newImmediatePromise();
                             promise.addListener((GenericFutureListener<Future<HeartBeatResponse>>) f -> {
                                 if (f.isSuccess()) {
                                     if (isNotNull(answer)) {
-                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                        answer.success(proto2Buf(channel.alloc(), f.get()));
                                     }
                                 } else {
                                     answerFailed(answer, f.cause());
@@ -169,11 +177,11 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         final QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
                         commandEventExecutor.execute(() -> {
                             final String cluster = request.getCluster();
-                            Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
+                            final Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
                             promise.addListener((GenericFutureListener<Future<QueryClusterNodeResponse>>) f -> {
                                 if (f.isSuccess()) {
                                     if (isNotNull(answer)) {
-                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                        answer.success(proto2Buf(channel.alloc(), f.get()));
                                     }
                                 } else {
                                     answerFailed(answer, f.cause());
@@ -194,17 +202,70 @@ public class MetadataProcessorAware implements ProcessorAware, ProcessCommand.Na
                         final QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
                         commandEventExecutor.execute(() -> {
                             final String topic = request.getTopic();
-                            Promise<QueryTopicInfoResponse> promise = newImmediatePromise();
+                            final Promise<QueryTopicInfoResponse> promise = newImmediatePromise();
                             promise.addListener((GenericFutureListener<Future<QueryTopicInfoResponse>>) f -> {
                                 if (f.isSuccess()) {
                                     if (isNotNull(answer)) {
-                                        answer.success(proto2Buf(channel.alloc(), promise.get()));
+                                        answer.success(proto2Buf(channel.alloc(), f.get()));
                                     }
                                 } else {
                                     answerFailed(answer, f.cause());
                                 }
                             });
                             topicMetadataProvider.getTopicInfo(topic);
+                        });
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
+                    }
+                }
+
+                case VOTE -> {
+                    try {
+                        final VoteRequest request = readProto(data, VoteRequest.parser());
+                        final int term = request.getTerm();
+                        commandEventExecutor.execute(() -> {
+                            final Promise<? super MessageLite> promise = newImmediatePromise();
+                            promise.addListener(f -> {
+                                if (f.isSuccess()) {
+                                    if (isNotNull(answer)) {
+                                        final VoteResponse response = (VoteResponse) f.get();
+                                        answer.success(proto2Buf(channel.alloc(), response));
+                                    }
+                                } else {
+                                    answerFailed(answer, f.cause());
+                                }
+                            });
+
+                            leaderElector.respond(term, promise);
+                        });
+                    } catch (Throwable cause) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("[nameserver process]<{}> - command [{}] cause:{}", switchAddress(channel), command, cause);
+                        }
+                        answerFailed(answer, cause);
+                    }
+                }
+
+                case RAFT_HEARTBEAT -> {
+                    try {
+                        final RaftHeartbeatRequest request = readProto(data, RaftHeartbeatRequest.parser());
+                        commandEventExecutor.execute(() -> {
+                            final Promise<RaftHeartbeatResponse> promise = newImmediatePromise();
+                            promise.addListener((GenericFutureListener<Future<RaftHeartbeatResponse>>) f -> {
+                                if (f.isSuccess()) {
+                                    if (isNotNull(answer)) {
+                                        answer.success(proto2Buf(channel.alloc(), f.get()));
+                                    }
+                                } else {
+                                    answerFailed(answer, f.cause());
+                                }
+                            });
+                            promise.trySuccess(RaftHeartbeatResponse.newBuilder().build());
+
+                            leaderElector.keepHeartbeat();
                         });
                     } catch (Throwable cause) {
                         if (logger.isErrorEnabled()) {
