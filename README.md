@@ -17,7 +17,7 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/thread_model.png)
 
-# Protocol
+# Metadata
 - Leader election protocol: Raft
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/metadata.png)
