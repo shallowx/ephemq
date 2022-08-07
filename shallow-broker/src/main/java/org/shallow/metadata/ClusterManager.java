@@ -13,12 +13,11 @@ import org.shallow.meta.Node;
 import org.shallow.pool.DefaultChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.proto.server.*;
+import org.shallow.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 import static org.shallow.util.ObjectUtil.isNull;
@@ -85,8 +84,9 @@ public class ClusterManager {
 
     private class Heartbeat {
         private final List<SocketAddress> addresses;
-        private final ScheduledExecutorService heartBeatTaskExecutor =
-                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heart-single-pool"));
+
+        private final EventExecutor heartBeatTaskExecutor =
+                NetworkUtil.newEventExecutorGroup(1, "heart-single-pool").next();
 
         public Heartbeat(List<SocketAddress> socketAddresses) {
             this.addresses = socketAddresses;
