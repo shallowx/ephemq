@@ -1,4 +1,4 @@
-package org.shallow.hook;
+package org.shallow;
 
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;

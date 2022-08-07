@@ -2,7 +2,6 @@ package org.shallow;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.shallow.hook.ShutdownHook;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.internal.BrokerServer;
 import org.shallow.logging.InternalLogger;

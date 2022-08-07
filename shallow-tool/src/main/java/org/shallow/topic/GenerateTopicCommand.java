@@ -8,12 +8,12 @@ import org.shallow.SubCommand;
 public class GenerateTopicCommand implements SubCommand {
     @Override
     public String name() {
-        return "GenerateTopic";
+        return "createTopic";
     }
 
     @Override
     public String desc() {
-        return "generate topic";
+        return "Create the topic";
     }
 
     @Override

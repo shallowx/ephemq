@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 
@@ -38,18 +39,18 @@ public class DynamicChannelPool implements ShallowChannelPool {
         this.bootstrap = bootstrap;
         this.config = config;
         this.channelPools = new ConcurrentHashMap<>(config.getBootstrapSocketAddress().size());
-        this.assembleChannels = new ConcurrentHashMap<>(config.getBootstrapSocketAddress().size() * config.getChannelPoolCapacity());
+        this.assembleChannels = new ConcurrentHashMap<>(config.getBootstrapSocketAddress().size() * config.getChannelFixedPoolCapacity());
         this.healthChecker = healthChecker;
         this.bootstrapAddress = constructBootstrap();
     }
 
     private List<SocketAddress> constructBootstrap() {
-        return ObjectUtil.checkNotNull(switchSocketAddress(config.getBootstrapSocketAddress()), "Bootstrap address cannot be null");
+        return ObjectUtil.checkNotNull(switchSocketAddress(config.getBootstrapSocketAddress()), "Client bootstrap address cannot be empty");
     }
 
     private void constructChannel(SocketAddress address) {
         final List<Future<ClientChannel>> futures = channelPools.computeIfAbsent(address, v -> new CopyOnWriteArrayList<>());
-        final int stuff = futures.isEmpty() ? config.getChannelPoolCapacity() : (config.getChannelPoolCapacity() - futures.size());
+        final int stuff = futures.isEmpty() ? config.getChannelFixedPoolCapacity() : (config.getChannelFixedPoolCapacity() - futures.size());
         for (int i = 0; i < stuff; i++) {
             final Future<ClientChannel> future = newChannel(address);
             futures.add(future);
@@ -66,7 +67,7 @@ public class DynamicChannelPool implements ShallowChannelPool {
         try {
             return acquireHealthyOrNew0(address).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
         } catch (Throwable t) {
-            throw new RuntimeException("[Acquire] - failed to acquire health channel from pool", t);
+            throw new RuntimeException("Failed to get healthy channel from pool", t);
         }
     }
 
@@ -75,7 +76,7 @@ public class DynamicChannelPool implements ShallowChannelPool {
         try {
             return acquireHealthyOrNew0(null).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
         } catch (Throwable t) {
-            throw new RuntimeException("[Acquire] - failed to acquire random health channel from pool", t);
+            throw new RuntimeException("Failed to get healthy channel randomly from pool", t);
         }
     }
 
@@ -129,8 +130,8 @@ public class DynamicChannelPool implements ShallowChannelPool {
         Promise<ClientChannel> promise = assemblePromise(channel);
         connectFuture.addListener(f -> {
             if (!f.isSuccess()) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Failed to new channel", f.cause());
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to new channel with cause:{}", f.cause());
                 }
                 promise.tryFailure(f.cause());
                 assembleChannels.remove(channel.id().asLongText());
@@ -138,7 +139,7 @@ public class DynamicChannelPool implements ShallowChannelPool {
         });
 
         channel.closeFuture().addListener((ChannelFutureListener) f -> {
-            promise.tryFailure(new IllegalStateException("Channel is closed"));
+            promise.tryFailure(new IllegalStateException(String.format("Channel<%s> was closed", f.channel().toString())));
             assembleChannels.remove(f.channel().id().asLongText());
         }) ;
         return promise;
@@ -147,9 +148,5 @@ public class DynamicChannelPool implements ShallowChannelPool {
     @Override
     public Promise<ClientChannel> assemblePromise(Channel channel) {
         return assembleChannels.computeIfAbsent(channel.id().asLongText(), v -> newImmediatePromise());
-    }
-
-    private <T> Promise<T> newImmediatePromise(){
-        return ImmediateEventExecutor.INSTANCE.newPromise();
     }
 }

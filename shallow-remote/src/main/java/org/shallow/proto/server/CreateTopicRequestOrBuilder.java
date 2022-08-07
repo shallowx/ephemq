@@ -26,8 +26,20 @@ public interface CreateTopicRequestOrBuilder extends
   int getPartitions();
 
   /**
-   * <code>int32 latency = 3;</code>
-   * @return The latency.
+   * <code>int32 latencies = 3;</code>
+   * @return The latencies.
    */
-  int getLatency();
+  int getLatencies();
+
+  /**
+   * <code>string cluster = 4;</code>
+   * @return The cluster.
+   */
+  java.lang.String getCluster();
+  /**
+   * <code>string cluster = 4;</code>
+   * @return The bytes for cluster.
+   */
+  com.google.protobuf.ByteString
+      getClusterBytes();
 }

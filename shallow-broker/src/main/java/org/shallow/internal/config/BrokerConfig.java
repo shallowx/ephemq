@@ -11,8 +11,8 @@ public class BrokerConfig {
 
     private static final String SERVER_ID = "shallow.server.id";
     private static final String CLUSTER_NAME = "shallow.cluster";
-    private static final String IO_THREAD_WHOLES = "shallow.io.thread.wholes";
-    private static final String WORK_THREAD_WHOLES = "shallow.network.thread.wholes";
+    private static final String IO_THREAD_LIMIT = "shallow.io.thread.limit";
+    private static final String WORK_THREAD_LIMIT = "shallow.network.thread.limit";
     private static final String OS_IS_EPOLL_PREFER= "shallow.os.epoll.prefer";
     private static final String SOCKET_WRITE_HIGH_WATER_MARK = "shallow.socket.write.high.water.mark";
     private static final String EXPOSED_HOST = "shallow.exposed.host";
@@ -38,12 +38,12 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(SERVER_ID, "shallow"));
     }
 
-    public int getIoThreadWholes(){
-        return object2Int(config.getOrDefault(IO_THREAD_WHOLES, 1));
+    public int getIoThreadLimit(){
+        return object2Int(config.getOrDefault(IO_THREAD_LIMIT, 1));
     }
 
-    public int getNetworkThreadWholes(){
-        return object2Int(config.getOrDefault(WORK_THREAD_WHOLES, availableProcessor()));
+    public int getNetworkThreadLimit(){
+        return object2Int(config.getOrDefault(WORK_THREAD_LIMIT, availableProcessor()));
     }
 
     public boolean isOsEpollPrefer(){

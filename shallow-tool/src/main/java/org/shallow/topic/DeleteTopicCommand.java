@@ -13,7 +13,7 @@ public class DeleteTopicCommand implements SubCommand {
 
     @Override
     public String desc() {
-        return "delete the topic";
+        return "Delete the topic";
     }
 
     @Override

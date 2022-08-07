@@ -30,8 +30,8 @@ public final class BrokerSocketServer {
     }
 
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(config.isOsEpollPrefer(), config.getIoThreadWholes(), "server-acceptor");
-        workGroup = newEventLoopGroup(config.isOsEpollPrefer(), config.getNetworkThreadWholes(), "server-processor");
+        bossGroup = newEventLoopGroup(config.isOsEpollPrefer(), config.getIoThreadLimit(), "server-acceptor");
+        workGroup = newEventLoopGroup(config.isOsEpollPrefer(), config.getNetworkThreadLimit(), "server-processor");
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)

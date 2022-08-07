@@ -89,29 +89,30 @@ public final class ServerProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\014server.proto\022\020shallow.protobuf\032\rshallo" +
-      "w.proto\"H\n\022CreateTopicRequest\022\r\n\005topic\030\001" +
-      " \001(\t\022\022\n\npartitions\030\002 \001(\005\022\017\n\007latency\030\003 \001(" +
-      "\005\"V\n\023CreateTopicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n" +
-      "\005topic\030\002 \001(\t\022\022\n\npartitions\030\003 \001(\005\022\017\n\007late" +
-      "ncy\030\004 \001(\005\" \n\017DelTopicRequest\022\r\n\005topic\030\001 " +
-      "\001(\t\".\n\020DelTopicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n\005" +
-      "topic\030\002 \001(\t\"X\n\023RegisterNodeRequest\022\017\n\007cl" +
-      "uster\030\001 \001(\t\0220\n\010metadata\030\002 \001(\0132\036.shallow." +
-      "protobuf.NodeMetadata\"\026\n\024RegisterNodeRes" +
-      "ponse\"U\n\020HeartBeatRequest\022\017\n\007cluster\030\001 \001" +
-      "(\t\0220\n\010metadata\030\002 \001(\0132\036.shallow.protobuf." +
-      "NodeMetadata\"@\n\021HeartBeatResponse\022\017\n\007clu" +
-      "ster\030\001 \001(\t\022\014\n\004host\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\"*" +
-      "\n\027QueryClusterNodeRequest\022\017\n\007cluster\030\001 \001" +
-      "(\t\"I\n\030QueryClusterNodeResponse\022-\n\005nodes\030" +
-      "\001 \003(\0132\036.shallow.protobuf.NodeMetadata\"&\n" +
-      "\025QueryTopicInfoRequest\022\r\n\005topic\030\001 \001(\t\"\256\001" +
-      "\n\026QueryTopicInfoResponse\022D\n\006topics\030\001 \003(\013" +
-      "24.shallow.protobuf.QueryTopicInfoRespon" +
-      "se.TopicsEntry\032N\n\013TopicsEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022.\n\005value\030\002 \001(\0132\037.shallow.protobuf.Top" +
-      "icMetadata:\0028\001B)\n\030org.shallow.proto.serv" +
-      "erB\013ServerProtoP\001b\006proto3"
+      "w.proto\"[\n\022CreateTopicRequest\022\r\n\005topic\030\001" +
+      " \001(\t\022\022\n\npartitions\030\002 \001(\005\022\021\n\tlatencies\030\003 " +
+      "\001(\005\022\017\n\007cluster\030\004 \001(\t\"X\n\023CreateTopicRespo" +
+      "nse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\022\022\n\nparti" +
+      "tions\030\003 \001(\005\022\021\n\tlatencies\030\004 \001(\005\" \n\017DelTop" +
+      "icRequest\022\r\n\005topic\030\001 \001(\t\".\n\020DelTopicResp" +
+      "onse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"X\n\023Regi" +
+      "sterNodeRequest\022\017\n\007cluster\030\001 \001(\t\0220\n\010meta" +
+      "data\030\002 \001(\0132\036.shallow.protobuf.NodeMetada" +
+      "ta\"\026\n\024RegisterNodeResponse\"U\n\020HeartBeatR" +
+      "equest\022\017\n\007cluster\030\001 \001(\t\0220\n\010metadata\030\002 \001(" +
+      "\0132\036.shallow.protobuf.NodeMetadata\"@\n\021Hea" +
+      "rtBeatResponse\022\017\n\007cluster\030\001 \001(\t\022\014\n\004host\030" +
+      "\002 \001(\t\022\014\n\004port\030\003 \001(\005\"*\n\027QueryClusterNodeR" +
+      "equest\022\017\n\007cluster\030\001 \001(\t\"I\n\030QueryClusterN" +
+      "odeResponse\022-\n\005nodes\030\001 \003(\0132\036.shallow.pro" +
+      "tobuf.NodeMetadata\"&\n\025QueryTopicInfoRequ" +
+      "est\022\r\n\005topic\030\001 \001(\t\"\256\001\n\026QueryTopicInfoRes" +
+      "ponse\022D\n\006topics\030\001 \003(\01324.shallow.protobuf" +
+      ".QueryTopicInfoResponse.TopicsEntry\032N\n\013T" +
+      "opicsEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037" +
+      ".shallow.protobuf.TopicMetadata:\0028\001B)\n\030o" +
+      "rg.shallow.proto.serverB\013ServerProtoP\001b\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -123,13 +124,13 @@ public final class ServerProto {
     internal_static_shallow_protobuf_CreateTopicRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_CreateTopicRequest_descriptor,
-        new java.lang.String[] { "Topic", "Partitions", "Latency", });
+        new java.lang.String[] { "Topic", "Partitions", "Latencies", "Cluster", });
     internal_static_shallow_protobuf_CreateTopicResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_shallow_protobuf_CreateTopicResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_CreateTopicResponse_descriptor,
-        new java.lang.String[] { "Ack", "Topic", "Partitions", "Latency", });
+        new java.lang.String[] { "Ack", "Topic", "Partitions", "Latencies", });
     internal_static_shallow_protobuf_DelTopicRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_shallow_protobuf_DelTopicRequest_fieldAccessorTable = new

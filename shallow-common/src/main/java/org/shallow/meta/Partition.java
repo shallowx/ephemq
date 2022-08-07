@@ -7,19 +7,14 @@ import java.util.Objects;
 public class Partition {
 
     private int id;
-    private int partitions;
     private int latency;
     private String leader;
     private SocketAddress leaderAddress;
     private List<String> latencies;
     private List<SocketAddress> latenciesAddress;
 
-    public Partition() {
-    }
-
-    public Partition(int id, int partitions, int latency, String leader, SocketAddress leaderAddress, List<String> latencies, List<SocketAddress> latenciesAddress) {
+    public Partition(int id, int latency, String leader, SocketAddress leaderAddress, List<String> latencies, List<SocketAddress> latenciesAddress) {
         this.id = id;
-        this.partitions = partitions;
         this.latency = latency;
         this.leader = leader;
         this.leaderAddress = leaderAddress;
@@ -33,14 +28,6 @@ public class Partition {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getPartitions() {
-        return partitions;
-    }
-
-    public void setPartitions(int partitions) {
-        this.partitions = partitions;
     }
 
     public int getLatency() {
@@ -86,20 +73,20 @@ public class Partition {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Partition that)) return false;
-        return getId() == that.getId();
+        if (!(o instanceof Partition)) return false;
+        Partition partition = (Partition) o;
+        return getId() == partition.getId() && getLatency() == partition.getLatency();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getId(), getLatency());
     }
 
     @Override
     public String toString() {
-        return "PartitionInfo{" +
+        return "Partition{" +
                 "id=" + id +
-                ", partitions=" + partitions +
                 ", latency=" + latency +
                 ", leader='" + leader + '\'' +
                 ", leaderAddress=" + leaderAddress +

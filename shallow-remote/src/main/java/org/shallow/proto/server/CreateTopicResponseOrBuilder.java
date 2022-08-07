@@ -32,8 +32,8 @@ public interface CreateTopicResponseOrBuilder extends
   int getPartitions();
 
   /**
-   * <code>int32 latency = 4;</code>
-   * @return The latency.
+   * <code>int32 latencies = 4;</code>
+   * @return The latencies.
    */
-  int getLatency();
+  int getLatencies();
 }

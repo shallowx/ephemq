@@ -1,0 +1,97 @@
+package org.shallow.meta;
+
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.ScheduledFuture;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.shallow.ClientConfig;
+import org.shallow.invoke.ClientChannel;
+import org.shallow.logging.InternalLogger;
+import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.pool.DefaultChannelPoolFactory;
+import org.shallow.pool.ShallowChannelPool;
+import org.shallow.processor.ProcessCommand;
+import org.shallow.proto.server.CreateTopicRequest;
+import org.shallow.proto.server.CreateTopicResponse;
+import org.shallow.proto.server.DelTopicRequest;
+import org.shallow.proto.server.DelTopicResponse;
+import org.shallow.util.NetworkUtil;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.shallow.util.NetworkUtil.newImmediatePromise;
+
+public class MetadataManager implements ProcessCommand.Server {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataManager.class);
+
+    private final ShallowChannelPool pool;
+    private final ClientConfig config;
+    private final LoadingCache<String, Partition> topics;
+    private final LoadingCache<String, Node> clusters;
+    private final EventExecutor scheduledMetadataTask;
+
+    public MetadataManager(ClientConfig config) {
+        this.pool = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool();
+        this.config = config;
+
+        this.topics = Caffeine.newBuilder().build(new CacheLoader<>() {
+            @Override
+            public @Nullable Partition load(String key) throws Exception {
+                return null;
+            }
+        });
+
+        this.clusters = Caffeine.newBuilder().build(new CacheLoader<>() {
+            @Override
+            public @Nullable Node load(String key) throws Exception {
+                return null;
+            }
+        });
+        this.scheduledMetadataTask = NetworkUtil.newEventExecutorGroup(1, "metadata-task").next();
+    }
+
+    public void start() throws Exception{
+        scheduledMetadataTask.scheduleAtFixedRate(this::refreshMetadata, 0,
+                config.getRefreshMetadataIntervalMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public Promise<CreateTopicResponse> createTopic(byte command, String topic, int partitions, int latency) {
+        CreateTopicRequest request = CreateTopicRequest.newBuilder()
+                .setTopic(topic)
+                .setLatencies(latency)
+                .setPartitions(partitions)
+                .build();
+
+        Promise<CreateTopicResponse> promise = newImmediatePromise();
+        ClientChannel channel = pool.acquireWithRandomly();
+        channel.invoker().invoke(command, config.getInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
+
+        return promise;
+    }
+
+    public Promise<DelTopicResponse> delTopic(byte command, String topic) {
+        DelTopicRequest request = DelTopicRequest.newBuilder().setTopic(topic).build();
+
+        Promise<DelTopicResponse> promise = newImmediatePromise();
+
+        ClientChannel channel = pool.acquireWithRandomly();
+        channel.invoker().invoke(command, config.getInvokeExpiredMs(), promise, request, DelTopicResponse.class);
+
+        return promise;
+    }
+
+    public void queryTopicInfo() {
+
+    }
+
+    public void queryNodeInfo() {
+
+    }
+
+    private void refreshMetadata() {
+
+    }
+}

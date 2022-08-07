@@ -13,7 +13,7 @@ public class ClusterCommand implements SubCommand {
 
     @Override
     public String desc() {
-        return "fetch cluster metadata";
+        return "Query cluster metadata";
     }
 
     @Override

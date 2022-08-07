@@ -3,7 +3,7 @@ package org.shallow;
 import io.netty.util.concurrent.Promise;
 import org.junit.Assert;
 import org.junit.Test;
-import org.shallow.meta.TopicManager;
+import org.shallow.meta.MetadataManager;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 
@@ -22,7 +22,7 @@ public class TopicTests {
         Client client = new Client("Client", clientConfig);
         client.start();
 
-        TopicManager topicManager = new TopicManager(clientConfig);
+        MetadataManager topicManager = new MetadataManager(clientConfig);
         Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "test-timeout", 1, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
@@ -42,7 +42,7 @@ public class TopicTests {
         Client client = new Client("Client", clientConfig);
         client.start();
 
-        TopicManager topicManager = new TopicManager(clientConfig);
+        MetadataManager topicManager = new MetadataManager(clientConfig);
         Promise<DelTopicResponse> promise = topicManager.delTopic(DELETE_TOPIC, "test-create");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 

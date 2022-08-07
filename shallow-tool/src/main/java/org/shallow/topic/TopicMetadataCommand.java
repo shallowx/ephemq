@@ -13,7 +13,7 @@ public class TopicMetadataCommand implements SubCommand {
 
     @Override
     public String desc() {
-        return "fetch the topic metadata";
+        return "Query the topic metadata";
     }
 
     @Override

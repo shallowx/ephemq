@@ -11,7 +11,7 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.metadata.Topic2NameserverManager;
+import org.shallow.metadata.TopicManager;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.server.CreateTopicRequest;
@@ -51,10 +51,10 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
                         final String topic = request.getTopic();
                         final int partitions = request.getPartitions();
-                        final int latency = request.getLatency();
+                        final int latencies = request.getLatencies();
 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("[broker server process] - topic<{}> partitions<{}> latency<{}>", topic, partitions, latency);
+                            logger.debug("The topic<{}> partitions<{}> latency<{}>", topic, partitions, latencies);
                         }
 
                         Promise<CreateTopicResponse> promise = newImmediatePromise();
@@ -68,8 +68,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        Topic2NameserverManager topic2NameserverManager = manager.getTopic2NameserverManager();
-                        topic2NameserverManager.write2Nameserver(topic, partitions, latency, promise);
                     } catch (Exception e) {
                         answerFailed(answer, e);
                     }
@@ -90,8 +88,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        Topic2NameserverManager topic2NameserverManager = manager.getTopic2NameserverManager();
-                        topic2NameserverManager.delFormNameserver(topic, promise);
                     } catch (Exception e) {
                         answerFailed(answer, e);
                     }
@@ -102,14 +98,14 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case FETCH_TOPIC_INFO -> {}
                 default -> {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("[broker server process] <{}> - not supported command [{}]", switchAddress(channel), command);
+                        logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
                     }
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
                 }
             }
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
-                logger.error("[broker server process]<{}> - command [{}]", switchAddress(channel), command);
+                logger.error("Channel<{}> - command [{}]", switchAddress(channel), command);
             }
             answerFailed(answer, cause);
         }

@@ -17,12 +17,10 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/thread_model.png)
 
-# Nameserver
+# Protocol
 - Leader election protocol: Raft
-- Function: Cluster management、Metadata management
-- Nameserver admin: VUI(Visual User Interface)
 
-![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/nameserver_architecture.png)
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/metadata.png)
 
 # Environment
 

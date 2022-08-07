@@ -9,12 +9,13 @@ public class ClientConfig {
     private boolean isEpollPrefer = false;
     private int workThreadWholes = availableProcessor();
     private long connectTimeOutMs = 5000;
-    private int channelPoolCapacity = 1;
+    private int channelFixedPoolCapacity = 1;
     private int dnsTtlMinExpiredMs = 30;
     private int dnsTtlMaxExpiredSeconds = 300;
     private int negativeTtlSeconds = 30;
     private int ChannelInvokerSemaphore = 2000;
-    private int defaultInvokeExpiredMs = 10000;
+    private int invokeExpiredMs = 5000;
+    private int refreshMetadataIntervalMs = 5000;
 
     private int availableProcessor() {
         return Runtime.getRuntime().availableProcessors();
@@ -42,14 +43,6 @@ public class ClientConfig {
 
     public void setNegativeTtlSeconds(int negativeTtlSeconds) {
         this.negativeTtlSeconds = negativeTtlSeconds;
-    }
-
-    public int getChannelPoolCapacity() {
-        return channelPoolCapacity;
-    }
-
-    public void setChannelPoolCapacity(int channelPoolCapacity) {
-        this.channelPoolCapacity = channelPoolCapacity;
     }
 
     public long getConnectTimeOutMs() {
@@ -92,11 +85,27 @@ public class ClientConfig {
         ChannelInvokerSemaphore = channelInvokerSemaphore;
     }
 
-    public int getDefaultInvokeExpiredMs() {
-        return defaultInvokeExpiredMs;
+    public int getInvokeExpiredMs() {
+        return invokeExpiredMs;
     }
 
-    public void setDefaultInvokeExpiredMs(int defaultInvokeExpiredMs) {
-        this.defaultInvokeExpiredMs = defaultInvokeExpiredMs;
+    public void setInvokeExpiredMs(int invokeExpiredMs) {
+        this.invokeExpiredMs = invokeExpiredMs;
+    }
+
+    public int getRefreshMetadataIntervalMs() {
+        return refreshMetadataIntervalMs;
+    }
+
+    public void setRefreshMetadataIntervalMs(int refreshMetadataIntervalMs) {
+        this.refreshMetadataIntervalMs = refreshMetadataIntervalMs;
+    }
+
+    public int getChannelFixedPoolCapacity() {
+        return channelFixedPoolCapacity;
+    }
+
+    public void setChannelFixedPoolCapacity(int channelFixedPoolCapacity) {
+        this.channelFixedPoolCapacity = channelFixedPoolCapacity;
     }
 }

@@ -10,14 +10,15 @@ option java_multiple_files = true;
 message CreateTopicRequest {
    string topic = 1;
    int32 partitions = 2;
-   int32 latency = 3;
+   int32 latencies = 3;
+   string cluster = 4;
 }
 
 message CreateTopicResponse {
   int32 ack = 1;
   string topic = 2;
   int32 partitions = 3;
-  int32 latency = 4;
+  int32 latencies = 4;
 }
 
 message DelTopicRequest {

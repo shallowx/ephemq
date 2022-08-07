@@ -38,7 +38,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
-        this.processor = checkNotNull(processor, "[constructor] - process cannot be empty");
+        this.processor = checkNotNull(processor, "Process cannot be empty");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             processor.process(ctx.channel(), command, buf, rejoin);
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
-                logger.error("[ProcessRequest] <{}> invoke processor error - command={}, rejoin={}, body length={}",
+                logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
                         ctx.channel().remoteAddress(), command, rejoin, length, cause);
             }
             if (isNotNull(rejoin)) {
@@ -110,7 +110,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final int answer = packet.answer();
         if (answer == INT_ZERO) {
             if (logger.isErrorEnabled()) {
-                logger.error("[ProcessResponse] - <{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()), command, answer);
+                logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()), command, answer);
             }
             return;
         }
@@ -127,7 +127,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             }
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
-                logger.error("[ProcessResponse] - <{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(), command, answer);
+                logger.error("Chanel<{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(), command, answer);
             }
             return;
         } finally {
@@ -136,7 +136,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
         if (!consumed) {
             if (logger.isErrorEnabled()) {
-                logger.error("[ProcessResponse] - <{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(), command, answer);
+                logger.error("Channel<{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(), command, answer);
             }
         }
     }
@@ -211,7 +211,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 }
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("[scheduleExpiredTask] - execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
+                    logger.debug("Execute expired task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
                 }
 
                 if (!wholeHolders.isEmpty()) {
@@ -225,14 +225,14 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         final int whole = holder.consumeWhole(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke timeout")));
         if (logger.isDebugEnabled()) {
-            logger.debug("[HandlerRemoved] - consume whole invoke, whole={}", whole);
+            logger.debug("Consume whole invoke, whole={}", whole);
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (logger.isErrorEnabled()) {
-            logger.error("[ExceptionCaught] <{}> caught {}", switchAddress(ctx.channel()), cause);
+            logger.error("Channel<{}> caught {}", switchAddress(ctx.channel()), cause);
         }
         ctx.close();
     }

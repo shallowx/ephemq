@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private CreateTopicRequest() {
     topic_ = "";
+    cluster_ = "";
   }
 
   @java.lang.Override
@@ -62,7 +63,13 @@ private static final long serialVersionUID = 0L;
           }
           case 24: {
 
-            latency_ = input.readInt32();
+            latencies_ = input.readInt32();
+            break;
+          }
+          case 34: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            cluster_ = s;
             break;
           }
           default: {
@@ -146,15 +153,53 @@ private static final long serialVersionUID = 0L;
     return partitions_;
   }
 
-  public static final int LATENCY_FIELD_NUMBER = 3;
-  private int latency_;
+  public static final int LATENCIES_FIELD_NUMBER = 3;
+  private int latencies_;
   /**
-   * <code>int32 latency = 3;</code>
-   * @return The latency.
+   * <code>int32 latencies = 3;</code>
+   * @return The latencies.
    */
   @java.lang.Override
-  public int getLatency() {
-    return latency_;
+  public int getLatencies() {
+    return latencies_;
+  }
+
+  public static final int CLUSTER_FIELD_NUMBER = 4;
+  private volatile java.lang.Object cluster_;
+  /**
+   * <code>string cluster = 4;</code>
+   * @return The cluster.
+   */
+  @java.lang.Override
+  public java.lang.String getCluster() {
+    java.lang.Object ref = cluster_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      cluster_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string cluster = 4;</code>
+   * @return The bytes for cluster.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getClusterBytes() {
+    java.lang.Object ref = cluster_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      cluster_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -177,8 +222,11 @@ private static final long serialVersionUID = 0L;
     if (partitions_ != 0) {
       output.writeInt32(2, partitions_);
     }
-    if (latency_ != 0) {
-      output.writeInt32(3, latency_);
+    if (latencies_ != 0) {
+      output.writeInt32(3, latencies_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, cluster_);
     }
     unknownFields.writeTo(output);
   }
@@ -196,9 +244,12 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, partitions_);
     }
-    if (latency_ != 0) {
+    if (latencies_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, latency_);
+        .computeInt32Size(3, latencies_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, cluster_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -219,8 +270,10 @@ private static final long serialVersionUID = 0L;
         .equals(other.getTopic())) return false;
     if (getPartitions()
         != other.getPartitions()) return false;
-    if (getLatency()
-        != other.getLatency()) return false;
+    if (getLatencies()
+        != other.getLatencies()) return false;
+    if (!getCluster()
+        .equals(other.getCluster())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -236,8 +289,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTopic().hashCode();
     hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
     hash = (53 * hash) + getPartitions();
-    hash = (37 * hash) + LATENCY_FIELD_NUMBER;
-    hash = (53 * hash) + getLatency();
+    hash = (37 * hash) + LATENCIES_FIELD_NUMBER;
+    hash = (53 * hash) + getLatencies();
+    hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
+    hash = (53 * hash) + getCluster().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -375,7 +430,9 @@ private static final long serialVersionUID = 0L;
 
       partitions_ = 0;
 
-      latency_ = 0;
+      latencies_ = 0;
+
+      cluster_ = "";
 
       return this;
     }
@@ -405,7 +462,8 @@ private static final long serialVersionUID = 0L;
       org.shallow.proto.server.CreateTopicRequest result = new org.shallow.proto.server.CreateTopicRequest(this);
       result.topic_ = topic_;
       result.partitions_ = partitions_;
-      result.latency_ = latency_;
+      result.latencies_ = latencies_;
+      result.cluster_ = cluster_;
       onBuilt();
       return result;
     }
@@ -461,8 +519,12 @@ private static final long serialVersionUID = 0L;
       if (other.getPartitions() != 0) {
         setPartitions(other.getPartitions());
       }
-      if (other.getLatency() != 0) {
-        setLatency(other.getLatency());
+      if (other.getLatencies() != 0) {
+        setLatencies(other.getLatencies());
+      }
+      if (!other.getCluster().isEmpty()) {
+        cluster_ = other.cluster_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -600,33 +662,109 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int latency_ ;
+    private int latencies_ ;
     /**
-     * <code>int32 latency = 3;</code>
-     * @return The latency.
+     * <code>int32 latencies = 3;</code>
+     * @return The latencies.
      */
     @java.lang.Override
-    public int getLatency() {
-      return latency_;
+    public int getLatencies() {
+      return latencies_;
     }
     /**
-     * <code>int32 latency = 3;</code>
-     * @param value The latency to set.
+     * <code>int32 latencies = 3;</code>
+     * @param value The latencies to set.
      * @return This builder for chaining.
      */
-    public Builder setLatency(int value) {
+    public Builder setLatencies(int value) {
       
-      latency_ = value;
+      latencies_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 latency = 3;</code>
+     * <code>int32 latencies = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLatency() {
+    public Builder clearLatencies() {
       
-      latency_ = 0;
+      latencies_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object cluster_ = "";
+    /**
+     * <code>string cluster = 4;</code>
+     * @return The cluster.
+     */
+    public java.lang.String getCluster() {
+      java.lang.Object ref = cluster_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        cluster_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string cluster = 4;</code>
+     * @return The bytes for cluster.
+     */
+    public com.google.protobuf.ByteString
+        getClusterBytes() {
+      java.lang.Object ref = cluster_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        cluster_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string cluster = 4;</code>
+     * @param value The cluster to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCluster(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      cluster_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string cluster = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearCluster() {
+      
+      cluster_ = getDefaultInstance().getCluster();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string cluster = 4;</code>
+     * @param value The bytes for cluster to set.
+     * @return This builder for chaining.
+     */
+    public Builder setClusterBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      cluster_ = value;
       onChanged();
       return this;
     }

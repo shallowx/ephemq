@@ -45,35 +45,4 @@ public interface ProcessCommand {
            return null;
        }
     }
-
-    interface NameServer {
-        NameServer ACTIVE = new NameServer() {
-            @Override
-            public String get(byte command) {
-                return switch (command) {
-                    case 1 -> "REGISTER_NODE";
-                    case 2 -> "HEARTBEAT";
-                    case 3 -> "NEW_TOPIC";
-                    case 4 -> "REMOVE_TOPIC";
-                    case 5 -> "QUERY_CLUSTER_NODE";
-                    case 6 -> "QUERY_TOPIC_INFO";
-                    case 7 -> "VOTE";
-                    case 8 -> "RAFT_HEARTBEAT";
-                    default -> throw new IllegalStateException("Unexpected server command: " + command);
-                };
-            }
-        };
-
-        byte REGISTER_NODE = 1;
-        byte HEARTBEAT = 2;
-        byte NEW_TOPIC = 3;
-        byte REMOVE_TOPIC = 4;
-        byte QUERY_CLUSTER_IFO = 5;
-        byte QUERY_TOPIC_INFO = 6;
-        byte VOTE = 7;
-        byte RAFT_HEARTBEAT = 8;
-        default String get(byte command) {
-            return null;
-        }
-    }
 }

@@ -67,7 +67,7 @@ private static final long serialVersionUID = 0L;
           }
           case 32: {
 
-            latency_ = input.readInt32();
+            latencies_ = input.readInt32();
             break;
           }
           default: {
@@ -162,15 +162,15 @@ private static final long serialVersionUID = 0L;
     return partitions_;
   }
 
-  public static final int LATENCY_FIELD_NUMBER = 4;
-  private int latency_;
+  public static final int LATENCIES_FIELD_NUMBER = 4;
+  private int latencies_;
   /**
-   * <code>int32 latency = 4;</code>
-   * @return The latency.
+   * <code>int32 latencies = 4;</code>
+   * @return The latencies.
    */
   @java.lang.Override
-  public int getLatency() {
-    return latency_;
+  public int getLatencies() {
+    return latencies_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -196,8 +196,8 @@ private static final long serialVersionUID = 0L;
     if (partitions_ != 0) {
       output.writeInt32(3, partitions_);
     }
-    if (latency_ != 0) {
-      output.writeInt32(4, latency_);
+    if (latencies_ != 0) {
+      output.writeInt32(4, latencies_);
     }
     unknownFields.writeTo(output);
   }
@@ -219,9 +219,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, partitions_);
     }
-    if (latency_ != 0) {
+    if (latencies_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, latency_);
+        .computeInt32Size(4, latencies_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -244,8 +244,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getTopic())) return false;
     if (getPartitions()
         != other.getPartitions()) return false;
-    if (getLatency()
-        != other.getLatency()) return false;
+    if (getLatencies()
+        != other.getLatencies()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -263,8 +263,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTopic().hashCode();
     hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
     hash = (53 * hash) + getPartitions();
-    hash = (37 * hash) + LATENCY_FIELD_NUMBER;
-    hash = (53 * hash) + getLatency();
+    hash = (37 * hash) + LATENCIES_FIELD_NUMBER;
+    hash = (53 * hash) + getLatencies();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -404,7 +404,7 @@ private static final long serialVersionUID = 0L;
 
       partitions_ = 0;
 
-      latency_ = 0;
+      latencies_ = 0;
 
       return this;
     }
@@ -435,7 +435,7 @@ private static final long serialVersionUID = 0L;
       result.ack_ = ack_;
       result.topic_ = topic_;
       result.partitions_ = partitions_;
-      result.latency_ = latency_;
+      result.latencies_ = latencies_;
       onBuilt();
       return result;
     }
@@ -494,8 +494,8 @@ private static final long serialVersionUID = 0L;
       if (other.getPartitions() != 0) {
         setPartitions(other.getPartitions());
       }
-      if (other.getLatency() != 0) {
-        setLatency(other.getLatency());
+      if (other.getLatencies() != 0) {
+        setLatencies(other.getLatencies());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -664,33 +664,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int latency_ ;
+    private int latencies_ ;
     /**
-     * <code>int32 latency = 4;</code>
-     * @return The latency.
+     * <code>int32 latencies = 4;</code>
+     * @return The latencies.
      */
     @java.lang.Override
-    public int getLatency() {
-      return latency_;
+    public int getLatencies() {
+      return latencies_;
     }
     /**
-     * <code>int32 latency = 4;</code>
-     * @param value The latency to set.
+     * <code>int32 latencies = 4;</code>
+     * @param value The latencies to set.
      * @return This builder for chaining.
      */
-    public Builder setLatency(int value) {
+    public Builder setLatencies(int value) {
       
-      latency_ = value;
+      latencies_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 latency = 4;</code>
+     * <code>int32 latencies = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLatency() {
+    public Builder clearLatencies() {
       
-      latency_ = 0;
+      latencies_ = 0;
       onChanged();
       return this;
     }

@@ -49,7 +49,7 @@ public class CmdLineTool {
     }
 
     private SubCommand acquireCommand(final String name, List<SubCommand> commands) {
-        ObjectUtil.checkNotNull(name, "command is null");
+        ObjectUtil.checkNotNull(name, "command cannot be empty");
         if (commands.isEmpty()) {
             return null;
         }

@@ -8,7 +8,8 @@ option java_outer_classname = "LeaderElectorProto";
 option java_multiple_files = true;
 
 message VoteRequest{
-  int32 term = 3;
+  int32 term = 1;
+  int32 version = 2;
 }
 
 message VoteResponse{
