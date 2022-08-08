@@ -11,7 +11,6 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.metadata.TopicManager;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.server.CreateTopicRequest;
@@ -38,7 +37,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Get remote active address <{}>", channel.remoteAddress());
+            logger.debug("Get remote active address<{}> successfully", channel.remoteAddress().toString());
         }
     }
 
@@ -72,6 +71,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         answerFailed(answer, e);
                     }
                 }
+
                 case DELETE_TOPIC -> {
                     try {
                         final DelTopicRequest request = readProto(data, DelTopicRequest.parser());
@@ -92,10 +92,13 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         answerFailed(answer, e);
                     }
                 }
-                case FETCH_CLUSTER_INFO -> {
+
+                case FETCH_CLUSTER_RECORD -> {
 
                 }
-                case FETCH_TOPIC_INFO -> {}
+
+                case FETCH_TOPIC_RECORD -> {}
+
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);

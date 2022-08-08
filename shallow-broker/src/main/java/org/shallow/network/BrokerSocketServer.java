@@ -65,8 +65,14 @@ public final class BrokerSocketServer {
         closedFuture = future.channel().closeFuture();
     }
 
-    public void awaitShutdownGracefully() throws InterruptedException {
-        closedFuture.sync();
+    public void awaitShutdownGracefully(){
+        try {
+            closedFuture.sync();
+        } catch (InterruptedException e) {
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
     public void shutdownGracefully() throws Exception {

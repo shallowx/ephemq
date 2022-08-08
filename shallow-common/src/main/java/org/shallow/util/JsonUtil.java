@@ -1,13 +1,9 @@
 package org.shallow.util;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import org.shallow.meta.Partition;
 
 import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 
 public class JsonUtil {
 

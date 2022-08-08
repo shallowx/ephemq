@@ -9,8 +9,8 @@ public interface ProcessCommand {
                 return switch (command) {
                     case 1 -> "CREATE_TOPIC";
                     case 2 -> "DELETE_TOPIC";
-                    case 3 -> "FETCH_CLUSTER_INFO";
-                    case 4 -> "FETCH_TOPIC_INFO";
+                    case 3 -> "FETCH_CLUSTER_RECORD";
+                    case 4 -> "FETCH_TOPIC_RECORD";
                     default -> throw new IllegalStateException("Unexpected client command: " + command);
                 };
             }
@@ -18,8 +18,8 @@ public interface ProcessCommand {
 
         byte CREATE_TOPIC = 1;
         byte DELETE_TOPIC = 2;
-        byte FETCH_CLUSTER_INFO = 3;
-        byte FETCH_TOPIC_INFO = 4;
+        byte FETCH_CLUSTER_RECORD = 3;
+        byte FETCH_TOPIC_RECORD = 4;
        default String get(byte command) {
            return null;
        }

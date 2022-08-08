@@ -18,7 +18,7 @@ public class TopicTests {
     @Test
     public void testCreateTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:7730"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
         Client client = new Client("Client", clientConfig);
         client.start();
 
@@ -27,7 +27,7 @@ public class TopicTests {
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getLatency(), 1);
+        Assert.assertEquals(response.getLatencies(), 1);
         Assert.assertEquals(response.getTopic(), "test-timeout");
         Assert.assertEquals(response.getPartitions(), 1);
         Assert.assertEquals(response.getAck(), 1);
@@ -38,7 +38,7 @@ public class TopicTests {
     @Test
     public void testDelTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:7730"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
         Client client = new Client("Client", clientConfig);
         client.start();
 

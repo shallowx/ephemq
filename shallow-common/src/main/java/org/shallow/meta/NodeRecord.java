@@ -3,11 +3,11 @@ package org.shallow.meta;
 import java.net.SocketAddress;
 import java.util.Objects;
 
-public class Node {
+public class NodeRecord {
     private String name;
     private SocketAddress socketAddress;
 
-    public Node(String name, SocketAddress socketAddress) {
+    public NodeRecord(String name, SocketAddress socketAddress) {
         this.name = name;
         this.socketAddress = socketAddress;
     }
@@ -31,7 +31,7 @@ public class Node {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node node)) return false;
+        if (!(o instanceof NodeRecord node)) return false;
         return Objects.equals(getName(), node.getName()) && Objects.equals(getSocketAddress(), node.getSocketAddress());
     }
 

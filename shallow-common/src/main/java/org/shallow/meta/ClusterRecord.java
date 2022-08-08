@@ -1,10 +1,10 @@
 package org.shallow.meta;
 
-public class Cluster {
+public class ClusterRecord {
     private String name;
-    private Node node;
+    private NodeRecord node;
 
-    public Cluster(String name, Node node) {
+    public ClusterRecord(String name, NodeRecord node) {
         this.name = name;
         this.node = node;
     }
@@ -17,11 +17,11 @@ public class Cluster {
         this.name = name;
     }
 
-    public Node getNode() {
+    public NodeRecord getNode() {
         return node;
     }
 
-    public void setNode(Node node) {
+    public void setNode(NodeRecord node) {
         this.node = node;
     }
 

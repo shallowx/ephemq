@@ -2,11 +2,11 @@ package org.shallow.meta;
 
 import java.util.Objects;
 
-public class Topic {
+public class TopicRecord {
     private String name;
-    private Partition partitionInfo;
+    private PartitionRecord partitionInfo;
 
-    public Topic(String name, Partition partitionInfo) {
+    public TopicRecord(String name, PartitionRecord partitionInfo) {
         this.name = name;
         this.partitionInfo = partitionInfo;
     }
@@ -19,18 +19,18 @@ public class Topic {
         this.name = name;
     }
 
-    public Partition getPartitionInfo() {
+    public PartitionRecord getPartitionInfo() {
         return partitionInfo;
     }
 
-    public void setPartitionInfo(Partition partitionInfo) {
+    public void setPartitionInfo(PartitionRecord partitionInfo) {
         this.partitionInfo = partitionInfo;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Topic topic)) return false;
+        if (!(o instanceof TopicRecord topic)) return false;
         return getName().equals(topic.getName()) &&
                 getPartitionInfo().equals(topic.getPartitionInfo());
     }

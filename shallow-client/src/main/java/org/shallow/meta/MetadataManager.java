@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import io.netty.util.concurrent.ScheduledFuture;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.ClientConfig;
 import org.shallow.invoke.ClientChannel;
@@ -18,10 +17,9 @@ import org.shallow.proto.server.CreateTopicRequest;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicRequest;
 import org.shallow.proto.server.DelTopicResponse;
-import org.shallow.util.NetworkUtil;
-
 import java.util.concurrent.TimeUnit;
 
+import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 
 public class MetadataManager implements ProcessCommand.Server {
@@ -29,8 +27,8 @@ public class MetadataManager implements ProcessCommand.Server {
 
     private final ShallowChannelPool pool;
     private final ClientConfig config;
-    private final LoadingCache<String, Partition> topics;
-    private final LoadingCache<String, Node> clusters;
+    private final LoadingCache<String, PartitionRecord> topics;
+    private final LoadingCache<String, NodeRecord> clusters;
     private final EventExecutor scheduledMetadataTask;
 
     public MetadataManager(ClientConfig config) {
@@ -39,18 +37,18 @@ public class MetadataManager implements ProcessCommand.Server {
 
         this.topics = Caffeine.newBuilder().build(new CacheLoader<>() {
             @Override
-            public @Nullable Partition load(String key) throws Exception {
+            public @Nullable PartitionRecord load(String key) throws Exception {
                 return null;
             }
         });
 
         this.clusters = Caffeine.newBuilder().build(new CacheLoader<>() {
             @Override
-            public @Nullable Node load(String key) throws Exception {
+            public @Nullable NodeRecord load(String key) throws Exception {
                 return null;
             }
         });
-        this.scheduledMetadataTask = NetworkUtil.newEventExecutorGroup(1, "metadata-task").next();
+        this.scheduledMetadataTask = newEventExecutorGroup(1, "metadata-task").next();
     }
 
     public void start() throws Exception{
@@ -83,11 +81,11 @@ public class MetadataManager implements ProcessCommand.Server {
         return promise;
     }
 
-    public void queryTopicInfo() {
+    public void queryTopicRecord() {
 
     }
 
-    public void queryNodeInfo() {
+    public void queryNodeRecord() {
 
     }
 

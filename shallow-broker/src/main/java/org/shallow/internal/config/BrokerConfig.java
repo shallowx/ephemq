@@ -9,18 +9,25 @@ public class BrokerConfig {
 
     private final Properties config;
 
-    private static final String SERVER_ID = "shallow.server.id";
     private static final String CLUSTER_NAME = "shallow.cluster";
+    private static final String SERVER_ID = "shallow.server.id";
+    private static final String EXPOSED_HOST = "shallow.exposed.host";
+    private static final String EXPOSED_PORT = "shallow.exposed.port";
+
+    private static final String PROCESS_ROLES = "shallow.process.roles";
+    private static final String CONTROLLER_QUORUM_VOTERS = "shallow.controller.quorum.voters";
+
     private static final String IO_THREAD_LIMIT = "shallow.io.thread.limit";
     private static final String WORK_THREAD_LIMIT = "shallow.network.thread.limit";
     private static final String OS_IS_EPOLL_PREFER= "shallow.os.epoll.prefer";
     private static final String SOCKET_WRITE_HIGH_WATER_MARK = "shallow.socket.write.high.water.mark";
-    private static final String EXPOSED_HOST = "shallow.exposed.host";
-    private static final String EXPOSED_PORT = "shallow.exposed.port";
-    private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
-    private static final String SHALLOW_NAMESERVER_URL = "shallow.nameserver.url";
+
+    private static final String NETWORK_LOGGING_DEBUG_ENABLED = "shallow.network.logging.debug.enabled";
+
     private static final String SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT = "shallow.internal.channel.pool.limit";
-    private static final String NODE_HEART_SEND_INTERVAL_TIME_MS = "shallow.node.send.heart.interval.time.ms";
+    private static final String NODE_HEART_SEND_INTERVAL_TIME_MS = "shallow.send.heart.interval.time.ms";
+
+    private static final String WORK_DIRECTORY = "shallow.work.directory";
 
     public static BrokerConfig exchange(Properties properties) {
         return new BrokerConfig(properties);
@@ -59,7 +66,7 @@ public class BrokerConfig {
     }
 
     public int getExposedPort(){
-        return object2Int(config.getOrDefault(EXPOSED_PORT, 7730));
+        return object2Int(config.getOrDefault(EXPOSED_PORT, 9100));
     }
 
     public boolean isNetworkLoggingDebugEnabled() {
@@ -70,15 +77,23 @@ public class BrokerConfig {
         return object2Int(config.getOrDefault(SHALLOW_INTERNAL_CHANNEL_POOL_LIMIT, 1));
     }
 
-    public String getNameserverUrl() {
-        return object2String(config.getOrDefault(SHALLOW_NAMESERVER_URL, "127.0.0.1:9100"));
-    }
-
     public String getClusterName() {
         return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 
     public int getHeartSendIntervalTimeMs() {
         return object2Int(config.getOrDefault(NODE_HEART_SEND_INTERVAL_TIME_MS, 30000));
+    }
+
+    public String getProcessRoles() {
+        return object2String(config.getOrDefault(PROCESS_ROLES, "controller,broker"));
+    }
+
+    public String getControllerQuorumVoters() {
+        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "127.0.0.1:9100"));
+    }
+
+    public String getWorkDirectory() {
+        return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow"));
     }
 }
