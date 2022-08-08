@@ -1,18 +1,18 @@
 package org.shallow.internal;
 
-import org.shallow.internal.client.Client2QuorumController;
+import org.shallow.internal.client.QuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.metadata.MappedFileApi;
 
 public class DefaultBrokerManager implements BrokerManager {
 
     private final BrokerConfig config;
-    private final Client2QuorumController client;
+    private final QuorumVoterClient client;
     public final MappedFileApi api;
 
     public DefaultBrokerManager(BrokerConfig config) {
         this.config = config;
-        this.client = new Client2QuorumController();
+        this.client = new QuorumVoterClient();
         this.api = new MappedFileApi(config);
     }
 
