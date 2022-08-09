@@ -92,4 +92,8 @@ public class BrokerConfig {
     public boolean isStandAlone() {
         return object2Boolean(config.getOrDefault(STAND_ALONE, true));
     }
+
+    public int getInvokeTimeMs() {
+        return object2Int(config.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
+    }
 }

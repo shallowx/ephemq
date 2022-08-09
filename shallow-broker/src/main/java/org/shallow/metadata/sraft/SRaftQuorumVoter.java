@@ -78,7 +78,7 @@ public class SRaftQuorumVoter {
         for (SocketAddress address : addresses) {
             try {
                 final ClientChannel clientChannel = acquire(address);
-                clientChannel.invoker().invoke(QUORUM_VOTE, 1000, promise, request, VoteResponse.class);
+                clientChannel.invoker().invoke(QUORUM_VOTE, config.getInvokeTimeMs(), promise, request, VoteResponse.class);
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Failed to send vote request with address<{}>, try again later", address);

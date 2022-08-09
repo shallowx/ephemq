@@ -26,6 +26,7 @@ public class DefaultBrokerManager implements BrokerManager {
         this.config = config;
 
         final ClientConfig quorumVoterClientConfig = new ClientConfig();
+        quorumVoterClientConfig.setInvokeExpiredMs(config.getInvokeTimeMs());
         final List<String> quorumVoterAddress = Stream.of(config.getControllerQuorumVoters()).map(voters -> {
             final int length = voters.length();
             return voters.substring(voters.lastIndexOf("@") + 1, length);

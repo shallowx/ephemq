@@ -53,11 +53,11 @@ public class ClientConfig {
         this.connectTimeOutMs = connectTimeOutMs;
     }
 
-    public int getWorkThreadWholes() {
+    public int getWorkThreadLimit() {
         return workThreadWholes;
     }
 
-    public void setWorkThreadWholes(int workThreadWholes) {
+    public void setWorkThreadLimit(int workThreadWholes) {
         this.workThreadWholes = workThreadWholes;
     }
 

@@ -22,7 +22,6 @@ interface ConfigConstants {
 
     String HEARTBEAT_INITIAL_DELAY_TIME_MS = "shallow.heartbeat.initial.delay.time.ms";
     String HEARTBEAT_INTERVAL_ORIGIN_TIME_MS = "shallow.heartbeat.interval.origin.time.ms";
-    String HEARTBEAT_FIXED_INTERVAL_TIME_MS = "shallow.heartbeat.fixed.interval.time.ms";
-
+    String INVOKE_TIMEOUT_MS = "shallow.invoke.timeout.ms";
     String WORK_DIRECTORY = "shallow.work.directory";
 }

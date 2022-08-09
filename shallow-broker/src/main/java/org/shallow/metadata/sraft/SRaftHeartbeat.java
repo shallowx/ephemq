@@ -79,7 +79,7 @@ public class SRaftHeartbeat {
             for (SocketAddress address : socketAddresses) {
                 try {
                     ClientChannel clientChannel = quorumVoter.acquire(address);
-                    clientChannel.invoker().invokeWithCallback(HEARTBEAT, 1000, request, HeartBeatResponse.class);
+                    clientChannel.invoker().invokeWithCallback(HEARTBEAT, config.getInvokeTimeMs(), request, HeartBeatResponse.class);
                 } catch (Throwable t) {
                     // TODO retry
                 }
