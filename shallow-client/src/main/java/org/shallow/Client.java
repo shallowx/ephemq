@@ -9,7 +9,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.shallow.pool.DefaultChannelPoolFactory;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.ShallowChannelHealthChecker;
@@ -62,7 +62,7 @@ public class Client {
                 .option(ChannelOption.SO_RCVBUF, 65536)
                 .resolver(new RoundRobinDnsAddressResolverGroup(drb));
 
-        DefaultChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config, healthChecker);
+        DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config, healthChecker);
 
         if (logger.isInfoEnabled()) {
             logger.info("The client<{}> started successfully", name);

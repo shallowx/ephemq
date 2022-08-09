@@ -10,7 +10,7 @@ import org.shallow.ClientConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.pool.DefaultChannelPoolFactory;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.proto.server.CreateTopicRequest;
@@ -32,7 +32,7 @@ public class MetadataManager implements ProcessCommand.Server {
     private final EventExecutor scheduledMetadataTask;
 
     public MetadataManager(ClientConfig config) {
-        this.pool = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool();
+        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
         this.config = config;
 
         this.topics = Caffeine.newBuilder().build(new CacheLoader<>() {

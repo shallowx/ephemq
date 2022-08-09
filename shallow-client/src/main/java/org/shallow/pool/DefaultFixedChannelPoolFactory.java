@@ -3,9 +3,9 @@ package org.shallow.pool;
 import io.netty.bootstrap.Bootstrap;
 import org.shallow.ClientConfig;
 
-public class DefaultChannelPoolFactory {
+public class DefaultFixedChannelPoolFactory {
 
-    public static final DefaultChannelPoolFactory INSTANCE = new DefaultChannelPoolFactory();
+    public static final DefaultFixedChannelPoolFactory INSTANCE = new DefaultFixedChannelPoolFactory();
     private ShallowChannelPool pool;
 
     public ShallowChannelPool newChannelPool(Bootstrap bootstrap, ClientConfig config) {
@@ -13,7 +13,7 @@ public class DefaultChannelPoolFactory {
     }
 
     public ShallowChannelPool newChannelPool(Bootstrap bootstrap, ClientConfig config, ShallowChannelHealthChecker healthChecker) {
-        pool = new DynamicChannelPool(bootstrap, config, (healthChecker == null ? ShallowChannelHealthChecker.ACTIVE : healthChecker));
+        pool = new FixedChannelPool(bootstrap, config, (healthChecker == null ? ShallowChannelHealthChecker.ACTIVE : healthChecker));
         return pool;
     }
 

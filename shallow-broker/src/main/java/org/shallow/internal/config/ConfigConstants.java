@@ -7,6 +7,7 @@ interface ConfigConstants {
     String EXPOSED_HOST = "shallow.exposed.host";
     String EXPOSED_PORT = "shallow.exposed.port";
 
+    String STAND_ALONE = "shallow.stand.alone";
     String PROCESS_ROLES = "shallow.process.roles";
     String CONTROLLER_QUORUM_VOTERS = "shallow.controller.quorum.voters";
 
@@ -19,8 +20,9 @@ interface ConfigConstants {
 
     String INTERNAL_CHANNEL_POOL_LIMIT = "shallow.internal.channel.pool.limit";
 
-    String HEART_RANDOM_ORIGIN_TIME_MS = "shallow.heart.random.origin.time.ms";
-    String HEART_INTERVAL_TIME_MS = "shallow.heart.interval.time.ms";
+    String HEARTBEAT_INITIAL_DELAY_TIME_MS = "shallow.heartbeat.initial.delay.time.ms";
+    String HEARTBEAT_INTERVAL_ORIGIN_TIME_MS = "shallow.heartbeat.interval.origin.time.ms";
+    String HEARTBEAT_FIXED_INTERVAL_TIME_MS = "shallow.heartbeat.fixed.interval.time.ms";
 
     String WORK_DIRECTORY = "shallow.work.directory";
 }

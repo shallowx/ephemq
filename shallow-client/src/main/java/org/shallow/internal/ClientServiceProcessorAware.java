@@ -7,7 +7,7 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.RemoteException;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.pool.DefaultChannelPoolFactory;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.util.NetworkUtil;
 import org.shallow.invoke.ClientChannel;
@@ -28,7 +28,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
-        Promise<ClientChannel> promise = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(channel);
+        Promise<ClientChannel> promise = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(channel);
         if (isNotNull(promise)) {
             promise.setSuccess(clientChannel);
         }

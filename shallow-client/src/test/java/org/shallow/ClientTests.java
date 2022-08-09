@@ -1,10 +1,9 @@
 package org.shallow;
 
-import io.netty.util.concurrent.Future;
 import org.junit.Assert;
 import org.junit.Test;
 import org.shallow.invoke.ClientChannel;
-import org.shallow.pool.DefaultChannelPoolFactory;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +19,7 @@ public class ClientTests {
         Client client = new Client("Client", clientConfig);
         client.start();
 
-        ShallowChannelPool pool = DefaultChannelPoolFactory.INSTANCE.acquireChannelPool();
+        ShallowChannelPool pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
         ClientChannel clientChannel = pool.acquireHealthyOrNew(switchSocketAddress("127.0.0.1", 7730));
 
         Assert.assertNotNull(clientChannel);

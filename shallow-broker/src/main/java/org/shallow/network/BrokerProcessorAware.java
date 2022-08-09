@@ -11,12 +11,12 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
-import org.shallow.proto.server.CreateTopicRequest;
-import org.shallow.proto.server.CreateTopicResponse;
-import org.shallow.proto.server.DelTopicRequest;
-import org.shallow.proto.server.DelTopicResponse;
+import org.shallow.proto.elector.VoteRequest;
+import org.shallow.proto.elector.VoteResponse;
+import org.shallow.proto.server.*;
 
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
@@ -45,6 +45,41 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
             switch (command) {
+                case QUORUM_VOTE -> {
+                    try {
+                        final VoteRequest request = readProto(data, VoteRequest.parser());
+                        final int term = request.getTerm();
+
+                        final Promise<VoteResponse> promise = newImmediatePromise();
+                        promise.addListener((GenericFutureListener<Future<VoteResponse>>) f -> {
+                            if (f.isSuccess()) {
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), f.get()));
+                                }
+                            } else {
+                                answerFailed(answer, f.cause());
+                            }
+                        });
+                        final SRaftProcessController controller = manager.getController();
+                        controller.respondVote(term, promise);
+                    } catch (Exception e) {
+                        answerFailed(answer, e);
+                    }
+                }
+
+                case HEARTBEAT -> {
+                    try {
+                        final HeartBeatRequest request = readProto(data, HeartBeatRequest.parser());
+
+                        final SRaftProcessController controller = manager.getController();
+                        controller.receiveHeartbeat();
+                    } catch (Exception e) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+
                 case CREATE_TOPIC -> {
                     try {
                         final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());

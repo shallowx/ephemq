@@ -5,7 +5,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.internal.ClientChannelInitializer;
 import org.shallow.ClientConfig;
@@ -24,9 +23,9 @@ import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 
-public class DynamicChannelPool implements ShallowChannelPool {
+public class FixedChannelPool implements ShallowChannelPool {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DynamicChannelPool.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(FixedChannelPool.class);
 
     private final ClientConfig config;
     private final Map<SocketAddress, List<Future<ClientChannel>>> channelPools;
@@ -35,7 +34,7 @@ public class DynamicChannelPool implements ShallowChannelPool {
     private final ShallowChannelHealthChecker healthChecker;
     private final List<SocketAddress> bootstrapAddress;
 
-    public DynamicChannelPool(Bootstrap bootstrap, ClientConfig config, ShallowChannelHealthChecker healthChecker) {
+    public FixedChannelPool(Bootstrap bootstrap, ClientConfig config, ShallowChannelHealthChecker healthChecker) {
         this.bootstrap = bootstrap;
         this.config = config;
         this.channelPools = new ConcurrentHashMap<>(config.getBootstrapSocketAddress().size());
@@ -74,25 +73,19 @@ public class DynamicChannelPool implements ShallowChannelPool {
     @Override
     public ClientChannel acquireWithRandomly() {
         try {
-            return acquireHealthyOrNew0(null).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
+            return randomAcquire().get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
         } catch (Throwable t) {
             throw new RuntimeException("Failed to get healthy channel randomly from pool", t);
         }
     }
 
-    private Future<ClientChannel> acquireHealthyOrNew0(SocketAddress address) {
-        Future<ClientChannel> future;
-        if (isNull(address)) {
-            future = randomAcquire();
-            if (ObjectUtil.isNotNull(future)) {
-                return future;
-            }
 
-            address = obtainSocketAddress();
-            if (address == null) {
-                throw new IllegalArgumentException("Any bootstrap address not found");
-            }
+
+    private Future<ClientChannel> acquireHealthyOrNew0(SocketAddress address) {
+        if (isNull(address)) {
+            throw new IllegalArgumentException("Any bootstrap address not found");
         }
+
         return acquireHealthy(address);
     }
 
@@ -101,7 +94,7 @@ public class DynamicChannelPool implements ShallowChannelPool {
         return channelPools.get(address).stream().findAny().orElse(null);
     }
 
-    private SocketAddress obtainSocketAddress() {
+    private SocketAddress toSocketAddress() {
         final int size = bootstrapAddress.size();
         if (size == 0) {
             return null;

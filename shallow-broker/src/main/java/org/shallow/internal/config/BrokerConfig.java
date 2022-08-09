@@ -61,8 +61,8 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 
-    public int getHeartIntervalTimeMs() {
-        return object2Int(config.getOrDefault(HEART_INTERVAL_TIME_MS, 30000));
+    public int getHeartInitialDelayTimeMs() {
+        return object2Int(config.getOrDefault(HEARTBEAT_INITIAL_DELAY_TIME_MS, 500));
     }
 
     public String getProcessRoles() {
@@ -70,18 +70,26 @@ public class BrokerConfig {
     }
 
     public String getControllerQuorumVoters() {
-        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "127.0.0.1:9100"));
+        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "shallow@127.0.0.1:9100, shallow@127.0.0.1:9200"));
     }
 
     public String getWorkDirectory() {
         return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow"));
     }
 
-    public int getHeartbeatRandomOriginTimeMs() {
-        return object2Int(config.getOrDefault(HEART_RANDOM_ORIGIN_TIME_MS, 150));
+    public int getHeartbeatIntervalOriginTimeMs() {
+        return object2Int(config.getOrDefault(HEARTBEAT_INTERVAL_ORIGIN_TIME_MS, 500));
     }
 
     public int getHeartbeatRandomBoundTimeMs() {
-        return (getHeartbeatRandomOriginTimeMs() + 150);
+        return (getHeartbeatIntervalOriginTimeMs() + 200);
+    }
+
+    public int getHeartbeatFixedIntervalTimeMs() {
+        return object2Int(getHeartbeatIntervalOriginTimeMs() + 50);
+    }
+
+    public boolean isStandAlone() {
+        return object2Boolean(config.getOrDefault(STAND_ALONE, true));
     }
 }
