@@ -17,7 +17,7 @@ message VoteResponse{
 }
 
 message RaftHeartbeatRequest{
-
+  int32 term = 1;
 }
 
 message RaftHeartbeatResponse{

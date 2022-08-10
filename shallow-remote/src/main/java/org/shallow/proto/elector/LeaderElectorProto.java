@@ -46,9 +46,10 @@ public final class LeaderElectorProto {
       "\n\024leader_elector.proto\022\020shallow.protobuf" +
       "\032\rshallow.proto\",\n\013VoteRequest\022\014\n\004term\030\001" +
       " \001(\005\022\017\n\007version\030\002 \001(\005\"\033\n\014VoteResponse\022\013\n" +
-      "\003ack\030\004 \001(\010\"\026\n\024RaftHeartbeatRequest\"\027\n\025Ra" +
-      "ftHeartbeatResponseB1\n\031org.shallow.proto" +
-      ".electorB\022LeaderElectorProtoP\001b\006proto3"
+      "\003ack\030\004 \001(\010\"$\n\024RaftHeartbeatRequest\022\014\n\004te" +
+      "rm\030\001 \001(\005\"\027\n\025RaftHeartbeatResponseB1\n\031org" +
+      ".shallow.proto.electorB\022LeaderElectorPro" +
+      "toP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -72,7 +73,7 @@ public final class LeaderElectorProto {
     internal_static_shallow_protobuf_RaftHeartbeatRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_RaftHeartbeatRequest_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Term", });
     internal_static_shallow_protobuf_RaftHeartbeatResponse_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_shallow_protobuf_RaftHeartbeatResponse_fieldAccessorTable = new

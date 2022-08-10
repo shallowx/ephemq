@@ -74,8 +74,8 @@ public class SRaftProcessController {
         quorumVoter.respondVote(respondVotePromise);
     }
 
-    public void receiveHeartbeat() {
-        heartbeat.receiveHeartbeat();
+    public void receiveHeartbeat(int term) {
+        heartbeat.receiveHeartbeat(term);
     }
 
     public Set<SocketAddress> toSocketAddress() {

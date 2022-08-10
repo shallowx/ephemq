@@ -14,6 +14,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
+import org.shallow.proto.elector.RaftHeartbeatRequest;
 import org.shallow.proto.elector.VoteRequest;
 import org.shallow.proto.elector.VoteResponse;
 import org.shallow.proto.server.*;
@@ -69,10 +70,10 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case HEARTBEAT -> {
                     try {
-                        final HeartBeatRequest request = readProto(data, HeartBeatRequest.parser());
-
+                        final RaftHeartbeatRequest request = readProto(data, RaftHeartbeatRequest.parser());
+                        final int term = request.getTerm();
                         final SRaftProcessController controller = manager.getController();
-                        controller.receiveHeartbeat();
+                        controller.receiveHeartbeat(term);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
                             logger.error(e.getMessage(), e);

@@ -5,8 +5,8 @@ import org.shallow.internal.config.BrokerConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.proto.server.HeartBeatRequest;
-import org.shallow.proto.server.HeartBeatResponse;
+import org.shallow.proto.elector.RaftHeartbeatRequest;
+import org.shallow.proto.server.RegisterNodeResponse;
 
 import java.net.SocketAddress;
 import java.util.Set;
@@ -82,11 +82,15 @@ public class SRaftHeartbeat {
         if (role == ProcessRoles.LEADER) {
             final Set<SocketAddress> socketAddresses = controller.toSocketAddress();
 
-            final HeartBeatRequest request = HeartBeatRequest.newBuilder().build();
+            final RaftHeartbeatRequest request = RaftHeartbeatRequest
+                    .newBuilder()
+                    .setTerm(quorumVoter.getTerm())
+                    .build();
+
             for (SocketAddress address : socketAddresses) {
                 try {
                     ClientChannel clientChannel = quorumVoter.acquire(address);
-                    clientChannel.invoker().invokeWithCallback(HEARTBEAT, config.getInvokeTimeMs(), request, HeartBeatResponse.class);
+                    clientChannel.invoker().invokeWithCallback(HEARTBEAT, config.getInvokeTimeMs(), request, RegisterNodeResponse.class);
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Failed to send heartbeat to address<{}>, trg again later", address);
@@ -96,8 +100,9 @@ public class SRaftHeartbeat {
         }
     }
 
-    public void receiveHeartbeat() {
+    public void receiveHeartbeat(int term) {
         this.lastKeepHeartbeatTime = System.currentTimeMillis();
+        quorumVoter.setTerm(term);
     }
 
     public SRaftQuorumVoter getQuorumVoter() {

@@ -6,4 +6,10 @@ package org.shallow.proto.elector;
 public interface RaftHeartbeatRequestOrBuilder extends
     // @@protoc_insertion_point(interface_extends:shallow.protobuf.RaftHeartbeatRequest)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>int32 term = 1;</code>
+   * @return The term.
+   */
+  int getTerm();
 }

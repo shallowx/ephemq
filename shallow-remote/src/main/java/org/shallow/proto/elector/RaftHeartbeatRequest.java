@@ -48,6 +48,11 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
+          case 8: {
+
+            term_ = input.readInt32();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -80,6 +85,17 @@ private static final long serialVersionUID = 0L;
             org.shallow.proto.elector.RaftHeartbeatRequest.class, org.shallow.proto.elector.RaftHeartbeatRequest.Builder.class);
   }
 
+  public static final int TERM_FIELD_NUMBER = 1;
+  private int term_;
+  /**
+   * <code>int32 term = 1;</code>
+   * @return The term.
+   */
+  @java.lang.Override
+  public int getTerm() {
+    return term_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -94,6 +110,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (term_ != 0) {
+      output.writeInt32(1, term_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -103,6 +122,10 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (term_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(1, term_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -118,6 +141,8 @@ private static final long serialVersionUID = 0L;
     }
     org.shallow.proto.elector.RaftHeartbeatRequest other = (org.shallow.proto.elector.RaftHeartbeatRequest) obj;
 
+    if (getTerm()
+        != other.getTerm()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -129,6 +154,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + TERM_FIELD_NUMBER;
+    hash = (53 * hash) + getTerm();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -262,6 +289,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      term_ = 0;
+
       return this;
     }
 
@@ -288,6 +317,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.elector.RaftHeartbeatRequest buildPartial() {
       org.shallow.proto.elector.RaftHeartbeatRequest result = new org.shallow.proto.elector.RaftHeartbeatRequest(this);
+      result.term_ = term_;
       onBuilt();
       return result;
     }
@@ -336,6 +366,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.shallow.proto.elector.RaftHeartbeatRequest other) {
       if (other == org.shallow.proto.elector.RaftHeartbeatRequest.getDefaultInstance()) return this;
+      if (other.getTerm() != 0) {
+        setTerm(other.getTerm());
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -362,6 +395,37 @@ private static final long serialVersionUID = 0L;
           mergeFrom(parsedMessage);
         }
       }
+      return this;
+    }
+
+    private int term_ ;
+    /**
+     * <code>int32 term = 1;</code>
+     * @return The term.
+     */
+    @java.lang.Override
+    public int getTerm() {
+      return term_;
+    }
+    /**
+     * <code>int32 term = 1;</code>
+     * @param value The term to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTerm(int value) {
+      
+      term_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 term = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTerm() {
+      
+      term_ = 0;
+      onChanged();
       return this;
     }
     @java.lang.Override

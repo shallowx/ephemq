@@ -113,4 +113,8 @@ public class SRaftQuorumVoter {
     public int getTerm() {
         return term;
     }
+
+    public void setTerm(int term) {
+        this.term = term;
+    }
 }
