@@ -1,6 +1,6 @@
 package org.shallow.internal.config;
 
-interface ConfigConstants {
+public interface ConfigConstants {
 
     String CLUSTER_NAME = "shallow.cluster";
     String SERVER_ID = "shallow.server.id";

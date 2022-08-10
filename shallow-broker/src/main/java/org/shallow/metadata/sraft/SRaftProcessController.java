@@ -27,6 +27,12 @@ public class SRaftProcessController {
 
     public void start() throws Exception {
         checkQuorumVoters();
+        if (config.isStandAlone()) {
+            if (logger.isInfoEnabled()) {
+                logger.info("The model is stand alone, and the node<name={} host={} port={}> is elected as leader", config.getServerId(), config.getExposedHost(), config.getExposedPort());
+            }
+            return;
+        }
         heartbeat.start();
     }
 
@@ -61,6 +67,7 @@ public class SRaftProcessController {
         respondVotePromise.addListener(f -> {
             if (f.isSuccess()) {
                 promise.trySuccess((VoteResponse) f.get());
+                heartbeat.stopHeartbeat();
             }
         });
 

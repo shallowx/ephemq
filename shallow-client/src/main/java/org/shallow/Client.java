@@ -43,7 +43,7 @@ public class Client {
             return;
         }
         state = Boolean.TRUE;
-        workGroup = newEventLoopGroup(config.isEpollPrefer(), config.getWorkThreadWholes(), "client-worker(" + name + ")");
+        workGroup = newEventLoopGroup(config.isEpollPrefer(), config.getWorkThreadLimit(), "client-worker(" + name + ")");
 
         DnsNameResolverBuilder drb = new DnsNameResolverBuilder();
         drb.ttl(config.getDnsTtlMaxExpiredSeconds(), config.getDnsTtlMaxExpiredSeconds());

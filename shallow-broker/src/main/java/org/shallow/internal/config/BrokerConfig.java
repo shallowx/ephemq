@@ -70,7 +70,7 @@ public class BrokerConfig {
     }
 
     public String getControllerQuorumVoters() {
-        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "shallow@127.0.0.1:9100, shallow@127.0.0.1:9200"));
+        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "shallow@127.0.0.1:9100"));
     }
 
     public String getWorkDirectory() {

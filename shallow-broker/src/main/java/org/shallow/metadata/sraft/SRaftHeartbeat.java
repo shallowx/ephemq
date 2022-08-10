@@ -48,11 +48,14 @@ public class SRaftHeartbeat {
         );
     }
 
-    // TODO elect timeout
+    // TODO elect timeout(register)
     private void doRegisterQuorumVote() {
         final Promise<Boolean> promise = newImmediatePromise();
         promise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
             if (f.isSuccess() && f.get()) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("The node<name={} host={} port={}> is elected as leader", config.getServerId(), config.getExposedHost(), config.getExposedPort());
+                }
                 registerHeartbeat();
             }
         });
@@ -61,13 +64,17 @@ public class SRaftHeartbeat {
         if (role == ProcessRoles.Follower) {
             final long now = System.currentTimeMillis();
             if ((now - lastKeepHeartbeatTime) > config.getHeartbeatFixedIntervalTimeMs()) {
-                quorumVoter.quorumVote();
+                quorumVoter.quorumVote(promise);
             }
         }
     }
 
     private void registerHeartbeat() {
         scheduleHeartbeatTask.scheduleAtFixedRate(this::doRegisterHeartbeat, 0, config.getHeartbeatFixedIntervalTimeMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public void stopHeartbeat() {
+
     }
 
     private void doRegisterHeartbeat() {
@@ -81,7 +88,9 @@ public class SRaftHeartbeat {
                     ClientChannel clientChannel = quorumVoter.acquire(address);
                     clientChannel.invoker().invokeWithCallback(HEARTBEAT, config.getInvokeTimeMs(), request, HeartBeatResponse.class);
                 } catch (Throwable t) {
-                    // TODO retry
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Failed to send heartbeat to address<{}>, trg again later", address);
+                    }
                 }
             }
         }

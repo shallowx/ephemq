@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+import static org.shallow.internal.config.ConfigConstants.STAND_ALONE;
 import static org.shallow.util.TypeUtil.*;
 
 @SuppressWarnings("all")
@@ -49,6 +50,9 @@ public class Server {
                 }
             }
         }
+
+        final String isStandAlone = System.getProperty(STAND_ALONE);
+        properties.setProperty(STAND_ALONE, isStandAlone);
 
         final BrokerConfig config = BrokerConfig.exchange(properties);
         checkAndPrintConfig(config);

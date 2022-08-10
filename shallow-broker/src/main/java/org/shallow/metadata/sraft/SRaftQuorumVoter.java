@@ -40,15 +40,15 @@ public class SRaftQuorumVoter {
         this.respondVoteVoteExecutor = group.next();
     }
 
-    public void quorumVote() {
+    public void quorumVote(Promise<Boolean> promise) {
         if (quorumVoteExecutor.inEventLoop()) {
-            doQuorumVote();
+            doQuorumVote(promise);
         } else {
-            quorumVoteExecutor.execute(this::doQuorumVote);
+            quorumVoteExecutor.execute(() -> doQuorumVote(promise));
         }
     }
 
-    private void doQuorumVote() {
+    private void doQuorumVote(Promise<Boolean> promise) {
         this.role = ProcessRoles.Candidate;
 
         ++this.term;
@@ -56,18 +56,19 @@ public class SRaftQuorumVoter {
         final Set<SocketAddress> addresses = controller.toSocketAddress();
         final int half = (int)StrictMath.floor((addresses.size() >>> 1) + 1);
 
-        final Promise<VoteResponse> promise = newImmediatePromise();
+        final Promise<VoteResponse> sendRequestPromise = newImmediatePromise();
         promise.addListener(f -> {
             if (f.isSuccess()) {
                 final VoteResponse response = (VoteResponse) f.get();
                 int votes = 0;
                 if (response.getAck() && ++votes >= half) {
                     role = ProcessRoles.LEADER;
+                    promise.trySuccess(true);
                 }
             }
         });
 
-        doSendVoteRequest(promise, addresses);
+        doSendVoteRequest(sendRequestPromise, addresses);
     }
 
     private void doSendVoteRequest(Promise<VoteResponse> promise, Set<SocketAddress> addresses) {
@@ -93,14 +94,16 @@ public class SRaftQuorumVoter {
 
     public void respondVote(Promise<VoteResponse> respondVotePromise) {
         if (respondVoteVoteExecutor.inEventLoop()) {
-            doRespondVote();
+            doRespondVote(respondVotePromise);
         } else {
-            respondVoteVoteExecutor.execute(this::doRespondVote);
+            respondVoteVoteExecutor.execute(() -> doRespondVote(respondVotePromise));
         }
     }
 
-    private void doRespondVote() {
-
+    private void doRespondVote(Promise<VoteResponse> respondVotePromise) {
+        role = ProcessRoles.Follower;
+        final VoteResponse response = VoteResponse.newBuilder().setAck(true).build();
+        respondVotePromise.trySuccess(response);
     }
 
     public ProcessRoles getSRaftRole() {
