@@ -136,21 +136,4 @@
             <version>3.0.2</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M6</version>
-                <configuration>
-                    <tagBase>${project.artifactId}-${project.version}</tagBase>
-                    <tagNameFormat>${project.version}</tagNameFormat>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <generateReleasePoms>false</generateReleasePoms>
-                    <arguments>-DskipTests</arguments>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -64,7 +64,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     @Override
     public ClientChannel acquireHealthyOrNew(SocketAddress address) {
         try {
-            return acquireHealthyOrNew0(address).get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
+            return acquireHealthyOrNew0(address).get(config.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             throw new RuntimeException("Failed to get healthy channel from pool", t);
         }
@@ -73,7 +73,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     @Override
     public ClientChannel acquireWithRandomly() {
         try {
-            return randomAcquire().get(config.getConnectTimeOutMs(), TimeUnit.SECONDS);
+            return randomAcquire().get(config.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             throw new RuntimeException("Failed to get healthy channel randomly from pool", t);
         }
@@ -90,8 +90,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> acquireHealthy(final SocketAddress address) {
-        channelPools.computeIfAbsent(address, v -> List.of(newChannel(address)));
-        return channelPools.get(address).stream().findAny().orElse(null);
+        return newChannel(address);
     }
 
     private SocketAddress toSocketAddress() {
@@ -105,15 +104,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> randomAcquire() {
-        final int size = channelPools.size();
-        if (size == 0) {
-            return null;
-        }
-        Optional<Future<ClientChannel>> any = channelPools.values().parallelStream()
-                .flatMap(Collection::stream)
-                .filter(healthChecker::isHealthy)
-                .findAny();
-        return any.orElse(null);
+        return newChannel(toSocketAddress());
     }
 
     private Future<ClientChannel> newChannel(SocketAddress address) {

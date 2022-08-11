@@ -12,6 +12,9 @@ import org.shallow.proto.elector.VoteResponse;
 
 import java.net.SocketAddress;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import static org.shallow.processor.ProcessCommand.Server.QUORUM_VOTE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
@@ -20,12 +23,15 @@ import static org.shallow.util.NetworkUtil.newImmediatePromise;
 public class SRaftQuorumVoter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SRaftQuorumVoter.class);
 
+    private static final AtomicIntegerFieldUpdater<SRaftQuorumVoter> updater = AtomicIntegerFieldUpdater.newUpdater(SRaftQuorumVoter.class, "term");
+
     private final BrokerConfig config;
     private volatile ProcessRoles role;
     private final SRaftProcessController controller;
     private final EventExecutor quorumVoteExecutor;
-    private final ShallowChannelPool pool;
+    private ShallowChannelPool pool;
     private final EventExecutor respondVoteVoteExecutor;
+    private final EventExecutor quorumVoteTimeoutExecutor;
     private volatile int term = 0;
 
     public SRaftQuorumVoter(BrokerConfig config, SRaftProcessController controller) {
@@ -34,13 +40,27 @@ public class SRaftQuorumVoter {
 
         this.controller = controller;
 
-        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
-        final EventExecutorGroup group = newEventExecutorGroup(2, "sraft-vote");
+
+        final EventExecutorGroup group = newEventExecutorGroup(3, "sraft-vote");
         this.quorumVoteExecutor = group.next();
         this.respondVoteVoteExecutor = group.next();
+        this.quorumVoteTimeoutExecutor = group.next();
+    }
+
+    public void start() throws Exception {
+        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }
 
     public void quorumVote(Promise<Boolean> promise) {
+        Runnable timeoutTask = () -> {
+            int theTerm = term;
+            if (role == ProcessRoles.Candidate) {
+                role = ProcessRoles.Follower;
+                updater.compareAndSet(this, theTerm, --term);
+            }
+        };
+        quorumVoteTimeoutExecutor.schedule(timeoutTask, config.getControllerQuorumVoteTimeoutMs(), TimeUnit.MILLISECONDS);
+
         if (quorumVoteExecutor.inEventLoop()) {
             doQuorumVote(promise);
         } else {
@@ -49,21 +69,25 @@ public class SRaftQuorumVoter {
     }
 
     private void doQuorumVote(Promise<Boolean> promise) {
-        this.role = ProcessRoles.Candidate;
+        int theTerm = term;
+        if (role == ProcessRoles.Follower) {
+            this.role = ProcessRoles.Candidate;
+            updater.compareAndSet(this, theTerm, ++term);
+        }
 
-        ++this.term;
+        Set<SocketAddress> addresses = controller.toSocketAddressWithoutSelf();
+        int half = (int)StrictMath.floor((addresses.size() >>> 1) + 1);
 
-        final Set<SocketAddress> addresses = controller.toSocketAddress();
-        final int half = (int)StrictMath.floor((addresses.size() >>> 1) + 1);
-
-        final Promise<VoteResponse> sendRequestPromise = newImmediatePromise();
-        promise.addListener(f -> {
+        AtomicInteger votes = new AtomicInteger(1);
+        Promise<VoteResponse> sendRequestPromise = newImmediatePromise();
+        sendRequestPromise.addListener(f -> {
             if (f.isSuccess()) {
                 final VoteResponse response = (VoteResponse) f.get();
-                int votes = 0;
-                if (response.getAck() && ++votes >= half) {
-                    role = ProcessRoles.LEADER;
-                    promise.trySuccess(true);
+                if (response.getAck() && votes.incrementAndGet() >= half) {
+                    if (role == ProcessRoles.Candidate) {
+                        role = ProcessRoles.LEADER;
+                        promise.trySuccess(true);
+                    }
                 }
             }
         });
@@ -101,8 +125,12 @@ public class SRaftQuorumVoter {
     }
 
     private void doRespondVote(Promise<VoteResponse> respondVotePromise) {
+        int theTerm = term;
+        if (role == ProcessRoles.Candidate) {
+            updater.compareAndSet(this, theTerm, --term);
+        }
         role = ProcessRoles.Follower;
-        final VoteResponse response = VoteResponse.newBuilder().setAck(true).build();
+        VoteResponse response = VoteResponse.newBuilder().setAck(true).build();
         respondVotePromise.trySuccess(response);
     }
 

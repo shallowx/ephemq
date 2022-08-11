@@ -27,11 +27,11 @@ public class MappedFileApi {
     }
 
     private void checkWorkDirectoryIfNotExistsAndNew() throws Exception {
-        final String defaultWorkDirectory = config.getWorkDirectory();
+        String defaultWorkDirectory = config.getWorkDirectory();
 
-        final Path workDirectoryPath = Path.of(defaultWorkDirectory);
-        final Path topicsPath = assemblePath(TOPICS);
-        final Path clustersPath = assemblePath(CLUSTERS);
+        Path workDirectoryPath = Path.of(defaultWorkDirectory);
+        Path topicsPath = assemblePath(TOPICS);
+        Path clustersPath = assemblePath(CLUSTERS);
 
         if (Files.notExists(workDirectoryPath)) {
             Files.createDirectory(workDirectoryPath);

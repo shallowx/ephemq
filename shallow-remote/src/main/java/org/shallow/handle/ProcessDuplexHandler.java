@@ -56,7 +56,6 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 }
 
                 final byte command = packet.command();
-                logger.info("command:{}", command);
                 if (command > INT_ZERO) {
                     processRequest(ctx, packet);
                 } else {

@@ -35,12 +35,15 @@ public class DefaultBrokerManager implements BrokerManager {
         quorumVoterClientConfig.setBootstrapSocketAddress(quorumVoterAddress);
         this.client = new QuorumVoterClient("quorum-voter-client", quorumVoterClientConfig);
 
+
         this.api = new MappedFileApi(config);
         this.controller = new SRaftProcessController(config);
     }
 
     @Override
     public void start() throws Exception {
+        client.start();
+
         controller.start();
         api.start();
     }

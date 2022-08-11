@@ -42,12 +42,8 @@ public class OperationInvoker implements ProcessCommand.Server {
         this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
     }
 
-    public void invokeWithCallback(byte command, int timeoutMs, MessageLite request, Class<?> clz) {
-        invoke(command, timeoutMs, null, request, clz);
-    }
-
     public void invoke(byte command, int timeoutMs, MessageLite request, Class<?> clz) {
-        invoke(command, timeoutMs, newImmediatePromise(), request, clz);
+        invoke(command, timeoutMs, null, request, clz);
     }
 
     public void invoke(byte command, int timeoutMs, Promise<?> promise, MessageLite request, Class<?> clz) {

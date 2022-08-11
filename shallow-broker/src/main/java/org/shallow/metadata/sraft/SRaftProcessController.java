@@ -6,6 +6,7 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.elector.VoteResponse;
 import java.net.SocketAddress;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,11 +38,13 @@ public class SRaftProcessController {
     }
 
     private void checkQuorumVoters() {
-        final Set<SocketAddress> quorumVoters = toSocketAddress();
+        Set<SocketAddress> quorumVoters = toSocketAddress();
         if (config.isStandAlone()) {
             if (quorumVoters.size() != 1) {
                 throw new IllegalArgumentException(String.format("The model is stand alone, and the quorum voters<shallow.controller.quorum.voters> value expected = 1, but actual = %d", quorumVoters.size()));
             }
+
+            checkQuorumVoterRoles(quorumVoters);
             return;
         }
 
@@ -52,18 +55,27 @@ public class SRaftProcessController {
         if (quorumVoters.size() % 2 == 0) {
             throw new IllegalArgumentException("The quorum voters<shallow.controller.quorum.voters> value expected to be odd, but actually even, for example, it should be 3, not 4");
         }
+
+        checkQuorumVoterRoles(quorumVoters);
+    }
+
+    private void checkQuorumVoterRoles(Set<SocketAddress> quorumVoters) {
+        SocketAddress localAddress = switchSocketAddress(config.getExposedHost(), config.getExposedPort());
+        if (quorumVoters.contains(localAddress) && !config.getProcessRoles().contains("controller")) {
+            throw new IllegalArgumentException(String.format("The quorum voters<shallow.controller.quorum.voters> value with node<host=%s port=%d> role must be 'controller'", config.getExposedHost(), config.getExposedPort()));
+        }
     }
 
     public void respondVote(int term, Promise<VoteResponse> promise) {
-        final SRaftQuorumVoter quorumVoter = heartbeat.getQuorumVoter();
+        SRaftQuorumVoter quorumVoter = heartbeat.getQuorumVoter();
         if (quorumVoter.getTerm() >= term) {
-            final VoteResponse response = VoteResponse.newBuilder().setAck(false).build();
+            VoteResponse response = VoteResponse.newBuilder().setAck(false).build();
             promise.trySuccess(response);
 
             return;
         }
 
-        final Promise<VoteResponse> respondVotePromise = newImmediatePromise();
+        Promise<VoteResponse> respondVotePromise = newImmediatePromise();
         respondVotePromise.addListener(f -> {
             if (f.isSuccess()) {
                 promise.trySuccess((VoteResponse) f.get());
@@ -79,13 +91,20 @@ public class SRaftProcessController {
     }
 
     public Set<SocketAddress> toSocketAddress() {
-       final String[] votersArray = config.getControllerQuorumVoters().split(",");
+       String[] votersArray = config.getControllerQuorumVoters().split(",");
        return Stream.of(votersArray)
                .map(voters -> {
                    final int length = voters.length();
                    final String newVoters = voters.substring(voters.lastIndexOf("@") + 1, length);
                    return switchSocketAddress(newVoters);
                }).collect(Collectors.toSet());
+    }
+
+    public Set<SocketAddress> toSocketAddressWithoutSelf() {
+        return toSocketAddress()
+                .stream()
+                .filter(f -> !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f))
+                .collect(Collectors.toSet());
     }
 
     public void shutdownGracefully() throws Exception {

@@ -8,26 +8,56 @@ import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
+import org.shallow.metadata.sraft.AbstractSRaftLog;
+import org.shallow.pool.ShallowChannelPool;
+
+import java.net.SocketAddress;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class ClusterManager {
+public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterManager.class);
 
-    private final LoadingCache<String, NodeRecord> nodeRecordCache;
-    private final BrokerConfig config;
+    private final LoadingCache<String, NodeRecord> nodeRecordCommitCache;
+    private final LoadingCache<String, NodeRecord> nodeRecordUnCommitCache;
+    private final MappedFileApi api;
 
-    public ClusterManager(BrokerConfig config) {
-        this.config = config;
+    public ClusterManager(Set<SocketAddress> quorumVoterAddresses, ShallowChannelPool pool, BrokerConfig config, MappedFileApi api) {
+        super(quorumVoterAddresses, pool, config);
+        this.api = api;
 
-        this.nodeRecordCache = Caffeine.newBuilder()
+        this.nodeRecordCommitCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
-            @Override
-            public @Nullable NodeRecord load(String key) throws Exception {
-                return null;
-            }
-        });
+                    @Override
+                    public @Nullable NodeRecord load(String key) throws Exception {
+                        return null;
+                    }
+                });
+        this.nodeRecordUnCommitCache = Caffeine.newBuilder()
+                .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
+                .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public @Nullable NodeRecord load(String key) throws Exception {
+                        return null;
+                    }
+                });
+    }
+
+    @Override
+    protected CommitRecord doPrepareCommit(NodeRecord nodeRecord) {
+        nodeRecordUnCommitCache.put(nodeRecord.getName(), nodeRecord);
+        nodeRecordCommitCache.invalidate(nodeRecord.getName());
+
+        return null;
+    }
+
+    @Override
+    protected void doPostCommit(NodeRecord nodeRecord) {
+        nodeRecordUnCommitCache.invalidate(nodeRecord.getName());
+        nodeRecordCommitCache.put(nodeRecord.getName(), nodeRecord);
     }
 }

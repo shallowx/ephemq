@@ -78,11 +78,11 @@ public class BrokerConfig {
     }
 
     public int getHeartbeatIntervalOriginTimeMs() {
-        return object2Int(config.getOrDefault(HEARTBEAT_INTERVAL_ORIGIN_TIME_MS, 500));
+        return object2Int(config.getOrDefault(HEARTBEAT_INTERVAL_ORIGIN_TIME_MS, 3000));
     }
 
     public int getHeartbeatRandomBoundTimeMs() {
-        return (getHeartbeatIntervalOriginTimeMs() + 200);
+        return (getHeartbeatIntervalOriginTimeMs() + 2000);
     }
 
     public int getHeartbeatFixedIntervalTimeMs() {
@@ -95,5 +95,9 @@ public class BrokerConfig {
 
     public int getInvokeTimeMs() {
         return object2Int(config.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
+    }
+
+    public int getControllerQuorumVoteTimeoutMs() {
+        return getHeartbeatIntervalOriginTimeMs();
     }
 }

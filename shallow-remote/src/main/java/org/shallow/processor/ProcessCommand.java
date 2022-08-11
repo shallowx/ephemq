@@ -13,6 +13,8 @@ public interface ProcessCommand {
                     case 4 -> "FETCH_TOPIC_RECORD";
                     case 5 -> "QUORUM_VOTE";
                     case 6 -> "HEARTBEAT";
+                    case 7 -> "PREPARE_COMMIT";
+                    case 8 -> "POST_COMMIT";
                     default -> throw new IllegalStateException("Unexpected client command: " + command);
                 };
             }
@@ -24,6 +26,8 @@ public interface ProcessCommand {
         byte FETCH_TOPIC_RECORD = 4;
         byte QUORUM_VOTE = 5;
         byte HEARTBEAT = 6;
+        byte PREPARE_COMMIT = 7;
+        byte POST_COMMIT = 7;
        default String get(byte command) {
            return null;
        }

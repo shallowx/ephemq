@@ -1,5 +1,6 @@
 package org.shallow.network;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -11,6 +12,9 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.TopicRecord;
+import org.shallow.metadata.TopicManager;
+import org.shallow.metadata.sraft.SRaftLog;
 import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
@@ -19,9 +23,8 @@ import org.shallow.proto.elector.VoteRequest;
 import org.shallow.proto.elector.VoteResponse;
 import org.shallow.proto.server.*;
 
+import static org.shallow.util.NetworkUtil.*;
 import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.NetworkUtil.switchAddress;
 import static org.shallow.util.ProtoBufUtil.proto2Buf;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
@@ -30,9 +33,11 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerSocketServer.class);
 
     private final BrokerManager manager;
+    private final EventExecutor commandExecutor;
 
     public BrokerProcessorAware(BrokerManager manager) {
         this.manager = manager;
+        this.commandExecutor = newEventExecutorGroup(1, "procesor-aware").next();
     }
 
     @Override
@@ -48,21 +53,29 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             switch (command) {
                 case QUORUM_VOTE -> {
                     try {
-                        final VoteRequest request = readProto(data, VoteRequest.parser());
-                        final int term = request.getTerm();
-
-                        final Promise<VoteResponse> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<VoteResponse>>) f -> {
-                            if (f.isSuccess()) {
-                                if (isNotNull(answer)) {
-                                    answer.success(proto2Buf(channel.alloc(), f.get()));
+                        VoteRequest request = readProto(data, VoteRequest.parser());
+                        commandExecutor.execute(() -> {
+                            try {
+                                int term = request.getTerm();
+                                Promise<VoteResponse> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<VoteResponse>>) f -> {
+                                    if (f.isSuccess()) {
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), f.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, f.cause());
+                                    }
+                                });
+                                SRaftProcessController controller = manager.getController();
+                                controller.respondVote(term, promise);
+                            } catch (Exception e) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to quorum vote with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
                                 }
-                            } else {
-                                answerFailed(answer, f.cause());
+                                answerFailed(answer, e);
                             }
                         });
-                        final SRaftProcessController controller = manager.getController();
-                        controller.respondVote(term, promise);
                     } catch (Exception e) {
                         answerFailed(answer, e);
                     }
@@ -70,10 +83,20 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case HEARTBEAT -> {
                     try {
-                        final RaftHeartbeatRequest request = readProto(data, RaftHeartbeatRequest.parser());
-                        final int term = request.getTerm();
-                        final SRaftProcessController controller = manager.getController();
-                        controller.receiveHeartbeat(term);
+                        RaftHeartbeatRequest request = readProto(data, RaftHeartbeatRequest.parser());
+                        commandExecutor.execute(() -> {
+                            try {
+                                int term = request.getTerm();
+                                SRaftProcessController controller = manager.getController();
+                                controller.receiveHeartbeat(term);
+                            } catch (Exception e) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to send heartbeat with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                                }
+                                answerFailed(answer, e);
+                            }
+                        });
+
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
                             logger.error(e.getMessage(), e);
@@ -83,26 +106,35 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case CREATE_TOPIC -> {
                     try {
-                        final CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
-                        final String topic = request.getTopic();
-                        final int partitions = request.getPartitions();
-                        final int latencies = request.getLatencies();
+                        CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
+                        String topic = request.getTopic();
 
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("The topic<{}> partitions<{}> latency<{}>", topic, partitions, latencies);
-                        }
+                        commandExecutor.execute(() -> {
+                            try {
+                                int partitions = request.getPartitions();
+                                int latencies = request.getLatencies();
 
-                        Promise<CreateTopicResponse> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
-                            if (f.isSuccess()) {
-                                if (isNotNull(answer)) {
-                                    answer.success(proto2Buf(channel.alloc(), f.get()));
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("The topic<{}> partitions<{}> latency<{}>", topic, partitions, latencies);
                                 }
-                            } else {
-                                answerFailed(answer, f.cause());
+
+                                Promise<CreateTopicResponse> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
+                                    if (f.isSuccess()) {
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), f.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, f.cause());
+                                    }
+                                });
+                            } catch (Exception e) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to create topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
+                                }
+                                answerFailed(answer, e);
                             }
                         });
-
                     } catch (Exception e) {
                         answerFailed(answer, e);
                     }
@@ -110,20 +142,28 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case DELETE_TOPIC -> {
                     try {
-                        final DelTopicRequest request = readProto(data, DelTopicRequest.parser());
-                        final String topic = request.getTopic();
+                        DelTopicRequest request = readProto(data, DelTopicRequest.parser());
+                        String topic = request.getTopic();
 
-                        Promise<DelTopicResponse> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<DelTopicResponse>>) f -> {
-                            if (f.isSuccess()) {
-                                if (isNotNull(answer)) {
-                                    answer.success(proto2Buf(channel.alloc(), f.get()));
+                        commandExecutor.execute(() -> {
+                            try {
+                                Promise<DelTopicResponse> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<DelTopicResponse>>) f -> {
+                                    if (f.isSuccess()) {
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), f.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, f.cause());
+                                    }
+                                });
+                            } catch (Exception e) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
                                 }
-                            } else {
-                                answerFailed(answer, f.cause());
+                                answerFailed(answer, e);
                             }
                         });
-
                     } catch (Exception e) {
                         answerFailed(answer, e);
                     }

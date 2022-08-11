@@ -24,6 +24,7 @@ public class ShutdownHook<V> extends Thread{
             if (logger.isInfoEnabled()) {
                 logger.info("The {} shutdownHook was invoked", name);
             }
+
             if (!stopped) {
                 this.stopped = true;
                 try {

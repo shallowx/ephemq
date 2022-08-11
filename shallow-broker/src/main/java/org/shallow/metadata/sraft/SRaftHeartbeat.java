@@ -38,19 +38,18 @@ public class SRaftHeartbeat {
 
     public void start() throws Exception {
         registerQuorumVote();
+        quorumVoter.start();
     }
 
     private void registerQuorumVote() {
         scheduleQuorumVoteTask.scheduleAtFixedRate(this::doRegisterQuorumVote,
                 config.getHeartInitialDelayTimeMs(),
                 ThreadLocalRandom.current().nextInt(config.getHeartbeatIntervalOriginTimeMs(),
-                        config.getHeartbeatRandomBoundTimeMs()), TimeUnit.MILLISECONDS
-        );
+                        config.getHeartbeatRandomBoundTimeMs()), TimeUnit.MILLISECONDS);
     }
 
-    // TODO elect timeout(register)
     private void doRegisterQuorumVote() {
-        final Promise<Boolean> promise = newImmediatePromise();
+        Promise<Boolean> promise = newImmediatePromise();
         promise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
             if (f.isSuccess() && f.get()) {
                 if (logger.isInfoEnabled()) {
@@ -60,9 +59,9 @@ public class SRaftHeartbeat {
             }
         });
 
-        final ProcessRoles role = quorumVoter.getSRaftRole();
+        ProcessRoles role = quorumVoter.getSRaftRole();
         if (role == ProcessRoles.Follower) {
-            final long now = System.currentTimeMillis();
+            long now = System.currentTimeMillis();
             if ((now - lastKeepHeartbeatTime) > config.getHeartbeatFixedIntervalTimeMs()) {
                 quorumVoter.quorumVote(promise);
             }
@@ -78,11 +77,11 @@ public class SRaftHeartbeat {
     }
 
     private void doRegisterHeartbeat() {
-        final ProcessRoles role = quorumVoter.getSRaftRole();
+        ProcessRoles role = quorumVoter.getSRaftRole();
         if (role == ProcessRoles.LEADER) {
-            final Set<SocketAddress> socketAddresses = controller.toSocketAddress();
+            Set<SocketAddress> socketAddresses = controller.toSocketAddressWithoutSelf();
 
-            final RaftHeartbeatRequest request = RaftHeartbeatRequest
+            RaftHeartbeatRequest request = RaftHeartbeatRequest
                     .newBuilder()
                     .setTerm(quorumVoter.getTerm())
                     .build();
@@ -90,7 +89,7 @@ public class SRaftHeartbeat {
             for (SocketAddress address : socketAddresses) {
                 try {
                     ClientChannel clientChannel = quorumVoter.acquire(address);
-                    clientChannel.invoker().invokeWithCallback(HEARTBEAT, config.getInvokeTimeMs(), request, RegisterNodeResponse.class);
+                    clientChannel.invoker().invoke(HEARTBEAT, config.getInvokeTimeMs(), request, RegisterNodeResponse.class);
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Failed to send heartbeat to address<{}>, trg again later", address);
