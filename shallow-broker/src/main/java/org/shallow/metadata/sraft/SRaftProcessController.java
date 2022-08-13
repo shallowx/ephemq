@@ -25,14 +25,14 @@ public class SRaftProcessController {
 
     private final BrokerConfig config;
     private final SRaftHeartbeat heartbeat;
-    private final SRaftLog<TopicRecord> topicSRaftLlog;
-    private final SRaftLog<NodeRecord> clusterSRaftLlog;
+    private final SRaftLog<TopicRecord> topicSRaftLog;
+    private final SRaftLog<NodeRecord> clusterSRaftLog;
 
     public SRaftProcessController(BrokerConfig config, MappedFileApi api) {
         this.config = config;
         this.heartbeat = new SRaftHeartbeat(config, this);
-        this.topicSRaftLlog = new TopicManager(toSocketAddressWithoutSelf(), config, api);
-        this.clusterSRaftLlog = new ClusterManager(toSocketAddressWithoutSelf(), config, api);
+        this.topicSRaftLog = new TopicManager(toSocketAddressWithoutSelf(), config, api);
+        this.clusterSRaftLog = new ClusterManager(toSocketAddressWithoutSelf(), config, api);
     }
 
     public void start() throws Exception {
