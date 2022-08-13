@@ -9,7 +9,9 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
 import org.shallow.metadata.sraft.AbstractSRaftLog;
-import org.shallow.pool.ShallowChannelPool;
+import org.shallow.metadata.sraft.CommitRecord;
+import org.shallow.metadata.sraft.CommitType;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 
 import java.net.SocketAddress;
 import java.util.Set;
@@ -23,8 +25,8 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
     private final LoadingCache<String, NodeRecord> nodeRecordUnCommitCache;
     private final MappedFileApi api;
 
-    public ClusterManager(Set<SocketAddress> quorumVoterAddresses, ShallowChannelPool pool, BrokerConfig config, MappedFileApi api) {
-        super(quorumVoterAddresses, pool, config);
+    public ClusterManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, MappedFileApi api) {
+        super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config);
         this.api = api;
 
         this.nodeRecordCommitCache = Caffeine.newBuilder()
@@ -48,7 +50,7 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
     }
 
     @Override
-    protected CommitRecord doPrepareCommit(NodeRecord nodeRecord) {
+    protected CommitRecord<NodeRecord> doPrepareCommit(NodeRecord nodeRecord, CommitType type) {
         nodeRecordUnCommitCache.put(nodeRecord.getName(), nodeRecord);
         nodeRecordCommitCache.invalidate(nodeRecord.getName());
 
@@ -56,7 +58,7 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
     }
 
     @Override
-    protected void doPostCommit(NodeRecord nodeRecord) {
+    protected void doPostCommit(NodeRecord nodeRecord, CommitType type) {
         nodeRecordUnCommitCache.invalidate(nodeRecord.getName());
         nodeRecordCommitCache.put(nodeRecord.getName(), nodeRecord);
     }

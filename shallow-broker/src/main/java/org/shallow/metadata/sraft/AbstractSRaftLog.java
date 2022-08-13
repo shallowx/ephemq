@@ -34,16 +34,16 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
     }
 
     @Override
-    public void prepareCommit(T t) {
-        CommitRecord commitRecord = this.doPrepareCommit(t);
+    public void prepareCommit(T t, CommitType type) {
+        CommitRecord<T> commitRecord = this.doPrepareCommit(t, type);
 
         if (isNull(quorumVoterAddresses) || quorumVoterAddresses.isEmpty()) {
             throw new IllegalArgumentException("The quorum voters<shallow.controller.quorum.voters> value cannot be empty");
         }
-        notifyPrepareCommit(commitRecord);
+        notifyPrepareCommit(commitRecord, type);
     }
 
-    private void notifyPrepareCommit(CommitRecord commitRecord) {
+    private void notifyPrepareCommit(CommitRecord<T> commitRecord, CommitType type) {
         int half = (int)StrictMath.floor((quorumVoterAddresses.size() >>> 1) + 1);
 
         AtomicInteger votes = new AtomicInteger(1);
@@ -51,7 +51,7 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
         promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
             if (f.isSuccess()) {
                 if (votes.incrementAndGet() >= half) {
-                    postCommit(commitRecord.t);
+                    postCommit(commitRecord.getRecord(), type);
                     notifyPostCommit(commitRecord);
                 }
             }
@@ -60,7 +60,7 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
         for (SocketAddress address : quorumVoterAddresses) {
             try {
                 ClientChannel clientChannel = pool.acquireHealthyOrNew(address);
-                clientChannel.invoker().invoke(PREPARE_COMMIT, config.getInvokeTimeMs(), promise, commitRecord.request, commitRecord.response.getClass());
+                clientChannel.invoker().invoke(PREPARE_COMMIT, config.getInvokeTimeMs(), promise, commitRecord.getRequest(), commitRecord.getResponse().getClass());
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
                     logger.error(e.getMessage(), e);
@@ -70,11 +70,11 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
     }
 
     @Override
-    public void postCommit(T t) {
-        this.doPostCommit(t);
+    public void postCommit(T t, CommitType type) {
+        this.doPostCommit(t, type);
     }
 
-    private void notifyPostCommit(CommitRecord commitRecord) {
+    private void notifyPostCommit(CommitRecord<T> commitRecord) {
         Promise<MessageLite> promise = newImmediatePromise();
         promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
             if (!f.isSuccess()) {
@@ -85,7 +85,7 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
         for (SocketAddress address : quorumVoterAddresses) {
             try {
                 ClientChannel clientChannel = pool.acquireHealthyOrNew(address);
-                clientChannel.invoker().invoke(POST_COMMIT, config.getInvokeTimeMs(), promise, commitRecord.request, commitRecord.response.getClass());
+                clientChannel.invoker().invoke(POST_COMMIT, config.getInvokeTimeMs(), promise, commitRecord.getRequest(), commitRecord.getResponse().getClass());
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
                     logger.error(e.getMessage(), e);
@@ -94,31 +94,7 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
         }
     }
 
-    protected abstract CommitRecord doPrepareCommit(T t);
+    protected abstract CommitRecord<T> doPrepareCommit(T t, CommitType type);
 
-    protected abstract void doPostCommit(T t);
-
-    protected class CommitRecord {
-        private final T t;
-        private final MessageLite request;
-        private final MessageLite response;
-
-        public CommitRecord(T t, MessageLite request, MessageLite response) {
-            this.t = t;
-            this.request = request;
-            this.response = response;
-        }
-
-        public T getT() {
-            return t;
-        }
-
-        public MessageLite getRequest() {
-            return request;
-        }
-
-        public MessageLite getResponse() {
-            return response;
-        }
-    }
+    protected abstract void doPostCommit(T t, CommitType type);
 }

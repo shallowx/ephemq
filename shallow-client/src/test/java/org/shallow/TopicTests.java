@@ -3,7 +3,6 @@ package org.shallow;
 import io.netty.util.concurrent.Promise;
 import org.junit.Assert;
 import org.junit.Test;
-import org.shallow.meta.MetadataManager;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 

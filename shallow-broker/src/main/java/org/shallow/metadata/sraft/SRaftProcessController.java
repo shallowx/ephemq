@@ -4,6 +4,12 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.NodeRecord;
+import org.shallow.meta.TopicRecord;
+import org.shallow.metadata.ClusterManager;
+import org.shallow.metadata.MappedFileApi;
+import org.shallow.metadata.Strategy;
+import org.shallow.metadata.TopicManager;
 import org.shallow.proto.elector.VoteResponse;
 import java.net.SocketAddress;
 import java.util.Objects;
@@ -11,8 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.NetworkUtil.switchSocketAddress;
+import static org.shallow.util.NetworkUtil.*;
 
 public class SRaftProcessController {
 
@@ -20,10 +25,14 @@ public class SRaftProcessController {
 
     private final BrokerConfig config;
     private final SRaftHeartbeat heartbeat;
+    private final SRaftLog<TopicRecord> topicSRaftLlog;
+    private final SRaftLog<NodeRecord> clusterSRaftLlog;
 
-    public SRaftProcessController(BrokerConfig config) {
+    public SRaftProcessController(BrokerConfig config, MappedFileApi api) {
         this.config = config;
         this.heartbeat = new SRaftHeartbeat(config, this);
+        this.topicSRaftLlog = new TopicManager(toSocketAddressWithoutSelf(), config, api);
+        this.clusterSRaftLlog = new ClusterManager(toSocketAddressWithoutSelf(), config, api);
     }
 
     public void start() throws Exception {
@@ -88,6 +97,14 @@ public class SRaftProcessController {
 
     public void receiveHeartbeat(int term) {
         heartbeat.receiveHeartbeat(term);
+    }
+
+    public void prepareCommit(Strategy strategy) {
+
+    }
+
+    public void postCommit(Strategy strategy) {
+
     }
 
     public Set<SocketAddress> toSocketAddress() {

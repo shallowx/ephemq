@@ -27,7 +27,7 @@ public interface ProcessCommand {
         byte QUORUM_VOTE = 5;
         byte HEARTBEAT = 6;
         byte PREPARE_COMMIT = 7;
-        byte POST_COMMIT = 7;
+        byte POST_COMMIT = 8;
        default String get(byte command) {
            return null;
        }

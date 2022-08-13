@@ -1,4 +1,4 @@
-package org.shallow.meta;
+package org.shallow;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -6,10 +6,11 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.shallow.ClientConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.NodeRecord;
+import org.shallow.meta.PartitionRecord;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.processor.ProcessCommand;

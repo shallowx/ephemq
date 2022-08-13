@@ -13,7 +13,10 @@ import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.TopicRecord;
+import org.shallow.metadata.Strategy;
 import org.shallow.metadata.TopicManager;
+import org.shallow.metadata.sraft.CommitRecord;
+import org.shallow.metadata.sraft.CommitType;
 import org.shallow.metadata.sraft.SRaftLog;
 import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.processor.ProcessCommand;
@@ -167,6 +170,14 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     } catch (Exception e) {
                         answerFailed(answer, e);
                     }
+                }
+
+                case PREPARE_COMMIT -> {
+
+                }
+
+                case POST_COMMIT -> {
+
                 }
 
                 case FETCH_CLUSTER_RECORD -> {

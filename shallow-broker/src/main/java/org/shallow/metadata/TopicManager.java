@@ -10,7 +10,9 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.PartitionRecord;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.sraft.AbstractSRaftLog;
-import org.shallow.pool.ShallowChannelPool;
+import org.shallow.metadata.sraft.CommitRecord;
+import org.shallow.metadata.sraft.CommitType;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 
 import java.net.SocketAddress;
 import java.util.Set;
@@ -24,8 +26,8 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     private final LoadingCache<String, PartitionRecord> topicUnCommitRecordCache;
     private final MappedFileApi api;
 
-    public TopicManager(Set<SocketAddress> quorumVoterAddresses, ShallowChannelPool pool, BrokerConfig config, MappedFileApi api) {
-        super(quorumVoterAddresses, pool, config);
+    public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, MappedFileApi api) {
+        super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config);
         this.api = api;
         this.topicCommitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
@@ -49,7 +51,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     }
 
     @Override
-    protected CommitRecord doPrepareCommit(TopicRecord topicRecord) {
+    protected CommitRecord<TopicRecord> doPrepareCommit(TopicRecord topicRecord, CommitType type) {
         topicCommitRecordCache.invalidate(topicRecord.getName());
         topicUnCommitRecordCache.put(topicRecord.getName(), topicRecord.getPartitionRecord());
 
@@ -57,7 +59,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     }
 
     @Override
-    protected void doPostCommit(TopicRecord topicRecord) {
+    protected void doPostCommit(TopicRecord topicRecord, CommitType type) {
         topicUnCommitRecordCache.invalidate(topicRecord.getName());
         topicCommitRecordCache.put(topicRecord.getName(), topicRecord.getPartitionRecord());
     }
