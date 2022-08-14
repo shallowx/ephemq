@@ -7,20 +7,44 @@ option java_package = "org.shallow.proto.elector";
 option java_outer_classname = "LeaderElectorProto";
 option java_multiple_files = true;
 
-message VoteRequest{
+message VoteRequest {
   int32 term = 1;
   int32 version = 2;
 }
 
-message VoteResponse{
+message VoteResponse {
   bool ack = 4;
 }
 
-message RaftHeartbeatRequest{
+message RaftHeartbeatRequest {
   int32 term = 1;
 }
 
-message RaftHeartbeatResponse{
+message RaftHeartbeatResponse {
 
 }
 
+message CreateTopicPrepareCommitRequest {
+    string topic = 1;
+    int32 partitions = 2;
+    int32 latencies = 3;
+    string cluster = 4;
+    PartitionMetadata partitionMetadata = 5;
+}
+
+message CreateTopicPrepareCommitResponse {
+  string topic = 1;
+  int32 partitions = 2;
+  int32 latencies = 3;
+  string cluster = 4;
+  PartitionMetadata partitionMetadata = 5;
+}
+
+message DeleteTopicPrepareCommitRequest {
+  string topic = 1;
+}
+
+message DeleteTopicPrepareCommitResponse {
+  string topic = 1;
+  int32 ack = 2;
+}

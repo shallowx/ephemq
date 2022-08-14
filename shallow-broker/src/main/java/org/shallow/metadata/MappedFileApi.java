@@ -55,7 +55,7 @@ public class MappedFileApi {
         return Path.of(config.getWorkDirectory() + path);
     }
 
-    private void write2File(String content, String path) throws IOException {
+    public void write2File(String content, String path) throws IOException {
         Files.writeString(assemblePath(path), content, StandardCharsets.UTF_8);
     }
 }

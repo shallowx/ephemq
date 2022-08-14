@@ -34,6 +34,26 @@ public final class LeaderElectorProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_RaftHeartbeatResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_CreateTopicPrepareCommitRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_CreateTopicPrepareCommitRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_CreateTopicPrepareCommitResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_CreateTopicPrepareCommitResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_DeleteTopicPrepareCommitRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_DeleteTopicPrepareCommitRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_DeleteTopicPrepareCommitResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_DeleteTopicPrepareCommitResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -47,9 +67,20 @@ public final class LeaderElectorProto {
       "\032\rshallow.proto\",\n\013VoteRequest\022\014\n\004term\030\001" +
       " \001(\005\022\017\n\007version\030\002 \001(\005\"\033\n\014VoteResponse\022\013\n" +
       "\003ack\030\004 \001(\010\"$\n\024RaftHeartbeatRequest\022\014\n\004te" +
-      "rm\030\001 \001(\005\"\027\n\025RaftHeartbeatResponseB1\n\031org" +
-      ".shallow.proto.electorB\022LeaderElectorPro" +
-      "toP\001b\006proto3"
+      "rm\030\001 \001(\005\"\027\n\025RaftHeartbeatResponse\"\250\001\n\037Cr" +
+      "eateTopicPrepareCommitRequest\022\r\n\005topic\030\001" +
+      " \001(\t\022\022\n\npartitions\030\002 \001(\005\022\021\n\tlatencies\030\003 " +
+      "\001(\005\022\017\n\007cluster\030\004 \001(\t\022>\n\021partitionMetadat" +
+      "a\030\005 \001(\0132#.shallow.protobuf.PartitionMeta" +
+      "data\"\251\001\n CreateTopicPrepareCommitRespons" +
+      "e\022\r\n\005topic\030\001 \001(\t\022\022\n\npartitions\030\002 \001(\005\022\021\n\t" +
+      "latencies\030\003 \001(\005\022\017\n\007cluster\030\004 \001(\t\022>\n\021part" +
+      "itionMetadata\030\005 \001(\0132#.shallow.protobuf.P" +
+      "artitionMetadata\"0\n\037DeleteTopicPrepareCo" +
+      "mmitRequest\022\r\n\005topic\030\001 \001(\t\">\n DeleteTopi" +
+      "cPrepareCommitResponse\022\r\n\005topic\030\001 \001(\t\022\013\n" +
+      "\003ack\030\002 \001(\005B1\n\031org.shallow.proto.electorB" +
+      "\022LeaderElectorProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -80,6 +111,30 @@ public final class LeaderElectorProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_RaftHeartbeatResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_shallow_protobuf_CreateTopicPrepareCommitRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_shallow_protobuf_CreateTopicPrepareCommitRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_CreateTopicPrepareCommitRequest_descriptor,
+        new java.lang.String[] { "Topic", "Partitions", "Latencies", "Cluster", "PartitionMetadata", });
+    internal_static_shallow_protobuf_CreateTopicPrepareCommitResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_shallow_protobuf_CreateTopicPrepareCommitResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_CreateTopicPrepareCommitResponse_descriptor,
+        new java.lang.String[] { "Topic", "Partitions", "Latencies", "Cluster", "PartitionMetadata", });
+    internal_static_shallow_protobuf_DeleteTopicPrepareCommitRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_shallow_protobuf_DeleteTopicPrepareCommitRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_DeleteTopicPrepareCommitRequest_descriptor,
+        new java.lang.String[] { "Topic", });
+    internal_static_shallow_protobuf_DeleteTopicPrepareCommitResponse_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_shallow_protobuf_DeleteTopicPrepareCommitResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_DeleteTopicPrepareCommitResponse_descriptor,
+        new java.lang.String[] { "Topic", "Ack", });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

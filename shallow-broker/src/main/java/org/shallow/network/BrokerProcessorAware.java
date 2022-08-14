@@ -1,6 +1,6 @@
 package org.shallow.network;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -14,16 +14,12 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.Strategy;
-import org.shallow.metadata.TopicManager;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
-import org.shallow.metadata.sraft.SRaftLog;
 import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
-import org.shallow.proto.elector.RaftHeartbeatRequest;
-import org.shallow.proto.elector.VoteRequest;
-import org.shallow.proto.elector.VoteResponse;
+import org.shallow.proto.elector.*;
 import org.shallow.proto.server.*;
 
 import static org.shallow.util.NetworkUtil.*;
@@ -121,16 +117,30 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                     logger.debug("The topic<{}> partitions<{}> latency<{}>", topic, partitions, latencies);
                                 }
 
-                                Promise<CreateTopicResponse> promise = newImmediatePromise();
-                                promise.addListener((GenericFutureListener<Future<CreateTopicResponse>>) f -> {
+                                Promise<MessageLite> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
                                     if (f.isSuccess()) {
                                         if (isNotNull(answer)) {
-                                            answer.success(proto2Buf(channel.alloc(), f.get()));
+                                            CreateTopicPrepareCommitResponse prepareCommitResponse = (CreateTopicPrepareCommitResponse) f.get();
+
+                                            CreateTopicResponse response = CreateTopicResponse
+                                                    .newBuilder()
+                                                    .setLatencies(prepareCommitResponse.getLatencies())
+                                                    .setAck(1)
+                                                    .setPartitions(prepareCommitResponse.getPartitions())
+                                                    .setTopic(prepareCommitResponse.getTopic())
+                                                    .build();
+                                            answer.success(proto2Buf(channel.alloc(), response));
                                         }
                                     } else {
                                         answerFailed(answer, f.cause());
                                     }
                                 });
+
+                                SRaftProcessController controller = manager.getController();
+                                TopicRecord topicRecord = new TopicRecord(topic, partitions, latencies);
+                                CommitRecord<TopicRecord> record = new CommitRecord<>(topicRecord, CommitType.ADD);
+                                controller.prepareCommit(Strategy.TOPIC, record, promise);
                             } catch (Exception e) {
                                 if (logger.isErrorEnabled()) {
                                     logger.error("Failed to create topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
@@ -150,16 +160,30 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                         commandExecutor.execute(() -> {
                             try {
-                                Promise<DelTopicResponse> promise = newImmediatePromise();
-                                promise.addListener((GenericFutureListener<Future<DelTopicResponse>>) f -> {
+                                Promise<MessageLite> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
                                     if (f.isSuccess()) {
                                         if (isNotNull(answer)) {
+                                            DeleteTopicPrepareCommitResponse prepareCommitResponse = (DeleteTopicPrepareCommitResponse) f.get();
+
+                                            DelTopicResponse response = DelTopicResponse
+                                                    .newBuilder()
+                                                    .setTopic(prepareCommitResponse.getTopic())
+                                                    .setAck(1)
+                                                    .setTopic(prepareCommitResponse.getTopic())
+                                                    .build();
+
                                             answer.success(proto2Buf(channel.alloc(), f.get()));
                                         }
                                     } else {
                                         answerFailed(answer, f.cause());
                                     }
                                 });
+
+                                SRaftProcessController controller = manager.getController();
+                                TopicRecord topicRecord = new TopicRecord(topic);
+                                CommitRecord<TopicRecord> record = new CommitRecord<>(topicRecord, CommitType.REMOVE);
+                                controller.prepareCommit(Strategy.TOPIC, record, promise);
                             } catch (Exception e) {
                                 if (logger.isErrorEnabled()) {
                                     logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
@@ -173,7 +197,11 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 }
 
                 case PREPARE_COMMIT -> {
-
+                    try {
+                        commandExecutor.execute(() ->{});
+                    } catch (Throwable t){
+                        answerFailed(answer,t);
+                    }
                 }
 
                 case POST_COMMIT -> {
@@ -184,7 +212,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 }
 
-                case FETCH_TOPIC_RECORD -> {}
+                case FETCH_TOPIC_RECORD -> {
+
+                }
 
                 default -> {
                     if (logger.isDebugEnabled()) {

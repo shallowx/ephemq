@@ -35,4 +35,14 @@ public class CommitRecord<T> {
     public MessageLite getResponse() {
         return response;
     }
+
+    @Override
+    public String toString() {
+        return "CommitRecord{" +
+                "record=" + record +
+                ", type=" + type +
+                ", request=" + request +
+                ", response=" + response +
+                '}';
+    }
 }

@@ -8,6 +8,10 @@ public class TopicRecord {
     private int latencies;
     private PartitionRecord partitionRecord;
 
+    public TopicRecord(String name) {
+        this.name = name;
+    }
+
     public TopicRecord(String name, int partitions, int latencies) {
         this.name = name;
         this.partitions = partitions;
@@ -35,6 +39,10 @@ public class TopicRecord {
 
     public PartitionRecord getPartitionRecord() {
         return partitionRecord;
+    }
+
+    public void setPartitionRecord(PartitionRecord partitionRecord) {
+        this.partitionRecord = partitionRecord;
     }
 
     @Override

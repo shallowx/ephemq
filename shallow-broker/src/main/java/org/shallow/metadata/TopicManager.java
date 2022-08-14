@@ -13,10 +13,18 @@ import org.shallow.metadata.sraft.AbstractSRaftLog;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
-
+import org.shallow.proto.PartitionMetadata;
+import org.shallow.proto.elector.CreateTopicPrepareCommitRequest;
+import org.shallow.proto.elector.CreateTopicPrepareCommitResponse;
+import org.shallow.proto.elector.DeleteTopicPrepareCommitRequest;
+import org.shallow.proto.elector.DeleteTopicPrepareCommitResponse;
 import java.net.SocketAddress;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static org.shallow.metadata.MetadataConstants.TOPICS;
+import static org.shallow.util.JsonUtil.object2Json;
 
 public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
@@ -51,16 +59,110 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     }
 
     @Override
-    protected CommitRecord<TopicRecord> doPrepareCommit(TopicRecord topicRecord, CommitType type) {
-        topicCommitRecordCache.invalidate(topicRecord.getName());
-        topicUnCommitRecordCache.put(topicRecord.getName(), topicRecord.getPartitionRecord());
+    protected CommitRecord<TopicRecord> doPrepareCommit(TopicRecord record, CommitType type) {
+        CommitRecord<TopicRecord> commitRecord = null;
+        switch (type) {
+            case ADD -> {
+                commitRecord = create(record);
+            }
 
-        return null;
+            case REMOVE -> {
+                commitRecord = delete(record);
+            }
+        }
+        return commitRecord;
+    }
+
+    private CommitRecord<TopicRecord> create(TopicRecord record) {
+        try {
+            topicCommitRecordCache.invalidate(record.getName());
+
+            String topic = record.getName();
+            int latencies = record.getLatencies();
+            int partitions = record.getPartitions();
+
+            PartitionRecord partitionRecord = new PartitionRecord(-1, latencies, "node1", List.of("node1"));
+            record.setPartitionRecord(partitionRecord);
+
+            CreateTopicPrepareCommitRequest.Builder requestBuilder = CreateTopicPrepareCommitRequest.newBuilder();
+            if (!config.isStandAlone()) {
+                requestBuilder.setTopic(topic)
+                        .setLatencies(latencies)
+                        .setPartitions(partitions)
+                        .setPartitionMetadata(PartitionMetadata
+                                .newBuilder()
+                                .setId(partitionRecord.getId())
+                                .setLatency(latencies)
+                                .setLeader(partitionRecord.getLeader())
+                                .addAllReplicas(partitionRecord.getLatencies())
+                                .build());
+            }
+
+            CreateTopicPrepareCommitResponse.Builder responseBuilder = CreateTopicPrepareCommitResponse.newBuilder();
+            if (config.isStandAlone()) {
+                responseBuilder.setTopic(topic)
+                        .setLatencies(latencies)
+                        .setPartitions(partitions)
+                        .setPartitionMetadata(PartitionMetadata
+                                .newBuilder()
+                                .setId(partitionRecord.getId())
+                                .setLatency(latencies)
+                                .setLeader(partitionRecord.getLeader())
+                                .addAllReplicas(partitionRecord.getLatencies())
+                                .build());
+            }
+
+            CommitRecord<TopicRecord> commitRecord = new CommitRecord<>(record, CommitType.ADD, requestBuilder.build(), responseBuilder.build());
+            topicUnCommitRecordCache.put(record.getName(), partitionRecord);
+
+            return commitRecord;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create topic<" + record.getName() + ">");
+        }
+    }
+
+    private CommitRecord<TopicRecord> delete(TopicRecord record) {
+        String topic = record.getName();
+        topicCommitRecordCache.invalidate(topic);
+
+        DeleteTopicPrepareCommitRequest.Builder requestBuilder = DeleteTopicPrepareCommitRequest.newBuilder();
+        if (!config.isStandAlone()) {
+            requestBuilder
+                    .setTopic(topic)
+                    .build();
+        }
+
+        DeleteTopicPrepareCommitResponse.Builder responseBuilder = DeleteTopicPrepareCommitResponse.newBuilder();
+        if (config.isStandAlone()) {
+            responseBuilder
+                    .setTopic(topic)
+                    .build();
+        }
+
+        return new CommitRecord<>(record, CommitType.REMOVE, requestBuilder.build(), responseBuilder.build());
     }
 
     @Override
-    protected void doPostCommit(TopicRecord topicRecord, CommitType type) {
-        topicUnCommitRecordCache.invalidate(topicRecord.getName());
-        topicCommitRecordCache.put(topicRecord.getName(), topicRecord.getPartitionRecord());
+    protected void doPostCommit(TopicRecord record, CommitType type) {
+        switch (type) {
+            case ADD -> {
+                topicUnCommitRecordCache.invalidate(record.getName());
+                topicCommitRecordCache.put(record.getName(), record.getPartitionRecord());
+            }
+
+            case REMOVE -> {
+                topicCommitRecordCache.invalidate(record.getName());
+                topicUnCommitRecordCache.invalidate(record.getName());
+            }
+        }
+
+        String content = object2Json(topicCommitRecordCache.asMap());
+        try {
+            api.write2File(content, TOPICS);
+        } catch (Exception e) {
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 }

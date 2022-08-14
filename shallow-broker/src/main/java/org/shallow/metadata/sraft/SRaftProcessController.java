@@ -1,5 +1,6 @@
 package org.shallow.metadata.sraft;
 
+import com.google.protobuf.MessageLite;
 import io.netty.util.concurrent.Promise;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
@@ -99,12 +100,27 @@ public class SRaftProcessController {
         heartbeat.receiveHeartbeat(term);
     }
 
-    public void prepareCommit(Strategy strategy) {
+    public void prepareCommit(Strategy strategy, CommitRecord<?> record, Promise<MessageLite> promise) {
+        switch (strategy) {
+            case TOPIC -> {
+                topicSRaftLog.prepareCommit((TopicRecord) record.getRecord(), record.getType(), promise);
+            }
 
+            case CLUSTER -> {
+                clusterSRaftLog.prepareCommit((NodeRecord) record.getRecord(), record.getType(), promise);
+            }
+        }
     }
 
-    public void postCommit(Strategy strategy) {
-
+    public void postCommit(Strategy strategy, CommitRecord<?> record, Promise<MessageLite> promise) {
+        switch (strategy) {
+            case TOPIC -> {
+                topicSRaftLog.postCommit((TopicRecord) record.getRecord(), record.getType());
+            }
+            case CLUSTER -> {
+                clusterSRaftLog.postCommit((NodeRecord) record.getRecord(), record.getType());
+            }
+        }
     }
 
     public Set<SocketAddress> toSocketAddress() {

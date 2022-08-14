@@ -60,8 +60,8 @@ public class MetadataManager implements ProcessCommand.Server {
     public Promise<CreateTopicResponse> createTopic(byte command, String topic, int partitions, int latency) {
         CreateTopicRequest request = CreateTopicRequest.newBuilder()
                 .setTopic(topic)
-                .setLatencies(latency)
                 .setPartitions(partitions)
+                .setLatencies(latency)
                 .build();
 
         Promise<CreateTopicResponse> promise = newImmediatePromise();

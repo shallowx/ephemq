@@ -34,25 +34,38 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
     }
 
     @Override
-    public void prepareCommit(T t, CommitType type) {
+    public void prepareCommit(T t, CommitType type, Promise<MessageLite> promise) {
         CommitRecord<T> commitRecord = this.doPrepareCommit(t, type);
+
+        if (config.isStandAlone()) {
+            doPostCommit(commitRecord.getRecord(), commitRecord.getType());
+            promise.trySuccess(commitRecord.getResponse());
+            return;
+        }
+
+        Promise<Void> prepareCommitPromise = newImmediatePromise();
+        prepareCommitPromise.addListener((GenericFutureListener<Future<Void>>) f -> {
+            if (f.isSuccess()) {
+                promise.trySuccess(commitRecord.getResponse());
+            }
+        });
 
         if (isNull(quorumVoterAddresses) || quorumVoterAddresses.isEmpty()) {
             throw new IllegalArgumentException("The quorum voters<shallow.controller.quorum.voters> value cannot be empty");
         }
-        notifyPrepareCommit(commitRecord, type);
+        notifyPrepareCommit(commitRecord, type, prepareCommitPromise);
     }
 
-    private void notifyPrepareCommit(CommitRecord<T> commitRecord, CommitType type) {
+    private void notifyPrepareCommit(CommitRecord<T> commitRecord, CommitType type, Promise<Void> promise) {
         int half = (int)StrictMath.floor((quorumVoterAddresses.size() >>> 1) + 1);
 
         AtomicInteger votes = new AtomicInteger(1);
-        Promise<MessageLite> promise = newImmediatePromise();
-        promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
+        Promise<MessageLite> preCommitPromise = newImmediatePromise();
+        preCommitPromise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
             if (f.isSuccess()) {
                 if (votes.incrementAndGet() >= half) {
                     postCommit(commitRecord.getRecord(), type);
-                    notifyPostCommit(commitRecord);
+                    notifyPostCommit(commitRecord, type, promise);
                 }
             }
         });
@@ -60,11 +73,12 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
         for (SocketAddress address : quorumVoterAddresses) {
             try {
                 ClientChannel clientChannel = pool.acquireHealthyOrNew(address);
-                clientChannel.invoker().invoke(PREPARE_COMMIT, config.getInvokeTimeMs(), promise, commitRecord.getRequest(), commitRecord.getResponse().getClass());
+                clientChannel.invoker().invoke(PREPARE_COMMIT, config.getInvokeTimeMs(), preCommitPromise, commitRecord.getRequest(), commitRecord.getResponse().getClass());
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
                     logger.error(e.getMessage(), e);
                 }
+                // try again later
             }
         }
     }
@@ -74,22 +88,25 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
         this.doPostCommit(t, type);
     }
 
-    private void notifyPostCommit(CommitRecord<T> commitRecord) {
-        Promise<MessageLite> promise = newImmediatePromise();
-        promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
-            if (!f.isSuccess()) {
-                // try again later
+    private void notifyPostCommit(CommitRecord<T> commitRecord, CommitType type, Promise<Void> promise) {
+        AtomicInteger votes = new AtomicInteger(0);
+
+        Promise<MessageLite> postCommitPromise = newImmediatePromise();
+        postCommitPromise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
+            if (f.isSuccess()) {
+                promise.trySuccess(null);
             }
         });
 
         for (SocketAddress address : quorumVoterAddresses) {
             try {
                 ClientChannel clientChannel = pool.acquireHealthyOrNew(address);
-                clientChannel.invoker().invoke(POST_COMMIT, config.getInvokeTimeMs(), promise, commitRecord.getRequest(), commitRecord.getResponse().getClass());
+                clientChannel.invoker().invoke(POST_COMMIT, config.getInvokeTimeMs(), postCommitPromise, commitRecord.getRequest(), commitRecord.getResponse().getClass());
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
                     logger.error(e.getMessage(), e);
                 }
+                // try again later
             }
         }
     }

@@ -1,6 +1,5 @@
 package org.shallow.meta;
 
-import java.net.SocketAddress;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,17 +8,13 @@ public class PartitionRecord {
     private int id;
     private int latency;
     private String leader;
-    private SocketAddress leaderAddress;
     private List<String> latencies;
-    private List<SocketAddress> latenciesAddress;
 
-    public PartitionRecord(int id, int latency, String leader, SocketAddress leaderAddress, List<String> latencies, List<SocketAddress> latenciesAddress) {
+    public PartitionRecord(int id, int latency, String leader, List<String> latencies) {
         this.id = id;
         this.latency = latency;
         this.leader = leader;
-        this.leaderAddress = leaderAddress;
         this.latencies = latencies;
-        this.latenciesAddress = latenciesAddress;
     }
 
     public int getId() {
@@ -46,28 +41,12 @@ public class PartitionRecord {
         this.leader = leader;
     }
 
-    public SocketAddress getLeaderAddress() {
-        return leaderAddress;
-    }
-
-    public void setLeaderAddress(SocketAddress leaderAddress) {
-        this.leaderAddress = leaderAddress;
-    }
-
     public List<String> getLatencies() {
         return latencies;
     }
 
     public void setLatencies(List<String> latencies) {
         this.latencies = latencies;
-    }
-
-    public List<SocketAddress> getLatenciesAddress() {
-        return latenciesAddress;
-    }
-
-    public void setLatenciesAddress(List<SocketAddress> latenciesAddress) {
-        this.latenciesAddress = latenciesAddress;
     }
 
     @Override
@@ -89,9 +68,7 @@ public class PartitionRecord {
                 "id=" + id +
                 ", latency=" + latency +
                 ", leader='" + leader + '\'' +
-                ", leaderAddress=" + leaderAddress +
                 ", latencies=" + latencies +
-                ", latenciesAddress=" + latenciesAddress +
                 '}';
     }
 }
