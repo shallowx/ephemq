@@ -7,10 +7,11 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
 import org.shallow.meta.TopicRecord;
-import org.shallow.metadata.ClusterManager;
+import org.shallow.metadata.atomic.DistributedAtomicInteger;
+import org.shallow.metadata.management.ClusterManager;
 import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.Strategy;
-import org.shallow.metadata.TopicManager;
+import org.shallow.metadata.management.TopicManager;
 import org.shallow.proto.elector.VoteResponse;
 import java.net.SocketAddress;
 import java.util.Objects;
@@ -26,14 +27,18 @@ public class SRaftProcessController {
 
     private final BrokerConfig config;
     private final SRaftHeartbeat heartbeat;
-    private final SRaftLog<TopicRecord> topicSRaftLog;
-    private final SRaftLog<NodeRecord> clusterSRaftLog;
+    private final TopicManager topicManager;
+    private final ClusterManager clusterManager;
+    private final MappedFileApi api;
+    private final DistributedAtomicInteger atomicValue;
 
     public SRaftProcessController(BrokerConfig config, MappedFileApi api) {
         this.config = config;
+        this.api = api;
         this.heartbeat = new SRaftHeartbeat(config, this);
-        this.topicSRaftLog = new TopicManager(toSocketAddressWithoutSelf(), config, api);
-        this.clusterSRaftLog = new ClusterManager(toSocketAddressWithoutSelf(), config, api);
+        this.topicManager = new TopicManager(toSocketAddress(true), config, this);
+        this.clusterManager = new ClusterManager(toSocketAddress(true), config, this);
+        this.atomicValue = new DistributedAtomicInteger(this);
     }
 
     public void start() throws Exception {
@@ -48,7 +53,7 @@ public class SRaftProcessController {
     }
 
     private void checkQuorumVoters() {
-        Set<SocketAddress> quorumVoters = toSocketAddress();
+        Set<SocketAddress> quorumVoters = toSocketAddress(false);
         if (config.isStandAlone()) {
             if (quorumVoters.size() != 1) {
                 throw new IllegalArgumentException(String.format("The model is stand alone, and the quorum voters<shallow.controller.quorum.voters> value expected = 1, but actual = %d", quorumVoters.size()));
@@ -103,11 +108,11 @@ public class SRaftProcessController {
     public void prepareCommit(Strategy strategy, CommitRecord<?> record, Promise<MessageLite> promise) {
         switch (strategy) {
             case TOPIC -> {
-                topicSRaftLog.prepareCommit((TopicRecord) record.getRecord(), record.getType(), promise);
+                topicManager.prepareCommit((TopicRecord) record.getRecord(), record.getType(), promise);
             }
 
             case CLUSTER -> {
-                clusterSRaftLog.prepareCommit((NodeRecord) record.getRecord(), record.getType(), promise);
+                clusterManager.prepareCommit((NodeRecord) record.getRecord(), record.getType(), promise);
             }
         }
     }
@@ -115,29 +120,43 @@ public class SRaftProcessController {
     public void postCommit(Strategy strategy, CommitRecord<?> record, Promise<MessageLite> promise) {
         switch (strategy) {
             case TOPIC -> {
-                topicSRaftLog.postCommit((TopicRecord) record.getRecord(), record.getType());
+                topicManager.postCommit((TopicRecord) record.getRecord(), record.getType());
             }
             case CLUSTER -> {
-                clusterSRaftLog.postCommit((NodeRecord) record.getRecord(), record.getType());
+                clusterManager.postCommit((NodeRecord) record.getRecord(), record.getType());
             }
         }
     }
 
-    public Set<SocketAddress> toSocketAddress() {
+    public Set<SocketAddress> toSocketAddress(boolean excludeSelf) {
        String[] votersArray = config.getControllerQuorumVoters().split(",");
        return Stream.of(votersArray)
                .map(voters -> {
                    final int length = voters.length();
                    final String newVoters = voters.substring(voters.lastIndexOf("@") + 1, length);
                    return switchSocketAddress(newVoters);
-               }).collect(Collectors.toSet());
+               }).filter(f -> excludeSelf && !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f))
+               .collect(Collectors.toSet());
     }
 
-    public Set<SocketAddress> toSocketAddressWithoutSelf() {
-        return toSocketAddress()
-                .stream()
-                .filter(f -> !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f))
-                .collect(Collectors.toSet());
+    public TopicManager getTopicManager() {
+        return topicManager;
+    }
+
+    public long distributedValue() {
+        return heartbeat.getDistributedValue();
+    }
+
+    public DistributedAtomicInteger getAtomicValue() {
+        return atomicValue;
+    }
+
+    public ClusterManager getClusterManager() {
+        return clusterManager;
+    }
+
+    public MappedFileApi getMappedFileApi() {
+        return api;
     }
 
     public void shutdownGracefully() throws Exception {

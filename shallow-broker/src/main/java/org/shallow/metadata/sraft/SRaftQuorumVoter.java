@@ -75,7 +75,7 @@ public class SRaftQuorumVoter {
             updater.compareAndSet(this, theTerm, ++term);
         }
 
-        Set<SocketAddress> addresses = controller.toSocketAddressWithoutSelf();
+        Set<SocketAddress> addresses = controller.toSocketAddress(true);
         int half = (int)StrictMath.floor((addresses.size() >>> 1) + 1);
 
         AtomicInteger votes = new AtomicInteger(1);

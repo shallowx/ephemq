@@ -1,6 +1,6 @@
 package org.shallow.metadata;
 
-interface MetadataConstants {
+public interface MetadataConstants {
     String TOPICS = "/topics.json";
     String CLUSTERS = "/clusters.json";
 }

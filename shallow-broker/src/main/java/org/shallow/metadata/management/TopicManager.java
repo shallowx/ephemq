@@ -1,4 +1,4 @@
-package org.shallow.metadata;
+package org.shallow.metadata.management;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -9,9 +9,12 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.PartitionRecord;
 import org.shallow.meta.TopicRecord;
+import org.shallow.metadata.MappedFileApi;
+import org.shallow.metadata.atomic.DistributedAtomicInteger;
 import org.shallow.metadata.sraft.AbstractSRaftLog;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
+import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.proto.PartitionMetadata;
 import org.shallow.proto.elector.CreateTopicPrepareCommitRequest;
@@ -30,19 +33,23 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicManager.class);
 
-    private final LoadingCache<String, PartitionRecord> topicCommitRecordCache;
-    private final LoadingCache<String, PartitionRecord> topicUnCommitRecordCache;
+    private final LoadingCache<String, Set<PartitionRecord>> topicCommitRecordCache;
+    private final LoadingCache<String, Set<PartitionRecord>> topicUnCommitRecordCache;
     private final MappedFileApi api;
+    private final SRaftProcessController controller;
+    private final DistributedAtomicInteger atomicValue;
 
-    public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, MappedFileApi api) {
+    public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, SRaftProcessController controller) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config);
-        this.api = api;
+        this.controller = controller;
+        this.api = controller.getMappedFileApi();
+        this.atomicValue = controller.getAtomicValue();
         this.topicCommitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
                     @Override
-                    public @Nullable PartitionRecord load(String key) throws Exception {
+                    public @Nullable Set<PartitionRecord> load(String key) throws Exception {
                         return null;
                     }
                 });
@@ -52,7 +59,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
                     @Override
-                    public @Nullable PartitionRecord load(String key) throws Exception {
+                    public @Nullable Set<PartitionRecord> load(String key) throws Exception {
                         return null;
                     }
                 });
@@ -81,7 +88,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
             int latencies = record.getLatencies();
             int partitions = record.getPartitions();
 
-            PartitionRecord partitionRecord = new PartitionRecord(-1, latencies, "node1", List.of("node1"));
+            PartitionRecord partitionRecord = new PartitionRecord(atomicValue.increment().preValue(), latencies, elect(), calculateReplicas());
             record.setPartitionRecord(partitionRecord);
 
             CreateTopicPrepareCommitRequest.Builder requestBuilder = CreateTopicPrepareCommitRequest.newBuilder();
@@ -113,12 +120,23 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
             }
 
             CommitRecord<TopicRecord> commitRecord = new CommitRecord<>(record, CommitType.ADD, requestBuilder.build(), responseBuilder.build());
-            topicUnCommitRecordCache.put(record.getName(), partitionRecord);
+            Set<PartitionRecord> partitionRecords = topicUnCommitRecordCache.get(record.getName());
+            partitionRecords.add(partitionRecord);
+
+            topicUnCommitRecordCache.put(record.getName(), partitionRecords);
 
             return commitRecord;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create topic<" + record.getName() + ">");
         }
+    }
+
+    private String elect() {
+        return config.getServerId();
+    }
+
+    private List<String> calculateReplicas() {
+        return List.of(config.getServerId());
     }
 
     private CommitRecord<TopicRecord> delete(TopicRecord record) {
@@ -147,7 +165,10 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         switch (type) {
             case ADD -> {
                 topicUnCommitRecordCache.invalidate(record.getName());
-                topicCommitRecordCache.put(record.getName(), record.getPartitionRecord());
+                Set<PartitionRecord> partitionRecords = topicUnCommitRecordCache.get(record.getName());
+                partitionRecords.add(record.getPartitionRecord());
+
+                topicCommitRecordCache.put(record.getName(), partitionRecords);
             }
 
             case REMOVE -> {

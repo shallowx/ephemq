@@ -26,6 +26,7 @@ public class SRaftHeartbeat {
     private final EventExecutor scheduleQuorumVoteTask;
     private final EventExecutor scheduleHeartbeatTask;
     private long lastKeepHeartbeatTime;
+    private int distributedValue;
 
     public SRaftHeartbeat(BrokerConfig config, SRaftProcessController controller) {
         this.config = config;
@@ -79,7 +80,7 @@ public class SRaftHeartbeat {
     private void doRegisterHeartbeat() {
         ProcessRoles role = quorumVoter.getSRaftRole();
         if (role == ProcessRoles.LEADER) {
-            Set<SocketAddress> socketAddresses = controller.toSocketAddressWithoutSelf();
+            Set<SocketAddress> socketAddresses = controller.toSocketAddress(true);
 
             RaftHeartbeatRequest request = RaftHeartbeatRequest
                     .newBuilder()
@@ -97,6 +98,10 @@ public class SRaftHeartbeat {
                 }
             }
         }
+    }
+
+    public int getDistributedValue() {
+        return distributedValue;
     }
 
     public void receiveHeartbeat(int term) {
