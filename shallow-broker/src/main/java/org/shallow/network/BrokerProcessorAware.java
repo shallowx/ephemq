@@ -86,8 +86,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         commandExecutor.execute(() -> {
                             try {
                                 int term = request.getTerm();
+                                int distributedValue = request.getDistributedValue();
                                 SRaftProcessController controller = manager.getController();
-                                controller.receiveHeartbeat(term);
+                                controller.receiveHeartbeat(term, distributedValue);
                             } catch (Exception e) {
                                 if (logger.isErrorEnabled()) {
                                     logger.error("Failed to send heartbeat with address<{}>, cause:{}", channel.remoteAddress().toString(), e);

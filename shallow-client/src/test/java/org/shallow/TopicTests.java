@@ -22,12 +22,12 @@ public class TopicTests {
         client.start();
 
         MetadataManager topicManager = new MetadataManager(clientConfig);
-        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "mu lite-create", 1, 1);
+        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "create", 1, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getLatencies(), 1);
-        Assert.assertEquals(response.getTopic(), "mu lite-create");
+        Assert.assertEquals(response.getTopic(), "create");
         Assert.assertEquals(response.getPartitions(), 1);
         Assert.assertEquals(response.getAck(), 1);
 

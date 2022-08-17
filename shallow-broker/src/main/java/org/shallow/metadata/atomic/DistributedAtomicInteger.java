@@ -1,29 +1,30 @@
 package org.shallow.metadata.atomic;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.shallow.metadata.sraft.SRaftProcessController;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.nio.ByteBuffer;
 
 import static org.shallow.util.ObjectUtil.isNull;
 
+@ThreadSafe
 @SuppressWarnings("rawtypes,unchecked")
 public class DistributedAtomicInteger implements DistributedAtomicNumber<Integer> {
 
     private final DistributedAtomicValue value;
 
-    public DistributedAtomicInteger(SRaftProcessController controller) {
-        this.value = new DistributedAtomicValue(controller);
+    public DistributedAtomicInteger() {
+        this.value = new DistributedAtomicValue();
     }
 
     @Override
     public AtomicValue<Integer> get() {
-        return value.get();
+        return new AtomicInteger(value.get());
     }
 
     @Override
     public void trySet(Integer newValue) {
-        value.worker(newValue);
+        value.trySet(newValue);
     }
 
     @Override

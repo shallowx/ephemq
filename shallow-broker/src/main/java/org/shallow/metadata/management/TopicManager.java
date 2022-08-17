@@ -24,6 +24,7 @@ import org.shallow.proto.elector.DeleteTopicPrepareCommitResponse;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.metadata.MetadataConstants.TOPICS;
@@ -36,33 +37,21 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     private final LoadingCache<String, Set<PartitionRecord>> topicCommitRecordCache;
     private final LoadingCache<String, Set<PartitionRecord>> topicUnCommitRecordCache;
     private final MappedFileApi api;
-    private final SRaftProcessController controller;
     private final DistributedAtomicInteger atomicValue;
 
     public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, SRaftProcessController controller) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config);
-        this.controller = controller;
         this.api = controller.getMappedFileApi();
         this.atomicValue = controller.getAtomicValue();
         this.topicCommitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @Nullable Set<PartitionRecord> load(String key) throws Exception {
-                        return null;
-                    }
-                });
+                .build(key -> new CopyOnWriteArraySet<>());
 
         this.topicUnCommitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @Nullable Set<PartitionRecord> load(String key) throws Exception {
-                        return null;
-                    }
-                });
+                .build(key -> new CopyOnWriteArraySet<>());
     }
 
     @Override

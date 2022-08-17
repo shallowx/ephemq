@@ -53,6 +53,11 @@ private static final long serialVersionUID = 0L;
             term_ = input.readInt32();
             break;
           }
+          case 16: {
+
+            distributedValue_ = input.readInt32();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -96,6 +101,17 @@ private static final long serialVersionUID = 0L;
     return term_;
   }
 
+  public static final int DISTRIBUTEDVALUE_FIELD_NUMBER = 2;
+  private int distributedValue_;
+  /**
+   * <code>int32 distributedValue = 2;</code>
+   * @return The distributedValue.
+   */
+  @java.lang.Override
+  public int getDistributedValue() {
+    return distributedValue_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -113,6 +129,9 @@ private static final long serialVersionUID = 0L;
     if (term_ != 0) {
       output.writeInt32(1, term_);
     }
+    if (distributedValue_ != 0) {
+      output.writeInt32(2, distributedValue_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -125,6 +144,10 @@ private static final long serialVersionUID = 0L;
     if (term_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, term_);
+    }
+    if (distributedValue_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, distributedValue_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -143,6 +166,8 @@ private static final long serialVersionUID = 0L;
 
     if (getTerm()
         != other.getTerm()) return false;
+    if (getDistributedValue()
+        != other.getDistributedValue()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -156,6 +181,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + TERM_FIELD_NUMBER;
     hash = (53 * hash) + getTerm();
+    hash = (37 * hash) + DISTRIBUTEDVALUE_FIELD_NUMBER;
+    hash = (53 * hash) + getDistributedValue();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -291,6 +318,8 @@ private static final long serialVersionUID = 0L;
       super.clear();
       term_ = 0;
 
+      distributedValue_ = 0;
+
       return this;
     }
 
@@ -318,6 +347,7 @@ private static final long serialVersionUID = 0L;
     public org.shallow.proto.elector.RaftHeartbeatRequest buildPartial() {
       org.shallow.proto.elector.RaftHeartbeatRequest result = new org.shallow.proto.elector.RaftHeartbeatRequest(this);
       result.term_ = term_;
+      result.distributedValue_ = distributedValue_;
       onBuilt();
       return result;
     }
@@ -368,6 +398,9 @@ private static final long serialVersionUID = 0L;
       if (other == org.shallow.proto.elector.RaftHeartbeatRequest.getDefaultInstance()) return this;
       if (other.getTerm() != 0) {
         setTerm(other.getTerm());
+      }
+      if (other.getDistributedValue() != 0) {
+        setDistributedValue(other.getDistributedValue());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -425,6 +458,37 @@ private static final long serialVersionUID = 0L;
     public Builder clearTerm() {
       
       term_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int distributedValue_ ;
+    /**
+     * <code>int32 distributedValue = 2;</code>
+     * @return The distributedValue.
+     */
+    @java.lang.Override
+    public int getDistributedValue() {
+      return distributedValue_;
+    }
+    /**
+     * <code>int32 distributedValue = 2;</code>
+     * @param value The distributedValue to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDistributedValue(int value) {
+      
+      distributedValue_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 distributedValue = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearDistributedValue() {
+      
+      distributedValue_ = 0;
       onChanged();
       return this;
     }

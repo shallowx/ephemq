@@ -10,6 +10,7 @@ import org.shallow.pool.ShallowChannelPool;
 import org.shallow.proto.elector.VoteRequest;
 import org.shallow.proto.elector.VoteResponse;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.net.SocketAddress;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import static org.shallow.processor.ProcessCommand.Server.QUORUM_VOTE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 
+@ThreadSafe
 public class SRaftQuorumVoter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SRaftQuorumVoter.class);
 

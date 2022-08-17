@@ -15,12 +15,12 @@ public class ClientTests {
     @Test
     public void testClientStart() throws ExecutionException, InterruptedException {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:7730"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
         Client client = new Client("Client", clientConfig);
         client.start();
 
         ShallowChannelPool pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
-        ClientChannel clientChannel = pool.acquireHealthyOrNew(switchSocketAddress("127.0.0.1", 7730));
+        ClientChannel clientChannel = pool.acquireHealthyOrNew(switchSocketAddress("127.0.0.1", 9100));
 
         Assert.assertNotNull(clientChannel);
 

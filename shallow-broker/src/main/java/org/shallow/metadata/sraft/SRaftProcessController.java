@@ -13,6 +13,8 @@ import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.Strategy;
 import org.shallow.metadata.management.TopicManager;
 import org.shallow.proto.elector.VoteResponse;
+
+import javax.annotation.concurrent.ThreadSafe;
 import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.Set;
@@ -21,6 +23,7 @@ import java.util.stream.Stream;
 
 import static org.shallow.util.NetworkUtil.*;
 
+@ThreadSafe
 public class SRaftProcessController {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SRaftProcessController.class);
@@ -36,9 +39,9 @@ public class SRaftProcessController {
         this.config = config;
         this.api = api;
         this.heartbeat = new SRaftHeartbeat(config, this);
+        this.atomicValue = new DistributedAtomicInteger();
         this.topicManager = new TopicManager(toSocketAddress(true), config, this);
         this.clusterManager = new ClusterManager(toSocketAddress(true), config, this);
-        this.atomicValue = new DistributedAtomicInteger(this);
     }
 
     public void start() throws Exception {
@@ -101,8 +104,9 @@ public class SRaftProcessController {
         quorumVoter.respondVote(respondVotePromise);
     }
 
-    public void receiveHeartbeat(int term) {
+    public void receiveHeartbeat(int term, int distributedValue) {
         heartbeat.receiveHeartbeat(term);
+        atomicValue.trySet(distributedValue);
     }
 
     public void prepareCommit(Strategy strategy, CommitRecord<?> record, Promise<MessageLite> promise) {
@@ -135,16 +139,18 @@ public class SRaftProcessController {
                    final int length = voters.length();
                    final String newVoters = voters.substring(voters.lastIndexOf("@") + 1, length);
                    return switchSocketAddress(newVoters);
-               }).filter(f -> excludeSelf && !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f))
+               }).filter(f -> {
+                   if (!excludeSelf) {
+                       return true;
+                   }
+
+                   return !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f);
+               })
                .collect(Collectors.toSet());
     }
 
     public TopicManager getTopicManager() {
         return topicManager;
-    }
-
-    public long distributedValue() {
-        return heartbeat.getDistributedValue();
     }
 
     public DistributedAtomicInteger getAtomicValue() {

@@ -8,6 +8,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.elector.RaftHeartbeatRequest;
 import org.shallow.proto.server.RegisterNodeResponse;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.net.SocketAddress;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,6 +18,7 @@ import static org.shallow.processor.ProcessCommand.Server.HEARTBEAT;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 
+@ThreadSafe
 public class SRaftHeartbeat {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SRaftHeartbeat.class);
 
@@ -26,7 +28,6 @@ public class SRaftHeartbeat {
     private final EventExecutor scheduleQuorumVoteTask;
     private final EventExecutor scheduleHeartbeatTask;
     private long lastKeepHeartbeatTime;
-    private int distributedValue;
 
     public SRaftHeartbeat(BrokerConfig config, SRaftProcessController controller) {
         this.config = config;
@@ -85,6 +86,7 @@ public class SRaftHeartbeat {
             RaftHeartbeatRequest request = RaftHeartbeatRequest
                     .newBuilder()
                     .setTerm(quorumVoter.getTerm())
+                    .setDistributedValue(controller.getAtomicValue().get().preValue())
                     .build();
 
             for (SocketAddress address : socketAddresses) {
@@ -98,10 +100,6 @@ public class SRaftHeartbeat {
                 }
             }
         }
-    }
-
-    public int getDistributedValue() {
-        return distributedValue;
     }
 
     public void receiveHeartbeat(int term) {

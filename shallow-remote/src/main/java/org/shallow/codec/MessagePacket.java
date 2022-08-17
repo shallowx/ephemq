@@ -6,9 +6,12 @@ import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 
+import javax.annotation.concurrent.Immutable;
+
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ByteUtil.*;
 
+@Immutable
 public final class MessagePacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
     public static final byte HEADER_LENGTH = 13;

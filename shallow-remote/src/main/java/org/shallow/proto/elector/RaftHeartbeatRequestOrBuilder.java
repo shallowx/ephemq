@@ -12,4 +12,10 @@ public interface RaftHeartbeatRequestOrBuilder extends
    * @return The term.
    */
   int getTerm();
+
+  /**
+   * <code>int32 distributedValue = 2;</code>
+   * @return The distributedValue.
+   */
+  int getDistributedValue();
 }

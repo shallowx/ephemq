@@ -18,6 +18,7 @@ message VoteResponse {
 
 message RaftHeartbeatRequest {
   int32 term = 1;
+  int32 distributedValue = 2;
 }
 
 message RaftHeartbeatResponse {

@@ -1,39 +1,54 @@
 package org.shallow.metadata.atomic;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.shallow.metadata.sraft.SRaftProcessController;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+@ThreadSafe
 public class DistributedAtomicValue<T> {
 
-    private volatile long value;
-
-    @SuppressWarnings("rawtypes")
-    private static final AtomicLongFieldUpdater<DistributedAtomicValue> updater = AtomicLongFieldUpdater.newUpdater(DistributedAtomicValue.class, "value");
-
-    public DistributedAtomicValue(SRaftProcessController controller) {
-        this.value = controller.distributedValue();
-    }
+    private long preValue;
+    private long postValue;
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock readLock = readWriteLock.readLock();
+    private final Lock writeLock = readWriteLock.writeLock();
 
     public AtomicValue<byte[]> get() {
-        byte[] preValueBytes = valueToBytes(value);
-        return new MutableAtomicValue<>(preValueBytes, null);
+        readLock.lock();
+        try {
+            byte[] preValueBytes = valueToBytes(preValue);
+            byte[] postValueBytes = valueToBytes(postValue);
+            return new MutableAtomicValue<>(preValueBytes, postValueBytes);
+        }finally {
+            readLock.unlock();
+        }
     }
 
-    public void trySet(T newValue) {
-        updater.compareAndSet(this, value, (long)newValue);
+    public void trySet(Number newValue) {
+        writeLock.lock();
+        try {
+            preValue = newValue.longValue();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
-    public AtomicValue<byte[]> worker(T newValue) {
-        byte[] preValueBytes = valueToBytes(value);
+    public AtomicValue<byte[]> worker(Number newValue) {
+        writeLock.lock();
+        try {
+            preValue += newValue.longValue();
 
-        updater.compareAndSet(this, value, (value + ((Number) newValue).longValue()));
-        long postValue = updater.get(this);
-        byte[] postValueBytes = valueToBytes(postValue);
+            byte[] preValueBytes = valueToBytes(preValue);
+            byte[] postValueBytes = valueToBytes((postValue = preValue + 1));
 
-        return new MutableAtomicValue<>(preValueBytes, postValueBytes);
+            return new MutableAtomicValue<>(preValueBytes, postValueBytes);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @VisibleForTesting

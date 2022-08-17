@@ -6,15 +6,17 @@ import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 import org.shallow.invoke.GenericInvokeAnswer;
-import org.shallow.invoke.InvokeAnswer;
+
+import javax.annotation.concurrent.Immutable;
 
 import static org.shallow.util.ObjectUtil.checkPositive;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ByteUtil.defaultIfNull;
 
+@Immutable
 public class AwareInvocation extends AbstractReferenceCounted {
 
-    private static final Recycler<AwareInvocation> RECYCLER = new Recycler<AwareInvocation>() {
+    private static final Recycler<AwareInvocation> RECYCLER = new Recycler<>() {
         @Override
         protected AwareInvocation newObject(Handle<AwareInvocation> handle) {
             return new AwareInvocation(handle);
