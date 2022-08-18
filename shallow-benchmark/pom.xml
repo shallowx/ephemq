@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.shallow</groupId>
-            <artifactId>shallow-client</artifactId>
+            <artifactId>shallow-broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
