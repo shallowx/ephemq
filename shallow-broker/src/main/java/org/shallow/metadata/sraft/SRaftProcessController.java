@@ -1,6 +1,5 @@
 package org.shallow.metadata.sraft;
 
-import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.google.protobuf.MessageLite;
 import io.netty.util.concurrent.Promise;
 import org.shallow.internal.BrokerManager;
@@ -11,7 +10,6 @@ import org.shallow.meta.NodeRecord;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.atomic.DistributedAtomicInteger;
 import org.shallow.metadata.management.ClusterManager;
-import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.Strategy;
 import org.shallow.metadata.management.TopicManager;
 import org.shallow.proto.elector.VoteResponse;
