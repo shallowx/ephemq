@@ -1,7 +1,9 @@
 package org.shallow.metadata.sraft;
 
+import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.google.protobuf.MessageLite;
 import io.netty.util.concurrent.Promise;
+import org.shallow.internal.BrokerManager;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -29,19 +31,17 @@ public class SRaftProcessController {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SRaftProcessController.class);
 
     private final BrokerConfig config;
-    private final SRaftHeartbeat heartbeat;
-    private final TopicManager topicManager;
-    private final ClusterManager clusterManager;
-    private final MappedFileApi api;
+    private SRaftHeartbeat heartbeat;
+    private TopicManager topicManager;
+    private ClusterManager clusterManager;
     private final DistributedAtomicInteger atomicValue;
-
-    public SRaftProcessController(BrokerConfig config, MappedFileApi api) {
+    private SocketAddress metadataLeader;
+    private final BrokerManager manager;
+    public SRaftProcessController(BrokerConfig config, BrokerManager manager) {
         this.config = config;
-        this.api = api;
-        this.heartbeat = new SRaftHeartbeat(config, this);
+        this.manager = manager;
+
         this.atomicValue = new DistributedAtomicInteger();
-        this.topicManager = new TopicManager(toSocketAddress(true), config, this);
-        this.clusterManager = new ClusterManager(toSocketAddress(true), config, this);
     }
 
     public void start() throws Exception {
@@ -52,12 +52,20 @@ public class SRaftProcessController {
             }
             return;
         }
+
+        this.LazyInitialize();
         heartbeat.start();
+    }
+
+    private void LazyInitialize() {
+        this.heartbeat = new SRaftHeartbeat(config, manager);
+        this.topicManager = new TopicManager(toSocketAddress(true), config, manager);
+        this.clusterManager = new ClusterManager(toSocketAddress(true), config, manager);
     }
 
     private void checkQuorumVoters() {
         Set<SocketAddress> quorumVoters = toSocketAddress(false);
-        if (config.isStandAlone()) {
+        if (isQuorumLeader()) {
             if (quorumVoters.size() != 1) {
                 throw new IllegalArgumentException(String.format("The model is stand alone, and the quorum voters<shallow.controller.quorum.voters> value expected = 1, but actual = %d", quorumVoters.size()));
             }
@@ -104,7 +112,8 @@ public class SRaftProcessController {
         quorumVoter.respondVote(respondVotePromise);
     }
 
-    public void receiveHeartbeat(int term, int distributedValue) {
+    public void receiveHeartbeat(int term, int distributedValue, SocketAddress metadataLeader) {
+        this.setMetadataLeader(metadataLeader);
         heartbeat.receiveHeartbeat(term);
         atomicValue.trySet(distributedValue);
     }
@@ -149,6 +158,18 @@ public class SRaftProcessController {
                .collect(Collectors.toSet());
     }
 
+    public void setMetadataLeader(SocketAddress metadataLeader) {
+        this.metadataLeader = metadataLeader;
+    }
+
+    public SocketAddress getMetadataLeader() {
+        return metadataLeader;
+    }
+
+    public boolean isQuorumLeader() {
+        return config.isStandAlone() || metadataLeader.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
+    }
+
     public TopicManager getTopicManager() {
         return topicManager;
     }
@@ -159,10 +180,6 @@ public class SRaftProcessController {
 
     public ClusterManager getClusterManager() {
         return clusterManager;
-    }
-
-    public MappedFileApi getMappedFileApi() {
-        return api;
     }
 
     public void shutdownGracefully() throws Exception {

@@ -1,6 +1,7 @@
 package org.shallow.metadata.sraft;
 
 import io.netty.util.concurrent.*;
+import org.shallow.internal.BrokerManager;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
@@ -15,8 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.processor.ProcessCommand.Server.HEARTBEAT;
-import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.NetworkUtil.*;
 
 @ThreadSafe
 public class SRaftHeartbeat {
@@ -29,9 +29,9 @@ public class SRaftHeartbeat {
     private final EventExecutor scheduleHeartbeatTask;
     private long lastKeepHeartbeatTime;
 
-    public SRaftHeartbeat(BrokerConfig config, SRaftProcessController controller) {
+    public SRaftHeartbeat(BrokerConfig config, BrokerManager manager) {
         this.config = config;
-        this.controller = controller;
+        this.controller = manager.getController();
         final EventExecutorGroup group = newEventExecutorGroup(2, "sraft-heartbeat");
         this.scheduleQuorumVoteTask =  group.next();
         this.scheduleHeartbeatTask =  group.next();
@@ -57,6 +57,7 @@ public class SRaftHeartbeat {
                 if (logger.isInfoEnabled()) {
                     logger.info("The node<name={} host={} port={}> is elected as leader", config.getServerId(), config.getExposedHost(), config.getExposedPort());
                 }
+                controller.setMetadataLeader(switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
                 registerHeartbeat();
             }
         });

@@ -12,15 +12,25 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.NodeRecord;
+import org.shallow.meta.PartitionRecord;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.Strategy;
+import org.shallow.metadata.management.ClusterManager;
+import org.shallow.metadata.management.TopicManager;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
 import org.shallow.metadata.sraft.SRaftProcessController;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
+import org.shallow.proto.NodeMetadata;
+import org.shallow.proto.PartitionMetadata;
+import org.shallow.proto.TopicMetadata;
 import org.shallow.proto.elector.*;
 import org.shallow.proto.server.*;
+import java.net.SocketAddress;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.shallow.util.NetworkUtil.*;
 import static org.shallow.util.ObjectUtil.isNotNull;
@@ -36,7 +46,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
     public BrokerProcessorAware(BrokerManager manager) {
         this.manager = manager;
-        this.commandExecutor = newEventExecutorGroup(1, "procesor-aware").next();
+        this.commandExecutor = newEventExecutorGroup(1, "processor-aware").next();
     }
 
     @Override
@@ -76,6 +86,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
                     } catch (Exception e) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to quorum vote with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                        }
                         answerFailed(answer, e);
                     }
                 }
@@ -88,7 +101,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 int term = request.getTerm();
                                 int distributedValue = request.getDistributedValue();
                                 SRaftProcessController controller = manager.getController();
-                                controller.receiveHeartbeat(term, distributedValue);
+                                SocketAddress leader = channel.remoteAddress();
+                                controller.receiveHeartbeat(term, distributedValue, leader);
                             } catch (Exception e) {
                                 if (logger.isErrorEnabled()) {
                                     logger.error("Failed to send heartbeat with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
@@ -96,7 +110,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 answerFailed(answer, e);
                             }
                         });
-
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
                             logger.error(e.getMessage(), e);
@@ -174,7 +187,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                                     .setTopic(prepareCommitResponse.getTopic())
                                                     .build();
 
-                                            answer.success(proto2Buf(channel.alloc(), f.get()));
+                                            answer.success(proto2Buf(channel.alloc(), response));
                                         }
                                     } else {
                                         answerFailed(answer, f.cause());
@@ -193,6 +206,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
                     } catch (Exception e) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                        }
                         answerFailed(answer, e);
                     }
                 }
@@ -206,15 +222,147 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 }
 
                 case POST_COMMIT -> {
-
+                    try {
+                        commandExecutor.execute(() ->{});
+                    } catch (Throwable t){
+                        answerFailed(answer,t);
+                    }
                 }
 
                 case FETCH_CLUSTER_RECORD -> {
+                    try {
+                        QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
+                        commandExecutor.execute(() -> {
+                            try {
+                                String cluster = request.getCluster();
 
+                                ClusterManager clusterManager = manager.getController().getClusterManager();
+                                Set<NodeRecord> clusterInfo = clusterManager.getClusterInfo(cluster);
+
+                                QueryClusterNodeResponse.Builder response = QueryClusterNodeResponse.newBuilder();
+                                if (!clusterInfo.isEmpty()) {
+                                    Set<NodeMetadata> nodeMetadataSets = clusterInfo.stream().map(nodeRecord -> {
+                                        String socketAddress = nodeRecord.getSocketAddress().toString();
+                                        int index = socketAddress.lastIndexOf(":");
+                                        String host = socketAddress.substring(index);
+                                        int port = Integer.parseInt(socketAddress.substring(index + 1));
+
+                                        return NodeMetadata.newBuilder().setName(nodeRecord.getName()).setPort(port).setHost(host).build();
+                                    }).collect(Collectors.toSet());
+
+                                    response.addAllNodes(nodeMetadataSets);
+                                }
+
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), response.build()));
+                                }
+                            } catch (Throwable t) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to query cluster information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
+                                }
+                                answerFailed(answer,t);
+                            }
+                        });
+                    } catch (Throwable t){
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to query cluster information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
+                        }
+                        answerFailed(answer,t);
+                    }
                 }
 
                 case FETCH_TOPIC_RECORD -> {
+                    try {
+                        QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
+                        commandExecutor.execute(() -> {
+                            try {
+                                String topic = request.getTopic();
+                                TopicManager topicManager = manager.getController().getTopicManager();
+                                Set<PartitionRecord> partitionRecords = topicManager.getTopicInfo(topic);
 
+                                QueryTopicInfoResponse.Builder response = QueryTopicInfoResponse.newBuilder();
+
+                                if (!partitionRecords.isEmpty()) {
+                                    Iterator<PartitionRecord> iterator = partitionRecords.iterator();
+                                    Map<Integer, PartitionMetadata> partitionMetadataMap = new HashMap<>();
+                                    while (iterator.hasNext()) {
+                                        PartitionRecord partitionRecord = iterator.next();
+                                        partitionMetadataMap.put(partitionRecord.getId(), PartitionMetadata.newBuilder()
+                                                        .setId(partitionRecord.getId())
+                                                        .setLeader(partitionRecord.getLeader())
+                                                        .setLatency(partitionRecord.getLatency())
+                                                        .addAllReplicas(partitionRecord.getLatencies())
+                                                .build());
+                                    }
+
+                                    TopicMetadata metadata = TopicMetadata.newBuilder()
+                                            .setName(topic)
+                                            .putAllPartitions(partitionMetadataMap)
+                                            .build();
+
+                                    Map<String, TopicMetadata> topicMetadataMap = new HashMap<>();
+                                    topicMetadataMap.put(topic, metadata);
+                                    response.putAllTopics(topicMetadataMap).build();
+                                }
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), response.build()));
+                                }
+                            } catch (Throwable t) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to query topic<{}> information with address<{}>, cause:{}", request.getTopic(), channel.remoteAddress().toString(), t);
+                                }
+                                answerFailed(answer, t);
+                            }
+                        });
+                    } catch (Throwable t){
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to query topic information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
+                        }
+                        answerFailed(answer,t);
+                    }
+                }
+
+                case REGISTER_NODE -> {
+                    try {
+                        commandExecutor.execute(() -> {
+                            try {
+                                RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
+                                String cluster = request.getCluster();
+
+                                NodeMetadata metadata = request.getMetadata();
+                                String name = metadata.getName();
+                                String host = metadata.getHost();
+                                int port = metadata.getPort();
+
+                                NodeRecord nodeRecord = new NodeRecord(cluster, name, switchSocketAddress(host, port));
+                                CommitRecord<NodeRecord> commitRecord = new CommitRecord<>(nodeRecord, CommitType.ADD);
+
+                                Promise<MessageLite> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
+                                    if (f.isSuccess()) {
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), f.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, f.cause());
+                                    }
+                                });
+
+                                SRaftProcessController controller = manager.getController();
+                                controller.prepareCommit(Strategy.CLUSTER, commitRecord, promise);
+                            } catch (Throwable t) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to register node, cause:{}", t);
+                                }
+                                answerFailed(answer,t);
+                            }
+                        });
+                    } catch (Throwable t){
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to register node, cause:{}", t);
+                        }
+                        answerFailed(answer,t);
+                    }
                 }
 
                 default -> {

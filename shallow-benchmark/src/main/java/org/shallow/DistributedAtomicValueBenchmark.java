@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class DistributedAtomicValueBenchmark {
 
-
     private DistributedAtomicInteger atomicValue;
 
     @Setup

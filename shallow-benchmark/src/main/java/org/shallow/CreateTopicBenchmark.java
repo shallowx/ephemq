@@ -27,7 +27,7 @@ public class CreateTopicBenchmark {
     @Setup
     public void setUp() {
         clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:7730"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
 
         client = new Client("Client", clientConfig);
         client.start();
@@ -37,7 +37,6 @@ public class CreateTopicBenchmark {
     public void tearDown() {
         client.shutdownGracefully();
     }
-
 
     @Benchmark
     public void createTopic() {

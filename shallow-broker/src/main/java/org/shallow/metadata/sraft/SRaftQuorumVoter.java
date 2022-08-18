@@ -42,7 +42,6 @@ public class SRaftQuorumVoter {
 
         this.controller = controller;
 
-
         final EventExecutorGroup group = newEventExecutorGroup(3, "sraft-vote");
         this.quorumVoteExecutor = group.next();
         this.respondVoteVoteExecutor = group.next();
@@ -84,7 +83,7 @@ public class SRaftQuorumVoter {
         Promise<VoteResponse> sendRequestPromise = newImmediatePromise();
         sendRequestPromise.addListener(f -> {
             if (f.isSuccess()) {
-                final VoteResponse response = (VoteResponse) f.get();
+                VoteResponse response = (VoteResponse) f.get();
                 if (response.getAck() && votes.incrementAndGet() >= half) {
                     if (role == ProcessRoles.Candidate) {
                         role = ProcessRoles.LEADER;

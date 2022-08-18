@@ -26,18 +26,20 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
     protected final Set<SocketAddress> quorumVoterAddresses;
     protected final ShallowChannelPool pool;
     protected final BrokerConfig config;
+    protected final SRaftProcessController controller;
 
-    public AbstractSRaftLog(Set<SocketAddress> quorumVoterAddresses, ShallowChannelPool pool, BrokerConfig config) {
+    public AbstractSRaftLog(Set<SocketAddress> quorumVoterAddresses, ShallowChannelPool pool, BrokerConfig config, SRaftProcessController controller) {
         this.quorumVoterAddresses = quorumVoterAddresses;
         this.pool = pool;
         this.config = config;
+        this.controller = controller;
     }
 
     @Override
     public void prepareCommit(T t, CommitType type, Promise<MessageLite> promise) {
         CommitRecord<T> commitRecord = this.doPrepareCommit(t, type);
 
-        if (config.isStandAlone()) {
+        if (controller.isQuorumLeader()) {
             doPostCommit(commitRecord.getRecord(), commitRecord.getType());
             promise.trySuccess(commitRecord.getResponse());
             return;

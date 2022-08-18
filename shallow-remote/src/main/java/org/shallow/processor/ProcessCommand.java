@@ -15,6 +15,7 @@ public interface ProcessCommand {
                     case 6 -> "HEARTBEAT";
                     case 7 -> "PREPARE_COMMIT";
                     case 8 -> "POST_COMMIT";
+                    case 9 -> "REGISTER_NODE";
                     default -> throw new IllegalStateException("Unexpected client command: " + command);
                 };
             }
@@ -28,6 +29,7 @@ public interface ProcessCommand {
         byte HEARTBEAT = 6;
         byte PREPARE_COMMIT = 7;
         byte POST_COMMIT = 8;
+        byte REGISTER_NODE = 9;
        default String get(byte command) {
            return null;
        }
