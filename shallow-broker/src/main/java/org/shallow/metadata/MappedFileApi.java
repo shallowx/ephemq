@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.shallow.metadata.MetadataConstants.CLUSTERS;
 import static org.shallow.metadata.MetadataConstants.TOPICS;
 
 public class MappedFileApi {
@@ -31,23 +30,17 @@ public class MappedFileApi {
 
         Path workDirectoryPath = Path.of(defaultWorkDirectory);
         Path topicsPath = assemblePath(TOPICS);
-        Path clustersPath = assemblePath(CLUSTERS);
 
         if (Files.notExists(workDirectoryPath)) {
             Files.createDirectory(workDirectoryPath);
 
             Files.createFile(topicsPath);
-            Files.createFile(clustersPath);
 
             return;
         }
 
         if (Files.notExists(topicsPath)) {
             Files.createFile(topicsPath);
-        }
-
-        if (Files.notExists(clustersPath)) {
-            Files.createFile(clustersPath);
         }
     }
 

@@ -44,14 +44,16 @@ public class SRaftProcessController {
 
     public void start() throws Exception {
         checkQuorumVoters();
-        if (config.isStandAlone()) {
+
+        this.LazyInitialize();
+        clusterManager.start();
+        if (isQuorumLeader()) {
             if (logger.isInfoEnabled()) {
                 logger.info("The model is stand alone, and the node<name={} host={} port={}> is elected as leader", config.getServerId(), config.getExposedHost(), config.getExposedPort());
             }
             return;
         }
 
-        this.LazyInitialize();
         heartbeat.start();
     }
 
@@ -150,7 +152,6 @@ public class SRaftProcessController {
                    if (!excludeSelf) {
                        return true;
                    }
-
                    return !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f);
                })
                .collect(Collectors.toSet());

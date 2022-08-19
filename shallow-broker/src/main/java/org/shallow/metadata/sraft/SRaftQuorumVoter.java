@@ -28,7 +28,7 @@ public class SRaftQuorumVoter {
     private static final AtomicIntegerFieldUpdater<SRaftQuorumVoter> updater = AtomicIntegerFieldUpdater.newUpdater(SRaftQuorumVoter.class, "term");
 
     private final BrokerConfig config;
-    private volatile ProcessRoles role;
+    private volatile ProcessRole role;
     private final SRaftProcessController controller;
     private final EventExecutor quorumVoteExecutor;
     private ShallowChannelPool pool;
@@ -38,7 +38,7 @@ public class SRaftQuorumVoter {
 
     public SRaftQuorumVoter(BrokerConfig config, SRaftProcessController controller) {
         this.config = config;
-        this.role = ProcessRoles.Follower;
+        this.role = ProcessRole.Follower;
 
         this.controller = controller;
 
@@ -55,8 +55,8 @@ public class SRaftQuorumVoter {
     public void quorumVote(Promise<Boolean> promise) {
         Runnable timeoutTask = () -> {
             int theTerm = term;
-            if (role == ProcessRoles.Candidate) {
-                role = ProcessRoles.Follower;
+            if (role == ProcessRole.Candidate) {
+                role = ProcessRole.Follower;
                 updater.compareAndSet(this, theTerm, --term);
             }
         };
@@ -71,8 +71,8 @@ public class SRaftQuorumVoter {
 
     private void doQuorumVote(Promise<Boolean> promise) {
         int theTerm = term;
-        if (role == ProcessRoles.Follower) {
-            this.role = ProcessRoles.Candidate;
+        if (role == ProcessRole.Follower) {
+            this.role = ProcessRole.Candidate;
             updater.compareAndSet(this, theTerm, ++term);
         }
 
@@ -85,8 +85,8 @@ public class SRaftQuorumVoter {
             if (f.isSuccess()) {
                 VoteResponse response = (VoteResponse) f.get();
                 if (response.getAck() && votes.incrementAndGet() >= half) {
-                    if (role == ProcessRoles.Candidate) {
-                        role = ProcessRoles.LEADER;
+                    if (role == ProcessRole.Candidate) {
+                        role = ProcessRole.LEADER;
                         promise.trySuccess(true);
                     }
                 }
@@ -127,15 +127,15 @@ public class SRaftQuorumVoter {
 
     private void doRespondVote(Promise<VoteResponse> respondVotePromise) {
         int theTerm = term;
-        if (role == ProcessRoles.Candidate) {
+        if (role == ProcessRole.Candidate) {
             updater.compareAndSet(this, theTerm, --term);
         }
-        role = ProcessRoles.Follower;
+        role = ProcessRole.Follower;
         VoteResponse response = VoteResponse.newBuilder().setAck(true).build();
         respondVotePromise.trySuccess(response);
     }
 
-    public ProcessRoles getSRaftRole() {
+    public ProcessRole getSRaftRole() {
         return role;
     }
 

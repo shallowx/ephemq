@@ -1,5 +1,5 @@
 package org.shallow.metadata.sraft;
 
-public enum ProcessRoles {
+public enum ProcessRole {
     LEADER, Candidate, Follower
 }

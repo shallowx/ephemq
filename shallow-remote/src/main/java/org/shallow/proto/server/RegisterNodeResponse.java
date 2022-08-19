@@ -16,6 +16,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private RegisterNodeResponse() {
+    host_ = "";
+    serverId_ = "";
   }
 
   @java.lang.Override
@@ -48,6 +50,23 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            host_ = s;
+            break;
+          }
+          case 16: {
+
+            port_ = input.readInt32();
+            break;
+          }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            serverId_ = s;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -80,6 +99,93 @@ private static final long serialVersionUID = 0L;
             org.shallow.proto.server.RegisterNodeResponse.class, org.shallow.proto.server.RegisterNodeResponse.Builder.class);
   }
 
+  public static final int HOST_FIELD_NUMBER = 1;
+  private volatile java.lang.Object host_;
+  /**
+   * <code>string host = 1;</code>
+   * @return The host.
+   */
+  @java.lang.Override
+  public java.lang.String getHost() {
+    java.lang.Object ref = host_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      host_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string host = 1;</code>
+   * @return The bytes for host.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getHostBytes() {
+    java.lang.Object ref = host_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      host_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int PORT_FIELD_NUMBER = 2;
+  private int port_;
+  /**
+   * <code>int32 port = 2;</code>
+   * @return The port.
+   */
+  @java.lang.Override
+  public int getPort() {
+    return port_;
+  }
+
+  public static final int SERVERID_FIELD_NUMBER = 3;
+  private volatile java.lang.Object serverId_;
+  /**
+   * <code>string serverId = 3;</code>
+   * @return The serverId.
+   */
+  @java.lang.Override
+  public java.lang.String getServerId() {
+    java.lang.Object ref = serverId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      serverId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string serverId = 3;</code>
+   * @return The bytes for serverId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getServerIdBytes() {
+    java.lang.Object ref = serverId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      serverId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -94,6 +200,15 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(host_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, host_);
+    }
+    if (port_ != 0) {
+      output.writeInt32(2, port_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(serverId_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, serverId_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -103,6 +218,16 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(host_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, host_);
+    }
+    if (port_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, port_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(serverId_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, serverId_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -118,6 +243,12 @@ private static final long serialVersionUID = 0L;
     }
     org.shallow.proto.server.RegisterNodeResponse other = (org.shallow.proto.server.RegisterNodeResponse) obj;
 
+    if (!getHost()
+        .equals(other.getHost())) return false;
+    if (getPort()
+        != other.getPort()) return false;
+    if (!getServerId()
+        .equals(other.getServerId())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -129,6 +260,12 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + HOST_FIELD_NUMBER;
+    hash = (53 * hash) + getHost().hashCode();
+    hash = (37 * hash) + PORT_FIELD_NUMBER;
+    hash = (53 * hash) + getPort();
+    hash = (37 * hash) + SERVERID_FIELD_NUMBER;
+    hash = (53 * hash) + getServerId().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -262,6 +399,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      host_ = "";
+
+      port_ = 0;
+
+      serverId_ = "";
+
       return this;
     }
 
@@ -288,6 +431,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.server.RegisterNodeResponse buildPartial() {
       org.shallow.proto.server.RegisterNodeResponse result = new org.shallow.proto.server.RegisterNodeResponse(this);
+      result.host_ = host_;
+      result.port_ = port_;
+      result.serverId_ = serverId_;
       onBuilt();
       return result;
     }
@@ -336,6 +482,17 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.shallow.proto.server.RegisterNodeResponse other) {
       if (other == org.shallow.proto.server.RegisterNodeResponse.getDefaultInstance()) return this;
+      if (!other.getHost().isEmpty()) {
+        host_ = other.host_;
+        onChanged();
+      }
+      if (other.getPort() != 0) {
+        setPort(other.getPort());
+      }
+      if (!other.getServerId().isEmpty()) {
+        serverId_ = other.serverId_;
+        onChanged();
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -362,6 +519,189 @@ private static final long serialVersionUID = 0L;
           mergeFrom(parsedMessage);
         }
       }
+      return this;
+    }
+
+    private java.lang.Object host_ = "";
+    /**
+     * <code>string host = 1;</code>
+     * @return The host.
+     */
+    public java.lang.String getHost() {
+      java.lang.Object ref = host_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        host_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string host = 1;</code>
+     * @return The bytes for host.
+     */
+    public com.google.protobuf.ByteString
+        getHostBytes() {
+      java.lang.Object ref = host_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        host_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string host = 1;</code>
+     * @param value The host to set.
+     * @return This builder for chaining.
+     */
+    public Builder setHost(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      host_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string host = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearHost() {
+      
+      host_ = getDefaultInstance().getHost();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string host = 1;</code>
+     * @param value The bytes for host to set.
+     * @return This builder for chaining.
+     */
+    public Builder setHostBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      host_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int port_ ;
+    /**
+     * <code>int32 port = 2;</code>
+     * @return The port.
+     */
+    @java.lang.Override
+    public int getPort() {
+      return port_;
+    }
+    /**
+     * <code>int32 port = 2;</code>
+     * @param value The port to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPort(int value) {
+      
+      port_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 port = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPort() {
+      
+      port_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object serverId_ = "";
+    /**
+     * <code>string serverId = 3;</code>
+     * @return The serverId.
+     */
+    public java.lang.String getServerId() {
+      java.lang.Object ref = serverId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        serverId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string serverId = 3;</code>
+     * @return The bytes for serverId.
+     */
+    public com.google.protobuf.ByteString
+        getServerIdBytes() {
+      java.lang.Object ref = serverId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        serverId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string serverId = 3;</code>
+     * @param value The serverId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setServerId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      serverId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string serverId = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearServerId() {
+      
+      serverId_ = getDefaultInstance().getServerId();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string serverId = 3;</code>
+     * @param value The bytes for serverId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setServerIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      serverId_ = value;
+      onChanged();
       return this;
     }
     @java.lang.Override

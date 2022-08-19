@@ -5,7 +5,6 @@ import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
-@SuppressWarnings("all")
 public class Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Server.class);
 

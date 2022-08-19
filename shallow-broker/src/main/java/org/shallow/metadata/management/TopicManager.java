@@ -3,11 +3,10 @@ package org.shallow.metadata.management;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
+import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.PartitionRecord;
@@ -18,27 +17,22 @@ import org.shallow.metadata.sraft.AbstractSRaftLog;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
-import org.shallow.processor.ProcessCommand;
 import org.shallow.proto.PartitionMetadata;
-import org.shallow.proto.TopicMetadata;
 import org.shallow.proto.elector.CreateTopicPrepareCommitRequest;
 import org.shallow.proto.elector.CreateTopicPrepareCommitResponse;
 import org.shallow.proto.elector.DeleteTopicPrepareCommitRequest;
 import org.shallow.proto.elector.DeleteTopicPrepareCommitResponse;
-import org.shallow.proto.server.QueryTopicInfoRequest;
-import org.shallow.proto.server.QueryTopicInfoResponse;
-import org.shallow.util.NetworkUtil;
-
 import java.net.SocketAddress;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.shallow.metadata.MetadataConstants.TOPICS;
+import static org.shallow.metadata.sraft.CommitType.ADD;
+import static org.shallow.metadata.sraft.CommitType.REMOVE;
 import static org.shallow.util.JsonUtil.object2Json;
+import static org.shallow.util.ObjectUtil.isNull;
 
 public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
@@ -46,15 +40,17 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
     private final MappedFileApi api;
     private final DistributedAtomicInteger atomicValue;
-    private final LoadingCache<String, Set<PartitionRecord>> topicCommitRecordCache;
-    private final LoadingCache<String, Set<PartitionRecord>> topicUnCommitRecordCache;
+    private final SRaftQuorumVoterClient client;
+    private final LoadingCache<String, Set<PartitionRecord>> commitRecordCache;
+    private final LoadingCache<String, Set<PartitionRecord>> unCommitRecordCache;
 
     public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, BrokerManager manager) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config, manager.getController());
         this.api = manager.getMappedFileApi();
         this.atomicValue = controller.getAtomicValue();
+        this.client = manager.getQuorumVoterClient();
 
-        this.topicCommitRecordCache = Caffeine.newBuilder()
+        this.commitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
@@ -64,7 +60,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                     }
                 });
 
-        this.topicUnCommitRecordCache = Caffeine.newBuilder()
+        this.unCommitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
@@ -80,21 +76,24 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         CommitRecord<TopicRecord> commitRecord = null;
         switch (type) {
             case ADD -> {
-                commitRecord = create(record);
+                commitRecord = preCreate(record);
             }
 
             case REMOVE -> {
-                commitRecord = delete(record);
+                commitRecord = preDelete(record);
             }
         }
         return commitRecord;
     }
 
-    private CommitRecord<TopicRecord> create(TopicRecord record) {
-        try {
-            topicCommitRecordCache.invalidate(record.getName());
+    private CommitRecord<TopicRecord> preCreate(TopicRecord record) {
+        String topic = record.getName();
+        if (contains(topic)) {
+            throw new RuntimeException("The topic<" + topic + "> already exists");
+        }
 
-            String topic = record.getName();
+        try {
+            commitRecordCache.invalidate(topic);
             int latencies = record.getLatencies();
             int partitions = record.getPartitions();
 
@@ -129,11 +128,14 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                                 .build());
             }
 
-            CommitRecord<TopicRecord> commitRecord = new CommitRecord<>(record, CommitType.ADD, requestBuilder.build(), responseBuilder.build());
-            Set<PartitionRecord> partitionRecords = topicUnCommitRecordCache.get(record.getName());
+            CommitRecord<TopicRecord> commitRecord = new CommitRecord<>(record, ADD, requestBuilder.build(), responseBuilder.build());
+            Set<PartitionRecord> partitionRecords = commitRecordCache.get(record.getName());
+            if (isNull(partitionRecords)) {
+                partitionRecords = new CopyOnWriteArraySet<>();
+            }
             partitionRecords.add(partitionRecord);
 
-            topicUnCommitRecordCache.put(record.getName(), partitionRecords);
+            unCommitRecordCache.put(record.getName(), partitionRecords);
 
             return commitRecord;
         } catch (Exception e) {
@@ -149,45 +151,51 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         return List.of(config.getServerId());
     }
 
-    private CommitRecord<TopicRecord> delete(TopicRecord record) {
+    private CommitRecord<TopicRecord> preDelete(TopicRecord record) {
         String topic = record.getName();
-        topicCommitRecordCache.invalidate(topic);
+        commitRecordCache.invalidate(topic);
 
         DeleteTopicPrepareCommitRequest.Builder requestBuilder = DeleteTopicPrepareCommitRequest.newBuilder();
-        if (!config.isStandAlone()) {
+        if (!controller.isQuorumLeader()) {
             requestBuilder
                     .setTopic(topic)
                     .build();
         }
 
         DeleteTopicPrepareCommitResponse.Builder responseBuilder = DeleteTopicPrepareCommitResponse.newBuilder();
-        if (config.isStandAlone()) {
+        if (controller.isQuorumLeader()) {
             responseBuilder
                     .setTopic(topic)
                     .build();
         }
 
-        return new CommitRecord<>(record, CommitType.REMOVE, requestBuilder.build(), responseBuilder.build());
+        return new CommitRecord<>(record, REMOVE, requestBuilder.build(), responseBuilder.build());
     }
 
     @Override
     protected void doPostCommit(TopicRecord record, CommitType type) {
         switch (type) {
             case ADD -> {
-                topicUnCommitRecordCache.invalidate(record.getName());
-                Set<PartitionRecord> partitionRecords = topicUnCommitRecordCache.get(record.getName());
+                unCommitRecordCache.invalidate(record.getName());
+                Set<PartitionRecord> partitionRecords = unCommitRecordCache.get(record.getName());
+                if (isNull(partitionRecords)) {
+                    partitionRecords = new CopyOnWriteArraySet<>();
+                }
                 partitionRecords.add(record.getPartitionRecord());
 
-                topicCommitRecordCache.put(record.getName(), partitionRecords);
+                commitRecordCache.put(record.getName(), partitionRecords);
             }
 
             case REMOVE -> {
-                topicCommitRecordCache.invalidate(record.getName());
-                topicUnCommitRecordCache.invalidate(record.getName());
+                String topic = record.getName();
+                commitRecordCache.invalidate(topic);
+                unCommitRecordCache.invalidate(topic);
             }
         }
 
-        String content = object2Json(topicCommitRecordCache.asMap());
+        //TODO notify init log
+
+        String content = object2Json(commitRecordCache.asMap());
         try {
             api.write2File(content, TOPICS);
         } catch (Exception e) {
@@ -198,8 +206,8 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     }
 
     public Set<PartitionRecord> getTopicInfo(String topic) {
-        Set<PartitionRecord> partitionRecords = topicCommitRecordCache.get(topic);
-        if (partitionRecords == null || partitionRecords.isEmpty()) {
+        Set<PartitionRecord> partitionRecords = commitRecordCache.get(topic);
+        if (isNull(partitionRecords) || partitionRecords.isEmpty()) {
             return null;
         }
         return partitionRecords;
@@ -209,48 +217,13 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         if (controller.isQuorumLeader()) {
             return null;
         }
-        try {
 
-            SocketAddress leader = controller.getMetadataLeader();
-            ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
+        SocketAddress leader = controller.getMetadataLeader();
 
-            QueryTopicInfoRequest request = QueryTopicInfoRequest
-                    .newBuilder()
-                    .setTopic(topic)
-                    .build();
-            Promise<QueryTopicInfoResponse> promise = NetworkUtil.newImmediatePromise();
-            clientChannel.invoker().invoke(ProcessCommand.Server.FETCH_TOPIC_RECORD, config.getInvokeTimeMs(), promise, request, QueryTopicInfoResponse.class);
+        return client.queryTopicInfo(topic, leader);
+    }
 
-            QueryTopicInfoResponse response = promise.get(config.getInvokeTimeMs(), TimeUnit.MILLISECONDS);
-            Map<String, TopicMetadata> topicsMap = response.getTopicsMap();
-
-            if (topicsMap.isEmpty()) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Query topic<{}> information is null");
-                }
-                return null;
-            }
-
-            Map<Integer, PartitionMetadata> partitionsMap = topicsMap
-                    .entrySet()
-                    .stream()
-                    .iterator()
-                    .next()
-                    .getValue()
-                    .getPartitionsMap();
-
-            if (partitionsMap.isEmpty()) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Query topic<{}> partition information is null");
-                }
-                return null;
-            }
-
-            return partitionsMap.values().stream()
-                    .map(metadata -> new PartitionRecord(metadata.getId(), metadata.getLatency(), metadata.getLeader(), metadata.getReplicasList()))
-                    .collect(Collectors.toCollection(CopyOnWriteArraySet::new));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private boolean contains(String topic) {
+        return commitRecordCache.asMap().containsKey(topic);
     }
 }

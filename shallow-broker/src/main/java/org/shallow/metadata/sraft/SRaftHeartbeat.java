@@ -62,8 +62,8 @@ public class SRaftHeartbeat {
             }
         });
 
-        ProcessRoles role = quorumVoter.getSRaftRole();
-        if (role == ProcessRoles.Follower) {
+        ProcessRole role = quorumVoter.getSRaftRole();
+        if (role == ProcessRole.Follower) {
             long now = System.currentTimeMillis();
             if ((now - lastKeepHeartbeatTime) > config.getHeartbeatFixedIntervalTimeMs()) {
                 quorumVoter.quorumVote(promise);
@@ -80,8 +80,8 @@ public class SRaftHeartbeat {
     }
 
     private void doRegisterHeartbeat() {
-        ProcessRoles role = quorumVoter.getSRaftRole();
-        if (role == ProcessRoles.LEADER) {
+        ProcessRole role = quorumVoter.getSRaftRole();
+        if (role == ProcessRole.LEADER) {
             Set<SocketAddress> socketAddresses = controller.toSocketAddress(true);
 
             RaftHeartbeatRequest request = RaftHeartbeatRequest

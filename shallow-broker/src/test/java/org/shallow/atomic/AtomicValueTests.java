@@ -25,8 +25,8 @@ public class AtomicValueTests {
         Integer incrementPreValue = atomicValue.increment().preValue();
         Integer incrementPostValue = atomicValue.get().postValue();
 
-        Assert.assertEquals(2, (long)incrementPreValue);
-        Assert.assertEquals(3, (long)incrementPostValue);
+        Assert.assertEquals(2, incrementPreValue.longValue());
+        Assert.assertEquals(3, incrementPostValue.longValue());
     }
 
     @Test
@@ -62,5 +62,18 @@ public class AtomicValueTests {
 
         result1.retainAll(result2);
         Assert.assertTrue(result1.isEmpty());
+    }
+
+    @Test
+    public void testMultipleAtomicValue() {
+        DistributedAtomicInteger atomicValue0 = new DistributedAtomicInteger();
+        Integer incrementPreValue0 = atomicValue0.increment().preValue();
+
+        Assert.assertEquals(1, incrementPreValue0.longValue());
+
+        DistributedAtomicInteger atomicValue1 = new DistributedAtomicInteger();
+        Integer incrementPreValue1 = atomicValue1.increment().preValue();
+
+        Assert.assertEquals(1, incrementPreValue1.longValue());
     }
 }

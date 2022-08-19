@@ -2,12 +2,8 @@ package org.shallow;
 
 public interface ApplicationRunListener {
 
-    default ApplicationArguments starting() throws Exception {
-        return null;
-    }
+    ApplicationArguments starting() throws Exception;
 
-    default ApplicationArguments argumentsPrepared(String[] args) throws Exception {
-        return null;
-    }
+    ApplicationArguments argumentsPrepared(String[] args) throws Exception;
 
 }

@@ -35,7 +35,19 @@ message RegisterNodeRequest {
   NodeMetadata metadata = 2;
 }
 
-message RegisterNodeResponse {}
+message RegisterNodeResponse {
+  string host = 1;
+  int32 port = 2;
+  string serverId = 3;
+}
+
+message UnRegisterNodeRequest {
+  string cluster = 1;
+  NodeMetadata metadata = 2;
+}
+
+message UnRegisterNodeResponse {
+}
 
 message QueryClusterNodeRequest {
   string cluster = 1;

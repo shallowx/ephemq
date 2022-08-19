@@ -6,4 +6,34 @@ package org.shallow.proto.server;
 public interface RegisterNodeResponseOrBuilder extends
     // @@protoc_insertion_point(interface_extends:shallow.protobuf.RegisterNodeResponse)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>string host = 1;</code>
+   * @return The host.
+   */
+  java.lang.String getHost();
+  /**
+   * <code>string host = 1;</code>
+   * @return The bytes for host.
+   */
+  com.google.protobuf.ByteString
+      getHostBytes();
+
+  /**
+   * <code>int32 port = 2;</code>
+   * @return The port.
+   */
+  int getPort();
+
+  /**
+   * <code>string serverId = 3;</code>
+   * @return The serverId.
+   */
+  java.lang.String getServerId();
+  /**
+   * <code>string serverId = 3;</code>
+   * @return The bytes for serverId.
+   */
+  com.google.protobuf.ByteString
+      getServerIdBytes();
 }

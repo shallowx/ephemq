@@ -1,7 +1,7 @@
 package org.shallow.internal;
 
 import org.shallow.ClientConfig;
-import org.shallow.internal.client.QuorumVoterClient;
+import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.sraft.SRaftProcessController;
@@ -14,22 +14,26 @@ import java.util.stream.Stream;
 public class DefaultBrokerManager implements BrokerManager {
 
     private final BrokerConfig config;
-    private final QuorumVoterClient client;
+    private final SRaftQuorumVoterClient client;
     private final MappedFileApi api;
     private final SRaftProcessController controller;
 
     public DefaultBrokerManager(BrokerConfig config) {
         this.config = config;
 
-        final ClientConfig quorumVoterClientConfig = new ClientConfig();
-        quorumVoterClientConfig.setInvokeExpiredMs(config.getInvokeTimeMs());
-        final List<String> quorumVoterAddress = Stream.of(config.getControllerQuorumVoters()).map(voters -> {
+        ClientConfig quorumVoterClientConfig = new ClientConfig();
+
+        List<String> quorumVoterAddress = Stream.of(config.getControllerQuorumVoters())
+                .map(voters -> {
             final int length = voters.length();
             return voters.substring(voters.lastIndexOf("@") + 1, length);
         }).collect(Collectors.toCollection(LinkedList::new));
 
         quorumVoterClientConfig.setBootstrapSocketAddress(quorumVoterAddress);
-        this.client = new QuorumVoterClient("quorum-voter-client", quorumVoterClientConfig);
+        quorumVoterClientConfig.setChannelFixedPoolCapacity(config.getInternalChannelPoolLimit());
+        quorumVoterClientConfig.setInvokeExpiredMs(config.getInvokeTimeMs());
+
+        this.client = new SRaftQuorumVoterClient("quorum-voter-client", quorumVoterClientConfig);
         client.start();
 
         this.api = new MappedFileApi(config);
@@ -48,7 +52,7 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public QuorumVoterClient getQuorumVoterClient() {
+    public SRaftQuorumVoterClient getQuorumVoterClient() {
         return client;
     }
 

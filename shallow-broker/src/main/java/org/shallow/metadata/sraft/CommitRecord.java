@@ -3,8 +3,8 @@ package org.shallow.metadata.sraft;
 import com.google.protobuf.MessageLite;
 
 public class CommitRecord<T> {
-    private T record;
-    private CommitType type;
+    private final T record;
+    private final CommitType type;
     private MessageLite request;
     private MessageLite response;
 

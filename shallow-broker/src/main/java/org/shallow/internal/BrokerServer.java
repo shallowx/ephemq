@@ -15,12 +15,10 @@ public final class BrokerServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerServer.class);
 
     private final BrokerSocketServer socketServer;
-    private final BrokerConfig config;
     private final CountDownLatch latch;
     private final BrokerManager manager;
 
     public BrokerServer(BrokerConfig config) {
-        this.config = config;
         this.manager = new DefaultBrokerManager(config);
         this.socketServer = new BrokerSocketServer(config, manager);
         this.latch = new CountDownLatch(1);

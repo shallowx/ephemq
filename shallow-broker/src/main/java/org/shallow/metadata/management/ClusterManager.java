@@ -3,13 +3,10 @@ package org.shallow.metadata.management;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
+import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
@@ -18,33 +15,36 @@ import org.shallow.metadata.sraft.AbstractSRaftLog;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
-import org.shallow.processor.ProcessCommand;
 import org.shallow.proto.NodeMetadata;
-import org.shallow.proto.server.*;
+import org.shallow.proto.server.RegisterNodeRequest;
+import org.shallow.proto.server.RegisterNodeResponse;
+import org.shallow.proto.server.UnRegisterNodeRequest;
+import org.shallow.proto.server.UnRegisterNodeResponse;
+
 import java.net.SocketAddress;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-import static org.shallow.processor.ProcessCommand.Server.REGISTER_NODE;
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.metadata.sraft.CommitType.ADD;
+import static org.shallow.metadata.sraft.CommitType.REMOVE;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
+import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
 
 public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterManager.class);
 
-    private final LoadingCache<String, Set<NodeRecord>> nodeRecordCommitCache;
-    private final LoadingCache<String, Set<NodeRecord>> nodeRecordUnCommitCache;
-    private final MappedFileApi api;
+    private final LoadingCache<String, Set<NodeRecord>> commitRecordCache;
+    private final LoadingCache<String, Set<NodeRecord>> unCommitRecordCache;
+    private final SRaftQuorumVoterClient client;
 
     public ClusterManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, BrokerManager manager) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config, manager.getController());
-        this.api = manager.getMappedFileApi();
+        this.client = manager.getQuorumVoterClient();
 
-        this.nodeRecordCommitCache = Caffeine.newBuilder()
+        this.commitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
@@ -53,7 +53,8 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
                         return syncFromQuorumLeader(key);
                     }
                 });
-        this.nodeRecordUnCommitCache = Caffeine.newBuilder()
+
+        this.unCommitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
                 .expireAfterAccess(Long.MAX_VALUE, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
@@ -64,34 +65,18 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
                 });
     }
 
-    public void start() {
-        registerNodeToQuorumLeader();
+    public void start() throws Exception {
+        registerNode();
     }
 
-    private void registerNodeToQuorumLeader() {
-        RegisterNodeRequest request = RegisterNodeRequest
-                .newBuilder()
-                .setCluster(config.getClusterName())
-                .setMetadata(NodeMetadata
-                        .newBuilder()
-                        .setHost(config.getExposedHost())
-                        .setPort(config.getExposedPort())
-                        .setName(config.getServerId())
-                        .build())
-                .build();
+    private void registerNode() throws Exception {
+        if (controller.isQuorumLeader()) {
+            NodeRecord nodeRecord = new NodeRecord(config.getClusterName(), config.getServerId(), switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
+            doPostCommit(nodeRecord, ADD);
+            return;
+        }
 
-        ClientChannel clientChannel = pool.acquireHealthyOrNew(controller.getMetadataLeader());
-
-        Promise<RegisterNodeResponse> promise = newImmediatePromise();
-        promise.addListener((GenericFutureListener<Future<RegisterNodeResponse>>) future -> {
-            if (!future.isSuccess()) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to register cluster node, try again later");
-                }
-            }
-        });
-
-        clientChannel.invoker().invoke(REGISTER_NODE, config.getInvokeTimeMs(), promise, request, RegisterNodeResponse.class);
+        client.registerNodeToQuorumLeader(controller.getMetadataLeader(), config.getClusterName(), config.getExposedHost(), config.getExposedPort(), config.getServerId());
     }
 
     private Set<NodeRecord> syncFromQuorumLeader(String cluster) {
@@ -103,34 +88,12 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
             return nodeRecords;
         }
 
-        try {
-            SocketAddress metadataLeader = controller.getMetadataLeader();
-            ClientChannel clientChannel = pool.acquireHealthyOrNew(metadataLeader);
-
-            Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
-
-            QueryClusterNodeRequest request = QueryClusterNodeRequest.newBuilder().setCluster(cluster).build();
-            clientChannel.invoker().invoke(ProcessCommand.Server.FETCH_CLUSTER_RECORD, config.getInvokeTimeMs(), promise, request, QueryTopicInfoResponse.class);
-
-            QueryClusterNodeResponse response = promise.get(config.getInvokeTimeMs(), TimeUnit.MILLISECONDS);
-            List<NodeMetadata> nodes = response.getNodesList();
-
-            if (nodes.isEmpty()) {
-                return null;
-            }
-
-            return nodes.stream()
-                    .map(nodeMetadata -> new NodeRecord(cluster, nodeMetadata.getName(), switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort())))
-                    .collect(Collectors.toCollection(
-                            CopyOnWriteArraySet::new
-                    ));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        SocketAddress metadataLeader = controller.getMetadataLeader();
+        return client.queryClusterInfo(cluster, metadataLeader);
     }
 
     public Set<NodeRecord> getClusterInfo(String cluster) {
-        Set<NodeRecord> nodeRecords = nodeRecordCommitCache.get(cluster);
+        Set<NodeRecord> nodeRecords = commitRecordCache.get(cluster);
         if (nodeRecords.isEmpty()) {
             return null;
         }
@@ -139,12 +102,120 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
     @Override
     protected CommitRecord<NodeRecord> doPrepareCommit(NodeRecord nodeRecord, CommitType type) {
+        CommitRecord<NodeRecord> commitRecord = null;
+        switch (type) {
+            case ADD -> {
+                commitRecord = preRegister(nodeRecord);
+            }
 
-        return null;
+            case REMOVE -> {
+                commitRecord = preOffLine(nodeRecord);
+            }
+        }
+
+        return commitRecord;
     }
 
-    @Override
-    protected void doPostCommit(NodeRecord nodeRecord, CommitType type) {
+    private CommitRecord<NodeRecord> preRegister(NodeRecord record) {
+        try {
+            RegisterNodeRequest.Builder request = RegisterNodeRequest.newBuilder();
+            if (!controller.isQuorumLeader()) {
+                String nodeSocket = record.getSocketAddress().toString();
+                int index = nodeSocket.lastIndexOf(":");
+                String host = nodeSocket.substring(0, index);
+                int port = Integer.parseInt(nodeSocket.substring(index + 1));
+                request.setCluster(record.getCluster())
+                        .setMetadata(NodeMetadata
+                                .newBuilder()
+                                .setName(record.getName())
+                                .setHost(host)
+                                .setPort(port)
+                                .build()
+                        );
+            }
 
+            RegisterNodeResponse.Builder response = RegisterNodeResponse.newBuilder();
+            if (controller.isQuorumLeader()) {
+                response.setHost(config.getExposedHost())
+                        .setPort(config.getExposedPort())
+                        .setServerId(config.getServerId());
+            }
+
+            CommitRecord<NodeRecord> commitRecord = new CommitRecord<>(record, ADD, request.build(), response.build());
+
+            String cluster = record.getCluster();
+            Set<NodeRecord> nodeRecords = unCommitRecordCache.get(cluster);
+            if (isNull(nodeRecords)) {
+                nodeRecords = new CopyOnWriteArraySet<>();
+            }
+            unCommitRecordCache.put(cluster, nodeRecords);
+
+            return commitRecord;
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
+
+    private CommitRecord<NodeRecord> preOffLine(NodeRecord record) {
+        String cluster = record.getCluster();
+
+        String nodeSocket = record.getSocketAddress().toString();
+        int index = nodeSocket.lastIndexOf(":");
+        String host = nodeSocket.substring(0, index);
+        int port = Integer.parseInt(nodeSocket.substring(index + 1));
+
+        Set<NodeRecord> nodeRecords = commitRecordCache.get(cluster);
+        if (isNotNull(nodeRecords)) {
+            nodeRecords.remove(record);
+        }
+
+        UnRegisterNodeRequest.Builder request = UnRegisterNodeRequest.newBuilder();
+        if (!controller.isQuorumLeader()) {
+            request.setCluster(cluster)
+                    .setMetadata(NodeMetadata
+                            .newBuilder()
+                            .setName(record.getName())
+                            .setHost(host)
+                            .setPort(port)
+                            .build())
+                    .build();
+        }
+
+        UnRegisterNodeResponse response = UnRegisterNodeResponse.newBuilder().build();
+
+        return new CommitRecord<>(record, REMOVE, request.build(), response);
+    }
+
+
+    @Override
+    protected void doPostCommit(NodeRecord record, CommitType type) {
+        String cluster = record.getCluster();
+        switch (type) {
+            case ADD -> {
+                Set<NodeRecord> unNodeRecords = unCommitRecordCache.get(cluster);
+                if (isNotNull(unNodeRecords)) {
+                    unNodeRecords.remove(record);
+                }
+
+                Set<NodeRecord> nodeRecords = commitRecordCache.get(record.getName());
+                if (isNull(nodeRecords)) {
+                    nodeRecords = new CopyOnWriteArraySet<>();
+                }
+                nodeRecords.add(record);
+                commitRecordCache.put(record.getName(), nodeRecords);
+            }
+
+            case REMOVE -> {
+                Set<NodeRecord> unNodeRecords = unCommitRecordCache.get(cluster);
+                if (isNotNull(unNodeRecords) && !unNodeRecords.isEmpty()) {
+                    unNodeRecords.remove(record);
+                }
+
+                Set<NodeRecord> nodeRecords = commitRecordCache.get(cluster);
+                if (isNotNull(nodeRecords) && !nodeRecords.isEmpty()) {
+                    nodeRecords.remove(record);
+                }
+            }
+        }
     }
 }
