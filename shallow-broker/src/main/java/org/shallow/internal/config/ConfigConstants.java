@@ -24,4 +24,7 @@ public interface ConfigConstants {
     String HEARTBEAT_INTERVAL_ORIGIN_TIME_MS = "shallow.heartbeat.interval.origin.time.ms";
     String INVOKE_TIMEOUT_MS = "shallow.invoke.timeout.ms";
     String WORK_DIRECTORY = "shallow.work.directory";
+
+    String LOG_SEGMENT_LIMIT = "shallow.log.segment.limit";
+    String LOG_SEGMENT_SIZE = "shallow.log.segment.size";
 }

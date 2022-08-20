@@ -100,4 +100,12 @@ public class BrokerConfig {
     public int getControllerQuorumVoteTimeoutMs() {
         return getHeartbeatIntervalOriginTimeMs();
     }
+
+    public int getLogSegmentLimit() {
+        return object2Int(config.getOrDefault(LOG_SEGMENT_LIMIT, 2));
+    }
+
+    public int getLogSegmentSize() {
+        return object2Int(config.getOrDefault(LOG_SEGMENT_SIZE, 4194304));
+    }
 }

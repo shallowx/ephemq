@@ -1,6 +1,7 @@
 package org.shallow.log;
 
 import io.netty.util.collection.IntObjectHashMap;
+import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -10,12 +11,18 @@ public class LogManager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LogManager.class);
 
-    private final Map<Integer, Log> logs = new IntObjectHashMap<>();
+    private static final Map<Integer, Log> logs = new IntObjectHashMap<>();
+    private final BrokerConfig config;
 
-    public void initLog() {
-        int ledger = 0;
+    public LogManager(BrokerConfig config) {
+        this.config = config;
+    }
 
-        logs.put(ledger, null);
+    public void initLog(int partitions) {
+        Log log = new Log();
+        int ledger = log.getLedgerId();
+
+        logs.put(ledger, log);
         if (logger.isInfoEnabled()) {
             logger.info("Log<ledger={}> initialize successfully", ledger);
         }

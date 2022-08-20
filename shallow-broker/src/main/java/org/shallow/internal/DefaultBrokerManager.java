@@ -40,7 +40,7 @@ public class DefaultBrokerManager implements BrokerManager {
 
         this.api = new MappedFileApi(config);
         this.controller = new SRaftProcessController(config, this);
-        this.logManager = new LogManager();
+        this.logManager = new LogManager(config);
     }
 
     @Override

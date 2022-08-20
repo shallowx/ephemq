@@ -191,7 +191,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
                 //TODO notify init log
                 LogManager logManager = manager.getLogManager();
-                logManager.initLog();
+                logManager.initLog(-1);
             }
 
             case REMOVE -> {
