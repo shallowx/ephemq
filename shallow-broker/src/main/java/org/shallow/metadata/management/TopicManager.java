@@ -5,6 +5,8 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
+import org.shallow.log.Log;
+import org.shallow.log.LogManager;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
@@ -43,9 +45,11 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     private final SRaftQuorumVoterClient client;
     private final LoadingCache<String, Set<PartitionRecord>> commitRecordCache;
     private final LoadingCache<String, Set<PartitionRecord>> unCommitRecordCache;
+    private final BrokerManager manager;
 
     public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, BrokerManager manager) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config, manager.getController());
+        this.manager = manager;
         this.api = manager.getMappedFileApi();
         this.atomicValue = controller.getAtomicValue();
         this.client = manager.getQuorumVoterClient();
@@ -184,6 +188,10 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 partitionRecords.add(record.getPartitionRecord());
 
                 commitRecordCache.put(record.getName(), partitionRecords);
+
+                //TODO notify init log
+                LogManager logManager = manager.getLogManager();
+                logManager.initLog();
             }
 
             case REMOVE -> {
@@ -192,8 +200,6 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 unCommitRecordCache.invalidate(topic);
             }
         }
-
-        //TODO notify init log
 
         String content = object2Json(commitRecordCache.asMap());
         try {
