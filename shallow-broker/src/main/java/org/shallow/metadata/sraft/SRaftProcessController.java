@@ -8,7 +8,7 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
 import org.shallow.meta.TopicRecord;
-import org.shallow.metadata.atomic.DistributedAtomicInteger;
+import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.metadata.management.ClusterManager;
 import org.shallow.metadata.Strategy;
 import org.shallow.metadata.management.TopicManager;

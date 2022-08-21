@@ -1,7 +1,7 @@
 package org.shallow;
 
 import org.openjdk.jmh.annotations.*;
-import org.shallow.metadata.atomic.DistributedAtomicInteger;
+import org.shallow.internal.atomic.DistributedAtomicInteger;
 
 import java.util.concurrent.TimeUnit;
 

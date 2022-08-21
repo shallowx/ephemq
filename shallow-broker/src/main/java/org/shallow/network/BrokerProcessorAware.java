@@ -3,10 +3,7 @@ package org.shallow.network;
 import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
 import org.shallow.RemoteException;
 import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
@@ -43,10 +40,15 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
     private final BrokerManager manager;
     private final EventExecutor commandExecutor;
+    private final EventExecutor quorumVoteExecutor;
+    private final EventExecutor messageExecutor;
 
     public BrokerProcessorAware(BrokerManager manager) {
         this.manager = manager;
-        this.commandExecutor = newEventExecutorGroup(1, "processor-aware").next();
+        EventExecutorGroup group = newEventExecutorGroup(3, "processor-aware").next();
+        this.commandExecutor = group.next();
+        this.quorumVoteExecutor = group.next();
+        this.messageExecutor = group.next();
     }
 
     @Override
@@ -60,10 +62,18 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
             switch (command) {
+                case SEND_MESSAGE -> {
+                    try {
+                        messageExecutor.execute(() ->{});
+                    } catch (Throwable t){
+                        answerFailed(answer,t);
+                    }
+                }
+
                 case QUORUM_VOTE -> {
                     try {
                         VoteRequest request = readProto(data, VoteRequest.parser());
-                        commandExecutor.execute(() -> {
+                        quorumVoteExecutor.execute(() -> {
                             try {
                                 int term = request.getTerm();
                                 Promise<VoteResponse> promise = newImmediatePromise();
@@ -96,7 +106,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case HEARTBEAT -> {
                     try {
                         RaftHeartbeatRequest request = readProto(data, RaftHeartbeatRequest.parser());
-                        commandExecutor.execute(() -> {
+                        quorumVoteExecutor.execute(() -> {
                             try {
                                 int term = request.getTerm();
                                 int distributedValue = request.getDistributedValue();

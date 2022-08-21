@@ -71,12 +71,12 @@ public final class LeaderElectorProto {
       "ftHeartbeatResponse\"\250\001\n\037CreateTopicPrepa" +
       "reCommitRequest\022\r\n\005topic\030\001 \001(\t\022\022\n\npartit" +
       "ions\030\002 \001(\005\022\021\n\tlatencies\030\003 \001(\005\022\017\n\007cluster" +
-      "\030\004 \001(\t\022>\n\021partitionMetadata\030\005 \001(\0132#.shal" +
+      "\030\004 \001(\t\022>\n\021partitionMetadata\030\005 \003(\0132#.shal" +
       "low.protobuf.PartitionMetadata\"\251\001\n Creat" +
       "eTopicPrepareCommitResponse\022\r\n\005topic\030\001 \001" +
       "(\t\022\022\n\npartitions\030\002 \001(\005\022\021\n\tlatencies\030\003 \001(" +
       "\005\022\017\n\007cluster\030\004 \001(\t\022>\n\021partitionMetadata\030" +
-      "\005 \001(\0132#.shallow.protobuf.PartitionMetada" +
+      "\005 \003(\0132#.shallow.protobuf.PartitionMetada" +
       "ta\"0\n\037DeleteTopicPrepareCommitRequest\022\r\n" +
       "\005topic\030\001 \001(\t\">\n DeleteTopicPrepareCommit" +
       "Response\022\r\n\005topic\030\001 \001(\t\022\013\n\003ack\030\002 \001(\005B1\n\031" +

@@ -13,7 +13,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.PartitionRecord;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.MappedFileApi;
-import org.shallow.metadata.atomic.DistributedAtomicInteger;
+import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.metadata.sraft.AbstractSRaftLog;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
@@ -24,10 +24,10 @@ import org.shallow.proto.elector.CreateTopicPrepareCommitResponse;
 import org.shallow.proto.elector.DeleteTopicPrepareCommitRequest;
 import org.shallow.proto.elector.DeleteTopicPrepareCommitResponse;
 import java.net.SocketAddress;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.shallow.metadata.MetadataConstants.TOPICS;
 import static org.shallow.metadata.sraft.CommitType.ADD;
@@ -45,6 +45,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     private final LoadingCache<String, Set<PartitionRecord>> commitRecordCache;
     private final LoadingCache<String, Set<PartitionRecord>> unCommitRecordCache;
     private final BrokerManager manager;
+    private final PartitionElector elector;
 
     public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, BrokerManager manager) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config, manager.getController());
@@ -52,6 +53,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         this.api = manager.getMappedFileApi();
         this.atomicValue = controller.getAtomicValue();
         this.client = manager.getQuorumVoterClient();
+        this.elector = new PartitionElector(config, manager);
 
         this.commitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
@@ -91,30 +93,52 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
     private CommitRecord<TopicRecord> preCreate(TopicRecord record) {
         String topic = record.getName();
+        int partitions = record.getPartitions();
+        int latencies = record.getLatencies();
+        int clusterSize = manager.getController().getClusterManager().getClusterSize(config.getClusterName());
+
+        if (partitions <= 0 ){
+            throw new RuntimeException(String.format("The number of partitions expected: > 0, but actually=%d", partitions));
+        }
+
+        if (latencies > clusterSize) {
+            throw new RuntimeException(String.format("Not enough cluster nodes, expected=%d actually=%d", latencies, clusterSize));
+        }
+
         if (contains(topic)) {
             throw new RuntimeException("The topic<" + topic + "> already exists");
         }
 
         try {
             commitRecordCache.invalidate(topic);
-            int latencies = record.getLatencies();
-            int partitions = record.getPartitions();
 
-            PartitionRecord partitionRecord = new PartitionRecord(atomicValue.increment().preValue(), latencies, elect(), calculateReplicas());
-            record.setPartitionRecord(partitionRecord);
+            Set<PartitionRecord> partitionRecords = new HashSet<>();
+            Map<Integer, PartitionElector.ElectorResult> result = elector.elect(partitions, latencies);
+            for (Map.Entry<Integer, PartitionElector.ElectorResult> entry : result.entrySet()) {
+                int id = entry.getKey();
+                PartitionElector.ElectorResult electorResult = entry.getValue();
+                String leader = electorResult.getLeader();
+                List<String> replicas = electorResult.getReplicas();
+
+                PartitionRecord partitionRecord = new PartitionRecord(id, atomicValue.increment().preValue(), leader, replicas);
+                partitionRecords.add(partitionRecord);
+            }
+            record.setPartitionRecords(partitionRecords);
 
             CreateTopicPrepareCommitRequest.Builder requestBuilder = CreateTopicPrepareCommitRequest.newBuilder();
             if (!controller.isQuorumLeader()) {
                 requestBuilder.setTopic(topic)
                         .setLatencies(latencies)
                         .setPartitions(partitions)
-                        .setPartitionMetadata(PartitionMetadata
+                        .addAllPartitionMetadata(partitionRecords.stream().map(pr ->
+                                PartitionMetadata
                                 .newBuilder()
-                                .setId(partitionRecord.getId())
-                                .setLatency(latencies)
-                                .setLeader(partitionRecord.getLeader())
-                                .addAllReplicas(partitionRecord.getLatencies())
-                                .build());
+                                .setId(pr.getId())
+                                .setLatency(pr.getLatency())
+                                .setLeader(pr.getLeader())
+                                .addAllReplicas(pr.getLatencies())
+                                .build()).collect(Collectors.toSet()))
+                        .build();
             }
 
             CreateTopicPrepareCommitResponse.Builder responseBuilder = CreateTopicPrepareCommitResponse.newBuilder();
@@ -122,36 +146,29 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 responseBuilder.setTopic(topic)
                         .setLatencies(latencies)
                         .setPartitions(partitions)
-                        .setPartitionMetadata(PartitionMetadata
-                                .newBuilder()
-                                .setId(partitionRecord.getId())
-                                .setLatency(latencies)
-                                .setLeader(partitionRecord.getLeader())
-                                .addAllReplicas(partitionRecord.getLatencies())
-                                .build());
+                        .addAllPartitionMetadata(partitionRecords.stream().map(pr ->
+                                PartitionMetadata
+                                        .newBuilder()
+                                        .setId(pr.getId())
+                                        .setLatency(pr.getLatency())
+                                        .setLeader(pr.getLeader())
+                                        .addAllReplicas(pr.getLatencies())
+                                        .build()).collect(Collectors.toSet()))
+                        .build();
             }
-
             CommitRecord<TopicRecord> commitRecord = new CommitRecord<>(record, ADD, requestBuilder.build(), responseBuilder.build());
-            Set<PartitionRecord> partitionRecords = commitRecordCache.get(record.getName());
-            if (isNull(partitionRecords)) {
-                partitionRecords = new CopyOnWriteArraySet<>();
-            }
-            partitionRecords.add(partitionRecord);
 
-            unCommitRecordCache.put(record.getName(), partitionRecords);
+            Set<PartitionRecord> cacheRecords = commitRecordCache.get(record.getName());
+            if (isNull(cacheRecords)) {
+                cacheRecords = new CopyOnWriteArraySet<>();
+            }
+            cacheRecords.addAll(partitionRecords);
+            unCommitRecordCache.put(record.getName(), cacheRecords);
 
             return commitRecord;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create topic<" + record.getName() + ">");
         }
-    }
-
-    private String elect() {
-        return config.getServerId();
-    }
-
-    private List<String> calculateReplicas() {
-        return List.of(config.getServerId());
     }
 
     private CommitRecord<TopicRecord> preDelete(TopicRecord record) {
@@ -179,18 +196,18 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     protected void doPostCommit(TopicRecord record, CommitType type) {
         switch (type) {
             case ADD -> {
-                unCommitRecordCache.invalidate(record.getName());
-                Set<PartitionRecord> partitionRecords = unCommitRecordCache.get(record.getName());
+                String topic = record.getName();
+                unCommitRecordCache.invalidate(topic);
+                Set<PartitionRecord> partitionRecords = unCommitRecordCache.get(topic);
                 if (isNull(partitionRecords)) {
                     partitionRecords = new CopyOnWriteArraySet<>();
                 }
-                partitionRecords.add(record.getPartitionRecord());
-
+                partitionRecords.addAll(record.getPartitionRecords());
                 commitRecordCache.put(record.getName(), partitionRecords);
 
                 //TODO notify init log
                 LogManager logManager = manager.getLogManager();
-                logManager.initLog(-1);
+                logManager.initLog(topic, -1, -1);
             }
 
             case REMOVE -> {

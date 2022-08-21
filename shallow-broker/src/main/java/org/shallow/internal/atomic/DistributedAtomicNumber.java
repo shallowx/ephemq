@@ -1,4 +1,4 @@
-package org.shallow.metadata.atomic;
+package org.shallow.internal.atomic;
 
 public interface DistributedAtomicNumber<T> {
 

@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private CreateTopicPrepareCommitRequest() {
     topic_ = "";
     cluster_ = "";
+    partitionMetadata_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -40,6 +41,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -73,16 +75,12 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 42: {
-            org.shallow.proto.PartitionMetadata.Builder subBuilder = null;
-            if (partitionMetadata_ != null) {
-              subBuilder = partitionMetadata_.toBuilder();
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              partitionMetadata_ = new java.util.ArrayList<org.shallow.proto.PartitionMetadata>();
+              mutable_bitField0_ |= 0x00000001;
             }
-            partitionMetadata_ = input.readMessage(org.shallow.proto.PartitionMetadata.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(partitionMetadata_);
-              partitionMetadata_ = subBuilder.buildPartial();
-            }
-
+            partitionMetadata_.add(
+                input.readMessage(org.shallow.proto.PartitionMetadata.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -100,6 +98,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+        partitionMetadata_ = java.util.Collections.unmodifiableList(partitionMetadata_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -216,29 +217,43 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PARTITIONMETADATA_FIELD_NUMBER = 5;
-  private org.shallow.proto.PartitionMetadata partitionMetadata_;
+  private java.util.List<org.shallow.proto.PartitionMetadata> partitionMetadata_;
   /**
-   * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
-   * @return Whether the partitionMetadata field is set.
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
    */
   @java.lang.Override
-  public boolean hasPartitionMetadata() {
-    return partitionMetadata_ != null;
+  public java.util.List<org.shallow.proto.PartitionMetadata> getPartitionMetadataList() {
+    return partitionMetadata_;
   }
   /**
-   * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
-   * @return The partitionMetadata.
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
    */
   @java.lang.Override
-  public org.shallow.proto.PartitionMetadata getPartitionMetadata() {
-    return partitionMetadata_ == null ? org.shallow.proto.PartitionMetadata.getDefaultInstance() : partitionMetadata_;
+  public java.util.List<? extends org.shallow.proto.PartitionMetadataOrBuilder> 
+      getPartitionMetadataOrBuilderList() {
+    return partitionMetadata_;
   }
   /**
-   * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
    */
   @java.lang.Override
-  public org.shallow.proto.PartitionMetadataOrBuilder getPartitionMetadataOrBuilder() {
-    return getPartitionMetadata();
+  public int getPartitionMetadataCount() {
+    return partitionMetadata_.size();
+  }
+  /**
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+   */
+  @java.lang.Override
+  public org.shallow.proto.PartitionMetadata getPartitionMetadata(int index) {
+    return partitionMetadata_.get(index);
+  }
+  /**
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+   */
+  @java.lang.Override
+  public org.shallow.proto.PartitionMetadataOrBuilder getPartitionMetadataOrBuilder(
+      int index) {
+    return partitionMetadata_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -267,8 +282,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, cluster_);
     }
-    if (partitionMetadata_ != null) {
-      output.writeMessage(5, getPartitionMetadata());
+    for (int i = 0; i < partitionMetadata_.size(); i++) {
+      output.writeMessage(5, partitionMetadata_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -293,9 +308,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, cluster_);
     }
-    if (partitionMetadata_ != null) {
+    for (int i = 0; i < partitionMetadata_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getPartitionMetadata());
+        .computeMessageSize(5, partitionMetadata_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -320,11 +335,8 @@ private static final long serialVersionUID = 0L;
         != other.getLatencies()) return false;
     if (!getCluster()
         .equals(other.getCluster())) return false;
-    if (hasPartitionMetadata() != other.hasPartitionMetadata()) return false;
-    if (hasPartitionMetadata()) {
-      if (!getPartitionMetadata()
-          .equals(other.getPartitionMetadata())) return false;
-    }
+    if (!getPartitionMetadataList()
+        .equals(other.getPartitionMetadataList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -344,9 +356,9 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getLatencies();
     hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
     hash = (53 * hash) + getCluster().hashCode();
-    if (hasPartitionMetadata()) {
+    if (getPartitionMetadataCount() > 0) {
       hash = (37 * hash) + PARTITIONMETADATA_FIELD_NUMBER;
-      hash = (53 * hash) + getPartitionMetadata().hashCode();
+      hash = (53 * hash) + getPartitionMetadataList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -476,6 +488,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getPartitionMetadataFieldBuilder();
       }
     }
     @java.lang.Override
@@ -490,10 +503,10 @@ private static final long serialVersionUID = 0L;
       cluster_ = "";
 
       if (partitionMetadataBuilder_ == null) {
-        partitionMetadata_ = null;
+        partitionMetadata_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
-        partitionMetadata_ = null;
-        partitionMetadataBuilder_ = null;
+        partitionMetadataBuilder_.clear();
       }
       return this;
     }
@@ -521,11 +534,16 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.elector.CreateTopicPrepareCommitRequest buildPartial() {
       org.shallow.proto.elector.CreateTopicPrepareCommitRequest result = new org.shallow.proto.elector.CreateTopicPrepareCommitRequest(this);
+      int from_bitField0_ = bitField0_;
       result.topic_ = topic_;
       result.partitions_ = partitions_;
       result.latencies_ = latencies_;
       result.cluster_ = cluster_;
       if (partitionMetadataBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          partitionMetadata_ = java.util.Collections.unmodifiableList(partitionMetadata_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.partitionMetadata_ = partitionMetadata_;
       } else {
         result.partitionMetadata_ = partitionMetadataBuilder_.build();
@@ -592,8 +610,31 @@ private static final long serialVersionUID = 0L;
         cluster_ = other.cluster_;
         onChanged();
       }
-      if (other.hasPartitionMetadata()) {
-        mergePartitionMetadata(other.getPartitionMetadata());
+      if (partitionMetadataBuilder_ == null) {
+        if (!other.partitionMetadata_.isEmpty()) {
+          if (partitionMetadata_.isEmpty()) {
+            partitionMetadata_ = other.partitionMetadata_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensurePartitionMetadataIsMutable();
+            partitionMetadata_.addAll(other.partitionMetadata_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.partitionMetadata_.isEmpty()) {
+          if (partitionMetadataBuilder_.isEmpty()) {
+            partitionMetadataBuilder_.dispose();
+            partitionMetadataBuilder_ = null;
+            partitionMetadata_ = other.partitionMetadata_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            partitionMetadataBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getPartitionMetadataFieldBuilder() : null;
+          } else {
+            partitionMetadataBuilder_.addAllMessages(other.partitionMetadata_);
+          }
+        }
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -623,6 +664,7 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object topic_ = "";
     /**
@@ -838,118 +880,239 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private org.shallow.proto.PartitionMetadata partitionMetadata_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.shallow.proto.PartitionMetadata, org.shallow.proto.PartitionMetadata.Builder, org.shallow.proto.PartitionMetadataOrBuilder> partitionMetadataBuilder_;
-    /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
-     * @return Whether the partitionMetadata field is set.
-     */
-    public boolean hasPartitionMetadata() {
-      return partitionMetadataBuilder_ != null || partitionMetadata_ != null;
+    private java.util.List<org.shallow.proto.PartitionMetadata> partitionMetadata_ =
+      java.util.Collections.emptyList();
+    private void ensurePartitionMetadataIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        partitionMetadata_ = new java.util.ArrayList<org.shallow.proto.PartitionMetadata>(partitionMetadata_);
+        bitField0_ |= 0x00000001;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        org.shallow.proto.PartitionMetadata, org.shallow.proto.PartitionMetadata.Builder, org.shallow.proto.PartitionMetadataOrBuilder> partitionMetadataBuilder_;
+
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
-     * @return The partitionMetadata.
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
-    public org.shallow.proto.PartitionMetadata getPartitionMetadata() {
+    public java.util.List<org.shallow.proto.PartitionMetadata> getPartitionMetadataList() {
       if (partitionMetadataBuilder_ == null) {
-        return partitionMetadata_ == null ? org.shallow.proto.PartitionMetadata.getDefaultInstance() : partitionMetadata_;
+        return java.util.Collections.unmodifiableList(partitionMetadata_);
       } else {
-        return partitionMetadataBuilder_.getMessage();
+        return partitionMetadataBuilder_.getMessageList();
       }
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
-    public Builder setPartitionMetadata(org.shallow.proto.PartitionMetadata value) {
+    public int getPartitionMetadataCount() {
+      if (partitionMetadataBuilder_ == null) {
+        return partitionMetadata_.size();
+      } else {
+        return partitionMetadataBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public org.shallow.proto.PartitionMetadata getPartitionMetadata(int index) {
+      if (partitionMetadataBuilder_ == null) {
+        return partitionMetadata_.get(index);
+      } else {
+        return partitionMetadataBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public Builder setPartitionMetadata(
+        int index, org.shallow.proto.PartitionMetadata value) {
       if (partitionMetadataBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        partitionMetadata_ = value;
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.set(index, value);
         onChanged();
       } else {
-        partitionMetadataBuilder_.setMessage(value);
+        partitionMetadataBuilder_.setMessage(index, value);
       }
-
       return this;
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
     public Builder setPartitionMetadata(
+        int index, org.shallow.proto.PartitionMetadata.Builder builderForValue) {
+      if (partitionMetadataBuilder_ == null) {
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        partitionMetadataBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public Builder addPartitionMetadata(org.shallow.proto.PartitionMetadata value) {
+      if (partitionMetadataBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.add(value);
+        onChanged();
+      } else {
+        partitionMetadataBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public Builder addPartitionMetadata(
+        int index, org.shallow.proto.PartitionMetadata value) {
+      if (partitionMetadataBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.add(index, value);
+        onChanged();
+      } else {
+        partitionMetadataBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public Builder addPartitionMetadata(
         org.shallow.proto.PartitionMetadata.Builder builderForValue) {
       if (partitionMetadataBuilder_ == null) {
-        partitionMetadata_ = builderForValue.build();
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.add(builderForValue.build());
         onChanged();
       } else {
-        partitionMetadataBuilder_.setMessage(builderForValue.build());
+        partitionMetadataBuilder_.addMessage(builderForValue.build());
       }
-
       return this;
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
-    public Builder mergePartitionMetadata(org.shallow.proto.PartitionMetadata value) {
+    public Builder addPartitionMetadata(
+        int index, org.shallow.proto.PartitionMetadata.Builder builderForValue) {
       if (partitionMetadataBuilder_ == null) {
-        if (partitionMetadata_ != null) {
-          partitionMetadata_ =
-            org.shallow.proto.PartitionMetadata.newBuilder(partitionMetadata_).mergeFrom(value).buildPartial();
-        } else {
-          partitionMetadata_ = value;
-        }
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.add(index, builderForValue.build());
         onChanged();
       } else {
-        partitionMetadataBuilder_.mergeFrom(value);
+        partitionMetadataBuilder_.addMessage(index, builderForValue.build());
       }
-
       return this;
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public Builder addAllPartitionMetadata(
+        java.lang.Iterable<? extends org.shallow.proto.PartitionMetadata> values) {
+      if (partitionMetadataBuilder_ == null) {
+        ensurePartitionMetadataIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, partitionMetadata_);
+        onChanged();
+      } else {
+        partitionMetadataBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
     public Builder clearPartitionMetadata() {
       if (partitionMetadataBuilder_ == null) {
-        partitionMetadata_ = null;
+        partitionMetadata_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
-        partitionMetadata_ = null;
-        partitionMetadataBuilder_ = null;
+        partitionMetadataBuilder_.clear();
       }
-
       return this;
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
-    public org.shallow.proto.PartitionMetadata.Builder getPartitionMetadataBuilder() {
-      
-      onChanged();
-      return getPartitionMetadataFieldBuilder().getBuilder();
+    public Builder removePartitionMetadata(int index) {
+      if (partitionMetadataBuilder_ == null) {
+        ensurePartitionMetadataIsMutable();
+        partitionMetadata_.remove(index);
+        onChanged();
+      } else {
+        partitionMetadataBuilder_.remove(index);
+      }
+      return this;
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
-    public org.shallow.proto.PartitionMetadataOrBuilder getPartitionMetadataOrBuilder() {
-      if (partitionMetadataBuilder_ != null) {
-        return partitionMetadataBuilder_.getMessageOrBuilder();
-      } else {
-        return partitionMetadata_ == null ?
-            org.shallow.proto.PartitionMetadata.getDefaultInstance() : partitionMetadata_;
+    public org.shallow.proto.PartitionMetadata.Builder getPartitionMetadataBuilder(
+        int index) {
+      return getPartitionMetadataFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public org.shallow.proto.PartitionMetadataOrBuilder getPartitionMetadataOrBuilder(
+        int index) {
+      if (partitionMetadataBuilder_ == null) {
+        return partitionMetadata_.get(index);  } else {
+        return partitionMetadataBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
+    public java.util.List<? extends org.shallow.proto.PartitionMetadataOrBuilder> 
+         getPartitionMetadataOrBuilderList() {
+      if (partitionMetadataBuilder_ != null) {
+        return partitionMetadataBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(partitionMetadata_);
+      }
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public org.shallow.proto.PartitionMetadata.Builder addPartitionMetadataBuilder() {
+      return getPartitionMetadataFieldBuilder().addBuilder(
+          org.shallow.proto.PartitionMetadata.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public org.shallow.proto.PartitionMetadata.Builder addPartitionMetadataBuilder(
+        int index) {
+      return getPartitionMetadataFieldBuilder().addBuilder(
+          index, org.shallow.proto.PartitionMetadata.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+     */
+    public java.util.List<org.shallow.proto.PartitionMetadata.Builder> 
+         getPartitionMetadataBuilderList() {
+      return getPartitionMetadataFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         org.shallow.proto.PartitionMetadata, org.shallow.proto.PartitionMetadata.Builder, org.shallow.proto.PartitionMetadataOrBuilder> 
         getPartitionMetadataFieldBuilder() {
       if (partitionMetadataBuilder_ == null) {
-        partitionMetadataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        partitionMetadataBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             org.shallow.proto.PartitionMetadata, org.shallow.proto.PartitionMetadata.Builder, org.shallow.proto.PartitionMetadataOrBuilder>(
-                getPartitionMetadata(),
+                partitionMetadata_,
+                ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
         partitionMetadata_ = null;

@@ -44,17 +44,26 @@ public interface CreateTopicPrepareCommitRequestOrBuilder extends
       getClusterBytes();
 
   /**
-   * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
-   * @return Whether the partitionMetadata field is set.
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
    */
-  boolean hasPartitionMetadata();
+  java.util.List<org.shallow.proto.PartitionMetadata> 
+      getPartitionMetadataList();
   /**
-   * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
-   * @return The partitionMetadata.
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
    */
-  org.shallow.proto.PartitionMetadata getPartitionMetadata();
+  org.shallow.proto.PartitionMetadata getPartitionMetadata(int index);
   /**
-   * <code>.shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
    */
-  org.shallow.proto.PartitionMetadataOrBuilder getPartitionMetadataOrBuilder();
+  int getPartitionMetadataCount();
+  /**
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+   */
+  java.util.List<? extends org.shallow.proto.PartitionMetadataOrBuilder> 
+      getPartitionMetadataOrBuilderList();
+  /**
+   * <code>repeated .shallow.protobuf.PartitionMetadata partitionMetadata = 5;</code>
+   */
+  org.shallow.proto.PartitionMetadataOrBuilder getPartitionMetadataOrBuilder(
+      int index);
 }

@@ -3,24 +3,6 @@ package org.shallow.processor;
 
 public interface ProcessCommand {
     interface Server {
-        Server ACTIVE = new Server() {
-            @Override
-            public String get(byte command) {
-                return switch (command) {
-                    case 1 -> "CREATE_TOPIC";
-                    case 2 -> "DELETE_TOPIC";
-                    case 3 -> "FETCH_CLUSTER_RECORD";
-                    case 4 -> "FETCH_TOPIC_RECORD";
-                    case 5 -> "QUORUM_VOTE";
-                    case 6 -> "HEARTBEAT";
-                    case 7 -> "PREPARE_COMMIT";
-                    case 8 -> "POST_COMMIT";
-                    case 9 -> "REGISTER_NODE";
-                    default -> throw new IllegalStateException("Unexpected client command: " + command);
-                };
-            }
-        };
-
         byte CREATE_TOPIC = 1;
         byte DELETE_TOPIC = 2;
         byte FETCH_CLUSTER_RECORD = 3;
@@ -30,9 +12,7 @@ public interface ProcessCommand {
         byte PREPARE_COMMIT = 7;
         byte POST_COMMIT = 8;
         byte REGISTER_NODE = 9;
-       default String get(byte command) {
-           return null;
-       }
+        byte SEND_MESSAGE = 10;
     }
 
     interface Client {

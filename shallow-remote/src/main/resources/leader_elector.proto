@@ -30,7 +30,7 @@ message CreateTopicPrepareCommitRequest {
     int32 partitions = 2;
     int32 latencies = 3;
     string cluster = 4;
-    PartitionMetadata partitionMetadata = 5;
+    repeated PartitionMetadata partitionMetadata = 5;
 }
 
 message CreateTopicPrepareCommitResponse {
@@ -38,7 +38,7 @@ message CreateTopicPrepareCommitResponse {
   int32 partitions = 2;
   int32 latencies = 3;
   string cluster = 4;
-  PartitionMetadata partitionMetadata = 5;
+  repeated PartitionMetadata partitionMetadata = 5;
 }
 
 message DeleteTopicPrepareCommitRequest {

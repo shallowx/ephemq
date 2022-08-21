@@ -2,7 +2,7 @@ package org.shallow.atomic;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.shallow.metadata.atomic.DistributedAtomicInteger;
+import org.shallow.internal.atomic.DistributedAtomicInteger;
 
 import java.util.ArrayList;
 import java.util.List;

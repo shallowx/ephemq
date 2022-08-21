@@ -1,4 +1,4 @@
-package org.shallow.metadata.atomic;
+package org.shallow.internal.atomic;
 
 import com.google.common.annotations.VisibleForTesting;
 
