@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
 import org.shallow.log.LogManager;
+import org.shallow.log.Segment;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
@@ -46,6 +47,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     private final LoadingCache<String, Set<PartitionRecord>> unCommitRecordCache;
     private final BrokerManager manager;
     private final PartitionElector elector;
+    private final LogManager logManager;
 
     public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, BrokerManager manager) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config, manager.getController());
@@ -54,6 +56,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         this.atomicValue = controller.getAtomicValue();
         this.client = manager.getQuorumVoterClient();
         this.elector = new PartitionElector(config, manager);
+        this.logManager = manager.getLogManager();
 
         this.commitRecordCache = Caffeine.newBuilder()
                 .expireAfterWrite(Long.MAX_VALUE, TimeUnit.DAYS)
@@ -202,12 +205,13 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 if (isNull(partitionRecords)) {
                     partitionRecords = new CopyOnWriteArraySet<>();
                 }
-                partitionRecords.addAll(record.getPartitionRecords());
+                Set<PartitionRecord> unInitPartitions = record.getPartitionRecords();
+                partitionRecords.addAll(unInitPartitions);
                 commitRecordCache.put(record.getName(), partitionRecords);
 
-                //TODO notify init log
-                LogManager logManager = manager.getLogManager();
-                logManager.initLog(topic, -1, -1);
+                for (PartitionRecord partitionRecord : unInitPartitions) {
+                    initPartition(topic, partitionRecord.getId());
+                }
             }
 
             case REMOVE -> {
@@ -225,6 +229,10 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 logger.error(e.getMessage(), e);
             }
         }
+    }
+
+    private void initPartition(String topic, int partition) {
+        logManager.initLog(topic, partition, -1);
     }
 
     public Set<PartitionRecord> getTopicInfo(String topic) {

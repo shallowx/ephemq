@@ -7,6 +7,8 @@ import io.netty.util.concurrent.*;
 import org.shallow.RemoteException;
 import org.shallow.internal.BrokerManager;
 import org.shallow.invoke.InvokeAnswer;
+import org.shallow.log.LogManager;
+import org.shallow.log.Offset;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
@@ -64,8 +66,41 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             switch (command) {
                 case SEND_MESSAGE -> {
                     try {
-                        messageExecutor.execute(() ->{});
+                        SendMessageRequest request = readProto(data, SendMessageRequest.parser());
+                        messageExecutor.execute(() ->{
+                            try {
+                                int ledger = request.getLedger();
+                                String queue = request.getQueue();
+
+                                Promise<Offset> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
+                                    if (f.isSuccess()) {
+                                        Offset offset = f.get();
+                                        SendMessageResponse response = SendMessageResponse
+                                                .newBuilder()
+                                                .setLedger(ledger)
+                                                .setEpoch(offset.epoch())
+                                                .setIndex(offset.index())
+                                                .build();
+
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), response));
+                                        }
+                                    }
+                                });
+                                LogManager logManager = manager.getLogManager();
+                                logManager.append(ledger, queue, data, promise);
+                            } catch (Throwable t) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to append message record", t);
+                                }
+                                answerFailed(answer,t);
+                            }
+                        });
                     } catch (Throwable t){
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to append message record", t);
+                        }
                         answerFailed(answer,t);
                     }
                 }

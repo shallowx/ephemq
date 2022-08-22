@@ -37,5 +37,6 @@ public final class RemoteException extends RuntimeException {
         byte UNKNOWN_EXCEPTION = -1;
         byte INVOKE_TIMEOUT_EXCEPTION = -2;
         byte UNSUPPORTED_EXCEPTION = -3;
+        byte MESSAGE_APPEND_EXCEPTION = -4;
     }
 }

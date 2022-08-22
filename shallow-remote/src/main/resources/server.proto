@@ -64,3 +64,14 @@ message QueryTopicInfoRequest {
 message QueryTopicInfoResponse {
   map<string, TopicMetadata> topics = 1;
 }
+
+message SendMessageRequest {
+  int32 ledger = 1;
+  string queue = 2;
+}
+
+message SendMessageResponse {
+  int32 ledger = 1;
+  int32 epoch = 2;
+  int64 index = 3;
+}

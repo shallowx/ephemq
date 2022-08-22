@@ -1,10 +1,15 @@
 package org.shallow.log;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Promise;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-
+import org.shallow.util.ByteUtil;
 import javax.annotation.concurrent.ThreadSafe;
+
+import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
 public class Ledger {
@@ -17,6 +22,7 @@ public class Ledger {
     private int epoch;
     private final BrokerConfig config;
     private final Storage storage;
+    private final EventExecutor storageExecutor;
 
     public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
@@ -24,12 +30,41 @@ public class Ledger {
         this.ledgerId = ledgerId;
         this.config = config;
         this.epoch = epoch;
-        this.storage = new Storage();
+        this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
+        this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
+    }
+
+    public void append(String queue, ByteBuf payload, Promise<Offset> promise) {
+        payload.retain();
+        if (storageExecutor.inEventLoop()) {
+            doAppend(queue, payload, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doAppend(queue, payload, promise));
+            } catch (Throwable t) {
+                ByteUtil.release(payload);
+                promise.tryFailure(t);
+            }
+        }
+    }
+
+    private void doAppend(String queue, ByteBuf payload, Promise<Offset> promise) {
+        try {
+            storage.append(queue, payload, promise);
+        } catch (Throwable t) {
+            ByteUtil.release(payload);
+            promise.tryFailure(t);
+        }
     }
 
     public int getLedgerId() {
         return ledgerId;
     }
 
-    public void append() {}
+    private static class MessageTrigger implements LedgerTrigger {
+        @Override
+        public void onAppend(int ledgerId, int limit, Offset tail) {
+            // TODO push message to client
+        }
+    }
 }

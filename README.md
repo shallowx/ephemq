@@ -17,6 +17,10 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/thread_model.png)
 
+# Push message architecture
+
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/push_message.png)
+
 # Metadata
 
 - Architecture

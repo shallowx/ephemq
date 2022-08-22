@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static io.netty.util.CharsetUtil.UTF_8;
 import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Segment {
@@ -28,6 +29,7 @@ public class Segment {
     private volatile Offset tail;
     private volatile int tailLocation;
     private volatile ByteBufHolder holder;
+    private volatile Segment next;
 
     public Segment(int ledgerId, ByteBuf payload, Offset base) {
         this.ledgerId = ledgerId;
@@ -73,11 +75,32 @@ public class Segment {
         return null;
     }
 
+    public int freeWriteBytes() {
+        ByteBufHolder theHolder = holder;
+        return isNull(theHolder) ? 0 : theHolder.payload.readableBytes();
+    }
+
+    public void next(Segment segment) {
+        this.next = segment;
+    }
+
+    public Segment next() {
+        return next;
+    }
+
+
+    public Offset getTailOffset() {
+        return tail;
+    }
+
     public int getLogId() {
         return ledgerId;
     }
 
     public void release() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Release segment of ledger={} headOffset={} tailOffset={}", ledgerId, head, tail);
+        }
         this.holder = null;
     }
 

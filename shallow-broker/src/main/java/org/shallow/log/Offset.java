@@ -19,4 +19,12 @@ public final class Offset {
     public long index() {
         return index;
     }
+
+    @Override
+    public String toString() {
+        return "Offset{" +
+                "epoch=" + epoch +
+                ", index=" + index +
+                '}';
+    }
 }

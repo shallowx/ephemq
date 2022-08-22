@@ -1,6 +1,9 @@
 package org.shallow.log;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.concurrent.Promise;
+import org.shallow.RemoteException;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -8,6 +11,8 @@ import org.shallow.internal.atomic.DistributedAtomicInteger;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Map;
+
+import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class LogManager {
@@ -24,7 +29,7 @@ public class LogManager {
     }
 
     public void initLog(String topic, int partition, int epoch) {
-        Integer ledger = atomicValue.increment().postValue();
+        Integer ledger = atomicValue.increment().preValue();
         Ledger log = new Ledger(config, topic, partition, ledger, epoch);
 
         if (logger.isInfoEnabled()) {
@@ -33,8 +38,12 @@ public class LogManager {
         logs.putIfAbsent(ledger, log);
     }
 
-    public void append() {
-
+    public void append(int ledgerId, String queue, ByteBuf payload, Promise<Offset> promise) {
+        Ledger ledger = logs.get(ledgerId);
+        if (isNull(ledger)) {
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
+        }
+        ledger.append(queue, payload, promise);
     }
 
     public Ledger getLog(int ledger) {
