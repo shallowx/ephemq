@@ -10,9 +10,9 @@ public class ShutdownHook<V> extends Thread{
 
     private volatile boolean stopped = false;
     private final Callable<V> callback;
-    private String name;
+    private final String name;
 
-    public ShutdownHook(String name ,Callable<V> callback) {
+    public ShutdownHook(String name, Callable<V> callback) {
         super(name);
         this.callback = callback;
         this.name = name;
