@@ -6,7 +6,6 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
 import org.shallow.log.LogManager;
-import org.shallow.log.Segment;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
@@ -241,6 +240,10 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
             return null;
         }
         return partitionRecords;
+    }
+
+    public List<String> getAllTopics() {
+        return new ArrayList<>(commitRecordCache.asMap().keySet());
     }
 
     private Set<PartitionRecord> syncFromQuorumLeader(String topic) {

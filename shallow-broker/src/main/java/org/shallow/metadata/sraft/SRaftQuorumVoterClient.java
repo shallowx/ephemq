@@ -53,7 +53,7 @@ public final class SRaftQuorumVoterClient extends Client {
 
             QueryTopicInfoRequest request = QueryTopicInfoRequest
                     .newBuilder()
-                    .setTopic(topic)
+                    .addAllTopic(List.of(topic))
                     .build();
             Promise<QueryTopicInfoResponse> promise = NetworkUtil.newImmediatePromise();
             clientChannel.invoker().invoke(ProcessCommand.Server.FETCH_TOPIC_RECORD, clientConfig.getInvokeExpiredMs(), promise, request, QueryTopicInfoResponse.class);

@@ -3,6 +3,7 @@ package org.shallow.log;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
+import org.shallow.consumer.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -32,6 +33,10 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
+    }
+
+    public void subscribe(String queue, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
+
     }
 
     public void append(String queue, ByteBuf payload, Promise<Offset> promise) {

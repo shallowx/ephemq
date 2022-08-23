@@ -1,11 +1,14 @@
 package org.shallow.network;
 
 import com.google.protobuf.MessageLite;
+import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
 import org.shallow.RemoteException;
+import org.shallow.consumer.Subscription;
 import org.shallow.internal.BrokerManager;
+import org.shallow.internal.config.BrokerConfig;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.log.LogManager;
 import org.shallow.log.Offset;
@@ -27,6 +30,8 @@ import org.shallow.proto.PartitionMetadata;
 import org.shallow.proto.TopicMetadata;
 import org.shallow.proto.elector.*;
 import org.shallow.proto.server.*;
+
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,17 +45,17 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerSocketServer.class);
 
+    private final BrokerConfig config;
     private final BrokerManager manager;
     private final EventExecutor commandExecutor;
     private final EventExecutor quorumVoteExecutor;
-    private final EventExecutor messageExecutor;
 
-    public BrokerProcessorAware(BrokerManager manager) {
+    public BrokerProcessorAware(BrokerConfig config, BrokerManager manager) {
+        this.config = config;
         this.manager = manager;
-        EventExecutorGroup group = newEventExecutorGroup(3, "processor-aware").next();
+        EventExecutorGroup group = newEventExecutorGroup(2, "processor-aware").next();
         this.commandExecutor = group.next();
         this.quorumVoteExecutor = group.next();
-        this.messageExecutor = group.next();
     }
 
     @Override
@@ -67,36 +72,27 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case SEND_MESSAGE -> {
                     try {
                         SendMessageRequest request = readProto(data, SendMessageRequest.parser());
-                        messageExecutor.execute(() ->{
-                            try {
-                                int ledger = request.getLedger();
-                                String queue = request.getQueue();
+                        int ledger = request.getLedger();
+                        String queue = request.getQueue();
 
-                                Promise<Offset> promise = newImmediatePromise();
-                                promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
-                                    if (f.isSuccess()) {
-                                        Offset offset = f.get();
-                                        SendMessageResponse response = SendMessageResponse
-                                                .newBuilder()
-                                                .setLedger(ledger)
-                                                .setEpoch(offset.epoch())
-                                                .setIndex(offset.index())
-                                                .build();
+                        Promise<Offset> promise = newImmediatePromise();
+                        promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
+                            if (f.isSuccess()) {
+                                Offset offset = f.get();
+                                SendMessageResponse response = SendMessageResponse
+                                        .newBuilder()
+                                        .setLedger(ledger)
+                                        .setEpoch(offset.epoch())
+                                        .setIndex(offset.index())
+                                        .build();
 
-                                        if (isNotNull(answer)) {
-                                            answer.success(proto2Buf(channel.alloc(), response));
-                                        }
-                                    }
-                                });
-                                LogManager logManager = manager.getLogManager();
-                                logManager.append(ledger, queue, data, promise);
-                            } catch (Throwable t) {
-                                if (logger.isErrorEnabled()) {
-                                    logger.error("Failed to append message record", t);
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), response));
                                 }
-                                answerFailed(answer,t);
                             }
                         });
+                        LogManager logManager = manager.getLogManager();
+                        logManager.append(ledger, queue, data, promise);
                     } catch (Throwable t){
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to append message record", t);
@@ -162,13 +158,59 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     }
                 }
 
+                case SUBSCRIBE -> {
+                    try {
+                        SubscribeRequest request = readProto(data, SubscribeRequest.parser());
+                        commandExecutor.execute(() -> {
+                            try {
+                                int ledger = request.getLedger();
+                                int epoch = request.getEpoch();
+                                long index = request.getIndex();
+                                String queue = request.getQueue();
+
+                                Promise<Subscription> promise = newImmediatePromise();
+                                promise.addListener(future -> {
+                                    if (future.isSuccess()) {
+                                        Subscription subscription = (Subscription)future.get();
+                                        SubscribeResponse response = SubscribeResponse
+                                                .newBuilder()
+                                                .setEpoch(subscription.getEpoch())
+                                                .setLedger(ledger)
+                                                .setIndex(subscription.getIndex())
+                                                .setQueue(queue)
+                                                .build();
+
+                                        if (isNotNull(answer)) {
+                                            answer.success(proto2Buf(channel.alloc(), response));
+                                        } else {
+                                            answerFailed(answer, future.cause());
+                                        }
+                                    }
+                                });
+
+                                LogManager logManager = manager.getLogManager();
+                                logManager.subscribe(queue, ledger, epoch, index, promise);
+                            } catch (Throwable t) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to subscribe");
+                                }
+                                answerFailed(answer, t);
+                            }
+                        });
+                    } catch (Throwable t) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to subscribe");
+                        }
+                        answerFailed(answer, t);
+                    }
+                }
+
                 case CREATE_TOPIC -> {
                     try {
                         CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
-                        String topic = request.getTopic();
-
                         commandExecutor.execute(() -> {
                             try {
+                                String topic = request.getTopic();
                                 int partitions = request.getPartitions();
                                 int latencies = request.getLatencies();
 
@@ -202,7 +244,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 controller.prepareCommit(Strategy.TOPIC, record, promise);
                             } catch (Exception e) {
                                 if (logger.isErrorEnabled()) {
-                                    logger.error("Failed to create topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
+                                    logger.error("Failed to create topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
                                 }
                                 answerFailed(answer, e);
                             }
@@ -287,12 +329,17 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 QueryClusterNodeResponse.Builder response = QueryClusterNodeResponse.newBuilder();
                                 if (!clusterInfo.isEmpty()) {
                                     Set<NodeMetadata> nodeMetadataSets = clusterInfo.stream().map(nodeRecord -> {
-                                        String socketAddress = nodeRecord.getSocketAddress().toString();
-                                        int index = socketAddress.lastIndexOf(":");
-                                        String host = socketAddress.substring(index);
-                                        int port = Integer.parseInt(socketAddress.substring(index + 1));
+                                        InetSocketAddress socketAddress = (InetSocketAddress)nodeRecord.getSocketAddress();
+                                        String host = socketAddress.getHostName();
+                                        int port = socketAddress.getPort();
 
-                                        return NodeMetadata.newBuilder().setName(nodeRecord.getName()).setPort(port).setHost(host).build();
+                                        return NodeMetadata
+                                                .newBuilder()
+                                                .setCluster(config.getClusterName())
+                                                .setName(nodeRecord.getName())
+                                                .setPort(port)
+                                                .setHost(host)
+                                                .build();
                                     }).collect(Collectors.toSet());
 
                                     response.addAllNodes(nodeMetadataSets);
@@ -321,40 +368,48 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
                         commandExecutor.execute(() -> {
                             try {
-                                String topic = request.getTopic();
+                                ProtocolStringList topics = request.getTopicList();
                                 TopicManager topicManager = manager.getController().getTopicManager();
-                                Set<PartitionRecord> partitionRecords = topicManager.getTopicInfo(topic);
+                                if (topics.isEmpty()) {
+                                    topics.addAll(topicManager.getAllTopics());
+                                }
+
 
                                 QueryTopicInfoResponse.Builder response = QueryTopicInfoResponse.newBuilder();
 
-                                if (!partitionRecords.isEmpty()) {
-                                    Iterator<PartitionRecord> iterator = partitionRecords.iterator();
-                                    Map<Integer, PartitionMetadata> partitionMetadataMap = new HashMap<>();
-                                    while (iterator.hasNext()) {
-                                        PartitionRecord partitionRecord = iterator.next();
-                                        partitionMetadataMap.put(partitionRecord.getId(), PartitionMetadata.newBuilder()
-                                                        .setId(partitionRecord.getId())
-                                                        .setLeader(partitionRecord.getLeader())
-                                                        .setLatency(partitionRecord.getLatency())
-                                                        .addAllReplicas(partitionRecord.getLatencies())
-                                                .build());
+                                for (String topic : topics) {
+                                    Set<PartitionRecord> partitionRecords = topicManager.getTopicInfo(topic);
+
+                                    if (!partitionRecords.isEmpty()) {
+                                        Iterator<PartitionRecord> iterator = partitionRecords.iterator();
+                                        Map<Integer, PartitionMetadata> partitionMetadataMap = new HashMap<>();
+                                        while (iterator.hasNext()) {
+                                            PartitionRecord partitionRecord = iterator.next();
+                                            partitionMetadataMap.put(partitionRecord.getId(), PartitionMetadata.newBuilder()
+                                                    .setId(partitionRecord.getId())
+                                                    .setLeader(partitionRecord.getLeader())
+                                                    .setLatency(partitionRecord.getLatency())
+                                                    .addAllReplicas(partitionRecord.getLatencies())
+                                                    .build());
+                                        }
+
+                                        TopicMetadata metadata = TopicMetadata.newBuilder()
+                                                .setName(topic)
+                                                .putAllPartitions(partitionMetadataMap)
+                                                .build();
+
+                                        Map<String, TopicMetadata> topicMetadataMap = new HashMap<>();
+                                        topicMetadataMap.put(topic, metadata);
+                                        response.putAllTopics(topicMetadataMap).build();
                                     }
-
-                                    TopicMetadata metadata = TopicMetadata.newBuilder()
-                                            .setName(topic)
-                                            .putAllPartitions(partitionMetadataMap)
-                                            .build();
-
-                                    Map<String, TopicMetadata> topicMetadataMap = new HashMap<>();
-                                    topicMetadataMap.put(topic, metadata);
-                                    response.putAllTopics(topicMetadataMap).build();
                                 }
+
                                 if (isNotNull(answer)) {
                                     answer.success(proto2Buf(channel.alloc(), response.build()));
                                 }
                             } catch (Throwable t) {
                                 if (logger.isErrorEnabled()) {
-                                    logger.error("Failed to query topic<{}> information with address<{}>, cause:{}", request.getTopic(), channel.remoteAddress().toString(), t);
+                                    logger.error("Failed to query topic information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
                                 }
                                 answerFailed(answer, t);
                             }

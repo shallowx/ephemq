@@ -16,6 +16,7 @@ public class ClientConfig {
     private int ChannelInvokerSemaphore = 2000;
     private int invokeExpiredMs = 5000;
     private int refreshMetadataIntervalMs = 5000;
+    private long metadataExpiredMs = Long.MAX_VALUE;
 
     private int availableProcessor() {
         return Runtime.getRuntime().availableProcessors();
@@ -107,5 +108,13 @@ public class ClientConfig {
 
     public void setChannelFixedPoolCapacity(int channelFixedPoolCapacity) {
         this.channelFixedPoolCapacity = channelFixedPoolCapacity;
+    }
+
+    public long getMetadataExpiredMs() {
+        return metadataExpiredMs;
+    }
+
+    public void setMetadataExpiredMs(long metadataExpiredMs) {
+        this.metadataExpiredMs = metadataExpiredMs;
     }
 }

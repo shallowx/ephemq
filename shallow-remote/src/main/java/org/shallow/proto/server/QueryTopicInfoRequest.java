@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private QueryTopicInfoRequest() {
-    topic_ = "";
+    topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
@@ -39,6 +39,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -51,8 +52,11 @@ private static final long serialVersionUID = 0L;
             break;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
-
-            topic_ = s;
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              topic_ = new com.google.protobuf.LazyStringArrayList();
+              mutable_bitField0_ |= 0x00000001;
+            }
+            topic_.add(s);
             break;
           }
           default: {
@@ -70,6 +74,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+        topic_ = topic_.getUnmodifiableView();
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -88,41 +95,38 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TOPIC_FIELD_NUMBER = 1;
-  private volatile java.lang.Object topic_;
+  private com.google.protobuf.LazyStringList topic_;
   /**
-   * <code>string topic = 1;</code>
-   * @return The topic.
+   * <code>repeated string topic = 1;</code>
+   * @return A list containing the topic.
    */
-  @java.lang.Override
-  public java.lang.String getTopic() {
-    java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      topic_ = s;
-      return s;
-    }
+  public com.google.protobuf.ProtocolStringList
+      getTopicList() {
+    return topic_;
   }
   /**
-   * <code>string topic = 1;</code>
-   * @return The bytes for topic.
+   * <code>repeated string topic = 1;</code>
+   * @return The count of topic.
    */
-  @java.lang.Override
+  public int getTopicCount() {
+    return topic_.size();
+  }
+  /**
+   * <code>repeated string topic = 1;</code>
+   * @param index The index of the element to return.
+   * @return The topic at the given index.
+   */
+  public java.lang.String getTopic(int index) {
+    return topic_.get(index);
+  }
+  /**
+   * <code>repeated string topic = 1;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the topic at the given index.
+   */
   public com.google.protobuf.ByteString
-      getTopicBytes() {
-    java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      topic_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+      getTopicBytes(int index) {
+    return topic_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -139,8 +143,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+    for (int i = 0; i < topic_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_.getRaw(i));
     }
     unknownFields.writeTo(output);
   }
@@ -151,8 +155,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+    {
+      int dataSize = 0;
+      for (int i = 0; i < topic_.size(); i++) {
+        dataSize += computeStringSizeNoTag(topic_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getTopicList().size();
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -169,8 +178,8 @@ private static final long serialVersionUID = 0L;
     }
     org.shallow.proto.server.QueryTopicInfoRequest other = (org.shallow.proto.server.QueryTopicInfoRequest) obj;
 
-    if (!getTopic()
-        .equals(other.getTopic())) return false;
+    if (!getTopicList()
+        .equals(other.getTopicList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -182,8 +191,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-    hash = (53 * hash) + getTopic().hashCode();
+    if (getTopicCount() > 0) {
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopicList().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -317,8 +328,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      topic_ = "";
-
+      topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -345,6 +356,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.server.QueryTopicInfoRequest buildPartial() {
       org.shallow.proto.server.QueryTopicInfoRequest result = new org.shallow.proto.server.QueryTopicInfoRequest(this);
+      int from_bitField0_ = bitField0_;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        topic_ = topic_.getUnmodifiableView();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      }
       result.topic_ = topic_;
       onBuilt();
       return result;
@@ -394,8 +410,14 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.shallow.proto.server.QueryTopicInfoRequest other) {
       if (other == org.shallow.proto.server.QueryTopicInfoRequest.getDefaultInstance()) return this;
-      if (!other.getTopic().isEmpty()) {
-        topic_ = other.topic_;
+      if (!other.topic_.isEmpty()) {
+        if (topic_.isEmpty()) {
+          topic_ = other.topic_;
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          ensureTopicIsMutable();
+          topic_.addAll(other.topic_);
+        }
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -426,79 +448,114 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
-    private java.lang.Object topic_ = "";
-    /**
-     * <code>string topic = 1;</code>
-     * @return The topic.
-     */
-    public java.lang.String getTopic() {
-      java.lang.Object ref = topic_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        topic_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    private com.google.protobuf.LazyStringList topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    private void ensureTopicIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        topic_ = new com.google.protobuf.LazyStringArrayList(topic_);
+        bitField0_ |= 0x00000001;
+       }
     }
     /**
-     * <code>string topic = 1;</code>
-     * @return The bytes for topic.
+     * <code>repeated string topic = 1;</code>
+     * @return A list containing the topic.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getTopicList() {
+      return topic_.getUnmodifiableView();
+    }
+    /**
+     * <code>repeated string topic = 1;</code>
+     * @return The count of topic.
+     */
+    public int getTopicCount() {
+      return topic_.size();
+    }
+    /**
+     * <code>repeated string topic = 1;</code>
+     * @param index The index of the element to return.
+     * @return The topic at the given index.
+     */
+    public java.lang.String getTopic(int index) {
+      return topic_.get(index);
+    }
+    /**
+     * <code>repeated string topic = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the topic at the given index.
      */
     public com.google.protobuf.ByteString
-        getTopicBytes() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        topic_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+        getTopicBytes(int index) {
+      return topic_.getByteString(index);
     }
     /**
-     * <code>string topic = 1;</code>
+     * <code>repeated string topic = 1;</code>
+     * @param index The index to set the value at.
      * @param value The topic to set.
      * @return This builder for chaining.
      */
     public Builder setTopic(
+        int index, java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTopicIsMutable();
+      topic_.set(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string topic = 1;</code>
+     * @param value The topic to add.
+     * @return This builder for chaining.
+     */
+    public Builder addTopic(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  
-      topic_ = value;
+  ensureTopicIsMutable();
+      topic_.add(value);
       onChanged();
       return this;
     }
     /**
-     * <code>string topic = 1;</code>
+     * <code>repeated string topic = 1;</code>
+     * @param values The topic to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllTopic(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureTopicIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, topic_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string topic = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearTopic() {
-      
-      topic_ = getDefaultInstance().getTopic();
+      topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
     /**
-     * <code>string topic = 1;</code>
-     * @param value The bytes for topic to set.
+     * <code>repeated string topic = 1;</code>
+     * @param value The bytes of the topic to add.
      * @return This builder for chaining.
      */
-    public Builder setTopicBytes(
+    public Builder addTopicBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      
-      topic_ = value;
+      ensureTopicIsMutable();
+      topic_.add(value);
       onChanged();
       return this;
     }

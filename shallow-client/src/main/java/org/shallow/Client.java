@@ -9,6 +9,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
+import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -22,6 +23,7 @@ public class Client {
 
     private final String name;
     private final ClientConfig config;
+    private final MetadataManager manager;
     private Boolean state;
 
     private Bootstrap bootstrap;
@@ -36,6 +38,7 @@ public class Client {
         this.name = name;
         this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
         this.healthChecker = healthChecker;
+        this.manager = new MetadataManager(this);
     }
 
     public void start() {
@@ -67,6 +70,14 @@ public class Client {
         if (logger.isInfoEnabled()) {
             logger.info("The client<{}> started successfully", name);
         }
+    }
+
+    public MetadataManager getMetadataManager() {
+        return manager;
+    }
+
+    public ClientConfig getClientConfig() {
+        return config;
     }
 
     public void shutdownGracefully() {

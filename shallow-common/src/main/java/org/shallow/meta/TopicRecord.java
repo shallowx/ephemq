@@ -19,10 +19,9 @@ public class TopicRecord {
         this.latencies = latencies;
     }
 
-    public TopicRecord(String name, int partitions, int latencies, Set<PartitionRecord> partitionRecords) {
+    public TopicRecord(String name, int partitions, Set<PartitionRecord> partitionRecords) {
         this.name = name;
         this.partitions = partitions;
-        this.latencies = latencies;
         this.partitionRecords = partitionRecords;
     }
 
@@ -51,14 +50,13 @@ public class TopicRecord {
         if (this == o) return true;
         if (!(o instanceof TopicRecord that)) return false;
         return getPartitions() == that.getPartitions() &&
-                getLatencies() == that.getLatencies() &&
                 getName().equals(that.getName()) &&
                 getPartitionRecords().equals(that.getPartitionRecords());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getPartitions(), getLatencies(), getPartitionRecords());
+        return Objects.hash(getName(), getPartitions(), getPartitionRecords());
     }
 
     @Override
@@ -66,7 +64,6 @@ public class TopicRecord {
         return "TopicRecord{" +
                 "name='" + name + '\'' +
                 ", partitions=" + partitions +
-                ", latencies=" + latencies +
                 ", partitionRecords=" + partitionRecords +
                 '}';
     }

@@ -4,6 +4,7 @@ import io.netty.util.concurrent.Promise;
 import org.openjdk.jmh.annotations.*;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.metadata.MetadataManager;
 import org.shallow.proto.server.CreateTopicResponse;
 
 import java.util.List;
@@ -40,8 +41,7 @@ public class CreateTopicBenchmark {
 
     @Benchmark
     public void createTopic() {
-        MetadataManager topicManager = new MetadataManager(clientConfig);
-        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "test-benchmark", 1, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic(CREATE_TOPIC, "test-benchmark", 1, 1);
         try {
             promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

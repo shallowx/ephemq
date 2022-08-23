@@ -79,8 +79,6 @@ public class FixedChannelPool implements ShallowChannelPool {
         }
     }
 
-
-
     private Future<ClientChannel> acquireHealthyOrNew0(SocketAddress address) {
         if (isNull(address)) {
             throw new IllegalArgumentException("Any bootstrap address not found");

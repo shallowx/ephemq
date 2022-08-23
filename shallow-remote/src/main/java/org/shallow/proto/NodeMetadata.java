@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private NodeMetadata() {
+    cluster_ = "";
     name_ = "";
     host_ = "";
   }
@@ -53,16 +54,22 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            name_ = s;
+            cluster_ = s;
             break;
           }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
+            name_ = s;
+            break;
+          }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
             host_ = s;
             break;
           }
-          case 24: {
+          case 32: {
 
             port_ = input.readInt32();
             break;
@@ -99,10 +106,48 @@ private static final long serialVersionUID = 0L;
             org.shallow.proto.NodeMetadata.class, org.shallow.proto.NodeMetadata.Builder.class);
   }
 
-  public static final int NAME_FIELD_NUMBER = 1;
+  public static final int CLUSTER_FIELD_NUMBER = 1;
+  private volatile java.lang.Object cluster_;
+  /**
+   * <code>string cluster = 1;</code>
+   * @return The cluster.
+   */
+  @java.lang.Override
+  public java.lang.String getCluster() {
+    java.lang.Object ref = cluster_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      cluster_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string cluster = 1;</code>
+   * @return The bytes for cluster.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getClusterBytes() {
+    java.lang.Object ref = cluster_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      cluster_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int NAME_FIELD_NUMBER = 2;
   private volatile java.lang.Object name_;
   /**
-   * <code>string name = 1;</code>
+   * <code>string name = 2;</code>
    * @return The name.
    */
   @java.lang.Override
@@ -119,7 +164,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string name = 1;</code>
+   * <code>string name = 2;</code>
    * @return The bytes for name.
    */
   @java.lang.Override
@@ -137,10 +182,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int HOST_FIELD_NUMBER = 2;
+  public static final int HOST_FIELD_NUMBER = 3;
   private volatile java.lang.Object host_;
   /**
-   * <code>string host = 2;</code>
+   * <code>string host = 3;</code>
    * @return The host.
    */
   @java.lang.Override
@@ -157,7 +202,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string host = 2;</code>
+   * <code>string host = 3;</code>
    * @return The bytes for host.
    */
   @java.lang.Override
@@ -175,10 +220,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PORT_FIELD_NUMBER = 3;
+  public static final int PORT_FIELD_NUMBER = 4;
   private int port_;
   /**
-   * <code>int32 port = 3;</code>
+   * <code>int32 port = 4;</code>
    * @return The port.
    */
   @java.lang.Override
@@ -200,14 +245,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, cluster_);
+    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(host_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, host_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, host_);
     }
     if (port_ != 0) {
-      output.writeInt32(3, port_);
+      output.writeInt32(4, port_);
     }
     unknownFields.writeTo(output);
   }
@@ -218,15 +266,18 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, cluster_);
+    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(host_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, host_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, host_);
     }
     if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, port_);
+        .computeInt32Size(4, port_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -243,6 +294,8 @@ private static final long serialVersionUID = 0L;
     }
     org.shallow.proto.NodeMetadata other = (org.shallow.proto.NodeMetadata) obj;
 
+    if (!getCluster()
+        .equals(other.getCluster())) return false;
     if (!getName()
         .equals(other.getName())) return false;
     if (!getHost()
@@ -260,6 +313,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
+    hash = (53 * hash) + getCluster().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
     hash = (37 * hash) + HOST_FIELD_NUMBER;
@@ -399,6 +454,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      cluster_ = "";
+
       name_ = "";
 
       host_ = "";
@@ -431,6 +488,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.NodeMetadata buildPartial() {
       org.shallow.proto.NodeMetadata result = new org.shallow.proto.NodeMetadata(this);
+      result.cluster_ = cluster_;
       result.name_ = name_;
       result.host_ = host_;
       result.port_ = port_;
@@ -482,6 +540,10 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.shallow.proto.NodeMetadata other) {
       if (other == org.shallow.proto.NodeMetadata.getDefaultInstance()) return this;
+      if (!other.getCluster().isEmpty()) {
+        cluster_ = other.cluster_;
+        onChanged();
+      }
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         onChanged();
@@ -522,9 +584,85 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private java.lang.Object cluster_ = "";
+    /**
+     * <code>string cluster = 1;</code>
+     * @return The cluster.
+     */
+    public java.lang.String getCluster() {
+      java.lang.Object ref = cluster_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        cluster_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string cluster = 1;</code>
+     * @return The bytes for cluster.
+     */
+    public com.google.protobuf.ByteString
+        getClusterBytes() {
+      java.lang.Object ref = cluster_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        cluster_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string cluster = 1;</code>
+     * @param value The cluster to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCluster(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      cluster_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string cluster = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearCluster() {
+      
+      cluster_ = getDefaultInstance().getCluster();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string cluster = 1;</code>
+     * @param value The bytes for cluster to set.
+     * @return This builder for chaining.
+     */
+    public Builder setClusterBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      cluster_ = value;
+      onChanged();
+      return this;
+    }
+
     private java.lang.Object name_ = "";
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @return The name.
      */
     public java.lang.String getName() {
@@ -540,7 +678,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @return The bytes for name.
      */
     public com.google.protobuf.ByteString
@@ -557,7 +695,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @param value The name to set.
      * @return This builder for chaining.
      */
@@ -572,7 +710,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearName() {
@@ -582,7 +720,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string name = 1;</code>
+     * <code>string name = 2;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
      */
@@ -600,7 +738,7 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object host_ = "";
     /**
-     * <code>string host = 2;</code>
+     * <code>string host = 3;</code>
      * @return The host.
      */
     public java.lang.String getHost() {
@@ -616,7 +754,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string host = 2;</code>
+     * <code>string host = 3;</code>
      * @return The bytes for host.
      */
     public com.google.protobuf.ByteString
@@ -633,7 +771,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string host = 2;</code>
+     * <code>string host = 3;</code>
      * @param value The host to set.
      * @return This builder for chaining.
      */
@@ -648,7 +786,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string host = 2;</code>
+     * <code>string host = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearHost() {
@@ -658,7 +796,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string host = 2;</code>
+     * <code>string host = 3;</code>
      * @param value The bytes for host to set.
      * @return This builder for chaining.
      */
@@ -676,7 +814,7 @@ private static final long serialVersionUID = 0L;
 
     private int port_ ;
     /**
-     * <code>int32 port = 3;</code>
+     * <code>int32 port = 4;</code>
      * @return The port.
      */
     @java.lang.Override
@@ -684,7 +822,7 @@ private static final long serialVersionUID = 0L;
       return port_;
     }
     /**
-     * <code>int32 port = 3;</code>
+     * <code>int32 port = 4;</code>
      * @param value The port to set.
      * @return This builder for chaining.
      */
@@ -695,7 +833,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 port = 3;</code>
+     * <code>int32 port = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPort() {

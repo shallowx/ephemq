@@ -3,16 +3,24 @@ package org.shallow;
 import io.netty.util.concurrent.Promise;
 import org.junit.Assert;
 import org.junit.Test;
+import org.shallow.logging.InternalLogger;
+import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.meta.TopicRecord;
+import org.shallow.metadata.MetadataManager;
+import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.processor.ProcessCommand.Server.CREATE_TOPIC;
 import static org.shallow.processor.ProcessCommand.Server.DELETE_TOPIC;
 
 public class TopicTests {
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicTests.class);
 
     @Test
     public void testCreateTopic() throws Exception {
@@ -21,8 +29,7 @@ public class TopicTests {
         Client client = new Client("Client", clientConfig);
         client.start();
 
-        MetadataManager topicManager = new MetadataManager(clientConfig);
-        Promise<CreateTopicResponse> promise = topicManager.createTopic(CREATE_TOPIC, "create", 3, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic(CREATE_TOPIC, "create", 3, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
@@ -41,8 +48,7 @@ public class TopicTests {
         Client client = new Client("Client", clientConfig);
         client.start();
 
-        MetadataManager topicManager = new MetadataManager(clientConfig);
-        Promise<DelTopicResponse> promise = topicManager.delTopic(DELETE_TOPIC, "mu lite-create");
+        Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic(DELETE_TOPIC, "create");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
@@ -50,5 +56,17 @@ public class TopicTests {
         Assert.assertEquals(response.getAck(), 1);
 
         client.shutdownGracefully();
+    }
+
+    @Test
+    public void testQuery() throws Exception {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        Client client = new Client("Client", clientConfig);
+        client.start();
+
+        Map<String, TopicRecord> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().acquireWithRandomly(), List.of("create"));
+
+        logger.info("result:{}", recordMap);
     }
 }

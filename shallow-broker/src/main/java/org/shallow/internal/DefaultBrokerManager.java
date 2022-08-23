@@ -14,15 +14,12 @@ import java.util.stream.Stream;
 
 public class DefaultBrokerManager implements BrokerManager {
 
-    private final BrokerConfig config;
     private final SRaftQuorumVoterClient client;
     private final MappedFileApi api;
     private final SRaftProcessController controller;
     private final LogManager logManager;
 
     public DefaultBrokerManager(BrokerConfig config) {
-        this.config = config;
-
         ClientConfig quorumVoterClientConfig = new ClientConfig();
 
         List<String> quorumVoterAddress = Stream.of(config.getControllerQuorumVoters())

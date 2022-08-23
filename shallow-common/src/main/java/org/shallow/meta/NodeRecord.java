@@ -37,9 +37,10 @@ public class NodeRecord {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof NodeRecord)) return false;
-        NodeRecord that = (NodeRecord) o;
-        return getCluster().equals(that.getCluster()) && getName().equals(that.getName()) && getSocketAddress().equals(that.getSocketAddress());
+        if (!(o instanceof NodeRecord that)) return false;
+        return getCluster().equals(that.getCluster()) &&
+                getName().equals(that.getName()) &&
+                getSocketAddress().equals(that.getSocketAddress());
     }
 
     @Override

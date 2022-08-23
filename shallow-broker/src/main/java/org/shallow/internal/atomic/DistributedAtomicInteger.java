@@ -11,10 +11,10 @@ import static org.shallow.util.ObjectUtil.isNull;
 @SuppressWarnings("rawtypes,unchecked")
 public class DistributedAtomicInteger implements DistributedAtomicNumber<Integer> {
 
-    private final DistributedAtomicValue value;
+    private final DistributedAtomicValue<Integer> value;
 
     public DistributedAtomicInteger() {
-        this.value = new DistributedAtomicValue();
+        this.value = new DistributedAtomicValue<>();
     }
 
     @Override

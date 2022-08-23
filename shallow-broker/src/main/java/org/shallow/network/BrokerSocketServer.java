@@ -21,11 +21,9 @@ public final class BrokerSocketServer {
     private  EventLoopGroup bossGroup;
     private  EventLoopGroup workGroup;
     private  ChannelFuture closedFuture;
-    private final BrokerManager manager;
 
     public BrokerSocketServer(BrokerConfig config, BrokerManager manager) {
         this.config = config;
-        this.manager = manager;
         this.serverChannelInitializer = new ServerChannelInitializer(config, manager);
     }
 

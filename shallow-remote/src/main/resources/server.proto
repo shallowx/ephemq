@@ -58,11 +58,25 @@ message QueryClusterNodeResponse {
 }
 
 message QueryTopicInfoRequest {
-  string topic = 1;
+  repeated string topic = 1;
 }
 
 message QueryTopicInfoResponse {
   map<string, TopicMetadata> topics = 1;
+}
+
+message SubscribeRequest {
+  string queue = 1;
+  int32 ledger = 2;
+  int32 epoch = 3;
+  int64 index = 4;
+}
+
+message SubscribeResponse {
+  string queue = 1;
+  int32 ledger = 2;
+  int32 epoch = 3;
+  int64 index = 4;
 }
 
 message SendMessageRequest {

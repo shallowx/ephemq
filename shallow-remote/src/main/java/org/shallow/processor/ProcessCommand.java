@@ -13,6 +13,7 @@ public interface ProcessCommand {
         byte POST_COMMIT = 8;
         byte REGISTER_NODE = 9;
         byte SEND_MESSAGE = 10;
+        byte SUBSCRIBE = 11;
     }
 
     interface Client {

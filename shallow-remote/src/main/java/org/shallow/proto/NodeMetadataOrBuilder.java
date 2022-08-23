@@ -8,31 +8,43 @@ public interface NodeMetadataOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string name = 1;</code>
+   * <code>string cluster = 1;</code>
+   * @return The cluster.
+   */
+  java.lang.String getCluster();
+  /**
+   * <code>string cluster = 1;</code>
+   * @return The bytes for cluster.
+   */
+  com.google.protobuf.ByteString
+      getClusterBytes();
+
+  /**
+   * <code>string name = 2;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <code>string name = 1;</code>
+   * <code>string name = 2;</code>
    * @return The bytes for name.
    */
   com.google.protobuf.ByteString
       getNameBytes();
 
   /**
-   * <code>string host = 2;</code>
+   * <code>string host = 3;</code>
    * @return The host.
    */
   java.lang.String getHost();
   /**
-   * <code>string host = 2;</code>
+   * <code>string host = 3;</code>
    * @return The bytes for host.
    */
   com.google.protobuf.ByteString
       getHostBytes();
 
   /**
-   * <code>int32 port = 3;</code>
+   * <code>int32 port = 4;</code>
    * @return The port.
    */
   int getPort();

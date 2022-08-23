@@ -53,7 +53,8 @@ public class PartitionRecord {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PartitionRecord partition)) return false;
-        return getId() == partition.getId() && getLatency() == partition.getLatency();
+        return getId() == partition.getId() &&
+                getLatency() == partition.getLatency();
     }
 
     @Override
