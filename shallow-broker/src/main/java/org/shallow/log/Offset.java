@@ -4,8 +4,8 @@ import javax.annotation.concurrent.Immutable;
 
 @Immutable
 public final class Offset {
-    private int epoch;
-    private long index;
+    private final int epoch;
+    private final long index;
 
     public Offset(int epoch, long index) {
         this.epoch = epoch;
