@@ -8,7 +8,7 @@ public class ClientConfig {
 
     private boolean isEpollPrefer = false;
     private int workThreadWholes = availableProcessor();
-    private long connectTimeOutMs = 5000;
+    private int connectTimeOutMs = 5000;
     private int channelFixedPoolCapacity = 1;
     private int dnsTtlMinExpiredMs = 30;
     private int dnsTtlMaxExpiredSeconds = 300;
@@ -46,11 +46,11 @@ public class ClientConfig {
         this.negativeTtlSeconds = negativeTtlSeconds;
     }
 
-    public long getConnectTimeOutMs() {
+    public int getConnectTimeOutMs() {
         return connectTimeOutMs;
     }
 
-    public void setConnectTimeOutMs(long connectTimeOutMs) {
+    public void setConnectTimeOutMs(int connectTimeOutMs) {
         this.connectTimeOutMs = connectTimeOutMs;
     }
 

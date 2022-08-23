@@ -60,7 +60,7 @@ public class Client {
                 .channel(preferChannelClass(config.isEpollPrefer()))
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, false)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeOutMs())
                 .option(ChannelOption.SO_SNDBUF, 65536)
                 .option(ChannelOption.SO_RCVBUF, 65536)
                 .resolver(new RoundRobinDnsAddressResolverGroup(drb));
