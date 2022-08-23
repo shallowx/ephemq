@@ -8,6 +8,7 @@ import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.metadata.MessageRouter;
+import org.shallow.metadata.MessageRoutingHolder;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
@@ -55,6 +56,7 @@ public class MessageProducer {
     public void sendOneway(String topic, String queue, Message message, MessageFilter messageFilter) {
         checkTopic(topic);
         checkQueue(queue);
+
         doSend(topic, queue, message, messageFilter, null);
     }
 
@@ -64,6 +66,7 @@ public class MessageProducer {
 
         Promise<SendMessageResponse> promise = newImmediatePromise();
         doSend(topic, queue, message, messageFilter, promise);
+
         SendMessageResponse response = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
         return new SendResult(response.getEpoch(), response.getIndex(), response.getLedger());
     }
@@ -97,7 +100,7 @@ public class MessageProducer {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s", topic));
         }
 
-        MessageRouter.RouteHolder holder = messageRouter.allocRouteHolder(queue);
+        MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
         SocketAddress leader = holder.leader();
         int ledger = holder.ledger();
 
@@ -105,7 +108,7 @@ public class MessageProducer {
         ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
 
         if (isNotNull(messageFilter)) {
-            messageFilter.filter(topic, queue);
+            messageFilter.filter(topic, queue, message);
         }
 
         // TODO assemble message data

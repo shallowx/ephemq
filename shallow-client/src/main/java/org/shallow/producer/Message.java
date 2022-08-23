@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public record Message(String message, org.shallow.producer.Message.Extras extras) {
+public record Message(String message, Extras extras) {
 
     @Override
     public String toString() {

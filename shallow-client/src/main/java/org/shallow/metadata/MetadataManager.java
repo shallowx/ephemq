@@ -101,7 +101,7 @@ public class MetadataManager implements ProcessCommand.Server {
         Map<String, TopicMetadata> topicsMap = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getTopicsMap();
         if (topicsMap.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Topic record is empty");
+                logger.debug("Query topic record is empty");
             }
             return null;
         }
@@ -132,7 +132,7 @@ public class MetadataManager implements ProcessCommand.Server {
         List<NodeMetadata> nodes = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
         if (nodes.isEmpty()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Node record is empty");
+                logger.debug("Query node record is empty");
             }
             return null;
         }
@@ -152,7 +152,7 @@ public class MetadataManager implements ProcessCommand.Server {
             return null;
         }
 
-        Map<Integer, MessageRouter.RouteHolder> holders = new ConcurrentHashMap<>();
+        Map<Integer, MessageRoutingHolder> holders = new ConcurrentHashMap<>();
         for (PartitionRecord partitionRecord : partitionRecords) {
             int ledgerId = partitionRecord.getLatency();
             int partition = partitionRecord.getId();
@@ -173,7 +173,7 @@ public class MetadataManager implements ProcessCommand.Server {
                     .map(NodeRecord::getSocketAddress)
                     .collect(Collectors.toSet());
 
-            MessageRouter.RouteHolder routeHolder = new MessageRouter.RouteHolder(topic, ledgerId, partition, leader, latencies);
+            MessageRoutingHolder routeHolder = new MessageRoutingHolder(topic, ledgerId, partition, leader, latencies);
             holders.put(ledgerId, routeHolder);
         }
         return new MessageRouter(topic, holders);

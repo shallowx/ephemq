@@ -1,4 +1,4 @@
-package org.shallow;
+package org.shallow.parser;
 
 public interface ApplicationRunListener {
 

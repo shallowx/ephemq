@@ -14,7 +14,7 @@ import static org.shallow.util.NetworkUtil.switchSocketAddress;
 public class ClientTests {
 
     @Test
-    public void testClientStart() throws ExecutionException, InterruptedException {
+    public void testClientStart() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
         Client client = new Client("Client", clientConfig);

@@ -9,6 +9,7 @@ import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.metadata.MessageRouter;
+import org.shallow.metadata.MessageRoutingHolder;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
@@ -90,7 +91,7 @@ public class MessageConsumer {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s", topic));
         }
 
-        MessageRouter.RouteHolder holder = messageRouter.allocRouteHolder(queue);
+        MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
         int ledger = holder.ledger();
         SocketAddress leader = holder.leader();
         ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);

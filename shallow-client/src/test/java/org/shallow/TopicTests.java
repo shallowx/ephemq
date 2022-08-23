@@ -26,7 +26,7 @@ public class TopicTests {
     public void testCreateTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
-        Client client = new Client("Client", clientConfig);
+        Client client = new Client("create-client", clientConfig);
         client.start();
 
         Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic(CREATE_TOPIC, "create", 3, 1);
@@ -45,14 +45,14 @@ public class TopicTests {
     public void testDelTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
-        Client client = new Client("Client", clientConfig);
+        Client client = new Client("del-client", clientConfig);
         client.start();
 
         Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic(DELETE_TOPIC, "create");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getTopic(), "mu lite-create");
+        Assert.assertEquals(response.getTopic(), "create");
         Assert.assertEquals(response.getAck(), 1);
 
         client.shutdownGracefully();
@@ -62,7 +62,7 @@ public class TopicTests {
     public void testQuery() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
-        Client client = new Client("Client", clientConfig);
+        Client client = new Client("query-client", clientConfig);
         client.start();
 
         Map<String, TopicRecord> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().acquireWithRandomly(), List.of("create"));
