@@ -1,9 +1,11 @@
 package org.shallow.producer;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
+import org.shallow.Message;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -12,17 +14,15 @@ import org.shallow.metadata.MessageRoutingHolder;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
-import org.shallow.processor.ProcessCommand;
+import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.proto.server.SendMessageRequest;
 import org.shallow.proto.server.SendMessageResponse;
-import org.shallow.util.NetworkUtil;
+import org.shallow.util.ByteBufUtil;
 
 import java.net.SocketAddress;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import static org.shallow.processor.ProcessCommand.Server.SEND_MESSAGE;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
@@ -34,49 +34,58 @@ public class MessageProducer {
     private final MetadataManager manager;
     private final ProducerConfig config;
     private final ShallowChannelPool pool;
+    private final String name;
 
-    public MessageProducer(Client client, ProducerConfig config) {
+    public MessageProducer(String name, Client client, ProducerConfig config) {
+        this.name = name;
         this.manager = client.getMetadataManager();
         this.config = config;
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }
 
-    public void sendOneway(String topic, String queue, Message message) {
-        sendOneway(topic, queue, message, null);
+    public void sendOneway(Message message) {
+        sendOneway(message, null);
     }
 
-    public SendResult send(String topic, String queue, Message message) throws Exception {
-        return send(topic, queue, message, null);
+    public SendResult send(Message message) throws Exception {
+        return send(message, null);
     }
 
-    public void sendAsync(String topic, String queue, Message message, SendCallback callback)  {
-        sendAsync(topic, queue, message, null, callback);
+    public void sendAsync(Message message, SendCallback callback)  {
+        sendAsync(message, null, callback);
     }
 
-    public void sendOneway(String topic, String queue, Message message, MessageFilter messageFilter) {
-        checkTopic(topic);
-        checkQueue(queue);
+    public void sendOneway(Message message, MessageFilter messageFilter) {
+        checkTopic(message.topic());
+        checkQueue(message.queue());
 
-        doSend(topic, queue, message, messageFilter, null);
+        message = exchange(message, messageFilter);
+
+        doSend(config.getSendOnewayTimeoutMs(), message, null);
     }
 
-    public SendResult send(String topic, String queue, Message message, MessageFilter messageFilter) throws Exception {
-        checkTopic(topic);
-        checkQueue(queue);
+    public SendResult send(Message message, MessageFilter messageFilter) throws Exception {
+        checkTopic(message.topic());
+        checkQueue(message.queue());
 
         Promise<SendMessageResponse> promise = newImmediatePromise();
-        doSend(topic, queue, message, messageFilter, promise);
+
+        message = exchange(message, messageFilter);
+
+        doSend(config.getSendTimeoutMs(), message, promise);
 
         SendMessageResponse response = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
         return new SendResult(response.getEpoch(), response.getIndex(), response.getLedger());
     }
 
-    public void sendAsync(String topic, String queue, Message message, MessageFilter messageFilter, SendCallback callback)  {
-        checkTopic(topic);
-        checkQueue(queue);
+    public void sendAsync(Message message, MessageFilter messageFilter, SendCallback callback)  {
+        checkTopic(message.topic());
+        checkQueue(message.queue());
+
+        message = exchange(message, messageFilter);
 
         if (isNull(callback)) {
-            doSend(topic, queue, message, messageFilter, null);
+            doSend(config.getSendAsyncTimeoutMs(), message, null);
             return;
         }
 
@@ -90,29 +99,61 @@ public class MessageProducer {
             }
         });
 
-        doSend(topic, queue, message, messageFilter, promise);
+        doSend(config.getSendAsyncTimeoutMs(), message, promise);
     }
 
-    public void doSend(String topic, String queue, Message message, MessageFilter messageFilter, Promise<SendMessageResponse> promise) {
+    public void doSend(int timeout,Message message, Promise<SendMessageResponse> promise) {
+        String topic = message.topic();
+        String queue = message.queue();
 
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (isNull(messageRouter)) {
-            throw new RuntimeException(String.format("Message router is empty, and topic=%s", topic));
+            throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
-        SocketAddress leader = holder.leader();
         int ledger = holder.ledger();
-
-        SendMessageRequest request = SendMessageRequest.newBuilder().build();
+        SocketAddress leader = holder.leader();
+        if (isNull(leader)) {
+            throw new IllegalArgumentException(String.format("Leader not found, and ledger=%d name=%s", ledger, name));
+        }
         ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
 
-        if (isNotNull(messageFilter)) {
-            messageFilter.filter(topic, queue, message);
-        }
+        SendMessageRequest request = SendMessageRequest
+                .newBuilder()
+                .setLedger(ledger)
+                .setQueue(queue)
+                .build();
 
-        // TODO assemble message data
-        clientChannel.invoker().invoke(SEND_MESSAGE, config.getInvokeExpiredMs(), promise, request, SendMessageResponse.class);
+        SendMessageExtras extras = buildExtras(topic, queue, message.extras());
+        try {
+             ByteBuf body = ByteBufUtil.byte2Buf(message.message());
+             clientChannel.invoker().invokeMessage(timeout, promise, request, extras, body, SendMessageResponse.class);
+        } catch (Throwable t) {
+            throw new RuntimeException(String.format("Failed to send async message, topic=%s, queue=%s name=%s", topic, queue, name));
+        }
+    }
+
+    private SendMessageExtras buildExtras(String topic, String queue, Message.Extras extras) {
+        SendMessageExtras.Builder metadata = SendMessageExtras.newBuilder().setQueue(queue).setTopic(topic);
+        if (isNotNull(extras)) {
+            for (Map.Entry<String, String> entry : extras) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                if (isNotNull(key) && isNotNull(value)) {
+                    metadata.putExtras(key, value);
+                }
+            }
+        }
+        return metadata.build();
+    }
+
+    private Message exchange(Message message, MessageFilter filter) {
+        if (isNotNull(filter)) {
+           message = filter.filter(message);
+        }
+        return message;
     }
 
     private void checkTopic(String topic) {

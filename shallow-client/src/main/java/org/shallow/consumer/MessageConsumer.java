@@ -32,10 +32,12 @@ public class MessageConsumer {
     private final ConsumerConfig config;
     private final MessageListener messageListener;
     private final ShallowChannelPool pool;
+    private final String name;
 
-    public MessageConsumer(Client client, ConsumerConfig config, MessageListener listener) {
+    public MessageConsumer(String name, Client client, ConsumerConfig config, MessageListener listener) {
         this.messageListener = listener;
         this.config = config;
+        this.name = name;
         this.manager = client.getMetadataManager();
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }
@@ -81,14 +83,14 @@ public class MessageConsumer {
         try {
             doSubscribe(topic, queue, promise);
         } catch (Throwable t) {
-            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s", topic, queue));
+            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s name=%s", topic, queue, name));
         }
     }
 
     private void doSubscribe(String topic, String queue, Promise<SubscribeResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (isNull(messageRouter)) {
-            throw new RuntimeException(String.format("Message router is empty, and topic=%s", topic));
+            throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);

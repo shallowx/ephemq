@@ -8,9 +8,8 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
-import org.shallow.util.ByteUtil;
 
-import static org.shallow.util.ByteUtil.release;
+import static org.shallow.util.ByteBufUtil.release;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
@@ -30,12 +29,11 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
             final byte state = packet.state();
             final int answer = packet.answer();
             final byte command = packet.command();
-            final byte serialization = packet.serialization();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;
             try {
-                 header = encodeHeader(ctx.alloc(), version, state, command, answer, serialization, body.readableBytes());
+                 header = encodeHeader(ctx.alloc(), version, state, command, answer, body.readableBytes());
             } catch (Throwable cause) {
                 release(body);
                 throw cause;
@@ -49,7 +47,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         }
     }
 
-    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int answer, byte serialization, int body) {
+    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte state, byte command, int answer, int body) {
         if (body > MessagePacket.MAX_BODY_LENGTH) {
             throw new EncoderException("Too large body:" + body + "bytes, limit:" + MessagePacket.MAX_BODY_LENGTH + "bytes");
         }
@@ -61,7 +59,6 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         header.writeByte(command);
         header.writeByte(state);
         header.writeInt(answer);
-        header.writeByte(serialization);
 
         return header;
     }

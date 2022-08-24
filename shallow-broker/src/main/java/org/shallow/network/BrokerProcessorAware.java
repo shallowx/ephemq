@@ -23,6 +23,7 @@ import org.shallow.metadata.management.TopicManager;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
 import org.shallow.metadata.sraft.SRaftProcessController;
+import org.shallow.processor.Ack;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.proto.NodeMetadata;
@@ -89,6 +90,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 if (isNotNull(answer)) {
                                     answer.success(proto2Buf(channel.alloc(), response));
                                 }
+                            } else {
+                                answerFailed(answer, f.cause());
                             }
                         });
                         LogManager logManager = manager.getLogManager();
@@ -227,7 +230,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                             CreateTopicResponse response = CreateTopicResponse
                                                     .newBuilder()
                                                     .setLatencies(prepareCommitResponse.getLatencies())
-                                                    .setAck(1)
+                                                    .setAck(Ack.SUCCESS)
                                                     .setPartitions(prepareCommitResponse.getPartitions())
                                                     .setTopic(prepareCommitResponse.getTopic())
                                                     .build();
@@ -270,7 +273,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                             DelTopicResponse response = DelTopicResponse
                                                     .newBuilder()
                                                     .setTopic(prepareCommitResponse.getTopic())
-                                                    .setAck(1)
+                                                    .setAck(Ack.SUCCESS)
                                                     .setTopic(prepareCommitResponse.getTopic())
                                                     .build();
 

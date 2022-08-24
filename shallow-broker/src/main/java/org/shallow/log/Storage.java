@@ -8,9 +8,10 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.util.ByteUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
+
+import static org.shallow.util.ObjectUtil.isNotNull;
 
 @ThreadSafe
 public class Storage {
@@ -43,7 +44,7 @@ public class Storage {
             try {
                 storageExecutor.execute(() -> doAppend(queue, payload, promise));
             } catch (Throwable t) {
-                ByteUtil.release(payload);
+                payload.release();
                 promise.tryFailure(t);
             }
         }
@@ -60,19 +61,32 @@ public class Storage {
 
             this.current = offset;
 
-            trigger.onAppend(ledger, 1, offset);
+            triggerAppend(ledger, 1, offset);
             promise.trySuccess(offset);
         } catch (Throwable t) {
             promise.tryFailure(t);
         } finally {
-            ByteUtil.release(payload);
+            payload.release();
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void triggerAppend(int ledger, int limit, Offset offset) {
+        if (isNotNull(trigger)) {
+            try {
+                trigger.onAppend(ledger, limit, offset);
+            } catch (Throwable t) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn("trigger append error: ledger={} limit={} offset={}", ledger, limit, offset);
+                }
+            }
         }
     }
 
     private Segment applySegment(int bytes) {
         Segment theTailSegment = tailSegment;
         if (theTailSegment.freeWriteBytes() < bytes) {
-            if (segmentLimit > config.getLogSegmentLimit()) {
+            if (segmentLimit >= config.getLogSegmentLimit()) {
                 releaseSegment();
             }
             return incrementSegment(StrictMath.max(bytes, config.getLogSegmentSize()));
@@ -91,8 +105,8 @@ public class Storage {
         if (limit > 1) {
             headSegment = theHeadSegment.next();
         } else if (limit == 1){
-            Segment empty = new Segment(ledger, Unpooled.EMPTY_BUFFER, theHeadSegment.getTailOffset());
-            theHeadSegment.next(empty);
+            Segment empty = new Segment(ledger, Unpooled.EMPTY_BUFFER, theHeadSegment.tailOffset());
+            theHeadSegment.tail(empty);
             headSegment = tailSegment = empty;
         }
 
@@ -103,9 +117,9 @@ public class Storage {
     private Segment incrementSegment(int bytes) {
         Segment theTailSegment = tailSegment;
         ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(bytes, bytes);
-        Segment segment = new Segment(ledger, buf, theTailSegment.getTailOffset());
+        Segment segment = new Segment(ledger, buf, theTailSegment.tailOffset());
 
-        theTailSegment.next(segment);
+        theTailSegment.tail(segment);
         tailSegment = segment;
 
         int limit = segmentLimit;
@@ -115,5 +129,13 @@ public class Storage {
 
         segmentLimit = ++limit;
         return segment;
+    }
+
+    public Segment headSegment() {
+        return headSegment;
+    }
+
+    public Segment tailSegment() {
+        return tailSegment;
     }
 }

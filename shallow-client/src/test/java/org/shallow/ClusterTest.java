@@ -17,7 +17,7 @@ public class ClusterTest {
     public void testQuery() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
-        Client client = new Client("Client", clientConfig);
+        Client client = new Client("cluster-client", clientConfig);
         client.start();
 
         Set<NodeRecord> nodeRecords = client.getMetadataManager().queryNodeRecord(DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().acquireWithRandomly());

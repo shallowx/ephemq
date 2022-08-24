@@ -17,7 +17,7 @@ public class ClientTests {
     public void testClientStart() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
-        Client client = new Client("Client", clientConfig);
+        Client client = new Client("start-client", clientConfig);
         client.start();
 
         ShallowChannelPool pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();

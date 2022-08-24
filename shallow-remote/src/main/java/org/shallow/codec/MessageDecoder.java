@@ -11,7 +11,7 @@ import static java.lang.Integer.MAX_VALUE;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.codec.MessageDecoder.State.*;
-import static org.shallow.util.ByteUtil.release;
+import static org.shallow.util.ByteBufUtil.release;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
@@ -29,13 +29,13 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final ByteBuf read) {
             if (invalid) {
-                release(read);
+                read.release();
                 return;
             }
 
             ByteBuf buf = null;
             try {
-                buf = whole(ctx.alloc(), read);
+                buf = whole(ctx.alloc(), read).retain();
                 while (!ctx.isRemoved() && buf.isReadable()) {
                     final MessagePacket packet = decode(buf);
                     if (isNull(packet)) {
@@ -97,12 +97,11 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 final byte command = buf.readByte();
                 final byte state = buf.readByte();
                 final int answer = buf.readInt();
-                final byte serialization = buf.readByte();
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
 
                 this.state = READ_MAGIC_NUMBER;
 
-                return MessagePacket.newPacket(version, state, answer, serialization, command, body);
+                return MessagePacket.newPacket(version, state, answer, command, body);
             }
             default:{
                 throw new DecoderException("Invalid decode state:" + state);

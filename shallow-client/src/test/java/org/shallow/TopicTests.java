@@ -1,6 +1,7 @@
 package org.shallow;
 
 import io.netty.util.concurrent.Promise;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
 import org.shallow.logging.InternalLogger;
@@ -8,6 +9,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
+import org.shallow.processor.Ack;
 import org.shallow.proto.server.CreateTopicResponse;
 import org.shallow.proto.server.DelTopicResponse;
 
@@ -36,7 +38,7 @@ public class TopicTests {
         Assert.assertEquals(response.getLatencies(), 1);
         Assert.assertEquals(response.getTopic(), "create");
         Assert.assertEquals(response.getPartitions(), 3);
-        Assert.assertEquals(response.getAck(), 1);
+        Assert.assertEquals(response.getAck(), Ack.SUCCESS);
 
         client.shutdownGracefully();
     }
@@ -53,7 +55,7 @@ public class TopicTests {
 
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getTopic(), "create");
-        Assert.assertEquals(response.getAck(), 1);
+        Assert.assertEquals(response.getAck(), Ack.SUCCESS);
 
         client.shutdownGracefully();
     }

@@ -84,6 +84,12 @@ message SendMessageRequest {
   string queue = 2;
 }
 
+message SendMessageExtras {
+  string topic = 1;
+  string queue = 2;
+  map<string, string> extras = 3;
+}
+
 message SendMessageResponse {
   int32 ledger = 1;
   int32 epoch = 2;

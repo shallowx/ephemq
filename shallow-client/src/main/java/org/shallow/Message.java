@@ -1,15 +1,18 @@
-package org.shallow.producer;
+package org.shallow;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public record Message(String message, Extras extras) {
+public record Message(String topic, String queue, byte[] message, Extras extras) {
 
     @Override
     public String toString() {
         return "Message{" +
-                "message='" + message + '\'' +
+                "topic='" + topic + '\'' +
+                ", queue='" + queue + '\'' +
+                ", message='" + Arrays.toString(message) + '\'' +
                 ", extras=" + extras +
                 '}';
     }

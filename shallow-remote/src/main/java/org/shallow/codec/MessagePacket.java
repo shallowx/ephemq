@@ -9,13 +9,13 @@ import io.netty.util.ReferenceCounted;
 import javax.annotation.concurrent.Immutable;
 
 import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ByteUtil.*;
+import static org.shallow.util.ByteBufUtil.*;
 
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
-    public static final byte HEADER_LENGTH = 13;
-    public static final int MAX_FRAME_LENGTH = 4194317;
+    public static final byte HEADER_LENGTH = 12;
+    public static final int MAX_FRAME_LENGTH = 4194316;
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
 
     private static final Recycler<MessagePacket> RECYCLER = new Recycler<>() {
@@ -27,23 +27,21 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     private short version;
     private byte state; // req: -1 ; resp:response code
-    private int answer; // opaque
-    private byte serialization; // default: -1
-    private byte command; //opcode
+    private int answer;
+    private byte command;
     private ByteBuf body;
     private final Recycler.Handle<MessagePacket> handle;
 
     public static MessagePacket newPacket(int answer, byte command, ByteBuf body) {
-       return newPacket((short) -1, (byte) -1, answer, (byte) -1, command, body);
+       return newPacket((short) -1, (byte) -1, answer, command, body);
     }
 
-    public static MessagePacket newPacket(short version, byte state, int answer, byte serialization, byte command, ByteBuf body) {
+    public static MessagePacket newPacket(short version, byte state, int answer, byte command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
         packet.version = version;
         packet.state = state;
         packet.answer = answer;
-        packet.serialization = serialization;
         packet.command = command;
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
 
@@ -60,10 +58,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     public short version() {
         return version;
-    }
-
-    public byte serialization() {
-        return serialization;
     }
 
     public byte state() {
@@ -119,7 +113,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
                 "version=" + version +
                 ", state=" + state +
                 ", answer=" + answer +
-                ", serialization=" + serialization +
                 ", command=" + command +
                 ", handle=" + handle +
                 '}';

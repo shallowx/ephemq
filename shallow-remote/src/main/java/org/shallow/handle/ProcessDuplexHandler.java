@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 import static org.shallow.util.ObjectUtil.*;
 import static org.shallow.RemoteException.of;
-import static org.shallow.util.ByteUtil.buf2String;
-import static org.shallow.util.ByteUtil.release;
+import static org.shallow.util.ByteBufUtil.buf2String;
+import static org.shallow.util.ByteBufUtil.release;
 import static org.shallow.util.NetworkUtil.*;
 
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
@@ -35,7 +35,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final int FAILURE_CONTENT_LIMIT = 1024 * 1024 * 4;
     private static final int INT_ZERO = 0;
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
-    private ProcessorAware processor;
+    private final ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
         this.processor = checkNotNull(processor, "Process cannot be empty");

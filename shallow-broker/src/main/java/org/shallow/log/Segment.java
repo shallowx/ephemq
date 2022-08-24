@@ -3,7 +3,6 @@ package org.shallow.log;
 import io.netty.buffer.ByteBuf;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.util.ByteUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.lang.ref.PhantomReference;
@@ -28,6 +27,7 @@ public class Segment {
 
     private volatile Offset tail;
     private volatile int tailLocation;
+
     private volatile ByteBufHolder holder;
     private volatile Segment next;
 
@@ -55,10 +55,12 @@ public class Segment {
                 finalBuf.writeBytes(payload);
 
             } catch (Throwable t) {
-                finalBuf.writeInt(location);
-                throw new RuntimeException("Failed to write segment", t);
+                finalBuf.writerIndex(location);
+                throw new RuntimeException(String.format("Failed to write segment, cause: %s", t));
             }
 
+            tail = offset;
+            tailLocation = finalBuf.writerIndex();
             return;
         }
         throw new RuntimeException("Segment is recycled");
@@ -77,10 +79,10 @@ public class Segment {
 
     public int freeWriteBytes() {
         ByteBufHolder theHolder = holder;
-        return isNull(theHolder) ? 0 : theHolder.payload.readableBytes();
+        return isNull(theHolder) ? 0 : theHolder.payload.writableBytes();
     }
 
-    public void next(Segment segment) {
+    public void tail(Segment segment) {
         this.next = segment;
     }
 
@@ -88,13 +90,73 @@ public class Segment {
         return next;
     }
 
+    public boolean isActive() {
+        return isNotNull(holder);
+    }
 
-    public Offset getTailOffset() {
+    public Offset tailOffset() {
         return tail;
+    }
+
+    public Offset headOffset() {
+        return head;
+    }
+
+    public int headLocation() {
+        return headLocation;
+    }
+
+    public int tailLocation() {
+        return tailLocation;
     }
 
     public int getLogId() {
         return ledgerId;
+    }
+
+    /**
+     * The location of message sites is based on the storage order,
+     * <p>offset</p> need to change the offset of the positioning.
+     * {@link Segment#write}
+     */
+    public int locate(Offset offset) {
+        if (isNull(offset)) {
+            return tailLocation;
+        }
+
+        if (!offset.after(head)) {
+            return headLocation;
+        }
+
+        ByteBufHolder theHolder = holder;
+        if (isNull(theHolder)) {
+            return tailLocation;
+        }
+
+        ByteBuf theBuf = holder.payload;
+        int theEpoch = offset.epoch();
+        long theIndex = offset.index();
+
+        int limit = tailLocation;
+        int position = headLocation;
+        while (position < limit) {
+            int length = theBuf.getInt(position);
+            int queueLength = theBuf.getInt(position + 4);
+
+            int epoch = theBuf.getInt(position + 8 + queueLength);
+            if (epoch > theEpoch) {
+                return position;
+            } else if (epoch == theEpoch){
+                long index = theBuf.getLong(position + 8 + queueLength + 4);
+                if (index > theIndex) {
+                    return position;
+                }
+            }
+
+            position += length + 4;
+        }
+
+        return limit;
     }
 
     public void release() {
@@ -124,7 +186,9 @@ public class Segment {
                     Reference<? extends ByteBufHolder> reference = BYTE_BUF_HOLDER_REFERENCE_QUEUE.remove();
                     ByteBuf buf = BYTE_BUF_MAP.remove(reference);
 
-                    ByteUtil.release(buf);
+                    if (isNotNull(buf)) {
+                        buf.release();
+                    }
                 } catch (InterruptedException e) {
                     if (logger.isErrorEnabled()) {
                         logger.error(e.getMessage(), e);

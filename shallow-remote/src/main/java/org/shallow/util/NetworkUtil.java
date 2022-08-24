@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-import static org.shallow.util.ByteUtil.string2Buf;
+import static org.shallow.util.ByteBufUtil.string2Buf;
 import static org.shallow.util.ObjectUtil.checkPositive;
 
 public final class NetworkUtil {

@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBufOutputStream;
 import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
-import static org.shallow.util.ByteUtil.release;
+import static org.shallow.util.ByteBufUtil.release;
 
 public class ProtoBufUtil {
 

@@ -9,9 +9,9 @@ import java.nio.charset.StandardCharsets;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 
-public final class ByteUtil {
+public final class ByteBufUtil {
 
-    private ByteUtil() throws OperationNotSupportedException {
+    private ByteBufUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }
@@ -29,8 +29,22 @@ public final class ByteUtil {
         }
     }
 
+    public static ByteBuf byte2Buf(byte[] bytes) {
+        if (isNull(bytes) || bytes.length == 0) {
+            return null;
+        }
+       return Unpooled.copiedBuffer(bytes);
+    }
+
+    public static byte[] buf2Bytes(ByteBuf buf) {
+        if (isNull(buf)) {
+            return null;
+        }
+        return buf.array();
+    }
+
     public static int bufLength(ByteBuf buf) {
-        return buf == null ? 0 : buf.readableBytes();
+        return isNull(buf) ? 0 : buf.readableBytes();
     }
 
     public static ByteBuf string2Buf(String data) {
@@ -38,7 +52,7 @@ public final class ByteUtil {
     }
 
     public static ByteBuf retainBuf(ByteBuf buf) {
-        return buf == null ? null : buf.retain();
+        return isNull(buf) ? null : buf.retain();
     }
 
     public static <T> T defaultIfNull(T t, T defaultValue) {
@@ -46,7 +60,7 @@ public final class ByteUtil {
     }
 
     public static void release(ByteBuf buf) {
-       if (isNotNull(buf) && buf.refCnt() != 0) {
+       if (isNotNull(buf)) {
            buf.release();
        }
     }

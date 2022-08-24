@@ -88,7 +88,17 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> acquireHealthy(final SocketAddress address) {
-        return newChannel(address);
+        List<Future<ClientChannel>> futures = channelPools.get(address);
+        if (futures == null || futures.isEmpty()) {
+            synchronized (channelPools) {
+                List<Future<ClientChannel>> activeFutures = channelPools.get(address);
+                if (activeFutures == null || activeFutures.isEmpty()) {
+                    Future<ClientChannel> future = newChannel(address);
+                    channelPools.put(address, List.of(future));
+                }
+            }
+        }
+        return channelPools.get(address).get(0);
     }
 
     private SocketAddress toSocketAddress() {

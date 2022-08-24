@@ -7,14 +7,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
-import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.AwareInvocation;
-import org.shallow.util.NetworkUtil;
+import org.shallow.util.ByteBufUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,13 +21,10 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.ByteBufUtil.*;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
-import static org.shallow.util.ByteUtil.release;
-import static org.shallow.util.ByteUtil.retainBuf;
-import static org.shallow.util.ProtoBufUtil.proto2Buf;
-import static org.shallow.util.ProtoBufUtil.readProto;
+import static org.shallow.util.ProtoBufUtil.*;
 
 public class OperationInvoker implements ProcessCommand.Server {
 
@@ -41,6 +37,38 @@ public class OperationInvoker implements ProcessCommand.Server {
         this.clientChannel = channel;
         this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
     }
+
+    public void invokeMessage(int timeoutMs,Promise<?> promise, MessageLite request, MessageLite extras, ByteBuf message, Class<?> clz) {
+        try {
+            @SuppressWarnings("unchecked")
+            Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
+            ByteBuf buf = assembleInvokeMessageData(clientChannel.allocator(), request, extras, message);
+            invoke0(SEND_MESSAGE, buf, timeoutMs, callback);
+        } catch (Exception e) {
+            tryFailure(promise, e);
+        }
+    }
+
+    private ByteBuf assembleInvokeMessageData(ByteBufAllocator alloc, MessageLite request, MessageLite extras, ByteBuf message) {
+        ByteBuf buf;
+        try {
+            int length = protoLength(request) + protoLength(extras) + bufLength(message);
+            buf = alloc.ioBuffer(length);
+
+            writeProto(buf, request);
+            writeProto(buf, extras);
+
+            if (isNotNull(message) && message.isReadable()) {
+                buf.writeBytes(message, message.readerIndex(), message.readableBytes());
+            }
+
+            return buf;
+        } catch (Throwable t) {
+            ByteBufUtil.release(message);
+            throw new RuntimeException("Failed to assemble invoke message");
+        }
+    }
+
 
     public void invoke(byte command, int timeoutMs, MessageLite request, Class<?> clz) {
         invoke(command, timeoutMs, null, request, clz);

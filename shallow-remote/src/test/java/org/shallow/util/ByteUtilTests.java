@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.nio.charset.StandardCharsets;
 
 import static org.shallow.util.ObjectUtil.isNull;
-import static org.shallow.util.ByteUtil.*;
+import static org.shallow.util.ByteBufUtil.*;
 
 public class ByteUtilTests {
 

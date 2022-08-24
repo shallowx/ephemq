@@ -23,7 +23,7 @@ public class Client {
 
     private final String name;
     private final ClientConfig config;
-    private final MetadataManager manager;
+    private MetadataManager manager;
     private Boolean state;
 
     private Bootstrap bootstrap;
@@ -38,7 +38,6 @@ public class Client {
         this.name = name;
         this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
         this.healthChecker = healthChecker;
-        this.manager = new MetadataManager(this);
     }
 
     public void start() {
@@ -66,6 +65,8 @@ public class Client {
                 .resolver(new RoundRobinDnsAddressResolverGroup(drb));
 
         DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config, healthChecker);
+
+        this.manager = new MetadataManager(this);
 
         if (logger.isInfoEnabled()) {
             logger.info("The client<{}> started successfully", name);

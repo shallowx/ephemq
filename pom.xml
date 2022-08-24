@@ -19,7 +19,6 @@
         <module>shallow-benchmark</module>
         <module>shallow-example</module>
         <module>shallow-common</module>
-        <module>shallow-serialization</module>
     </modules>
 
     <scm>

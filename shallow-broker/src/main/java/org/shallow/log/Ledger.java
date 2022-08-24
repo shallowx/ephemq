@@ -7,9 +7,10 @@ import org.shallow.consumer.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.util.ByteUtil;
+
 import javax.annotation.concurrent.ThreadSafe;
 
+import static org.shallow.util.ByteBufUtil.release;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
@@ -47,7 +48,7 @@ public class Ledger {
             try {
                 storageExecutor.execute(() -> doAppend(queue, payload, promise));
             } catch (Throwable t) {
-                ByteUtil.release(payload);
+                payload.release();
                 promise.tryFailure(t);
             }
         }
@@ -57,8 +58,9 @@ public class Ledger {
         try {
             storage.append(queue, payload, promise);
         } catch (Throwable t) {
-            ByteUtil.release(payload);
             promise.tryFailure(t);
+        } finally {
+           release(payload);
         }
     }
 
@@ -66,10 +68,14 @@ public class Ledger {
         return ledgerId;
     }
 
-    private static class MessageTrigger implements LedgerTrigger {
+    public void onTriggerAppend(int ledgerId, int limit, Offset offset) {
+
+    }
+
+    private class MessageTrigger implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int limit, Offset tail) {
-            // TODO push message to client
+            onTriggerAppend(ledgerId, limit, tail);
         }
     }
 }

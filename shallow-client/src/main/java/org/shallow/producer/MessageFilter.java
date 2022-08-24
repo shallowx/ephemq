@@ -1,6 +1,8 @@
 package org.shallow.producer;
 
+import org.shallow.Message;
+
 @FunctionalInterface
 public interface MessageFilter {
-    void filter(String topic, String queue, Message message);
+    Message filter(Message message);
 }

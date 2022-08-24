@@ -11,7 +11,7 @@ import javax.annotation.concurrent.Immutable;
 
 import static org.shallow.util.ObjectUtil.checkPositive;
 import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ByteUtil.defaultIfNull;
+import static org.shallow.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
 public class AwareInvocation extends AbstractReferenceCounted {
