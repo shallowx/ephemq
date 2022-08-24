@@ -102,7 +102,7 @@ public class MessageProducer {
         doSend(config.getSendAsyncTimeoutMs(), message, promise);
     }
 
-    public void doSend(int timeout,Message message, Promise<SendMessageResponse> promise) {
+    public void doSend(int timeout, Message message, Promise<SendMessageResponse> promise) {
         String topic = message.topic();
         String queue = message.queue();
 
