@@ -38,7 +38,7 @@ public class OperationInvoker implements ProcessCommand.Server {
         this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
     }
 
-    public void invokeMessage(int timeoutMs,Promise<?> promise, MessageLite request, MessageLite extras, ByteBuf message, Class<?> clz) {
+    public void invokeMessage(int timeoutMs, Promise<?> promise, MessageLite request, MessageLite extras, ByteBuf message, Class<?> clz) {
         try {
             @SuppressWarnings("unchecked")
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
@@ -69,7 +69,6 @@ public class OperationInvoker implements ProcessCommand.Server {
         }
     }
 
-
     public void invoke(byte command, int timeoutMs, MessageLite request, Class<?> clz) {
         invoke(command, timeoutMs, null, request, clz);
     }
@@ -86,7 +85,7 @@ public class OperationInvoker implements ProcessCommand.Server {
    }
 
    @SuppressWarnings("rawtypes")
-   private Parser assembleParser(Class<?> clz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+   private Parser assembleParser(Class<?> clz) throws Exception {
         final Method defaultInstance = clz.getDeclaredMethod("getDefaultInstance");
         Message defaultInst = (Message) defaultInstance.invoke(null);
        return defaultInst.getParserForType();
@@ -97,22 +96,27 @@ public class OperationInvoker implements ProcessCommand.Server {
             long now = System.currentTimeMillis();
             final Channel channel = clientChannel.channel();
             if (semaphore.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
-                if (isNull(callback)) {
-                    ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                    channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content)), promise);
-                } else {
-                    long expired = timeoutMs + now;
-                    GenericInvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
-                        semaphore.release();
-                        callback.operationCompleted(buf, cause);
-                    });
-                    channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), expired, answer));
+                try {
+                    if (isNull(callback)) {
+                        ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content)), promise);
+                    } else {
+                        long expired = timeoutMs + now;
+                        GenericInvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
+                            semaphore.release();
+                            callback.operationCompleted(buf, cause);
+                        });
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), expired, answer));
+                    }
+                } catch (Throwable t) {
+                    semaphore.release();
+                    throw t;
                 }
             } else {
-                throw new TimeoutException("[Invoke0] - semaphore acquire timeout: " + timeoutMs + "ms");
+                throw new TimeoutException("Semaphore acquire timeout: " + timeoutMs + "ms");
             }
         } catch (Throwable t) {
-            RuntimeException exception = new RuntimeException(String.format("[Invoke0] - failed to invoke channel, address=%s command=%s", clientChannel.address(), command));
+            RuntimeException exception = new RuntimeException(String.format("Failed to invoke channel, address=%s command=%s", clientChannel.address(), command));
             if (isNotNull(callback)) {
                 callback.operationCompleted(null, exception);
             } else {
@@ -128,7 +132,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             return proto2Buf(alloc, lite);
         } catch (Throwable cause) {
             final String type = isNull(lite) ? null : lite.getClass().getSimpleName();
-            throw new RuntimeException("[AssembleInvokeData] - failed to assemble messageLite type:{" + type + "}", cause);
+            throw new RuntimeException("Failed to assemble messageLite type:{" + type + "}", cause);
         }
     }
 

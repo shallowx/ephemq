@@ -6,7 +6,7 @@ import java.util.List;
 public class ClientConfig {
     private List<String> bootstrapSocketAddress = new LinkedList<>();
 
-    private boolean isEpollPrefer = false;
+    private boolean isEpollPrefer = true;
     private int workThreadWholes = availableProcessor();
     private int connectTimeOutMs = 5000;
     private int channelFixedPoolCapacity = 1;

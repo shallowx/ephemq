@@ -45,7 +45,7 @@ public class LogManager {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
-        ledger.subscribe(queue, ledgerId, epoch, index, promise);
+        ledger.subscribe(queue, epoch, index, promise);
     }
 
     public void append(int ledgerId, String queue, ByteBuf payload, Promise<Offset> promise) {

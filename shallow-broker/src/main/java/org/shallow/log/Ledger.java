@@ -36,7 +36,20 @@ public class Ledger {
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
     }
 
-    public void subscribe(String queue, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(String queue, int epoch, long index, Promise<Subscription> promise) {
+        Offset offset = Offset.of(epoch, index);
+        if (storageExecutor.inEventLoop()) {
+            doSubscribe(queue, offset, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doSubscribe(queue, offset, promise));
+            } catch (Throwable t) {
+                promise.tryFailure(t);
+            }
+        }
+    }
+
+    private void doSubscribe(String queue, Offset offset, Promise<Subscription> promise) {
 
     }
 
