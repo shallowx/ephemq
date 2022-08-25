@@ -223,6 +223,6 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
     }
 
     public int getClusterSize(String cluster) {
-        return commitRecordCache.asMap().size();
+        return commitRecordCache.get(cluster).size();
     }
 }
