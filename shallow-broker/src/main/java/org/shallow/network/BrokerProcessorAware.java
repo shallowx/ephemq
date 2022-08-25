@@ -435,9 +435,10 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 NodeMetadata metadata = request.getMetadata();
                                 String name = metadata.getName();
                                 String host = metadata.getHost();
+                                String state = metadata.getState();
                                 int port = metadata.getPort();
 
-                                NodeRecord nodeRecord = new NodeRecord(cluster, name, switchSocketAddress(host, port));
+                                NodeRecord nodeRecord = new NodeRecord(cluster, name, state, switchSocketAddress(host, port));
                                 CommitRecord<NodeRecord> commitRecord = new CommitRecord<>(nodeRecord, CommitType.ADD);
 
                                 Promise<MessageLite> promise = newImmediatePromise();

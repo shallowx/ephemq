@@ -25,6 +25,7 @@ import java.net.SocketAddress;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.shallow.metadata.sraft.CommitType.ADD;
 import static org.shallow.metadata.sraft.CommitType.REMOVE;
@@ -71,7 +72,7 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
     private void registerNode() throws Exception {
         if (controller.isQuorumLeader()) {
-            NodeRecord nodeRecord = new NodeRecord(config.getClusterName(), config.getServerId(), switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
+            NodeRecord nodeRecord = new NodeRecord(config.getClusterName(), config.getServerId(), NodeRecord.UP, switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
             doPostCommit(nodeRecord, ADD);
             return;
         }
@@ -81,7 +82,7 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
     private Set<NodeRecord> syncFromQuorumLeader(String cluster) {
         if (controller.isQuorumLeader()) {
-            NodeRecord record = new NodeRecord(config.getClusterName(), config.getServerId(), switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
+            NodeRecord record = new NodeRecord(config.getClusterName(), config.getServerId(), NodeRecord.UP, switchSocketAddress(config.getExposedHost(), config.getExposedPort()));
             CopyOnWriteArraySet<NodeRecord> nodeRecords = new CopyOnWriteArraySet<>();
             nodeRecords.add(record);
 
@@ -97,7 +98,9 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
         if (nodeRecords.isEmpty()) {
             return null;
         }
-        return nodeRecords;
+        return nodeRecords.stream()
+                .filter(nodeRecord -> nodeRecord.getState().equals(NodeRecord.UP))
+                .collect(Collectors.toSet());
     }
 
     @Override

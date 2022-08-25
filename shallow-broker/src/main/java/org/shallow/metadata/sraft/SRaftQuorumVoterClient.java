@@ -108,7 +108,7 @@ public final class SRaftQuorumVoterClient extends Client {
             }
 
             return nodes.stream()
-                    .map(nodeMetadata -> new NodeRecord(cluster, nodeMetadata.getName(), switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort())))
+                    .map(nodeMetadata -> new NodeRecord(cluster, nodeMetadata.getName(), nodeMetadata.getState(), switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort())))
                     .collect(Collectors.toCollection(
                             CopyOnWriteArraySet::new
                     ));

@@ -138,7 +138,7 @@ public class MetadataManager implements ProcessCommand.Server {
         }
 
         return nodes.stream()
-                 .map(nodeMetadata -> new NodeRecord(nodeMetadata.getCluster(), nodeMetadata.getName(), switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort())))
+                 .map(nodeMetadata -> new NodeRecord(nodeMetadata.getCluster(), nodeMetadata.getName(), nodeMetadata.getState(), switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort())))
                  .collect(Collectors.toSet());
     }
 

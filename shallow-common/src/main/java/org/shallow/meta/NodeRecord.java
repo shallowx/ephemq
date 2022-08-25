@@ -6,11 +6,13 @@ import java.util.Objects;
 public class NodeRecord {
     private String cluster;
     private String name;
+    private String state;
     private SocketAddress socketAddress;
 
-    public NodeRecord(String cluster, String name, SocketAddress socketAddress) {
+    public NodeRecord(String cluster, String name, String state, SocketAddress socketAddress) {
         this.cluster = cluster;
         this.name = name;
+        this.state = state;
         this.socketAddress = socketAddress;
     }
 
@@ -30,8 +32,8 @@ public class NodeRecord {
         return socketAddress;
     }
 
-    public void setSocketAddress(SocketAddress socketAddress) {
-        this.socketAddress = socketAddress;
+    public String getState() {
+        return state;
     }
 
     @Override
@@ -40,6 +42,7 @@ public class NodeRecord {
         if (!(o instanceof NodeRecord that)) return false;
         return getCluster().equals(that.getCluster()) &&
                 getName().equals(that.getName()) &&
+                getState().equals(that.getState()) &&
                 getSocketAddress().equals(that.getSocketAddress());
     }
 
@@ -53,7 +56,11 @@ public class NodeRecord {
         return "NodeRecord{" +
                 "cluster='" + cluster + '\'' +
                 ", name='" + name + '\'' +
+                ", state='" + state + '\'' +
                 ", socketAddress=" + socketAddress +
                 '}';
     }
+
+    public static final String UP = "UP";
+    public static final String DOWN = "DOWN";
 }

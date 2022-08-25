@@ -48,4 +48,16 @@ public interface NodeMetadataOrBuilder extends
    * @return The port.
    */
   int getPort();
+
+  /**
+   * <code>string state = 5;</code>
+   * @return The state.
+   */
+  java.lang.String getState();
+  /**
+   * <code>string state = 5;</code>
+   * @return The bytes for state.
+   */
+  com.google.protobuf.ByteString
+      getStateBytes();
 }

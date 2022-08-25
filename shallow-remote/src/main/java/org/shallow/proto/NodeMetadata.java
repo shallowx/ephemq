@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
     cluster_ = "";
     name_ = "";
     host_ = "";
+    state_ = "";
   }
 
   @java.lang.Override
@@ -72,6 +73,12 @@ private static final long serialVersionUID = 0L;
           case 32: {
 
             port_ = input.readInt32();
+            break;
+          }
+          case 42: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            state_ = s;
             break;
           }
           default: {
@@ -231,6 +238,44 @@ private static final long serialVersionUID = 0L;
     return port_;
   }
 
+  public static final int STATE_FIELD_NUMBER = 5;
+  private volatile java.lang.Object state_;
+  /**
+   * <code>string state = 5;</code>
+   * @return The state.
+   */
+  @java.lang.Override
+  public java.lang.String getState() {
+    java.lang.Object ref = state_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      state_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string state = 5;</code>
+   * @return The bytes for state.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getStateBytes() {
+    java.lang.Object ref = state_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      state_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -257,6 +302,9 @@ private static final long serialVersionUID = 0L;
     if (port_ != 0) {
       output.writeInt32(4, port_);
     }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(state_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, state_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -278,6 +326,9 @@ private static final long serialVersionUID = 0L;
     if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(4, port_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(state_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, state_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -302,6 +353,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getHost())) return false;
     if (getPort()
         != other.getPort()) return false;
+    if (!getState()
+        .equals(other.getState())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -321,6 +374,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getHost().hashCode();
     hash = (37 * hash) + PORT_FIELD_NUMBER;
     hash = (53 * hash) + getPort();
+    hash = (37 * hash) + STATE_FIELD_NUMBER;
+    hash = (53 * hash) + getState().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -462,6 +517,8 @@ private static final long serialVersionUID = 0L;
 
       port_ = 0;
 
+      state_ = "";
+
       return this;
     }
 
@@ -492,6 +549,7 @@ private static final long serialVersionUID = 0L;
       result.name_ = name_;
       result.host_ = host_;
       result.port_ = port_;
+      result.state_ = state_;
       onBuilt();
       return result;
     }
@@ -554,6 +612,10 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getPort() != 0) {
         setPort(other.getPort());
+      }
+      if (!other.getState().isEmpty()) {
+        state_ = other.state_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -839,6 +901,82 @@ private static final long serialVersionUID = 0L;
     public Builder clearPort() {
       
       port_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object state_ = "";
+    /**
+     * <code>string state = 5;</code>
+     * @return The state.
+     */
+    public java.lang.String getState() {
+      java.lang.Object ref = state_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        state_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string state = 5;</code>
+     * @return The bytes for state.
+     */
+    public com.google.protobuf.ByteString
+        getStateBytes() {
+      java.lang.Object ref = state_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        state_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string state = 5;</code>
+     * @param value The state to set.
+     * @return This builder for chaining.
+     */
+    public Builder setState(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      state_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string state = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearState() {
+      
+      state_ = getDefaultInstance().getState();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string state = 5;</code>
+     * @param value The bytes for state to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStateBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      state_ = value;
       onChanged();
       return this;
     }
