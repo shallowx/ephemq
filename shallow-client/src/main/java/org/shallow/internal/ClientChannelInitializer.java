@@ -3,6 +3,7 @@ package org.shallow.internal;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import org.shallow.Client;
 import org.shallow.ClientConfig;
 import org.shallow.codec.MessageDecoder;
 import org.shallow.codec.MessageEncoder;
@@ -14,11 +15,11 @@ import java.net.SocketAddress;
 
 public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     private final SocketAddress socketAddress;
-    private final ClientConfig config;
+    private final Client client;
 
-    public ClientChannelInitializer(SocketAddress socketAddress, ClientConfig config) {
+    public ClientChannelInitializer(SocketAddress socketAddress, Client client) {
         this.socketAddress = socketAddress;
-        this.config = config;
+        this.client = client;
     }
 
     @Override
@@ -29,7 +30,6 @@ public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> 
                 .addLast("connect-handler", new ConnectDuplexHandler(10000, 20000))
                 .addLast("service-handler", new ProcessDuplexHandler(
                         new ClientServiceProcessorAware(
-                                new ClientChannel(socketChannel, config, socketAddress)
-                        )));
+                                new ClientChannel(socketChannel, client.getClientConfig(), socketAddress),client)));
     }
 }

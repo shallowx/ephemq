@@ -8,6 +8,7 @@ import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.shallow.RemoteException;
+import org.shallow.Type;
 import org.shallow.codec.MessagePacket;
 import org.shallow.invoke.GenericInvokeAnswer;
 import org.shallow.invoke.GenericInvokeHolder;
@@ -72,6 +73,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
         final byte command = packet.command();
         final int answer = packet.answer();
+        final byte type = packet.type();
         final int length = packet.body().readableBytes();
         final InvokeAnswer<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
@@ -90,7 +92,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
         final ByteBuf buf = packet.body().retain();
         try {
-            processor.process(ctx.channel(), command, buf, rejoin);
+            processor.process(ctx.channel(), command, buf, rejoin, type);
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
                 logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",

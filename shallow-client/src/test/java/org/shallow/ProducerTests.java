@@ -8,7 +8,6 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.producer.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -27,14 +26,13 @@ public class ProducerTests {
     public static void beforeClass() throws Exception {
         clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
-
-        client = new Client("producer-client", clientConfig);
-        client.start();
     }
 
     @Test
     public void testSend() throws Exception {
-        MessageProducer producer = new MessageProducer("send-producer", client, new ProducerConfig());
+        Producer producer = new MessageProducer("send-producer", new ProducerConfig());
+        producer.start();
+
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
         MessageFilter filter = sendMessage -> sendMessage;
 
@@ -45,7 +43,9 @@ public class ProducerTests {
 
     @Test
     public void testSendOneway() {
-        MessageProducer producer = new MessageProducer("oneway-producer", client, new ProducerConfig());
+        Producer producer = new MessageProducer("oneway-producer", new ProducerConfig());
+        producer.start();
+
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
 
         producer.sendOneway(message, new MessageFilter() {
@@ -58,7 +58,9 @@ public class ProducerTests {
 
     @Test
     public void testSendAsync() throws InterruptedException {
-        MessageProducer producer = new MessageProducer("async-producer", client, new ProducerConfig());
+        Producer producer = new MessageProducer("async-producer", new ProducerConfig());
+        producer.start();
+
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
         MessageFilter filter = sendMessage -> sendMessage;
 

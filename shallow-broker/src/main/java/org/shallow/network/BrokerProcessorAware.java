@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
 import org.shallow.RemoteException;
-import org.shallow.consumer.Subscription;
+import org.shallow.consumer.push.Subscription;
 import org.shallow.internal.BrokerManager;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.invoke.InvokeAnswer;
@@ -67,7 +67,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     @Override
-    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type) {
         try {
             switch (command) {
                 case SEND_MESSAGE -> {

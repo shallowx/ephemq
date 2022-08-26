@@ -95,3 +95,15 @@ message SendMessageResponse {
   int32 epoch = 2;
   int64 index = 3;
 }
+
+message PullMessageRequest {
+  string queue = 1;
+  int32 limit = 2;
+}
+
+message PullMessageResponse {
+  string queue = 1;
+  int32 limit = 2;
+  int32 ledger = 3;
+}
+

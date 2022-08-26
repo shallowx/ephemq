@@ -3,7 +3,7 @@ package org.shallow.log;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.shallow.consumer.Subscription;
+import org.shallow.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;

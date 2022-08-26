@@ -9,11 +9,13 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
+import org.shallow.internal.Listener;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.ShallowChannelHealthChecker;
+import org.shallow.pool.ShallowChannelPool;
 import org.shallow.util.ObjectUtil;
 
 import static org.shallow.util.NetworkUtil.*;
@@ -24,27 +26,34 @@ public class Client {
     private final String name;
     private final ClientConfig config;
     private MetadataManager manager;
-    private Boolean state;
+    private boolean state = false;
 
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
     private final ShallowChannelHealthChecker healthChecker;
+    private Listener listener;
+    private ShallowChannelPool pool;
 
     public Client(String name, ClientConfig config) {
         this(name, config, null);
     }
 
-    public Client(String name, ClientConfig config, ShallowChannelHealthChecker healthChecker) {
-        this.name = name;
+    public Client(String name, ClientConfig config, Listener listener) {
+        this(name, config, listener, null);
+    }
+
+    public Client(String name, ClientConfig config, Listener listener, ShallowChannelHealthChecker healthChecker) {
+        this.name = ObjectUtil.checkNonEmpty(name, "Client name cannot be empty");
         this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
+        this.listener = listener;
         this.healthChecker = healthChecker;
     }
 
     public void start() {
-        if (state != null) {
+        if (state) {
             return;
         }
-        state = Boolean.TRUE;
+        state = true;
         workGroup = newEventLoopGroup(config.isEpollPrefer(), config.getWorkThreadLimit(), "client-worker(" + name + ")");
 
         DnsNameResolverBuilder drb = new DnsNameResolverBuilder();
@@ -64,7 +73,7 @@ public class Client {
                 .option(ChannelOption.SO_RCVBUF, 65536)
                 .resolver(new RoundRobinDnsAddressResolverGroup(drb));
 
-        DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(bootstrap, config, healthChecker);
+        pool = DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(this);
 
         this.manager = new MetadataManager(this);
 
@@ -73,13 +82,34 @@ public class Client {
         }
     }
 
-    public MetadataManager getMetadataManager() {
-        return manager;
+    public Listener getListener() {
+        return listener;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    public ShallowChannelPool getChanelPool() {
+        return pool;
     }
 
     public ClientConfig getClientConfig() {
         return config;
     }
+
+    public Bootstrap getBootstrap() {
+        return bootstrap;
+    }
+
+    public ShallowChannelHealthChecker getHealthChecker() {
+        return healthChecker;
+    }
+
+    public MetadataManager getMetadataManager() {
+        return manager;
+    }
+
 
     public void shutdownGracefully() {
         if (state != Boolean.TRUE) {

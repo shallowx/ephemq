@@ -18,6 +18,7 @@ import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.proto.server.SendMessageRequest;
 import org.shallow.proto.server.SendMessageResponse;
 import org.shallow.util.ByteBufUtil;
+import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
 import java.util.Map;
@@ -27,7 +28,7 @@ import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 
-public class MessageProducer {
+public class MessageProducer implements Producer{
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProducer.class);
 
@@ -35,26 +36,43 @@ public class MessageProducer {
     private final ProducerConfig config;
     private final ShallowChannelPool pool;
     private final String name;
+    private final Client client;
+    private volatile boolean state = false;
 
-    public MessageProducer(String name, Client client, ProducerConfig config) {
-        this.name = name;
+    public MessageProducer(String name, ProducerConfig config) {
+        this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be empty");
+        this.client = new Client("producer-client", config);
         this.manager = client.getMetadataManager();
         this.config = config;
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }
 
+    @Override
+    public void start() {
+        if (state) {
+            return;
+        }
+
+        state = true;
+        client.start();
+    }
+
+    @Override
     public void sendOneway(Message message) {
         sendOneway(message, null);
     }
 
+    @Override
     public SendResult send(Message message) throws Exception {
         return send(message, null);
     }
 
+    @Override
     public void sendAsync(Message message, SendCallback callback)  {
         sendAsync(message, null, callback);
     }
 
+    @Override
     public void sendOneway(Message message, MessageFilter messageFilter) {
         checkTopic(message.topic());
         checkQueue(message.queue());
@@ -64,6 +82,7 @@ public class MessageProducer {
         doSend(config.getSendOnewayTimeoutMs(), message, null);
     }
 
+    @Override
     public SendResult send(Message message, MessageFilter messageFilter) throws Exception {
         checkTopic(message.topic());
         checkQueue(message.queue());
@@ -78,6 +97,7 @@ public class MessageProducer {
         return new SendResult(response.getEpoch(), response.getIndex(), response.getLedger());
     }
 
+    @Override
     public void sendAsync(Message message, MessageFilter messageFilter, SendCallback callback)  {
         checkTopic(message.topic());
         checkQueue(message.queue());

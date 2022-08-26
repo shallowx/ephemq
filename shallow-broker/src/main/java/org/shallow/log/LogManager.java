@@ -4,14 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.concurrent.Promise;
 import org.shallow.RemoteException;
-import org.shallow.consumer.Subscription;
+import org.shallow.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.internal.atomic.DistributedAtomicInteger;
-import org.shallow.proto.server.SubscribeResponse;
 
-import javax.annotation.concurrent.ThreadSafe;
 import java.util.Map;
 
 import static org.shallow.util.ObjectUtil.isNull;

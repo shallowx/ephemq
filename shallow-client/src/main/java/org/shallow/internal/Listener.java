@@ -1,12 +1,17 @@
 package org.shallow.internal;
 
+import io.netty.buffer.ByteBuf;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 
-public interface ClientListener {
+public interface Listener {
 
     default void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal){}
 
     default void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal){}
+
+    default void onPushMessage(ByteBuf data){}
+
+    default void onPullMessage(String topic, ByteBuf data){}
 }

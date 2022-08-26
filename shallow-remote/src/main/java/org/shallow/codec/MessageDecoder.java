@@ -95,13 +95,13 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final short version = buf.readShort();
                 final byte command = buf.readByte();
-                final byte state = buf.readByte();
+                final byte type = buf.readByte();
                 final int answer = buf.readInt();
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
 
                 this.state = READ_MAGIC_NUMBER;
 
-                return MessagePacket.newPacket(version, state, answer, command, body);
+                return MessagePacket.newPacket(version, type, answer, command, body);
             }
             default:{
                 throw new DecoderException("Invalid decode state:" + state);

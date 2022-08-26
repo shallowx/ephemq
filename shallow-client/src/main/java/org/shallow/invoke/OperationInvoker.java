@@ -9,13 +9,13 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
+import org.shallow.Type;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.processor.AwareInvocation;
 import org.shallow.util.ByteBufUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +43,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             @SuppressWarnings("unchecked")
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
             ByteBuf buf = assembleInvokeMessageData(clientChannel.allocator(), request, extras, message);
-            invoke0(SEND_MESSAGE, buf, timeoutMs, callback);
+            invoke0(SEND_MESSAGE, buf, (byte) Type.PUSH.sequence(), timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
@@ -74,24 +74,28 @@ public class OperationInvoker implements ProcessCommand.Server {
     }
 
     public void invoke(byte command, int timeoutMs, Promise<?> promise, MessageLite request, Class<?> clz) {
-       try {
-           @SuppressWarnings("unchecked")
-           Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
-           ByteBuf buf = assembleInvokeData(clientChannel.allocator(), request);
-           invoke0(command, buf, timeoutMs, callback);
-       } catch (Exception e) {
-           tryFailure(promise, e);
-       }
+        invoke(command, timeoutMs, (byte) Type.PUSH.sequence(), promise, request, clz);
    }
+
+    public void invoke(byte command, int timeoutMs, byte type, Promise<?> promise, MessageLite request, Class<?> clz) {
+        try {
+            @SuppressWarnings("unchecked")
+            Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
+            ByteBuf buf = assembleInvokeData(clientChannel.allocator(), request);
+            invoke0(command, buf, type, timeoutMs, callback);
+        } catch (Exception e) {
+            tryFailure(promise, e);
+        }
+    }
 
    @SuppressWarnings("rawtypes")
    private Parser assembleParser(Class<?> clz) throws Exception {
         final Method defaultInstance = clz.getDeclaredMethod("getDefaultInstance");
         Message defaultInst = (Message) defaultInstance.invoke(null);
-       return defaultInst.getParserForType();
+        return defaultInst.getParserForType();
    }
 
-    private void invoke0(byte command, ByteBuf content, long timeoutMs, Callback<ByteBuf> callback) {
+    private void invoke0(byte command, ByteBuf content, byte type, long timeoutMs, Callback<ByteBuf> callback) {
         try {
             long now = System.currentTimeMillis();
             final Channel channel = clientChannel.channel();
@@ -99,14 +103,14 @@ public class OperationInvoker implements ProcessCommand.Server {
                 try {
                     if (isNull(callback)) {
                         ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content)), promise);
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), type), promise);
                     } else {
                         long expired = timeoutMs + now;
                         GenericInvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
                             semaphore.release();
                             callback.operationCompleted(buf, cause);
                         });
-                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), expired, answer));
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), type, expired, answer));
                     }
                 } catch (Throwable t) {
                     semaphore.release();

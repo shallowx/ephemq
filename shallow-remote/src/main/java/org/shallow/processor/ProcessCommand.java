@@ -14,6 +14,7 @@ public interface ProcessCommand {
         byte REGISTER_NODE = 9;
         byte SEND_MESSAGE = 10;
         byte SUBSCRIBE = 11;
+        byte PULL_MESSAGE = 12;
     }
 
     interface Client {
@@ -29,7 +30,7 @@ public interface ProcessCommand {
             }
         };
 
-        byte RECEIVE_MESSAGE = 1;
+        byte HANDLE_MESSAGE = 1;
         byte TOPIC_CHANGED = 2;
         byte CLUSTER_CHANGED = 3;
        default String get(byte command) {

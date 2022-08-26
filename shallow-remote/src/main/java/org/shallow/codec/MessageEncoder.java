@@ -26,14 +26,14 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             final short version = packet.version();
-            final byte state = packet.state();
+            final byte type = packet.type();
             final int answer = packet.answer();
             final byte command = packet.command();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;
             try {
-                 header = encodeHeader(ctx.alloc(), version, state, command, answer, body.readableBytes());
+                 header = encodeHeader(ctx.alloc(), version, type, command, answer, body.readableBytes());
             } catch (Throwable cause) {
                 release(body);
                 throw cause;

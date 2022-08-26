@@ -1,4 +1,4 @@
-package org.shallow.consumer;
+package org.shallow.consumer.push;
 
 @FunctionalInterface
 public interface SubscribeCallback {

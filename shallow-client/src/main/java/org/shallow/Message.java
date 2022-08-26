@@ -5,14 +5,63 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public record Message(String topic, String queue, byte[] message, Extras extras) {
+public class Message {
+
+    private final String topic;
+    private final String queue;
+    private final byte[] message;
+    private int epoch;
+    private long index;
+    private Extras extras;
+
+    public Message(String topic, String queue, byte[] message, Extras extras) {
+        this.topic = topic;
+        this.queue = queue;
+        this.message = message;
+        this.extras = extras;
+    }
+
+    public Message(String topic, String queue, byte[] message, int epoch, long index, Extras extras) {
+        this.topic = topic;
+        this.queue = queue;
+        this.message = message;
+        this.epoch = epoch;
+        this.index = index;
+        this.extras = extras;
+    }
+
+    public String topic() {
+        return topic;
+    }
+
+    public String queue() {
+        return queue;
+    }
+
+    public byte[] message() {
+        return message;
+    }
+
+    public int epoch() {
+        return epoch;
+    }
+
+    public long index() {
+        return index;
+    }
+
+    public Extras extras() {
+        return extras;
+    }
 
     @Override
     public String toString() {
         return "Message{" +
                 "topic='" + topic + '\'' +
                 ", queue='" + queue + '\'' +
-                ", message='" + Arrays.toString(message) + '\'' +
+                ", message=" + Arrays.toString(message) +
+                ", epoch=" + epoch +
+                ", index=" + index +
                 ", extras=" + extras +
                 '}';
     }

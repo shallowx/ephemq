@@ -24,7 +24,6 @@ public class MessageSendBenchmark {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageSendBenchmark.class);
 
     private MessageProducer producer;
-    private Client client;
     private ClientConfig clientConfig;
     private ProducerConfig producerConfig;
 
@@ -33,11 +32,9 @@ public class MessageSendBenchmark {
         clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
 
-        client = new Client("benchmark-client", clientConfig);
-        client.start();
-
         producerConfig = new ProducerConfig();
-        producer = new MessageProducer("async-producer", client, producerConfig);
+        producer = new MessageProducer("async-producer", producerConfig);
+        producer.start();
     }
 
     @Benchmark
@@ -56,6 +53,6 @@ public class MessageSendBenchmark {
 
     @TearDown
     public void shutdown() {
-        client.shutdownGracefully();
+
     }
 }

@@ -15,16 +15,16 @@ public final class BrokerServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerServer.class);
 
     private final BrokerSocketServer socketServer;
-    private final CountDownLatch latch;
     private final BrokerManager manager;
 
     public BrokerServer(BrokerConfig config) {
         this.manager = new DefaultBrokerManager(config);
         this.socketServer = new BrokerSocketServer(config, manager);
-        this.latch = new CountDownLatch(1);
+
     }
 
     public void start() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
         ScheduledFuture<?> socketStartFuture = newEventExecutorGroup(1, "socket-start")
                 .next()
                 .schedule(() -> {

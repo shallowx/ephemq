@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
+import org.shallow.Type;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -14,8 +15,8 @@ import static org.shallow.util.ByteBufUtil.*;
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
-    public static final byte HEADER_LENGTH = 12;
-    public static final int MAX_FRAME_LENGTH = 4194316;
+    public static final byte HEADER_LENGTH = 13;
+    public static final int MAX_FRAME_LENGTH = 4194317;
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
 
     private static final Recycler<MessagePacket> RECYCLER = new Recycler<>() {
@@ -26,21 +27,21 @@ public final class MessagePacket extends AbstractReferenceCounted {
     };
 
     private short version;
-    private byte state; // req: -1 ; resp:response code
+    private byte type;
     private int answer;
     private byte command;
     private ByteBuf body;
     private final Recycler.Handle<MessagePacket> handle;
 
     public static MessagePacket newPacket(int answer, byte command, ByteBuf body) {
-       return newPacket((short) -1, (byte) -1, answer, command, body);
+       return newPacket((short) -1, (byte) Type.HEARTBEAT.sequence(), answer, command, body);
     }
 
-    public static MessagePacket newPacket(short version, byte state, int answer, byte command, ByteBuf body) {
+    public static MessagePacket newPacket(short version, byte type, int answer, byte command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
         packet.version = version;
-        packet.state = state;
+        packet.type = type;
         packet.answer = answer;
         packet.command = command;
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
@@ -60,8 +61,8 @@ public final class MessagePacket extends AbstractReferenceCounted {
         return version;
     }
 
-    public byte state() {
-        return state;
+    public byte type() {
+        return type;
     }
 
     public ByteBuf body() {
@@ -111,7 +112,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
     public String toString() {
         return "MessagePacket{" +
                 "version=" + version +
-                ", state=" + state +
+                ", type=" + type +
                 ", answer=" + answer +
                 ", command=" + command +
                 ", handle=" + handle +

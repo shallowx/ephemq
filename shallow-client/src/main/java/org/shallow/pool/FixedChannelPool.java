@@ -6,6 +6,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
+import org.shallow.Client;
 import org.shallow.internal.ClientChannelInitializer;
 import org.shallow.ClientConfig;
 import org.shallow.util.ObjectUtil;
@@ -27,44 +28,32 @@ public class FixedChannelPool implements ShallowChannelPool {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(FixedChannelPool.class);
 
-    private final ClientConfig config;
+    private final Client client;
+    private final Bootstrap bootstrap;
+    private final ClientConfig clientConfig;
     private final Map<SocketAddress, List<Future<ClientChannel>>> channelPools;
     private final Map<String, Promise<ClientChannel>> assembleChannels;
-    private final Bootstrap bootstrap;
     private final ShallowChannelHealthChecker healthChecker;
     private final List<SocketAddress> bootstrapAddress;
 
-    public FixedChannelPool(Bootstrap bootstrap, ClientConfig config, ShallowChannelHealthChecker healthChecker) {
-        this.bootstrap = bootstrap;
-        this.config = config;
-        this.channelPools = new ConcurrentHashMap<>(config.getBootstrapSocketAddress().size());
-        this.assembleChannels = new ConcurrentHashMap<>(config.getBootstrapSocketAddress().size() * config.getChannelFixedPoolCapacity());
+    public FixedChannelPool(Client client, ShallowChannelHealthChecker healthChecker) {
+        this.client = client;
+        this.bootstrap = client.getBootstrap();
+        this.clientConfig = client.getClientConfig();
+        this.channelPools = new ConcurrentHashMap<>(clientConfig.getBootstrapSocketAddress().size());
+        this.assembleChannels = new ConcurrentHashMap<>(clientConfig.getBootstrapSocketAddress().size() * clientConfig.getChannelFixedPoolCapacity());
         this.healthChecker = healthChecker;
         this.bootstrapAddress = constructBootstrap();
     }
 
     private List<SocketAddress> constructBootstrap() {
-        return ObjectUtil.checkNotNull(switchSocketAddress(config.getBootstrapSocketAddress()), "Client bootstrap address cannot be empty");
-    }
-
-    private void constructChannel(SocketAddress address) {
-        final List<Future<ClientChannel>> futures = channelPools.computeIfAbsent(address, v -> new CopyOnWriteArrayList<>());
-        final int stuff = futures.isEmpty() ? config.getChannelFixedPoolCapacity() : (config.getChannelFixedPoolCapacity() - futures.size());
-        for (int i = 0; i < stuff; i++) {
-            final Future<ClientChannel> future = newChannel(address);
-            futures.add(future);
-            future.addListener(f -> {
-                if (!f.isSuccess()) {
-                    futures.remove(f);
-                }
-            });
-        }
+        return ObjectUtil.checkNotNull(switchSocketAddress(clientConfig.getBootstrapSocketAddress()), "Client bootstrap address cannot be empty");
     }
 
     @Override
     public ClientChannel acquireHealthyOrNew(SocketAddress address) {
         try {
-            return acquireHealthyOrNew0(address).get(config.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
+            return acquireHealthyOrNew0(address).get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             throw new RuntimeException("Failed to get healthy channel from pool", t);
         }
@@ -73,7 +62,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     @Override
     public ClientChannel acquireWithRandomly() {
         try {
-            return randomAcquire().get(config.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
+            return randomAcquire().get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             throw new RuntimeException("Failed to get healthy channel randomly from pool", t);
         }
@@ -116,7 +105,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> newChannel(SocketAddress address) {
-        Bootstrap bs = bootstrap.clone().handler(new ClientChannelInitializer(address, config));
+        Bootstrap bs = bootstrap.clone().handler(new ClientChannelInitializer(address, client));
         final ChannelFuture connectFuture = bs.connect(address);
         final Channel channel = connectFuture.channel();
         Promise<ClientChannel> promise = assemblePromise(channel);

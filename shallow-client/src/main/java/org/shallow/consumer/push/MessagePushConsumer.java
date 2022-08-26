@@ -1,10 +1,12 @@
-package org.shallow.consumer;
+package org.shallow.consumer.push;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
-import org.shallow.ClientConfig;
+import org.shallow.consumer.ConsumerConfig;
+import org.shallow.consumer.pull.PullConsumerListener;
+import org.shallow.internal.Listener;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -15,7 +17,7 @@ import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.proto.server.SubscribeRequest;
 import org.shallow.proto.server.SubscribeResponse;
-import org.shallow.util.NetworkUtil;
+import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -24,24 +26,32 @@ import static org.shallow.processor.ProcessCommand.Server.SUBSCRIBE;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNull;
 
-public class MessageConsumer {
+public class MessagePushConsumer implements PushConsumer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageConsumer.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessagePushConsumer.class);
 
     private final MetadataManager manager;
     private final ConsumerConfig config;
-    private final MessageListener messageListener;
+    private final MessagePushListener messageListener;
     private final ShallowChannelPool pool;
     private final String name;
+    private final Client client;
 
-    public MessageConsumer(String name, Client client, ConsumerConfig config, MessageListener listener) {
+    public MessagePushConsumer(String name, ConsumerConfig config, MessagePushListener listener) {
         this.messageListener = listener;
+        this.client = new Client("consumer-client", config, new PushConsumerListener(this));
         this.config = config;
-        this.name = name;
+        this.name = ObjectUtil.checkNonEmpty(name, "Message push consumer name cannot be empty");
         this.manager = client.getMetadataManager();
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }
 
+    @Override
+    public MessagePushListener getPushConsumerListener() {
+        return messageListener;
+    }
+
+    @Override
     public Subscription subscribe(String topic, String queue) {
         checkTopic(topic);
         checkQueue(queue);
@@ -58,6 +68,7 @@ public class MessageConsumer {
         }
     }
 
+    @Override
     public void subscribeAsync(String topic, String queue, SubscribeCallback callback) {
         checkTopic(topic);
         checkQueue(queue);
