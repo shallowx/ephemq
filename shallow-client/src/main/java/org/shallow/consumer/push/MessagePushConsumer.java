@@ -5,8 +5,6 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.consumer.ConsumerConfig;
-import org.shallow.consumer.pull.PullConsumerListener;
-import org.shallow.internal.Listener;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
