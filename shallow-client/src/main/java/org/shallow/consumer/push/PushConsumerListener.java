@@ -6,7 +6,7 @@ import org.shallow.invoke.ClientChannel;
 import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 
-public class PushConsumerListener implements Listener {
+final class PushConsumerListener implements Listener {
 
     private MessagePushListener listener;
 

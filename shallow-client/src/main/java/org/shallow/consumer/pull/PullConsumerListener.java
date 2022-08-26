@@ -13,7 +13,7 @@ import org.shallow.util.ByteBufUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PullConsumerListener implements Listener {
+final class PullConsumerListener implements Listener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumerListener.class);
     private final MessagePullListener listener;
