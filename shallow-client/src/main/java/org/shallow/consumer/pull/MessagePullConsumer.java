@@ -1,5 +1,7 @@
 package org.shallow.consumer.pull;
 
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.consumer.ConsumerConfig;
@@ -23,21 +25,19 @@ public class MessagePullConsumer implements PullConsumer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessagePullConsumer.class);
 
-    private final MetadataManager manager;
+    private MetadataManager manager;
     private final ConsumerConfig config;
     private final String name;
-    private final ShallowChannelPool pool;
+    private ShallowChannelPool pool;
     private final Client client;
     private volatile boolean state = false;
     private final MessagePullListener listener;
 
     public MessagePullConsumer(ConsumerConfig config, String name, MessagePullListener pullListener) {
-        this.client = new Client("consumer-client", config, new PullConsumerListener(this));
-        this.manager = client.getMetadataManager();
-        this.config = config;
         this.listener = pullListener;
+        this.client = new Client("consumer-client", config.getClientConfig(), new PullConsumerListener(this));
+        this.config = config;
         this.name = ObjectUtil.checkNonEmpty(name, "Message pull consumer name cannot be empty");
-        this.pool = client.getChanelPool();
     }
 
     public void start() {
@@ -46,12 +46,21 @@ public class MessagePullConsumer implements PullConsumer {
         }
         state = true;
         client.start();
+
+        this.manager = client.getMetadataManager();
+        this.pool = client.getChanelPool();
     }
 
     @Override
-    public void pull(String topic, String queue, int limit) throws Exception {
-        Promise<PullMessageResponse> promise = newImmediatePromise();
-        doPullMessage(topic, queue, limit, promise);
+    public void pull(String topic, String queue, int epoch, long index, int limit, Promise<PullMessageResponse> promise) throws Exception {
+        promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
+            if (future.isSuccess()) {
+                promise.trySuccess(future.get());
+            } else {
+                promise.tryFailure(future.cause());
+            }
+        });
+        doPullMessage(topic, queue, epoch, index, limit, promise);
     }
 
     @Override
@@ -59,7 +68,7 @@ public class MessagePullConsumer implements PullConsumer {
         return listener;
     }
 
-    private void doPullMessage(String topic, String queue, int limit, Promise<PullMessageResponse> promise) {
+    private void doPullMessage(String topic, String queue,int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (isNull(messageRouter)) {
             throw new RuntimeException(String.format("The topic<%s> router is empty", topic));
@@ -69,15 +78,19 @@ public class MessagePullConsumer implements PullConsumer {
         if (isNull(holder)) {
             throw new RuntimeException(String.format("The topic<%s> ledgers is empty", topic));
         }
+        int ledger = holder.ledger();
 
         PullMessageRequest request = PullMessageRequest
                 .newBuilder()
+                .setLedger(ledger)
+                .setEpoch(epoch)
+                .setIndex(index)
                 .setQueue(queue)
                 .setLimit(limit)
                 .build();
 
         SocketAddress leader = holder.leader();
         ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
-        clientChannel.invoker().invoke(ProcessCommand.Server.PULL_MESSAGE, config.getInvokeExpiredMs(),promise, request, PullMessageResponse.class);
+        clientChannel.invoker().invoke(ProcessCommand.Server.PULL_MESSAGE, config.getClientConfig().getInvokeExpiredMs(),promise, request, PullMessageResponse.class);
     }
 }

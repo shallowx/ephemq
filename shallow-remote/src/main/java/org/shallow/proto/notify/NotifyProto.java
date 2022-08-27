@@ -24,6 +24,11 @@ public final class NotifyProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_NodeOfflineSignal_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_MessagePullSignal_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_MessagePullSignal_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -35,8 +40,11 @@ public final class NotifyProto {
     java.lang.String[] descriptorData = {
       "\n\014notify.proto\022\020shallow.protobuf\032\rshallo" +
       "w.proto\"\030\n\026PartitionChangedSignal\"\023\n\021Nod" +
-      "eOfflineSignalB)\n\030org.shallow.proto.noti" +
-      "fyB\013NotifyProtoP\001b\006proto3"
+      "eOfflineSignal\"n\n\021MessagePullSignal\022\r\n\005t" +
+      "opic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\016\n\006ledger\030\003 \001(" +
+      "\005\022\r\n\005limit\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index" +
+      "\030\006 \001(\003B)\n\030org.shallow.proto.notifyB\013Noti" +
+      "fyProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -55,6 +63,12 @@ public final class NotifyProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_NodeOfflineSignal_descriptor,
         new java.lang.String[] { });
+    internal_static_shallow_protobuf_MessagePullSignal_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_shallow_protobuf_MessagePullSignal_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_MessagePullSignal_descriptor,
+        new java.lang.String[] { "Topic", "Queue", "Ledger", "Limit", "Epoch", "Index", });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

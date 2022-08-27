@@ -8,10 +8,13 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
+import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.util.ByteBufUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.shallow.util.ProtoBufUtil.readProto;
 
 final class PullConsumerListener implements Listener {
 
@@ -33,27 +36,34 @@ final class PullConsumerListener implements Listener {
     }
 
     @Override
-    public void onPullMessage(String topic, ByteBuf data) {
-        String queue = null;
-        int ledger = 0;
-
-        int limit = data.readInt();
+    public void onPullMessage(String topic, String queue, int ledger, int limit, int epoch, long index, ByteBuf data) {
         List<Message> messages = new ArrayList<>(limit);
+        try {
+            for (int i = 0; i < limit; i++) {
+                int messageLength = data.readInt();
 
-        for (int i = 0; i < limit; i++) {
-            int length = data.readInt();
+                int queueLength = data.readInt();
+                data.skipBytes(queueLength);
 
-            int queueLength = data.readInt();
-            queue = ByteBufUtil.buf2String(data.readBytes(queueLength), queueLength);
+                int messageEpoch = data.readInt();
+                long position = data.readLong();
 
-            int epoch = data.readInt();
-            long position = data.readLong();
+                ByteBuf buf = data.retainedSlice(data.readerIndex(), messageLength - 16 - queueLength);
 
-            byte[] body = ByteBufUtil.buf2Bytes(data.readBytes((length - 16 - queue.length())));
-            messages.add(new Message(topic, queue, body, epoch, position, null));
+                SendMessageExtras extras = readProto(buf, SendMessageExtras.parser());
+                byte[] body = ByteBufUtil.buf2Bytes(buf.readBytes(buf.readableBytes()));
+
+                messages.add(new Message(topic, queue, body, messageEpoch, position, new Message.Extras(extras.getExtrasMap())));
+            }
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error(t.getMessage(), t);
+            }
+        } finally {
+            ByteBufUtil.release(data);
         }
 
-        PullResult result = new PullResult(ledger, topic, queue, messages);
+        PullResult result = new PullResult(ledger, topic, queue, limit, epoch, index, messages);
         listener.onMessage(result);
     }
 }

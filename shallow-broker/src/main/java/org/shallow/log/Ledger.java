@@ -1,9 +1,12 @@
 package org.shallow.log;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
+import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
+import org.shallow.handle.EntryPullHandler;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -25,6 +28,7 @@ public class Ledger {
     private final BrokerConfig config;
     private final Storage storage;
     private final EventExecutor storageExecutor;
+    private final EntryPullHandler entryPullHandler;
 
     public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
@@ -34,6 +38,7 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
+        this.entryPullHandler = new EntryPullHandler();
     }
 
     public void subscribe(String queue, int epoch, long index, Promise<Subscription> promise) {
@@ -77,18 +82,53 @@ public class Ledger {
         }
     }
 
+    public void pull(Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
+        if (storageExecutor.inEventLoop()) {
+            doPull(channel, queue, epoch, index, limit, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doPull(channel, queue, epoch, index, limit, promise));
+            } catch (Throwable t) {
+                promise.tryFailure(t);
+            }
+        }
+    }
+
+    private void doPull(Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
+        Offset offset = new Offset(epoch, index);
+        try {
+            entryPullHandler.register(queue, channel);
+            storage.read(queue, offset, limit, promise);
+        } catch (Throwable t) {
+            promise.tryFailure(t);
+        }
+    }
+
     public int getLedgerId() {
         return ledgerId;
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
     public void onTriggerAppend(int ledgerId, int limit, Offset offset) {
 
     }
 
+    public void onTriggerPull(String queue, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
+        entryPullHandler.write2PullChannel(topic, queue, ledgerId, limit, offset, buf);
+    }
+
     private class MessageTrigger implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int limit, Offset tail) {
             onTriggerAppend(ledgerId, limit, tail);
+        }
+
+        @Override
+        public void onPull(String queue, int ledgerId, int limit, Offset head, ByteBuf buf) {
+            onTriggerPull(queue, ledgerId, limit, head, buf);
         }
     }
 }

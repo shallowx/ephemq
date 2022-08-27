@@ -97,13 +97,19 @@ message SendMessageResponse {
 }
 
 message PullMessageRequest {
-  string queue = 1;
-  int32 limit = 2;
+  int32 ledger = 1;
+  string queue = 2;
+  int32 limit = 3;
+  int32 epoch = 4;
+  int64 index = 5;
 }
 
 message PullMessageResponse {
-  string queue = 1;
-  int32 limit = 2;
-  int32 ledger = 3;
+  string topic = 1;
+  string queue = 2;
+  int32 limit = 3;
+  int32 ledger = 4;
+  int32 epoch = 5;
+  int64 index = 6;
 }
 

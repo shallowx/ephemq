@@ -20,7 +20,6 @@ public class ProducerTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerTests.class);
 
     private static ClientConfig clientConfig;
-    private static Client client;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -30,7 +29,10 @@ public class ProducerTests {
 
     @Test
     public void testSend() throws Exception {
-        Producer producer = new MessageProducer("send-producer", new ProducerConfig());
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+
+        Producer producer = new MessageProducer("send-producer", producerConfig);
         producer.start();
 
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
@@ -43,7 +45,10 @@ public class ProducerTests {
 
     @Test
     public void testSendOneway() {
-        Producer producer = new MessageProducer("oneway-producer", new ProducerConfig());
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+
+        Producer producer = new MessageProducer("oneway-producer", producerConfig);
         producer.start();
 
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
@@ -58,10 +63,13 @@ public class ProducerTests {
 
     @Test
     public void testSendAsync() throws InterruptedException {
-        Producer producer = new MessageProducer("async-producer", new ProducerConfig());
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+
+        Producer producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
 
-        Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
+        Message message = new Message("create", "message", "message".getBytes(UTF_8), new Message.Extras());
         MessageFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -79,6 +87,5 @@ public class ProducerTests {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        client.shutdownGracefully();
     }
 }

@@ -104,6 +104,36 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     }
                 }
 
+                case PULL_MESSAGE -> {
+                    try {
+                        PullMessageRequest request = readProto(data, PullMessageRequest.parser());
+                        int ledger = request.getLedger();
+                        int limit = request.getLimit();
+                        String queue = request.getQueue();
+                        int epoch = request.getEpoch() ;
+                        long index = request.getIndex();
+
+                        Promise<PullMessageResponse> promise = newImmediatePromise();
+                        promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
+                            if (future.isSuccess()) {
+                                if (isNotNull(answer)) {
+                                    answer.success(proto2Buf(channel.alloc(), future.get()));
+                                }
+                            } else {
+                                answerFailed(answer, future.cause());
+                            }
+                        });
+
+                        LogManager logManager = manager.getLogManager();
+                        logManager.pull(channel, ledger, queue, epoch, index, limit, promise);
+                    } catch (Throwable t) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to pull message record", t);
+                        }
+                        answerFailed(answer,t);
+                    }
+                }
+
                 case QUORUM_VOTE -> {
                     try {
                         VoteRequest request = readProto(data, VoteRequest.parser());

@@ -13,7 +13,7 @@ public class DefaultFixedChannelPoolFactory {
         return newChannelPool(client, null);
     }
 
-    public ShallowChannelPool newChannelPool(Client client, ShallowChannelHealthChecker healthChecker) {
+    public ShallowChannelPool newChannelPool(Client client,  ShallowChannelHealthChecker healthChecker) {
         pool = new FixedChannelPool(client, (healthChecker == null ? ShallowChannelHealthChecker.ACTIVE : healthChecker));
         return pool;
     }

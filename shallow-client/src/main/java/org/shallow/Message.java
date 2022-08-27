@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.shallow.util.ObjectUtil.isNull;
+
 public class Message {
 
     private final String topic;
@@ -12,13 +14,13 @@ public class Message {
     private final byte[] message;
     private int epoch;
     private long index;
-    private Extras extras;
+    private final Extras extras;
 
     public Message(String topic, String queue, byte[] message, Extras extras) {
         this.topic = topic;
         this.queue = queue;
         this.message = message;
-        this.extras = extras;
+        this.extras = extras ;
     }
 
     public Message(String topic, String queue, byte[] message, int epoch, long index, Extras extras) {

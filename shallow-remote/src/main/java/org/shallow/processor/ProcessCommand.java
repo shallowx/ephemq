@@ -22,7 +22,7 @@ public interface ProcessCommand {
             @Override
             public String get(byte command) {
                 return switch (command) {
-                    case 1 -> "RECEIVE_MESSAGE";
+                    case 1 -> "HANDLE_MESSAGE";
                     case 2 -> "TOPIC_CHANGED";
                     case 3 -> "CLUSTER_CHANGED";
                     default -> throw new IllegalStateException("Unexpected server command: " + command);

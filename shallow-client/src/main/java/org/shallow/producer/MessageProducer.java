@@ -32,19 +32,18 @@ public class MessageProducer implements Producer{
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProducer.class);
 
-    private final MetadataManager manager;
+    private MetadataManager manager;
     private final ProducerConfig config;
-    private final ShallowChannelPool pool;
+    private ShallowChannelPool pool;
     private final String name;
     private final Client client;
     private volatile boolean state = false;
 
     public MessageProducer(String name, ProducerConfig config) {
         this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be empty");
-        this.client = new Client("producer-client", config);
-        this.manager = client.getMetadataManager();
+        this.client = new Client("producer-client", config.getClientConfig());
         this.config = config;
-        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
+
     }
 
     @Override
@@ -55,6 +54,9 @@ public class MessageProducer implements Producer{
 
         state = true;
         client.start();
+
+        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
+        this.manager = client.getMetadataManager();
     }
 
     @Override
@@ -93,7 +95,7 @@ public class MessageProducer implements Producer{
 
         doSend(config.getSendTimeoutMs(), message, promise);
 
-        SendMessageResponse response = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+        SendMessageResponse response = promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
         return new SendResult(response.getEpoch(), response.getIndex(), response.getLedger());
     }
 

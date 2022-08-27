@@ -13,5 +13,5 @@ public interface Listener {
 
     default void onPushMessage(ByteBuf data){}
 
-    default void onPullMessage(String topic, ByteBuf data){}
+    default void onPullMessage(String topic, String queue, int ledger, int limit, int epoch, long index, ByteBuf data){}
 }

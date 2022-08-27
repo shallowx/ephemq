@@ -1,17 +1,22 @@
 package org.shallow.log;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.*;
+import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
+import org.shallow.RemoteException;
+import org.shallow.consumer.pull.PullResult;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.proto.elector.VoteResponse;
+import org.shallow.util.ByteBufUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import static java.lang.Integer.MAX_VALUE;
 import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Storage {
@@ -70,6 +75,77 @@ public class Storage {
         }
     }
 
+    public void read(String queue, Offset offset, int limit, Promise<PullResult> promise) {
+        if (storageExecutor.inEventLoop()) {
+            doRead(queue, offset, limit, promise);
+        } else {
+            storageExecutor.execute(() -> doRead(queue, offset,  limit, promise));
+        }
+    }
+
+    @SuppressWarnings("all")
+    private void doRead(String queue, Offset offset, int limit, Promise<PullResult> promise) {
+        try {
+            Segment segment = locateSegment(offset);
+            if (isNull(segment)) {
+                promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("The Segment not found, and the offset<epoch= %d index=%d>", offset.epoch(), offset.index())));
+                return;
+            }
+
+            int position = segment.locate(offset);
+            CompositeByteBuf compositeByteBuf = null;
+            for (int i = 0; i < limit; i++) {
+                ByteBuf queueBuf = null;
+                try {
+                    ByteBuf payload = segment.readCompleted(position);
+
+                    int queueLength = payload.getInt(4);
+                    queueBuf = payload.retainedSlice(8, queueLength);
+                    String theQueue = ByteBufUtil.buf2String(queueBuf, queueLength);
+                    if (!theQueue.equals(queue)) {
+                        continue;
+                    }
+
+                    if (isNull(compositeByteBuf)) {
+                        compositeByteBuf = newComposite(payload, limit);
+                        continue;
+                    }
+                    compositeByteBuf.addFlattenedComponents(true, payload);
+                } catch (Throwable t) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Read message failed, error:{}", t);
+                    }
+                    continue;
+                } finally {
+                    ByteBufUtil.release(queueBuf);
+                }
+            }
+            triggerPull(queue, ledger, limit, offset, compositeByteBuf);
+
+            Offset headOffset = segment.headOffset();
+            promise.trySuccess(new PullResult(ledger, null, queue, limit, headOffset.epoch(), headOffset.index(), null));
+        } catch (Throwable t) {
+            promise.tryFailure(t);
+        }
+    }
+
+    private CompositeByteBuf newComposite(ByteBuf buf, int limit) {
+        return Unpooled.compositeBuffer(limit).addFlattenedComponents(true, buf);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void triggerPull(String queue, int ledger, int limit, Offset offset, ByteBuf buf) {
+        if (isNotNull(trigger)) {
+            try {
+                trigger.onPull(queue, ledger, limit, offset, buf);
+            } catch (Throwable t) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn("trigger pull error: ledger={} limit={} offset={}", ledger, limit, offset);
+                }
+            }
+        }
+    }
+
     @SuppressWarnings("SameParameterValue")
     private void triggerAppend(int ledger, int limit, Offset offset) {
         if (isNotNull(trigger)) {
@@ -93,6 +169,23 @@ public class Storage {
         } else {
             return theTailSegment;
         }
+    }
+
+    private Segment locateSegment(Offset offset) {
+        boolean isActive = true;
+
+        Segment theSegment = headSegment;
+        Offset tailOffset = theSegment.tailOffset();
+        while (offset.after(tailOffset)) {
+            theSegment = headSegment.next();
+            if (isNull(theSegment)) {
+                isActive = false;
+                break;
+            }
+            tailOffset = theSegment.tailOffset();
+        }
+
+        return isActive ? theSegment : null;
     }
 
     private void releaseSegment() {

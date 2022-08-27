@@ -77,6 +77,17 @@ public class Segment {
         return null;
     }
 
+    public ByteBuf readCompleted(int location) {
+        ByteBufHolder finalHolder = holder;
+        if (isNotNull(finalHolder)) {
+            ByteBuf payload = finalHolder.payload;
+            int length = payload.getInt(location);
+            return payload.retainedSlice(location, length + 4);
+        }
+
+        return null;
+    }
+
     public int freeWriteBytes() {
         ByteBufHolder theHolder = holder;
         return isNull(theHolder) ? 0 : theHolder.payload.writableBytes();

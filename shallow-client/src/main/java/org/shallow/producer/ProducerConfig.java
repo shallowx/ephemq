@@ -2,11 +2,20 @@ package org.shallow.producer;
 
 import org.shallow.ClientConfig;
 
-public class ProducerConfig extends ClientConfig {
+public class ProducerConfig {
 
     private int sendTimeoutMs = 5000;
     private int sendOnewayTimeoutMs = 5000;
     private int sendAsyncTimeoutMs = 5000;
+    private ClientConfig clientConfig;
+
+    public ClientConfig getClientConfig() {
+        return clientConfig;
+    }
+
+    public void setClientConfig(ClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
+    }
 
     public void setSendTimeoutMs(int sendTimeoutMs) {
         this.sendTimeoutMs = sendTimeoutMs;

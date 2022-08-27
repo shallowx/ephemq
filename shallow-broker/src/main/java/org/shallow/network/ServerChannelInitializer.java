@@ -5,11 +5,11 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import org.shallow.handle.ConnectDuplexHandler;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.codec.MessageDecoder;
 import org.shallow.codec.MessageEncoder;
 import org.shallow.internal.BrokerManager;
-import org.shallow.handle.ConnectDuplexHandler;
 
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 

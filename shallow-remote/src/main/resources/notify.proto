@@ -14,3 +14,12 @@ message PartitionChangedSignal {
 message NodeOfflineSignal {
 
 }
+
+message MessagePullSignal {
+  string topic = 1;
+  string queue = 2;
+  int32 ledger = 3;
+  int32 limit = 4;
+  int32 epoch = 5;
+  int64 index = 6;
+}

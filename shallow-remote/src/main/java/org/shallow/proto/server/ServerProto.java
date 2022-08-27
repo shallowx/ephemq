@@ -162,11 +162,13 @@ public final class ServerProto {
       "eExtras.ExtrasEntry\032-\n\013ExtrasEntry\022\013\n\003ke" +
       "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendMessag" +
       "eResponse\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005" +
-      "\022\r\n\005index\030\003 \001(\003\"2\n\022PullMessageRequest\022\r\n" +
-      "\005queue\030\001 \001(\t\022\r\n\005limit\030\002 \001(\005\"C\n\023PullMessa" +
-      "geResponse\022\r\n\005queue\030\001 \001(\t\022\r\n\005limit\030\002 \001(\005" +
-      "\022\016\n\006ledger\030\003 \001(\005B)\n\030org.shallow.proto.se" +
-      "rverB\013ServerProtoP\001b\006proto3"
+      "\022\r\n\005index\030\003 \001(\003\"`\n\022PullMessageRequest\022\016\n" +
+      "\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 " +
+      "\001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\"p\n\023Pul" +
+      "lMessageResponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue" +
+      "\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n" +
+      "\005epoch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shall" +
+      "ow.proto.serverB\013ServerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -292,13 +294,13 @@ public final class ServerProto {
     internal_static_shallow_protobuf_PullMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageRequest_descriptor,
-        new java.lang.String[] { "Queue", "Limit", });
+        new java.lang.String[] { "Ledger", "Queue", "Limit", "Epoch", "Index", });
     internal_static_shallow_protobuf_PullMessageResponse_descriptor =
       getDescriptor().getMessageTypes().get(18);
     internal_static_shallow_protobuf_PullMessageResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageResponse_descriptor,
-        new java.lang.String[] { "Queue", "Limit", "Ledger", });
+        new java.lang.String[] { "Topic", "Queue", "Limit", "Ledger", "Epoch", "Index", });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

@@ -1,5 +1,6 @@
 package org.shallow.internal;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -11,12 +12,14 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.processor.ProcessCommand;
+import org.shallow.proto.notify.MessagePullSignal;
 import org.shallow.util.NetworkUtil;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.processor.ProcessorAware;
 
 import static org.shallow.util.ObjectUtil.isNotNull;
+import static org.shallow.util.ProtoBufUtil.readProto;
 
 public class ClientServiceProcessorAware implements ProcessorAware, ProcessCommand.Client {
 
@@ -43,12 +46,12 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         try {
             switch (command) {
                 case HANDLE_MESSAGE -> {
-                    String topic = null;
                     if (type == Type.PUSH.sequence()) {
                         onPushMessage(data, answer);
                         return;
                     }
-                    onPullMessage(topic, data, answer);
+
+                    onPullMessage(data, answer);
                 }
                 case TOPIC_CHANGED -> {
                     onPartitionChanged(answer);
@@ -79,8 +82,17 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         trySuccess(answer);
     }
 
-    private void onPullMessage(String topic, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        listener.onPullMessage(topic, data);
+    private void onPullMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
+        MessagePullSignal signal = readProto(data, MessagePullSignal.parser());
+
+        String topic = signal.getTopic();
+        String queue = signal.getQueue();
+        int ledger = signal.getLedger();
+        int limit = signal.getLimit();
+        int epoch = signal.getEpoch();
+        long index = signal.getIndex();
+
+        listener.onPullMessage(topic, queue, ledger, limit, epoch, index, data);
         trySuccess(answer);
     }
 

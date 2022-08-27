@@ -15,8 +15,8 @@ import static org.shallow.util.ByteBufUtil.*;
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
-    public static final byte HEADER_LENGTH = 13;
-    public static final int MAX_FRAME_LENGTH = 4194317;
+    public static final byte HEADER_LENGTH = 12;
+    public static final int MAX_FRAME_LENGTH = 4194316;
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
 
     private static final Recycler<MessagePacket> RECYCLER = new Recycler<>() {

@@ -40,7 +40,11 @@ public final class ByteBufUtil {
         if (isNull(buf)) {
             return null;
         }
-        return buf.array();
+        int length = buf.readableBytes();
+        byte[] bytes = new byte[length];
+        buf.readBytes(bytes);
+
+        return bytes;
     }
 
     public static int bufLength(ByteBuf buf) {

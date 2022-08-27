@@ -37,7 +37,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     public MessagePushConsumer(String name, ConsumerConfig config, MessagePushListener listener) {
         this.messageListener = listener;
-        this.client = new Client("consumer-client", config, new PushConsumerListener(this));
+        this.client = new Client("consumer-client", config.getClientConfig(), new PushConsumerListener(this));
         this.config = config;
         this.name = ObjectUtil.checkNonEmpty(name, "Message push consumer name cannot be empty");
         this.manager = client.getMetadataManager();
@@ -59,7 +59,7 @@ public class MessagePushConsumer implements PushConsumer {
         Promise<SubscribeResponse> promise = newImmediatePromise();
         try {
             doSubscribe(topic, queue, promise);
-            SubscribeResponse response = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+            SubscribeResponse response = promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
             return new Subscription(response.getEpoch(), response.getIndex(), response.getQueue(), response.getLedger());
         } catch (Throwable t) {
             throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s", topic, queue));
@@ -115,7 +115,7 @@ public class MessagePushConsumer implements PushConsumer {
                 .setIndex(-1)
                 .build();
 
-        clientChannel.invoker().invoke(SUBSCRIBE, config.getInvokeExpiredMs(), promise, request, SubscribeResponse.class);
+        clientChannel.invoker().invoke(SUBSCRIBE, config.getClientConfig().getInvokeExpiredMs(), promise, request, SubscribeResponse.class);
     }
 
     private void checkTopic(String topic) {
