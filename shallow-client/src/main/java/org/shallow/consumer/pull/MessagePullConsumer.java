@@ -18,7 +18,6 @@ import org.shallow.proto.server.PullMessageResponse;
 import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
 import static org.shallow.util.ObjectUtil.isNull;
 
 public class MessagePullConsumer implements PullConsumer {
