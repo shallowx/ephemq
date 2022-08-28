@@ -6,6 +6,7 @@ import org.shallow.internal.Listener;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.metadata.MetadataManager;
 import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 import org.shallow.proto.server.SendMessageExtras;
@@ -19,10 +20,14 @@ import static org.shallow.util.ProtoBufUtil.readProto;
 final class PullConsumerListener implements Listener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumerListener.class);
-    private final MessagePullListener listener;
 
-    public PullConsumerListener(PullConsumer consumer) {
-        this.listener = consumer.getPullListener();
+    private MessagePullListener listener;
+
+    public PullConsumerListener() {
+    }
+
+    public void registerListener(MessagePullListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -39,21 +44,31 @@ final class PullConsumerListener implements Listener {
     public void onPullMessage(String topic, String queue, int ledger, int limit, int epoch, long index, ByteBuf data) {
         List<Message> messages = new ArrayList<>(limit);
         try {
+            int skipBytes = 0;
             for (int i = 0; i < limit; i++) {
-                int messageLength = data.readInt();
+                if (skipBytes != 0) {
+                    data.skipBytes(skipBytes);
+                }
 
+                if (data.readerIndex() >= data.writerIndex()) {
+                    break;
+                }
+
+                int messageLength = data.readInt();
                 int queueLength = data.readInt();
                 data.skipBytes(queueLength);
 
                 int messageEpoch = data.readInt();
                 long position = data.readLong();
 
-                ByteBuf buf = data.retainedSlice(data.readerIndex(), messageLength - 16 - queueLength);
+                int sliceLength = messageLength - 16 - queueLength;
+                ByteBuf buf = data.retainedSlice(data.readerIndex(), sliceLength);
 
                 SendMessageExtras extras = readProto(buf, SendMessageExtras.parser());
                 byte[] body = ByteBufUtil.buf2Bytes(buf.readBytes(buf.readableBytes()));
 
                 messages.add(new Message(topic, queue, body, messageEpoch, position, new Message.Extras(extras.getExtrasMap())));
+                skipBytes = sliceLength;
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {

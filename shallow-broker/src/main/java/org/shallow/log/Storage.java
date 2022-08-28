@@ -1,7 +1,6 @@
 package org.shallow.log;
 
 import io.netty.buffer.*;
-import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.RemoteException;
@@ -9,12 +8,8 @@ import org.shallow.consumer.pull.PullResult;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.proto.elector.VoteResponse;
 import org.shallow.util.ByteBufUtil;
-
 import javax.annotation.concurrent.ThreadSafe;
-
-import static java.lang.Integer.MAX_VALUE;
 import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 
@@ -75,16 +70,16 @@ public class Storage {
         }
     }
 
-    public void read(String queue, Offset offset, int limit, Promise<PullResult> promise) {
+    public void read(int requestId, String queue, Offset offset, int limit, Promise<PullResult> promise) {
         if (storageExecutor.inEventLoop()) {
-            doRead(queue, offset, limit, promise);
+            doRead(requestId, queue, offset, limit, promise);
         } else {
-            storageExecutor.execute(() -> doRead(queue, offset,  limit, promise));
+            storageExecutor.execute(() -> doRead(requestId, queue, offset,  limit, promise));
         }
     }
 
     @SuppressWarnings("all")
-    private void doRead(String queue, Offset offset, int limit, Promise<PullResult> promise) {
+    private void doRead(int requestId, String queue, Offset offset, int limit, Promise<PullResult> promise) {
         try {
             Segment segment = locateSegment(offset);
             if (isNull(segment)) {
@@ -94,9 +89,19 @@ public class Storage {
 
             int position = segment.locate(offset);
             CompositeByteBuf compositeByteBuf = null;
+
             for (int i = 0; i < limit; i++) {
                 ByteBuf queueBuf = null;
                 try {
+                    int tailLocation = segment.tailLocation();
+                    if (position >= tailLocation) {
+                        Segment next = segment.next();
+                        if (isNull(next)) {
+                            break;
+                        }
+                        segment = next;
+                    }
+
                     ByteBuf payload = segment.readCompleted(position);
 
                     int queueLength = payload.getInt(4);
@@ -108,9 +113,12 @@ public class Storage {
 
                     if (isNull(compositeByteBuf)) {
                         compositeByteBuf = newComposite(payload, limit);
+                        position += payload.readableBytes();
                         continue;
                     }
                     compositeByteBuf.addFlattenedComponents(true, payload);
+
+                    position += payload.readableBytes();
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Read message failed, error:{}", t);
@@ -120,10 +128,10 @@ public class Storage {
                     ByteBufUtil.release(queueBuf);
                 }
             }
-            triggerPull(queue, ledger, limit, offset, compositeByteBuf);
+            triggerPull(requestId, queue, ledger, limit, offset, compositeByteBuf);
 
-            Offset headOffset = segment.headOffset();
-            promise.trySuccess(new PullResult(ledger, null, queue, limit, headOffset.epoch(), headOffset.index(), null));
+            Offset tailOffset = segment.tailOffset();
+            promise.trySuccess(new PullResult(ledger, null, queue, limit, tailOffset.epoch(), tailOffset.index(), null));
         } catch (Throwable t) {
             promise.tryFailure(t);
         }
@@ -134,10 +142,10 @@ public class Storage {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void triggerPull(String queue, int ledger, int limit, Offset offset, ByteBuf buf) {
+    private void triggerPull(int requestId, String queue, int ledger, int limit, Offset offset, ByteBuf buf) {
         if (isNotNull(trigger)) {
             try {
-                trigger.onPull(queue, ledger, limit, offset, buf);
+                trigger.onPull(requestId, queue, ledger, limit, offset, buf);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
                     logger.warn("trigger pull error: ledger={} limit={} offset={}", ledger, limit, offset);

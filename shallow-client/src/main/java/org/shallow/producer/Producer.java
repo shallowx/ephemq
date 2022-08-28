@@ -4,7 +4,9 @@ import org.shallow.Message;
 
 public interface Producer {
 
-    void start();
+    void start() throws Exception;
+
+    void shutdownGracefully() throws Exception;
     void sendOneway(Message message);
 
     SendResult send(Message message) throws Exception;

@@ -6,5 +6,5 @@ import io.netty.channel.Channel;
 public interface LedgerTrigger {
     void onAppend(int ledgerId, int limit, Offset tail);
 
-    void onPull(String queue, int ledgerId, int limit, Offset head, ByteBuf buf);
+    void onPull(int requestId, String queue, int ledgerId, int limit, Offset head, ByteBuf buf);
 }

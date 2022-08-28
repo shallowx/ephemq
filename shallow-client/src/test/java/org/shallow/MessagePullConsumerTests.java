@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.shallow.consumer.ConsumerConfig;
 import org.shallow.consumer.pull.MessagePullConsumer;
 import org.shallow.consumer.pull.MessagePullListener;
+import org.shallow.consumer.pull.PullConsumer;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -35,7 +36,9 @@ public class MessagePullConsumerTests {
 
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
-        MessagePullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer", new MessagePullListener() {
+
+        PullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer");
+        messagePullConsumer.registerMessageListener(new MessagePullListener() {
             @Override
             public void onMessage(PullResult result) {
                 if (logger.isInfoEnabled()) {
@@ -60,8 +63,9 @@ public class MessagePullConsumerTests {
                 }
             }
         });
-        messagePullConsumer.pull("create", "message", -1, -1,1, promise);
+        messagePullConsumer.pull("create", "message", -1, -1,3, promise);
 
         latch.await();
+        messagePullConsumer.shutdownGracefully();
     }
 }

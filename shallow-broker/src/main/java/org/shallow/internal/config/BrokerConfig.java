@@ -108,4 +108,12 @@ public class BrokerConfig {
     public int getLogSegmentSize() {
         return object2Int(config.getOrDefault(LOG_SEGMENT_SIZE, 4194304));
     }
+
+    public int getPullRetryTaskDelayTimeMs() {
+        return object2Int(config.getOrDefault(PULL_HANDLER_RETRY_TASK_DELAY_TIME_MS, 1000));
+    }
+
+    public int getPullHandleThreadLimit() {
+        return object2Int(config.getOrDefault(PULL_HANDLE_THREAD_LIMIT, 100));
+    }
 }

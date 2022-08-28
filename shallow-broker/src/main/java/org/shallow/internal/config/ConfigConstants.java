@@ -27,4 +27,6 @@ public interface ConfigConstants {
 
     String LOG_SEGMENT_LIMIT = "shallow.log.segment.limit";
     String LOG_SEGMENT_SIZE = "shallow.log.segment.size";
+    String PULL_HANDLER_RETRY_TASK_DELAY_TIME_MS = "shallow.pull.handler.retry.task.delay.time.ms";
+    String PULL_HANDLE_THREAD_LIMIT = "shallow.pull.handle.thread.limit";
 }

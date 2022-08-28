@@ -189,4 +189,9 @@ public class MessageProducer implements Producer{
             throw new IllegalArgumentException("Send queue cannot be empty");
         }
     }
+
+    @Override
+    public void shutdownGracefully() throws Exception {
+        client.shutdownGracefully();
+    }
 }

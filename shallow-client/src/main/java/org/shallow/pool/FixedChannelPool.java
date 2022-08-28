@@ -130,4 +130,9 @@ public class FixedChannelPool implements ShallowChannelPool {
     public Promise<ClientChannel> assemblePromise(Channel channel) {
         return assembleChannels.computeIfAbsent(channel.id().asLongText(), v -> newImmediatePromise());
     }
+
+    @Override
+    public void shutdownGracefully() throws Exception {
+
+    }
 }

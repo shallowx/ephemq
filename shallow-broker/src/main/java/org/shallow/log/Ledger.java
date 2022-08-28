@@ -38,7 +38,11 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.entryPullHandler = new EntryPullHandler();
+        this.entryPullHandler = new EntryPullHandler(config);
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
     public void subscribe(String queue, int epoch, long index, Promise<Subscription> promise) {
@@ -82,42 +86,34 @@ public class Ledger {
         }
     }
 
-    public void pull(Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
+    public void pull(int requestId, Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
         if (storageExecutor.inEventLoop()) {
-            doPull(channel, queue, epoch, index, limit, promise);
+            doPull(requestId, channel, queue, epoch, index, limit, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doPull(channel, queue, epoch, index, limit, promise));
+                storageExecutor.execute(() -> doPull(requestId, channel, queue, epoch, index, limit, promise));
             } catch (Throwable t) {
                 promise.tryFailure(t);
             }
         }
     }
 
-    private void doPull(Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
+    private void doPull(int requestId, Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
         Offset offset = new Offset(epoch, index);
         try {
-            entryPullHandler.register(queue, channel);
-            storage.read(queue, offset, limit, promise);
+            entryPullHandler.register(requestId, channel);
+            storage.read(requestId, queue, offset, limit, promise);
         } catch (Throwable t) {
             promise.tryFailure(t);
         }
-    }
-
-    public int getLedgerId() {
-        return ledgerId;
-    }
-
-    public String getTopic() {
-        return topic;
     }
 
     public void onTriggerAppend(int ledgerId, int limit, Offset offset) {
 
     }
 
-    public void onTriggerPull(String queue, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
-        entryPullHandler.write2PullChannel(topic, queue, ledgerId, limit, offset, buf);
+    public void onTriggerPull(int requestId, String queue, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
+        entryPullHandler.handle(requestId, topic, queue, ledgerId, limit, offset, buf);
     }
 
     private class MessageTrigger implements LedgerTrigger {
@@ -127,8 +123,8 @@ public class Ledger {
         }
 
         @Override
-        public void onPull(String queue, int ledgerId, int limit, Offset head, ByteBuf buf) {
-            onTriggerPull(queue, ledgerId, limit, head, buf);
+        public void onPull(int requestId, String queue, int ledgerId, int limit, Offset head, ByteBuf buf) {
+            onTriggerPull(requestId, queue, ledgerId, limit, head, buf);
         }
     }
 }

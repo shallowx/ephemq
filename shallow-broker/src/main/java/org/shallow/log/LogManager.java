@@ -26,15 +26,17 @@ public class LogManager {
 
     private static final Map<Integer, Ledger> logs = new IntObjectHashMap<>();
     private final BrokerConfig config;
-    private final DistributedAtomicInteger atomicValue;
+    private final DistributedAtomicInteger atomicLedgerValue;
+    private final DistributedAtomicInteger atomicRequestValue;
 
     public LogManager(BrokerConfig config) {
         this.config = config;
-        this.atomicValue = new DistributedAtomicInteger();
+        this.atomicLedgerValue = new DistributedAtomicInteger();
+        this.atomicRequestValue = new DistributedAtomicInteger();
     }
 
     public void initLog(String topic, int partition, int epoch) {
-        Integer ledger = atomicValue.increment().preValue();
+        Integer ledger = atomicLedgerValue.increment().preValue();
         Ledger log = new Ledger(config, topic, partition, ledger, epoch);
 
         if (logger.isInfoEnabled()) {
@@ -78,8 +80,8 @@ public class LogManager {
                 PullMessageResponse response = PullMessageResponse
                         .newBuilder()
                         .setTopic(topic)
-                        .setEpoch(result.getStartEpoch())
-                        .setIndex(result.getStartIndex())
+                        .setEpoch(result.getEndEpoch())
+                        .setIndex(result.getEndIndex())
                         .setLedger(ledgerId)
                         .setLimit(limit)
                         .setQueue(queue)
@@ -89,7 +91,8 @@ public class LogManager {
                 promise.tryFailure(future.cause());
             }
         });
-        ledger.pull(channel, queue, epoch, index, limit, pullResultPromise);
+        int requestId = atomicRequestValue.increment().preValue();
+        ledger.pull(requestId, channel, queue, epoch, index, limit, pullResultPromise);
     }
 
     public Ledger getLedger(int ledger) {

@@ -10,4 +10,6 @@ public interface ShallowChannelPool {
     ClientChannel acquireWithRandomly();
     ClientChannel acquireHealthyOrNew(SocketAddress address);
     Promise<ClientChannel> assemblePromise(Channel channel);
+
+    void shutdownGracefully() throws Exception;
 }
