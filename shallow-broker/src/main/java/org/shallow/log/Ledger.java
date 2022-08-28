@@ -127,4 +127,10 @@ public class Ledger {
             onTriggerPull(requestId, queue, ledgerId, limit, head, buf);
         }
     }
+
+    public void close() {
+        entryPullHandler.shutdownGracefully();
+        storageExecutor.shutdownGracefully();
+        storage.close();
+    }
 }

@@ -69,5 +69,6 @@ public class DefaultBrokerManager implements BrokerManager {
     @Override
     public void shutdownGracefully() throws Exception {
         controller.shutdownGracefully();
+        logManager.close();
     }
 }

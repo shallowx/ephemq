@@ -239,4 +239,11 @@ public class Storage {
     public Segment tailSegment() {
         return tailSegment;
     }
+
+    public void close() {
+        for (int i = 0; i < segmentLimit; i++) {
+            releaseSegment();
+        }
+        storageExecutor.shutdownGracefully();
+    }
 }

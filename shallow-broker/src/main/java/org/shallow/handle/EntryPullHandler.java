@@ -17,6 +17,7 @@ import org.shallow.proto.notify.MessagePullSignal;
 import org.shallow.util.ByteBufUtil;
 import org.shallow.util.ProtoBufUtil;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,6 +29,7 @@ import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.util.ObjectUtil.isNull;
 
+@ThreadSafe
 public class EntryPullHandler {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandler.class);
@@ -218,8 +220,9 @@ public class EntryPullHandler {
         if (handlers.isEmpty()) {
             return;
         }
-        handlers.stream().forEach(handler -> {
 
+        handlers.forEach(handler -> {
+            handler.handleExecutor.shutdownGracefully();
         });
     }
 }

@@ -6,6 +6,8 @@ import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.shallow.RemoteException;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
@@ -24,10 +26,10 @@ public class LogManager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LogManager.class);
 
-    private static final Map<Integer, Ledger> logs = new IntObjectHashMap<>();
     private final BrokerConfig config;
     private final DistributedAtomicInteger atomicLedgerValue;
     private final DistributedAtomicInteger atomicRequestValue;
+    private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
 
     public LogManager(BrokerConfig config) {
         this.config = config;
@@ -42,11 +44,11 @@ public class LogManager {
         if (logger.isInfoEnabled()) {
             logger.info("Initialize log successfully, topic={} partition={} ledger={}", topic, partition, ledger);
         }
-        logs.putIfAbsent(ledger, log);
+        ledgers.putIfAbsent(ledger, log);
     }
 
     public void subscribe(String queue, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
-        Ledger ledger = logs.get(ledgerId);
+        Ledger ledger = ledgers.get(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
@@ -55,7 +57,7 @@ public class LogManager {
     }
 
     public void append(int ledgerId, String queue, ByteBuf payload, Promise<Offset> promise) {
-        Ledger ledger = logs.get(ledgerId);
+        Ledger ledger = ledgers.get(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
@@ -65,7 +67,7 @@ public class LogManager {
 
     @SuppressWarnings("all")
     public void pull(Channel channel, int ledgerId, String queue, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
-        Ledger ledger = logs.get(ledgerId);
+        Ledger ledger = ledgers.get(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_PULL_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
@@ -96,6 +98,12 @@ public class LogManager {
     }
 
     public Ledger getLedger(int ledger) {
-        return logs.get(ledger);
+        return ledgers.get(ledger);
+    }
+
+    public void close() {
+        if (!ledgers.isEmpty()) {
+            ledgers.values().forEach(Ledger::close);
+        }
     }
 }

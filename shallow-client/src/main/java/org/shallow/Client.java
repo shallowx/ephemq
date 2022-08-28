@@ -86,7 +86,7 @@ public class Client {
         return listener;
     }
 
-    public void setListener(Listener listener) {
+    public void registerListener(Listener listener) {
         this.listener = listener;
     }
 
@@ -109,7 +109,6 @@ public class Client {
     public MetadataManager getMetadataManager() {
         return manager;
     }
-
 
     public void shutdownGracefully() {
         if (state != Boolean.TRUE) {

@@ -87,7 +87,7 @@ public class MessagePullConsumer implements PullConsumer {
     @Override
     public void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception {
         if (isNotNull(listener)) {
-            this.listener = listener;
+            this.registerMessageListener(listener);
         }
 
         if (isNull(this.listener)) {
