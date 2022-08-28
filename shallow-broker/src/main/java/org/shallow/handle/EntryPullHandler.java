@@ -7,6 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.shallow.Type;
 import org.shallow.codec.MessagePacket;
 import org.shallow.internal.config.BrokerConfig;
@@ -35,7 +36,7 @@ public class EntryPullHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandler.class);
 
     private final BrokerConfig config;
-    private final Int2ObjectMap<Channel> channels = new Int2ObjectLinkedOpenHashMap<>();
+    private final Int2ObjectMap<Channel> channels = new Int2ObjectOpenHashMap<>();
     private final EventExecutor transferExecutor = newEventExecutorGroup(1, "transfer").next();
     private final EventExecutor allocateExecutor = newEventExecutorGroup(1, "allocate").next();
     private final Set<Handler> handlers = new CopyOnWriteArraySet<>();
