@@ -213,7 +213,6 @@ public class EntryPullHandler {
     }
 
     public void shutdownGracefully() {
-        channels.clear();
         transferExecutor.shutdownGracefully();
         allocateExecutor.shutdownGracefully();
 
@@ -221,8 +220,6 @@ public class EntryPullHandler {
             return;
         }
 
-        handlers.forEach(handler -> {
-            handler.handleExecutor.shutdownGracefully();
-        });
+        handlers.forEach(handler -> handler.handleExecutor.shutdownGracefully());
     }
 }

@@ -35,26 +35,26 @@ public class LedgerManager {
     }
 
     public void initLog(String topic, int partition, int epoch) {
-        Integer ledger = atomicLedgerValue.increment().preValue();
-        Ledger log = new Ledger(config, topic, partition, ledger, epoch);
+        Integer ledgerId = atomicLedgerValue.increment().preValue();
+        Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> new Ledger(config, topic, partition, ledgerId, epoch));
 
         if (logger.isInfoEnabled()) {
-            logger.info("Initialize log successfully, topic={} partition={} ledger={}", topic, partition, ledger);
+            logger.info("Initialize log successfully, topic={} partition={} ledger={}", topic, partition, ledgerId);
         }
-        ledgers.putIfAbsent(ledger, log);
+        ledgers.putIfAbsent(ledgerId, ledger);
     }
 
-    public void subscribe(String queue, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
-        Ledger ledger = ledgers.get(ledgerId);
+    public void subscribe(Channel channel, String queue, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
+        Ledger ledger = getLedger(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
-        ledger.subscribe(queue, epoch, index, promise);
+        ledger.subscribe(channel, queue, epoch, index, promise);
     }
 
     public void append(int ledgerId, String queue, ByteBuf payload, short version, Promise<Offset> promise) {
-        Ledger ledger = ledgers.get(ledgerId);
+        Ledger ledger = getLedger(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
@@ -64,7 +64,7 @@ public class LedgerManager {
 
     @SuppressWarnings("all")
     public void pull(Channel channel, int ledgerId, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
-        Ledger ledger = ledgers.get(ledgerId);
+        Ledger ledger = getLedger(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_PULL_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
@@ -94,8 +94,8 @@ public class LedgerManager {
         ledger.pull(requestId, channel, queue, version, epoch, index, limit, pullResultPromise);
     }
 
-    public Ledger getLedger(int ledger) {
-        return ledgers.get(ledger);
+    public Ledger getLedger(int ledgerId) {
+        return ledgers.get(ledgerId);
     }
 
     public void close() {

@@ -16,6 +16,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import static org.shallow.util.ByteBufUtil.release;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
+import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Ledger {
@@ -26,7 +27,6 @@ public class Ledger {
     private final int partition;
     private final int ledgerId;
     private int epoch;
-    private final BrokerConfig config;
     private final Storage storage;
     private final EventExecutor storageExecutor;
     private final EntryPullHandler entryPullHandler;
@@ -36,7 +36,6 @@ public class Ledger {
         this.topic = topic;
         this.partition = partition;
         this.ledgerId = ledgerId;
-        this.config = config;
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
@@ -44,25 +43,40 @@ public class Ledger {
         this.entryPushHandler = new EntryPushHandler(config);
     }
 
-    public String getTopic() {
-        return topic;
-    }
-
-    public void subscribe(String queue, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(Channel channel, String queue, int epoch, long index, Promise<Subscription> promise) {
         Offset offset = Offset.of(epoch, index);
         if (storageExecutor.inEventLoop()) {
-            doSubscribe(queue, offset, promise);
+            doSubscribe(channel, queue, offset, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doSubscribe(queue, offset, promise));
+                storageExecutor.execute(() -> doSubscribe(channel, queue, offset, promise));
             } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to subscribe, topic={} partition={} queue={} ledgerId={} epoch={} index={}. error cause:{}",
+                            topic, partition, queue, ledgerId, epoch, index, t);
+                }
                 promise.tryFailure(t);
             }
         }
     }
 
-    private void doSubscribe(String queue, Offset offset, Promise<Subscription> promise) {
+    private void doSubscribe(Channel channel, String queue, Offset offset, Promise<Subscription> promise) {
+        Offset theOffset;
+        Segment segment = storage.locateSegment(offset);
+        if (isNull(segment)) {
+            theOffset = offset;
+        } else {
+            theOffset = offset;
 
+            Offset headOffset = segment.headOffset();
+            if (headOffset.after(offset)) {
+                theOffset = headOffset;
+            }
+        }
+        entryPushHandler.subscribe(channel, queue, theOffset);
+
+        // TODO
+        promise.trySuccess(null);
     }
 
     public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
@@ -96,6 +110,11 @@ public class Ledger {
             try {
                 storageExecutor.execute(() -> doPull(requestId, channel, queue, version, epoch, index, limit, promise));
             } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to pull message, topic={} partition={} queue={} version={} ledgerId={} epoch={} index={} requestId={}. error cause:{}",
+                            topic, partition, queue, version, ledgerId, epoch, index, requestId, t);
+
+                }
                 promise.tryFailure(t);
             }
         }
@@ -107,6 +126,11 @@ public class Ledger {
             entryPullHandler.register(requestId, channel);
             storage.read(requestId, queue, version, offset, limit, promise);
         } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to doPull message, topic={} partition={} queue={} version={} ledgerId={} epoch={} index={} requestId={}. error cause:{}",
+                        topic, partition, queue, version, ledgerId, epoch, index, requestId, t);
+
+            }
             promise.tryFailure(t);
         }
     }
@@ -131,9 +155,34 @@ public class Ledger {
         }
     }
 
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public int getPartition() {
+        return partition;
+    }
+
+    public int getLedgerId() {
+        return ledgerId;
+    }
+
+    public int getEpoch() {
+        return epoch;
+    }
+
+    public void epoch(int epoch) {
+        this.epoch = epoch;
+    }
+
     public void close() {
         entryPullHandler.shutdownGracefully();
         storageExecutor.shutdownGracefully();
         storage.close();
+
+        if (logger.isWarnEnabled()) {
+            logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
+        }
     }
 }

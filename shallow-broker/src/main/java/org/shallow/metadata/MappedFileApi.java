@@ -1,6 +1,7 @@
 package org.shallow.metadata;
 
 import org.shallow.internal.config.BrokerConfig;
+import org.shallow.log.Segment;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -48,7 +49,12 @@ public class MappedFileApi {
         return Path.of(config.getWorkDirectory() + path);
     }
 
-    public void write2File(String content, String path) throws IOException {
+    public void write(String content, String path) throws IOException {
         Files.writeString(assemblePath(path), content, StandardCharsets.UTF_8);
+    }
+
+    public String read(String path) throws IOException {
+        Path filePath = assemblePath(path);
+        return Files.readString(filePath, StandardCharsets.UTF_8);
     }
 }

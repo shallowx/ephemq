@@ -46,6 +46,7 @@ public class SRaftProcessController {
         checkQuorumVoters();
 
         this.LazyInitialize();
+        topicManager.start();
         clusterManager.start();
         if (isQuorumLeader()) {
             if (logger.isInfoEnabled()) {
@@ -145,16 +146,15 @@ public class SRaftProcessController {
        String[] votersArray = config.getControllerQuorumVoters().split(",");
        return Stream.of(votersArray)
                .map(voters -> {
-                   final int length = voters.length();
-                   final String newVoters = voters.substring(voters.lastIndexOf("@") + 1, length);
+                   int length = voters.length();
+                   String newVoters = voters.substring(voters.lastIndexOf("@") + 1, length);
                    return switchSocketAddress(newVoters);
                }).filter(f -> {
                    if (!excludeSelf) {
                        return true;
                    }
                    return !Objects.equals(switchSocketAddress(config.getExposedHost(), config.getExposedPort()), f);
-               })
-               .collect(Collectors.toSet());
+               }).collect(Collectors.toSet());
     }
 
     public void setMetadataLeader(SocketAddress metadataLeader) {

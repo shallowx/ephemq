@@ -187,10 +187,14 @@ public class Storage {
         }
     }
 
-    private Segment locateSegment(Offset offset) {
+    public Segment locateSegment(Offset offset) {
         boolean isActive = true;
 
         Segment theSegment = headSegment;
+        if (theSegment.headOffset().after(offset)) {
+            return theSegment;
+        }
+
         Offset tailOffset = theSegment.tailOffset();
         while (offset.after(tailOffset)) {
             theSegment = headSegment.next();

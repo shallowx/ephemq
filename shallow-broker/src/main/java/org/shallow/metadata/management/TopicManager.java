@@ -3,6 +3,7 @@ package org.shallow.metadata.management;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.reflect.TypeToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
 import org.shallow.log.LedgerManager;
@@ -23,8 +24,15 @@ import org.shallow.proto.elector.CreateTopicPrepareCommitRequest;
 import org.shallow.proto.elector.CreateTopicPrepareCommitResponse;
 import org.shallow.proto.elector.DeleteTopicPrepareCommitRequest;
 import org.shallow.proto.elector.DeleteTopicPrepareCommitResponse;
+
+import java.io.IOException;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -32,6 +40,7 @@ import java.util.stream.Collectors;
 import static org.shallow.metadata.MetadataConstants.TOPICS;
 import static org.shallow.metadata.sraft.CommitType.ADD;
 import static org.shallow.metadata.sraft.CommitType.REMOVE;
+import static org.shallow.util.JsonUtil.json2Object;
 import static org.shallow.util.JsonUtil.object2Json;
 import static org.shallow.util.ObjectUtil.isNull;
 
@@ -76,6 +85,10 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                         return null;
                     }
                 });
+    }
+
+    public void start() throws Exception {
+        fill();
     }
 
     @Override
@@ -222,7 +235,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
         String content = object2Json(commitRecordCache.asMap());
         try {
-            api.write2File(content, TOPICS);
+            api.write(content, TOPICS);
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error(e.getMessage(), e);
@@ -254,6 +267,25 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
         SocketAddress leader = controller.getMetadataLeader();
 
         return client.queryTopicInfo(topic, leader);
+    }
+
+    @SuppressWarnings("all")
+    private void fill() throws IOException {
+        String content = api.read(TOPICS);
+        ConcurrentMap<String, CopyOnWriteArraySet<PartitionRecord>> partitions = json2Object(content,
+                new TypeToken<ConcurrentMap<String, CopyOnWriteArraySet<PartitionRecord>>>() {}.getType());
+
+
+        if (isNull(partitions) || partitions.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<String, CopyOnWriteArraySet<PartitionRecord>> entry : partitions.entrySet()) {
+            String topic = entry.getKey();
+            CopyOnWriteArraySet<PartitionRecord> partitionRecords = entry.getValue();
+
+            commitRecordCache.put(topic, partitionRecords);
+        }
     }
 
     private boolean contains(String topic) {

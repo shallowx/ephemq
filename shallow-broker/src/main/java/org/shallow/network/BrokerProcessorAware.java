@@ -208,9 +208,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                         Subscription subscription = (Subscription)future.get();
                                         SubscribeResponse response = SubscribeResponse
                                                 .newBuilder()
-                                                .setEpoch(subscription.getEpoch())
+                                                .setEpoch(subscription.epoch())
                                                 .setLedger(ledger)
-                                                .setIndex(subscription.getIndex())
+                                                .setIndex(subscription.index())
                                                 .setQueue(queue)
                                                 .build();
 
@@ -223,7 +223,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 });
 
                                 LedgerManager logManager = manager.getLogManager();
-                                logManager.subscribe(queue, ledger, epoch, index, promise);
+                                logManager.subscribe(channel, queue, ledger, epoch, index, promise);
                             } catch (Throwable t) {
                                 if (logger.isErrorEnabled()) {
                                     logger.error("Failed to subscribe");
