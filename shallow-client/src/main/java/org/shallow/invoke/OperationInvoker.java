@@ -38,12 +38,12 @@ public class OperationInvoker implements ProcessCommand.Server {
         this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
     }
 
-    public void invokeMessage(int timeoutMs, Promise<?> promise, MessageLite request, MessageLite extras, ByteBuf message, Class<?> clz) {
+    public void invokeMessage(short version, int timeoutMs, Promise<?> promise, MessageLite request, MessageLite extras, ByteBuf message, Class<?> clz) {
         try {
             @SuppressWarnings("unchecked")
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
             ByteBuf buf = assembleInvokeMessageData(clientChannel.allocator(), request, extras, message);
-            invoke0(SEND_MESSAGE, buf, (byte) Type.PUSH.sequence(), timeoutMs, callback);
+            invoke0(SEND_MESSAGE, version, buf, (byte) Type.PUSH.sequence(), timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
@@ -82,7 +82,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             @SuppressWarnings("unchecked")
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
             ByteBuf buf = assembleInvokeData(clientChannel.allocator(), request);
-            invoke0(command, buf, type, timeoutMs, callback);
+            invoke0(command, (short) -1, buf, type, timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
@@ -95,7 +95,7 @@ public class OperationInvoker implements ProcessCommand.Server {
         return defaultInst.getParserForType();
    }
 
-    private void invoke0(byte command, ByteBuf content, byte type, long timeoutMs, Callback<ByteBuf> callback) {
+    private void invoke0(byte command, short version, ByteBuf content, byte type, long timeoutMs, Callback<ByteBuf> callback) {
         try {
             long now = System.currentTimeMillis();
             final Channel channel = clientChannel.channel();
@@ -103,14 +103,14 @@ public class OperationInvoker implements ProcessCommand.Server {
                 try {
                     if (isNull(callback)) {
                         ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), type), promise);
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, version, retainBuf(content), type), promise);
                     } else {
                         long expired = timeoutMs + now;
                         GenericInvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
                             semaphore.release();
                             callback.operationCompleted(buf, cause);
                         });
-                        channel.writeAndFlush(AwareInvocation.newInvocation(command, retainBuf(content), type, expired, answer));
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, version,  retainBuf(content), type, expired, answer));
                     }
                 } catch (Throwable t) {
                     semaphore.release();

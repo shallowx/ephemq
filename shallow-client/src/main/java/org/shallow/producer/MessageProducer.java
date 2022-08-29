@@ -127,6 +127,7 @@ public class MessageProducer implements Producer{
     public void doSend(int timeout, Message message, Promise<SendMessageResponse> promise) {
         String topic = message.topic();
         String queue = message.queue();
+        short version = message.version();
 
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (isNull(messageRouter)) {
@@ -150,7 +151,7 @@ public class MessageProducer implements Producer{
         SendMessageExtras extras = buildExtras(topic, queue, message.extras());
         try {
              ByteBuf body = ByteBufUtil.byte2Buf(message.message());
-             clientChannel.invoker().invokeMessage(timeout, promise, request, extras, body, SendMessageResponse.class);
+             clientChannel.invoker().invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);
         } catch (Throwable t) {
             throw new RuntimeException(String.format("Failed to send async message, topic=%s, queue=%s name=%s", topic, queue, name));
         }

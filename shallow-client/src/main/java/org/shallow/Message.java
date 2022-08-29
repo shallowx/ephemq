@@ -14,22 +14,38 @@ public class Message {
     private final byte[] message;
     private int epoch;
     private long index;
+    private final short version;
     private final Extras extras;
 
     public Message(String topic, String queue, byte[] message, Extras extras) {
+       this(topic, queue, (short) -1, message, extras);
+    }
+
+    public Message(String topic, String queue, byte[] message, int epoch, long index, Extras extras) {
+        this(topic, queue, (short) -1, message, epoch, index, extras);
+    }
+
+    public Message(String topic, String queue, short version, byte[] message, Extras extras) {
         this.topic = topic;
         this.queue = queue;
+        this.version = version;
         this.message = message;
         this.extras = extras ;
     }
 
-    public Message(String topic, String queue, byte[] message, int epoch, long index, Extras extras) {
+    public Message(String topic, String queue, short version, byte[] message, int epoch, long index, Extras extras) {
         this.topic = topic;
         this.queue = queue;
+        this.version = version;
         this.message = message;
         this.epoch = epoch;
         this.index = index;
         this.extras = extras;
+    }
+
+
+    public short version() {
+        return version;
     }
 
     public String topic() {
@@ -61,6 +77,7 @@ public class Message {
         return "Message{" +
                 "topic='" + topic + '\'' +
                 ", queue='" + queue + '\'' +
+                ", version=" + version +
                 ", message=" + Arrays.toString(message) +
                 ", epoch=" + epoch +
                 ", index=" + index +

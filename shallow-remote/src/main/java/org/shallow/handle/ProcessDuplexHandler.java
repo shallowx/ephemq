@@ -72,6 +72,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
         final byte command = packet.command();
+        final short version = packet.version();
         final int answer = packet.answer();
         final byte type = packet.type();
         final int length = packet.body().readableBytes();
@@ -92,7 +93,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
         final ByteBuf buf = packet.body().retain();
         try {
-            processor.process(ctx.channel(), command, buf, rejoin, type);
+            processor.process(ctx.channel(), command, buf, rejoin, type, version);
         } catch (Throwable cause) {
             if (logger.isErrorEnabled()) {
                 logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
@@ -146,9 +147,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final AwareInvocation invocation) {
             final int answer = holder.hold(invocation.expired(), invocation.answer());
+            final short version = invocation.version();
             final MessagePacket packet;
             try {
-                packet = MessagePacket.newPacket(answer, invocation.command(),  invocation.data().retain());
+                packet = MessagePacket.newPacket(version, answer, invocation.command(),  invocation.data().retain());
             } catch (Throwable cause) {
                 holder.consume(answer, r -> r.failure(cause));
                 throw cause;

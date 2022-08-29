@@ -68,4 +68,44 @@ public class MessagePullConsumerTests {
         latch.await();
         messagePullConsumer.shutdownGracefully();
     }
+
+    @SuppressWarnings("all")
+    @Test
+    public void testPullWithVersion() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClientConfig(clientConfig);
+
+        PullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer");
+        messagePullConsumer.registerMessageListener(new MessagePullListener() {
+            @Override
+            public void onMessage(PullResult result) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Message pull result:" + result);
+                }
+                latch.countDown();
+            }
+        });
+        messagePullConsumer.start();
+
+        Promise<PullMessageResponse> promise = NetworkUtil.newImmediatePromise();
+        promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
+            if (future.isSuccess()) {
+                PullMessageResponse response = future.get();
+                if (logger.isInfoEnabled()) {
+                    logger.info("Send pull message command result: ledger={} epoch={} index={} limit={} queue={} topic={}",
+                            response.getLedger(), response.getEpoch(), response.getIndex(), response.getLimit(), response.getQueue(), response.getTopic());
+                }
+            } else {
+                if (logger.isErrorEnabled()) {
+                    logger.error(future.cause());
+                }
+            }
+        });
+        messagePullConsumer.pull("create", "message", (short) 2, -1, -1,3, promise);
+
+        latch.await();
+        messagePullConsumer.shutdownGracefully();
+    }
 }

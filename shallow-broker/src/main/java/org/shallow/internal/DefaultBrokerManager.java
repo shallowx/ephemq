@@ -1,7 +1,7 @@
 package org.shallow.internal;
 
 import org.shallow.ClientConfig;
-import org.shallow.log.LogManager;
+import org.shallow.log.LedgerManager;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.metadata.MappedFileApi;
@@ -17,7 +17,7 @@ public class DefaultBrokerManager implements BrokerManager {
     private final SRaftQuorumVoterClient client;
     private final MappedFileApi api;
     private final SRaftProcessController controller;
-    private final LogManager logManager;
+    private final LedgerManager logManager;
 
     public DefaultBrokerManager(BrokerConfig config) {
         ClientConfig quorumVoterClientConfig = new ClientConfig();
@@ -37,7 +37,7 @@ public class DefaultBrokerManager implements BrokerManager {
 
         this.api = new MappedFileApi(config);
         this.controller = new SRaftProcessController(config, this);
-        this.logManager = new LogManager(config);
+        this.logManager = new LedgerManager(config);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public LogManager getLogManager() {
+    public LedgerManager getLogManager() {
         return logManager;
     }
 

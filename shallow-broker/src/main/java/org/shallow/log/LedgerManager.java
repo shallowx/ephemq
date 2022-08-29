@@ -2,7 +2,6 @@ package org.shallow.log;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
@@ -18,20 +17,18 @@ import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.proto.server.PullMessageResponse;
 import org.shallow.util.NetworkUtil;
 
-import java.util.Map;
-
 import static org.shallow.util.ObjectUtil.isNull;
 
-public class LogManager {
+public class LedgerManager {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LogManager.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
 
     private final BrokerConfig config;
     private final DistributedAtomicInteger atomicLedgerValue;
     private final DistributedAtomicInteger atomicRequestValue;
     private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
 
-    public LogManager(BrokerConfig config) {
+    public LedgerManager(BrokerConfig config) {
         this.config = config;
         this.atomicLedgerValue = new DistributedAtomicInteger();
         this.atomicRequestValue = new DistributedAtomicInteger();
@@ -56,17 +53,17 @@ public class LogManager {
         ledger.subscribe(queue, epoch, index, promise);
     }
 
-    public void append(int ledgerId, String queue, ByteBuf payload, Promise<Offset> promise) {
+    public void append(int ledgerId, String queue, ByteBuf payload, short version, Promise<Offset> promise) {
         Ledger ledger = ledgers.get(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
-        ledger.append(queue, payload, promise);
+        ledger.append(queue, version, payload, promise);
     }
 
     @SuppressWarnings("all")
-    public void pull(Channel channel, int ledgerId, String queue, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
+    public void pull(Channel channel, int ledgerId, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         Ledger ledger = ledgers.get(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_PULL_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
@@ -82,8 +79,8 @@ public class LogManager {
                 PullMessageResponse response = PullMessageResponse
                         .newBuilder()
                         .setTopic(topic)
-                        .setEpoch(result.getEndEpoch())
-                        .setIndex(result.getEndIndex())
+                        .setEpoch(result.getStartEpoch())
+                        .setIndex(result.getStartIndex())
                         .setLedger(ledgerId)
                         .setLimit(limit)
                         .setQueue(queue)
@@ -94,7 +91,7 @@ public class LogManager {
             }
         });
         int requestId = atomicRequestValue.increment().preValue();
-        ledger.pull(requestId, channel, queue, epoch, index, limit, pullResultPromise);
+        ledger.pull(requestId, channel, queue, version, epoch, index, limit, pullResultPromise);
     }
 
     public Ledger getLedger(int ledger) {

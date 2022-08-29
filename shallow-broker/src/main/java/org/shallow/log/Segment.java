@@ -38,16 +38,17 @@ public class Segment {
         this.tailLocation = this.headLocation = payload.writerIndex();
     }
 
-    public void write(String queue, ByteBuf payload, Offset offset) {
+    public void write(String queue, short version, ByteBuf payload, Offset offset) {
         ByteBufHolder finalHolder = holder;
         if (isNotNull(finalHolder)) {
             ByteBuf finalBuf = finalHolder.payload;
             int location = finalBuf.writerIndex();
 
             try {
-                int length = queue.length() + 16 + payload.readableBytes();
+                int length = queue.length() + 18 + payload.readableBytes();
 
                 finalBuf.writeInt(length);
+                finalBuf.writeShort(version);
                 finalBuf.writeInt(queue.length());
                 finalBuf.writeBytes(queue.getBytes(UTF_8));
                 finalBuf.writeInt(offset.epoch());
@@ -152,13 +153,13 @@ public class Segment {
         int position = headLocation;
         while (position < limit) {
             int length = theBuf.getInt(position);
-            int queueLength = theBuf.getInt(position + 4);
+            int queueLength = theBuf.getInt(position + 6);
 
-            int epoch = theBuf.getInt(position + 8 + queueLength);
+            int epoch = theBuf.getInt(position + 10 + queueLength);
             if (epoch > theEpoch) {
                 return position;
             } else if (epoch == theEpoch){
-                long index = theBuf.getLong(position + 8 + queueLength + 4);
+                long index = theBuf.getLong(position + 14 + queueLength);
                 if (index > theIndex) {
                     return position;
                 }

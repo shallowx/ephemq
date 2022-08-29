@@ -42,7 +42,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
     }
 
     @Override
-    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type) {
+    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
         try {
             switch (command) {
                 case HANDLE_MESSAGE -> {
@@ -51,7 +51,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                         return;
                     }
 
-                    onPullMessage(data, answer);
+                    onPullMessage(version, data, answer);
                 }
                 case TOPIC_CHANGED -> {
                     onPartitionChanged(answer);
@@ -82,7 +82,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         trySuccess(answer);
     }
 
-    private void onPullMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
+    private void onPullMessage(short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
         MessagePullSignal signal = readProto(data, MessagePullSignal.parser());
 
         String topic = signal.getTopic();

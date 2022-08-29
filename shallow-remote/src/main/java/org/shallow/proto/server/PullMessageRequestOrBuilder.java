@@ -42,4 +42,10 @@ public interface PullMessageRequestOrBuilder extends
    * @return The index.
    */
   long getIndex();
+
+  /**
+   * <code>int32 version = 6;</code>
+   * @return The version.
+   */
+  int getVersion();
 }

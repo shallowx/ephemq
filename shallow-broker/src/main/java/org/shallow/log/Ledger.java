@@ -7,6 +7,7 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
 import org.shallow.handle.EntryPullHandler;
+import org.shallow.handle.EntryPushHandler;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -29,6 +30,7 @@ public class Ledger {
     private final Storage storage;
     private final EventExecutor storageExecutor;
     private final EntryPullHandler entryPullHandler;
+    private final EntryPushHandler entryPushHandler;
 
     public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
@@ -39,6 +41,7 @@ public class Ledger {
         this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
         this.entryPullHandler = new EntryPullHandler(config);
+        this.entryPushHandler = new EntryPushHandler(config);
     }
 
     public String getTopic() {
@@ -62,13 +65,13 @@ public class Ledger {
 
     }
 
-    public void append(String queue, ByteBuf payload, Promise<Offset> promise) {
+    public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         payload.retain();
         if (storageExecutor.inEventLoop()) {
-            doAppend(queue, payload, promise);
+            doAppend(queue, version, payload, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doAppend(queue, payload, promise));
+                storageExecutor.execute(() -> doAppend(queue, version, payload, promise));
             } catch (Throwable t) {
                 payload.release();
                 promise.tryFailure(t);
@@ -76,9 +79,9 @@ public class Ledger {
         }
     }
 
-    private void doAppend(String queue, ByteBuf payload, Promise<Offset> promise) {
+    private void doAppend(String queue, short version,  ByteBuf payload, Promise<Offset> promise) {
         try {
-            storage.append(queue, payload, promise);
+            storage.append(queue, version, payload, promise);
         } catch (Throwable t) {
             promise.tryFailure(t);
         } finally {
@@ -86,45 +89,45 @@ public class Ledger {
         }
     }
 
-    public void pull(int requestId, Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
+    public void pull(int requestId, Channel channel, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
         if (storageExecutor.inEventLoop()) {
-            doPull(requestId, channel, queue, epoch, index, limit, promise);
+            doPull(requestId, channel, queue, version, epoch, index, limit, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doPull(requestId, channel, queue, epoch, index, limit, promise));
+                storageExecutor.execute(() -> doPull(requestId, channel, queue, version, epoch, index, limit, promise));
             } catch (Throwable t) {
                 promise.tryFailure(t);
             }
         }
     }
 
-    private void doPull(int requestId, Channel channel, String queue, int epoch, long index, int limit, Promise<PullResult> promise) {
+    private void doPull(int requestId, Channel channel, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
         Offset offset = new Offset(epoch, index);
         try {
             entryPullHandler.register(requestId, channel);
-            storage.read(requestId, queue, offset, limit, promise);
+            storage.read(requestId, queue, version, offset, limit, promise);
         } catch (Throwable t) {
             promise.tryFailure(t);
         }
     }
 
-    public void onTriggerAppend(int ledgerId, int limit, Offset offset) {
-
+    public void onTriggerAppend(int limit, Offset offset) {
+        entryPushHandler.handle();
     }
 
-    public void onTriggerPull(int requestId, String queue, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
-        entryPullHandler.handle(requestId, topic, queue, ledgerId, limit, offset, buf);
+    public void onTriggerPull(int requestId, String queue, short version, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
+        entryPullHandler.handle(requestId, topic, queue, version, ledgerId, limit, offset, buf);
     }
 
     private class MessageTrigger implements LedgerTrigger {
         @Override
-        public void onAppend(int ledgerId, int limit, Offset tail) {
-            onTriggerAppend(ledgerId, limit, tail);
+        public void onAppend(int limit, Offset tail) {
+            onTriggerAppend(limit, tail);
         }
 
         @Override
-        public void onPull(int requestId, String queue, int ledgerId, int limit, Offset head, ByteBuf buf) {
-            onTriggerPull(requestId, queue, ledgerId, limit, head, buf);
+        public void onPull(int requestId, String queue, short version, int ledgerId, int limit, Offset head, ByteBuf buf) {
+            onTriggerPull(requestId, queue, version, ledgerId, limit, head, buf);
         }
     }
 

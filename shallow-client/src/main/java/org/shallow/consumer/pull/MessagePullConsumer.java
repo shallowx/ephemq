@@ -70,22 +70,7 @@ public class MessagePullConsumer implements PullConsumer {
     }
 
     @Override
-    public void pull(String topic, String queue, int epoch, long index, int limit, Promise<PullMessageResponse> promise) throws Exception {
-        this.pull(topic, queue, epoch, index, limit, null,  promise);
-    }
-
-    @Override
-    public void pull(String topic, String queue, int epoch, long index, int limit) throws Exception {
-        this.pull(topic, queue, epoch, index, limit, null, null);
-    }
-
-    @Override
-    public void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener) throws Exception {
-        this.pull(topic, queue, epoch, index, limit, listener, null);
-    }
-
-    @Override
-    public void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception {
+    public void pull(String topic, String queue, short version, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception {
         if (isNotNull(listener)) {
             this.registerMessageListener(listener);
         }
@@ -109,15 +94,51 @@ public class MessagePullConsumer implements PullConsumer {
                 logger.debug("Consume<"+ name +"> promise is null, and there will be no callback");
             }
         });
-        doPullMessage(topic, queue, epoch, index, limit, responsePromise);
+        doPullMessage(topic, queue, version, epoch, index, limit, responsePromise);
     }
+
+    @Override
+    public void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener, Promise<PullMessageResponse> promise) throws Exception {
+        this.pull(topic, queue, (short)-1, epoch, index, limit, listener, promise);
+    }
+
+    @Override
+    public void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener) throws Exception {
+        this.pull(topic, queue, (short)-1, epoch, index, limit, listener, null);
+    }
+
+    @Override
+    public void pull(String topic, String queue, int epoch, long index, int limit, Promise<PullMessageResponse> promise) throws Exception {
+        this.pull(topic, queue, (short)-1, epoch, index, limit, null, promise);
+    }
+
+    @Override
+    public void pull(String topic, String queue, int epoch, long index, int limit) throws Exception {
+        this.pull(topic, queue, (short)-1, epoch, index, limit, null, null);
+    }
+
+    @Override
+    public void pull(String topic, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) throws Exception {
+        this.pull(topic, queue, version, epoch, index, limit, null,  promise);
+    }
+
+    @Override
+    public void pull(String topic, String queue, short version, int epoch, long index, int limit) throws Exception {
+        this.pull(topic, queue, version, epoch, index, limit, null, null);
+    }
+
+    @Override
+    public void pull(String topic, String queue, short version, int epoch, long index, int limit, MessagePullListener listener) throws Exception {
+        this.pull(topic, queue, version, epoch, index, limit, listener, null);
+    }
+
 
     @Override
     public MessagePullListener getPullListener() {
         return listener;
     }
 
-    private void doPullMessage(String topic, String queue,int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
+    private void doPullMessage(String topic, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (isNull(messageRouter)) {
             throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> router is empty", topic));
@@ -136,6 +157,7 @@ public class MessagePullConsumer implements PullConsumer {
                 .setIndex(index)
                 .setQueue(queue)
                 .setLimit(limit)
+                .setVersion(version)
                 .build();
 
         SocketAddress leader = holder.leader();

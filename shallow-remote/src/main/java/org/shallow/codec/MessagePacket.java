@@ -37,6 +37,10 @@ public final class MessagePacket extends AbstractReferenceCounted {
        return newPacket((short) -1, (byte) Type.HEARTBEAT.sequence(), answer, command, body);
     }
 
+    public static MessagePacket newPacket(short version, int answer, byte command, ByteBuf body) {
+        return newPacket(version, (byte) Type.HEARTBEAT.sequence(), answer, command, body);
+    }
+
     public static MessagePacket newPacket(short version, byte type, int answer, byte command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);

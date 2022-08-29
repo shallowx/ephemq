@@ -16,7 +16,7 @@
         <module>shallow-tool</module>
         <module>shallow-client</module>
         <module>shallow-remote</module>
-        <module>shallow-benchmark</module>
+        <module>shallow-distribution</module>
         <module>shallow-example</module>
         <module>shallow-common</module>
     </modules>

@@ -37,16 +37,16 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         Options options = buildCommandOptions();
         CommandLine cmdLine = parseCmdLine(args, options, new DefaultParser());
 
+        Properties properties = new Properties();
         if (cmdLine.hasOption('c')) {
             String file = cmdLine.getOptionValue('c');
             if (!StringUtil.isNullOrEmpty(file)) {
                 String extension = getExtension(file);
                 PropertySourceLoader propertySourceLoader = propertySourceLoaderBeanFactory(extension);
-                Properties properties = propertySourceLoader.load(file);
-                return new DefaultApplicationArguments(properties);
+                 properties = propertySourceLoader.load(file);
             }
         }
-        return null;
+        return new DefaultApplicationArguments(properties);
     }
 
     private PropertySourceLoader propertySourceLoaderBeanFactory(String extension) {

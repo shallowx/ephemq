@@ -52,18 +52,18 @@ public class EntryPullHandler {
         channels.remove(requestId);
     }
 
-    public void handle(int requestId, String topic, String queue, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
+    public void handle(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
         if (channels.isEmpty()) {
             return;
         }
 
         allocateExecutor.execute(() -> {
-            Handler handler = allocateHandler();
-            handler.handleExecutor.execute(() -> doHandle(requestId, topic, queue, ledgerId, limit, offset, payload));
+            Handler handler = applyHandler();
+            handler.handleExecutor.execute(() -> doHandle(requestId, topic, queue, version, ledgerId, limit, offset, payload));
         });
     }
 
-    private void doHandle(int requestId, String topic, String queue, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
+    private void doHandle(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
         try {
             Channel channel = channels.get(requestId);
             if (isNull(channel)) {
@@ -72,7 +72,7 @@ public class EntryPullHandler {
 
             ByteBuf buf = null;
             try {
-                buf = buildByteBuf(topic, queue, ledgerId, limit, offset, payload, channel.alloc());
+                buf = buildByteBuf(topic, queue, version, ledgerId, limit, offset, payload, channel.alloc());
                 if (!channel.isActive()) {
                     if (logger.isWarnEnabled()) {
                         logger.warn("Channel is not active, and will remove it");
@@ -139,7 +139,7 @@ public class EntryPullHandler {
         }
     }
 
-    private ByteBuf buildByteBuf(String topic, String queue, int ledgerId, int limit, Offset offset , ByteBuf payload, ByteBufAllocator alloc) {
+    private ByteBuf buildByteBuf(String topic, String queue, short version, int ledgerId, int limit, Offset offset , ByteBuf payload, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             MessagePullSignal signal = MessagePullSignal
@@ -159,7 +159,7 @@ public class EntryPullHandler {
 
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + payloadLength);
-            buf.writeShort(0);
+            buf.writeShort(version);
             buf.writeByte(HANDLE_MESSAGE);
             buf.writeByte(Type.PULL.sequence());
             buf.writeInt(0);
@@ -174,7 +174,7 @@ public class EntryPullHandler {
         }
     }
 
-    private Handler allocateHandler() {
+    private Handler applyHandler() {
         if (handlers.isEmpty()) {
             return buildHandler();
         }

@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
-import org.shallow.log.LogManager;
+import org.shallow.log.LedgerManager;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
@@ -46,7 +46,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
     private final LoadingCache<String, Set<PartitionRecord>> unCommitRecordCache;
     private final BrokerManager manager;
     private final PartitionElector elector;
-    private final LogManager logManager;
+    private final LedgerManager logManager;
 
     public TopicManager(Set<SocketAddress> quorumVoterAddresses, BrokerConfig config, BrokerManager manager) {
         super(quorumVoterAddresses, DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool(), config, manager.getController());

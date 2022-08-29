@@ -11,19 +11,19 @@ public final class PullResult {
     private final int ledger;
     private String topic;
     private final String queue;
-    private final int endEpoch;
-    private final long endIndex;
+    private final int startEpoch;
+    private final long startIndex;
     private final int limit;
     private final List<Message> message;
 
-    public PullResult(int ledger, String topic, String queue, int limit, int endEpoch, long endIndex , List<Message> message) {
+    public PullResult(int ledger, String topic, String queue, int limit, int startEpoch, long startIndex , List<Message> message) {
         this.ledger = ledger;
         this.topic = topic;
         this.queue = queue;
         this.message = message;
         this.limit = limit;
-        this.endEpoch = endEpoch;
-        this.endIndex = endIndex;
+        this.startEpoch = startEpoch;
+        this.startIndex = startIndex;
     }
 
     public void setTopic(String topic) {
@@ -46,12 +46,12 @@ public final class PullResult {
         return message;
     }
 
-    public int getEndEpoch() {
-        return endEpoch;
+    public int getStartEpoch() {
+        return startEpoch;
     }
 
-    public long getEndIndex() {
-        return endIndex;
+    public long getStartIndex() {
+        return startIndex;
     }
 
     public int getLimit() {
@@ -64,8 +64,8 @@ public final class PullResult {
                 "ledger=" + ledger +
                 ", topic='" + topic + '\'' +
                 ", queue='" + queue + '\'' +
-                ", endEpoch=" + endEpoch +
-                ", endIndex=" + endIndex +
+                ", startEpoch=" + startEpoch +
+                ", startIndex=" + startIndex +
                 ", limit=" + limit +
                 ", message=" + message +
                 '}';

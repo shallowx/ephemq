@@ -10,7 +10,7 @@ import org.shallow.consumer.push.Subscription;
 import org.shallow.internal.BrokerManager;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.invoke.InvokeAnswer;
-import org.shallow.log.LogManager;
+import org.shallow.log.LedgerManager;
 import org.shallow.log.Offset;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -67,7 +67,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     @Override
-    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type) {
+    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
         try {
             switch (command) {
                 case SEND_MESSAGE -> {
@@ -94,8 +94,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 answerFailed(answer, f.cause());
                             }
                         });
-                        LogManager logManager = manager.getLogManager();
-                        logManager.append(ledger, queue, data, promise);
+                        LedgerManager logManager = manager.getLogManager();
+                        logManager.append(ledger, queue, data, version, promise);
                     } catch (Throwable t){
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to append message record", t);
@@ -110,6 +110,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         int ledger = request.getLedger();
                         int limit = request.getLimit();
                         String queue = request.getQueue();
+                        short theVersion = (short) request.getVersion();
                         int epoch = request.getEpoch() ;
                         long index = request.getIndex();
 
@@ -124,8 +125,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        LogManager logManager = manager.getLogManager();
-                        logManager.pull(channel, ledger, queue, epoch, index, limit, promise);
+                        LedgerManager logManager = manager.getLogManager();
+                        logManager.pull(channel, ledger, queue, theVersion, epoch, index, limit, promise);
                     } catch (Throwable t) {
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to pull message record", t);
@@ -221,7 +222,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                     }
                                 });
 
-                                LogManager logManager = manager.getLogManager();
+                                LedgerManager logManager = manager.getLogManager();
                                 logManager.subscribe(queue, ledger, epoch, index, promise);
                             } catch (Throwable t) {
                                 if (logger.isErrorEnabled()) {

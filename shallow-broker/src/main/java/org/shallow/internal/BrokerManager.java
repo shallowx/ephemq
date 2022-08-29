@@ -1,6 +1,6 @@
 package org.shallow.internal;
 
-import org.shallow.log.LogManager;
+import org.shallow.log.LedgerManager;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.sraft.SRaftProcessController;
@@ -15,5 +15,5 @@ public interface BrokerManager {
 
     SRaftProcessController getController();
 
-    LogManager getLogManager();
+    LedgerManager getLogManager();
 }

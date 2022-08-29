@@ -93,6 +93,32 @@ public class ProducerTests {
     }
 
     @Test
+    public void testSendAsyncWithVersion() throws Exception {
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+
+        Producer producer = new MessageProducer("async-producer", producerConfig);
+        producer.start();
+
+        short messageVersion = 2;
+        Message message = new Message("create", "message", messageVersion, "message-test-send-async".getBytes(UTF_8), new Message.Extras());
+        MessageFilter filter = sendMessage -> sendMessage;
+
+        CountDownLatch latch = new CountDownLatch(1);
+        producer.sendAsync(message, filter, (sendResult, cause) -> {
+            if (isNull(cause)) {
+                logger.warn("send result - {}", sendResult);
+            } else {
+                logger.error(cause);
+            }
+            latch.countDown();
+        });
+
+        latch.await();
+        producer.shutdownGracefully();
+    }
+
+    @Test
     public void testSendWithExtras() throws Exception {
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);

@@ -162,13 +162,14 @@ public final class ServerProto {
       "eExtras.ExtrasEntry\032-\n\013ExtrasEntry\022\013\n\003ke" +
       "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendMessag" +
       "eResponse\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005" +
-      "\022\r\n\005index\030\003 \001(\003\"`\n\022PullMessageRequest\022\016\n" +
+      "\022\r\n\005index\030\003 \001(\003\"q\n\022PullMessageRequest\022\016\n" +
       "\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 " +
-      "\001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\"p\n\023Pul" +
-      "lMessageResponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue" +
-      "\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n" +
-      "\005epoch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shall" +
-      "ow.proto.serverB\013ServerProtoP\001b\006proto3"
+      "\001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\022\017\n\007ver" +
+      "sion\030\006 \001(\005\"p\n\023PullMessageResponse\022\r\n\005top" +
+      "ic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\016" +
+      "\n\006ledger\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index\030\006" +
+      " \001(\003B)\n\030org.shallow.proto.serverB\013Server" +
+      "ProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -294,7 +295,7 @@ public final class ServerProto {
     internal_static_shallow_protobuf_PullMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageRequest_descriptor,
-        new java.lang.String[] { "Ledger", "Queue", "Limit", "Epoch", "Index", });
+        new java.lang.String[] { "Ledger", "Queue", "Limit", "Epoch", "Index", "Version", });
     internal_static_shallow_protobuf_PullMessageResponse_descriptor =
       getDescriptor().getMessageTypes().get(18);
     internal_static_shallow_protobuf_PullMessageResponse_fieldAccessorTable = new

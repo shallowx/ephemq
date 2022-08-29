@@ -36,13 +36,13 @@ public class Storage {
         this.headSegment = this.tailSegment = new Segment(ledger, Unpooled.EMPTY_BUFFER, current);
     }
 
-    public void append(String queue, ByteBuf payload, Promise<Offset> promise) {
+    public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         payload.retain();
         if (storageExecutor.inEventLoop()) {
-            doAppend(queue, payload, promise);
+            doAppend(queue, version, payload, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doAppend(queue, payload, promise));
+                storageExecutor.execute(() -> doAppend(queue, version, payload, promise));
             } catch (Throwable t) {
                 payload.release();
                 promise.tryFailure(t);
@@ -50,14 +50,14 @@ public class Storage {
         }
     }
 
-    private void doAppend(String queue, ByteBuf payload, Promise<Offset> promise) {
+    private void doAppend(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         try {
             Offset theCurrent = current;
             Offset offset = new Offset(theCurrent.epoch(), theCurrent.index() + 1);
 
-            int bytes = queue.length() + 20 + payload.readableBytes();
+            int bytes = queue.length() + 22 + payload.readableBytes();
             Segment segment = applySegment(bytes);
-            segment.write(queue, payload, offset);
+            segment.write(queue, version, payload, offset);
 
             this.current = offset;
 
@@ -70,16 +70,16 @@ public class Storage {
         }
     }
 
-    public void read(int requestId, String queue, Offset offset, int limit, Promise<PullResult> promise) {
+    public void read(int requestId, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
         if (storageExecutor.inEventLoop()) {
-            doRead(requestId, queue, offset, limit, promise);
+            doRead(requestId, queue, version, offset, limit, promise);
         } else {
-            storageExecutor.execute(() -> doRead(requestId, queue, offset,  limit, promise));
+            storageExecutor.execute(() -> doRead(requestId, queue, version, offset,  limit, promise));
         }
     }
 
     @SuppressWarnings("all")
-    private void doRead(int requestId, String queue, Offset offset, int limit, Promise<PullResult> promise) {
+    private void doRead(int requestId, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
         try {
             Segment segment = locateSegment(offset);
             if (isNull(segment)) {
@@ -89,8 +89,9 @@ public class Storage {
 
             int position = segment.locate(offset);
             CompositeByteBuf compositeByteBuf = null;
+            int current = 0;
 
-            for (int i = 0; i < limit; i++) {
+            while (current < limit) {
                 ByteBuf queueBuf = null;
                 try {
                     int tailLocation = segment.tailLocation();
@@ -104,21 +105,27 @@ public class Storage {
 
                     ByteBuf payload = segment.readCompleted(position);
 
-                    int queueLength = payload.getInt(4);
-                    queueBuf = payload.retainedSlice(8, queueLength);
+                    short theVersion = payload.getShort(4);
+                    int queueLength = payload.getInt(6);
+                    queueBuf = payload.retainedSlice(10, queueLength);
                     String theQueue = ByteBufUtil.buf2String(queueBuf, queueLength);
+
+                    position += payload.readableBytes();
                     if (!theQueue.equals(queue)) {
+                        continue;
+                    }
+
+                    if (version != -1 && theVersion != version) {
                         continue;
                     }
 
                     if (isNull(compositeByteBuf)) {
                         compositeByteBuf = newComposite(payload, limit);
-                        position += payload.readableBytes();
                         continue;
                     }
                     compositeByteBuf.addFlattenedComponents(true, payload);
 
-                    position += payload.readableBytes();
+                    current++;
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Read message failed, error:{}", t);
@@ -128,7 +135,8 @@ public class Storage {
                     ByteBufUtil.release(queueBuf);
                 }
             }
-            triggerPull(requestId, queue, ledger, limit, offset, compositeByteBuf);
+
+            triggerPull(requestId, queue, version, ledger, limit, offset, compositeByteBuf == null ? Unpooled.EMPTY_BUFFER : compositeByteBuf);
 
             Offset tailOffset = segment.tailOffset();
             promise.trySuccess(new PullResult(ledger, null, queue, limit, tailOffset.epoch(), tailOffset.index(), null));
@@ -142,10 +150,10 @@ public class Storage {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void triggerPull(int requestId, String queue, int ledger, int limit, Offset offset, ByteBuf buf) {
+    private void triggerPull(int requestId, String queue, short version, int ledger, int limit, Offset offset, ByteBuf buf) {
         if (isNotNull(trigger)) {
             try {
-                trigger.onPull(requestId, queue, ledger, limit, offset, buf);
+                trigger.onPull(requestId, queue, version, ledger, limit, offset, buf);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
                     logger.warn("trigger pull error: ledger={} limit={} offset={}", ledger, limit, offset);
@@ -158,7 +166,7 @@ public class Storage {
     private void triggerAppend(int ledger, int limit, Offset offset) {
         if (isNotNull(trigger)) {
             try {
-                trigger.onAppend(ledger, limit, offset);
+                trigger.onAppend(limit, offset);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
                     logger.warn("trigger append error: ledger={} limit={} offset={}", ledger, limit, offset);

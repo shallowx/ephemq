@@ -12,7 +12,7 @@ import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Cursor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LogManager.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
 
     private final Storage storage;
     private WeakReference<Segment> reference;
