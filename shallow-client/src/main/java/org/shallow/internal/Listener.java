@@ -11,7 +11,7 @@ public interface Listener {
 
     default void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal){}
 
-    default void onPushMessage(ByteBuf data){}
+    default void onPushMessage(short version, String topic, String queue, int epoch, long index, ByteBuf data){}
 
     default void onPullMessage(String topic, String queue, int ledger, int limit, int epoch, long index, ByteBuf data){}
 }

@@ -61,8 +61,8 @@ public class Storage {
 
             this.current = offset;
 
-            triggerAppend(ledger, 1, offset);
             promise.trySuccess(offset);
+            triggerAppend(ledger, 1, offset);
         } catch (Throwable t) {
             promise.tryFailure(t);
         } finally {
@@ -175,6 +175,15 @@ public class Storage {
         }
     }
 
+    public Cursor locateCursor(Offset offset) {
+        if (isNull(offset)) {
+            Segment theTailSegment = tailSegment;
+            return new Cursor(this, theTailSegment, theTailSegment.tailLocation());
+        }
+        Segment theHeadSegment = headSegment;
+        return new Cursor(this, theHeadSegment, theHeadSegment.headLocation());
+    }
+
     private Segment applySegment(int bytes) {
         Segment theTailSegment = tailSegment;
         if (theTailSegment.freeWriteBytes() < bytes) {
@@ -188,24 +197,30 @@ public class Storage {
     }
 
     public Segment locateSegment(Offset offset) {
-        boolean isActive = true;
-
-        Segment theSegment = headSegment;
-        if (theSegment.headOffset().after(offset)) {
-            return theSegment;
-        }
-
-        Offset tailOffset = theSegment.tailOffset();
-        while (offset.after(tailOffset)) {
-            theSegment = headSegment.next();
-            if (isNull(theSegment)) {
-                isActive = false;
-                break;
+        try {
+            boolean isActive = true;
+            Segment theSegment = headSegment;
+            if (theSegment.headOffset().after(offset)) {
+                return theSegment;
             }
-            tailOffset = theSegment.tailOffset();
-        }
 
-        return isActive ? theSegment : null;
+            Offset tailOffset = theSegment.tailOffset();
+            while (offset.after(tailOffset)) {
+                theSegment = headSegment.next();
+                if (isNull(theSegment)) {
+                    isActive = false;
+                    break;
+                }
+                tailOffset = theSegment.tailOffset();
+            }
+
+            return isActive ? theSegment : null;
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to locate segment, error:{}", t);
+            }
+            return null;
+        }
     }
 
     private void releaseSegment() {
@@ -250,6 +265,10 @@ public class Storage {
 
     public Segment tailSegment() {
         return tailSegment;
+    }
+
+    public Offset currentOffset() {
+        return current;
     }
 
     public void close() {

@@ -9,7 +9,7 @@ public interface PullConsumer {
 
     void shutdownGracefully() throws Exception;
 
-    void registerMessageListener(MessagePullListener listener);
+    void registerListener(MessagePullListener listener);
 
     void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception;
 
@@ -26,5 +26,5 @@ public interface PullConsumer {
     void pull(String topic, String queue, short version, int epoch, long index, int limit,  Promise<PullMessageResponse> promise) throws Exception;
 
     void pull(String topic, String queue, short version, int epoch, long index, int limit) throws Exception;
-    MessagePullListener getPullListener();
+    MessagePullListener getListener();
 }

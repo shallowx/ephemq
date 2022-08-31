@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.shallow.util.ObjectUtil.isNull;
@@ -145,6 +146,32 @@ public class ProducerTests {
 
         latch.await();
         producer.shutdownGracefully();
+    }
+
+    @Test
+    public void testContinueSend() throws Exception {
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+
+        Producer producer = new MessageProducer("async-producer", producerConfig);
+        producer.start();
+
+        MessageFilter filter = sendMessage -> sendMessage;
+
+        CountDownLatch latch = new CountDownLatch(1);
+        for (int i = 0; i < Long.MAX_VALUE; i++) {
+            Message message = new Message("create", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Message.Extras());
+            producer.sendAsync(message, filter, (sendResult, cause) -> {
+                if (isNull(cause)) {
+                    logger.warn("send result - {}", sendResult);
+                } else {
+                    logger.error(cause);
+                }
+            });
+
+            TimeUnit.SECONDS.sleep(1);
+        }
+        latch.wait();
     }
 
     @AfterClass

@@ -6,8 +6,9 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
-import org.shallow.handle.EntryPullHandler;
-import org.shallow.handle.EntryPushHandler;
+import org.shallow.log.handle.pull.EntryPullDispatcher;
+import org.shallow.log.handle.pull.PullDispatcher;
+import org.shallow.log.handle.push.EntryPushDispatcher;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -29,8 +30,8 @@ public class Ledger {
     private int epoch;
     private final Storage storage;
     private final EventExecutor storageExecutor;
-    private final EntryPullHandler entryPullHandler;
-    private final EntryPushHandler entryPushHandler;
+    private final PullDispatcher entryPullHandler;
+    private final EntryPushDispatcher entryPushHandler;
 
     public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
@@ -39,17 +40,17 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.entryPullHandler = new EntryPullHandler(config);
-        this.entryPushHandler = new EntryPushHandler(config);
+        this.entryPullHandler = new EntryPullDispatcher(config);
+        this.entryPushHandler = new EntryPushDispatcher(config, storage);
     }
 
-    public void subscribe(Channel channel, String queue, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(Channel channel, String queue, short version, int epoch, long index, Promise<Subscription> promise) {
         Offset offset = Offset.of(epoch, index);
         if (storageExecutor.inEventLoop()) {
-            doSubscribe(channel, queue, offset, promise);
+            doSubscribe(channel, queue, version, offset, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doSubscribe(channel, queue, offset, promise));
+                storageExecutor.execute(() -> doSubscribe(channel, queue, version, offset, promise));
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Failed to subscribe, topic={} partition={} queue={} ledgerId={} epoch={} index={}. error cause:{}",
@@ -60,23 +61,47 @@ public class Ledger {
         }
     }
 
-    private void doSubscribe(Channel channel, String queue, Offset offset, Promise<Subscription> promise) {
-        Offset theOffset;
-        Segment segment = storage.locateSegment(offset);
-        if (isNull(segment)) {
-            theOffset = offset;
-        } else {
-            theOffset = offset;
+    private void doSubscribe(Channel channel, String queue, short version, Offset offset, Promise<Subscription> promise) {
+        try {
+            Offset theOffset;
+            if (isNull(offset)) {
+                Segment segment = storage.tailSegment();
+                theOffset = segment.tailOffset();
+            } else {
+               theOffset = offset;
+            }
 
-            Offset headOffset = segment.headOffset();
-            if (headOffset.after(offset)) {
-                theOffset = headOffset;
+            entryPushHandler.subscribe(channel, queue, theOffset, version);
+            promise.trySuccess(new Subscription(theOffset.epoch(), theOffset.index(), queue, ledgerId));
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to subscribe, channel<{}> ledgerId={} topic={} queue={} offset={}", channel.toString(), ledgerId, topic, queue, offset);
+            }
+            promise.tryFailure(t);
+        }
+    }
+
+    public void clean(Channel channel, String queue, Promise<Void> promise) {
+        if (storageExecutor.inEventLoop()) {
+            doClean(channel, queue, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doClean(channel, queue, promise));
+            } catch (Throwable t) {
+                promise.tryFailure(t);
             }
         }
-        entryPushHandler.subscribe(channel, queue, theOffset);
+    }
 
-        // TODO
-        promise.trySuccess(null);
+    private void doClean(Channel channel, String queue, Promise<Void> promise) {
+        try {
+            entryPushHandler.clean(channel, queue);
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to clear subscribe, channel<{}> ledgerId={} topic={} queue={}", channel.toString(), ledgerId, topic, queue);
+            }
+            promise.tryFailure(t);
+        }
     }
 
     public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
@@ -136,11 +161,11 @@ public class Ledger {
     }
 
     public void onTriggerAppend(int limit, Offset offset) {
-        entryPushHandler.handle();
+        entryPushHandler.handle(topic);
     }
 
     public void onTriggerPull(int requestId, String queue, short version, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
-        entryPullHandler.handle(requestId, topic, queue, version, ledgerId, limit, offset, buf);
+        entryPullHandler.dispatch(requestId, topic, queue, version, ledgerId, limit, offset, buf);
     }
 
     private class MessageTrigger implements LedgerTrigger {
@@ -154,7 +179,6 @@ public class Ledger {
             onTriggerPull(requestId, queue, version, ledgerId, limit, head, buf);
         }
     }
-
 
     public String getTopic() {
         return topic;
@@ -177,10 +201,11 @@ public class Ledger {
     }
 
     public void close() {
-        entryPullHandler.shutdownGracefully();
+
         storageExecutor.shutdownGracefully();
         storage.close();
-
+        entryPullHandler.shutdownGracefully();
+        entryPushHandler.shutdownGracefully();
         if (logger.isWarnEnabled()) {
             logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
         }

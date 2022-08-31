@@ -70,6 +70,11 @@ private static final long serialVersionUID = 0L;
             index_ = input.readInt64();
             break;
           }
+          case 40: {
+
+            version_ = input.readInt32();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -173,6 +178,17 @@ private static final long serialVersionUID = 0L;
     return index_;
   }
 
+  public static final int VERSION_FIELD_NUMBER = 5;
+  private int version_;
+  /**
+   * <code>int32 version = 5;</code>
+   * @return The version.
+   */
+  @java.lang.Override
+  public int getVersion() {
+    return version_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -199,6 +215,9 @@ private static final long serialVersionUID = 0L;
     if (index_ != 0L) {
       output.writeInt64(4, index_);
     }
+    if (version_ != 0) {
+      output.writeInt32(5, version_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -223,6 +242,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(4, index_);
     }
+    if (version_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, version_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -246,6 +269,8 @@ private static final long serialVersionUID = 0L;
         != other.getEpoch()) return false;
     if (getIndex()
         != other.getIndex()) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -266,6 +291,8 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + INDEX_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getIndex());
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -407,6 +434,8 @@ private static final long serialVersionUID = 0L;
 
       index_ = 0L;
 
+      version_ = 0;
+
       return this;
     }
 
@@ -437,6 +466,7 @@ private static final long serialVersionUID = 0L;
       result.ledger_ = ledger_;
       result.epoch_ = epoch_;
       result.index_ = index_;
+      result.version_ = version_;
       onBuilt();
       return result;
     }
@@ -497,6 +527,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getIndex() != 0L) {
         setIndex(other.getIndex());
+      }
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -692,6 +725,37 @@ private static final long serialVersionUID = 0L;
     public Builder clearIndex() {
       
       index_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private int version_ ;
+    /**
+     * <code>int32 version = 5;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <code>int32 version = 5;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+      
+      version_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 version = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      
+      version_ = 0;
       onChanged();
       return this;
     }

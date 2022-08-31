@@ -44,13 +44,22 @@ public class LedgerManager {
         ledgers.putIfAbsent(ledgerId, ledger);
     }
 
-    public void subscribe(Channel channel, String queue, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(Channel channel, String queue, short version, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
         Ledger ledger = getLedger(ledgerId);
         if (isNull(ledger)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
-        ledger.subscribe(channel, queue, epoch, index, promise);
+        ledger.subscribe(channel, queue, version, epoch, index, promise);
+    }
+
+    public void clean(Channel channel, String queue, int ledgerId, Promise<Void> promise) {
+        Ledger ledger = getLedger(ledgerId);
+        if (isNull(ledger)) {
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
+            return;
+        }
+        ledger.clean(channel, queue, promise);
     }
 
     public void append(int ledgerId, String queue, ByteBuf payload, short version, Promise<Offset> promise) {

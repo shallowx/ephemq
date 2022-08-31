@@ -5,6 +5,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.consumer.ConsumerConfig;
+import org.shallow.internal.Listener;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -13,6 +14,8 @@ import org.shallow.metadata.MessageRoutingHolder;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
+import org.shallow.proto.server.CleanSubscribeRequest;
+import org.shallow.proto.server.CleanSubscribeResponse;
 import org.shallow.proto.server.SubscribeRequest;
 import org.shallow.proto.server.SubscribeResponse;
 import org.shallow.util.ObjectUtil;
@@ -20,64 +23,107 @@ import org.shallow.util.ObjectUtil;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
+import static org.shallow.processor.ProcessCommand.Server.CLEAN_SUBSCRIBE;
 import static org.shallow.processor.ProcessCommand.Server.SUBSCRIBE;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ObjectUtil.isNull;
 
 public class MessagePushConsumer implements PushConsumer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessagePushConsumer.class);
 
-    private final MetadataManager manager;
+    private MetadataManager manager;
     private final ConsumerConfig config;
-    private final MessagePushListener messageListener;
-    private final ShallowChannelPool pool;
+    private MessagePushListener messageListener;
+    private ShallowChannelPool pool;
     private final String name;
     private final Client client;
+    private volatile boolean state = false;
+    private final PushConsumerListener pushConsumerListener;
 
-    public MessagePushConsumer(String name, ConsumerConfig config, MessagePushListener listener) {
-        this.messageListener = listener;
-        this.client = new Client("consumer-client", config.getClientConfig(), new PushConsumerListener(this));
+    public MessagePushConsumer(String name, ConsumerConfig config) {
+        this.pushConsumerListener = new PushConsumerListener();
+        this.client = new Client("consumer-client", config.getClientConfig(), pushConsumerListener);
         this.config = config;
+
         this.name = ObjectUtil.checkNonEmpty(name, "Message push consumer name cannot be empty");
-        this.manager = client.getMetadataManager();
-        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }
 
     @Override
-    public MessagePushListener getPushConsumerListener() {
+    public void start() {
+        if (isNull(messageListener)) {
+            throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
+        }
+
+        if (state) {
+            return;
+        }
+        state = true;
+        client.start();
+
+        this.manager = client.getMetadataManager();
+        this.pool = client.getChanelPool();
+    }
+
+    @Override
+    public void registerListener(MessagePushListener listener) {
+        if (isNull(listener)) {
+            throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
+        }
+        this.messageListener = listener;
+        pushConsumerListener.registerListener(listener);
+    }
+
+    @Override
+    public MessagePushListener getListener() {
         return messageListener;
     }
 
     @Override
-    public Subscription subscribe(String topic, String queue) {
+    public Subscription subscribe(String topic, String queue, short version, int epoch, long index) {
+        return this.subscribe(topic, queue, version, epoch, index, null);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback) {
+        this.subscribeAsync(topic, queue, (short) -1, epoch, index, callback, null);
+    }
+
+    @Override
+    public Subscription subscribe(String topic, String queue, short version, int epoch, long index, MessagePushListener listener) {
         checkTopic(topic);
         checkQueue(queue);
 
-        topic = topic.intern();
+        if (isNotNull(listener)) {
+            this.registerListener(listener);
+        }
 
+        topic = topic.intern();
         Promise<SubscribeResponse> promise = newImmediatePromise();
         try {
-            doSubscribe(topic, queue, promise);
+            doSubscribe(topic, queue, version, epoch, index, promise);
             SubscribeResponse response = promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
             return new Subscription(response.getEpoch(), response.getIndex(), response.getQueue(), response.getLedger());
         } catch (Throwable t) {
-            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s", topic, queue));
+            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s, error:%s", topic, queue, t));
         }
     }
 
     @Override
-    public void subscribeAsync(String topic, String queue, SubscribeCallback callback) {
+    public void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback, MessagePushListener listener) {
         checkTopic(topic);
         checkQueue(queue);
 
-        topic = topic.intern();
-
-        if (isNull(callback)) {
-            doSubscribe(topic, queue, null);
-            return;
+        if (isNotNull(listener)) {
+            this.registerListener(listener);
         }
 
+        topic = topic.intern();
+        if (isNull(callback)) {
+            doSubscribe(topic, queue, version,epoch, index, null);
+            return;
+        }
         Promise<SubscribeResponse> promise = newImmediatePromise();
         promise.addListener((GenericFutureListener<Future<SubscribeResponse>>) future -> {
             if (future.isSuccess()) {
@@ -90,13 +136,77 @@ public class MessagePushConsumer implements PushConsumer {
         });
 
         try {
-            doSubscribe(topic, queue, promise);
+            doSubscribe(topic, queue,version, epoch, index, promise);
         } catch (Throwable t) {
-            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s name=%s", topic, queue, name));
+            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s name=%s error:%s", topic, queue, name, t));
         }
     }
 
-    private void doSubscribe(String topic, String queue, Promise<SubscribeResponse> promise) {
+    @Override
+    public Subscription subscribe(String topic, String queue, int epoch, long index) {
+        return this.subscribe(topic, queue, epoch, index, null);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, int epoch, long index, SubscribeCallback callback) {
+        this.subscribeAsync(topic, queue, (short) -1, epoch, index, callback, null);
+    }
+
+    @Override
+    public Subscription subscribe(String topic, String queue, int epoch, long index, MessagePushListener listener) {
+        return this.subscribe(topic, queue, (short) -1, epoch, index, listener);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, int epoch, long index, SubscribeCallback callback, MessagePushListener listener) {
+        this.subscribeAsync(topic, queue, (short) -1, epoch, index, callback, listener);
+    }
+
+    @Override
+    public Subscription subscribe(String topic, String queue, short version) {
+        return this.subscribe(topic, queue, (short) -1, null);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback) {
+        this.subscribeAsync(topic, queue, version, callback, null);
+    }
+
+    @Override
+    public Subscription subscribe(String topic, String queue, short version, MessagePushListener listener) {
+        return this.subscribe(topic, queue, version, (short)-1, (short)-1, listener);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback, MessagePushListener listener) {
+        this.subscribeAsync(topic, queue, version, (short)-1, (short)-1, callback, listener);
+    }
+
+    @Override
+    public Subscription subscribe(String topic, String queue) {
+        return this.subscribe(topic, queue, (short)-1);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, SubscribeCallback callback) {
+        this.subscribeAsync(topic, queue, (short)-1, callback, null);
+    }
+
+    @Override
+    public Subscription subscribe(String topic, String queue, MessagePushListener listener) {
+        if (isNull(listener)) {
+            throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
+        }
+        this.registerListener(listener);
+        return this.subscribe(topic, queue, (short)-1, listener);
+    }
+
+    @Override
+    public void subscribeAsync(String topic, String queue, SubscribeCallback callback, MessagePushListener listener) {
+        this.subscribeAsync(topic, queue,(short) -1, (short)-1, (short)-1, callback, listener);
+    }
+
+    private void doSubscribe(String topic, String queue, short version, int epoch, long index, Promise<SubscribeResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (isNull(messageRouter)) {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
@@ -111,11 +221,62 @@ public class MessagePushConsumer implements PushConsumer {
                 .newBuilder()
                 .setQueue(queue)
                 .setLedger(ledger)
-                .setEpoch(-1)
-                .setIndex(-1)
+                .setVersion(version)
+                .setEpoch(epoch)
+                .setIndex(index)
                 .build();
 
         clientChannel.invoker().invoke(SUBSCRIBE, config.getClientConfig().getInvokeExpiredMs(), promise, request, SubscribeResponse.class);
+    }
+
+    @Override
+    public boolean clean(String topic, String queue) {
+        checkTopic(topic);
+        checkQueue(queue);
+
+        topic = topic.intern();
+
+        Promise<CleanSubscribeResponse> promise = newImmediatePromise();
+        doClean(topic, queue, promise);
+        return promise.isSuccess();
+    }
+
+    @Override
+    public void cleanAsync(String topic, String queue, CleanSubscribeCallback callback) {
+        checkTopic(topic);
+        checkQueue(queue);
+
+        topic = topic.intern();
+
+        Promise<CleanSubscribeResponse> promise = newImmediatePromise();
+        promise.addListener((GenericFutureListener<Future<CleanSubscribeResponse>>) future -> {
+            if (future.isSuccess()) {
+                callback.onCompleted(null);
+            } else {
+                callback.onCompleted(future.cause());
+            }
+        });
+
+        doClean(topic, queue, promise);
+    }
+
+    private void doClean(String topic, String queue, Promise<CleanSubscribeResponse> promise) {
+        MessageRouter messageRouter = manager.queryRouter(topic);
+        if (isNull(messageRouter)) {
+            throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
+        }
+
+        MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
+        int ledger = holder.ledger();
+        SocketAddress leader = holder.leader();
+        ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
+
+        CleanSubscribeRequest request = CleanSubscribeRequest
+                .newBuilder()
+                .setQueue(queue)
+                .setLedgerId(ledger)
+                .build();
+        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getClientConfig().getInvokeExpiredMs(), promise, request, CleanSubscribeResponse.class);
     }
 
     private void checkTopic(String topic) {
@@ -128,6 +289,11 @@ public class MessagePushConsumer implements PushConsumer {
         if (isNull(queue) || queue.isEmpty()) {
             throw new IllegalArgumentException("Subscribe queue cannot be empty");
         }
+    }
+
+    @Override
+    public void shutdownGracefully() throws Exception {
+        client.shutdownGracefully();
     }
 }
 

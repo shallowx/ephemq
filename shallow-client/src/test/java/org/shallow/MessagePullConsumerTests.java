@@ -38,7 +38,7 @@ public class MessagePullConsumerTests {
         consumerConfig.setClientConfig(clientConfig);
 
         PullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer");
-        messagePullConsumer.registerMessageListener(new MessagePullListener() {
+        messagePullConsumer.registerListener(new MessagePullListener() {
             @Override
             public void onMessage(PullResult result) {
                 if (logger.isInfoEnabled()) {
@@ -78,7 +78,7 @@ public class MessagePullConsumerTests {
         consumerConfig.setClientConfig(clientConfig);
 
         PullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer");
-        messagePullConsumer.registerMessageListener(new MessagePullListener() {
+        messagePullConsumer.registerListener(new MessagePullListener() {
             @Override
             public void onMessage(PullResult result) {
                 if (logger.isInfoEnabled()) {

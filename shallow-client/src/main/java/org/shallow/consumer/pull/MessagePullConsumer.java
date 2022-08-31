@@ -61,7 +61,7 @@ public class MessagePullConsumer implements PullConsumer {
     }
 
     @Override
-    public void registerMessageListener(MessagePullListener listener) {
+    public void registerListener(MessagePullListener listener) {
         if (isNull(listener)) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message pull listener cannot be null");
         }
@@ -72,7 +72,7 @@ public class MessagePullConsumer implements PullConsumer {
     @Override
     public void pull(String topic, String queue, short version, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception {
         if (isNotNull(listener)) {
-            this.registerMessageListener(listener);
+            this.registerListener(listener);
         }
 
         if (isNull(this.listener)) {
@@ -134,7 +134,7 @@ public class MessagePullConsumer implements PullConsumer {
 
 
     @Override
-    public MessagePullListener getPullListener() {
+    public MessagePullListener getListener() {
         return listener;
     }
 

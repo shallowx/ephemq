@@ -15,6 +15,7 @@ public interface ProcessCommand {
         byte SEND_MESSAGE = 10;
         byte SUBSCRIBE = 11;
         byte PULL_MESSAGE = 12;
+        byte CLEAN_SUBSCRIBE = 13;
     }
 
     interface Client {

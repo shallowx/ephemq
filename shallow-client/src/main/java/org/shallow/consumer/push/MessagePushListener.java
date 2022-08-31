@@ -1,8 +1,8 @@
 package org.shallow.consumer.push;
 
-import io.netty.buffer.ByteBuf;
+import org.shallow.Message;
 
 @FunctionalInterface
 public interface MessagePushListener {
-    void onMessage(String topic, String queue, ByteBuf message);
+    void onMessage(Message message);
 }

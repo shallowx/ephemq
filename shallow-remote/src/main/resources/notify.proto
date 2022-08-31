@@ -23,3 +23,10 @@ message MessagePullSignal {
   int32 epoch = 5;
   int64 index = 6;
 }
+
+message MessagePushSignal {
+  string queue = 1;
+  int32 epoch = 2;
+  int64 index = 3;
+  string topic = 4;
+}

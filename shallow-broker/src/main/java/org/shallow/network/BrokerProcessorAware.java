@@ -197,10 +197,12 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         SubscribeRequest request = readProto(data, SubscribeRequest.parser());
                         commandExecutor.execute(() -> {
                             try {
+                                Channel subscribeChannel = channel;
                                 int ledger = request.getLedger();
                                 int epoch = request.getEpoch();
                                 long index = request.getIndex();
                                 String queue = request.getQueue();
+                                short theVersion = (short) request.getVersion();
 
                                 Promise<Subscription> promise = newImmediatePromise();
                                 promise.addListener(future -> {
@@ -215,15 +217,15 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                                 .build();
 
                                         if (isNotNull(answer)) {
-                                            answer.success(proto2Buf(channel.alloc(), response));
-                                        } else {
-                                            answerFailed(answer, future.cause());
+                                            answer.success(proto2Buf(subscribeChannel.alloc(), response));
                                         }
+                                    }else {
+                                        answerFailed(answer, future.cause());
                                     }
                                 });
 
                                 LedgerManager logManager = manager.getLogManager();
-                                logManager.subscribe(channel, queue, ledger, epoch, index, promise);
+                                logManager.subscribe(subscribeChannel, queue, theVersion, ledger, epoch, index, promise);
                             } catch (Throwable t) {
                                 if (logger.isErrorEnabled()) {
                                     logger.error("Failed to subscribe");

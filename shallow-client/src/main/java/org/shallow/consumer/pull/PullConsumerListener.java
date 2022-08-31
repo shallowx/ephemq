@@ -11,11 +11,13 @@ import org.shallow.proto.notify.PartitionChangedSignal;
 import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.util.ByteBufUtil;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.shallow.util.ProtoBufUtil.readProto;
 
+@Immutable
 final class PullConsumerListener implements Listener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumerListener.class);

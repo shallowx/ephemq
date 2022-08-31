@@ -1,4 +1,4 @@
-package org.shallow.handle;
+package org.shallow.log.handle.pull;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -16,54 +16,56 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.notify.MessagePullSignal;
 import org.shallow.util.ByteBufUtil;
 import org.shallow.util.ProtoBufUtil;
-
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
-public class EntryPullHandler {
+public class EntryPullDispatcher implements PullDispatcher{
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandler.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullDispatcher.class);
 
     private final BrokerConfig config;
     private final Int2ObjectMap<Channel> channels = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<Handler> executionHandlers = new Int2ObjectOpenHashMap<>();
     private final EventExecutor transferExecutor = newEventExecutorGroup(1, "transfer").next();
-    private final EventExecutor allocateExecutor = newEventExecutorGroup(1, "allocate").next();
-    private final Set<Handler> handlers = new CopyOnWriteArraySet<>();
+    private final EventExecutor chainExecutor = newEventExecutorGroup(1, "chain").next();
+    private final HandlerChain chain;
 
-    public EntryPullHandler(BrokerConfig config) {
+    public EntryPullDispatcher(BrokerConfig config) {
         this.config = config;
+        this.chain = new EntryPullHandlerExecutionChain(config);
     }
 
+    @Override
     public void register(int requestId, Channel channel) {
+        if (chainExecutor.inEventLoop()) {
+            doRegister(requestId, channel);
+        } else {
+            chainExecutor.execute(() -> doRegister(requestId, channel));
+        }
+    }
+
+    private void doRegister(int requestId, Channel channel) {
         channels.computeIfAbsent(requestId, k -> channel);
+        Handler handler = chain.applyHandler();
+        executionHandlers.computeIfAbsent(requestId, k -> handler);
     }
 
-    private void cancel(int requestId) {
-        channels.remove(requestId);
-    }
-
-    public void handle(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
+    public void dispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
         if (channels.isEmpty()) {
             return;
         }
 
-        allocateExecutor.execute(() -> {
-            Handler handler = applyHandler();
-            handler.handleExecutor.execute(() -> doHandle(requestId, topic, queue, version, ledgerId, limit, offset, payload));
-        });
+        Handler handler = executionHandlers.get(requestId);
+        handler = chain.preHandle(handler);
+        handler.executor().execute(() -> doDispatch(requestId, topic, queue, version, ledgerId, limit, offset, payload));
     }
 
-    private void doHandle(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
+    private void doDispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
         try {
             Channel channel = channels.get(requestId);
             if (isNull(channel)) {
@@ -98,8 +100,25 @@ public class EntryPullHandler {
         } catch (Throwable t) {
             throw new RuntimeException("Channel pull message failed", t);
         } finally {
+            cancel(requestId);
             ByteBufUtil.release(payload);
         }
+    }
+
+    private void cancel(int id) {
+        if (chainExecutor.inEventLoop()) {
+            doCancel(id);
+        } else {
+            chainExecutor.execute(() -> doCancel(id));
+        }
+    }
+
+    private void doCancel(int id) {
+        channels.remove(id);
+        executionHandlers.remove(id);
+
+        Handler handler = executionHandlers.get(id);
+        chain.postHandle(handler);
     }
 
     private void transfer(int requestId, ByteBuf payload, Channel channel) {
@@ -174,52 +193,8 @@ public class EntryPullHandler {
         }
     }
 
-    private Handler applyHandler() {
-        if (handlers.isEmpty()) {
-            return buildHandler();
-        }
-
-        Handler minHandler = handlers.stream()
-                .sorted(Comparator.comparingInt(h -> h.count))
-                .collect(Collectors.toCollection(LinkedHashSet::new))
-                .iterator()
-                .next();
-
-        if (minHandler.count >= minHandler.limit) {
-            return buildHandler();
-        }
-
-        minHandler.count += 1;
-        return minHandler;
-    }
-
-    private Handler buildHandler() {
-        EventExecutor executor = newEventExecutorGroup(1, "handle").next();
-        Handler handler = new Handler(executor, config.getPullHandleThreadLimit(), 1);
-        handlers.add(handler);
-        return handler;
-    }
-
-   @SuppressWarnings("all")
-   private class Handler {
-        final EventExecutor handleExecutor;
-        final int limit;
-        int count;
-
-        public Handler(EventExecutor handleExecutor, int limit, int count) {
-            this.handleExecutor = handleExecutor;
-            this.limit = limit;
-        }
-    }
-
+    @Override
     public void shutdownGracefully() {
         transferExecutor.shutdownGracefully();
-        allocateExecutor.shutdownGracefully();
-
-        if (handlers.isEmpty()) {
-            return;
-        }
-
-        handlers.forEach(handler -> handler.handleExecutor.shutdownGracefully());
     }
 }

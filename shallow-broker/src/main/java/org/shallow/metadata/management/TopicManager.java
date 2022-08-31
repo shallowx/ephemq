@@ -285,6 +285,9 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
             CopyOnWriteArraySet<PartitionRecord> partitionRecords = entry.getValue();
 
             commitRecordCache.put(topic, partitionRecords);
+            for (PartitionRecord partitionRecord : partitionRecords) {
+                initPartition(topic, partitionRecord.getId());
+            }
         }
     }
 

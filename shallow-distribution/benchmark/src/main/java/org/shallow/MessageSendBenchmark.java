@@ -33,6 +33,7 @@ public class MessageSendBenchmark {
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
 
         producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
         producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
     }
@@ -52,7 +53,7 @@ public class MessageSendBenchmark {
     }
 
     @TearDown
-    public void shutdown() {
-
+    public void shutdown() throws Exception {
+        producer.shutdownGracefully();
     }
 }

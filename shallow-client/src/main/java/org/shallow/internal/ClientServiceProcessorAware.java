@@ -13,6 +13,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.proto.notify.MessagePullSignal;
+import org.shallow.proto.notify.MessagePushSignal;
 import org.shallow.util.NetworkUtil;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.invoke.InvokeAnswer;
@@ -47,11 +48,11 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
             switch (command) {
                 case HANDLE_MESSAGE -> {
                     if (type == Type.PUSH.sequence()) {
-                        onPushMessage(data, answer);
+                        onPushMessage(version, data, answer);
                         return;
                     }
 
-                    onPullMessage(version, data, answer);
+                    onPullMessage(data, answer);
                 }
                 case TOPIC_CHANGED -> {
                     onPartitionChanged(answer);
@@ -77,12 +78,18 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         trySuccess(answer);
     }
 
-    private void onPushMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        listener.onPushMessage(data);
+    private void onPushMessage(short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
+        MessagePushSignal signal = readProto(data, MessagePushSignal.parser());
+        String topic = signal.getTopic();
+        String queue = signal.getQueue();
+        int epoch = signal.getEpoch();
+        long index = signal.getIndex();
+
+        listener.onPushMessage(version, topic, queue, epoch, index, data);
         trySuccess(answer);
     }
 
-    private void onPullMessage(short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
+    private void onPullMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
         MessagePullSignal signal = readProto(data, MessagePullSignal.parser());
 
         String topic = signal.getTopic();

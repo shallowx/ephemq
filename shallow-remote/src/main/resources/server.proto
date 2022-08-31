@@ -70,6 +70,7 @@ message SubscribeRequest {
   int32 ledger = 2;
   int32 epoch = 3;
   int64 index = 4;
+  int32 version = 5;
 }
 
 message SubscribeResponse {
@@ -77,6 +78,14 @@ message SubscribeResponse {
   int32 ledger = 2;
   int32 epoch = 3;
   int64 index = 4;
+}
+
+message CleanSubscribeRequest {
+  int32 ledgerId= 1;
+  string queue = 2;
+}
+
+message CleanSubscribeResponse {
 }
 
 message SendMessageRequest {
