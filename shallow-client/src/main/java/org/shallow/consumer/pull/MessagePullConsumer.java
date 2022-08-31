@@ -20,9 +20,6 @@ import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
 
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
-
 public class MessagePullConsumer implements PullConsumer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessagePullConsumer.class);
@@ -46,7 +43,7 @@ public class MessagePullConsumer implements PullConsumer {
 
     @Override
     public void start() {
-        if (isNull(listener)) {
+        if (null == listener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message pull listener cannot be null");
         }
 
@@ -62,7 +59,7 @@ public class MessagePullConsumer implements PullConsumer {
 
     @Override
     public void registerListener(MessagePullListener listener) {
-        if (isNull(listener)) {
+        if (null == listener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message pull listener cannot be null");
         }
         this.listener = listener;
@@ -71,17 +68,17 @@ public class MessagePullConsumer implements PullConsumer {
 
     @Override
     public void pull(String topic, String queue, short version, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception {
-        if (isNotNull(listener)) {
+        if (null != listener) {
             this.registerListener(listener);
         }
 
-        if (isNull(this.listener)) {
+        if (null == this.listener) {
             throw new IllegalArgumentException("Consume<"+ name +"> message pull listener cannot be null");
         }
 
         Promise<PullMessageResponse> responsePromise = NetworkUtil.newImmediatePromise();
         responsePromise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
-            if (isNotNull(promise)) {
+            if (null != promise) {
                 if (future.isSuccess()) {
                     promise.trySuccess(future.get());
                 } else {
@@ -140,12 +137,12 @@ public class MessagePullConsumer implements PullConsumer {
 
     private void doPullMessage(String topic, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
-        if (isNull(messageRouter)) {
+        if (null == messageRouter) {
             throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> router is empty", topic));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
-        if (isNull(holder)) {
+        if (null == holder) {
             throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> ledgers is empty", topic));
         }
         int ledger = holder.ledger();

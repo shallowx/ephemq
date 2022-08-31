@@ -27,11 +27,7 @@ import org.shallow.proto.elector.DeleteTopicPrepareCommitResponse;
 
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +38,6 @@ import static org.shallow.metadata.sraft.CommitType.ADD;
 import static org.shallow.metadata.sraft.CommitType.REMOVE;
 import static org.shallow.util.JsonUtil.json2Object;
 import static org.shallow.util.JsonUtil.object2Json;
-import static org.shallow.util.ObjectUtil.isNull;
 
 public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
@@ -174,7 +169,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
             CommitRecord<TopicRecord> commitRecord = new CommitRecord<>(record, ADD, requestBuilder.build(), responseBuilder.build());
 
             Set<PartitionRecord> cacheRecords = commitRecordCache.get(record.getName());
-            if (isNull(cacheRecords)) {
+            if (cacheRecords == null) {
                 cacheRecords = new CopyOnWriteArraySet<>();
             }
             cacheRecords.addAll(partitionRecords);
@@ -214,7 +209,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 String topic = record.getName();
                 unCommitRecordCache.invalidate(topic);
                 Set<PartitionRecord> partitionRecords = unCommitRecordCache.get(topic);
-                if (isNull(partitionRecords)) {
+                if (partitionRecords == null) {
                     partitionRecords = new CopyOnWriteArraySet<>();
                 }
                 Set<PartitionRecord> unInitPartitions = record.getPartitionRecords();
@@ -249,7 +244,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
 
     public Set<PartitionRecord> getTopicInfo(String topic) {
         Set<PartitionRecord> partitionRecords = commitRecordCache.get(topic);
-        if (isNull(partitionRecords) || partitionRecords.isEmpty()) {
+        if (null == partitionRecords || partitionRecords.isEmpty()) {
             return null;
         }
         return partitionRecords;
@@ -276,7 +271,7 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
                 new TypeToken<ConcurrentMap<String, CopyOnWriteArraySet<PartitionRecord>>>() {}.getType());
 
 
-        if (isNull(partitions) || partitions.isEmpty()) {
+        if (null == partitions || partitions.isEmpty()) {
             return;
         }
 

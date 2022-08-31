@@ -10,7 +10,6 @@ import org.shallow.invoke.GenericInvokeAnswer;
 import javax.annotation.concurrent.Immutable;
 
 import static org.shallow.util.ObjectUtil.checkPositive;
-import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
@@ -81,7 +80,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
 
     @Override
     protected void deallocate() {
-        if (isNotNull(data)) {
+        if (null != data) {
             data.release();
             data = null;
         }
@@ -103,7 +102,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
 
     @Override
     public AwareInvocation touch(Object hint) {
-        if (isNotNull(data)) {
+        if (null != data) {
             data.touch(hint);
         }
         return this;

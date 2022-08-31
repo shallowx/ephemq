@@ -5,14 +5,12 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.consumer.ConsumerConfig;
-import org.shallow.internal.Listener;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.metadata.MessageRouter;
 import org.shallow.metadata.MessageRoutingHolder;
 import org.shallow.metadata.MetadataManager;
-import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.proto.server.CleanSubscribeRequest;
 import org.shallow.proto.server.CleanSubscribeResponse;
@@ -26,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 import static org.shallow.processor.ProcessCommand.Server.CLEAN_SUBSCRIBE;
 import static org.shallow.processor.ProcessCommand.Server.SUBSCRIBE;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 
 public class MessagePushConsumer implements PushConsumer {
 
@@ -52,7 +48,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public void start() {
-        if (isNull(messageListener)) {
+        if (null == messageListener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
         }
 
@@ -68,7 +64,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public void registerListener(MessagePushListener listener) {
-        if (isNull(listener)) {
+        if (null == listener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
         }
         this.messageListener = listener;
@@ -95,7 +91,7 @@ public class MessagePushConsumer implements PushConsumer {
         checkTopic(topic);
         checkQueue(queue);
 
-        if (isNotNull(listener)) {
+        if (null != listener) {
             this.registerListener(listener);
         }
 
@@ -115,12 +111,12 @@ public class MessagePushConsumer implements PushConsumer {
         checkTopic(topic);
         checkQueue(queue);
 
-        if (isNotNull(listener)) {
+        if (null != listener) {
             this.registerListener(listener);
         }
 
         topic = topic.intern();
-        if (isNull(callback)) {
+        if (null == callback) {
             doSubscribe(topic, queue, version,epoch, index, null);
             return;
         }
@@ -194,7 +190,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public Subscription subscribe(String topic, String queue, MessagePushListener listener) {
-        if (isNull(listener)) {
+        if (null == listener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
         }
         this.registerListener(listener);
@@ -208,7 +204,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     private void doSubscribe(String topic, String queue, short version, int epoch, long index, Promise<SubscribeResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
-        if (isNull(messageRouter)) {
+        if (null == messageRouter) {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
         }
 
@@ -262,7 +258,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     private void doClean(String topic, String queue, Promise<CleanSubscribeResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
-        if (isNull(messageRouter)) {
+        if (null == messageRouter) {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
         }
 
@@ -280,13 +276,13 @@ public class MessagePushConsumer implements PushConsumer {
     }
 
     private void checkTopic(String topic) {
-        if (isNull(topic) || topic.isEmpty()) {
+        if (null == topic || topic.isEmpty()) {
             throw new IllegalArgumentException("Subscribe topic cannot be empty");
         }
     }
 
     private void checkQueue(String queue) {
-        if (isNull(queue) || queue.isEmpty()) {
+        if (null == queue || queue.isEmpty()) {
             throw new IllegalArgumentException("Subscribe queue cannot be empty");
         }
     }

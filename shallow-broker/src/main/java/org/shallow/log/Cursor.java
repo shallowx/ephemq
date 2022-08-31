@@ -7,9 +7,6 @@ import org.shallow.logging.InternalLoggerFactory;
 import javax.annotation.concurrent.ThreadSafe;
 import java.lang.ref.WeakReference;
 
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
-
 @ThreadSafe
 public class Cursor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
@@ -30,9 +27,9 @@ public class Cursor {
 
     public ByteBuf next() {
         Segment segment;
-        while (isNotNull(segment = efficientSegment())) {
+        while ((segment = efficientSegment()) != null) {
             ByteBuf buf = segment.read(location);
-            if (isNotNull(buf)) {
+            if (buf != null) {
                 location += 4 + buf.readableBytes();
                 return buf;
             }
@@ -41,7 +38,7 @@ public class Cursor {
     }
 
     public Cursor skip2Location(Offset offset) {
-        if (isNull(offset)) {
+        if (offset == null) {
             return skip2Tail();
         }
 
@@ -52,7 +49,7 @@ public class Cursor {
             }
 
             Segment next = segment.next();
-            if (isNotNull(next) && offset.after(next.headOffset())) {
+            if (next != null && offset.after(next.headOffset())) {
                 reference = buildWeakReference(next);
                 location = next.headLocation();
                 continue;
@@ -80,7 +77,7 @@ public class Cursor {
             }
 
             Segment next = segment.next();
-            if (isNull(next)) {
+            if (next == null) {
                 return null;
             }
 
@@ -91,7 +88,7 @@ public class Cursor {
 
     private Segment currentSegment() {
         Segment segment = reference.get();
-        if (isNotNull(segment)) {
+        if (segment != null) {
             return segment;
         }
 

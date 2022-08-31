@@ -5,7 +5,6 @@ import io.netty.util.ReferenceCounted;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import static io.netty.util.ReferenceCountUtil.release;
 import static org.shallow.util.ObjectUtil.checkNotNull;
-import static org.shallow.util.ObjectUtil.isNotNull;
 
 public class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 
@@ -57,7 +56,7 @@ public class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
     }
 
     private void onCompleted(V v, Throwable cause) {
-       if (isNotNull(callback)) {
+       if (null != callback) {
            callback.operationCompleted(v, cause);
        }
     }

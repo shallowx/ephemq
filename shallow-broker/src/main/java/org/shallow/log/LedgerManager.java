@@ -17,8 +17,6 @@ import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.proto.server.PullMessageResponse;
 import org.shallow.util.NetworkUtil;
 
-import static org.shallow.util.ObjectUtil.isNull;
-
 public class LedgerManager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
@@ -46,7 +44,7 @@ public class LedgerManager {
 
     public void subscribe(Channel channel, String queue, short version, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
         Ledger ledger = getLedger(ledgerId);
-        if (isNull(ledger)) {
+        if (ledger == null) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
@@ -55,7 +53,7 @@ public class LedgerManager {
 
     public void clean(Channel channel, String queue, int ledgerId, Promise<Void> promise) {
         Ledger ledger = getLedger(ledgerId);
-        if (isNull(ledger)) {
+        if (ledger == null) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
@@ -64,7 +62,7 @@ public class LedgerManager {
 
     public void append(int ledgerId, String queue, ByteBuf payload, short version, Promise<Offset> promise) {
         Ledger ledger = getLedger(ledgerId);
-        if (isNull(ledger)) {
+        if (ledger == null) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }
@@ -74,7 +72,7 @@ public class LedgerManager {
     @SuppressWarnings("all")
     public void pull(Channel channel, int ledgerId, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         Ledger ledger = getLedger(ledgerId);
-        if (isNull(ledger)) {
+        if (ledger == null) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_PULL_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
             return;
         }

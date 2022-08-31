@@ -52,7 +52,7 @@ public final class NetworkUtil {
             List<SocketAddress> answers = new LinkedList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);
-                if (ObjectUtil.isNotNull(socketAddress)) {
+                if (null != socketAddress) {
                     answers.add(socketAddress);
                 }
             }

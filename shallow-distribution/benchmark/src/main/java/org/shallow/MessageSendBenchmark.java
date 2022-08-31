@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @BenchmarkMode(Mode.All)
 @State(Scope.Thread)
@@ -44,7 +43,7 @@ public class MessageSendBenchmark {
         MessageFilter filter = sendMessage -> sendMessage;
 
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if (isNull(cause)) {
+            if (null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);

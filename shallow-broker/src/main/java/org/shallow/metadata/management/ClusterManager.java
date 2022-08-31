@@ -10,7 +10,6 @@ import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
-import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.sraft.AbstractSRaftLog;
 import org.shallow.metadata.sraft.CommitRecord;
 import org.shallow.metadata.sraft.CommitType;
@@ -30,8 +29,6 @@ import java.util.stream.Collectors;
 import static org.shallow.metadata.sraft.CommitType.ADD;
 import static org.shallow.metadata.sraft.CommitType.REMOVE;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 
 public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
@@ -148,7 +145,7 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
             String cluster = record.getCluster();
             Set<NodeRecord> nodeRecords = unCommitRecordCache.get(cluster);
-            if (isNull(nodeRecords)) {
+            if (null == nodeRecords) {
                 nodeRecords = new CopyOnWriteArraySet<>();
             }
             unCommitRecordCache.put(cluster, nodeRecords);
@@ -168,7 +165,7 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
         int port = Integer.parseInt(nodeSocket.substring(index + 1));
 
         Set<NodeRecord> nodeRecords = commitRecordCache.get(cluster);
-        if (isNotNull(nodeRecords)) {
+        if (null != nodeRecords) {
             nodeRecords.remove(record);
         }
 
@@ -196,12 +193,12 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
         switch (type) {
             case ADD -> {
                 Set<NodeRecord> unNodeRecords = unCommitRecordCache.get(cluster);
-                if (isNotNull(unNodeRecords)) {
+                if (null != unNodeRecords) {
                     unNodeRecords.remove(record);
                 }
 
                 Set<NodeRecord> nodeRecords = commitRecordCache.get(record.getName());
-                if (isNull(nodeRecords)) {
+                if (null == nodeRecords) {
                     nodeRecords = new CopyOnWriteArraySet<>();
                 }
                 nodeRecords.add(record);
@@ -210,12 +207,12 @@ public class ClusterManager extends AbstractSRaftLog<NodeRecord> {
 
             case REMOVE -> {
                 Set<NodeRecord> unNodeRecords = unCommitRecordCache.get(cluster);
-                if (isNotNull(unNodeRecords) && !unNodeRecords.isEmpty()) {
+                if (null != unNodeRecords && !unNodeRecords.isEmpty()) {
                     unNodeRecords.remove(record);
                 }
 
                 Set<NodeRecord> nodeRecords = commitRecordCache.get(cluster);
-                if (isNotNull(nodeRecords) && !nodeRecords.isEmpty()) {
+                if (null != nodeRecords && !nodeRecords.isEmpty()) {
                     nodeRecords.remove(record);
                 }
             }

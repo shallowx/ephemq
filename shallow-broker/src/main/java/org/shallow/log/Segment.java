@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.netty.util.CharsetUtil.UTF_8;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Segment {
@@ -40,7 +38,7 @@ public class Segment {
 
     public void write(String queue, short version, ByteBuf payload, Offset offset) {
         ByteBufHolder finalHolder = holder;
-        if (isNotNull(finalHolder)) {
+        if (finalHolder != null) {
             ByteBuf finalBuf = finalHolder.payload;
             int location = finalBuf.writerIndex();
 
@@ -69,7 +67,7 @@ public class Segment {
 
     public ByteBuf read(int location) {
         ByteBufHolder finalHolder = holder;
-        if (isNotNull(finalHolder)) {
+        if (finalHolder != null) {
             ByteBuf payload = finalHolder.payload;
             int length = payload.getInt(location);
             return payload.retainedSlice(location + 4, length);
@@ -80,7 +78,7 @@ public class Segment {
 
     public ByteBuf readCompleted(int location) {
         ByteBufHolder finalHolder = holder;
-        if (isNotNull(finalHolder)) {
+        if (finalHolder != null) {
             ByteBuf payload = finalHolder.payload;
             int length = payload.getInt(location);
             return payload.retainedSlice(location, length + 4);
@@ -91,7 +89,7 @@ public class Segment {
 
     public int freeWriteBytes() {
         ByteBufHolder theHolder = holder;
-        return isNull(theHolder) ? 0 : theHolder.payload.writableBytes();
+        return theHolder == null ? 0 : theHolder.payload.writableBytes();
     }
 
     public void tail(Segment segment) {
@@ -103,7 +101,7 @@ public class Segment {
     }
 
     public boolean isActive() {
-        return isNotNull(holder);
+        return holder != null;
     }
 
     public Offset tailOffset() {
@@ -132,7 +130,7 @@ public class Segment {
      * {@link Segment#write}
      */
     public int locate(Offset offset) {
-        if (isNull(offset)) {
+        if (offset == null) {
             return tailLocation;
         }
 
@@ -141,7 +139,7 @@ public class Segment {
         }
 
         ByteBufHolder theHolder = holder;
-        if (isNull(theHolder)) {
+        if (theHolder == null) {
             return tailLocation;
         }
 
@@ -198,7 +196,7 @@ public class Segment {
                     Reference<? extends ByteBufHolder> reference = BYTE_BUF_HOLDER_REFERENCE_QUEUE.remove();
                     ByteBuf buf = BYTE_BUF_MAP.remove(reference);
 
-                    if (isNotNull(buf)) {
+                    if (buf != null) {
                         buf.release();
                     }
                 } catch (InterruptedException e) {

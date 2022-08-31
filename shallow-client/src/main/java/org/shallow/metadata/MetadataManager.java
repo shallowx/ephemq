@@ -21,7 +21,6 @@ import org.shallow.proto.NodeMetadata;
 import org.shallow.proto.PartitionMetadata;
 import org.shallow.proto.TopicMetadata;
 import org.shallow.proto.server.*;
-import org.shallow.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.util.*;
@@ -31,7 +30,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.shallow.util.NetworkUtil.*;
-import static org.shallow.util.ObjectUtil.isNull;
 
 public class MetadataManager implements ProcessCommand.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataManager.class);
@@ -148,7 +146,7 @@ public class MetadataManager implements ProcessCommand.Server {
 
     private MessageRouter assembleRouter(String topic, TopicRecord topicRecord, Set<NodeRecord> nodeRecords) {
         Set<PartitionRecord> partitionRecords = topicRecord.getPartitionRecords();
-        if (isNull(partitionRecords) || partitionRecords.isEmpty()) {
+        if (null == partitionRecords || partitionRecords.isEmpty()) {
             return null;
         }
 
@@ -162,7 +160,7 @@ public class MetadataManager implements ProcessCommand.Server {
                     .findFirst()
                     .orElse(null);
 
-            if (isNull(leaderNode)) {
+            if (null == leaderNode) {
                 continue;
             }
             SocketAddress leader = leaderNode.getSocketAddress();
@@ -198,7 +196,7 @@ public class MetadataManager implements ProcessCommand.Server {
             }
 
             Set<NodeRecord> nodeRecords = queryNodeRecord(pool.acquireWithRandomly());
-            if (isNull(nodeRecords)) {
+            if (null == nodeRecords) {
                 if (logger.isWarnEnabled()) {
                     logger.warn("Node record is empty");
                 }
@@ -209,7 +207,7 @@ public class MetadataManager implements ProcessCommand.Server {
             for (String topic : topics) {
                 TopicRecord topicRecord = topicRecords.get(topic);
                 MessageRouter messageRouter = assembleRouter(topic, topicRecord, nodeRecords);
-                if (isNull(messageRouter)) {
+                if (null == messageRouter) {
                     if (logger.isWarnEnabled()) {
                         logger.warn("Topic<{}> message router is empty", topic);
                     }

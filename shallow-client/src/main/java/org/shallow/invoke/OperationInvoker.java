@@ -22,8 +22,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.shallow.util.ByteBufUtil.*;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.util.ProtoBufUtil.*;
 
 public class OperationInvoker implements ProcessCommand.Server {
@@ -58,7 +56,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             writeProto(buf, request);
             writeProto(buf, extras);
 
-            if (isNotNull(message) && message.isReadable()) {
+            if (null != message && message.isReadable()) {
                 buf.writeBytes(message, message.readerIndex(), message.readableBytes());
             }
 
@@ -101,7 +99,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             final Channel channel = clientChannel.channel();
             if (semaphore.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
                 try {
-                    if (isNull(callback)) {
+                    if (null == callback) {
                         ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
                         channel.writeAndFlush(AwareInvocation.newInvocation(command, version, retainBuf(content), type), promise);
                     } else {
@@ -121,7 +119,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             }
         } catch (Throwable t) {
             RuntimeException exception = new RuntimeException(String.format("Failed to invoke channel, address=%s command=%s", clientChannel.address(), command));
-            if (isNotNull(callback)) {
+            if (null != callback) {
                 callback.operationCompleted(null, exception);
             } else {
                 throw exception;
@@ -135,14 +133,14 @@ public class OperationInvoker implements ProcessCommand.Server {
         try {
             return proto2Buf(alloc, lite);
         } catch (Throwable cause) {
-            final String type = isNull(lite) ? null : lite.getClass().getSimpleName();
+            final String type = null == lite ? null : lite.getClass().getSimpleName();
             throw new RuntimeException("Failed to assemble messageLite type:{" + type + "}", cause);
         }
     }
 
     private <T> Callback<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
-        return isNull(promise) ? null : (buf, cause) -> {
-            if (isNull(cause)) {
+        return null == promise ? null : (buf, cause) -> {
+            if (null == cause) {
                 try {
                     promise.trySuccess(readProto(buf, parser));
                 } catch (Throwable t) {
@@ -155,7 +153,7 @@ public class OperationInvoker implements ProcessCommand.Server {
     }
 
     private static void tryFailure(Promise<?> promise, Throwable t) {
-        if (isNotNull(promise)) {
+        if (null != promise) {
             promise.tryFailure(t);
         }
     }

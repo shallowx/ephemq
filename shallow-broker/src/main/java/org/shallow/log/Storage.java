@@ -10,8 +10,6 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.util.ByteBufUtil;
 import javax.annotation.concurrent.ThreadSafe;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Storage {
@@ -82,7 +80,7 @@ public class Storage {
     private void doRead(int requestId, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
         try {
             Segment segment = locateSegment(offset);
-            if (isNull(segment)) {
+            if (segment == null) {
                 promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("The Segment not found, and the offset<epoch= %d index=%d>", offset.epoch(), offset.index())));
                 return;
             }
@@ -97,7 +95,7 @@ public class Storage {
                     int tailLocation = segment.tailLocation();
                     if (position >= tailLocation) {
                         Segment next = segment.next();
-                        if (isNull(next)) {
+                        if (next == null) {
                             break;
                         }
                         segment = next;
@@ -119,7 +117,7 @@ public class Storage {
                         continue;
                     }
 
-                    if (isNull(compositeByteBuf)) {
+                    if (compositeByteBuf == null) {
                         compositeByteBuf = newComposite(payload, limit);
                         continue;
                     }
@@ -151,7 +149,7 @@ public class Storage {
 
     @SuppressWarnings("SameParameterValue")
     private void triggerPull(int requestId, String queue, short version, int ledger, int limit, Offset offset, ByteBuf buf) {
-        if (isNotNull(trigger)) {
+        if (trigger != null) {
             try {
                 trigger.onPull(requestId, queue, version, ledger, limit, offset, buf);
             } catch (Throwable t) {
@@ -164,7 +162,7 @@ public class Storage {
 
     @SuppressWarnings("SameParameterValue")
     private void triggerAppend(int ledger, int limit, Offset offset) {
-        if (isNotNull(trigger)) {
+        if (trigger != null) {
             try {
                 trigger.onAppend(limit, offset);
             } catch (Throwable t) {
@@ -176,7 +174,7 @@ public class Storage {
     }
 
     public Cursor locateCursor(Offset offset) {
-        if (isNull(offset)) {
+        if (offset == null) {
             Segment theTailSegment = tailSegment;
             return new Cursor(this, theTailSegment, theTailSegment.tailLocation());
         }
@@ -207,7 +205,7 @@ public class Storage {
             Offset tailOffset = theSegment.tailOffset();
             while (offset.after(tailOffset)) {
                 theSegment = headSegment.next();
-                if (isNull(theSegment)) {
+                if (theSegment == null) {
                     isActive = false;
                     break;
                 }

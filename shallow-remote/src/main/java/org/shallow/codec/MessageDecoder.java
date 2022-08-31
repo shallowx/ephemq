@@ -8,8 +8,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
 
 import static java.lang.Integer.MAX_VALUE;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.codec.MessageDecoder.State.*;
 import static org.shallow.util.ByteBufUtil.release;
 
@@ -38,7 +36,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 buf = whole(ctx.alloc(), read).retain();
                 while (!ctx.isRemoved() && buf.isReadable()) {
                     final MessagePacket packet = decode(buf);
-                    if (isNull(packet)) {
+                    if (null == packet) {
                         break;
                     }
                     ctx.fireChannelRead(packet);
@@ -50,7 +48,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
               release(buf);
 
               buf = whole;
-              if (isNotNull(buf) && (!buf.isReadable() || invalid)) {
+              if (null != buf && (!buf.isReadable() || invalid)) {
                   whole = null;
                   release(buf);
               }
@@ -111,7 +109,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     private ByteBuf whole(ByteBufAllocator alloc, ByteBuf read) {
         final ByteBuf buf = whole;
-        if (isNull(buf)) {
+        if (null == buf) {
             return whole = read;
         }
 
@@ -142,7 +140,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (isNotNull(whole)) {
+        if (null != whole) {
             release(whole);
             whole = null;
         }
@@ -153,7 +151,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         final ByteBuf buf = whole;
-        if (isNotNull(buf)) {
+        if (null != buf) {
             whole = null;
             if (buf.isReadable()) {
                 ctx.fireChannelRead(buf);

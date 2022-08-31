@@ -38,7 +38,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.shallow.util.NetworkUtil.*;
-import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ProtoBufUtil.proto2Buf;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
@@ -87,7 +86,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                         .setIndex(offset.index())
                                         .build();
 
-                                if (isNotNull(answer)) {
+                                if (answer != null) {
                                     answer.success(proto2Buf(channel.alloc(), response));
                                 }
                             } else {
@@ -117,7 +116,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         Promise<PullMessageResponse> promise = newImmediatePromise();
                         promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
                             if (future.isSuccess()) {
-                                if (isNotNull(answer)) {
+                                if (answer != null) {
                                     answer.success(proto2Buf(channel.alloc(), future.get()));
                                 }
                             } else {
@@ -144,7 +143,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 Promise<VoteResponse> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<VoteResponse>>) f -> {
                                     if (f.isSuccess()) {
-                                        if (isNotNull(answer)) {
+                                        if (answer != null) {
                                             answer.success(proto2Buf(channel.alloc(), f.get()));
                                         }
                                     } else {
@@ -216,7 +215,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                                 .setQueue(queue)
                                                 .build();
 
-                                        if (isNotNull(answer)) {
+                                        if (answer != null) {
                                             answer.success(proto2Buf(subscribeChannel.alloc(), response));
                                         }
                                     }else {
@@ -257,7 +256,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 Promise<MessageLite> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
                                     if (f.isSuccess()) {
-                                        if (isNotNull(answer)) {
+                                        if (answer != null) {
                                             CreateTopicPrepareCommitResponse prepareCommitResponse = (CreateTopicPrepareCommitResponse) f.get();
 
                                             CreateTopicResponse response = CreateTopicResponse
@@ -300,7 +299,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 Promise<MessageLite> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
                                     if (f.isSuccess()) {
-                                        if (isNotNull(answer)) {
+                                        if (answer != null) {
                                             DeleteTopicPrepareCommitResponse prepareCommitResponse = (DeleteTopicPrepareCommitResponse) f.get();
 
                                             DelTopicResponse response = DelTopicResponse
@@ -381,7 +380,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                     response.addAllNodes(nodeMetadataSets);
                                 }
 
-                                if (isNotNull(answer)) {
+                                if (answer != null) {
                                     answer.success(proto2Buf(channel.alloc(), response.build()));
                                 }
                             } catch (Throwable t) {
@@ -440,7 +439,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                     }
                                 }
 
-                                if (isNotNull(answer)) {
+                                if (answer != null) {
                                     answer.success(proto2Buf(channel.alloc(), response.build()));
                                 }
                             } catch (Throwable t) {
@@ -477,7 +476,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 Promise<MessageLite> promise = newImmediatePromise();
                                 promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
                                     if (f.isSuccess()) {
-                                        if (isNotNull(answer)) {
+                                        if (answer != null) {
                                             answer.success(proto2Buf(channel.alloc(), f.get()));
                                         }
                                     } else {
@@ -518,7 +517,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {
-        if (isNotNull(answer)) {
+        if (answer != null) {
             answer.failure(cause);
         }
     }

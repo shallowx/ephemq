@@ -19,7 +19,6 @@ import org.shallow.invoke.ClientChannel;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.processor.ProcessorAware;
 
-import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
 public class ClientServiceProcessorAware implements ProcessorAware, ProcessCommand.Client {
@@ -37,7 +36,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         Promise<ClientChannel> promise = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(channel);
-        if (isNotNull(promise)) {
+        if (null != promise) {
             promise.setSuccess(clientChannel);
         }
     }
@@ -61,7 +60,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
 
                 }
                 default -> {
-                    if (isNotNull(answer)) {
+                    if (null != answer) {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,"Unsupported command exception <" + command + ">"));
                     }
                 }
@@ -104,7 +103,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
     }
 
     private void trySuccess(InvokeAnswer<ByteBuf> answer) {
-        if (isNotNull(answer)) {
+        if (null != answer) {
             answer.success(null);
         }
     }

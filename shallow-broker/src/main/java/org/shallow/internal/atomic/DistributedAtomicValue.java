@@ -1,9 +1,6 @@
 package org.shallow.internal.atomic;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import javax.annotation.concurrent.ThreadSafe;
-import java.nio.ByteBuffer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -20,8 +17,8 @@ public class DistributedAtomicValue<T> {
     public AtomicValue<byte[]> get() {
         readLock.lock();
         try {
-            byte[] preValueBytes = valueToBytes(preValue);
-            byte[] postValueBytes = valueToBytes(postValue);
+            byte[] preValueBytes = long2Bytes(preValue);
+            byte[] postValueBytes = long2Bytes(postValue);
             return new MutableAtomicValue<>(preValueBytes, postValueBytes);
         }finally {
             readLock.unlock();
@@ -31,7 +28,9 @@ public class DistributedAtomicValue<T> {
     public void trySet(Number newValue) {
         writeLock.lock();
         try {
-            preValue = newValue.longValue();
+            long v = newValue.longValue();
+            preValue = v;
+            postValue = v + 1;
         } finally {
             writeLock.unlock();
         }
@@ -42,8 +41,8 @@ public class DistributedAtomicValue<T> {
         try {
             preValue += newValue.longValue();
 
-            byte[] preValueBytes = valueToBytes(preValue);
-            byte[] postValueBytes = valueToBytes((postValue = preValue + 1));
+            byte[] preValueBytes = long2Bytes(preValue);
+            byte[] postValueBytes = long2Bytes((postValue = preValue + 1));
 
             return new MutableAtomicValue<>(preValueBytes, postValueBytes);
         } finally {
@@ -51,25 +50,17 @@ public class DistributedAtomicValue<T> {
         }
     }
 
-    @VisibleForTesting
-    private byte[] valueToBytes(long newValue) {
-        byte[] bytes = longToBytes(newValue);
-        ByteBuffer wrapper = ByteBuffer.wrap(bytes);
-        wrapper.putLong(newValue);
-
-        return bytes;
-    }
-
-    private byte[] longToBytes(long newValue) {
-       return new byte[] {
-                (byte) newValue,
-                (byte) (newValue >> 8),
-                (byte) (newValue >> 16),
-                (byte) (newValue >> 24),
-                (byte) (newValue >> 32),
-                (byte) (newValue >> 40),
-                (byte) (newValue >> 48),
-                (byte) (newValue >> 56)};
+    private byte[] long2Bytes(long newValue) {
+        return new byte[]{
+                (byte) ((newValue >> 56) & 0xFF),
+                (byte) ((newValue >> 48) & 0xFF),
+                (byte) ((newValue >> 40) & 0xFF),
+                (byte) ((newValue >> 32) & 0xFF),
+                (byte) ((newValue >> 24) & 0xFF),
+                (byte) ((newValue >> 16) & 0xFF),
+                (byte) ((newValue >> 8)  & 0xFF),
+                (byte) (newValue & 0xFF)
+        };
     }
 
     private static class MutableAtomicValue<T> implements AtomicValue<T> {

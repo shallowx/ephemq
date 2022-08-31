@@ -6,9 +6,6 @@ import io.netty.buffer.Unpooled;
 import javax.naming.OperationNotSupportedException;
 import java.nio.charset.StandardCharsets;
 
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
-
 public final class ByteBufUtil {
 
     private ByteBufUtil() throws OperationNotSupportedException {
@@ -17,7 +14,7 @@ public final class ByteBufUtil {
     }
 
     public static String buf2String(ByteBuf buf, int maxLength) {
-        if (isNull(buf)) {
+        if (null == buf) {
             return null;
         }
         int length = buf.readableBytes();
@@ -30,14 +27,14 @@ public final class ByteBufUtil {
     }
 
     public static ByteBuf byte2Buf(byte[] bytes) {
-        if (isNull(bytes) || bytes.length == 0) {
+        if (null == bytes || bytes.length == 0) {
             return null;
         }
        return Unpooled.copiedBuffer(bytes);
     }
 
     public static byte[] buf2Bytes(ByteBuf buf) {
-        if (isNull(buf)) {
+        if (null == buf) {
             return null;
         }
         int length = buf.readableBytes();
@@ -48,23 +45,23 @@ public final class ByteBufUtil {
     }
 
     public static int bufLength(ByteBuf buf) {
-        return isNull(buf) ? 0 : buf.readableBytes();
+        return null == buf ? 0 : buf.readableBytes();
     }
 
     public static ByteBuf string2Buf(String data) {
-        return isNull(data) ? null : Unpooled.copiedBuffer(data, StandardCharsets.UTF_8);
+        return null == data ? null : Unpooled.copiedBuffer(data, StandardCharsets.UTF_8);
     }
 
     public static ByteBuf retainBuf(ByteBuf buf) {
-        return isNull(buf) ? null : buf.retain();
+        return null == buf  ? null : buf.retain();
     }
 
     public static <T> T defaultIfNull(T t, T defaultValue) {
-        return isNotNull(t) ? t : defaultValue;
+        return null != t ? t : defaultValue;
     }
 
     public static void release(ByteBuf buf) {
-       if (isNotNull(buf)) {
+       if (null != buf) {
            buf.release();
        }
     }

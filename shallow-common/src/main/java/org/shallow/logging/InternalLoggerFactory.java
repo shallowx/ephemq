@@ -9,17 +9,17 @@ public abstract class InternalLoggerFactory {
     @SuppressWarnings("UnusedCatchParameter")
     private static InternalLoggerFactory newDefaultFactory(String name) {
         InternalLoggerFactory f = useSlf4JLoggerFactory(name);
-        if (ObjectUtil.isNotNull(f)) {
+        if (null != f) {
             return f;
         }
 
         f = useLog4J2LoggerFactory(name);
-        if (ObjectUtil.isNotNull(f)) {
+        if (null != f) {
             return f;
         }
 
         f = useLog4JLoggerFactory(name);
-        if (ObjectUtil.isNotNull(f)) {
+        if (null != f) {
             return f;
         }
 
@@ -72,7 +72,7 @@ public abstract class InternalLoggerFactory {
     }
 
     public static InternalLoggerFactory getDefaultFactory() {
-        if (ObjectUtil.isNull(defaultFactory)) {
+        if (null == defaultFactory) {
             defaultFactory = newDefaultFactory(InternalLoggerFactory.class.getName());
         }
         return defaultFactory;

@@ -17,11 +17,9 @@ import org.shallow.invoke.ClientChannel;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.ObjectUtil.isNull;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 
 public class FixedChannelPool implements ShallowChannelPool {
@@ -69,7 +67,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> acquireHealthyOrNew0(SocketAddress address) {
-        if (isNull(address)) {
+        if (null == address) {
             throw new IllegalArgumentException("Any bootstrap address not found");
         }
 

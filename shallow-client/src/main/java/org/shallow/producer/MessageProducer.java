@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 
 public class MessageProducer implements Producer{
 
@@ -106,7 +104,7 @@ public class MessageProducer implements Producer{
 
         message = exchange(message, messageFilter);
 
-        if (isNull(callback)) {
+        if (null == callback) {
             doSend(config.getSendAsyncTimeoutMs(), message, null);
             return;
         }
@@ -130,14 +128,14 @@ public class MessageProducer implements Producer{
         short version = message.version();
 
         MessageRouter messageRouter = manager.queryRouter(topic);
-        if (isNull(messageRouter)) {
+        if (null == messageRouter) {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
         int ledger = holder.ledger();
         SocketAddress leader = holder.leader();
-        if (isNull(leader)) {
+        if (null == leader) {
             throw new IllegalArgumentException(String.format("Leader not found, and ledger=%d name=%s", ledger, name));
         }
         ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
@@ -159,12 +157,12 @@ public class MessageProducer implements Producer{
 
     private SendMessageExtras buildExtras(String topic, String queue, Message.Extras extras) {
         SendMessageExtras.Builder metadata = SendMessageExtras.newBuilder().setQueue(queue).setTopic(topic);
-        if (isNotNull(extras)) {
+        if (null != extras) {
             for (Map.Entry<String, String> entry : extras) {
                 String key = entry.getKey();
                 String value = entry.getValue();
 
-                if (isNotNull(key) && isNotNull(value)) {
+                if (null != key && null != value) {
                     metadata.putExtras(key, value);
                 }
             }
@@ -173,20 +171,20 @@ public class MessageProducer implements Producer{
     }
 
     private Message exchange(Message message, MessageFilter filter) {
-        if (isNotNull(filter)) {
+        if (null != filter) {
            message = filter.filter(message);
         }
         return message;
     }
 
     private void checkTopic(String topic) {
-        if (isNull(topic) || topic.isEmpty()) {
+        if (null == topic || topic.isEmpty()) {
             throw new IllegalArgumentException("Send topic cannot be empty");
         }
     }
 
     private void checkQueue(String queue) {
-        if (isNull(queue) || queue.isEmpty()) {
+        if (null == queue || queue.isEmpty()) {
             throw new IllegalArgumentException("Send queue cannot be empty");
         }
     }

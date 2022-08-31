@@ -1,11 +1,6 @@
 package org.shallow.internal.atomic;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import javax.annotation.concurrent.ThreadSafe;
-import java.nio.ByteBuffer;
-
-import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 @SuppressWarnings("rawtypes,unchecked")
@@ -33,14 +28,17 @@ public class DistributedAtomicInteger implements DistributedAtomicNumber<Integer
         return new AtomicInteger(worker);
     }
 
-    @VisibleForTesting
-    int bytesToValue(byte[] data) {
-        if (isNull(data) || data.length == 0) {
-            return 0;
-        }
+    private int bytes2Integer(byte[] data) {
+        long v = (long)(data[0] & 0xFF) << 56 |
+                 (long)(data[1] & 0xFF) << 48 |
+                 (long)(data[2] & 0xFF) << 40 |
+                 (long)(data[3] & 0xFF) << 32 |
+                 (long)(data[4] & 0xFF) << 24 |
+                 (long)(data[5] & 0xFF) << 16 |
+                 (long)(data[6] & 0xFF) << 8  |
+                 (long) (data[7] & 0xFF);
 
-        ByteBuffer wrapper = ByteBuffer.wrap(data);
-        return ((Number)wrapper.getLong()).intValue();
+        return (int) v;
     }
 
     private class AtomicInteger implements AtomicValue<Integer> {
@@ -52,12 +50,12 @@ public class DistributedAtomicInteger implements DistributedAtomicNumber<Integer
 
         @Override
         public Integer preValue() {
-            return bytesToValue(bytes.preValue());
+            return bytes2Integer(bytes.preValue());
         }
 
         @Override
         public Integer postValue() {
-            return bytesToValue(bytes.postValue());
+            return bytes2Integer(bytes.postValue());
         }
     }
 }

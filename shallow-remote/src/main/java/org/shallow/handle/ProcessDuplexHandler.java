@@ -81,7 +81,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 return;
             }
 
-            if (isNull(cause)) {
+            if (null == cause) {
                 ctx.writeAndFlush(newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
             } else {
                 ChannelFuture future = ctx.writeAndFlush(newFailurePacket(answer, cause));
@@ -99,7 +99,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
                         ctx.channel().remoteAddress(), command, rejoin, length, cause);
             }
-            if (isNotNull(rejoin)) {
+            if (null != rejoin) {
                 rejoin.failure(cause);
             }
         } finally {
@@ -164,7 +164,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             if (answer != INT_ZERO && !promise.isVoid()) {
                 promise.addListener(f -> {
                    Throwable cause = f.cause();
-                   if (isNull(cause)) {
+                   if (null == cause) {
                        return;
                    }
                    if (executor.inEventLoop()) {

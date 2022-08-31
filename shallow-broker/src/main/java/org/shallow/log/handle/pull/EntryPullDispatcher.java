@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class EntryPullDispatcher implements PullDispatcher{
@@ -68,7 +67,7 @@ public class EntryPullDispatcher implements PullDispatcher{
     private void doDispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
         try {
             Channel channel = channels.get(requestId);
-            if (isNull(channel)) {
+            if (null == channel) {
                 return;
             }
 

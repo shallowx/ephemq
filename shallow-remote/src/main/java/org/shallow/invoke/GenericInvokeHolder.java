@@ -7,9 +7,6 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.util.function.Consumer;
 
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
-
 public class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
     private final Int2ObjectMap<Holder> holders;
@@ -35,7 +32,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
     @Override
     public int hold(long expires, InvokeAnswer<V> answer) {
-        if (isNull(answer)) {
+        if (null == answer) {
             return 0;
         }
 
@@ -51,11 +48,11 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         }
 
         Holder holder = holders.remove(answer);
-        if (isNull(holder)) {
+        if (null == holder) {
             return false;
         }
 
-        if (holder.isValid() && isNotNull(consumer)) {
+        if (holder.isValid() && null != consumer) {
             doConsume(holder, consumer);
         }
         holder.recycle();
@@ -72,7 +69,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
         while(iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
-            if (holder.isValid() && isNotNull(consumer)) {
+            if (holder.isValid() && null != consumer) {
                 doConsume(holder, consumer);
             }
 
@@ -102,7 +99,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
                 continue;
             }
 
-            if (valid && isNotNull(consumer)) {
+            if (valid && null != consumer) {
                 doConsume(holder, consumer);
             }
 
@@ -156,7 +153,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
         }
 
         private boolean isValid() {
-            return isNotNull(answer) && !answer.isCompleted();
+            return null != answer && !answer.isCompleted();
         }
     }
 }

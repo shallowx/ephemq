@@ -9,7 +9,6 @@ import org.shallow.Type;
 
 import javax.annotation.concurrent.Immutable;
 
-import static org.shallow.util.ObjectUtil.isNotNull;
 import static org.shallow.util.ByteBufUtil.*;
 
 @Immutable
@@ -79,7 +78,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     protected void deallocate() {
-        if (isNotNull(body)) {
+        if (null != body) {
             body.release();
             body = null;
         }
@@ -106,7 +105,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     public MessagePacket touch(Object hint) {
-        if (isNotNull(body)) {
+        if (null != body) {
             body.touch(hint);
         }
         return this;

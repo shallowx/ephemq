@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.shallow.processor.ProcessCommand.Server.POST_COMMIT;
 import static org.shallow.processor.ProcessCommand.Server.PREPARE_COMMIT;
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.ObjectUtil.isNull;
 
 public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
 
@@ -52,7 +51,7 @@ public abstract class AbstractSRaftLog<T> implements SRaftLog<T> {
             }
         });
 
-        if (isNull(quorumVoterAddresses) || quorumVoterAddresses.isEmpty()) {
+        if (null == quorumVoterAddresses || quorumVoterAddresses.isEmpty()) {
             throw new IllegalArgumentException("The quorum voters<shallow.controller.quorum.voters> value cannot be empty");
         }
         notifyPrepareCommit(commitRecord, type, prepareCommitPromise);

@@ -36,14 +36,6 @@ public final class ObjectUtil {
         return varargs;
     }
 
-    public static boolean isNull(Object o) {
-        return o == null;
-    }
-
-    public static boolean isNotNull(Object o) {
-        return o != null;
-    }
-
     public static <T> T checkNotNullWithIAE(final T arg, final String paramName) throws IllegalArgumentException {
         if (arg == null) {
             throw new IllegalArgumentException("Param '" + paramName + "' must not be null");

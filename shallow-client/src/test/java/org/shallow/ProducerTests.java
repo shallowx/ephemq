@@ -15,7 +15,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @SuppressWarnings("all")
 public class ProducerTests {
@@ -81,7 +80,7 @@ public class ProducerTests {
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if (isNull(cause)) {
+            if ( null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
@@ -107,7 +106,7 @@ public class ProducerTests {
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if (isNull(cause)) {
+            if ( null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
@@ -136,7 +135,7 @@ public class ProducerTests {
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if (isNull(cause)) {
+            if ( null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
@@ -162,7 +161,7 @@ public class ProducerTests {
         for (int i = 0; i < Long.MAX_VALUE; i++) {
             Message message = new Message("create", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Message.Extras());
             producer.sendAsync(message, filter, (sendResult, cause) -> {
-                if (isNull(cause)) {
+                if ( null == cause) {
                     logger.warn("send result - {}", sendResult);
                 } else {
                     logger.error(cause);

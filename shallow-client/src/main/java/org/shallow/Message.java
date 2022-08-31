@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.shallow.util.ObjectUtil.isNull;
-
 public class Message {
 
     private final String topic;

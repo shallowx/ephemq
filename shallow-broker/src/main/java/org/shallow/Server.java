@@ -8,8 +8,6 @@ import org.shallow.parser.ApplicationArguments;
 import org.shallow.parser.ApplicationRunListener;
 import org.shallow.parser.ConfigurableArgumentsRunListener;
 
-import static org.shallow.util.ObjectUtil.isNull;
-
 public class Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Server.class);
 
@@ -28,7 +26,7 @@ public class Server {
         ApplicationRunListener listener = new ConfigurableArgumentsRunListener(args);
         ApplicationArguments arguments = listener.starting();
 
-        if (isNull(arguments)) {
+        if (arguments == null) {
             throw new RuntimeException("Server config file cannot be empty");
         }
 

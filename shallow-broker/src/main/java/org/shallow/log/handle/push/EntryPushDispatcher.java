@@ -23,8 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
-import static org.shallow.util.ObjectUtil.isNotNull;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class EntryPushDispatcher {
@@ -73,7 +71,7 @@ public class EntryPushDispatcher {
 
     private void doHandle(String topic) {
         ByteBuf payload;
-        while (isNotNull((payload = cursor.next()))) {
+        while ((payload = cursor.next()) != null) {
             ByteBuf message = null;
             try {
                 short version = payload.readShort();
@@ -81,7 +79,7 @@ public class EntryPushDispatcher {
                 String queue = ByteBufUtil.buf2String(payload.retainedSlice(payload.readerIndex(), queueLength), queueLength);
 
                 Set<Subscription> subscriptions = subscriptionMap.get(queue);
-                if (isNull(subscriptions) || subscriptions.isEmpty()) {
+                if (subscriptions == null || subscriptions.isEmpty()) {
                     return;
                 }
 

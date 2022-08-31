@@ -17,7 +17,6 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import static org.shallow.util.ByteBufUtil.release;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @ThreadSafe
 public class Ledger {
@@ -64,7 +63,7 @@ public class Ledger {
     private void doSubscribe(Channel channel, String queue, short version, Offset offset, Promise<Subscription> promise) {
         try {
             Offset theOffset;
-            if (isNull(offset)) {
+            if (offset == null) {
                 Segment segment = storage.tailSegment();
                 theOffset = segment.tailOffset();
             } else {

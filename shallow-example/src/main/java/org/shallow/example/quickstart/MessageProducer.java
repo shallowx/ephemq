@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.shallow.util.ObjectUtil.isNull;
 
 @SuppressWarnings("all")
 public class MessageProducer {
@@ -36,7 +35,7 @@ public class MessageProducer {
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if (isNull(cause)) {
+            if (null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
