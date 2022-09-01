@@ -5,6 +5,8 @@ import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
+@ThreadSafe
 public class EntryPullHandlerExecutionChain implements HandlerChain {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandlerExecutionChain.class);

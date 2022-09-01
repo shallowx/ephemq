@@ -38,7 +38,7 @@ public class MessageProducer {
             if (null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
-                logger.error(cause);
+                logger.error(cause.getMessage(), cause);
             }
             latch.countDown();
         });
