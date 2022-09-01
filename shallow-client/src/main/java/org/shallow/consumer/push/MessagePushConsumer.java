@@ -47,7 +47,7 @@ public class MessagePushConsumer implements PushConsumer {
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         if (null == messageListener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
         }

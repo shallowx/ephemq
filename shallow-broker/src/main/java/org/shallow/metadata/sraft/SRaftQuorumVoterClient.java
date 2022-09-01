@@ -42,7 +42,7 @@ public final class SRaftQuorumVoterClient extends Client {
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         super.start();
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
     }

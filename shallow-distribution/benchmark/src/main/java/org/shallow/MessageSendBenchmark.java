@@ -27,7 +27,7 @@ public class MessageSendBenchmark {
     private ProducerConfig producerConfig;
 
     @Setup
-    public void setUp() {
+    public void setUp() throws Exception {
         clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
 

@@ -45,7 +45,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         if (state) {
             return;
         }

@@ -42,7 +42,7 @@ public class MessagePullConsumer implements PullConsumer {
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         if (null == listener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message pull listener cannot be null");
         }

@@ -17,7 +17,7 @@ public final class BrokerServer {
     private final BrokerSocketServer socketServer;
     private final BrokerManager manager;
 
-    public BrokerServer(BrokerConfig config) {
+    public BrokerServer(BrokerConfig config) throws Exception {
         this.manager = new DefaultBrokerManager(config);
         this.socketServer = new BrokerSocketServer(config, manager);
 

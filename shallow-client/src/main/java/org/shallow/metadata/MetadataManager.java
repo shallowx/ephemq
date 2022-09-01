@@ -141,7 +141,30 @@ public class MetadataManager implements ProcessCommand.Server {
     }
 
     public MessageRouter queryRouter(String topic) {
-        return routers.get(topic);
+        MessageRouter messageRouter = routers.get(topic);
+        if (null == messageRouter) {
+            ClientChannel clientChannel = pool.acquireWithRandomly();
+            try {
+                Set<NodeRecord> nodeRecords = queryNodeRecord(clientChannel);
+                if (nodeRecords == null || nodeRecords.isEmpty()) {
+                    return null;
+                }
+
+                Map<String, TopicRecord> topicRecords = queryTopicRecord(clientChannel, List.of(topic));
+                if (topicRecords == null || topicRecords.isEmpty()) {
+                    return null;
+                }
+                TopicRecord topicRecord = topicRecords.get(topic);
+                MessageRouter router = assembleRouter(topic, topicRecord, nodeRecords);
+                routers.put(topic, router);
+                return router;
+            } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to query topic<{}> router, error:{}", topic, t);
+                }
+            }
+        }
+        return messageRouter;
     }
 
     private MessageRouter assembleRouter(String topic, TopicRecord topicRecord, Set<NodeRecord> nodeRecords) {
@@ -202,7 +225,6 @@ public class MetadataManager implements ProcessCommand.Server {
                 }
                 return;
             }
-
 
             for (String topic : topics) {
                 TopicRecord topicRecord = topicRecords.get(topic);

@@ -49,7 +49,7 @@ public class Client {
         this.healthChecker = healthChecker;
     }
 
-    public void start() {
+    public void start() throws Exception {
         if (state) {
             return;
         }
@@ -76,6 +76,7 @@ public class Client {
         pool = DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(this);
 
         this.manager = new MetadataManager(this);
+        manager.start();
 
         if (logger.isInfoEnabled()) {
             logger.info("The client<{}> started successfully", name);

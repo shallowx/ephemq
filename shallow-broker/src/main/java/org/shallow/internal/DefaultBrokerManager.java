@@ -19,7 +19,7 @@ public class DefaultBrokerManager implements BrokerManager {
     private final SRaftProcessController controller;
     private final LedgerManager logManager;
 
-    public DefaultBrokerManager(BrokerConfig config) {
+    public DefaultBrokerManager(BrokerConfig config) throws Exception {
         ClientConfig quorumVoterClientConfig = new ClientConfig();
 
         List<String> quorumVoterAddress = Stream.of(config.getControllerQuorumVoters())
