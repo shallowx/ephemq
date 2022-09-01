@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.reflect.TypeToken;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.internal.BrokerManager;
 import org.shallow.log.LedgerManager;
@@ -123,14 +124,14 @@ public class TopicManager extends AbstractSRaftLog<TopicRecord> {
             commitRecordCache.invalidate(topic);
 
             Set<PartitionRecord> partitionRecords = new HashSet<>();
-            Map<Integer, PartitionElector.ElectorResult> result = elector.elect(partitions, latencies);
-            for (Map.Entry<Integer, PartitionElector.ElectorResult> entry : result.entrySet()) {
+            Int2ObjectMap<ElectorRecord> entries = elector.elect(partitions, latencies);
+            for (Map.Entry<Integer, ElectorRecord> entry : entries.int2ObjectEntrySet()) {
                 int id = entry.getKey();
-                PartitionElector.ElectorResult electorResult = entry.getValue();
+                ElectorRecord electorResult = entry.getValue();
                 String leader = electorResult.getLeader();
-                List<String> replicas = electorResult.getReplicas();
+                List<String> latencyList = electorResult.getLatencies();
 
-                PartitionRecord partitionRecord = new PartitionRecord(id, atomicValue.increment().preValue(), leader, replicas);
+                PartitionRecord partitionRecord = new PartitionRecord(id, atomicValue.increment().preValue(), leader, latencyList);
                 partitionRecords.add(partitionRecord);
             }
             record.setPartitionRecords(partitionRecords);
