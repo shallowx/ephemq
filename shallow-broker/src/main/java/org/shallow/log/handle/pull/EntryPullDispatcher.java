@@ -30,13 +30,15 @@ public class EntryPullDispatcher implements PullDispatcher{
     private final BrokerConfig config;
     private final Int2ObjectMap<Channel> channels = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<Handler> executionHandlers = new Int2ObjectOpenHashMap<>();
-    private final EventExecutor transferExecutor = newEventExecutorGroup(1, "transfer").next();
-    private final EventExecutor chainExecutor = newEventExecutorGroup(1, "chain").next();
+    private final EventExecutor transferExecutor;
+    private final EventExecutor chainExecutor;
     private final HandlerChain chain;
 
     public EntryPullDispatcher(BrokerConfig config) {
         this.config = config;
         this.chain = new EntryPullHandlerExecutionChain(config);
+        this.transferExecutor = newEventExecutorGroup(config.getMessagePullTransferThreadLimit(), "transfer").next();
+        this.chainExecutor = newEventExecutorGroup(config.getMessagePullChainThreadLimit(), "chain").next();
     }
 
     @Override

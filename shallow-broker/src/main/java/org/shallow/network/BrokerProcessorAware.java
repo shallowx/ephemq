@@ -53,7 +53,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     public BrokerProcessorAware(BrokerConfig config, BrokerManager manager) {
         this.config = config;
         this.manager = manager;
-        EventExecutorGroup group = newEventExecutorGroup(2, "processor-aware").next();
+
+        EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-aware").next();
         this.commandExecutor = group.next();
         this.quorumVoteExecutor = group.next();
     }
@@ -106,26 +107,35 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case PULL_MESSAGE -> {
                     try {
                         PullMessageRequest request = readProto(data, PullMessageRequest.parser());
-                        int ledger = request.getLedger();
-                        int limit = request.getLimit();
-                        String queue = request.getQueue();
-                        short theVersion = (short) request.getVersion();
-                        int epoch = request.getEpoch() ;
-                        long index = request.getIndex();
+                        commandExecutor.execute(() -> {
+                            try {
+                                int ledger = request.getLedger();
+                                int limit = request.getLimit();
+                                String queue = request.getQueue();
+                                short theVersion = (short) request.getVersion();
+                                int epoch = request.getEpoch() ;
+                                long index = request.getIndex();
 
-                        Promise<PullMessageResponse> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
-                            if (future.isSuccess()) {
-                                if (answer != null) {
-                                    answer.success(proto2Buf(channel.alloc(), future.get()));
+                                Promise<PullMessageResponse> promise = newImmediatePromise();
+                                promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
+                                    if (future.isSuccess()) {
+                                        if (answer != null) {
+                                            answer.success(proto2Buf(channel.alloc(), future.get()));
+                                        }
+                                    } else {
+                                        answerFailed(answer, future.cause());
+                                    }
+                                });
+
+                                LedgerManager logManager = manager.getLogManager();
+                                logManager.pull(channel, ledger, queue, theVersion, epoch, index, limit, promise);
+                            } catch (Throwable t) {
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Failed to pull message record", t);
                                 }
-                            } else {
-                                answerFailed(answer, future.cause());
+                                answerFailed(answer,t);
                             }
                         });
-
-                        LedgerManager logManager = manager.getLogManager();
-                        logManager.pull(channel, ledger, queue, theVersion, epoch, index, limit, promise);
                     } catch (Throwable t) {
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to pull message record", t);

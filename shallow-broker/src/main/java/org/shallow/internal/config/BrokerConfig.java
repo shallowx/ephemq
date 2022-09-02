@@ -116,4 +116,20 @@ public class BrokerConfig {
     public int getPullHandleThreadLimit() {
         return object2Int(config.getOrDefault(PULL_HANDLE_THREAD_LIMIT, 100));
     }
+
+    public int getProcessCommandHandleThreadLimit() {
+        return object2Int(config.getOrDefault(PROCESS_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
+    }
+
+    public int getMessageStorageHandleThreadLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
+    }
+
+    public int getMessagePullTransferThreadLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PULL_TRANSFER_THREAD_LIMIT, availableProcessor()));
+    }
+
+    public int getMessagePullChainThreadLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PULL_CHAIN_THREAD_LIMIT, availableProcessor()));
+    }
 }

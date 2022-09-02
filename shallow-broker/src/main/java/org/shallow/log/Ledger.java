@@ -37,7 +37,7 @@ public class Ledger {
         this.partition = partition;
         this.ledgerId = ledgerId;
         this.epoch = epoch;
-        this.storageExecutor = newEventExecutorGroup(1, "ledger-storage").next();
+        this.storageExecutor = newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
         this.entryPullHandler = new EntryPullDispatcher(config);
         this.entryPushHandler = new EntryPushDispatcher(config, storage);
