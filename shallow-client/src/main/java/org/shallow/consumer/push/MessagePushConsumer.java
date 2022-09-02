@@ -222,7 +222,7 @@ public class MessagePushConsumer implements PushConsumer {
                 .setIndex(index)
                 .build();
 
-        clientChannel.invoker().invoke(SUBSCRIBE, config.getClientConfig().getInvokeExpiredMs(), promise, request, SubscribeResponse.class);
+        clientChannel.invoker().invoke(SUBSCRIBE, config.getPushSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
     }
 
     @Override
@@ -272,7 +272,7 @@ public class MessagePushConsumer implements PushConsumer {
                 .setQueue(queue)
                 .setLedgerId(ledger)
                 .build();
-        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getClientConfig().getInvokeExpiredMs(), promise, request, CleanSubscribeResponse.class);
+        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getPushCleanSubscribeInvokeTimeMs(), promise, request, CleanSubscribeResponse.class);
     }
 
     private void checkTopic(String topic) {

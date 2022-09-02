@@ -4,10 +4,11 @@ import org.shallow.ClientConfig;
 
 public class ProducerConfig {
 
+    private ClientConfig clientConfig;
+
     private int sendTimeoutMs = 5000;
     private int sendOnewayTimeoutMs = 5000;
     private int sendAsyncTimeoutMs = 5000;
-    private ClientConfig clientConfig;
 
     public ClientConfig getClientConfig() {
         return clientConfig;

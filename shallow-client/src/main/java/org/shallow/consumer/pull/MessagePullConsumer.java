@@ -159,7 +159,7 @@ public class MessagePullConsumer implements PullConsumer {
 
         SocketAddress leader = holder.leader();
         ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
-        clientChannel.invoker().invoke(ProcessCommand.Server.PULL_MESSAGE, config.getClientConfig().getInvokeExpiredMs(),promise, request, PullMessageResponse.class);
+        clientChannel.invoker().invoke(ProcessCommand.Server.PULL_MESSAGE, config.getPullInvokeTimeMs(), promise, request, PullMessageResponse.class);
     }
 
     @Override
