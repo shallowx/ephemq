@@ -27,7 +27,7 @@ public class TopicTests {
     @Test
     public void testCreateTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
         Client client = new Client("create-client", clientConfig);
         client.start();
 
@@ -46,7 +46,7 @@ public class TopicTests {
     @Test
     public void testDelTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
         Client client = new Client("del-client", clientConfig);
         client.start();
 
@@ -63,7 +63,7 @@ public class TopicTests {
     @Test
     public void testQuery() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
         Client client = new Client("query-client", clientConfig);
         client.start();
 

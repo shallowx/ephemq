@@ -22,7 +22,7 @@ public class MessageProducer {
     @Test
     public void sendAsync() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);

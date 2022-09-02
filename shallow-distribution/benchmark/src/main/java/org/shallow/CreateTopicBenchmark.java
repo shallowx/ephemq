@@ -28,7 +28,7 @@ public class CreateTopicBenchmark {
     @Setup
     public void setUp() throws Exception {
         clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 
         client = new Client("Client", clientConfig);
         client.start();

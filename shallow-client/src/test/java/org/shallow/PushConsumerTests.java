@@ -21,7 +21,7 @@ public class PushConsumerTests {
         CountDownLatch latch = new CountDownLatch(1);
 
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);

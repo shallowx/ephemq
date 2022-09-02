@@ -16,7 +16,7 @@ public class ClusterTest {
     @Test
     public void testQuery() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9100"));
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
         Client client = new Client("cluster-client", clientConfig);
         client.start();
 

@@ -46,7 +46,7 @@ public class BrokerConfig {
     }
 
     public int getExposedPort(){
-        return object2Int(config.getOrDefault(EXPOSED_PORT, 9100));
+        return object2Int(config.getOrDefault(EXPOSED_PORT, 9127));
     }
 
     public boolean isNetworkLoggingDebugEnabled() {
@@ -70,7 +70,7 @@ public class BrokerConfig {
     }
 
     public String getControllerQuorumVoters() {
-        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "shallow@127.0.0.1:9100"));
+        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "shallow@127.0.0.1:9127"));
     }
 
     public String getWorkDirectory() {
