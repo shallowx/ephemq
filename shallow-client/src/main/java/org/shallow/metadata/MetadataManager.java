@@ -231,7 +231,7 @@ public class MetadataManager implements ProcessCommand.Server {
                 MessageRouter messageRouter = assembleRouter(topic, topicRecord, nodeRecords);
                 if (null == messageRouter) {
                     if (logger.isWarnEnabled()) {
-                        logger.warn("Topic<{}> message router is empty", topic);
+                        logger.warn("Topic<{}> message router is  null", topic);
                     }
                     continue;
                 }

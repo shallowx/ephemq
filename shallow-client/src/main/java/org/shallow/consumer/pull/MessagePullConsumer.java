@@ -38,7 +38,7 @@ public class MessagePullConsumer implements PullConsumer {
         this.client = new Client("consumer-client", config.getClientConfig(), pullConsumerListener);
 
         this.config = config;
-        this.name = ObjectUtil.checkNonEmpty(name, "Message pull consumer name cannot be empty");
+        this.name = ObjectUtil.checkNonEmpty(name, "Message pull consumer name cannot be null");
     }
 
     @Override
@@ -138,12 +138,12 @@ public class MessagePullConsumer implements PullConsumer {
     private void doPullMessage(String topic, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (null == messageRouter) {
-            throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> router is empty", topic));
+            throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> router is null", topic));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
         if (null == holder) {
-            throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> ledgers is empty", topic));
+            throw new RuntimeException(String.format("Consume<"+ name +"> the topic<%s> ledgers is null", topic));
         }
         int ledger = holder.ledger();
 

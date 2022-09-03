@@ -38,7 +38,7 @@ public class MessageProducer implements Producer{
     private volatile boolean state = false;
 
     public MessageProducer(String name, ProducerConfig config) {
-        this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be empty");
+        this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be null");
         this.client = new Client("producer-client", config.getClientConfig());
         this.config = config;
 
@@ -129,7 +129,7 @@ public class MessageProducer implements Producer{
 
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (null == messageRouter) {
-            throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
+            throw new RuntimeException(String.format("Message router is null, and topic=%s name=%s", topic, name));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);

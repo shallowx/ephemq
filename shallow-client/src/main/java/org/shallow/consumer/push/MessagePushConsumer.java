@@ -43,7 +43,7 @@ public class MessagePushConsumer implements PushConsumer {
         this.client = new Client("consumer-client", config.getClientConfig(), pushConsumerListener);
         this.config = config;
 
-        this.name = ObjectUtil.checkNonEmpty(name, "Message push consumer name cannot be empty");
+        this.name = ObjectUtil.checkNonEmpty(name, "Message push consumer name cannot be null");
     }
 
     @Override
@@ -259,7 +259,7 @@ public class MessagePushConsumer implements PushConsumer {
     private void doClean(String topic, String queue, Promise<CleanSubscribeResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (null == messageRouter) {
-            throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
+            throw new RuntimeException(String.format("Message router is null, and topic=%s name=%s", topic, name));
         }
 
         MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
@@ -277,13 +277,13 @@ public class MessagePushConsumer implements PushConsumer {
 
     private void checkTopic(String topic) {
         if (null == topic || topic.isEmpty()) {
-            throw new IllegalArgumentException("Subscribe topic cannot be empty");
+            throw new IllegalArgumentException("Subscribe topic cannot be null");
         }
     }
 
     private void checkQueue(String queue) {
         if (null == queue || queue.isEmpty()) {
-            throw new IllegalArgumentException("Subscribe queue cannot be empty");
+            throw new IllegalArgumentException("Subscribe queue cannot be null");
         }
     }
 
