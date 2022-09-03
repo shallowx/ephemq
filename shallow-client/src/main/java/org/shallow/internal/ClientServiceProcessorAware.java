@@ -1,6 +1,5 @@
 package org.shallow.internal;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -46,6 +45,9 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         try {
             switch (command) {
                 case HANDLE_MESSAGE -> {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Receive handle message");
+                    }
                     if (type == Type.PUSH.sequence()) {
                         onPushMessage(version, data, answer);
                         return;
@@ -53,13 +55,25 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
 
                     onPullMessage(data, answer);
                 }
+
                 case TOPIC_CHANGED -> {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Receive topic changed signal");
+                    }
                     onPartitionChanged(answer);
                 }
-                case CLUSTER_CHANGED -> {
 
+                case CLUSTER_CHANGED -> {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Receive cluster changed signal");
+                    }
                 }
+
                 default -> {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Unsupported command exception <{}>", command);
+                    }
+
                     if (null != answer) {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,"Unsupported command exception <" + command + ">"));
                     }
@@ -67,44 +81,63 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("[Client process] <{}> code:[{}] process error", NetworkUtil.switchAddress(channel), ProcessCommand.Client.ACTIVE.get(command));
+                logger.error("Client process <{}> code:[{}] process error", NetworkUtil.switchAddress(channel), ProcessCommand.Client.ACTIVE.get(command));
             }
+            tryFailure(answer, t);
         }
     }
 
     private void onPartitionChanged(InvokeAnswer<ByteBuf> answer) {
-        listener.onPartitionChanged(null, null);
-        trySuccess(answer);
+        try {
+            listener.onPartitionChanged(null, null);
+            trySuccess(answer);
+        } catch (Throwable t) {
+            tryFailure(answer, t);
+        }
     }
 
-    private void onPushMessage(short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
-        MessagePushSignal signal = readProto(data, MessagePushSignal.parser());
-        String topic = signal.getTopic();
-        String queue = signal.getQueue();
-        int epoch = signal.getEpoch();
-        long index = signal.getIndex();
+    private void onPushMessage(short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            MessagePushSignal signal = readProto(data, MessagePushSignal.parser());
+            String topic = signal.getTopic();
+            String queue = signal.getQueue();
+            int epoch = signal.getEpoch();
+            long index = signal.getIndex();
 
-        listener.onPushMessage(version, topic, queue, epoch, index, data);
-        trySuccess(answer);
+            listener.onPushMessage(version, topic, queue, epoch, index, data);
+            trySuccess(answer);
+        } catch (Throwable t) {
+            tryFailure(answer, t);
+        }
     }
 
-    private void onPullMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) throws InvalidProtocolBufferException {
-        MessagePullSignal signal = readProto(data, MessagePullSignal.parser());
+    private void onPullMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            MessagePullSignal signal = readProto(data, MessagePullSignal.parser());
 
-        String topic = signal.getTopic();
-        String queue = signal.getQueue();
-        int ledger = signal.getLedger();
-        int limit = signal.getLimit();
-        int epoch = signal.getEpoch();
-        long index = signal.getIndex();
+            String topic = signal.getTopic();
+            String queue = signal.getQueue();
+            int ledger = signal.getLedger();
+            int limit = signal.getLimit();
+            int epoch = signal.getEpoch();
+            long index = signal.getIndex();
 
-        listener.onPullMessage(topic, queue, ledger, limit, epoch, index, data);
-        trySuccess(answer);
+            listener.onPullMessage(topic, queue, ledger, limit, epoch, index, data);
+            trySuccess(answer);
+        } catch (Throwable t) {
+            tryFailure(answer, t);
+        }
     }
 
     private void trySuccess(InvokeAnswer<ByteBuf> answer) {
         if (null != answer) {
             answer.success(null);
+        }
+    }
+
+    private void tryFailure(InvokeAnswer<ByteBuf> answer, Throwable t) {
+        if (null != answer) {
+            answer.failure(t);
         }
     }
 }

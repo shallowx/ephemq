@@ -33,12 +33,16 @@ final class PullConsumerListener implements Listener {
 
     @Override
     public void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal) {
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("Send partition changed signal");
+        }
     }
 
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("Send node offline signal");
+        }
     }
 
     @Override
@@ -80,7 +84,6 @@ final class PullConsumerListener implements Listener {
                 messages.add(new Message(topic, queue, theVersion, body, messageEpoch, position, new Message.Extras(extras.getExtrasMap())));
                 skipBytes = sliceLength;
             }
-
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(t.getMessage(), t);
