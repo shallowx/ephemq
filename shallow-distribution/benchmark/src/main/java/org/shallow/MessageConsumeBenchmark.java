@@ -10,4 +10,25 @@ import java.util.concurrent.TimeUnit;
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class MessageConsumeBenchmark {
+
+    @Setup
+    public void setUp() {
+
+    }
+
+
+    @Benchmark
+    public void pull() {
+
+    }
+
+    @Benchmark
+    public void push() {
+
+    }
+
+    @TearDown
+    public void shutdownGracefully() {
+
+    }
 }
