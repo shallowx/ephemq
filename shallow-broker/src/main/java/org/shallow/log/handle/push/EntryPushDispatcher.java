@@ -28,15 +28,11 @@ import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 public class EntryPushDispatcher {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPushDispatcher.class);
 
-    private final BrokerConfig config;
-    private final Storage storage;
-    private Cursor cursor;
+    private final Cursor cursor;
     private final Map<String, Set<Subscription>> subscriptionMap = new ConcurrentHashMap<>();
 
+    @SuppressWarnings("unused")
     public EntryPushDispatcher(BrokerConfig config, Storage storage) {
-        this.config = config;
-        this.storage = storage;
-
         Offset currentOffset = storage.currentOffset();
         this.cursor = storage.locateCursor(currentOffset);
     }

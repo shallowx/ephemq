@@ -4,6 +4,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
+import org.shallow.State;
 import org.shallow.consumer.ConsumerConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
@@ -19,6 +20,7 @@ import org.shallow.util.NetworkUtil;
 import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MessagePullConsumer implements PullConsumer {
 
@@ -29,7 +31,7 @@ public class MessagePullConsumer implements PullConsumer {
     private final String name;
     private ShallowChannelPool pool;
     private final Client client;
-    private volatile boolean state = false;
+    private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
     private MessagePullListener listener;
     private final PullConsumerListener pullConsumerListener;
 
@@ -43,14 +45,14 @@ public class MessagePullConsumer implements PullConsumer {
 
     @Override
     public void start() throws Exception {
+        if (!state.compareAndSet(State.LATENT, State.STARTED)) {
+            throw new UnsupportedOperationException("The message pull consumer<"+ name +"> was started");
+        }
+
         if (null == listener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message pull listener cannot be null");
         }
 
-        if (state) {
-            return;
-        }
-        state = true;
         client.start();
 
         this.manager = client.getMetadataManager();
@@ -164,6 +166,8 @@ public class MessagePullConsumer implements PullConsumer {
 
     @Override
     public void shutdownGracefully() throws Exception {
-        client.shutdownGracefully();
+        if (state.compareAndSet(State.STARTED, State.CLOSED)) {
+            client.shutdownGracefully();
+        }
     }
 }

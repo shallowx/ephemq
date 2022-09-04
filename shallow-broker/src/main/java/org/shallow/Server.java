@@ -18,7 +18,7 @@ public class Server {
             if (logger.isErrorEnabled()) {
                 logger.error("Start server failed", e);
             }
-            System.exit(-1);
+            System.exit(1);
         }
     }
 

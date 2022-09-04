@@ -8,6 +8,8 @@ public class ConsumerConfig {
     public int pullInvokeTimeMs = 5000;
     public int pushSubscribeInvokeTimeMs = 5000;
     public int pushCleanSubscribeInvokeTimeMs = 5000;
+    public int messageHandleThreadLimit = Runtime.getRuntime().availableProcessors();
+    public int messageHandleSemaphoreLimit = 100;
 
     public ClientConfig getClientConfig() {
         return clientConfig;
@@ -39,5 +41,21 @@ public class ConsumerConfig {
 
     public void setPushCleanSubscribeInvokeTimeMs(int pushCleanSubscribeInvokeTimeMs) {
         this.pushCleanSubscribeInvokeTimeMs = pushCleanSubscribeInvokeTimeMs;
+    }
+
+    public int getMessageHandleThreadLimit() {
+        return messageHandleThreadLimit;
+    }
+
+    public void setMessageHandleThreadLimit(int messageHandleThreadLimit) {
+        this.messageHandleThreadLimit = messageHandleThreadLimit;
+    }
+
+    public int getMessageHandleSemaphoreLimit() {
+        return messageHandleSemaphoreLimit;
+    }
+
+    public void setMessageHandleSemaphoreLimit(int messageHandleSemaphoreLimit) {
+        this.messageHandleSemaphoreLimit = messageHandleSemaphoreLimit;
     }
 }

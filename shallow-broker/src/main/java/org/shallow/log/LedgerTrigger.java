@@ -1,7 +1,6 @@
 package org.shallow.log;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 
 public interface LedgerTrigger {
     void onAppend(int limit, Offset tail);

@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @ThreadSafe
-public class DistributedAtomicValue<T> {
+public class DistributedAtomicValue {
 
     private long preValue;
     private long postValue;

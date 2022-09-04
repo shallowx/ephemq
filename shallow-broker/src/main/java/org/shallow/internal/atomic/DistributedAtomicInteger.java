@@ -6,10 +6,10 @@ import javax.annotation.concurrent.ThreadSafe;
 @SuppressWarnings("rawtypes,unchecked")
 public class DistributedAtomicInteger implements DistributedAtomicNumber<Integer> {
 
-    private final DistributedAtomicValue<Integer> value;
+    private final DistributedAtomicValue value;
 
     public DistributedAtomicInteger() {
-        this.value = new DistributedAtomicValue<>();
+        this.value = new DistributedAtomicValue();
     }
 
     @Override

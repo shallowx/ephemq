@@ -4,6 +4,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
+import org.shallow.State;
 import org.shallow.consumer.ConsumerConfig;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
@@ -20,6 +21,7 @@ import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.shallow.processor.ProcessCommand.Server.CLEAN_SUBSCRIBE;
 import static org.shallow.processor.ProcessCommand.Server.SUBSCRIBE;
@@ -35,11 +37,11 @@ public class MessagePushConsumer implements PushConsumer {
     private ShallowChannelPool pool;
     private final String name;
     private final Client client;
-    private volatile boolean state = false;
+    private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
     private final PushConsumerListener pushConsumerListener;
 
     public MessagePushConsumer(String name, ConsumerConfig config) {
-        this.pushConsumerListener = new PushConsumerListener();
+        this.pushConsumerListener = new PushConsumerListener(config);
         this.client = new Client("consumer-client", config.getClientConfig(), pushConsumerListener);
         this.config = config;
 
@@ -48,14 +50,14 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public void start() throws Exception {
+        if (!state.compareAndSet(State.LATENT, State.STARTED)) {
+            throw new UnsupportedOperationException("The message pull consumer<"+ name +"> was started");
+        }
+
         if (null == messageListener) {
             throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
         }
 
-        if (state) {
-            return;
-        }
-        state = true;
         client.start();
 
         this.manager = client.getMetadataManager();
@@ -69,6 +71,11 @@ public class MessagePushConsumer implements PushConsumer {
         }
         this.messageListener = listener;
         pushConsumerListener.registerListener(listener);
+    }
+
+    @Override
+    public void registerFilter(MessagePostFilter filter) {
+        pushConsumerListener.registerFilter(filter);
     }
 
     @Override
@@ -289,7 +296,9 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public void shutdownGracefully() throws Exception {
-        client.shutdownGracefully();
+        if (state.compareAndSet(State.STARTED, State.CLOSED)) {
+            client.shutdownGracefully();
+        }
     }
 }
 

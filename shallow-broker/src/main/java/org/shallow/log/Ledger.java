@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
+import org.shallow.State;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
 import org.shallow.log.handle.pull.EntryPullDispatcher;
@@ -14,6 +15,8 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.shallow.util.ByteBufUtil.release;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
@@ -31,6 +34,11 @@ public class Ledger {
     private final EventExecutor storageExecutor;
     private final PullDispatcher entryPullHandler;
     private final EntryPushDispatcher entryPushHandler;
+    private final AtomicReference<State> state = new AtomicReference<>();
+
+    enum State {
+        LATENT, STARTED, CLOSED
+    }
 
     public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
@@ -41,6 +49,12 @@ public class Ledger {
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
         this.entryPullHandler = new EntryPullDispatcher(config);
         this.entryPushHandler = new EntryPushDispatcher(config, storage);
+    }
+
+    public void start() throws Exception {
+        if (!state.compareAndSet(State.LATENT, State.STARTED)) {
+            throw new UnsupportedOperationException(String.format("Ledger<%d> was started", ledgerId));
+        }
     }
 
     public void subscribe(Channel channel, String queue, short version, int epoch, long index, Promise<Subscription> promise) {
@@ -159,6 +173,7 @@ public class Ledger {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onTriggerAppend(int limit, Offset offset) {
         entryPushHandler.handle(topic);
     }
@@ -183,6 +198,7 @@ public class Ledger {
         return topic;
     }
 
+    @SuppressWarnings("unused")
     public int getPartition() {
         return partition;
     }
@@ -191,22 +207,29 @@ public class Ledger {
         return ledgerId;
     }
 
+    @SuppressWarnings("unused")
     public int getEpoch() {
         return epoch;
     }
 
+    @SuppressWarnings("unused")
     public void epoch(int epoch) {
         this.epoch = epoch;
     }
 
-    public void close() {
+    public State getState() {
+        return state.get();
+    }
 
-        storageExecutor.shutdownGracefully();
-        storage.close();
-        entryPullHandler.shutdownGracefully();
-        entryPushHandler.shutdownGracefully();
-        if (logger.isWarnEnabled()) {
-            logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
+    public void close() {
+        if (state.compareAndSet(State.STARTED, State.CLOSED)) {
+            storageExecutor.shutdownGracefully();
+            storage.close();
+            entryPullHandler.shutdownGracefully();
+            entryPushHandler.shutdownGracefully();
+            if (logger.isWarnEnabled()) {
+                logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ public class Cursor {
         this.location = location;
     }
 
+    @SuppressWarnings("unused")
     public Cursor copy() {
         return new Cursor(storage, reference.get(), location);
     }
@@ -34,9 +35,13 @@ public class Cursor {
                 return buf;
             }
         }
+        if (logger.isWarnEnabled()) {
+            logger.warn("The next byteBuf not found");
+        }
         return null;
     }
 
+    @SuppressWarnings("unused")
     public Cursor skip2Location(Offset offset) {
         if (offset == null) {
             return skip2Tail();

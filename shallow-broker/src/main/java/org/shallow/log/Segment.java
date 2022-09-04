@@ -120,6 +120,7 @@ public class Segment {
         return tailLocation;
     }
 
+    @SuppressWarnings("unused")
     public int getLogId() {
         return ledgerId;
     }

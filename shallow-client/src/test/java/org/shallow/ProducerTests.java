@@ -38,7 +38,7 @@ public class ProducerTests {
         producer.start();
 
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
-        MessageFilter filter = sendMessage -> sendMessage;
+        MessagePreFilter filter = sendMessage -> sendMessage;
 
         SendResult result = producer.send(message, filter);
         Assert.assertNotNull(result);
@@ -57,7 +57,7 @@ public class ProducerTests {
 
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
 
-        producer.sendOneway(message, new MessageFilter() {
+        producer.sendOneway(message, new MessagePreFilter() {
             @Override
             public Message filter(Message message) {
                 return message;
@@ -76,7 +76,7 @@ public class ProducerTests {
         producer.start();
 
         Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
-        MessageFilter filter = sendMessage -> sendMessage;
+        MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
@@ -102,7 +102,7 @@ public class ProducerTests {
 
         short messageVersion = 2;
         Message message = new Message("create", "message", messageVersion, "message-test-send-async".getBytes(UTF_8), new Message.Extras());
-        MessageFilter filter = sendMessage -> sendMessage;
+        MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
@@ -131,7 +131,7 @@ public class ProducerTests {
         extras.put("extras1", "send-message-filter1");
 
         Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras(extras));
-        MessageFilter filter = sendMessage -> sendMessage;
+        MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
@@ -155,7 +155,7 @@ public class ProducerTests {
         Producer producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
 
-        MessageFilter filter = sendMessage -> sendMessage;
+        MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         for (int i = 0; i < Long.MAX_VALUE; i++) {

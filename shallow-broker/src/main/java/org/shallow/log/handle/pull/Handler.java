@@ -14,6 +14,7 @@ public class Handler {
         this.id = id;
         this.handleExecutor = handleExecutor;
         this.limit = limit;
+        this.count = count;
     }
 
     public int id() {

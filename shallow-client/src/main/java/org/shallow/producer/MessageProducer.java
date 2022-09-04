@@ -6,6 +6,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.Message;
+import org.shallow.State;
 import org.shallow.invoke.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -23,6 +24,8 @@ import org.shallow.util.ObjectUtil;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
 
@@ -35,22 +38,20 @@ public class MessageProducer implements Producer{
     private ShallowChannelPool pool;
     private final String name;
     private final Client client;
-    private volatile boolean state = false;
+    private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     public MessageProducer(String name, ProducerConfig config) {
         this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be null");
         this.client = new Client("producer-client", config.getClientConfig());
         this.config = config;
-
     }
 
     @Override
     public void start() throws Exception {
-        if (state) {
-            return;
+        if (!state.compareAndSet(State.LATENT, State.STARTED)) {
+            throw new UnsupportedOperationException("The message producer<"+ name +"> was started");
         }
 
-        state = true;
         client.start();
 
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
@@ -73,7 +74,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void sendOneway(Message message, MessageFilter messageFilter) {
+    public void sendOneway(Message message, MessagePreFilter messageFilter) {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -83,7 +84,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public SendResult send(Message message, MessageFilter messageFilter) throws Exception {
+    public SendResult send(Message message, MessagePreFilter messageFilter) throws Exception {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -98,7 +99,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void sendAsync(Message message, MessageFilter messageFilter, SendCallback callback)  {
+    public void sendAsync(Message message, MessagePreFilter messageFilter, SendCallback callback)  {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -170,7 +171,7 @@ public class MessageProducer implements Producer{
         return metadata.build();
     }
 
-    private Message exchange(Message message, MessageFilter filter) {
+    private Message exchange(Message message, MessagePreFilter filter) {
         if (null != filter) {
            message = filter.filter(message);
         }
@@ -191,6 +192,8 @@ public class MessageProducer implements Producer{
 
     @Override
     public void shutdownGracefully() throws Exception {
-        client.shutdownGracefully();
+        if (state.compareAndSet(State.STARTED, State.CLOSED)) {
+            client.shutdownGracefully();
+        }
     }
 }

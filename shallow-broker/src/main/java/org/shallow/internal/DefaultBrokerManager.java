@@ -42,8 +42,8 @@ public class DefaultBrokerManager implements BrokerManager {
 
     @Override
     public void start() throws Exception {
-        controller.start();
         api.start();
+        controller.start();
     }
 
     @Override

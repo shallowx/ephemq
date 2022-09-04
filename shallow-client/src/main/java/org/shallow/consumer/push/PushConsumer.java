@@ -40,5 +40,6 @@ public interface PushConsumer {
     void cleanAsync(String topic, String queue, CleanSubscribeCallback callback);
 
     void registerListener(MessagePushListener listener);
+    void registerFilter(MessagePostFilter filter);
     MessagePushListener getListener();
 }
