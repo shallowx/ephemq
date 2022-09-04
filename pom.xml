@@ -13,7 +13,6 @@
 
     <modules>
         <module>shallow-broker</module>
-        <module>shallow-tool</module>
         <module>shallow-client</module>
         <module>shallow-remote</module>
         <module>shallow-distribution</module>
