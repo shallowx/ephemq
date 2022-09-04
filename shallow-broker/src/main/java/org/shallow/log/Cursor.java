@@ -29,7 +29,7 @@ public class Cursor {
     public ByteBuf next() {
         Segment segment;
         while ((segment = efficientSegment()) != null) {
-            ByteBuf buf = segment.read(location);
+            ByteBuf buf = segment.readBuf(location);
             if (buf != null) {
                 location += 4 + buf.readableBytes();
                 return buf;

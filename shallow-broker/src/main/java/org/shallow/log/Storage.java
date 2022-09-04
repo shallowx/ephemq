@@ -55,7 +55,7 @@ public class Storage {
 
             int bytes = queue.length() + 22 + payload.readableBytes();
             Segment segment = applySegment(bytes);
-            segment.write(queue, version, payload, offset);
+            segment.writeBuf(queue, version, payload, offset);
 
             this.current = offset;
 
@@ -101,7 +101,7 @@ public class Storage {
                         segment = next;
                     }
 
-                    ByteBuf payload = segment.readCompleted(position);
+                    ByteBuf payload = segment.readBufCompleted(position);
 
                     short theVersion = payload.getShort(4);
                     int queueLength = payload.getInt(6);

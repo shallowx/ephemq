@@ -36,7 +36,7 @@ public class Segment {
         this.tailLocation = this.headLocation = payload.writerIndex();
     }
 
-    public void write(String queue, short version, ByteBuf payload, Offset offset) {
+    public void writeBuf(String queue, short version, ByteBuf payload, Offset offset) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf finalBuf = finalHolder.payload;
@@ -65,7 +65,7 @@ public class Segment {
         throw new RuntimeException("Segment is recycled");
     }
 
-    public ByteBuf read(int location) {
+    public ByteBuf readBuf(int location) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf payload = finalHolder.payload;
@@ -76,7 +76,7 @@ public class Segment {
         return null;
     }
 
-    public ByteBuf readCompleted(int location) {
+    public ByteBuf readBufCompleted(int location) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf payload = finalHolder.payload;
@@ -128,7 +128,7 @@ public class Segment {
     /**
      * The location of message sites is based on the storage order,
      * <p>offset</p> need to change the offset of the positioning.
-     * {@link Segment#write}
+     * {@link Segment#writeBuf}
      */
     public int locate(Offset offset) {
         if (offset == null) {
