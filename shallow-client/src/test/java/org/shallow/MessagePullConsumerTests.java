@@ -18,6 +18,7 @@ import org.shallow.util.NetworkUtil;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+@SuppressWarnings("all")
 public class MessagePullConsumerTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessagePullConsumerTests.class);
 
@@ -29,7 +30,6 @@ public class MessagePullConsumerTests {
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
     }
 
-    @SuppressWarnings("all")
     @Test
     public void testPull() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);

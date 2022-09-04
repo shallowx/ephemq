@@ -6,7 +6,7 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.State;
 import org.shallow.consumer.ConsumerConfig;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.metadata.MessageRouter;
@@ -228,7 +228,7 @@ public class MessagePushConsumer implements PushConsumer {
                 .setEpoch(epoch)
                 .setIndex(index)
                 .build();
-
+        pushConsumerListener.set(epoch, index, queue, ledger);
         clientChannel.invoker().invoke(SUBSCRIBE, config.getPushSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
     }
 

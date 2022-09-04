@@ -29,12 +29,14 @@ public class EntryPushDispatcher {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPushDispatcher.class);
 
     private final Cursor cursor;
+    private final int ledgerId;
     private final Map<String, Set<Subscription>> subscriptionMap = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unused")
-    public EntryPushDispatcher(BrokerConfig config, Storage storage) {
+    public EntryPushDispatcher(int ledgerId, BrokerConfig config, Storage storage) {
         Offset currentOffset = storage.currentOffset();
         this.cursor = storage.locateCursor(currentOffset);
+        this.ledgerId = ledgerId;
     }
 
     public void subscribe(Channel channel, String queue, Offset offset, short version) {
@@ -130,6 +132,7 @@ public class EntryPushDispatcher {
                     .newBuilder()
                     .setQueue(queue)
                     .setTopic(topic)
+                    .setLedgerId(ledgerId)
                     .setEpoch(offset.epoch())
                     .setIndex(offset.index())
                     .build();

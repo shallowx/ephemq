@@ -4,12 +4,10 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import org.shallow.Client;
-import org.shallow.ClientConfig;
 import org.shallow.codec.MessageDecoder;
 import org.shallow.codec.MessageEncoder;
 import org.shallow.handle.ConnectDuplexHandler;
 import org.shallow.handle.ProcessDuplexHandler;
-import org.shallow.invoke.ClientChannel;
 
 import java.net.SocketAddress;
 

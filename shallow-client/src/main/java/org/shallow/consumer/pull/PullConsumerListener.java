@@ -1,9 +1,10 @@
 package org.shallow.consumer.pull;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import org.shallow.Message;
 import org.shallow.internal.Listener;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.notify.NodeOfflineSignal;
@@ -34,23 +35,25 @@ final class PullConsumerListener implements Listener {
     @Override
     public void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Send partition changed signal");
+            logger.debug("Receive partition changed signal, channel={} signal={}", channel.toString(), signal.toString());
         }
+        // do nothing
     }
 
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Send node offline signal");
+            logger.debug("Receive node offline signal, channel={} signal={}", channel.toString(), signal.toString());
         }
+        // do nothing
     }
 
     @Override
-    public void onPullMessage(String topic, String queue, int ledger, int limit, int epoch, long index, ByteBuf data) {
+    public void onPullMessage(Channel channel, int ledgerId, String topic, String queue, int ledger, int limit, int epoch, long index, ByteBuf data) {
         List<Message> messages = new ArrayList<>(limit);
         if (data.readerIndex() >= data.writerIndex()) {
             if (logger.isWarnEnabled()) {
-                logger.warn("Message pull result is empty, and topic={} queue={} ledger={} limit= {} epoch={} index={}", topic, queue, ledger, limit, epoch, index);
+                logger.warn("Message pull result is empty, and channel={} topic={} queue={} ledger={} limit= {} epoch={} index={}", channel.toString(), topic, queue, ledger, limit, epoch, index);
             }
             listener.onMessage(null);
             return;
@@ -73,20 +76,21 @@ final class PullConsumerListener implements Listener {
                 data.skipBytes(queueLength);
 
                 int messageEpoch = data.readInt();
-                long position = data.readLong();
+                long theIndex = data.readLong();
 
                 int sliceLength = messageLength - 18 - queueLength;
                 ByteBuf buf = data.retainedSlice(data.readerIndex(), sliceLength);
 
                 SendMessageExtras extras = readProto(buf, SendMessageExtras.parser());
                 byte[] body = ByteBufUtil.buf2Bytes(buf.readBytes(buf.readableBytes()));
+                messages.add(new Message(topic, queue, theVersion, body, messageEpoch, theIndex, new Message.Extras(extras.getExtrasMap())));
 
-                messages.add(new Message(topic, queue, theVersion, body, messageEpoch, position, new Message.Extras(extras.getExtrasMap())));
                 skipBytes = sliceLength;
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
+                logger.error("Failed to handle pull message, channel={} ledgerId={} topic={} queue={} version={} epoch={} index={}, error={}",
+                        channel.toString(), ledger, topic, queue, epoch, index, t);
             }
         } finally {
             ByteBufUtil.release(data);

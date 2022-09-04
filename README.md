@@ -81,4 +81,4 @@ MessagePreFilter filter = sendMessage -> sendMessage;
 
 producer.sendAsync(message, filter, (sendResult, cause) -> {});
 ```
-- For more, please check out module: shallow-distribution
+- For more, please check out module: shallow-example

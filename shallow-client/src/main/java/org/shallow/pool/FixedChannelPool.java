@@ -12,7 +12,7 @@ import org.shallow.ClientConfig;
 import org.shallow.util.ObjectUtil;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.internal.ClientChannel;
 
 import java.net.SocketAddress;
 import java.util.*;

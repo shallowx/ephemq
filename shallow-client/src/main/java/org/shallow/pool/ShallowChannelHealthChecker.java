@@ -1,7 +1,7 @@
 package org.shallow.pool;
 
 import io.netty.util.concurrent.Future;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.internal.ClientChannel;
 
 public interface ShallowChannelHealthChecker {
 

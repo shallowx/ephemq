@@ -33,7 +33,7 @@ public class PushConsumer {
             @Override
             public void onMessage(Message message) {
                 if (logger.isInfoEnabled()) {
-                    logger.info("Recive message:{}", message);
+                    logger.info("Receive message:{}", message);
                 }
             }
         });

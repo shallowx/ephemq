@@ -35,10 +35,10 @@ public class TopicTests {
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getLatencies(), 1);
-        Assert.assertEquals(response.getTopic(), "create");
-        Assert.assertEquals(response.getPartitions(), 3);
-        Assert.assertEquals(response.getAck(), Ack.SUCCESS);
+        Assert.assertEquals(1, response.getLatencies());
+        Assert.assertEquals("create", response.getTopic());
+        Assert.assertEquals(3, response.getPartitions());
+        Assert.assertEquals(Ack.SUCCESS, response.getAck());
 
         client.shutdownGracefully();
     }
@@ -54,8 +54,8 @@ public class TopicTests {
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getTopic(), "create");
-        Assert.assertEquals(response.getAck(), Ack.SUCCESS);
+        Assert.assertEquals("create", response.getTopic());
+        Assert.assertEquals(Ack.SUCCESS, response.getAck());
 
         client.shutdownGracefully();
     }

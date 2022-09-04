@@ -22,7 +22,6 @@ public class PullConsumer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumer.class);
 
-    @SuppressWarnings("all")
     @Test
     public void pull() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
@@ -50,7 +49,7 @@ public class PullConsumer {
             if (future.isSuccess()) {
                 PullMessageResponse response = future.get();
                 if (logger.isInfoEnabled()) {
-                    logger.info("Send pull message command result: ledger={} epoch={} index={} limit={} queue={} topic={}",
+                    logger.info("Send pull message callback result: ledger={} epoch={} index={} limit={} queue={} topic={}",
                             response.getLedger(), response.getEpoch(), response.getIndex(), response.getLimit(), response.getQueue(), response.getTopic());
                 }
             } else {

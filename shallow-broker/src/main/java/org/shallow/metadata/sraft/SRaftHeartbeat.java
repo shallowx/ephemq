@@ -3,7 +3,7 @@ package org.shallow.metadata.sraft;
 import io.netty.util.concurrent.*;
 import org.shallow.internal.BrokerManager;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.elector.RaftHeartbeatRequest;

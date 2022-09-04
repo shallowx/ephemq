@@ -1,4 +1,4 @@
-package org.shallow.invoke;
+package org.shallow.internal;
 
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;

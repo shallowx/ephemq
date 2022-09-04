@@ -36,7 +36,7 @@ public class MessageProducer {
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
             if (null == cause) {
-                logger.warn("send result - {}", sendResult);
+                logger.warn("Send result - {}", sendResult);
             } else {
                 logger.error(cause.getMessage(), cause);
             }

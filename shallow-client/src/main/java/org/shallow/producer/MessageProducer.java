@@ -7,7 +7,7 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.Message;
 import org.shallow.State;
-import org.shallow.invoke.ClientChannel;
+import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.metadata.MessageRouter;
@@ -24,7 +24,6 @@ import org.shallow.util.ObjectUtil;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.shallow.util.NetworkUtil.newImmediatePromise;

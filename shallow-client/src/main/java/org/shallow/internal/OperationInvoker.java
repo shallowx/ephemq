@@ -1,4 +1,4 @@
-package org.shallow.invoke;
+package org.shallow.internal;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
@@ -10,6 +10,8 @@ import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;
 import org.shallow.Type;
+import org.shallow.invoke.Callback;
+import org.shallow.invoke.GenericInvokeAnswer;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessCommand;

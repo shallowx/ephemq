@@ -48,10 +48,10 @@ public final class NotifyProto {
       "eOfflineSignal\"n\n\021MessagePullSignal\022\r\n\005t" +
       "opic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\016\n\006ledger\030\003 \001(" +
       "\005\022\r\n\005limit\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index" +
-      "\030\006 \001(\003\"O\n\021MessagePushSignal\022\r\n\005queue\030\001 \001" +
+      "\030\006 \001(\003\"a\n\021MessagePushSignal\022\r\n\005queue\030\001 \001" +
       "(\t\022\r\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005topi" +
-      "c\030\004 \001(\tB)\n\030org.shallow.proto.notifyB\013Not" +
-      "ifyProtoP\001b\006proto3"
+      "c\030\004 \001(\t\022\020\n\010ledgerId\030\005 \001(\005B)\n\030org.shallow" +
+      ".proto.notifyB\013NotifyProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -81,7 +81,7 @@ public final class NotifyProto {
     internal_static_shallow_protobuf_MessagePushSignal_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_MessagePushSignal_descriptor,
-        new java.lang.String[] { "Queue", "Epoch", "Index", "Topic", });
+        new java.lang.String[] { "Queue", "Epoch", "Index", "Topic", "LedgerId", });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

@@ -29,4 +29,5 @@ message MessagePushSignal {
   int32 epoch = 2;
   int64 index = 3;
   string topic = 4;
+  int32 ledgerId = 5;
 }

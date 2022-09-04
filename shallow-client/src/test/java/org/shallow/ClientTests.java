@@ -2,12 +2,10 @@ package org.shallow;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.shallow.invoke.ClientChannel;
-import org.shallow.metadata.MetadataManager;
+import org.shallow.internal.ClientChannel;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.pool.ShallowChannelPool;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 

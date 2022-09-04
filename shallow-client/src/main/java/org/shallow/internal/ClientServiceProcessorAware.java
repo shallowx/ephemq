@@ -14,7 +14,6 @@ import org.shallow.processor.ProcessCommand;
 import org.shallow.proto.notify.MessagePullSignal;
 import org.shallow.proto.notify.MessagePushSignal;
 import org.shallow.util.NetworkUtil;
-import org.shallow.invoke.ClientChannel;
 import org.shallow.invoke.InvokeAnswer;
 import org.shallow.processor.ProcessorAware;
 
@@ -49,11 +48,11 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                         logger.debug("Receive handle message");
                     }
                     if (type == Type.PUSH.sequence()) {
-                        onPushMessage(version, data, answer);
+                        onPushMessage(channel, version, data, answer);
                         return;
                     }
 
-                    onPullMessage(data, answer);
+                    onPullMessage(channel, data, answer);
                 }
 
                 case TOPIC_CHANGED -> {
@@ -96,22 +95,23 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         }
     }
 
-    private void onPushMessage(short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    private void onPushMessage(Channel channel, short version, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
             MessagePushSignal signal = readProto(data, MessagePushSignal.parser());
             String topic = signal.getTopic();
             String queue = signal.getQueue();
             int epoch = signal.getEpoch();
             long index = signal.getIndex();
+            int ledgerId = signal.getLedgerId();
 
-            listener.onPushMessage(version, topic, queue, epoch, index, data);
+            listener.onPushMessage(channel, ledgerId, version, topic, queue, epoch, index, data);
             trySuccess(answer);
         } catch (Throwable t) {
             tryFailure(answer, t);
         }
     }
 
-    private void onPullMessage(ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    private void onPullMessage(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
             MessagePullSignal signal = readProto(data, MessagePullSignal.parser());
 
@@ -122,7 +122,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
             int epoch = signal.getEpoch();
             long index = signal.getIndex();
 
-            listener.onPullMessage(topic, queue, ledger, limit, epoch, index, data);
+            listener.onPullMessage(channel, ledger, topic, queue, ledger, limit, epoch, index, data);
             trySuccess(answer);
         } catch (Throwable t) {
             tryFailure(answer, t);
