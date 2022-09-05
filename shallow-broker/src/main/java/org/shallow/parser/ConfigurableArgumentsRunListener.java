@@ -63,7 +63,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         }
     }
 
-    public static String getExtension(final String fileName) throws IllegalArgumentException {
+    private String getExtension(final String fileName) throws IllegalArgumentException {
         if (fileName == null) {
             return null;
         }
@@ -74,7 +74,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         return fileName.substring(index + 1);
     }
 
-    public static int indexOfExtension(final String fileName) throws IllegalArgumentException {
+    private int indexOfExtension(final String fileName) throws IllegalArgumentException {
         if (fileName == null) {
             return NOT_FOUND;
         }
@@ -82,7 +82,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         if (isSystemWindows()) {
             final int offset = fileName.indexOf(':', getAdsCriticalOffset(fileName));
             if (offset != -1) {
-                throw new IllegalArgumentException("NTFS ADS separator (':') in file name is forbidden.");
+                throw new IllegalArgumentException("NTFS ADS separator (':') in file name is forbidden");
             }
         }
 
@@ -91,11 +91,11 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         return lastSeparator > extensionPos ? NOT_FOUND : extensionPos;
     }
 
-    static boolean isSystemWindows() {
+    private boolean isSystemWindows() {
         return File.separatorChar == WINDOWS_NAME_SEPARATOR;
     }
 
-    private static int getAdsCriticalOffset(final String fileName) {
+    private int getAdsCriticalOffset(final String fileName) {
         final int offset1 = fileName.lastIndexOf(File.separatorChar);
         final int offset2 = fileName.lastIndexOf(flipSeparator());
         if (offset1 == -1) {
@@ -107,20 +107,20 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         if (offset2 == -1) {
             return offset1 + 1;
         }
-        return Math.max(offset1, offset2) + 1;
+        return StrictMath.max(offset1, offset2) + 1;
     }
 
-    static char flipSeparator() {
+    private char flipSeparator() {
         if (File.separatorChar == UNIX_NAME_SEPARATOR) {
-            return WINDOWS_NAME_SEPARATOR;
+            return UNIX_NAME_SEPARATOR;
         }
         if (File.separatorChar == WINDOWS_NAME_SEPARATOR) {
-            return UNIX_NAME_SEPARATOR;
+            return WINDOWS_NAME_SEPARATOR;
         }
         throw new IllegalArgumentException(String.valueOf(File.separatorChar));
     }
 
-    public static int indexOfLastSeparator(final String fileName) {
+    private int indexOfLastSeparator(final String fileName) {
         if (fileName == null) {
             return NOT_FOUND;
         }
@@ -129,11 +129,11 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener{
         return Math.max(lastUnixPos, lastWindowsPos);
     }
 
-    private static CommandLine parseCmdLine(String[] args, Options options, CommandLineParser parser) throws ParseException {
+    private CommandLine parseCmdLine(String[] args, Options options, CommandLineParser parser) throws ParseException {
         return parser.parse(options, args);
     }
 
-    private static Options buildCommandOptions() {
+    private Options buildCommandOptions() {
         Options options = new Options();
         Option opt = new Option("c", "configFile", true, "Broker config properties file");
         opt.setRequired(false);

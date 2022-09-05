@@ -67,8 +67,8 @@ public class EntryPullDispatcher implements PullDispatcher{
     }
 
     private void doDispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
+        Channel channel = channels.get(requestId);
         try {
-            Channel channel = channels.get(requestId);
             if (null == channel) {
                 return;
             }
@@ -78,7 +78,7 @@ public class EntryPullDispatcher implements PullDispatcher{
                 buf = buildByteBuf(topic, queue, version, ledgerId, limit, offset, payload, channel.alloc());
                 if (!channel.isActive()) {
                     if (logger.isWarnEnabled()) {
-                        logger.warn("Channel is not active, and will remove it");
+                        logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
                     }
                     cancel(requestId);
                     return;
@@ -92,14 +92,16 @@ public class EntryPullDispatcher implements PullDispatcher{
                 channel.writeAndFlush(buf.retainedDuplicate());
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("Channel pull message failed, error:{}", t);
+                    logger.error("Channel<{}> pull message failed, error:{}", channel.toString(), t);
                 }
             } finally {
                 cancel(requestId);
                 ByteBufUtil.release(buf);
             }
         } catch (Throwable t) {
-            throw new RuntimeException("Channel pull message failed", t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Channel<{}> pull message failed, topic={} queue={} version={} error:{}", topic, queue, version, channel.toString(), t);
+            }
         } finally {
             cancel(requestId);
             ByteBufUtil.release(payload);
@@ -129,7 +131,7 @@ public class EntryPullDispatcher implements PullDispatcher{
                 try {
                     if (!channel.isActive()) {
                         if (logger.isWarnEnabled()) {
-                            logger.warn("Channel is not active, and will remove it");
+                            logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
                         }
                         cancel(requestId);
                         return;
@@ -137,7 +139,7 @@ public class EntryPullDispatcher implements PullDispatcher{
 
                     if (!channel.isWritable()) {
                         if (logger.isWarnEnabled()) {
-                            logger.warn("Channel is not writable, and try again after {} ms", retryDelayTimeMs);
+                            logger.warn("Channel<{}> is not writable, and try again after {} ms", channel.toString(), retryDelayTimeMs);
                         }
                         transfer(requestId, payload, channel);
                         return;
@@ -146,7 +148,7 @@ public class EntryPullDispatcher implements PullDispatcher{
                     channel.writeAndFlush(payload.retainedDuplicate());
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("Channel pull message retry failed, and try again after {} ms,  error:{}", retryDelayTimeMs, t);
+                        logger.error("Channel<{}> pull message retry failed, and try again after {} ms,  error:{}", channel.toString(), retryDelayTimeMs, t);
                     }
                 } finally {
                     ByteBufUtil.release(payload);

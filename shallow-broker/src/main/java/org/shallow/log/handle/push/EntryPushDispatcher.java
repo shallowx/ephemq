@@ -42,7 +42,7 @@ public class EntryPushDispatcher {
     public void subscribe(Channel channel, String queue, Offset offset, short version) {
         if (!channel.isActive() || !channel.isWritable()) {
             if (logger.isWarnEnabled()) {
-                logger.warn("chanel is not active for subscribe");
+                logger.warn("Channel<{}> is not active for subscribe", channel.toString());
             }
         }
         subscriptionMap.computeIfAbsent(queue, k -> new CopyOnWriteArraySet<>()).add(new Subscription(channel, queue, offset, version));
@@ -103,7 +103,7 @@ public class EntryPushDispatcher {
 
                     if (!channel.isActive()) {
                         if (logger.isWarnEnabled()) {
-                            logger.warn("Channel is not active, and will remove it");
+                            logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
                         }
                         continue;
                     }
@@ -116,7 +116,7 @@ public class EntryPushDispatcher {
                 }
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
-                    logger.error(t.getMessage(), t);
+                    logger.error("Channel push message failed, topic={} error:{}", topic, t);
                 }
             } finally {
                 ByteBufUtil.release(message);
