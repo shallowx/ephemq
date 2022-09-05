@@ -1,6 +1,7 @@
 package org.shallow;
 
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.State;
 
 import java.util.concurrent.TimeUnit;
 

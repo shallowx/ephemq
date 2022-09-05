@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 @SuppressWarnings("all")
-public class MessagePullConsumerTests {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessagePullConsumerTests.class);
+public class PullConsumerTests {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumerTests.class);
 
     private static ClientConfig clientConfig;
 

@@ -162,9 +162,13 @@ public class ProducerTests {
             Message message = new Message("create", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Message.Extras());
             producer.sendAsync(message, filter, (sendResult, cause) -> {
                 if ( null == cause) {
-                    logger.warn("send result - {}", sendResult);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("send result - {}", sendResult);
+                    }
                 } else {
-                    logger.error(cause);
+                    if (logger.isErrorEnabled()) {
+                        logger.error(cause);
+                    }
                 }
             });
 

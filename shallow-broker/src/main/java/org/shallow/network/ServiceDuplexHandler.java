@@ -17,20 +17,15 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (logger.isDebugEnabled()) {
-            logger.debug("[channelInactive] - Clean inactive channel");
+            logger.debug("Clean inactive channel<{}>", ctx.channel().toString());
         }
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
-        if (logger.isErrorEnabled()) {
-            logger.error(cause.getMessage(), cause);
-        }
-
         if (logger.isDebugEnabled()) {
-            logger.debug("[channelInactive] - Clean exception caught channel <{}>", cause);
+            logger.debug("Clean exception caught channel <{}>, error:{}", ctx.channel().toString(), cause);
         }
 
         ctx.close();

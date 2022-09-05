@@ -42,7 +42,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
     }
 
     @Override
-    public boolean consume(int answer, Consumer<InvokeAnswer<V>> consumer) {
+    public boolean free(int answer, Consumer<InvokeAnswer<V>> consumer) {
         if (answer == 0) {
             return false;
         }
@@ -60,7 +60,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
     }
 
     @Override
-    public int consumeWhole(Consumer<InvokeAnswer<V>> consumer) {
+    public int freeEntire(Consumer<InvokeAnswer<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }
@@ -82,7 +82,7 @@ public class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
 
     @Override
-    public int consumeExpired(Consumer<InvokeAnswer<V>> consumer) {
+    public int freeExpired(Consumer<InvokeAnswer<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }

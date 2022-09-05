@@ -1,6 +1,7 @@
 package org.shallow;
 
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.State;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.producer.MessagePreFilter;

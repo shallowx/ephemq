@@ -65,7 +65,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             return buf;
         } catch (Throwable t) {
             ByteBufUtil.release(message);
-            throw new RuntimeException("Failed to assemble invoke message");
+            throw new RuntimeException(String.format("Failed to assemble invoke message<%s>", request.toString()));
         }
     }
 

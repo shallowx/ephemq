@@ -44,9 +44,6 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
         try {
             switch (command) {
                 case HANDLE_MESSAGE -> {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Receive handle message");
-                    }
                     if (type == Type.PUSH.sequence()) {
                         onPushMessage(channel, version, data, answer);
                         return;
@@ -56,16 +53,11 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                 }
 
                 case TOPIC_CHANGED -> {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Receive topic changed signal");
-                    }
                     onPartitionChanged(answer);
                 }
 
                 case CLUSTER_CHANGED -> {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Receive cluster changed signal");
-                    }
+
                 }
 
                 default -> {

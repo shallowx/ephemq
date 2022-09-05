@@ -3,6 +3,7 @@ package org.shallow.consumer.push;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.shallow.Message;
 import org.shallow.consumer.ConsumerConfig;
@@ -51,12 +52,19 @@ final class PushConsumerListener implements Listener {
     }
 
     public void set(int epoch, long index, String queue, int ledger) {
-        Subscription subscription = new Subscription(epoch, index, queue, ledger);
-        AtomicReference<Subscription> reference = subscriptionShips.get(ledger);
-        if (reference == null){
-            reference = new AtomicReference<>();
+        try {
+            synchronized (subscriptionShips) {
+                Subscription subscription = new Subscription(epoch, index, queue, ledger);
+                AtomicReference<Subscription> reference = subscriptionShips.get(ledger);
+                if (reference == null){
+                    reference = new AtomicReference<>();
+                }
+                reference.set(subscription);
+                subscriptionShips.put(ledger, reference);
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException("Failed to handle message subscribe sequence");
         }
-        reference.set(subscription);
     }
 
     @Override

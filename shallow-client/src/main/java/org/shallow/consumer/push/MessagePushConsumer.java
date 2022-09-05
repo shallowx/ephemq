@@ -17,6 +17,7 @@ import org.shallow.proto.server.CleanSubscribeRequest;
 import org.shallow.proto.server.CleanSubscribeResponse;
 import org.shallow.proto.server.SubscribeRequest;
 import org.shallow.proto.server.SubscribeResponse;
+import org.shallow.util.NetworkUtil;
 import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
@@ -228,6 +229,7 @@ public class MessagePushConsumer implements PushConsumer {
                 .setEpoch(epoch)
                 .setIndex(index)
                 .build();
+
         pushConsumerListener.set(epoch, index, queue, ledger);
         clientChannel.invoker().invoke(SUBSCRIBE, config.getPushSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
     }

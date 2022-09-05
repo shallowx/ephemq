@@ -9,8 +9,8 @@ public interface InvokeHolder<V> {
 
     int hold(long expires, InvokeAnswer<V> rejoin);
 
-    boolean consume(int rejoin, Consumer<InvokeAnswer<V>> consumer);
+    boolean free(int rejoin, Consumer<InvokeAnswer<V>> consumer);
 
-    int consumeExpired(Consumer<InvokeAnswer<V>> consumer);
-    int consumeWhole(Consumer<InvokeAnswer<V>> consumer);
+    int freeExpired(Consumer<InvokeAnswer<V>> consumer);
+    int freeEntire(Consumer<InvokeAnswer<V>> consumer);
 }

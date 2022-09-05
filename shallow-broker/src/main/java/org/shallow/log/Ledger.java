@@ -34,7 +34,7 @@ public class Ledger {
     private final EventExecutor storageExecutor;
     private final PullDispatcher entryPullHandler;
     private final EntryPushDispatcher entryPushHandler;
-    private final AtomicReference<State> state = new AtomicReference<>();
+    private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     enum State {
         LATENT, STARTED, CLOSED
