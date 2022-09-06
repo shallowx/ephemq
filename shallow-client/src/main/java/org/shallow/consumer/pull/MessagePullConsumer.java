@@ -86,7 +86,6 @@ public class MessagePullConsumer implements PullConsumer {
                 } else {
                     promise.tryFailure(future.cause());
                 }
-                return;
             }
 
             if (logger.isDebugEnabled()) {

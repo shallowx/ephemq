@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.shallow.Client;
 import org.shallow.Message;
 import org.shallow.State;
@@ -38,6 +39,7 @@ public class MessageProducer implements Producer{
     private final String name;
     private final Client client;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
+    private final Map<Integer, ClientChannel> activeChannels = new Int2ObjectOpenHashMap<>();
 
     public MessageProducer(String name, ProducerConfig config) {
         this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be null");
@@ -138,7 +140,6 @@ public class MessageProducer implements Producer{
         if (null == leader) {
             throw new IllegalArgumentException(String.format("Leader not found, and ledger=%d name=%s", ledger, name));
         }
-        ClientChannel clientChannel = pool.acquireHealthyOrNew(leader);
 
         SendMessageRequest request = SendMessageRequest
                 .newBuilder()
@@ -149,9 +150,31 @@ public class MessageProducer implements Producer{
         SendMessageExtras extras = buildExtras(topic, queue, message.extras());
         try {
              ByteBuf body = ByteBufUtil.byte2Buf(message.message());
+
+             ClientChannel clientChannel = fetchHealthyChannel(ledger, leader);
              clientChannel.invoker().invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);
         } catch (Throwable t) {
             throw new RuntimeException(String.format("Failed to send async message, topic=%s, queue=%s name=%s", topic, queue, name));
+        }
+    }
+
+    private ClientChannel fetchHealthyChannel(int ledger, SocketAddress address) {
+        ClientChannel clientChannel = activeChannels.get(ledger);
+        if (clientChannel != null && clientChannel.channel().isActive()) {
+            return clientChannel;
+        }
+        activeChannels.remove(ledger, clientChannel);
+
+        synchronized (activeChannels) {
+            ClientChannel channel = activeChannels.get(ledger);
+            if (channel != null && channel.channel().isActive()) {
+                return channel;
+            }
+
+            ClientChannel newChannel = pool.acquireHealthyOrNew(address);
+            activeChannels.put(ledger, newChannel);
+
+            return newChannel;
         }
     }
 

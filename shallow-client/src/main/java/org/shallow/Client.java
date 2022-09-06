@@ -83,6 +83,10 @@ public class Client {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Listener getListener() {
         return listener;
     }

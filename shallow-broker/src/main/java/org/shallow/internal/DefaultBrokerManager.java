@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class DefaultBrokerManager implements BrokerManager {
 
-    private final SRaftQuorumVoterClient client;
+    private SRaftQuorumVoterClient client;
     private final MappedFileApi api;
     private final SRaftProcessController controller;
     private final LedgerManager logManager;
@@ -32,8 +32,10 @@ public class DefaultBrokerManager implements BrokerManager {
         quorumVoterClientConfig.setChannelFixedPoolCapacity(config.getInternalChannelPoolLimit());
         quorumVoterClientConfig.setInvokeExpiredMs(config.getInvokeTimeMs());
 
-        this.client = new SRaftQuorumVoterClient("quorum-voter-client", quorumVoterClientConfig);
-        client.start();
+        if (!config.isStandAlone()) {
+            this.client = new SRaftQuorumVoterClient("quorum-voter-client", quorumVoterClientConfig);
+            client.start();
+        }
 
         this.api = new MappedFileApi(config);
         this.controller = new SRaftProcessController(config, this);

@@ -6,6 +6,8 @@ import org.shallow.internal.ClientChannel;
 import java.net.SocketAddress;
 
 public interface ShallowChannelPool {
+
+    void initChannelPool() throws Exception;
     ClientChannel acquireWithRandomly();
     ClientChannel acquireHealthyOrNew(SocketAddress address);
     Promise<ClientChannel> assemblePromise(Channel channel);

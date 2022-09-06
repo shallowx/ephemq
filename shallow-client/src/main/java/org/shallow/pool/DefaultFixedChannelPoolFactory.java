@@ -1,20 +1,19 @@
 package org.shallow.pool;
 
-import io.netty.bootstrap.Bootstrap;
 import org.shallow.Client;
-import org.shallow.ClientConfig;
 
 public class DefaultFixedChannelPoolFactory {
 
     public static final DefaultFixedChannelPoolFactory INSTANCE = new DefaultFixedChannelPoolFactory();
     private ShallowChannelPool pool;
 
-    public ShallowChannelPool newChannelPool(Client client) {
+    public ShallowChannelPool newChannelPool(Client client) throws Exception {
         return newChannelPool(client, client.getHealthChecker());
     }
 
-    public ShallowChannelPool newChannelPool(Client client,  ShallowChannelHealthChecker healthChecker) {
+    public ShallowChannelPool newChannelPool(Client client,  ShallowChannelHealthChecker healthChecker) throws Exception {
         pool = new FixedChannelPool(client, (healthChecker == null ? ShallowChannelHealthChecker.ACTIVE : healthChecker));
+        pool.initChannelPool();
         return pool;
     }
 
