@@ -62,7 +62,7 @@ public class MetadataManager implements ProcessCommand.Server {
                 config.getRefreshMetadataIntervalMs(), TimeUnit.MILLISECONDS);
     }
 
-    public Promise<CreateTopicResponse> createTopic(byte command, String topic, int partitions, int latency) {
+    public Promise<CreateTopicResponse> createTopic(String topic, int partitions, int latency) {
         CreateTopicRequest request = CreateTopicRequest.newBuilder()
                 .setTopic(topic)
                 .setPartitions(partitions)
@@ -71,18 +71,18 @@ public class MetadataManager implements ProcessCommand.Server {
 
         Promise<CreateTopicResponse> promise = newImmediatePromise();
         ClientChannel channel = pool.acquireWithRandomly();
-        channel.invoker().invoke(command, config.getInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
+        channel.invoker().invoke(CREATE_TOPIC, config.getInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
 
         return promise;
     }
 
-    public Promise<DelTopicResponse> delTopic(byte command, String topic) {
+    public Promise<DelTopicResponse> delTopic(String topic) {
         DelTopicRequest request = DelTopicRequest.newBuilder().setTopic(topic).build();
 
         Promise<DelTopicResponse> promise = newImmediatePromise();
 
         ClientChannel channel = pool.acquireWithRandomly();
-        channel.invoker().invoke(command, config.getInvokeExpiredMs(), promise, request, DelTopicResponse.class);
+        channel.invoker().invoke(DELETE_TOPIC, config.getInvokeExpiredMs(), promise, request, DelTopicResponse.class);
 
         return promise;
     }

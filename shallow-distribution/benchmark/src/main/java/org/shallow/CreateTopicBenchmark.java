@@ -41,7 +41,7 @@ public class CreateTopicBenchmark {
 
     @Benchmark
     public void createTopic() {
-        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic(CREATE_TOPIC, "test-benchmark", 1, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic( "test-benchmark", 1, 1);
         try {
             promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

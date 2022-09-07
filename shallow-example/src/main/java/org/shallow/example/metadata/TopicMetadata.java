@@ -29,7 +29,7 @@ public class TopicMetadata {
         Client client = new Client("create-client", clientConfig);
         client.start();
 
-        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic(CREATE_TOPIC, "create", 3, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic( "create", 3, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         client.shutdownGracefully();
@@ -42,7 +42,7 @@ public class TopicMetadata {
         Client client = new Client("del-client", clientConfig);
         client.start();
 
-        Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic(DELETE_TOPIC, "create");
+        Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic( "create");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         client.shutdownGracefully();
