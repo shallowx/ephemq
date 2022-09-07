@@ -3,10 +3,11 @@ package org.shallow.consumer.push;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.shallow.Message;
+import org.shallow.consumer.ConsumeListener;
 import org.shallow.consumer.ConsumerConfig;
+import org.shallow.consumer.MessagePostFilter;
 import org.shallow.internal.Listener;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
@@ -29,7 +30,7 @@ final class PushConsumerListener implements Listener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PushConsumerListener.class);
 
     private MessagePushListener listener;
-    private MessagePostFilter   filter;
+    private MessagePostFilter filter;
     private final MessageHandler[] handlers;
     private final Map<Integer, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
 
@@ -43,8 +44,9 @@ final class PushConsumerListener implements Listener {
         }
     }
 
-    public void registerListener(MessagePushListener listener) {
-        this.listener = listener;
+    @Override
+    public void registerListener(ConsumeListener listener) {
+        this.listener = (MessagePushListener) listener;
     }
 
     public void registerFilter(MessagePostFilter filter) {
@@ -72,6 +74,7 @@ final class PushConsumerListener implements Listener {
         if (logger.isDebugEnabled()) {
             logger.debug("Receive partition changed signal, channel={} signal={}", channel.toString(), signal.toString());
         }
+        //do nothing
     }
 
     @Override
@@ -79,6 +82,7 @@ final class PushConsumerListener implements Listener {
         if (logger.isDebugEnabled()) {
             logger.debug("Receive node offline signal, channel={} signal={}", channel.toString(), signal.toString());
         }
+        //do nothing
     }
 
     @Override
@@ -107,7 +111,7 @@ final class PushConsumerListener implements Listener {
                 }
             }
 
-            MessageHandler handler = handlers[(Objects.hash(topic, queue) & 0x7fffffff) % handlers.length];
+            MessageHandler handler = handlers[((Objects.hash(topic, queue) + ledgerId) & 0x7fffffff) % handlers.length];
             handler.handle(message, listener, filter);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {

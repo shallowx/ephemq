@@ -1,5 +1,7 @@
 package org.shallow.consumer.push;
 
+import org.shallow.consumer.MessagePostFilter;
+
 public interface PushConsumer {
 
     void start() throws Exception;

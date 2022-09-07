@@ -204,24 +204,24 @@ public class MetadataManager implements ProcessCommand.Server {
         try {
             List<String> topics = new ArrayList<>(routers.asMap().keySet());
             if (topics.isEmpty()) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Router record is empty");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Router record is empty");
                 }
                 return;
             }
 
             Map<String, TopicRecord> topicRecords = queryTopicRecord(pool.acquireWithRandomly(), topics);
             if (topicRecords.isEmpty()) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Topic record is empty");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Topic record is empty");
                 }
                 return;
             }
 
             Set<NodeRecord> nodeRecords = queryNodeRecord(pool.acquireWithRandomly());
             if (null == nodeRecords) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Node record is empty");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Node record is empty");
                 }
                 return;
             }
@@ -230,11 +230,16 @@ public class MetadataManager implements ProcessCommand.Server {
                 TopicRecord topicRecord = topicRecords.get(topic);
                 MessageRouter messageRouter = assembleRouter(topic, topicRecord, nodeRecords);
                 if (null == messageRouter) {
-                    if (logger.isWarnEnabled()) {
-                        logger.warn("Topic<{}> message router is  null", topic);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Topic<{}> message router is  null", topic);
                     }
                     continue;
                 }
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Message router:{}", messageRouter);
+                }
+
                 routers.put(topic, messageRouter);
             }
         } catch (Exception e) {

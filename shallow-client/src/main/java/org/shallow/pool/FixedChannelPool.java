@@ -4,6 +4,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
@@ -17,10 +18,8 @@ import org.shallow.internal.ClientChannel;
 
 import java.net.SocketAddress;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.shallow.util.NetworkUtil.newImmediatePromise;
@@ -37,6 +36,8 @@ public class FixedChannelPool implements ShallowChannelPool {
     private final Map<String, Promise<ClientChannel>> assembleChannels;
     private final ShallowChannelHealthChecker healthChecker;
     private final List<SocketAddress> bootstrapAddress;
+    private final ScheduledExecutorService scheduledExecutor;
+    private final AtomicBoolean flipState = new AtomicBoolean(false);
 
     public FixedChannelPool(Client client, ShallowChannelHealthChecker healthChecker) {
         this.client = client;
@@ -46,6 +47,9 @@ public class FixedChannelPool implements ShallowChannelPool {
         this.assembleChannels = new ConcurrentHashMap<>(clientConfig.getBootstrapSocketAddress().size() * clientConfig.getChannelFixedPoolCapacity());
         this.healthChecker = healthChecker;
         this.bootstrapAddress = constructBootstrap();
+        this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory(String.format("%s-channel-poll", client.getName())));
+
+        scheduledExecutor.schedule(this::checkHealthyChannel, 5000, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -58,25 +62,7 @@ public class FixedChannelPool implements ShallowChannelPool {
         int capacity = client.getClientConfig().getChannelFixedPoolCapacity();
         while (iterator.hasNext()) {
             SocketAddress address = iterator.next();
-            for (int i = 0; i < capacity; i++) {
-                try {
-                    Future<ClientChannel> future = newChannel(address);
-                    channelPools.computeIfAbsent(address, v -> new CopyOnWriteArrayList<>()).add(future);
-
-                    future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
-                        if (!f.isSuccess()) {
-                            remove(address, f);
-                        } else {
-                            ClientChannel clientChannel = f.getNow();
-                            clientChannel.channel().closeFuture().addListener(cf -> remove(address, f));
-                        }
-                    });
-                } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to init chanel pool<{}>, address={}", client.getName(), address.toString());
-                    }
-                }
-            }
+            flip(address, capacity);
         }
     }
 
@@ -143,25 +129,7 @@ public class FixedChannelPool implements ShallowChannelPool {
             }
 
             channelPools.remove(address);
-            for (int i = 0; i < client.getClientConfig().getChannelFixedPoolCapacity(); i++) {
-                try {
-                    Future<ClientChannel> future = newChannel(address);
-                    channelPools.computeIfAbsent(address, v -> new CopyOnWriteArrayList<>()).add(future);
-
-                    future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
-                        if (!f.isSuccess()) {
-                            remove(address, f);
-                        } else {
-                            ClientChannel clientChannel = f.getNow();
-                            clientChannel.channel().closeFuture().addListener(cf -> remove(address, f));
-                        }
-                    });
-                } catch (Throwable t) {
-                   if (logger.isErrorEnabled()) {
-                       logger.error("Failed to acquire healthy chanel from pool<{}>, address={}", client.getName(), address.toString());
-                   }
-                 }
-            }
+            flip(address, client.getClientConfig().getChannelFixedPoolCapacity());
         }
         List<Future<ClientChannel>> activeFutures = channelPools.get(address);
         return activeFutures.get(ThreadLocalRandom.current().nextInt(activeFutures.size()));
@@ -176,7 +144,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> randomAcquire() {
-        Future<ClientChannel> future = null;
+        Future<ClientChannel> future;
         List<SocketAddress> addresses = constructBootstrap();
         SocketAddress socketAddress = addresses.get(ThreadLocalRandom.current().nextInt(addresses.size()));
         List<Future<ClientChannel>> futures = channelPools.get(socketAddress);
@@ -202,19 +170,7 @@ public class FixedChannelPool implements ShallowChannelPool {
                 return listFutures.get(ThreadLocalRandom.current().nextInt(listFutures.size()));
             }
 
-            for (int i = 0; i < client.getClientConfig().getChannelFixedPoolCapacity(); i++) {
-                future = newChannel(socketAddress);
-                channelPools.computeIfAbsent(socketAddress, v -> new CopyOnWriteArrayList<>()).add(future);
-
-                future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
-                    if (!f.isSuccess()) {
-                        remove(socketAddress, f);
-                    } else {
-                        ClientChannel clientChannel = f.getNow();
-                        clientChannel.channel().closeFuture().addListener(cf -> remove(socketAddress, f));
-                    }
-                });
-            }
+            future = flip(socketAddress, client.getClientConfig().getChannelFixedPoolCapacity());
         }
 
         return future;
@@ -242,6 +198,62 @@ public class FixedChannelPool implements ShallowChannelPool {
         return promise;
     }
 
+    private void checkHealthyChannel() {
+        if (channelPools.isEmpty()) {
+            return;
+        }
+
+        Set<Map.Entry<SocketAddress, List<Future<ClientChannel>>>> entries = channelPools.entrySet();
+        for (Map.Entry<SocketAddress, List<Future<ClientChannel>>> entry : entries) {
+            List<Future<ClientChannel>> listFuture = entry.getValue();
+            List<Future<ClientChannel>> activeFutures = listFuture.stream()
+                    .filter(healthChecker::isHealthy)
+                    .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+
+            int diff = client.getClientConfig().getChannelFixedPoolCapacity() - activeFutures.size();
+            if (diff == 0) {
+                continue;
+            }
+
+            SocketAddress address = entry.getKey();
+            flip(address, diff);
+        }
+    }
+
+    private Future<ClientChannel> flip(SocketAddress address, int limit) {
+        if (address == null || limit <= 0) {
+            throw new IllegalArgumentException("Address cannot be null, or limit expect > 0");
+        }
+
+        // invoker confirms safety synchronized, @see org.shallow.pool.FixedChannelPool#acquireHealthyOrNew0
+        if (flipState.compareAndSet(false, true)) {
+            throw new UnsupportedOperationException();
+        }
+
+        Future<ClientChannel> future = null;
+        for (int i = 0; i < limit; i++) {
+            try {
+                future = newChannel(address);
+                channelPools.computeIfAbsent(address, v -> new CopyOnWriteArrayList<>()).add(future);
+
+                future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
+                    if (!f.isSuccess()) {
+                        remove(address, f);
+                    } else {
+                        ClientChannel clientChannel = f.getNow();
+                        clientChannel.channel().closeFuture().addListener(cf -> remove(address, f));
+                    }
+                });
+            } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to new healthy chanel<{}>, address={}", client.getName(), address.toString());
+                }
+            }
+        }
+        flipState.compareAndSet(true, false);
+        return future;
+    }
+
     @Override
     public Promise<ClientChannel> assemblePromise(Channel channel) {
         return assembleChannels.computeIfAbsent(channel.id().asLongText(), v -> newImmediatePromise());
@@ -249,6 +261,9 @@ public class FixedChannelPool implements ShallowChannelPool {
 
     @Override
     public void shutdownGracefully() throws Exception {
+        if (!scheduledExecutor.isShutdown() || !scheduledExecutor.isTerminated()) {
+            scheduledExecutor.shutdown();
+        }
         client.shutdownGracefully();
         channelPools.clear();
         assembleChannels.clear();

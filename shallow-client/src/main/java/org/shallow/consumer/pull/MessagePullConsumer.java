@@ -6,6 +6,7 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.State;
 import org.shallow.consumer.ConsumerConfig;
+import org.shallow.consumer.MessagePostFilter;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -66,6 +67,11 @@ public class MessagePullConsumer implements PullConsumer {
         }
         this.listener = listener;
         this.pullConsumerListener.registerListener(listener);
+    }
+
+    @Override
+    public void registerFilter(MessagePostFilter filter) {
+        pullConsumerListener.registerFilter(filter);
     }
 
     @Override

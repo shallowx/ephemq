@@ -2,6 +2,7 @@ package org.shallow.consumer.push;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.Message;
+import org.shallow.consumer.MessagePostFilter;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 

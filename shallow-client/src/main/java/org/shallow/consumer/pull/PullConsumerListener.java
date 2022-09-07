@@ -3,6 +3,8 @@ package org.shallow.consumer.pull;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.shallow.Message;
+import org.shallow.consumer.ConsumeListener;
+import org.shallow.consumer.MessagePostFilter;
 import org.shallow.internal.Listener;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
@@ -24,12 +26,19 @@ final class PullConsumerListener implements Listener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumerListener.class);
 
     private MessagePullListener listener;
+    private MessagePostFilter filter;
 
     public PullConsumerListener() {
     }
 
-    public void registerListener(MessagePullListener listener) {
-        this.listener = listener;
+    @Override
+    public void registerListener(ConsumeListener listener) {
+        this.listener = (MessagePullListener) listener;
+    }
+
+    @Override
+    public void registerFilter(MessagePostFilter filter) {
+        this.filter = filter;
     }
 
     @Override
@@ -83,7 +92,13 @@ final class PullConsumerListener implements Listener {
 
                 SendMessageExtras extras = readProto(buf, SendMessageExtras.parser());
                 byte[] body = ByteBufUtil.buf2Bytes(buf.readBytes(buf.readableBytes()));
-                messages.add(new Message(topic, queue, theVersion, body, messageEpoch, theIndex, new Message.Extras(extras.getExtrasMap())));
+                Message message = new Message(topic, queue, theVersion, body, messageEpoch, theIndex, new Message.Extras(extras.getExtrasMap()));
+
+                if (filter != null) {
+                    message = filter.filter(message);
+                }
+
+                messages.add(message);
 
                 skipBytes = sliceLength;
             }

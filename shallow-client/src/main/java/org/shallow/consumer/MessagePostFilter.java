@@ -1,4 +1,4 @@
-package org.shallow.consumer.push;
+package org.shallow.consumer;
 
 import org.shallow.Message;
 

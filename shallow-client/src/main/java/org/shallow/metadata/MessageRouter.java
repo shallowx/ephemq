@@ -1,5 +1,6 @@
 package org.shallow.metadata;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class MessageRouter {
@@ -24,5 +25,14 @@ public class MessageRouter {
 
         int index = ((31 * topic.hashCode() + queue.hashCode()) & 0x7fffffff) % length;
         return holders.get(index);
+    }
+
+    @Override
+    public String toString() {
+        return "MessageRouter{" +
+                "topic='" + topic + '\'' +
+                ", ledgerIds=" + Arrays.toString(ledgerIds) +
+                ", holders=" + holders +
+                '}';
     }
 }

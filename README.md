@@ -15,7 +15,6 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 ## Message
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/message.png)
-- Type: pull or push or no
 
 ## Asynchronous thread model
 
@@ -34,7 +33,7 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 # Environment
 
-- Jdk version: Jdk17+
+- Java version: Jdk17+
 
 # Quickstart
 
