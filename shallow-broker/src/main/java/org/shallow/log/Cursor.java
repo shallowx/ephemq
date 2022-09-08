@@ -36,7 +36,7 @@ public class Cursor {
             }
         }
         if (logger.isWarnEnabled()) {
-            logger.warn("The next byteBuf not found");
+            logger.warn("Any message byteBuf not found");
         }
         return null;
     }
