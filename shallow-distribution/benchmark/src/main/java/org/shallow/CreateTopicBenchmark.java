@@ -35,7 +35,7 @@ public class CreateTopicBenchmark {
     }
 
     @TearDown
-    public void tearDown() {
+    public void tearDown() throws Exception {
         client.shutdownGracefully();
     }
 

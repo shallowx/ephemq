@@ -118,7 +118,6 @@ public class Ledger {
     }
 
     public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
-        payload.retain();
         if (storageExecutor.inEventLoop()) {
             doAppend(queue, version, payload, promise);
         } else {

@@ -115,11 +115,13 @@ public class Client {
         return manager;
     }
 
-    public void shutdownGracefully() {
+    public void shutdownGracefully() throws Exception {
         if (state != Boolean.TRUE) {
             return;
         }
         state = Boolean.FALSE;
+
+        pool.shutdownGracefully();
 
         if (workGroup != null) {
             workGroup.shutdownGracefully();

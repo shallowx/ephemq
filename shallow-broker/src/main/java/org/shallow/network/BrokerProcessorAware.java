@@ -31,6 +31,7 @@ import org.shallow.proto.PartitionMetadata;
 import org.shallow.proto.TopicMetadata;
 import org.shallow.proto.elector.*;
 import org.shallow.proto.server.*;
+import org.shallow.util.ByteBufUtil;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -49,14 +50,17 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     private final BrokerManager manager;
     private final EventExecutor commandExecutor;
     private final EventExecutor quorumVoteExecutor;
+    private final EventExecutor handleMessageExecutor;
 
     public BrokerProcessorAware(BrokerConfig config, BrokerManager manager) {
         this.config = config;
         this.manager = manager;
 
-        EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-aware").next();
+        EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command").next();
         this.commandExecutor = group.next();
         this.quorumVoteExecutor = group.next();
+
+        this.handleMessageExecutor = newEventExecutorGroup(Runtime.getRuntime().availableProcessors(), "processor-handle-message").next();
     }
 
     @Override
@@ -109,29 +113,40 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     private void processSendRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
         try {
             SendMessageRequest request = readProto(data, SendMessageRequest.parser());
-            int ledger = request.getLedger();
-            String queue = request.getQueue();
 
-            Promise<Offset> promise = newImmediatePromise();
-            promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
-                if (f.isSuccess()) {
-                    Offset offset = f.get();
-                    SendMessageResponse response = SendMessageResponse
-                            .newBuilder()
-                            .setLedger(ledger)
-                            .setEpoch(offset.epoch())
-                            .setIndex(offset.index())
-                            .build();
+            ByteBuf retain = data.retain();
+            handleMessageExecutor.execute(() -> {
+                try {
+                    int ledger = request.getLedger();
+                    String queue = request.getQueue();
 
-                    if (answer != null) {
-                        answer.success(proto2Buf(channel.alloc(), response));
+                    Promise<Offset> promise = newImmediatePromise();
+                    promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
+                        if (f.isSuccess()) {
+                            Offset offset = f.get();
+                            SendMessageResponse response = SendMessageResponse
+                                    .newBuilder()
+                                    .setLedger(ledger)
+                                    .setEpoch(offset.epoch())
+                                    .setIndex(offset.index())
+                                    .build();
+
+                            if (answer != null) {
+                                answer.success(proto2Buf(channel.alloc(), response));
+                            }
+                        } else {
+                            answerFailed(answer, f.cause());
+                        }
+                    });
+                    LedgerManager logManager = manager.getLogManager();
+                    logManager.append(ledger, queue, retain, version, promise);
+                } catch (Throwable t) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Failed to append message record", t);
                     }
-                } else {
-                    answerFailed(answer, f.cause());
+                    answerFailed(answer,t);
                 }
             });
-            LedgerManager logManager = manager.getLogManager();
-            logManager.append(ledger, queue, data, version, promise);
         } catch (Throwable t){
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to append message record", t);

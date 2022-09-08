@@ -37,7 +37,6 @@ public class FixedChannelPool implements ShallowChannelPool {
     private final ShallowChannelHealthChecker healthChecker;
     private final List<SocketAddress> bootstrapAddress;
     private final ScheduledExecutorService scheduledExecutor;
-    private final AtomicBoolean flipState = new AtomicBoolean(false);
 
     public FixedChannelPool(Client client, ShallowChannelHealthChecker healthChecker) {
         this.client = client;
@@ -97,6 +96,7 @@ public class FixedChannelPool implements ShallowChannelPool {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public ClientChannel acquireWithRandomly() {
         try {
@@ -117,22 +117,22 @@ public class FixedChannelPool implements ShallowChannelPool {
                 return futures.get(0);
             }
             return futures.get(ThreadLocalRandom.current().nextInt(futures.size()));
-        }
-
-        synchronized (channelPools) {
-            List<Future<ClientChannel>> actives = acquireHealthy(address);
-            if (actives != null && !actives.isEmpty()) {
-                if (actives.size() == 1) {
-                    return actives.get(0);
+        } else {
+            synchronized (channelPools) {
+                List<Future<ClientChannel>> actives = acquireHealthy(address);
+                if (actives != null && !actives.isEmpty()) {
+                    if (actives.size() == 1) {
+                        return actives.get(0);
+                    }
+                    return actives.get(ThreadLocalRandom.current().nextInt(actives.size()));
                 }
-                return actives.get(ThreadLocalRandom.current().nextInt(actives.size()));
-            }
 
-            channelPools.remove(address);
-            flip(address, client.getClientConfig().getChannelFixedPoolCapacity());
+                channelPools.remove(address);
+                flip(address, client.getClientConfig().getChannelFixedPoolCapacity());
+            }
+            List<Future<ClientChannel>> activeFutures = channelPools.get(address);
+            return activeFutures.get(ThreadLocalRandom.current().nextInt(activeFutures.size()));
         }
-        List<Future<ClientChannel>> activeFutures = channelPools.get(address);
-        return activeFutures.get(ThreadLocalRandom.current().nextInt(activeFutures.size()));
     }
 
     private List<Future<ClientChannel>> acquireHealthy(final SocketAddress address) {
@@ -144,12 +144,11 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private Future<ClientChannel> randomAcquire() {
-        Future<ClientChannel> future;
-        List<SocketAddress> addresses = constructBootstrap();
-        SocketAddress socketAddress = addresses.get(ThreadLocalRandom.current().nextInt(addresses.size()));
+        SocketAddress socketAddress = bootstrapAddress.get(bootstrapAddress.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(bootstrapAddress.size()));
         List<Future<ClientChannel>> futures = channelPools.get(socketAddress);
 
-        if (futures != null) {
+        Future<ClientChannel> future;
+        if (futures != null && !futures.isEmpty()) {
             List<Future<ClientChannel>> actives = futures.stream()
                     .filter(healthChecker::isHealthy).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 
@@ -159,21 +158,21 @@ public class FixedChannelPool implements ShallowChannelPool {
                 }
                 return actives.get(ThreadLocalRandom.current().nextInt(actives.size()));
             }
-        }
-
-        synchronized (channelPools) {
-            List<Future<ClientChannel>> listFutures = channelPools.get(socketAddress);
-            if (listFutures != null && !listFutures.isEmpty()) {
-                if (listFutures.size() == 1) {
-                    return listFutures.get(0);
+        } else {
+            synchronized (channelPools) {
+                List<Future<ClientChannel>> listFutures = channelPools.get(socketAddress);
+                if (listFutures != null && !listFutures.isEmpty()) {
+                    if (listFutures.size() == 1) {
+                        return listFutures.get(0);
+                    }
+                    return listFutures.get(ThreadLocalRandom.current().nextInt(listFutures.size()));
                 }
-                return listFutures.get(ThreadLocalRandom.current().nextInt(listFutures.size()));
+
+                future = flip(socketAddress, client.getClientConfig().getChannelFixedPoolCapacity());
             }
-
-            future = flip(socketAddress, client.getClientConfig().getChannelFixedPoolCapacity());
+            return future;
         }
-
-        return future;
+        return null;
     }
 
     private Future<ClientChannel> newChannel(SocketAddress address) {
@@ -225,11 +224,6 @@ public class FixedChannelPool implements ShallowChannelPool {
             throw new IllegalArgumentException("Address cannot be null, or limit expect > 0");
         }
 
-        // invoker confirms safety synchronized, @see org.shallow.pool.FixedChannelPool#acquireHealthyOrNew0
-        if (flipState.compareAndSet(false, true)) {
-            throw new UnsupportedOperationException();
-        }
-
         Future<ClientChannel> future = null;
         for (int i = 0; i < limit; i++) {
             try {
@@ -250,7 +244,6 @@ public class FixedChannelPool implements ShallowChannelPool {
                 }
             }
         }
-        flipState.compareAndSet(true, false);
         return future;
     }
 
@@ -264,8 +257,11 @@ public class FixedChannelPool implements ShallowChannelPool {
         if (!scheduledExecutor.isShutdown() || !scheduledExecutor.isTerminated()) {
             scheduledExecutor.shutdown();
         }
-        client.shutdownGracefully();
-        channelPools.clear();
+
+        if (!channelPools.isEmpty()) {
+            channelPools.clear();
+        }
+
         assembleChannels.clear();
     }
 }

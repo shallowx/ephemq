@@ -9,7 +9,7 @@ public class ClientConfig {
     private boolean isEpollPrefer = true;
     private int workThreadWholes = availableProcessor();
     private int connectTimeOutMs = 5000;
-    private int channelFixedPoolCapacity = 1;
+    private int channelFixedPoolCapacity = 5;
     private int dnsTtlMinExpiredMs = 30;
     private int dnsTtlMaxExpiredSeconds = 300;
     private int negativeTtlSeconds = 30;

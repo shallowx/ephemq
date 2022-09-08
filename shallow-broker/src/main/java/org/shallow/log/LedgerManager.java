@@ -103,7 +103,7 @@ public class LedgerManager {
             ledger.append(queue, version, payload, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to append message, topic={} queue={} version={}", ledger.getTopic(), queue, version);
+                logger.error("Failed to append message, topic={} queue={} version={}, error:{}", ledger.getTopic(), queue, version, t);
             }
             promise.tryFailure(t);
         }

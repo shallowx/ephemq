@@ -71,10 +71,12 @@ public class EntryPushDispatcher {
         ByteBuf payload;
         while ((payload = cursor.next()) != null) {
             ByteBuf message = null;
+            ByteBuf queueBuf = null;
             try {
                 short version = payload.readShort();
                 int queueLength = payload.readInt();
-                String queue = ByteBufUtil.buf2String(payload.retainedSlice(payload.readerIndex(), queueLength), queueLength);
+                queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
+                String queue = ByteBufUtil.buf2String(queueBuf, queueLength);
 
                 Set<Subscription> subscriptions = subscriptionMap.get(queue);
                 if (subscriptions == null || subscriptions.isEmpty()) {
@@ -121,6 +123,7 @@ public class EntryPushDispatcher {
             } finally {
                 ByteBufUtil.release(message);
                 ByteBufUtil.release(payload);
+                ByteBufUtil.release(queueBuf);
             }
         }
     }

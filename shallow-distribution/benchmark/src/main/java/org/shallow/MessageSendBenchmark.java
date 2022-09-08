@@ -14,28 +14,32 @@ import java.util.concurrent.TimeUnit;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @BenchmarkMode(Mode.All)
-@State(Scope.Thread)
-@Measurement(iterations = 3, time = 5)
-@Threads(10)
+@Warmup(iterations = 3, time = 2)
+@Measurement(iterations = 3, time = 10)
+@Threads(5)
 @Fork(1)
+@State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class MessageSendBenchmark {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageSendBenchmark.class);
 
     private MessageProducer producer;
-    private ClientConfig clientConfig;
-    private ProducerConfig producerConfig;
 
     @Setup
     public void setUp() throws Exception {
-        clientConfig = new ClientConfig();
+        ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 
-        producerConfig = new ProducerConfig();
+        ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
         producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
+    }
+
+    @TearDown
+    public void shutdown() throws Exception {
+        producer.shutdownGracefully();
     }
 
     @Benchmark
@@ -43,17 +47,6 @@ public class MessageSendBenchmark {
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
         MessagePreFilter filter = sendMessage -> sendMessage;
 
-        producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if (null == cause) {
-                logger.warn("send result - {}", sendResult);
-            } else {
-                logger.error(cause);
-            }
-        });
-    }
-
-    @TearDown
-    public void shutdown() throws Exception {
-        producer.shutdownGracefully();
+        producer.sendAsync(message, filter, (sendResult, cause) -> {});
     }
 }

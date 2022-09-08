@@ -47,6 +47,10 @@ public class ClientChannel{
         return channel.isActive();
     }
 
+    public void close() {
+        channel.close();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

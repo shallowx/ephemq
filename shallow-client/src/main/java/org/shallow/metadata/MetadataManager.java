@@ -58,7 +58,7 @@ public class MetadataManager implements ProcessCommand.Server {
     }
 
     public void start() throws Exception{
-        scheduledMetadataTask.scheduleAtFixedRate(this::refreshMetadata, 0,
+        scheduledMetadataTask.scheduleAtFixedRate(this::refreshMetadata, 5000,
                 config.getRefreshMetadataIntervalMs(), TimeUnit.MILLISECONDS);
     }
 
