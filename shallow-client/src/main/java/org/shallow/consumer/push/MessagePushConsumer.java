@@ -340,9 +340,12 @@ public class MessagePushConsumer implements PushConsumer {
                     try {
                         resetSuscribe(node, address);
                     } catch (Throwable cause) {
-                        subscribeTaskExecutor.schedule(() -> resetSuscribe(node, address), 0, TimeUnit.MILLISECONDS);
+                        if (subscribeTaskExecutor.isShutdown()) {
+                            return;
+                        }
+                        subscribeTaskExecutor.schedule(() -> resetSuscribe(node, address), 1000, TimeUnit.MILLISECONDS);
                     }
-                }, 0, TimeUnit.MILLISECONDS);
+                }, 1000, TimeUnit.MILLISECONDS);
             }
         }
     }
@@ -371,7 +374,7 @@ public class MessagePushConsumer implements PushConsumer {
                         } catch (Throwable t) {
                             promise.tryFailure(t);
                         }
-                    }, 0, TimeUnit.MILLISECONDS);
+                    }, 1000, TimeUnit.MILLISECONDS);
 
         } catch (Throwable t) {
             promise.tryFailure(t);
