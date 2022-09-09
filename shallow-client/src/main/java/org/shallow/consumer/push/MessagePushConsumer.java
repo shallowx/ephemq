@@ -438,6 +438,11 @@ public class MessagePushConsumer implements PushConsumer {
                 .setQueue(queue)
                 .setLedgerId(ledger)
                 .build();
+
+        promise.addListener(f -> {
+            subscribes.remove(topic, queue);
+        });
+
         clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getPushCleanSubscribeInvokeTimeMs(), promise, request, CleanSubscribeResponse.class);
     }
 
