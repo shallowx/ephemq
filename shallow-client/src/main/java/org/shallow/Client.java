@@ -18,6 +18,8 @@ import org.shallow.pool.ShallowChannelHealthChecker;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.util.ObjectUtil;
 
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+
 import static org.shallow.util.NetworkUtil.*;
 
 public class Client {
@@ -26,8 +28,7 @@ public class Client {
     private final String name;
     private final ClientConfig config;
     private MetadataManager manager;
-    private boolean state = false;
-
+    private volatile boolean state = false;
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
     private final ShallowChannelHealthChecker healthChecker;
@@ -115,7 +116,7 @@ public class Client {
         return manager;
     }
 
-    public void shutdownGracefully() throws Exception {
+    public synchronized void shutdownGracefully() throws Exception {
         if (state != Boolean.TRUE) {
             return;
         }
@@ -123,8 +124,11 @@ public class Client {
 
         pool.shutdownGracefully();
 
-        if (workGroup != null) {
-            workGroup.shutdownGracefully();
-        }
+        manager.shutdownGracefully(() -> {
+            if (workGroup != null) {
+                workGroup.shutdownGracefully();
+            }
+            return null;
+        });
     }
 }

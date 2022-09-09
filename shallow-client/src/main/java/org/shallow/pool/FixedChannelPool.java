@@ -4,13 +4,12 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.*;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.internal.ClientChannelInitializer;
 import org.shallow.ClientConfig;
+import org.shallow.util.NetworkUtil;
 import org.shallow.util.ObjectUtil;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -19,11 +18,9 @@ import org.shallow.internal.ClientChannel;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
-import static org.shallow.util.NetworkUtil.switchSocketAddress;
+import static org.shallow.util.NetworkUtil.*;
 
 public class FixedChannelPool implements ShallowChannelPool {
 
@@ -36,7 +33,6 @@ public class FixedChannelPool implements ShallowChannelPool {
     private final Map<String, Promise<ClientChannel>> assembleChannels;
     private final ShallowChannelHealthChecker healthChecker;
     private final List<SocketAddress> bootstrapAddress;
-    private final ScheduledExecutorService scheduledExecutor;
 
     public FixedChannelPool(Client client, ShallowChannelHealthChecker healthChecker) {
         this.client = client;
@@ -46,9 +42,6 @@ public class FixedChannelPool implements ShallowChannelPool {
         this.assembleChannels = new ConcurrentHashMap<>(clientConfig.getBootstrapSocketAddress().size() * clientConfig.getChannelFixedPoolCapacity());
         this.healthChecker = healthChecker;
         this.bootstrapAddress = constructBootstrap();
-        this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory(String.format("%s-channel-poll", client.getName())));
-
-        scheduledExecutor.schedule(this::checkHealthyChannel, 5000, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -96,7 +89,6 @@ public class FixedChannelPool implements ShallowChannelPool {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public ClientChannel acquireWithRandomly() {
         try {
@@ -147,7 +139,6 @@ public class FixedChannelPool implements ShallowChannelPool {
         SocketAddress socketAddress = bootstrapAddress.get(bootstrapAddress.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(bootstrapAddress.size()));
         List<Future<ClientChannel>> futures = channelPools.get(socketAddress);
 
-        Future<ClientChannel> future;
         if (futures != null && !futures.isEmpty()) {
             List<Future<ClientChannel>> actives = futures.stream()
                     .filter(healthChecker::isHealthy).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
@@ -158,21 +149,8 @@ public class FixedChannelPool implements ShallowChannelPool {
                 }
                 return actives.get(ThreadLocalRandom.current().nextInt(actives.size()));
             }
-        } else {
-            synchronized (channelPools) {
-                List<Future<ClientChannel>> listFutures = channelPools.get(socketAddress);
-                if (listFutures != null && !listFutures.isEmpty()) {
-                    if (listFutures.size() == 1) {
-                        return listFutures.get(0);
-                    }
-                    return listFutures.get(ThreadLocalRandom.current().nextInt(listFutures.size()));
-                }
-
-                future = flip(socketAddress, client.getClientConfig().getChannelFixedPoolCapacity());
-            }
-            return future;
         }
-        return null;
+        return newChannel(socketAddress);
     }
 
     private Future<ClientChannel> newChannel(SocketAddress address) {
@@ -197,37 +175,14 @@ public class FixedChannelPool implements ShallowChannelPool {
         return promise;
     }
 
-    private void checkHealthyChannel() {
-        if (channelPools.isEmpty()) {
-            return;
-        }
-
-        Set<Map.Entry<SocketAddress, List<Future<ClientChannel>>>> entries = channelPools.entrySet();
-        for (Map.Entry<SocketAddress, List<Future<ClientChannel>>> entry : entries) {
-            List<Future<ClientChannel>> listFuture = entry.getValue();
-            List<Future<ClientChannel>> activeFutures = listFuture.stream()
-                    .filter(healthChecker::isHealthy)
-                    .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
-
-            int diff = client.getClientConfig().getChannelFixedPoolCapacity() - activeFutures.size();
-            if (diff == 0) {
-                continue;
-            }
-
-            SocketAddress address = entry.getKey();
-            flip(address, diff);
-        }
-    }
-
-    private Future<ClientChannel> flip(SocketAddress address, int limit) {
+    private void flip(SocketAddress address, int limit) {
         if (address == null || limit <= 0) {
             throw new IllegalArgumentException("Address cannot be null, or limit expect > 0");
         }
 
-        Future<ClientChannel> future = null;
         for (int i = 0; i < limit; i++) {
             try {
-                future = newChannel(address);
+                Future<ClientChannel> future = newChannel(address);
                 channelPools.computeIfAbsent(address, v -> new CopyOnWriteArrayList<>()).add(future);
 
                 future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
@@ -244,7 +199,6 @@ public class FixedChannelPool implements ShallowChannelPool {
                 }
             }
         }
-        return future;
     }
 
     @Override
@@ -254,14 +208,6 @@ public class FixedChannelPool implements ShallowChannelPool {
 
     @Override
     public void shutdownGracefully() throws Exception {
-        if (!scheduledExecutor.isShutdown() || !scheduledExecutor.isTerminated()) {
-            scheduledExecutor.shutdown();
-        }
-
-        if (!channelPools.isEmpty()) {
-            channelPools.clear();
-        }
-
-        assembleChannels.clear();
+        // do nothing
     }
 }

@@ -210,8 +210,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                     remnantInvoker += holder.size();
                 }
 
-                if (logger.isInfoEnabled()) {
-                    logger.info("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
                 }
 
                 if (!wholeHolders.isEmpty()) {

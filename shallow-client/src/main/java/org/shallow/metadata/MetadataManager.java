@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.shallow.Client;
@@ -26,7 +27,9 @@ import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.shallow.util.NetworkUtil.*;
@@ -247,5 +250,14 @@ public class MetadataManager implements ProcessCommand.Server {
               logger.error("Failed to refresh metadata, cause:{}", e);
           }
         }
+    }
+
+    public synchronized void shutdownGracefully(Supplier<Void> supplier) {
+        if (scheduledMetadataTask == null || scheduledMetadataTask.isShutdown() || scheduledMetadataTask.isTerminated()) {
+            return;
+        }
+
+        Future<?> future = scheduledMetadataTask.shutdownGracefully();
+        future.addListener(f -> supplier.get());
     }
 }

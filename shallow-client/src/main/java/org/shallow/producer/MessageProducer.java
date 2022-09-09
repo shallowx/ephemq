@@ -214,8 +214,10 @@ public class MessageProducer implements Producer{
 
     @Override
     public void shutdownGracefully() throws Exception {
-        if (state.compareAndSet(State.STARTED, State.CLOSED)) {
-            client.shutdownGracefully();
+        synchronized (this) {
+            if (state.compareAndSet(State.STARTED, State.CLOSED)) {
+                client.shutdownGracefully();
+            }
         }
     }
 }
