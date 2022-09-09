@@ -44,14 +44,15 @@ public final class NotifyProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\014notify.proto\022\020shallow.protobuf\032\rshallo" +
-      "w.proto\"\030\n\026PartitionChangedSignal\"\023\n\021Nod" +
-      "eOfflineSignal\"n\n\021MessagePullSignal\022\r\n\005t" +
-      "opic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\016\n\006ledger\030\003 \001(" +
-      "\005\022\r\n\005limit\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index" +
-      "\030\006 \001(\003\"a\n\021MessagePushSignal\022\r\n\005queue\030\001 \001" +
-      "(\t\022\r\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005topi" +
-      "c\030\004 \001(\t\022\020\n\010ledgerId\030\005 \001(\005B)\n\030org.shallow" +
-      ".proto.notifyB\013NotifyProtoP\001b\006proto3"
+      "w.proto\"\030\n\026PartitionChangedSignal\"?\n\021Nod" +
+      "eOfflineSignal\022\016\n\006nodeId\030\001 \001(\t\022\014\n\004host\030\002" +
+      " \001(\t\022\014\n\004port\030\003 \001(\005\"n\n\021MessagePullSignal\022" +
+      "\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\016\n\006ledger\030" +
+      "\003 \001(\005\022\r\n\005limit\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005i" +
+      "ndex\030\006 \001(\003\"a\n\021MessagePushSignal\022\r\n\005queue" +
+      "\030\001 \001(\t\022\r\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005" +
+      "topic\030\004 \001(\t\022\020\n\010ledgerId\030\005 \001(\005B)\n\030org.sha" +
+      "llow.proto.notifyB\013NotifyProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -69,7 +70,7 @@ public final class NotifyProto {
     internal_static_shallow_protobuf_NodeOfflineSignal_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_NodeOfflineSignal_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "NodeId", "Host", "Port", });
     internal_static_shallow_protobuf_MessagePullSignal_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_shallow_protobuf_MessagePullSignal_fieldAccessorTable = new

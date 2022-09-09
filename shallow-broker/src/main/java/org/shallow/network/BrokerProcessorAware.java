@@ -68,6 +68,12 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         if (logger.isDebugEnabled()) {
             logger.debug("Get remote active address<{}> successfully", channel.remoteAddress().toString());
         }
+
+        manager.getBrokerConnectionManager().add(channel);
+
+        channel.closeFuture().addListener(f -> {
+           // TODO client channel closed , and will clean subscribe ships for this channel
+        });
     }
 
     @Override
@@ -273,6 +279,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                     .setLedger(ledger)
                                     .setIndex(subscription.index())
                                     .setQueue(queue)
+                                    .setVersion(subscription.version())
                                     .build();
 
                             if (answer != null) {

@@ -27,6 +27,10 @@ public class MessageRouter {
         return holders.get(index);
     }
 
+    public Map<Integer, MessageRoutingHolder> getHolders() {
+        return holders;
+    }
+
     @Override
     public String toString() {
         return "MessageRouter{" +

@@ -6,6 +6,7 @@ import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.sraft.SRaftProcessController;
+import org.shallow.network.BrokerConnectionManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class DefaultBrokerManager implements BrokerManager {
     private final MappedFileApi api;
     private final SRaftProcessController controller;
     private final LedgerManager logManager;
+    private final BrokerConnectionManager connectionManager;
 
     public DefaultBrokerManager(BrokerConfig config) throws Exception {
         ClientConfig quorumVoterClientConfig = new ClientConfig();
@@ -40,6 +42,7 @@ public class DefaultBrokerManager implements BrokerManager {
         this.api = new MappedFileApi(config);
         this.controller = new SRaftProcessController(config, this);
         this.logManager = new LedgerManager(config);
+        this.connectionManager = new BrokerConnectionManager();
     }
 
     @Override
@@ -67,6 +70,12 @@ public class DefaultBrokerManager implements BrokerManager {
     public LedgerManager getLogManager() {
         return logManager;
     }
+
+    @Override
+    public BrokerConnectionManager getBrokerConnectionManager() {
+        return connectionManager;
+    }
+
 
     @Override
     public void shutdownGracefully() throws Exception {

@@ -163,25 +163,26 @@ public final class ServerProto {
       "lue\030\002 \001(\0132\037.shallow.protobuf.TopicMetada" +
       "ta:\0028\001\"`\n\020SubscribeRequest\022\r\n\005queue\030\001 \001(" +
       "\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005inde" +
-      "x\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"P\n\021SubscribeRes" +
+      "x\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"a\n\021SubscribeRes" +
       "ponse\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005" +
-      "epoch\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\"8\n\025CleanSubsc" +
-      "ribeRequest\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005queue\030\002" +
-      " \001(\t\"\030\n\026CleanSubscribeResponse\"3\n\022SendMe" +
-      "ssageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 " +
-      "\001(\t\"\241\001\n\021SendMessageExtras\022\r\n\005topic\030\001 \001(\t" +
-      "\022\r\n\005queue\030\002 \001(\t\022?\n\006extras\030\003 \003(\0132/.shallo" +
-      "w.protobuf.SendMessageExtras.ExtrasEntry" +
-      "\032-\n\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
-      "\001(\t:\0028\001\"C\n\023SendMessageResponse\022\016\n\006ledger" +
-      "\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\"q\n\022" +
-      "PullMessageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005qu" +
-      "eue\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022" +
-      "\r\n\005index\030\005 \001(\003\022\017\n\007version\030\006 \001(\005\"p\n\023PullM" +
-      "essageResponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002" +
-      " \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n\005e" +
-      "poch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shallow" +
-      ".proto.serverB\013ServerProtoP\001b\006proto3"
+      "epoch\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 " +
+      "\001(\005\"8\n\025CleanSubscribeRequest\022\020\n\010ledgerId" +
+      "\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\030\n\026CleanSubscribeR" +
+      "esponse\"3\n\022SendMessageRequest\022\016\n\006ledger\030" +
+      "\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\241\001\n\021SendMessageExtr" +
+      "as\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022?\n\006extr" +
+      "as\030\003 \003(\0132/.shallow.protobuf.SendMessageE" +
+      "xtras.ExtrasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendMessageR" +
+      "esponse\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r" +
+      "\n\005index\030\003 \001(\003\"q\n\022PullMessageRequest\022\016\n\006l" +
+      "edger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 \001(" +
+      "\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\022\017\n\007versi" +
+      "on\030\006 \001(\005\"p\n\023PullMessageResponse\022\r\n\005topic" +
+      "\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006" +
+      "ledger\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index\030\006 \001" +
+      "(\003B)\n\030org.shallow.proto.serverB\013ServerPr" +
+      "otoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -277,7 +278,7 @@ public final class ServerProto {
     internal_static_shallow_protobuf_SubscribeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SubscribeResponse_descriptor,
-        new java.lang.String[] { "Queue", "Ledger", "Epoch", "Index", });
+        new java.lang.String[] { "Queue", "Ledger", "Epoch", "Index", "Version", });
     internal_static_shallow_protobuf_CleanSubscribeRequest_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_shallow_protobuf_CleanSubscribeRequest_fieldAccessorTable = new

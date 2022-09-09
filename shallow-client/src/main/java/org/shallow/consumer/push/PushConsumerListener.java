@@ -16,13 +16,16 @@ import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.util.ByteBufUtil;
+import org.shallow.util.NetworkUtil;
 
+import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
+import static org.shallow.util.NetworkUtil.switchSocketAddress;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
 final class PushConsumerListener implements Listener {
@@ -32,9 +35,10 @@ final class PushConsumerListener implements Listener {
     private MessagePushListener listener;
     private MessagePostFilter filter;
     private final MessageHandler[] handlers;
-    private final Map<Integer, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
+    private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
+    private final MessagePushConsumer pushConsumer;
 
-    public PushConsumerListener(ConsumerConfig consumerConfig) {
+    public PushConsumerListener(ConsumerConfig consumerConfig, MessagePushConsumer consumer) {
         EventExecutorGroup group = newEventExecutorGroup(1, "client-message-handle");
 
         handlers = new MessageHandler[consumerConfig.getMessageHandleThreadLimit()];
@@ -42,6 +46,7 @@ final class PushConsumerListener implements Listener {
             Semaphore semaphore = new Semaphore(consumerConfig.messageHandleSemaphoreLimit);
             handlers[i] = new MessageHandler(String.valueOf(i), semaphore, group.next());
         }
+        this.pushConsumer = consumer;
     }
 
     @Override
@@ -53,10 +58,10 @@ final class PushConsumerListener implements Listener {
         this.filter = filter;
     }
 
-    public void set(int epoch, long index, String queue, int ledger) {
+    public void set(int epoch, long index, String queue, int ledger, short version) {
         try {
             synchronized (subscriptionShips) {
-                Subscription subscription = new Subscription(epoch, index, queue, ledger);
+                Subscription subscription = new Subscription(epoch, index, queue, ledger, version);
                 AtomicReference<Subscription> reference = subscriptionShips.get(ledger);
                 if (reference == null){
                     reference = new AtomicReference<>();
@@ -67,6 +72,10 @@ final class PushConsumerListener implements Listener {
         } catch (Throwable t) {
             throw new RuntimeException("Failed to handle message subscribe sequence");
         }
+    }
+
+    public AtomicReference<Subscription> getSubscriptionShip(int ledger) {
+        return subscriptionShips.get(ledger);
     }
 
     @Override
@@ -82,7 +91,13 @@ final class PushConsumerListener implements Listener {
         if (logger.isDebugEnabled()) {
             logger.debug("Receive node offline signal, channel={} signal={}", channel.toString(), signal.toString());
         }
-        //do nothing
+
+        String nodeId = signal.getNodeId();
+        String host = signal.getHost();
+        int port = signal.getPort();
+
+        SocketAddress address = switchSocketAddress(host, port);
+        pushConsumer.resetSuscribe(nodeId, address);
     }
 
     @Override
@@ -93,7 +108,7 @@ final class PushConsumerListener implements Listener {
             byte[] body = ByteBufUtil.buf2Bytes(data);
             Message message = new Message(topic, queue, version, body, epoch, index, new Message.Extras(extras.getExtrasMap()));
 
-            Subscription theLastShip = new Subscription(epoch, index, queue, ledgerId);
+            Subscription theLastShip = new Subscription(epoch, index, queue, ledgerId, version);
 
             AtomicReference<Subscription> sequence = subscriptionShips.get(ledgerId);
             if (sequence == null) {
@@ -103,7 +118,10 @@ final class PushConsumerListener implements Listener {
             }
 
             Subscription preShip = sequence.get();
-            if (preShip == null || ((epoch == preShip.epoch() && index > theLastShip.index()) || epoch > theLastShip.epoch())) {
+            if (preShip == null ||
+                    ((epoch == preShip.epoch() && index > theLastShip.index()) ||
+                            epoch > theLastShip.epoch() ||
+                            version > theLastShip.version())) {
                 if (!sequence.compareAndSet(preShip, theLastShip)) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip, preShip);

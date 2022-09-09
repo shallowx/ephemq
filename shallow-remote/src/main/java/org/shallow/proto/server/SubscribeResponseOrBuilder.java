@@ -36,4 +36,10 @@ public interface SubscribeResponseOrBuilder extends
    * @return The index.
    */
   long getIndex();
+
+  /**
+   * <code>int32 version = 5;</code>
+   * @return The version.
+   */
+  int getVersion();
 }

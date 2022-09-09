@@ -85,7 +85,7 @@ public class Ledger {
             }
 
             entryPushHandler.subscribe(channel, queue, theOffset, version);
-            promise.trySuccess(new Subscription(theOffset.epoch(), theOffset.index(), queue, ledgerId));
+            promise.trySuccess(new Subscription(theOffset.epoch(), theOffset.index(), queue, ledgerId, version));
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to subscribe, channel<{}> ledgerId={} topic={} queue={} offset={}", channel.toString(), ledgerId, topic, queue, offset);

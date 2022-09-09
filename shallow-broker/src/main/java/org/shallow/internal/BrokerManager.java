@@ -4,6 +4,7 @@ import org.shallow.log.LedgerManager;
 import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.metadata.MappedFileApi;
 import org.shallow.metadata.sraft.SRaftProcessController;
+import org.shallow.network.BrokerConnectionManager;
 
 public interface BrokerManager {
     void start() throws Exception;
@@ -16,4 +17,6 @@ public interface BrokerManager {
     SRaftProcessController getController();
 
     LedgerManager getLogManager();
+
+    BrokerConnectionManager getBrokerConnectionManager();
 }

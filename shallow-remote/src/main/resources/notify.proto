@@ -12,7 +12,9 @@ message PartitionChangedSignal {
 }
 
 message NodeOfflineSignal {
-
+  string nodeId = 1;
+  string host = 2;
+  int32 port = 3;
 }
 
 message MessagePullSignal {

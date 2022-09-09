@@ -26,6 +26,7 @@ import org.shallow.proto.server.*;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -143,6 +144,10 @@ public class MetadataManager implements ProcessCommand.Server {
                  .collect(Collectors.toSet());
     }
 
+    public Map<String, MessageRouter> getWholesRoutes() {
+        return routers.asMap();
+    }
+
     public MessageRouter queryRouter(String topic) {
         MessageRouter messageRouter = routers.get(topic);
         if (null == messageRouter) {
@@ -203,7 +208,7 @@ public class MetadataManager implements ProcessCommand.Server {
         return new MessageRouter(topic, holders);
     }
 
-    private void refreshMetadata() {
+   public void refreshMetadata() {
         try {
             List<String> topics = new ArrayList<>(routers.asMap().keySet());
             if (topics.isEmpty()) {
