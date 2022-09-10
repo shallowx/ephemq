@@ -148,41 +148,41 @@ public final class ServerProto {
       "onse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"X\n\023Regi" +
       "sterNodeRequest\022\017\n\007cluster\030\001 \001(\t\0220\n\010meta" +
       "data\030\002 \001(\0132\036.shallow.protobuf.NodeMetada" +
-      "ta\"D\n\024RegisterNodeResponse\022\014\n\004host\030\001 \001(\t" +
-      "\022\014\n\004port\030\002 \001(\005\022\020\n\010serverId\030\003 \001(\t\"Z\n\025UnRe" +
-      "gisterNodeRequest\022\017\n\007cluster\030\001 \001(\t\0220\n\010me" +
-      "tadata\030\002 \001(\0132\036.shallow.protobuf.NodeMeta" +
-      "data\"\030\n\026UnRegisterNodeResponse\"*\n\027QueryC" +
-      "lusterNodeRequest\022\017\n\007cluster\030\001 \001(\t\"I\n\030Qu" +
-      "eryClusterNodeResponse\022-\n\005nodes\030\001 \003(\0132\036." +
-      "shallow.protobuf.NodeMetadata\"&\n\025QueryTo" +
-      "picInfoRequest\022\r\n\005topic\030\001 \003(\t\"\256\001\n\026QueryT" +
-      "opicInfoResponse\022D\n\006topics\030\001 \003(\01324.shall" +
-      "ow.protobuf.QueryTopicInfoResponse.Topic" +
-      "sEntry\032N\n\013TopicsEntry\022\013\n\003key\030\001 \001(\t\022.\n\005va" +
-      "lue\030\002 \001(\0132\037.shallow.protobuf.TopicMetada" +
-      "ta:\0028\001\"`\n\020SubscribeRequest\022\r\n\005queue\030\001 \001(" +
-      "\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005inde" +
-      "x\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"a\n\021SubscribeRes" +
-      "ponse\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005" +
-      "epoch\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 " +
-      "\001(\005\"8\n\025CleanSubscribeRequest\022\020\n\010ledgerId" +
-      "\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\030\n\026CleanSubscribeR" +
-      "esponse\"3\n\022SendMessageRequest\022\016\n\006ledger\030" +
-      "\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\241\001\n\021SendMessageExtr" +
-      "as\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022?\n\006extr" +
-      "as\030\003 \003(\0132/.shallow.protobuf.SendMessageE" +
-      "xtras.ExtrasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendMessageR" +
-      "esponse\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r" +
-      "\n\005index\030\003 \001(\003\"q\n\022PullMessageRequest\022\016\n\006l" +
-      "edger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 \001(" +
-      "\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\022\017\n\007versi" +
-      "on\030\006 \001(\005\"p\n\023PullMessageResponse\022\r\n\005topic" +
-      "\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006" +
-      "ledger\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index\030\006 \001" +
-      "(\003B)\n\030org.shallow.proto.serverB\013ServerPr" +
-      "otoP\001b\006proto3"
+      "ta\"S\n\024RegisterNodeResponse\022\014\n\004host\030\001 \001(\t" +
+      "\022\014\n\004port\030\002 \001(\005\022\020\n\010serverId\030\003 \001(\t\022\r\n\005stat" +
+      "e\030\004 \001(\t\"Z\n\025UnRegisterNodeRequest\022\017\n\007clus" +
+      "ter\030\001 \001(\t\0220\n\010metadata\030\002 \001(\0132\036.shallow.pr" +
+      "otobuf.NodeMetadata\"\030\n\026UnRegisterNodeRes" +
+      "ponse\"*\n\027QueryClusterNodeRequest\022\017\n\007clus" +
+      "ter\030\001 \001(\t\"I\n\030QueryClusterNodeResponse\022-\n" +
+      "\005nodes\030\001 \003(\0132\036.shallow.protobuf.NodeMeta" +
+      "data\"&\n\025QueryTopicInfoRequest\022\r\n\005topic\030\001" +
+      " \003(\t\"\256\001\n\026QueryTopicInfoResponse\022D\n\006topic" +
+      "s\030\001 \003(\01324.shallow.protobuf.QueryTopicInf" +
+      "oResponse.TopicsEntry\032N\n\013TopicsEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shallow.proto" +
+      "buf.TopicMetadata:\0028\001\"`\n\020SubscribeReques" +
+      "t\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoc" +
+      "h\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"" +
+      "a\n\021SubscribeResponse\022\r\n\005queue\030\001 \001(\t\022\016\n\006l" +
+      "edger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005index\030\004 \001(" +
+      "\003\022\017\n\007version\030\005 \001(\005\"8\n\025CleanSubscribeRequ" +
+      "est\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\030\n\026" +
+      "CleanSubscribeResponse\"3\n\022SendMessageReq" +
+      "uest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\241\001\n\021" +
+      "SendMessageExtras\022\r\n\005topic\030\001 \001(\t\022\r\n\005queu" +
+      "e\030\002 \001(\t\022?\n\006extras\030\003 \003(\0132/.shallow.protob" +
+      "uf.SendMessageExtras.ExtrasEntry\032-\n\013Extr" +
+      "asEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
+      "C\n\023SendMessageResponse\022\016\n\006ledger\030\001 \001(\005\022\r" +
+      "\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\"q\n\022PullMess" +
+      "ageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(" +
+      "\t\022\r\n\005limit\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index" +
+      "\030\005 \001(\003\022\017\n\007version\030\006 \001(\005\"p\n\023PullMessageRe" +
+      "sponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\r\n\005" +
+      "limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n\005epoch\030\005 \001" +
+      "(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shallow.proto.s" +
+      "erverB\013ServerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -224,7 +224,7 @@ public final class ServerProto {
     internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_RegisterNodeResponse_descriptor,
-        new java.lang.String[] { "Host", "Port", "ServerId", });
+        new java.lang.String[] { "Host", "Port", "ServerId", "State", });
     internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_shallow_protobuf_UnRegisterNodeRequest_fieldAccessorTable = new

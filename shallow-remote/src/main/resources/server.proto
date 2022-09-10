@@ -39,6 +39,7 @@ message RegisterNodeResponse {
   string host = 1;
   int32 port = 2;
   string serverId = 3;
+  string state = 4;
 }
 
 message UnRegisterNodeRequest {

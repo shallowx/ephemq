@@ -9,11 +9,12 @@ public class NodeRecord {
     private String state;
     private SocketAddress socketAddress;
 
-    public NodeRecord(String cluster, String name, String state, SocketAddress socketAddress) {
-        this.cluster = cluster;
-        this.name = name;
-        this.state = state;
-        this.socketAddress = socketAddress;
+    private NodeRecord() {
+        // unsupported
+    }
+
+    public static NodeBuilder newBuilder() {
+        return new NodeBuilder();
     }
 
     public String getCluster() {
@@ -24,10 +25,6 @@ public class NodeRecord {
         return name;
     }
 
-    public void setName(String node) {
-        this.name = node;
-    }
-
     public SocketAddress getSocketAddress() {
         return socketAddress;
     }
@@ -36,13 +33,58 @@ public class NodeRecord {
         return state;
     }
 
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public static class NodeBuilder {
+        private String cluster;
+        private String name;
+        private String state;
+        private SocketAddress socketAddress;
+
+        private NodeBuilder() {
+        }
+
+        public NodeBuilder cluster(String cluster) {
+            this.cluster = cluster;
+            return this;
+        }
+
+        public NodeBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public NodeBuilder state(String state) {
+            this.state = state;
+            return this;
+        }
+
+        public NodeBuilder socketAddress(SocketAddress socketAddress) {
+            this.socketAddress = socketAddress;
+            return this;
+        }
+
+        public NodeRecord build() {
+            NodeRecord record = new NodeRecord();
+
+            record.cluster = this.cluster;
+            record.name = this.name;
+            record.state = this.state;
+            record.socketAddress = this.socketAddress;
+
+            return record;
+        }
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof NodeRecord that)) return false;
         return getCluster().equals(that.getCluster()) &&
                 getName().equals(that.getName()) &&
-                getState().equals(that.getState()) &&
                 getSocketAddress().equals(that.getSocketAddress());
     }
 
@@ -61,6 +103,7 @@ public class NodeRecord {
                 '}';
     }
 
+    public static final String UN_COMMIT = "UN_COMMIT";
     public static final String UP = "UP";
     public static final String DOWN = "DOWN";
 }

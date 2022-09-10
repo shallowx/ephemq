@@ -4,25 +4,17 @@ import java.util.Objects;
 import java.util.Set;
 
 public class TopicRecord {
-    private final String name;
+    private String name;
     private int partitions;
     private int latencies;
     private Set<PartitionRecord> partitionRecords;
 
-    public TopicRecord(String name) {
-        this.name = name;
+    private TopicRecord() {
+        // unsupported
     }
 
-    public TopicRecord(String name, int partitions, int latencies) {
-        this.name = name;
-        this.partitions = partitions;
-        this.latencies = latencies;
-    }
-
-    public TopicRecord(String name, int partitions, Set<PartitionRecord> partitionRecords) {
-        this.name = name;
-        this.partitions = partitions;
-        this.partitionRecords = partitionRecords;
+    public static TopicBuilder newBuilder() {
+        return new TopicBuilder();
     }
 
     public String getName() {
@@ -41,8 +33,45 @@ public class TopicRecord {
         return partitionRecords;
     }
 
-    public void setPartitionRecords(Set<PartitionRecord> partitionRecords) {
-        this.partitionRecords = partitionRecords;
+    public static class TopicBuilder {
+        private String name;
+        private int partitions;
+        private int latencies;
+        private Set<PartitionRecord> partitionRecords;
+
+        private TopicBuilder() {
+        }
+
+        public TopicBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public TopicBuilder partitions(int partitions) {
+            this.partitions = partitions;
+            return this;
+        }
+
+        public TopicBuilder latencies(int latencies) {
+            this.latencies = latencies;
+            return this;
+        }
+
+        public TopicBuilder partitionRecords(Set<PartitionRecord> partitionRecords) {
+            this.partitionRecords = partitionRecords;
+            return this;
+        }
+
+
+        public TopicRecord build() {
+            TopicRecord topicRecord = new TopicRecord();
+            topicRecord.name = this.name;
+            topicRecord.partitions = this.partitions;
+            topicRecord.latencies = this.latencies;
+            topicRecord.partitionRecords = this.partitionRecords;
+
+            return topicRecord;
+        }
     }
 
     @Override

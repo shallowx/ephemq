@@ -34,7 +34,7 @@ public class BrokerConfig {
     }
 
     public boolean isOsEpollPrefer(){
-        return object2Boolean(config.getOrDefault(OS_IS_EPOLL_PREFER, false));
+        return object2Boolean(config.getOrDefault(OS_IS_EPOLL_PREFER, true));
     }
 
     public int getSocketWriteHighWaterMark(){

@@ -36,4 +36,16 @@ public interface RegisterNodeResponseOrBuilder extends
    */
   com.google.protobuf.ByteString
       getServerIdBytes();
+
+  /**
+   * <code>string state = 4;</code>
+   * @return The state.
+   */
+  java.lang.String getState();
+  /**
+   * <code>string state = 4;</code>
+   * @return The bytes for state.
+   */
+  com.google.protobuf.ByteString
+      getStateBytes();
 }

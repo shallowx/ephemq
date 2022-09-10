@@ -47,7 +47,7 @@ public class Cursor {
             return skip2Tail();
         }
 
-        while (true) {
+       for (;;) {
             Segment segment = currentSegment();
             if (!offset.after(segment.headOffset())) {
                 return this;

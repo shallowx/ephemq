@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private RaftHeartbeatRequest() {
+    leader_ = "";
   }
 
   @java.lang.Override
@@ -54,6 +55,17 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 16: {
+
+            version_ = input.readInt32();
+            break;
+          }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            leader_ = s;
+            break;
+          }
+          case 32: {
 
             distributedValue_ = input.readInt32();
             break;
@@ -101,10 +113,59 @@ private static final long serialVersionUID = 0L;
     return term_;
   }
 
-  public static final int DISTRIBUTEDVALUE_FIELD_NUMBER = 2;
+  public static final int VERSION_FIELD_NUMBER = 2;
+  private int version_;
+  /**
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  @java.lang.Override
+  public int getVersion() {
+    return version_;
+  }
+
+  public static final int LEADER_FIELD_NUMBER = 3;
+  private volatile java.lang.Object leader_;
+  /**
+   * <code>string leader = 3;</code>
+   * @return The leader.
+   */
+  @java.lang.Override
+  public java.lang.String getLeader() {
+    java.lang.Object ref = leader_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      leader_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string leader = 3;</code>
+   * @return The bytes for leader.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getLeaderBytes() {
+    java.lang.Object ref = leader_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      leader_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int DISTRIBUTEDVALUE_FIELD_NUMBER = 4;
   private int distributedValue_;
   /**
-   * <code>int32 distributedValue = 2;</code>
+   * <code>int32 distributedValue = 4;</code>
    * @return The distributedValue.
    */
   @java.lang.Override
@@ -129,8 +190,14 @@ private static final long serialVersionUID = 0L;
     if (term_ != 0) {
       output.writeInt32(1, term_);
     }
+    if (version_ != 0) {
+      output.writeInt32(2, version_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leader_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, leader_);
+    }
     if (distributedValue_ != 0) {
-      output.writeInt32(2, distributedValue_);
+      output.writeInt32(4, distributedValue_);
     }
     unknownFields.writeTo(output);
   }
@@ -145,9 +212,16 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, term_);
     }
+    if (version_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, version_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leader_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, leader_);
+    }
     if (distributedValue_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, distributedValue_);
+        .computeInt32Size(4, distributedValue_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -166,6 +240,10 @@ private static final long serialVersionUID = 0L;
 
     if (getTerm()
         != other.getTerm()) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
+    if (!getLeader()
+        .equals(other.getLeader())) return false;
     if (getDistributedValue()
         != other.getDistributedValue()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
@@ -181,6 +259,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + TERM_FIELD_NUMBER;
     hash = (53 * hash) + getTerm();
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
+    hash = (37 * hash) + LEADER_FIELD_NUMBER;
+    hash = (53 * hash) + getLeader().hashCode();
     hash = (37 * hash) + DISTRIBUTEDVALUE_FIELD_NUMBER;
     hash = (53 * hash) + getDistributedValue();
     hash = (29 * hash) + unknownFields.hashCode();
@@ -318,6 +400,10 @@ private static final long serialVersionUID = 0L;
       super.clear();
       term_ = 0;
 
+      version_ = 0;
+
+      leader_ = "";
+
       distributedValue_ = 0;
 
       return this;
@@ -347,6 +433,8 @@ private static final long serialVersionUID = 0L;
     public org.shallow.proto.elector.RaftHeartbeatRequest buildPartial() {
       org.shallow.proto.elector.RaftHeartbeatRequest result = new org.shallow.proto.elector.RaftHeartbeatRequest(this);
       result.term_ = term_;
+      result.version_ = version_;
+      result.leader_ = leader_;
       result.distributedValue_ = distributedValue_;
       onBuilt();
       return result;
@@ -398,6 +486,13 @@ private static final long serialVersionUID = 0L;
       if (other == org.shallow.proto.elector.RaftHeartbeatRequest.getDefaultInstance()) return this;
       if (other.getTerm() != 0) {
         setTerm(other.getTerm());
+      }
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
+      }
+      if (!other.getLeader().isEmpty()) {
+        leader_ = other.leader_;
+        onChanged();
       }
       if (other.getDistributedValue() != 0) {
         setDistributedValue(other.getDistributedValue());
@@ -462,9 +557,116 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private int version_ ;
+    /**
+     * <code>int32 version = 2;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <code>int32 version = 2;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+      
+      version_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 version = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      
+      version_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object leader_ = "";
+    /**
+     * <code>string leader = 3;</code>
+     * @return The leader.
+     */
+    public java.lang.String getLeader() {
+      java.lang.Object ref = leader_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        leader_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string leader = 3;</code>
+     * @return The bytes for leader.
+     */
+    public com.google.protobuf.ByteString
+        getLeaderBytes() {
+      java.lang.Object ref = leader_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        leader_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string leader = 3;</code>
+     * @param value The leader to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLeader(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      leader_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string leader = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLeader() {
+      
+      leader_ = getDefaultInstance().getLeader();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string leader = 3;</code>
+     * @param value The bytes for leader to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLeaderBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      leader_ = value;
+      onChanged();
+      return this;
+    }
+
     private int distributedValue_ ;
     /**
-     * <code>int32 distributedValue = 2;</code>
+     * <code>int32 distributedValue = 4;</code>
      * @return The distributedValue.
      */
     @java.lang.Override
@@ -472,7 +674,7 @@ private static final long serialVersionUID = 0L;
       return distributedValue_;
     }
     /**
-     * <code>int32 distributedValue = 2;</code>
+     * <code>int32 distributedValue = 4;</code>
      * @param value The distributedValue to set.
      * @return This builder for chaining.
      */
@@ -483,7 +685,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 distributedValue = 2;</code>
+     * <code>int32 distributedValue = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearDistributedValue() {

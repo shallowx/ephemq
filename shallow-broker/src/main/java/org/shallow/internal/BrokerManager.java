@@ -1,22 +1,16 @@
 package org.shallow.internal;
 
 import org.shallow.log.LedgerManager;
-import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
-import org.shallow.metadata.MappedFileApi;
-import org.shallow.metadata.sraft.SRaftProcessController;
+import org.shallow.metadata.raft.RaftVoteProcessor;
 import org.shallow.network.BrokerConnectionManager;
 
 public interface BrokerManager {
     void start() throws Exception;
     void shutdownGracefully() throws Exception;
 
-    SRaftQuorumVoterClient getQuorumVoterClient();
+    LedgerManager getLedgerManager();
 
-    MappedFileApi getMappedFileApi();
-
-    SRaftProcessController getController();
-
-    LedgerManager getLogManager();
+    RaftVoteProcessor getVoteProcessor();
 
     BrokerConnectionManager getBrokerConnectionManager();
 }

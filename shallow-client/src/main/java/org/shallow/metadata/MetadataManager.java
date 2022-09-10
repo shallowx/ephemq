@@ -117,10 +117,22 @@ public class MetadataManager implements ProcessCommand.Server {
             for (Map.Entry<Integer, PartitionMetadata> entry : partitionsMap.entrySet()) {
                 PartitionMetadata partitionMetadata = entry.getValue();
 
-                PartitionRecord partitionRecord = new PartitionRecord(partitionMetadata.getId(), partitionMetadata.getLatency(), partitionMetadata.getLeader(), partitionMetadata.getReplicasList());
+                PartitionRecord partitionRecord = PartitionRecord
+                        .newBuilder()
+                        .id(partitionMetadata.getId())
+                        .latency(partitionMetadata.getLatency())
+                        .leader(partitionMetadata.getLeader())
+                        .latencies(partitionMetadata.getReplicasList())
+                        .build();
+
                 partitionRecords.add(partitionRecord);
             }
-            return new TopicRecord(topic, partitionsMap.size(), partitionRecords);
+            return TopicRecord
+                    .newBuilder()
+                    .name(topic)
+                    .partitionRecords(partitionRecords)
+                    .partitions(partitionsMap.size())
+                    .build();
         }).collect(Collectors.toMap(TopicRecord::getName, Function.identity()));
     }
 
@@ -140,7 +152,13 @@ public class MetadataManager implements ProcessCommand.Server {
         }
 
         return nodes.stream()
-                 .map(nodeMetadata -> new NodeRecord(nodeMetadata.getCluster(), nodeMetadata.getName(), nodeMetadata.getState(), switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort())))
+                 .map(nodeMetadata -> NodeRecord
+                         .newBuilder()
+                         .cluster(nodeMetadata.getCluster())
+                         .name(nodeMetadata.getName())
+                         .state(nodeMetadata.getState())
+                         .socketAddress(switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort()))
+                         .build())
                  .collect(Collectors.toSet());
     }
 

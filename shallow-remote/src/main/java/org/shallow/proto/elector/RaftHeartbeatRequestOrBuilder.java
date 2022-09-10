@@ -14,7 +14,25 @@ public interface RaftHeartbeatRequestOrBuilder extends
   int getTerm();
 
   /**
-   * <code>int32 distributedValue = 2;</code>
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  int getVersion();
+
+  /**
+   * <code>string leader = 3;</code>
+   * @return The leader.
+   */
+  java.lang.String getLeader();
+  /**
+   * <code>string leader = 3;</code>
+   * @return The bytes for leader.
+   */
+  com.google.protobuf.ByteString
+      getLeaderBytes();
+
+  /**
+   * <code>int32 distributedValue = 4;</code>
    * @return The distributedValue.
    */
   int getDistributedValue();

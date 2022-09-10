@@ -9,13 +9,11 @@ public interface ProcessCommand {
         byte FETCH_TOPIC_RECORD = 4;
         byte QUORUM_VOTE = 5;
         byte HEARTBEAT = 6;
-        byte PREPARE_COMMIT = 7;
-        byte POST_COMMIT = 8;
-        byte REGISTER_NODE = 9;
-        byte SEND_MESSAGE = 10;
-        byte SUBSCRIBE = 11;
-        byte PULL_MESSAGE = 12;
-        byte CLEAN_SUBSCRIBE = 13;
+        byte REGISTER_NODE = 7;
+        byte SEND_MESSAGE = 8;
+        byte SUBSCRIBE = 9;
+        byte PULL_MESSAGE = 10;
+        byte CLEAN_SUBSCRIBE = 11;
     }
 
     interface Client {

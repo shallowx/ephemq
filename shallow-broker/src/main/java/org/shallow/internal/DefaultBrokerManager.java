@@ -2,10 +2,8 @@ package org.shallow.internal;
 
 import org.shallow.ClientConfig;
 import org.shallow.log.LedgerManager;
-import org.shallow.metadata.sraft.SRaftQuorumVoterClient;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.metadata.MappedFileApi;
-import org.shallow.metadata.sraft.SRaftProcessController;
+import org.shallow.metadata.raft.RaftVoteProcessor;
 import org.shallow.network.BrokerConnectionManager;
 
 import java.util.LinkedList;
@@ -15,11 +13,9 @@ import java.util.stream.Stream;
 
 public class DefaultBrokerManager implements BrokerManager {
 
-    private SRaftQuorumVoterClient client;
-    private final MappedFileApi api;
-    private final SRaftProcessController controller;
     private final LedgerManager logManager;
     private final BrokerConnectionManager connectionManager;
+    private final RaftVoteProcessor voteProcessor;
 
     public DefaultBrokerManager(BrokerConfig config) throws Exception {
         ClientConfig quorumVoterClientConfig = new ClientConfig();
@@ -34,40 +30,18 @@ public class DefaultBrokerManager implements BrokerManager {
         quorumVoterClientConfig.setChannelFixedPoolCapacity(config.getInternalChannelPoolLimit());
         quorumVoterClientConfig.setInvokeExpiredMs(config.getInvokeTimeMs());
 
-        if (!config.isStandAlone()) {
-            this.client = new SRaftQuorumVoterClient("quorum-voter-client", quorumVoterClientConfig);
-            client.start();
-        }
-
-        this.api = new MappedFileApi(config);
-        this.controller = new SRaftProcessController(config, this);
         this.logManager = new LedgerManager(config);
         this.connectionManager = new BrokerConnectionManager();
+        this.voteProcessor = new RaftVoteProcessor(config, this);
     }
 
     @Override
     public void start() throws Exception {
-        api.start();
-        controller.start();
+        voteProcessor.start();
     }
 
     @Override
-    public MappedFileApi getMappedFileApi() {
-        return api;
-    }
-
-    @Override
-    public SRaftQuorumVoterClient getQuorumVoterClient() {
-        return client;
-    }
-
-    @Override
-    public SRaftProcessController getController() {
-        return controller;
-    }
-
-    @Override
-    public LedgerManager getLogManager() {
+    public LedgerManager getLedgerManager() {
         return logManager;
     }
 
@@ -76,10 +50,13 @@ public class DefaultBrokerManager implements BrokerManager {
         return connectionManager;
     }
 
+    @Override
+    public RaftVoteProcessor getVoteProcessor() {
+        return voteProcessor;
+    }
 
     @Override
     public void shutdownGracefully() throws Exception {
-        controller.shutdownGracefully();
         logManager.close();
     }
 }
