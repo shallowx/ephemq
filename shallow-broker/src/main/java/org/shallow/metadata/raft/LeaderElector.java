@@ -193,6 +193,10 @@ public class LeaderElector {
         return event.getLeader();
     }
 
+    public boolean isLeader() {
+       return peer == RaftPeer.LEADER;
+    }
+
     public void setAddress(SocketAddress address) {
         event.setLeaderAddress(address);
     }

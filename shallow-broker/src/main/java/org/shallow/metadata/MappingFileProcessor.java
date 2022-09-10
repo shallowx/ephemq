@@ -30,10 +30,10 @@ public class MappingFileProcessor {
 
         String file = workDirectory + File.separatorChar + MetadataConstants.TOPICS;
         File dataFile = new File(file);
+        this.path = Path.of(file);
         if (!dataFile.exists()) {
             Files.createFile(path);
         }
-        this.path = Path.of(file);
     }
 
     public void write(String content) throws IOException {
@@ -41,6 +41,9 @@ public class MappingFileProcessor {
     }
 
     public String read() throws IOException {
+        if (path == null) {
+            return null;
+        }
         return Files.readString(path, UTF_8);
     }
 }

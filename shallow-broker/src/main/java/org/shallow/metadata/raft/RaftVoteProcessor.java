@@ -34,8 +34,6 @@ public class RaftVoteProcessor {
         this.atomicValue = new DistributedAtomicInteger();
         this.fileProcessor = new MappingFileProcessor(config);
 
-        this.topicSnapshot = new TopicSnapshot(fileProcessor, config, atomicValue, this, manager);
-
         quorumAddress = switchSocketAddress();
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(quorumAddress);
@@ -45,6 +43,7 @@ public class RaftVoteProcessor {
         this.standAloneProcessor = new StandAloneProcessor(quorumAddress, config);
 
         this.clusterSnapshot = new ClusterSnapshot(fileProcessor, config, this, client);
+        this.topicSnapshot = new TopicSnapshot(fileProcessor, config, atomicValue, this, manager, client);
     }
 
     private List<String> switchSocketAddress() {
@@ -57,7 +56,7 @@ public class RaftVoteProcessor {
         String[] voterArray = controllerQuorumVoters.split(",");
         for (String voter : voterArray) {
             int pre = voter.lastIndexOf("@");
-            String address = voter.substring(pre);
+            String address = voter.substring(pre + 1);
 
             addresses.add(address);
         }
@@ -69,18 +68,18 @@ public class RaftVoteProcessor {
         checkConfiguration();
         fileProcessor.start();
 
-        clusterSnapshot.start();
-        topicSnapshot.start();
-
+        client.start();
         standAloneProcessor.start(() -> {
             try {
-                client.start();
                 leaderElector.registerElector();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             return null;
         });
+
+        clusterSnapshot.start();
+        topicSnapshot.start();
     }
 
     public void handleVoteRequest(int term, int version, Promise<Boolean> promise) {
@@ -99,13 +98,19 @@ public class RaftVoteProcessor {
     public void handleHeartbeatRequest(SocketAddress address, String leader, int version, int term, int distributedValue) {
         leaderElector.setLastKeepTime(System.currentTimeMillis());
 
+        if (distributedValue != atomicValue.get().preValue()) {
+            atomicValue.trySet(distributedValue);
+        }
+
         int currentVersion = leaderElector.getVersion();
-        if (version == currentVersion) {
+        if (version != currentVersion) {
             leaderElector.setLeader(leader);
             leaderElector.setTerm(term);
             leaderElector.setVersion(version);
             leaderElector.setAddress(address);
-            atomicValue.trySet(distributedValue);
+
+            clusterSnapshot.fetchFromQuorumLeader();
+            topicSnapshot.fetchFromQuorumLeader();
         }
     }
 

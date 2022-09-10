@@ -9,7 +9,7 @@ public class TopicRecord {
     private int latencies;
     private Set<PartitionRecord> partitionRecords;
 
-    private TopicRecord() {
+    public TopicRecord() {
         // unsupported
     }
 
@@ -31,6 +31,22 @@ public class TopicRecord {
 
     public Set<PartitionRecord> getPartitionRecords() {
         return partitionRecords;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPartitions(int partitions) {
+        this.partitions = partitions;
+    }
+
+    public void setLatencies(int latencies) {
+        this.latencies = latencies;
+    }
+
+    public void setPartitionRecords(Set<PartitionRecord> partitionRecords) {
+        this.partitionRecords = partitionRecords;
     }
 
     public static class TopicBuilder {

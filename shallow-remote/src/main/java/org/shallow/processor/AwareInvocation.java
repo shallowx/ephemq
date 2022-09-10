@@ -6,6 +6,7 @@ import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
 import org.shallow.invoke.GenericInvokeAnswer;
+import org.shallow.invoke.InvokeAnswer;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -27,7 +28,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
     private long expired;
     private byte type;
     private short version;
-    private GenericInvokeAnswer<ByteBuf> answer;
+    private InvokeAnswer<ByteBuf> answer;
 
     private final Recycler.Handle<AwareInvocation> handle;
 
@@ -39,7 +40,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
        return newInvocation(command, version, data, type, 0, null);
     }
 
-    public static  AwareInvocation newInvocation(byte command, short version, ByteBuf data, byte type, long expires, GenericInvokeAnswer<ByteBuf> answer) {
+    public static  AwareInvocation newInvocation(byte command, short version, ByteBuf data, byte type, long expires, InvokeAnswer<ByteBuf> answer) {
         checkPositive(command, "Command");
 
         final AwareInvocation invocation = RECYCLER.get();
@@ -74,7 +75,7 @@ public class AwareInvocation extends AbstractReferenceCounted {
         return expired;
     }
 
-    public GenericInvokeAnswer<ByteBuf> answer() {
+    public InvokeAnswer<ByteBuf> answer() {
         return answer;
     }
 
