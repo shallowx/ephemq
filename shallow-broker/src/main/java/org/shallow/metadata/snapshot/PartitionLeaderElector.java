@@ -3,7 +3,7 @@ package org.shallow.metadata.snapshot;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
-import org.shallow.metadata.raft.RaftVoteProcessor;
+import org.shallow.metadata.sraft.RaftVoteProcessor;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.shallow.metadata.raft;
+package org.shallow.metadata.sraft;
 
 import io.netty.util.concurrent.Promise;
 import org.shallow.ClientConfig;

@@ -1,4 +1,4 @@
-package org.shallow.metadata.raft;
+package org.shallow.metadata.sraft;
 
 import java.net.SocketAddress;
 import java.util.List;

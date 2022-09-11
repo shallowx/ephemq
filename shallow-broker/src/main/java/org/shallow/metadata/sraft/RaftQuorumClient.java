@@ -1,4 +1,4 @@
-package org.shallow.metadata.raft;
+package org.shallow.metadata.sraft;
 
 import org.shallow.Client;
 import org.shallow.ClientConfig;

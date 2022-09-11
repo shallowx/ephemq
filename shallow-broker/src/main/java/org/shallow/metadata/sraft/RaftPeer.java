@@ -1,4 +1,4 @@
-package org.shallow.metadata.raft;
+package org.shallow.metadata.sraft;
 
 public enum RaftPeer {
     LEADER, FOLLOWER, CANDIDATE

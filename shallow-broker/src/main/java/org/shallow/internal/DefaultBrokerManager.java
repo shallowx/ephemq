@@ -3,7 +3,7 @@ package org.shallow.internal;
 import org.shallow.ClientConfig;
 import org.shallow.log.LedgerManager;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.metadata.raft.RaftVoteProcessor;
+import org.shallow.metadata.sraft.RaftVoteProcessor;
 import org.shallow.network.BrokerConnectionManager;
 
 import java.util.LinkedList;

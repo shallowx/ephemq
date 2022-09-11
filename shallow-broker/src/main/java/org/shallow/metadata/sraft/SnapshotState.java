@@ -1,4 +1,4 @@
-package org.shallow.metadata.raft;
+package org.shallow.metadata.sraft;
 
 @SuppressWarnings("all")
 public enum SnapshotState {
