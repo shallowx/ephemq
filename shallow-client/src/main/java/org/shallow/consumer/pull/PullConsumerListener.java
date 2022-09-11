@@ -2,6 +2,7 @@ package org.shallow.consumer.pull;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import org.shallow.Extras;
 import org.shallow.Message;
 import org.shallow.consumer.ConsumeListener;
 import org.shallow.consumer.MessagePostFilter;
@@ -92,7 +93,7 @@ final class PullConsumerListener implements Listener {
 
                 SendMessageExtras extras = readProto(buf, SendMessageExtras.parser());
                 byte[] body = ByteBufUtil.buf2Bytes(buf.readBytes(buf.readableBytes()));
-                Message message = new Message(topic, queue, theVersion, body, messageEpoch, theIndex, new Message.Extras(extras.getExtrasMap()));
+                Message message = new Message(topic, queue, theVersion, body, messageEpoch, theIndex, new Extras(extras.getExtrasMap()));
 
                 if (filter != null) {
                     message = filter.filter(message);

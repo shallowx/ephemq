@@ -21,7 +21,7 @@ public class EntryPullHandlerExecutionChain implements HandlerChain {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandlerExecutionChain.class);
 
     private final BrokerConfig config;
-    private final Set<Handler> handlers = new CopyOnWriteArraySet<>();
+    private final Set<EntryPullHandler> handlers = new CopyOnWriteArraySet<>();
     private final DistributedAtomicInteger atomicValue = new DistributedAtomicInteger();
 
     public EntryPullHandlerExecutionChain(BrokerConfig config) {
@@ -29,13 +29,13 @@ public class EntryPullHandlerExecutionChain implements HandlerChain {
     }
 
     @Override
-    public Handler applyHandler() {
+    public EntryPullHandler applyHandler() {
         if (handlers.isEmpty()) {
             return buildHandler();
         }
 
-        Handler minHandler = handlers.stream()
-                .sorted(Comparator.comparingInt(Handler::count))
+        EntryPullHandler minHandler = handlers.stream()
+                .sorted(Comparator.comparingInt(EntryPullHandler::count))
                 .collect(Collectors.toCollection(LinkedHashSet::new))
                 .iterator()
                 .next();
@@ -49,7 +49,7 @@ public class EntryPullHandlerExecutionChain implements HandlerChain {
     }
 
     @Override
-    public Handler preHandle(Handler handler) {
+    public EntryPullHandler preHandle(EntryPullHandler handler) {
         EventExecutor executor = handler.executor();
         if (executor.isShutdown()) {
             if (logger.isWarnEnabled()) {
@@ -67,14 +67,14 @@ public class EntryPullHandlerExecutionChain implements HandlerChain {
         return handler;
     }
 
-    private Handler applyHandler(Handler handler) {
+    private EntryPullHandler applyHandler(EntryPullHandler handler) {
         if (handlers.isEmpty()) {
             return buildHandler();
         }
 
-        Handler minHandler = handlers.stream()
+        EntryPullHandler minHandler = handlers.stream()
                 .filter(hf -> hf.id() != handler.id())
-                .sorted(Comparator.comparingInt(Handler::count))
+                .sorted(Comparator.comparingInt(EntryPullHandler::count))
                 .collect(Collectors.toCollection(LinkedHashSet::new))
                 .iterator()
                 .next();
@@ -88,7 +88,7 @@ public class EntryPullHandlerExecutionChain implements HandlerChain {
     }
 
     @Override
-    public void postHandle(Handler handler) {
+    public void postHandle(EntryPullHandler handler) {
         if (!handlers.contains(handler)) {
             return;
         }
@@ -99,10 +99,11 @@ public class EntryPullHandlerExecutionChain implements HandlerChain {
         handlers.add(handler);
     }
 
-    private Handler buildHandler() {
+    private EntryPullHandler buildHandler() {
         EventExecutor executor = newEventExecutorGroup(1, "handle").next();
-        Handler handler = new Handler(atomicValue.increment().preValue(), executor, config.getPullHandleThreadLimit(), 1);
+        EntryPullHandler handler = new EntryPullHandler(atomicValue.increment().preValue(), executor, config.getPullHandleThreadLimit(), 1);
         handlers.add(handler);
+
         return handler;
     }
 

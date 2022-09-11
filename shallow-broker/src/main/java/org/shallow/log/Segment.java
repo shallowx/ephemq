@@ -72,10 +72,6 @@ public class Segment {
             int length = payload.getInt(location);
             return payload.retainedSlice(location + 4, length);
         }
-
-        if (logger.isWarnEnabled()) {
-            logger.warn("The segment has no readable byteBuf data, ledgerId={}", ledgerId);
-        }
         return null;
     }
 
@@ -85,10 +81,6 @@ public class Segment {
             ByteBuf payload = finalHolder.payload;
             int length = payload.getInt(location);
             return payload.retainedSlice(location, length + 4);
-        }
-
-        if (logger.isWarnEnabled()) {
-            logger.warn("The segment has no readable completed byteBuf data, ledgerId={}", ledgerId);
         }
         return null;
     }

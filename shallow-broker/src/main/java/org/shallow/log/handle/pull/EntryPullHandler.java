@@ -4,13 +4,13 @@ import io.netty.util.concurrent.EventExecutor;
 
 import java.util.Objects;
 
-public class Handler {
+public class EntryPullHandler {
     private final int id;
     private final EventExecutor handleExecutor;
     private final int limit;
     private int count;
 
-    public Handler(int id, EventExecutor handleExecutor, int limit, int count) {
+    public EntryPullHandler(int id, EventExecutor handleExecutor, int limit, int count) {
         this.id = id;
         this.handleExecutor = handleExecutor;
         this.limit = limit;
@@ -40,7 +40,7 @@ public class Handler {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Handler handler)) return false;
+        if (!(o instanceof EntryPullHandler handler)) return false;
         return id == handler.id;
     }
 

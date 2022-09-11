@@ -2,6 +2,7 @@ package org.shallow.example.quickstart;
 
 import org.junit.jupiter.api.Test;
 import org.shallow.ClientConfig;
+import org.shallow.Extras;
 import org.shallow.Message;
 import org.shallow.example.metadata.TopicMetadata;
 import org.shallow.logging.InternalLogger;
@@ -30,7 +31,7 @@ public class MessageProducer {
         Producer producer = new org.shallow.producer.MessageProducer("async-producer", producerConfig);
         producer.start();
 
-        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
+        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
         MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);

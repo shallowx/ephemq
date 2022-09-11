@@ -4,13 +4,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.shallow.State;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
 import org.shallow.log.handle.pull.EntryPullDispatcher;
 import org.shallow.log.handle.pull.PullDispatcher;
 import org.shallow.log.handle.push.EntryPushDispatcher;
 import org.shallow.internal.config.BrokerConfig;
+import org.shallow.log.handle.push.PushDispatcher;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -33,7 +33,7 @@ public class Ledger {
     private final Storage storage;
     private final EventExecutor storageExecutor;
     private final PullDispatcher entryPullHandler;
-    private final EntryPushDispatcher entryPushHandler;
+    private final PushDispatcher entryPushHandler;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     enum State {

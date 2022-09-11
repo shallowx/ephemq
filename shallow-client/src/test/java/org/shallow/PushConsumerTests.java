@@ -38,7 +38,7 @@ public class PushConsumerTests {
         messagePushConsumer.start();
 
         Subscription subscribe = messagePushConsumer.subscribe("create", "message");
-        latch.await(60, TimeUnit.SECONDS);
+        latch.await(60, TimeUnit.DAYS);
 
         messagePushConsumer.shutdownGracefully();
     }

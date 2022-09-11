@@ -35,10 +35,11 @@ public class Cursor {
                 return buf;
             }
         }
-        if (logger.isWarnEnabled()) {
-            logger.warn("Any message byteBuf not found");
-        }
         return null;
+    }
+
+    public boolean hashNext() {
+        return efficientSegment() != null;
     }
 
     @SuppressWarnings("unused")
@@ -75,7 +76,7 @@ public class Cursor {
     }
 
     private Segment efficientSegment() {
-        while (true) {
+        for (;;) {
             Segment segment = currentSegment();
             if (location < segment.tailLocation() && segment.isActive()) {
                 return segment;

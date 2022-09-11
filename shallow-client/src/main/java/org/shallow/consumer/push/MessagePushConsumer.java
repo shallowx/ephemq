@@ -103,7 +103,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback) {
-        this.subscribeAsync(topic, queue, (short) -1, epoch, index, callback, null);
+        this.subscribeAsync(topic, queue, version, epoch, index, callback, null);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class MessagePushConsumer implements PushConsumer {
 
     @Override
     public Subscription subscribe(String topic, String queue, int epoch, long index) {
-        return this.subscribe(topic, queue, epoch, index, null);
+        return this.subscribe(topic, queue, (short)-1, epoch, index, null);
     }
 
     @Override

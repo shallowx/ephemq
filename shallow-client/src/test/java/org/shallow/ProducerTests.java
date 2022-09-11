@@ -75,7 +75,7 @@ public class ProducerTests {
         Producer producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
 
-        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
+        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
         MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -101,7 +101,7 @@ public class ProducerTests {
         producer.start();
 
         short messageVersion = 2;
-        Message message = new Message("create", "message", messageVersion, "message-test-send-async".getBytes(UTF_8), new Message.Extras());
+        Message message = new Message("create", "message", messageVersion, "message-test-send-async".getBytes(UTF_8), new Extras());
         MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -130,7 +130,7 @@ public class ProducerTests {
         extras.put("extras0", "send-message-filter0");
         extras.put("extras1", "send-message-filter1");
 
-        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras(extras));
+        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras(extras));
         MessagePreFilter filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -159,7 +159,7 @@ public class ProducerTests {
 
         CountDownLatch latch = new CountDownLatch(1);
         for (int i = 0; i < Long.MAX_VALUE; i++) {
-            Message message = new Message("create", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Message.Extras());
+            Message message = new Message("create", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Extras());
             producer.sendAsync(message, filter, (sendResult, cause) -> {
                 if ( null == cause) {
                     if (logger.isInfoEnabled()) {

@@ -1,9 +1,9 @@
 package org.shallow.log.handle.pull;
 
 public interface HandlerChain {
-    Handler applyHandler();
+    EntryPullHandler applyHandler();
 
-    Handler preHandle(Handler handler);
+    EntryPullHandler preHandle(EntryPullHandler handler);
 
-    void postHandle(Handler handler);
+    void postHandle(EntryPullHandler handler);
 }

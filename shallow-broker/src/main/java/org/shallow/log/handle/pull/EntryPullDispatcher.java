@@ -29,7 +29,7 @@ public class EntryPullDispatcher implements PullDispatcher{
 
     private final BrokerConfig config;
     private final Int2ObjectMap<Channel> channels = new Int2ObjectOpenHashMap<>();
-    private final Int2ObjectMap<Handler> executionHandlers = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<EntryPullHandler> executionHandlers = new Int2ObjectOpenHashMap<>();
     private final EventExecutor transferExecutor;
     private final EventExecutor chainExecutor;
     private final HandlerChain chain;
@@ -52,7 +52,7 @@ public class EntryPullDispatcher implements PullDispatcher{
 
     private void doRegister(int requestId, Channel channel) {
         channels.computeIfAbsent(requestId, k -> channel);
-        Handler handler = chain.applyHandler();
+        EntryPullHandler handler = chain.applyHandler();
         executionHandlers.computeIfAbsent(requestId, k -> handler);
     }
 
@@ -61,7 +61,7 @@ public class EntryPullDispatcher implements PullDispatcher{
             return;
         }
 
-        Handler handler = executionHandlers.get(requestId);
+        EntryPullHandler handler = executionHandlers.get(requestId);
         handler = chain.preHandle(handler);
         handler.executor().execute(() -> doDispatch(requestId, topic, queue, version, ledgerId, limit, offset, payload));
     }
@@ -120,7 +120,7 @@ public class EntryPullDispatcher implements PullDispatcher{
         channels.remove(id);
         executionHandlers.remove(id);
 
-        Handler handler = executionHandlers.get(id);
+        EntryPullHandler handler = executionHandlers.get(id);
         chain.postHandle(handler);
     }
 

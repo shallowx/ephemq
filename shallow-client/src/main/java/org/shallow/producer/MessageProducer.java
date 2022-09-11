@@ -6,6 +6,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.shallow.Client;
+import org.shallow.Extras;
 import org.shallow.Message;
 import org.shallow.State;
 import org.shallow.internal.ClientChannel;
@@ -178,7 +179,7 @@ public class MessageProducer implements Producer{
         }
     }
 
-    private SendMessageExtras buildExtras(String topic, String queue, Message.Extras extras) {
+    private SendMessageExtras buildExtras(String topic, String queue, Extras extras) {
         SendMessageExtras.Builder metadata = SendMessageExtras.newBuilder().setQueue(queue).setTopic(topic);
         if (null != extras) {
             for (Map.Entry<String, String> entry : extras) {

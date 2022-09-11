@@ -70,6 +70,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
         channel.closeFuture().addListener(f -> {
            // TODO client channel closed , and will clean subscribe ships for this channel
+
         });
     }
 

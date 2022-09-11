@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutorGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.shallow.Extras;
 import org.shallow.Message;
 import org.shallow.consumer.ConsumeListener;
 import org.shallow.consumer.ConsumerConfig;
@@ -106,7 +107,7 @@ final class PushConsumerListener implements Listener {
             SendMessageExtras extras = readProto(data, SendMessageExtras.parser());
 
             byte[] body = ByteBufUtil.buf2Bytes(data);
-            Message message = new Message(topic, queue, version, body, epoch, index, new Message.Extras(extras.getExtrasMap()));
+            Message message = new Message(topic, queue, version, body, epoch, index, new Extras(extras.getExtrasMap()));
 
             Subscription theLastShip = new Subscription(epoch, index, queue, ledgerId, version);
 
