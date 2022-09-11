@@ -125,13 +125,13 @@ public class EntryPushDispatcher implements PushDispatcher {
     }
 
     @Override
-    public void clean(Channel channel, String queue) {
+    public void clean(Channel channel, String topic, String queue) {
         try {
             EventExecutor executor = helper.channelExecutor(channel);
             if (executor.inEventLoop()) {
-                doClean(channel, queue);
+                doClean(channel, topic, queue);
             } else {
-                executor.execute(() -> doClean(channel, queue));
+                executor.execute(() -> doClean(channel, topic, queue));
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
@@ -140,7 +140,7 @@ public class EntryPushDispatcher implements PushDispatcher {
         }
     }
 
-    private void doClean(Channel channel, String queue) {
+    private void doClean(Channel channel, String topic, String queue) {
         EntryPushHandler handler = helper.getHandler(channel);
         if (handler == null) {
             return;
@@ -155,7 +155,9 @@ public class EntryPushDispatcher implements PushDispatcher {
         EventExecutor dispatchExecutor = handler.getDispatchExecutor();
         dispatchExecutor.execute(() -> {
             List<String> oldQueues = subscription.getQueue();
-            oldQueues.remove(queue);
+            if (subscription.getTopic().equals(topic)) {
+                oldQueues.remove(queue);
+            }
 
             if (oldQueues.isEmpty()) {
                 handler.setNextCursor(null);
@@ -164,6 +166,11 @@ public class EntryPushDispatcher implements PushDispatcher {
                 subscriptionShips.remove(channel);
             }
         });
+    }
+
+    @Override
+    public void clearChannel(Channel channel) {
+        helper.remove(channel);
     }
 
     @Override

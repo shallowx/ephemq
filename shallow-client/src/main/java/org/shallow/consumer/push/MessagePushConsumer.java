@@ -23,6 +23,7 @@ import org.shallow.util.NetworkUtil;
 import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +48,7 @@ public class MessagePushConsumer implements PushConsumer {
     private final Client client;
     private final PushConsumerListener pushConsumerListener;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
-    private final Map<String, String> subscribes = new ConcurrentHashMap<>();
+    private final Map<ClientChannel, Map<String, String>> subscribes = new ConcurrentHashMap<>();
     private final Map<Integer, ClientChannel> ledgerOfChannels = new ConcurrentHashMap<>();
     private final EventExecutor subscribeTaskExecutor;
 
@@ -75,6 +76,8 @@ public class MessagePushConsumer implements PushConsumer {
 
         this.manager = client.getMetadataManager();
         this.pool = client.getChanelPool();
+
+        subscribeTaskExecutor.schedule(() -> resetSuscribe(null), 5000, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -252,7 +255,13 @@ public class MessagePushConsumer implements PushConsumer {
                     logger.debug("Subscribe successfully, topic={} queue={} ledger={} version={}, epoch={} index={}", topic, queue, ledger, epoch, index);
                 }
                 pushConsumerListener.set(epoch, index, queue, ledger, version);
-                subscribes.put(topic, queue);
+
+                Map<String, String> subscribeShips = subscribes.get(clientChannel);
+                if (subscribeShips == null || subscribeShips.isEmpty()) {
+                    subscribeShips = new ConcurrentHashMap<>();
+                }
+                subscribeShips.put(topic, queue);
+                subscribes.put(clientChannel, subscribeShips);
             }
         });
 
@@ -291,94 +300,67 @@ public class MessagePushConsumer implements PushConsumer {
         doClean(topic, queue, promise);
     }
 
-    public void resetSuscribe(String node, SocketAddress address) {
+    public void resetSuscribe(SocketAddress address) {
         try {
-            manager.refreshMetadata();
+            if (subscribes.isEmpty()) {
+                return;
+            }
 
-            Map<String, MessageRouter> wholesRoutes = manager.getWholesRoutes();
-            Set<Map.Entry<String, MessageRouter>> entries = wholesRoutes.entrySet();
+            Set<Map.Entry<ClientChannel, Map<String, String>>> entries = subscribes.entrySet();
+            for (Map.Entry<ClientChannel, Map<String, String>> entry : entries) {
+                ClientChannel clientChannel = entry.getKey();
 
-            for (Map.Entry<String, MessageRouter> entry : entries) {
-                MessageRouter router = entry.getValue();
-                Map<Integer, MessageRoutingHolder> holders = router.getHolders();
+                SocketAddress subscribeAddress = clientChannel.address();
+                if (address != null && !subscribeAddress.equals(address)) {
+                    continue;
+                }
 
-                Set<Map.Entry<Integer, MessageRoutingHolder>> holderEnties = holders.entrySet();
-                for (Map.Entry<Integer, MessageRoutingHolder> holderEntry : holderEnties) {
-                    MessageRoutingHolder holder = holderEntry.getValue();
-                    SocketAddress leader = holder.leader();
-                    if (leader.equals(address)) {
-                        String topic = holder.topic();
+                if (clientChannel.isActive()) {
+                    continue;
+                }
 
-                        int ledger = holder.ledger();
-                        AtomicReference<Subscription> subscriptionShip = pushConsumerListener.getSubscriptionShip(ledger);
-                        Subscription subscription = subscriptionShip.get();
-                        String queue = subscription.queue();
-                        short version = subscription.version();
-                        int epoch = subscription.epoch();
-                        long index = subscription.index();
+                Map<String, String> topicQueues = entry.getValue();
+                if (topicQueues.isEmpty()) {
+                    continue;
+                }
 
-                        try {
-                            subscribeAsync(topic, queue, version, epoch, index, new SubscribeCallback() {
-                                @Override
-                                public void onCompleted(Subscription subscription, Throwable cause) {
-                                    if (cause != null) {
-                                        retryTask(topic, queue, version, epoch, index);
-                                    }
-                                }
-                            }, messageListener);
-                        } catch (Throwable t) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Retry subscribe was failure, and try again later, topic={} queue={} version={} epoch={} index={}", topic, queue, version, epoch, index);
-                            }
-                            retryTask(topic, queue, version, epoch, index);
-                        }
+                Set<Map.Entry<String, String>> topicQueueEntries = topicQueues.entrySet();
+                for (Map.Entry<String, String> topicQueueEntry : topicQueueEntries) {
+                    String topic = topicQueueEntry.getKey();
+                    String queue = topicQueueEntry.getValue();
+
+                    MessageRouter messageRouter = manager.queryRouter(topic);
+                    if (null == messageRouter) {
+                        throw new RuntimeException(String.format("Message rest subscribe router is empty, and topic=%s name=%s", topic, name));
                     }
+
+                    MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
+                    int ledger = holder.ledger();
+
+                    AtomicReference<Subscription> subscriptionShip = pushConsumerListener.getSubscriptionShip(ledger);
+                    Subscription subscription = subscriptionShip.get();
+
+                    short version = subscription.version();
+                    int epoch = subscription.epoch();
+                    long index = subscription.index();
+
+                    subscribeAsync(topic, queue, version, index, null, messageListener);
                 }
             }
+
         } catch (Throwable t) {
             if (!subscribeTaskExecutor.isShutdown()) {
                 subscribeTaskExecutor.schedule(() -> {
                     try {
-                        resetSuscribe(node, address);
+                        resetSuscribe(address);
                     } catch (Throwable cause) {
                         if (subscribeTaskExecutor.isShutdown()) {
                             return;
                         }
-                        subscribeTaskExecutor.schedule(() -> resetSuscribe(node, address), 1000, TimeUnit.MILLISECONDS);
+                        subscribeTaskExecutor.schedule(() -> resetSuscribe(address), 1000, TimeUnit.MILLISECONDS);
                     }
                 }, 1000, TimeUnit.MILLISECONDS);
             }
-        }
-    }
-
-    private void retryTask(String topic, String queue, short version, int epoch, long index) {
-        Promise<Object> promise = newImmediatePromise();
-        promise.addListener(f -> {
-            if (!f.isSuccess()) {
-                retryTask(topic, queue, version, epoch, index);
-            }
-        });
-
-        try {
-            subscribeTaskExecutor.schedule(() -> {
-                        try {
-                            subscribeAsync(topic, queue, version, epoch, index, new SubscribeCallback() {
-                                @Override
-                                public void onCompleted(Subscription subscription, Throwable cause) {
-                                    if (cause != null) {
-                                        promise.tryFailure(cause);
-                                    } else {
-                                        promise.trySuccess(null);
-                                    }
-                                }
-                            }, messageListener);
-                        } catch (Throwable t) {
-                            promise.tryFailure(t);
-                        }
-                    }, 1000, TimeUnit.MILLISECONDS);
-
-        } catch (Throwable t) {
-            promise.tryFailure(t);
         }
     }
 
@@ -437,11 +419,24 @@ public class MessagePushConsumer implements PushConsumer {
         CleanSubscribeRequest request = CleanSubscribeRequest
                 .newBuilder()
                 .setQueue(queue)
+                .setTopic(topic)
                 .setLedgerId(ledger)
                 .build();
 
         promise.addListener(f -> {
-            subscribes.remove(topic, queue);
+            Collection<Map<String, String>> subscribeModel = subscribes.values();
+            if (subscribeModel == null || subscribeModel.isEmpty()) {
+                return;
+            }
+
+            for (Map<String, String> map : subscribeModel) {
+                Set<Map.Entry<String, String>> entries = map.entrySet();
+                for (Map.Entry<String, String> entry : entries) {
+                    if (entry.getKey().equals(topic) && entry.getValue().equals(queue)) {
+                        map.remove(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
         });
 
         clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getPushCleanSubscribeInvokeTimeMs(), promise, request, CleanSubscribeResponse.class);

@@ -18,17 +18,14 @@ public class EntryHandleHelper {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryHandleHelper.class);
 
-    private final BrokerConfig config;
     private final EventExecutor[] executors;
     private final ConcurrentMap<Channel, EntryPushHandler> channelOfHandlers = new ConcurrentHashMap<>();
     private final WeakHashMap<EntryPushHandler, Integer> applyHandlers = new WeakHashMap<>();
 
     public EntryHandleHelper(BrokerConfig config) {
-        this.config =config;
-
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
-        EventExecutorGroup group = newEventExecutorGroup(1, "push-handler-group");
+        EventExecutorGroup group = newEventExecutorGroup(config.getMessagePushHandleThreadLimit(), "push-handler-group");
         group.forEach(eventExecutorList::add);
         Collections.shuffle(eventExecutorList);
 
@@ -41,6 +38,10 @@ public class EntryHandleHelper {
 
     public void putHandler(Channel channel, EntryPushHandler handler) {
         channelOfHandlers.put(channel, handler);
+    }
+
+    public void remove(Channel channel) {
+        channelOfHandlers.remove(channel);
     }
 
     public EntryPushHandler getHandler(Channel channel) {

@@ -69,8 +69,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         manager.getBrokerConnectionManager().add(channel);
 
         channel.closeFuture().addListener(f -> {
-           // TODO client channel closed , and will clean subscribe ships for this channel
-
+            LedgerManager ledgerManager = manager.getLedgerManager();
+            ledgerManager.clearChannel(channel);
         });
     }
 
@@ -88,6 +88,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case HEARTBEAT -> processHeartbeatRequest(channel, data, answer);
 
                 case SUBSCRIBE -> processSubscribeRequest(channel, data, answer);
+
+                case CLEAN_SUBSCRIBE -> processCleanSubscribeRequest(channel, command, data, answer, type, version);
 
                 case CREATE_TOPIC -> processCreateTopicRequest(channel, command, data, answer, type, version);
 
@@ -620,6 +622,46 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         } catch (Throwable t) {
             answerFailed(answer, t);
         }
+    }
+
+    private void processCleanSubscribeRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
+        transfer(channel, command, data, answer, type, version, () -> {
+            try {
+                CleanSubscribeRequest request = readProto(data, CleanSubscribeRequest.parser());
+                commandExecutor.execute(() -> {
+                    try {
+                        String queue = request.getQueue();
+                        String topic = request.getTopic();
+                        int ledgerId = request.getLedgerId();
+
+                        Promise<Void> promise = newImmediatePromise();
+                        promise.addListener(future -> {
+                            if (future.isSuccess()) {
+                                CleanSubscribeResponse response = CleanSubscribeResponse.newBuilder().build();
+                                if (answer != null) {
+                                    answer.success(proto2Buf(channel.alloc(), response));
+                                } else {
+                                    answerFailed(answer, future.cause());
+                                }
+                            }
+                        });
+
+                        LedgerManager ledgerManager = manager.getLedgerManager();
+                        ledgerManager.clean(channel, topic, queue, ledgerId, promise);
+                    } catch (Throwable t) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Failed to query cluster info");
+                            answerFailed(answer, t);
+                        }
+                    }
+                });
+            } catch (Throwable t){
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to query cluster information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
+                }
+                answerFailed(answer,t);
+            }
+        });
     }
 
     @FunctionalInterface

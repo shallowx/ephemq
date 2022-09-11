@@ -7,6 +7,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import org.shallow.RemoteException;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
@@ -68,7 +69,7 @@ public class LedgerManager {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void clean(Channel channel, String queue, int ledgerId, Promise<Void> promise) {
+    public void clean(Channel channel, String topic, String queue, int ledgerId, Promise<Void> promise) {
         Ledger ledger = getLedger(ledgerId);
         try {
             if (ledger == null) {
@@ -77,7 +78,7 @@ public class LedgerManager {
             }
             checkLedgerState(ledger);
 
-            ledger.clean(channel, queue, promise);
+            ledger.clean(channel, topic, queue, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to clean subscribe, channel={} topic={} queue={} version={} epoch={} index={}", channel.toString(), ledger.getTopic(), queue);
@@ -141,6 +142,17 @@ public class LedgerManager {
                 logger.error("Failed to pull message, ledger={} topic={} queue={} version={} epoch={} index={}", ledgerId, ledger.getTopic(), queue, version, epoch, index);
             }
             promise.tryFailure(t);
+        }
+    }
+
+    public void clearChannel(Channel channel) {
+        if (ledgers.isEmpty()) {
+            return;
+        }
+
+        ObjectCollection<Ledger> activeLedgers = ledgers.values();
+        for (Ledger ledger : activeLedgers) {
+            ledger.clearChannel(channel);
         }
     }
 

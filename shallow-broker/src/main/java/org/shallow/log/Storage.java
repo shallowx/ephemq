@@ -89,6 +89,7 @@ public class Storage {
             CompositeByteBuf compositeByteBuf = null;
             int current = 0;
 
+            int limitBytes = config.getMessagePullBytesLimit();
             while (current < limit) {
                 ByteBuf queueBuf = null;
                 ByteBuf topicBuf = null;
@@ -128,11 +129,20 @@ public class Storage {
                     }
 
                     if (compositeByteBuf == null) {
+                        if (payload.readableBytes() > limitBytes) {
+                            break;
+                        }
+
                         compositeByteBuf = newComposite(payload, limit);
                         continue;
                     }
-                    compositeByteBuf.addFlattenedComponents(true, payload);
 
+                    int readableBytes = compositeByteBuf.readableBytes() + payload.readableBytes();
+                    if (readableBytes > limitBytes) {
+                        break;
+                    }
+
+                    compositeByteBuf.addFlattenedComponents(true, payload);
                     current++;
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {

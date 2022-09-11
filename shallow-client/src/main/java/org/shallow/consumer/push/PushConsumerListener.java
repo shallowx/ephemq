@@ -40,7 +40,7 @@ final class PushConsumerListener implements Listener {
     private final MessagePushConsumer pushConsumer;
 
     public PushConsumerListener(ConsumerConfig consumerConfig, MessagePushConsumer consumer) {
-        EventExecutorGroup group = newEventExecutorGroup(1, "client-message-handle");
+        EventExecutorGroup group = newEventExecutorGroup(consumerConfig.getMessageHandleThreadLimit(), "client-message-handle");
 
         handlers = new MessageHandler[consumerConfig.getMessageHandleThreadLimit()];
         for (int i = 0; i < consumerConfig.getMessageHandleThreadLimit(); i++) {
@@ -98,7 +98,7 @@ final class PushConsumerListener implements Listener {
         int port = signal.getPort();
 
         SocketAddress address = switchSocketAddress(host, port);
-        pushConsumer.resetSuscribe(nodeId, address);
+        pushConsumer.resetSuscribe(address);
     }
 
     @Override
@@ -119,8 +119,7 @@ final class PushConsumerListener implements Listener {
             }
 
             Subscription preShip = sequence.get();
-            if (preShip == null ||
-                    ((epoch == preShip.epoch() && index > theLastShip.index()) ||
+            if (preShip == null || ((epoch == preShip.epoch() && index > theLastShip.index()) ||
                             epoch > theLastShip.epoch() ||
                             version > theLastShip.version())) {
                 if (!sequence.compareAndSet(preShip, theLastShip)) {

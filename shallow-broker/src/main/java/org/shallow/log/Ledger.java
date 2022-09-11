@@ -94,21 +94,22 @@ public class Ledger {
         }
     }
 
-    public void clean(Channel channel, String queue, Promise<Void> promise) {
+    public void clean(Channel channel, String topic, String queue, Promise<Void> promise) {
         if (storageExecutor.inEventLoop()) {
-            doClean(channel, queue, promise);
+            doClean(channel, topic, queue, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doClean(channel, queue, promise));
+                storageExecutor.execute(() -> doClean(channel, topic, queue, promise));
             } catch (Throwable t) {
                 promise.tryFailure(t);
             }
         }
     }
 
-    private void doClean(Channel channel, String queue, Promise<Void> promise) {
+    private void doClean(Channel channel, String topic, String queue, Promise<Void> promise) {
         try {
-            entryPushHandler.clean(channel, queue);
+            entryPushHandler.clean(channel, topic, queue);
+            promise.trySuccess(null);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to clear subscribe, channel<{}> ledgerId={} topic={} queue={}", channel.toString(), ledgerId, topic, queue);
@@ -170,6 +171,10 @@ public class Ledger {
             }
             promise.tryFailure(t);
         }
+    }
+
+    public void clearChannel(Channel channel) {
+        entryPushHandler.clearChannel(channel);
     }
 
     @SuppressWarnings("unused")

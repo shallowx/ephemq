@@ -86,6 +86,7 @@ message SubscribeResponse {
 message CleanSubscribeRequest {
   int32 ledgerId= 1;
   string queue = 2;
+  string topic = 3;
 }
 
 message CleanSubscribeResponse {

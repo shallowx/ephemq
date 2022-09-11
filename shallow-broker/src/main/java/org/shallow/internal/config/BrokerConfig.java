@@ -61,10 +61,6 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 
-    public int getHeartInitialDelayTimeMs() {
-        return object2Int(config.getOrDefault(HEARTBEAT_INITIAL_DELAY_TIME_MS, 500));
-    }
-
     public String getProcessRoles() {
         return object2String(config.getOrDefault(PROCESS_ROLES, "controller,broker"));
     }
@@ -77,28 +73,12 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow"));
     }
 
-    public int getHeartbeatIntervalOriginTimeMs() {
-        return object2Int(config.getOrDefault(HEARTBEAT_INTERVAL_ORIGIN_TIME_MS, 3000));
-    }
-
-    public int getHeartbeatRandomBoundTimeMs() {
-        return (getHeartbeatIntervalOriginTimeMs() + 2000);
-    }
-
-    public int getHeartbeatFixedIntervalTimeMs() {
-        return object2Int(getHeartbeatIntervalOriginTimeMs() + 50);
-    }
-
     public boolean isStandAlone() {
         return object2Boolean(config.getOrDefault(STAND_ALONE, true));
     }
 
     public int getInvokeTimeMs() {
         return object2Int(config.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
-    }
-
-    public int getControllerQuorumVoteTimeoutMs() {
-        return getHeartbeatIntervalOriginTimeMs();
     }
 
     public int getLogSegmentLimit() {
@@ -131,5 +111,13 @@ public class BrokerConfig {
 
     public int getMessagePullChainThreadLimit() {
         return object2Int(config.getOrDefault(MESSAGE_PULL_CHAIN_THREAD_LIMIT, availableProcessor()));
+    }
+
+    public int getMessagePushHandleThreadLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_THREAD_LIMIT, availableProcessor()));
+    }
+
+    public int getMessagePullBytesLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PULL_BYTES_LIMIT, 4194304));
     }
 }
