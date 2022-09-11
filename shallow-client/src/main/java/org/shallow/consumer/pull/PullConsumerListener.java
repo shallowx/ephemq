@@ -81,14 +81,19 @@ final class PullConsumerListener implements Listener {
                 }
 
                 int messageLength = data.readInt();
+
                 short theVersion = data.readShort();
+
+                int topicLength = data.readInt();
+                data.skipBytes(topicLength);
+
                 int queueLength = data.readInt();
                 data.skipBytes(queueLength);
 
                 int messageEpoch = data.readInt();
                 long theIndex = data.readLong();
 
-                int sliceLength = messageLength - 18 - queueLength;
+                int sliceLength = messageLength - 22 - queueLength - topicLength;
                 ByteBuf buf = data.retainedSlice(data.readerIndex(), sliceLength);
 
                 SendMessageExtras extras = readProto(buf, SendMessageExtras.parser());

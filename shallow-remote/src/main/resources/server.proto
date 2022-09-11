@@ -72,6 +72,7 @@ message SubscribeRequest {
   int32 epoch = 3;
   int64 index = 4;
   int32 version = 5;
+  string topic = 6;
 }
 
 message SubscribeResponse {
@@ -93,6 +94,7 @@ message CleanSubscribeResponse {
 message SendMessageRequest {
   int32 ledger = 1;
   string queue = 2;
+  string topic = 3;
 }
 
 message SendMessageExtras {
@@ -114,6 +116,7 @@ message PullMessageRequest {
   int32 epoch = 4;
   int64 index = 5;
   int32 version = 6;
+  string topic = 7;
 }
 
 message PullMessageResponse {

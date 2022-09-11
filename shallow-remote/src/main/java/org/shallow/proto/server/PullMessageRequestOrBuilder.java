@@ -48,4 +48,16 @@ public interface PullMessageRequestOrBuilder extends
    * @return The version.
    */
   int getVersion();
+
+  /**
+   * <code>string topic = 7;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 7;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 }

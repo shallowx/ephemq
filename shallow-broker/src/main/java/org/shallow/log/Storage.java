@@ -34,13 +34,13 @@ public class Storage {
         this.headSegment = this.tailSegment = new Segment(ledger, Unpooled.EMPTY_BUFFER, current);
     }
 
-    public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
+    public void append(String topic, String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         payload.retain();
         if (storageExecutor.inEventLoop()) {
-            doAppend(queue, version, payload, promise);
+            doAppend(topic, queue, version, payload, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doAppend(queue, version, payload, promise));
+                storageExecutor.execute(() -> doAppend(topic, queue, version, payload, promise));
             } catch (Throwable t) {
                 payload.release();
                 promise.tryFailure(t);
@@ -48,14 +48,14 @@ public class Storage {
         }
     }
 
-    private void doAppend(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
+    private void doAppend(String topic, String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         try {
             Offset theCurrent = current;
             Offset offset = new Offset(theCurrent.epoch(), theCurrent.index() + 1);
 
-            int bytes = queue.length() + 22 + payload.readableBytes();
+            int bytes = topic.length() + queue.length() + 26 + payload.readableBytes();
             Segment segment = applySegment(bytes);
-            segment.writeBuf(queue, version, payload, offset);
+            segment.writeBuf(topic, queue, version, payload, offset);
 
             this.current = offset;
 
@@ -68,16 +68,16 @@ public class Storage {
         }
     }
 
-    public void read(int requestId, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
+    public void read(int requestId, String topic, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
         if (storageExecutor.inEventLoop()) {
-            doRead(requestId, queue, version, offset, limit, promise);
+            doRead(requestId, topic, queue, version, offset, limit, promise);
         } else {
-            storageExecutor.execute(() -> doRead(requestId, queue, version, offset,  limit, promise));
+            storageExecutor.execute(() -> doRead(requestId, topic, queue, version, offset,  limit, promise));
         }
     }
 
     @SuppressWarnings("all")
-    private void doRead(int requestId, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
+    private void doRead(int requestId, String topic, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
         try {
             Segment segment = locateSegment(offset);
             if (segment == null) {
@@ -91,6 +91,7 @@ public class Storage {
 
             while (current < limit) {
                 ByteBuf queueBuf = null;
+                ByteBuf topicBuf = null;
                 try {
                     int tailLocation = segment.tailLocation();
                     if (position >= tailLocation) {
@@ -104,12 +105,21 @@ public class Storage {
                     ByteBuf payload = segment.readBufCompleted(position);
 
                     short theVersion = payload.getShort(4);
-                    int queueLength = payload.getInt(6);
-                    queueBuf = payload.retainedSlice(10, queueLength);
+
+                    int topicLength = payload.getInt(6);
+                    topicBuf = payload.retainedSlice(10, topicLength);
+                    String theTopic = ByteBufUtil.buf2String(topicBuf, topicLength);
+
+                    int queueLength = payload.getInt(10 + topicLength);
+                    queueBuf = payload.retainedSlice(14 + topicLength, queueLength);
                     String theQueue = ByteBufUtil.buf2String(queueBuf, queueLength);
 
                     position += payload.readableBytes();
                     if (!theQueue.equals(queue)) {
+                        continue;
+                    }
+
+                    if (!theTopic.equals(topic)) {
                         continue;
                     }
 
@@ -154,7 +164,7 @@ public class Storage {
                 trigger.onPull(requestId, queue, version, ledger, limit, offset, buf);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
-                    logger.warn("trigger pull error: ledger={} limit={} offset={}", ledger, limit, offset);
+                    logger.warn("trigger pull error: ledger={} limit={} offset={}. error:{}", ledger, limit, offset, t);
                 }
             }
         }

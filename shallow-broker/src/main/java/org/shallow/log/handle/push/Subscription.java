@@ -10,6 +10,7 @@ public class Subscription {
     private List<String> queue;
     private Offset offset;
     private short version;
+    private String topic;
     private EntryPushHandler handler;
 
     private Subscription() {
@@ -32,6 +33,10 @@ public class Subscription {
         return version;
     }
 
+    public String getTopic() {
+        return topic;
+    }
+
     public void setOffset(Offset offset) {
         this.offset = offset;
     }
@@ -46,6 +51,7 @@ public class Subscription {
         private Offset offset;
         private short version;
         private EntryPushHandler handler;
+        private String topic;
 
         private SubscribeBuilder() {
         }
@@ -69,8 +75,14 @@ public class Subscription {
             this.version = version;
             return this;
         }
+
         public SubscribeBuilder handler(EntryPushHandler handler) {
             this.handler = handler;
+            return this;
+        }
+
+        public SubscribeBuilder topic(String topic) {
+            this.topic = topic;
             return this;
         }
 
@@ -82,6 +94,7 @@ public class Subscription {
             subscription.offset = this.offset;
             subscription.handler = this.handler;
             subscription.version = this.version;
+            subscription.topic = this.topic;
 
             return subscription;
         }

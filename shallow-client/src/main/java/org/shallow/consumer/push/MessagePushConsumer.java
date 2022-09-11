@@ -239,6 +239,7 @@ public class MessagePushConsumer implements PushConsumer {
         SubscribeRequest request = SubscribeRequest
                 .newBuilder()
                 .setQueue(queue)
+                .setTopic(topic)
                 .setLedger(ledger)
                 .setVersion(version)
                 .setEpoch(epoch)

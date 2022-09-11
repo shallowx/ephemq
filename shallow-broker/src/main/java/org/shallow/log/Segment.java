@@ -36,19 +36,27 @@ public class Segment {
         this.tailLocation = this.headLocation = payload.writerIndex();
     }
 
-    public void writeBuf(String queue, short version, ByteBuf payload, Offset offset) {
+    public void writeBuf(String topic, String queue, short version, ByteBuf payload, Offset offset) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf finalBuf = finalHolder.payload;
             int location = finalBuf.writerIndex();
 
             try {
-                int length = queue.length() + 18 + payload.readableBytes();
+                int topicLength = topic.length();
+                int queueLength = queue.length();
+
+                int length = topicLength + queueLength + 22 + payload.readableBytes();
 
                 finalBuf.writeInt(length);
                 finalBuf.writeShort(version);
-                finalBuf.writeInt(queue.length());
+
+                finalBuf.writeInt(topicLength);
+                finalBuf.writeBytes(topic.getBytes(UTF_8));
+
+                finalBuf.writeInt(queueLength);
                 finalBuf.writeBytes(queue.getBytes(UTF_8));
+
                 finalBuf.writeInt(offset.epoch());
                 finalBuf.writeLong(offset.index());
                 finalBuf.writeBytes(payload);
@@ -150,13 +158,15 @@ public class Segment {
         int position = headLocation;
         while (position < limit) {
             int length = theBuf.getInt(position);
-            int queueLength = theBuf.getInt(position + 6);
 
-            int epoch = theBuf.getInt(position + 10 + queueLength);
+            int topicLength = theBuf.getInt(position + 6);
+            int queueLength = theBuf.getInt(position + 10 + topicLength);
+
+            int epoch = theBuf.getInt(position + 14 + queueLength + topicLength);
             if (epoch > theEpoch) {
                 return position;
             } else if (epoch == theEpoch){
-                long index = theBuf.getLong(position + 14 + queueLength);
+                long index = theBuf.getLong(position + 18 + queueLength + topicLength);
                 if (index > theIndex) {
                     return position;
                 }

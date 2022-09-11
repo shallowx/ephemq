@@ -5,7 +5,7 @@ import org.shallow.log.Offset;
 
 public interface PushDispatcher {
 
-    void subscribe(Channel channel, String queue, Offset offset, short version);
+    void subscribe(Channel channel, String topic, String queue, Offset offset, short version);
 
     void clean(Channel channel, String queue);
 

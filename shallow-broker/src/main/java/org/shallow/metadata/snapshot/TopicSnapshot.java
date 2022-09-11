@@ -50,7 +50,6 @@ public class TopicSnapshot {
     private final LedgerManager ledgerManager;
     private final EventExecutor retryTaskExecutor;
     private final RaftQuorumClient client;
-    private final ShallowChannelPool pool;
 
     public TopicSnapshot(MappingFileProcessor processor, BrokerConfig config, DistributedAtomicInteger atomicValue, RaftVoteProcessor voteProcessor, BrokerManager manager, RaftQuorumClient client) {
         this.fileProcessor = processor;
@@ -60,7 +59,6 @@ public class TopicSnapshot {
         this.voteProcessor = voteProcessor;
         this.leaderElector = new PartitionLeaderElector(voteProcessor);
         this.client = client;
-        this.pool = client.getChanelPool();
 
         this.topics = Caffeine.newBuilder().build(new CacheLoader<>() {
             @Override
@@ -127,7 +125,7 @@ public class TopicSnapshot {
         LeaderElector elector = voteProcessor.getLeaderElector();
         SocketAddress address = elector.getAddress();
 
-        ClientChannel clientChannel = pool.acquireHealthyOrNew(address);
+        ClientChannel clientChannel = client.getChanelPool().acquireHealthyOrNew(address);
         return clientChannel;
     }
 
@@ -141,14 +139,15 @@ public class TopicSnapshot {
             List<String> replicas = leaderElector.assignLatencies(topic, partitions, latencies);
             String leader = leaderElector.elect(topic, partitions, latencies);
 
+            int ledgerId = atomicValue.increment().preValue();
             PartitionRecord partitionRecord = PartitionRecord
                     .newBuilder()
-                    .id(atomicValue.increment().preValue())
-                    .latency(i)
+                    .id(i)
+                    .latency(ledgerId)
                     .latencies(replicas)
                     .leader(leader)
                     .build();
-            ledgerManager.initLog(topic, i, -1);
+            ledgerManager.initLog(topic, i, -1, ledgerId);
             partitionRecords.add(partitionRecord);
         }
 
@@ -175,6 +174,7 @@ public class TopicSnapshot {
         String content = fileProcessor.read();
 
         Gson gson = new Gson();
+        int max = 0;
         Map<String, TopicRecord> records = gson.fromJson(content, new TypeToken<Map<String, TopicRecord>>(){}.getType());
         if (records != null && !records.isEmpty()) {
             Set<Map.Entry<String, TopicRecord>> entries = records.entrySet();
@@ -185,9 +185,11 @@ public class TopicSnapshot {
                 topics.put(topic, record);
                 Set<PartitionRecord> partitionRecords = record.getPartitionRecords();
                 for (PartitionRecord partitionRecord : partitionRecords) {
-                    ledgerManager.initLog(topic, partitionRecord.getId(), -1);
+                    max = StrictMath.max(max, partitionRecord.getLatency());
+                    ledgerManager.initLog(topic, partitionRecord.getId(), -1, partitionRecord.getLatency());
                 }
             }
         }
+        atomicValue.trySet(max);
     }
 }

@@ -24,7 +24,7 @@ public class MessageRouter {
         }
 
         int index = ((31 * topic.hashCode() + queue.hashCode()) & 0x7fffffff) % length;
-        return holders.get(index);
+        return holders.get(ledgerIds[index]);
     }
 
     public Map<Integer, MessageRoutingHolder> getHolders() {

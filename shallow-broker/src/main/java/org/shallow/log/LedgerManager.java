@@ -22,18 +22,15 @@ public class LedgerManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
 
     private final BrokerConfig config;
-    private final DistributedAtomicInteger atomicLedgerValue;
     private final DistributedAtomicInteger atomicRequestValue;
     private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
 
     public LedgerManager(BrokerConfig config) {
         this.config = config;
-        this.atomicLedgerValue = new DistributedAtomicInteger();
         this.atomicRequestValue = new DistributedAtomicInteger();
     }
 
-    public void initLog(String topic, int partition, int epoch) {
-        int ledgerId = atomicLedgerValue.increment().preValue();
+    public void initLog(String topic, int partition, int epoch, int ledgerId) {
         try {
             Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> new Ledger(config, topic, partition, ledgerId, epoch));
             ledger.start();
@@ -51,7 +48,7 @@ public class LedgerManager {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void subscribe(Channel channel, String queue, short version, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(Channel channel, String topic, String queue, short version, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
         Ledger ledger = getLedger(ledgerId);
        try {
            if (ledger == null) {
@@ -61,7 +58,7 @@ public class LedgerManager {
 
            checkLedgerState(ledger);
 
-           ledger.subscribe(channel, queue, version, epoch, index, promise);
+           ledger.subscribe(channel, topic, queue, version, epoch, index, promise);
        } catch (Throwable t) {
            if (logger.isErrorEnabled()) {
                logger.error("Failed to subscribe, channel={} topic={} queue={} version={} epoch={} index={}", channel.toString(), ledger.getTopic(), queue, version, epoch, index);
@@ -110,7 +107,7 @@ public class LedgerManager {
     }
 
     @SuppressWarnings({"ConstantConditions", "unchecked"})
-    public void pull(Channel channel, int ledgerId, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
+    public void pull(Channel channel, int ledgerId, String topic, String queue, short version, int epoch, long index, int limit, Promise<PullMessageResponse> promise) {
         Ledger ledger = getLedger(ledgerId);
         try {
             if (ledger == null) {
@@ -121,7 +118,6 @@ public class LedgerManager {
             pullResultPromise.addListeners((GenericFutureListener<Future<PullResult>>) future -> {
                 if (future.isSuccess()) {
                     PullResult result = future.get();
-                    String topic = this.getLedger(ledgerId).getTopic();
                     result.setTopic(topic);
 
                     PullMessageResponse response = PullMessageResponse
@@ -139,7 +135,7 @@ public class LedgerManager {
                 }
             });
             int requestId = atomicRequestValue.increment().preValue();
-            ledger.pull(requestId, channel, queue, version, epoch, index, limit, pullResultPromise);
+            ledger.pull(requestId, channel, topic, queue, version, epoch, index, limit, pullResultPromise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to pull message, ledger={} topic={} queue={} version={} epoch={} index={}", ledgerId, ledger.getTopic(), queue, version, epoch, index);

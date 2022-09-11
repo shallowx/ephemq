@@ -161,28 +161,29 @@ public final class ServerProto {
       "s\030\001 \003(\01324.shallow.protobuf.QueryTopicInf" +
       "oResponse.TopicsEntry\032N\n\013TopicsEntry\022\013\n\003" +
       "key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shallow.proto" +
-      "buf.TopicMetadata:\0028\001\"`\n\020SubscribeReques" +
+      "buf.TopicMetadata:\0028\001\"o\n\020SubscribeReques" +
       "t\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoc" +
-      "h\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"" +
-      "a\n\021SubscribeResponse\022\r\n\005queue\030\001 \001(\t\022\016\n\006l" +
-      "edger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005index\030\004 \001(" +
-      "\003\022\017\n\007version\030\005 \001(\005\"8\n\025CleanSubscribeRequ" +
-      "est\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\030\n\026" +
-      "CleanSubscribeResponse\"3\n\022SendMessageReq" +
-      "uest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\"\241\001\n\021" +
-      "SendMessageExtras\022\r\n\005topic\030\001 \001(\t\022\r\n\005queu" +
-      "e\030\002 \001(\t\022?\n\006extras\030\003 \003(\0132/.shallow.protob" +
-      "uf.SendMessageExtras.ExtrasEntry\032-\n\013Extr" +
-      "asEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
-      "C\n\023SendMessageResponse\022\016\n\006ledger\030\001 \001(\005\022\r" +
-      "\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\"q\n\022PullMess" +
-      "ageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(" +
-      "\t\022\r\n\005limit\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index" +
-      "\030\005 \001(\003\022\017\n\007version\030\006 \001(\005\"p\n\023PullMessageRe" +
-      "sponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022\r\n\005" +
-      "limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n\005epoch\030\005 \001" +
-      "(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shallow.proto.s" +
-      "erverB\013ServerProtoP\001b\006proto3"
+      "h\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\022" +
+      "\r\n\005topic\030\006 \001(\t\"a\n\021SubscribeResponse\022\r\n\005q" +
+      "ueue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(" +
+      "\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"8\n\025Cle" +
+      "anSubscribeRequest\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005" +
+      "queue\030\002 \001(\t\"\030\n\026CleanSubscribeResponse\"B\n" +
+      "\022SendMessageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005q" +
+      "ueue\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"\241\001\n\021SendMessag" +
+      "eExtras\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022?\n" +
+      "\006extras\030\003 \003(\0132/.shallow.protobuf.SendMes" +
+      "sageExtras.ExtrasEntry\032-\n\013ExtrasEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendMes" +
+      "sageResponse\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 " +
+      "\001(\005\022\r\n\005index\030\003 \001(\003\"\200\001\n\022PullMessageReques" +
+      "t\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005limi" +
+      "t\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\022\017\n" +
+      "\007version\030\006 \001(\005\022\r\n\005topic\030\007 \001(\t\"p\n\023PullMes" +
+      "sageResponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001" +
+      "(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n\005epo" +
+      "ch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shallow.p" +
+      "roto.serverB\013ServerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -272,7 +273,7 @@ public final class ServerProto {
     internal_static_shallow_protobuf_SubscribeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SubscribeRequest_descriptor,
-        new java.lang.String[] { "Queue", "Ledger", "Epoch", "Index", "Version", });
+        new java.lang.String[] { "Queue", "Ledger", "Epoch", "Index", "Version", "Topic", });
     internal_static_shallow_protobuf_SubscribeResponse_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_shallow_protobuf_SubscribeResponse_fieldAccessorTable = new
@@ -296,7 +297,7 @@ public final class ServerProto {
     internal_static_shallow_protobuf_SendMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SendMessageRequest_descriptor,
-        new java.lang.String[] { "Ledger", "Queue", });
+        new java.lang.String[] { "Ledger", "Queue", "Topic", });
     internal_static_shallow_protobuf_SendMessageExtras_descriptor =
       getDescriptor().getMessageTypes().get(17);
     internal_static_shallow_protobuf_SendMessageExtras_fieldAccessorTable = new
@@ -320,7 +321,7 @@ public final class ServerProto {
     internal_static_shallow_protobuf_PullMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageRequest_descriptor,
-        new java.lang.String[] { "Ledger", "Queue", "Limit", "Epoch", "Index", "Version", });
+        new java.lang.String[] { "Ledger", "Queue", "Limit", "Epoch", "Index", "Version", "Topic", });
     internal_static_shallow_protobuf_PullMessageResponse_descriptor =
       getDescriptor().getMessageTypes().get(20);
     internal_static_shallow_protobuf_PullMessageResponse_fieldAccessorTable = new

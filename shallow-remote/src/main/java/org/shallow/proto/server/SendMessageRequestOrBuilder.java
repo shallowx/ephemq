@@ -24,4 +24,16 @@ public interface SendMessageRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getQueueBytes();
+
+  /**
+   * <code>string topic = 3;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 3;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 }

@@ -57,13 +57,13 @@ public class Ledger {
         }
     }
 
-    public void subscribe(Channel channel, String queue, short version, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(Channel channel, String topic, String queue, short version, int epoch, long index, Promise<Subscription> promise) {
         Offset offset = Offset.of(epoch, index);
         if (storageExecutor.inEventLoop()) {
-            doSubscribe(channel, queue, version, offset, promise);
+            doSubscribe(channel, topic, queue, version, offset, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doSubscribe(channel, queue, version, offset, promise));
+                storageExecutor.execute(() -> doSubscribe(channel, topic, queue, version, offset, promise));
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Failed to subscribe, topic={} partition={} queue={} ledgerId={} epoch={} index={}. error cause:{}",
@@ -74,7 +74,7 @@ public class Ledger {
         }
     }
 
-    private void doSubscribe(Channel channel, String queue, short version, Offset offset, Promise<Subscription> promise) {
+    private void doSubscribe(Channel channel, String topic, String queue, short version, Offset offset, Promise<Subscription> promise) {
         try {
             Offset theOffset;
             if (offset == null) {
@@ -84,7 +84,7 @@ public class Ledger {
                theOffset = offset;
             }
 
-            entryPushHandler.subscribe(channel, queue, theOffset, version);
+            entryPushHandler.subscribe(channel, topic, queue, theOffset, version);
             promise.trySuccess(new Subscription(theOffset.epoch(), theOffset.index(), queue, ledgerId, version));
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
@@ -119,10 +119,10 @@ public class Ledger {
 
     public void append(String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         if (storageExecutor.inEventLoop()) {
-            doAppend(queue, version, payload, promise);
+            doAppend(topic, queue, version, payload, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doAppend(queue, version, payload, promise));
+                storageExecutor.execute(() -> doAppend(topic, queue, version, payload, promise));
             } catch (Throwable t) {
                 payload.release();
                 promise.tryFailure(t);
@@ -130,9 +130,9 @@ public class Ledger {
         }
     }
 
-    private void doAppend(String queue, short version,  ByteBuf payload, Promise<Offset> promise) {
+    private void doAppend(String topic, String queue, short version,  ByteBuf payload, Promise<Offset> promise) {
         try {
-            storage.append(queue, version, payload, promise);
+            storage.append(topic, queue, version, payload, promise);
         } catch (Throwable t) {
             promise.tryFailure(t);
         } finally {
@@ -140,12 +140,12 @@ public class Ledger {
         }
     }
 
-    public void pull(int requestId, Channel channel, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
+    public void pull(int requestId, Channel channel, String topic, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
         if (storageExecutor.inEventLoop()) {
-            doPull(requestId, channel, queue, version, epoch, index, limit, promise);
+            doPull(requestId, channel, topic, queue, version, epoch, index, limit, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doPull(requestId, channel, queue, version, epoch, index, limit, promise));
+                storageExecutor.execute(() -> doPull(requestId, channel, topic, queue, version, epoch, index, limit, promise));
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Failed to pull message, topic={} partition={} queue={} version={} ledgerId={} epoch={} index={} requestId={}. error cause:{}",
@@ -157,11 +157,11 @@ public class Ledger {
         }
     }
 
-    private void doPull(int requestId, Channel channel, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
+    private void doPull(int requestId, Channel channel, String topic, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
         Offset offset = new Offset(epoch, index);
         try {
             entryPullHandler.register(requestId, channel);
-            storage.read(requestId, queue, version, offset, limit, promise);
+            storage.read(requestId, topic, queue, version, offset, limit, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to doPull message, topic={} partition={} queue={} version={} ledgerId={} epoch={} index={} requestId={}. error cause:{}",

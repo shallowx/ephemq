@@ -47,7 +47,7 @@ public class EntryPushDispatcher implements PushDispatcher {
     }
 
     @Override
-    public void subscribe(Channel channel, String queue, Offset offset, short version) {
+    public void subscribe(Channel channel, String topic, String queue, Offset offset, short version) {
         if (!channel.isActive() || !channel.isWritable()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Channel<{}> is not active for subscribe", channel.toString());
@@ -57,9 +57,9 @@ public class EntryPushDispatcher implements PushDispatcher {
         try {
             EventExecutor executor = helper.channelExecutor(channel);
            if (executor.inEventLoop()) {
-                doSubscribe(channel, queue, offset, version);
+                doSubscribe(channel, topic, queue, offset, version);
            } else {
-                executor.execute(() -> doSubscribe(channel, queue, offset, version));
+                executor.execute(() -> doSubscribe(channel, topic, queue, offset, version));
            }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
@@ -68,7 +68,7 @@ public class EntryPushDispatcher implements PushDispatcher {
         }
     }
 
-    private void doSubscribe(Channel channel, String queue, Offset offset, short version) {
+    private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version) {
         EntryPushHandler handler = helper.applyHandler(channel, subscribeLimit);
         ConcurrentMap<Channel, Subscription> subscriptionShips = handler.getSubscriptionShips();
         Subscription oldSubscription = subscriptionShips.get(channel);
@@ -84,6 +84,7 @@ public class EntryPushDispatcher implements PushDispatcher {
                 .newBuilder()
                 .channel(channel)
                 .handler(handler)
+                .topic(topic)
                 .offset(offset)
                 .queue(queues)
                 .version(version)
@@ -174,16 +175,16 @@ public class EntryPushDispatcher implements PushDispatcher {
         for (EntryPushHandler handler : handlers) {
             Cursor nextCursor = handler.getNextCursor();
             if (nextCursor != null) {
-                doHandle(topic, handler);
+                doHandle(handler);
             }
         }
     }
 
-    private void doHandle(String topic, EntryPushHandler handler) {
+    private void doHandle(EntryPushHandler handler) {
         AtomicBoolean triggered = handler.getTriggered();
         if (triggered.compareAndSet(false, true)) {
             try {
-                handler.getDispatchExecutor().execute(() -> dispatch(topic, handler));
+                handler.getDispatchExecutor().execute(() -> dispatch(handler));
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Entry push handler submit failure");
@@ -192,7 +193,7 @@ public class EntryPushDispatcher implements PushDispatcher {
         }
     }
 
-    private void dispatch(String topic, EntryPushHandler handler) {
+    private void dispatch(EntryPushHandler handler) {
         Cursor cursor = handler.getNextCursor();
         if (cursor == null) {
             handler.getTriggered().set(false);
@@ -211,16 +212,28 @@ public class EntryPushDispatcher implements PushDispatcher {
             ByteBuf payload;
             while ((payload = cursor.next()) != null) {
                 ByteBuf message = null;
+
                 ByteBuf queueBuf = null;
                 String queue = null;
+
+                ByteBuf topicBuf = null;
+                String topic = null;
+
                 try {
                     short version = payload.readShort();
+
+                    int topicLength = payload.readInt();
+                    topicBuf = payload.retainedSlice(payload.readerIndex(), topicLength);
+                    topic = ByteBufUtil.buf2String(topicBuf, topicLength);
+
+                    payload.skipBytes(topicLength);
 
                     int queueLength = payload.readInt();
                     queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
                     queue = ByteBufUtil.buf2String(queueBuf, queueLength);
 
                     payload.skipBytes(queueLength);
+
                     int epoch = payload.readInt();
                     long index = payload.readLong();
 
@@ -251,13 +264,17 @@ public class EntryPushDispatcher implements PushDispatcher {
                             continue;
                         }
 
+                        if (!subscription.getTopic().equals(topic)) {
+                            continue;
+                        }
+
                         message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
 
                         if (!channel.isWritable()) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
                             }
-                            // TODO
+                            // TODO transfer to pursue
                         }
                         channel.writeAndFlush(message.retainedSlice());
                      }
@@ -269,6 +286,7 @@ public class EntryPushDispatcher implements PushDispatcher {
                     ByteBufUtil.release(message);
                     ByteBufUtil.release(payload);
                     ByteBufUtil.release(queueBuf);
+                    ByteBufUtil.release(topicBuf);
                 }
             }
         } catch (Throwable t) {
@@ -281,7 +299,7 @@ public class EntryPushDispatcher implements PushDispatcher {
 
         handler.setNextOffset(nextOffset);
         if (cursor.hashNext()) {
-            doHandle(topic, handler);
+            doHandle(handler);
         }
     }
 

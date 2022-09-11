@@ -170,6 +170,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     short theVersion = (short) request.getVersion();
                     int epoch = request.getEpoch() ;
                     long index = request.getIndex();
+                    String topic = request.getTopic();
 
                     Promise<PullMessageResponse> promise = newImmediatePromise();
                     promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
@@ -183,7 +184,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     });
 
                     LedgerManager logManager = manager.getLedgerManager();
-                    logManager.pull(channel, ledger, queue, theVersion, epoch, index, limit, promise);
+                    logManager.pull(channel, ledger, topic, queue, theVersion, epoch, index, limit, promise);
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Failed to pull message record", t);
@@ -285,6 +286,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     long index = request.getIndex();
                     String queue = request.getQueue();
                     short theVersion = (short) request.getVersion();
+                    String topic = request.getTopic();
 
                     Promise<Subscription> promise = newImmediatePromise();
                     promise.addListener(future -> {
@@ -308,7 +310,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     });
 
                     LedgerManager logManager = manager.getLedgerManager();
-                    logManager.subscribe(channel, queue, theVersion, ledger, epoch, index, promise);
+                    logManager.subscribe(channel, topic, queue, theVersion, ledger, epoch, index, promise);
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Failed to subscribe");

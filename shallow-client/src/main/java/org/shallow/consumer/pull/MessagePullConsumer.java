@@ -157,6 +157,7 @@ public class MessagePullConsumer implements PullConsumer {
         PullMessageRequest request = PullMessageRequest
                 .newBuilder()
                 .setLedger(ledger)
+                .setTopic(topic)
                 .setEpoch(epoch)
                 .setIndex(index)
                 .setQueue(queue)

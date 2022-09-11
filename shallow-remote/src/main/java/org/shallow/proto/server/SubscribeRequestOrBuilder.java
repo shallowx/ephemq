@@ -42,4 +42,16 @@ public interface SubscribeRequestOrBuilder extends
    * @return The version.
    */
   int getVersion();
+
+  /**
+   * <code>string topic = 6;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 6;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 }

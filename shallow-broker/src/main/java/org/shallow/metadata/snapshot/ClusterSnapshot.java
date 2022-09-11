@@ -34,7 +34,6 @@ public class ClusterSnapshot {
     private final BrokerConfig config;
     private final LoadingCache<String, Set<NodeRecord>> clusters;
     private final LeaderElector leaderElector;
-    private final ShallowChannelPool pool;
     private final RaftQuorumClient client;
     private final EventExecutor retryTaskExecutor;
 
@@ -42,7 +41,6 @@ public class ClusterSnapshot {
         this.processor = processor;
         this.config = config;
         this.leaderElector = voteProcessor.getLeaderElector();
-        this.pool = client.getChanelPool();
         this.client = client;
 
         this.retryTaskExecutor = newEventExecutorGroup(1, "cluster-retry-task").next();
@@ -143,7 +141,7 @@ public class ClusterSnapshot {
 
     private Set<NodeRecord> applyFromNameServer(String cluster) throws Exception {
         SocketAddress leaderAddress = leaderElector.getAddress();
-        ClientChannel clientChannel = pool.acquireHealthyOrNew(leaderAddress);
+        ClientChannel clientChannel = client.getChanelPool().acquireHealthyOrNew(leaderAddress);
 
         MetadataManager metadataManager = client.getMetadataManager();
         Set<NodeRecord> nodeRecords = metadataManager.queryNodeRecord(clientChannel);
