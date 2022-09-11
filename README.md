@@ -9,6 +9,9 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 - Nameserver: Cluster management、Metadata management...
 - Metrics & Monitoring: CPU、JVM、Thread、Cluster、Metadata、Network...
 
+# Example
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/example.gif)
+
 ## Latency
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/latency.png)
