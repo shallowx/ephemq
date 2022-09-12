@@ -1,1 +1,0 @@
-Shallow log system support them, eg: jdk logging、log4j logging、logback logging
