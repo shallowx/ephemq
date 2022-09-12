@@ -12,6 +12,9 @@ public final class Offset implements Comparable<Offset> {
         this.index = index;
     }
 
+    /**
+     * Constructs a new object.
+     */
     public static Offset of(int epoch, long index) {
         return (epoch < 0 && index < 0) ? null : new Offset(epoch, index);
     }

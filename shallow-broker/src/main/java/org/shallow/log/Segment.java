@@ -29,6 +29,9 @@ public class Segment {
     private volatile ByteBufHolder holder;
     private volatile Segment next;
 
+    /**
+     * Constructs a new object.
+     */
     public Segment(int ledgerId, ByteBuf payload, Offset base) {
         this.ledgerId = ledgerId;
         this.tail = head = base;

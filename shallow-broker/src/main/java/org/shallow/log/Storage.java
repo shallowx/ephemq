@@ -25,6 +25,9 @@ public class Storage {
     private final BrokerConfig config;
     private final LedgerTrigger trigger;
 
+    /**
+     * Constructs a new object.
+     */
     public Storage(EventExecutor storageExecutor, int ledger, BrokerConfig config, int epoch, LedgerTrigger trigger) {
         this.storageExecutor = storageExecutor;
         this.ledger = ledger;

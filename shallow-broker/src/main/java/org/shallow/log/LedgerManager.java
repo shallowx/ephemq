@@ -26,6 +26,9 @@ public class LedgerManager {
     private final DistributedAtomicInteger atomicRequestValue;
     private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
 
+    /**
+     * Constructs a new object.
+     */
     public LedgerManager(BrokerConfig config) {
         this.config = config;
         this.atomicRequestValue = new DistributedAtomicInteger();
