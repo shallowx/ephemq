@@ -46,7 +46,4 @@ public class PartitionLeaderElector implements LeaderElection {
 
         return replicas;
     }
-
-
-
 }

@@ -31,6 +31,9 @@ public class LedgerManager {
         this.atomicRequestValue = new DistributedAtomicInteger();
     }
 
+    public void start() throws Exception {
+    }
+
     public void initLog(String topic, int partition, int epoch, int ledgerId) {
         try {
             Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> new Ledger(config, topic, partition, ledgerId, epoch));

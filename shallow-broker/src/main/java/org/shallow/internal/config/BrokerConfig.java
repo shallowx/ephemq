@@ -70,7 +70,7 @@ public class BrokerConfig {
     }
 
     public String getWorkDirectory() {
-        return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow"));
+        return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow/raft"));
     }
 
     public boolean isStandAlone() {

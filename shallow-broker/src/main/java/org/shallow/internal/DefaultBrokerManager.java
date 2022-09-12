@@ -38,6 +38,7 @@ public class DefaultBrokerManager implements BrokerManager {
     @Override
     public void start() throws Exception {
         voteProcessor.start();
+        logManager.start();
     }
 
     @Override
