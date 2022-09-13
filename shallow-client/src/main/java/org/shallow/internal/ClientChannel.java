@@ -39,6 +39,7 @@ public class ClientChannel{
         return address;
     }
 
+    @SuppressWarnings("unused")
     public EventExecutor eventLoop() {
         return channel.eventLoop();
     }
@@ -47,6 +48,7 @@ public class ClientChannel{
         return channel.isActive();
     }
 
+    @SuppressWarnings("unused")
     public void close() {
         channel.close();
     }
