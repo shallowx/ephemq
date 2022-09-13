@@ -5,7 +5,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
-import org.shallow.invoke.GenericInvokeAnswer;
 import org.shallow.invoke.InvokeAnswer;
 
 import javax.annotation.concurrent.Immutable;
