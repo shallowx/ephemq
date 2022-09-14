@@ -8,6 +8,7 @@ import org.shallow.logging.InternalLoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -107,4 +108,21 @@ public class EntryPullHandlerExecutionMapping implements HandlerMapping {
         return handler;
     }
 
+    @Override
+    public void close() {
+        if (handlers.isEmpty()) {
+            return;
+        }
+
+        for (EntryPullHandler handler : handlers) {
+            EventExecutor executor = handler.executor();
+
+            if (executor.isShutdown()) {
+                continue;
+            }
+            executor.shutdownGracefully();
+        }
+
+        handlers.clear();
+    }
 }

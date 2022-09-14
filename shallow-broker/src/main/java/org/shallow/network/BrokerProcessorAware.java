@@ -47,7 +47,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     private final BrokerManager manager;
     private final EventExecutor commandExecutor;
     private final EventExecutor quorumVoteExecutor;
-    private final EventExecutor handleMessageExecutor;
 
     public BrokerProcessorAware(BrokerConfig config, BrokerManager manager) {
         this.config = config;
@@ -56,8 +55,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command").next();
         this.commandExecutor = group.next();
         this.quorumVoteExecutor = group.next();
-
-        this.handleMessageExecutor = newEventExecutorGroup(Runtime.getRuntime().availableProcessors(), "processor-handle-message").next();
     }
 
     @Override
@@ -121,38 +118,36 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             SendMessageRequest request = readProto(data, SendMessageRequest.parser());
 
             ByteBuf retain = data.retain();
-            handleMessageExecutor.execute(() -> {
-                try {
-                    int ledger = request.getLedger();
-                    String queue = request.getQueue();
+            try {
+                int ledger = request.getLedger();
+                String queue = request.getQueue();
 
-                    Promise<Offset> promise = newImmediatePromise();
-                    promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
-                        if (f.isSuccess()) {
-                            Offset offset = f.get();
-                            SendMessageResponse response = SendMessageResponse
-                                    .newBuilder()
-                                    .setLedger(ledger)
-                                    .setEpoch(offset.epoch())
-                                    .setIndex(offset.index())
-                                    .build();
+                Promise<Offset> promise = newImmediatePromise();
+                promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
+                    if (f.isSuccess()) {
+                        Offset offset = f.get();
+                        SendMessageResponse response = SendMessageResponse
+                                .newBuilder()
+                                .setLedger(ledger)
+                                .setEpoch(offset.epoch())
+                                .setIndex(offset.index())
+                                .build();
 
-                            if (answer != null) {
-                                answer.success(proto2Buf(channel.alloc(), response));
-                            }
-                        } else {
-                            answerFailed(answer, f.cause());
+                        if (answer != null) {
+                            answer.success(proto2Buf(channel.alloc(), response));
                         }
-                    });
-                    LedgerManager logManager = manager.getLedgerManager();
-                    logManager.append(ledger, queue, retain, version, promise);
-                } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to append message record", t);
+                    } else {
+                        answerFailed(answer, f.cause());
                     }
-                    answerFailed(answer,t);
+                });
+                LedgerManager logManager = manager.getLedgerManager();
+                logManager.append(ledger, queue, retain, version, promise);
+            } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to append message record", t);
                 }
-            });
+                answerFailed(answer,t);
+            }
         } catch (Throwable t){
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to append message record", t);

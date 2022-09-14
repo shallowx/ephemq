@@ -392,6 +392,21 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
 
     @Override
     public void shutdownGracefully() {
+        if (handlers.isEmpty()) {
+            return;
+        }
 
+        if (logger.isInfoEnabled()) {
+            logger.info("Entry push dispatcher will close");
+        }
+
+        helper.close(new EntryDispatchHelper.CloseFunction<Channel, String, String>() {
+            @Override
+            public void consume(Channel channel, String topic, String queue) {
+                doClean(channel, topic, queue);
+            }
+        });
+
+        handlers.clear();
     }
 }

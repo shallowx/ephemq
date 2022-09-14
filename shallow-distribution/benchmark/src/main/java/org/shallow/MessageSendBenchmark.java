@@ -13,11 +13,21 @@ import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Warmup(iterations = 3, time = 5000, timeUnit = TimeUnit.MILLISECONDS)
+@Measurement(iterations = 3, time = 5000, timeUnit = TimeUnit.MILLISECONDS)
 @BenchmarkMode(Mode.All)
-@Warmup(iterations = 3, time = 2)
-@Measurement(iterations = 3, time = 10)
-@Threads(5)
-@Fork(1)
+@Threads(3)
+@Fork(value = 1, jvmArgsAppend = {
+        "-XX:+UseLargePages",
+        "-XX:+UseZGC",
+        "-XX:MinHeapSize=4G",
+        "-XX:InitialHeapSize=4G",
+        "-XX:MaxHeapSize=4G",
+        "-XX:MaxDirectMemorySize=10G",
+        "-Dio.netty.tryReflectionSetAccessible=true",
+        "-Dfile.encoding=UTF-8",
+        "-Duser.timezone=Asia/Shanghai"
+})
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class MessageSendBenchmark {
@@ -45,8 +55,8 @@ public class MessageSendBenchmark {
     @Benchmark
     public void sendAsync() {
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        MessagePreInterceptor interceptor = sendMessage -> sendMessage;
 
-        producer.sendAsync(message, filter, (sendResult, cause) -> {});
+        producer.sendAsync(message, interceptor, (sendResult, cause) -> {});
     }
 }

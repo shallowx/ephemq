@@ -7,6 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.shallow.Type;
 import org.shallow.codec.MessagePacket;
 import org.shallow.internal.config.BrokerConfig;
@@ -198,6 +199,30 @@ public class DefaultEntryPullDispatcher implements PullDispatchProcessor {
 
     @Override
     public void shutdownGracefully() {
-        transferExecutor.shutdownGracefully();
+        if (channels.isEmpty()) {
+            return;
+        }
+
+        ObjectSet<Int2ObjectMap.Entry<Channel>> channelEntries = channels.int2ObjectEntrySet();
+        for (Int2ObjectMap.Entry<Channel> channelEntry : channelEntries) {
+            int requestId = channelEntry.getIntKey();
+
+            EntryPullHandler entryPullHandler = executionHandlers.get(requestId);
+            EventExecutor executor = entryPullHandler.executor();
+
+            executor.submit(() -> {
+                doCancel(requestId);
+            });
+        }
+
+        if (!chainExecutor.isShutdown()) {
+            chainExecutor.shutdownGracefully();
+        }
+
+        if (!transferExecutor.isShutdown()) {
+            transferExecutor.shutdownGracefully();
+        }
+
+        chain.close();
     }
 }

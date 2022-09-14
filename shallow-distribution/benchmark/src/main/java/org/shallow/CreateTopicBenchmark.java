@@ -8,15 +8,28 @@ import org.openjdk.jmh.annotations.State;
 import org.shallow.proto.server.CreateTopicResponse;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.shallow.processor.ProcessCommand.Server.CREATE_TOPIC;
 
 @BenchmarkMode(Mode.All)
-@State(Scope.Thread)
-@Measurement(iterations = 2, time = 5)
+@State(Scope.Benchmark)
+@Measurement(iterations = 2, time = 2000, timeUnit = TimeUnit.MILLISECONDS, batchSize = 10)
 @Threads(1)
-@Fork(1)
+@Fork(value = 1, jvmArgsAppend = {
+        "-XX:+UseLargePages",
+        "-XX:+UseZGC",
+        "-XX:MinHeapSize=2G",
+        "-XX:InitialHeapSize=2G",
+        "-XX:MaxHeapSize=2G",
+        "-XX:MaxDirectMemorySize=10G",
+        "--add-exports java.base/jdk.internal.misc=ALL-UNNAMED",
+        "--add-opens java.base/java.nio=ALL-UNNAMED",
+        "-Dio.netty.tryReflectionSetAccessible=true",
+        "-Dfile.encoding=UTF-8",
+        "-Duser.timezone=Asia/Shanghai"
+})
 @OutputTimeUnit(TimeUnit.SECONDS)
 public class CreateTopicBenchmark {
 
@@ -41,7 +54,7 @@ public class CreateTopicBenchmark {
 
     @Benchmark
     public void createTopic() {
-        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic( "test-benchmark", 1, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic( "test-benchmark-" + UUID.randomUUID(), 1, 1);
         try {
             promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

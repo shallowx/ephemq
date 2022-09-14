@@ -120,4 +120,49 @@ public class EntryDispatchHelper {
             return handler;
         }
     }
+
+    public void close(CloseFunction<Channel, String, String> function) {
+        if (applyHandlers.isEmpty()) {
+            return;
+        }
+
+        Set<Map.Entry<Channel, EntryPushHandler>> entries = channelOfHandlers.entrySet();
+        for (Map.Entry<Channel, EntryPushHandler> entry : entries) {
+            Channel channel = entry.getKey();
+            EntryPushHandler handler = getHandler(channel);
+            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+            if (subscriptionShips == null || subscriptionShips.isEmpty()) {
+                continue;
+            }
+
+            EntrySubscription entrySubscription = subscriptionShips.get(channel);
+            String topic = entrySubscription.getTopic();
+            List<String> queues = entrySubscription.getQueue();
+            if (queues == null || queues.isEmpty()) {
+                continue;
+            }
+
+            if (function == null) {
+                continue;
+            }
+
+            for (String queue : queues) {
+                function.consume(channel, topic, queue);
+            }
+
+            EventExecutor dispatchExecutor = handler.getDispatchExecutor();
+            if (dispatchExecutor.isShutdown()) {
+                continue;
+            }
+
+            dispatchExecutor.shutdownGracefully();
+        }
+
+        applyHandlers.clear();
+    }
+
+    @FunctionalInterface
+    public interface CloseFunction<T, E, V> {
+        void consume(T t, E e, V v);
+    }
 }

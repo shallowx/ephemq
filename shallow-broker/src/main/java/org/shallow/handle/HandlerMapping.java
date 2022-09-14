@@ -6,4 +6,6 @@ public interface HandlerMapping {
     EntryPullHandler preHandle(EntryPullHandler handler);
 
     void postHandle(EntryPullHandler handler);
+
+    void close();
 }
