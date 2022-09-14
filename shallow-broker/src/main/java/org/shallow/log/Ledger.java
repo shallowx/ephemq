@@ -6,11 +6,11 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
-import org.shallow.log.handle.pull.EntryPullDispatcher;
-import org.shallow.log.handle.pull.PullDispatcher;
-import org.shallow.log.handle.push.EntryPushDispatcher;
+import org.shallow.handle.DefaultEntryPullDispatcher;
+import org.shallow.handle.PullDispatchProcessor;
+import org.shallow.handle.DefaultEntryPushDispatcher;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.log.handle.push.PushDispatcher;
+import org.shallow.handle.PushDispatchProcessor;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -32,8 +32,8 @@ public class Ledger {
     private int epoch;
     private final Storage storage;
     private final EventExecutor storageExecutor;
-    private final PullDispatcher entryPullHandler;
-    private final PushDispatcher entryPushHandler;
+    private final PullDispatchProcessor entryPullHandler;
+    private final PushDispatchProcessor entryPushHandler;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     enum State {
@@ -50,8 +50,8 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.entryPullHandler = new EntryPullDispatcher(config);
-        this.entryPushHandler = new EntryPushDispatcher(ledgerId, config, storage);
+        this.entryPullHandler = new DefaultEntryPullDispatcher(config);
+        this.entryPushHandler = new DefaultEntryPushDispatcher(ledgerId, config, storage);
     }
 
     public void start() throws Exception {

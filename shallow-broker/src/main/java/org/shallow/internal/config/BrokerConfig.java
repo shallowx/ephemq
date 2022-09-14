@@ -120,4 +120,17 @@ public class BrokerConfig {
     public int getMessagePullBytesLimit() {
         return object2Int(config.getOrDefault(MESSAGE_PULL_BYTES_LIMIT, 4194304));
     }
+
+    public int getMessagePushHandleLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_LIMIT, 1000));
+    }
+
+    public int getMessagePushHandleTraceLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_TRACE_LIMIT, 1000));
+    }
+
+    public int getMessagePushHandleAlignLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_ALIGN_LIMIT, 1000));
+    }
+
 }

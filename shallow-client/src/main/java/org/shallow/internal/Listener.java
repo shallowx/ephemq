@@ -3,7 +3,7 @@ package org.shallow.internal;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.shallow.consumer.ConsumeListener;
-import org.shallow.consumer.MessagePostFilter;
+import org.shallow.consumer.MessagePostInterceptor;
 import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 
@@ -20,5 +20,5 @@ public interface Listener {
 
     default void registerListener(ConsumeListener listener) {}
 
-    default void registerFilter(MessagePostFilter filter) {}
+    default void registerInterceptor(MessagePostInterceptor filter) {}
 }

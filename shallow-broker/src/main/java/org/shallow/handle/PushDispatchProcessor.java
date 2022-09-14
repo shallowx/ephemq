@@ -1,9 +1,9 @@
-package org.shallow.log.handle.push;
+package org.shallow.handle;
 
 import io.netty.channel.Channel;
 import org.shallow.log.Offset;
 
-public interface PushDispatcher {
+public interface PushDispatchProcessor {
 
     void subscribe(Channel channel, String topic, String queue, Offset offset, short version);
 

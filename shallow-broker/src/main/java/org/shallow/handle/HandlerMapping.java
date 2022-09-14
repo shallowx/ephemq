@@ -1,6 +1,6 @@
-package org.shallow.log.handle.pull;
+package org.shallow.handle;
 
-public interface HandlerChain {
+public interface HandlerMapping {
     EntryPullHandler applyHandler();
 
     EntryPullHandler preHandle(EntryPullHandler handler);

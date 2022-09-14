@@ -1,7 +1,7 @@
 package org.shallow.consumer.pull;
 
 import io.netty.util.concurrent.Promise;
-import org.shallow.consumer.MessagePostFilter;
+import org.shallow.consumer.MessagePostInterceptor;
 import org.shallow.proto.server.PullMessageResponse;
 
 public interface PullConsumer {
@@ -12,8 +12,7 @@ public interface PullConsumer {
 
     void registerListener(MessagePullListener listener);
 
-    void registerFilter(MessagePostFilter filter);
-
+    void registerInterceptor(MessagePostInterceptor filter);
 
     void pull(String topic, String queue, int epoch, long index, int limit, MessagePullListener listener,  Promise<PullMessageResponse> promise) throws Exception;
 

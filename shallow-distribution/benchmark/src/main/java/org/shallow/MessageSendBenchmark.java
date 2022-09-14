@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.annotations.State;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.producer.MessagePreFilter;
+import org.shallow.producer.MessagePreInterceptor;
 import org.shallow.producer.MessageProducer;
 import org.shallow.producer.ProducerConfig;
 
@@ -45,7 +45,7 @@ public class MessageSendBenchmark {
     @Benchmark
     public void sendAsync() {
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
-        MessagePreFilter filter = sendMessage -> sendMessage;
+        MessagePreInterceptor filter = sendMessage -> sendMessage;
 
         producer.sendAsync(message, filter, (sendResult, cause) -> {});
     }

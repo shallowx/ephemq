@@ -33,12 +33,13 @@ public class PushConsumerTests {
                 if (logger.isInfoEnabled()) {
                     logger.info("Recive message:{}", message);
                 }
+
             }
         });
         messagePushConsumer.start();
 
         Subscription subscribe = messagePushConsumer.subscribe("create", "message");
-        latch.await(60, TimeUnit.DAYS);
+        latch.await();
 
         messagePushConsumer.shutdownGracefully();
     }

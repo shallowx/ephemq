@@ -1,4 +1,4 @@
-package org.shallow.log.handle.push;
+package org.shallow.handle;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -14,15 +14,15 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
-public class EntryHandleHelper {
+public class EntryDispatchHelper {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryHandleHelper.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDispatchHelper.class);
 
     private final EventExecutor[] executors;
     private final ConcurrentMap<Channel, EntryPushHandler> channelOfHandlers = new ConcurrentHashMap<>();
     private final WeakHashMap<EntryPushHandler, Integer> applyHandlers = new WeakHashMap<>();
 
-    public EntryHandleHelper(BrokerConfig config) {
+    public EntryDispatchHelper(BrokerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
         EventExecutorGroup group = newEventExecutorGroup(config.getMessagePushHandleThreadLimit(), "push-handler-group");

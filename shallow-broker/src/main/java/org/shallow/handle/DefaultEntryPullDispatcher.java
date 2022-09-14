@@ -1,4 +1,4 @@
-package org.shallow.log.handle.pull;
+package org.shallow.handle;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -23,20 +23,20 @@ import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
-public class EntryPullDispatcher implements PullDispatcher{
+public class DefaultEntryPullDispatcher implements PullDispatchProcessor {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullDispatcher.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryPullDispatcher.class);
 
     private final BrokerConfig config;
     private final Int2ObjectMap<Channel> channels = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<EntryPullHandler> executionHandlers = new Int2ObjectOpenHashMap<>();
     private final EventExecutor transferExecutor;
     private final EventExecutor chainExecutor;
-    private final HandlerChain chain;
+    private final HandlerMapping chain;
 
-    public EntryPullDispatcher(BrokerConfig config) {
+    public DefaultEntryPullDispatcher(BrokerConfig config) {
         this.config = config;
-        this.chain = new EntryPullHandlerExecutionChain(config);
+        this.chain = new EntryPullHandlerExecutionMapping(config);
         this.transferExecutor = newEventExecutorGroup(config.getMessagePullTransferThreadLimit(), "transfer").next();
         this.chainExecutor = newEventExecutorGroup(config.getMessagePullChainThreadLimit(), "chain").next();
     }

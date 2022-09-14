@@ -1,4 +1,4 @@
-package org.shallow.log.handle.push;
+package org.shallow.handle;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -10,10 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@SuppressWarnings("all")
 public class EntryPushHandler {
 
     private final String id = UUID.randomUUID().toString();
-    private final ConcurrentMap<Channel, Subscription> subscriptionShips = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Channel, EntrySubscription> subscriptionShips = new ConcurrentHashMap<>();
     private final EventExecutor dispatchExecutor;
     private volatile Offset nextOffset;
     private volatile Cursor nextCursor;
@@ -28,7 +29,7 @@ public class EntryPushHandler {
         return id;
     }
 
-    public ConcurrentMap<Channel, Subscription> getSubscriptionShips() {
+    public ConcurrentMap<Channel, EntrySubscription> getSubscriptionShips() {
         return subscriptionShips;
     }
 

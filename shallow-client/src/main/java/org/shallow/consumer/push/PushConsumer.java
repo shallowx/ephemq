@@ -1,6 +1,6 @@
 package org.shallow.consumer.push;
 
-import org.shallow.consumer.MessagePostFilter;
+import org.shallow.consumer.MessagePostInterceptor;
 
 public interface PushConsumer {
 
@@ -42,6 +42,6 @@ public interface PushConsumer {
     void cleanAsync(String topic, String queue, CleanSubscribeCallback callback);
 
     void registerListener(MessagePushListener listener);
-    void registerFilter(MessagePostFilter filter);
+    void registerInterceptor(MessagePostInterceptor interceptor);
     MessagePushListener getListener();
 }

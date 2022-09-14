@@ -1,4 +1,4 @@
-package org.shallow.log.handle.pull;
+package org.shallow.handle;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.internal.atomic.DistributedAtomicInteger;
@@ -16,15 +16,15 @@ import java.util.stream.Collectors;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
-public class EntryPullHandlerExecutionChain implements HandlerChain {
+public class EntryPullHandlerExecutionMapping implements HandlerMapping {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandlerExecutionChain.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPullHandlerExecutionMapping.class);
 
     private final BrokerConfig config;
     private final Set<EntryPullHandler> handlers = new CopyOnWriteArraySet<>();
     private final DistributedAtomicInteger atomicValue = new DistributedAtomicInteger();
 
-    public EntryPullHandlerExecutionChain(BrokerConfig config) {
+    public EntryPullHandlerExecutionMapping(BrokerConfig config) {
         this.config = config;
     }
 

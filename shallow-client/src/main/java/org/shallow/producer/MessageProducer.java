@@ -76,7 +76,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void sendOneway(Message message, MessagePreFilter messageFilter) {
+    public void sendOneway(Message message, MessagePreInterceptor messageFilter) {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -86,7 +86,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public SendResult send(Message message, MessagePreFilter messageFilter) throws Exception {
+    public SendResult send(Message message, MessagePreInterceptor messageFilter) throws Exception {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -101,7 +101,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void sendAsync(Message message, MessagePreFilter messageFilter, SendCallback callback)  {
+    public void sendAsync(Message message, MessagePreInterceptor messageFilter, SendCallback callback)  {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -194,7 +194,7 @@ public class MessageProducer implements Producer{
         return metadata.build();
     }
 
-    private Message exchange(Message message, MessagePreFilter filter) {
+    private Message exchange(Message message, MessagePreInterceptor filter) {
         if (null != filter) {
            message = filter.filter(message);
         }

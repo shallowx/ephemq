@@ -13,9 +13,9 @@ public interface Producer {
 
     void sendAsync(Message message, SendCallback callback);
 
-    void sendOneway(Message message, MessagePreFilter messageFilter);
+    void sendOneway(Message message, MessagePreInterceptor messageFilter);
 
-    SendResult send(Message message, MessagePreFilter messageFilter) throws Exception;
+    SendResult send(Message message, MessagePreInterceptor messageFilter) throws Exception;
 
-    void sendAsync(Message message, MessagePreFilter messageFilter, SendCallback callback);
+    void sendAsync(Message message, MessagePreInterceptor messageFilter, SendCallback callback);
 }

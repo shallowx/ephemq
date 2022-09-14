@@ -2,27 +2,27 @@ package org.shallow.consumer.push;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.Message;
-import org.shallow.consumer.MessagePostFilter;
+import org.shallow.consumer.MessagePostInterceptor;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
 import java.util.concurrent.Semaphore;
 
-public class MessageHandler {
+public class MessageProcessor {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageHandler.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProcessor.class);
 
     private final String id;
     private final Semaphore semaphore;
     private final EventExecutor executor;
 
-    public MessageHandler(String id, Semaphore semaphore, EventExecutor executor) {
+    public MessageProcessor(String id, Semaphore semaphore, EventExecutor executor) {
         this.id = id;
         this.semaphore = semaphore;
         this.executor = executor;
     }
 
-    public void handle(Message message, MessagePushListener listener, MessagePostFilter filter) {
+    public void process(Message message, MessagePushListener listener, MessagePostInterceptor filter) {
         if (executor.isShutdown()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Event executor is shutdown");
@@ -32,7 +32,7 @@ public class MessageHandler {
 
         semaphore.acquireUninterruptibly();
         try {
-            executor.execute(() -> doHandle(message, listener, filter));
+            executor.execute(() -> doProcess(message, listener, filter));
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Handle message execute failed, message={}", message);
@@ -41,10 +41,10 @@ public class MessageHandler {
         }
     }
 
-    public void doHandle(Message message, MessagePushListener listener, MessagePostFilter filter) {
+    public void doProcess(Message message, MessagePushListener listener, MessagePostInterceptor mpInterceptor) {
         try {
-            if (filter != null) {
-                message = filter.filter(message);
+            if (mpInterceptor != null) {
+                message = mpInterceptor.interceptor(message);
             }
 
             listener.onMessage(message);

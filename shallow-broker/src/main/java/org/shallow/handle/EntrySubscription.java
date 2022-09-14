@@ -1,11 +1,11 @@
-package org.shallow.log.handle.push;
+package org.shallow.handle;
 
 import io.netty.channel.Channel;
 import org.shallow.log.Offset;
 
 import java.util.List;
 
-public class Subscription {
+public class EntrySubscription {
     private Channel channel;
     private List<String> queue;
     private Offset offset;
@@ -13,7 +13,7 @@ public class Subscription {
     private String topic;
     private EntryPushHandler handler;
 
-    private Subscription() {
+    private EntrySubscription() {
         //unsupported
     }
 
@@ -39,6 +39,10 @@ public class Subscription {
 
     public void setOffset(Offset offset) {
         this.offset = offset;
+    }
+
+    public EntryPushHandler getHandler() {
+        return handler;
     }
 
     public static SubscribeBuilder newBuilder() {
@@ -86,8 +90,8 @@ public class Subscription {
             return this;
         }
 
-        public Subscription build() {
-            Subscription subscription = new Subscription();
+        public EntrySubscription build() {
+            EntrySubscription subscription = new EntrySubscription();
 
             subscription.channel = this.channel;
             subscription.queue = this.queue;
@@ -98,5 +102,17 @@ public class Subscription {
 
             return subscription;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Subscription{" +
+                "channel=" + channel +
+                ", queue=" + queue +
+                ", offset=" + offset +
+                ", version=" + version +
+                ", topic='" + topic + '\'' +
+                ", handler=" + handler +
+                '}';
     }
 }

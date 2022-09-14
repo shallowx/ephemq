@@ -1,4 +1,4 @@
-package org.shallow.log.handle.push;
+package org.shallow.handle;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -19,31 +19,36 @@ import org.shallow.util.ProtoBufUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 
 @SuppressWarnings("all")
 @ThreadSafe
-public class EntryPushDispatcher implements PushDispatcher {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryPushDispatcher.class);
+public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryPushDispatcher.class);
 
     private final int ledgerId;
     private final int subscribeLimit;
-    private final EntryHandleHelper helper;
+    private final int handleLimit;
+    private final int traceLimit;
+    private final int alignLimit;
+
+    private final EntryDispatchHelper helper;
     private final Storage storage;
     private final List<EntryPushHandler> handlers = new ArrayList<>();
 
     @SuppressWarnings("unused")
-    public EntryPushDispatcher(int ledgerId, BrokerConfig config, Storage storage) {
+    public DefaultEntryPushDispatcher(int ledgerId, BrokerConfig config, Storage storage) {
         this.storage = storage;
         Offset currentOffset = storage.currentOffset();
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
-        this.helper = new EntryHandleHelper(config);
+        this.handleLimit = config.getMessagePushHandleLimit();
+        this.traceLimit = config.getMessagePushHandleTraceLimit();
+        this.alignLimit = config.getMessagePushHandleAlignLimit();
+        this.helper = new EntryDispatchHelper(config);
     }
 
     @Override
@@ -70,8 +75,8 @@ public class EntryPushDispatcher implements PushDispatcher {
 
     private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version) {
         EntryPushHandler handler = helper.applyHandler(channel, subscribeLimit);
-        ConcurrentMap<Channel, Subscription> subscriptionShips = handler.getSubscriptionShips();
-        Subscription oldSubscription = subscriptionShips.get(channel);
+        ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+        EntrySubscription oldSubscription = subscriptionShips.get(channel);
 
         List<String> queues = new ArrayList<>();
         if (oldSubscription != null) {
@@ -80,7 +85,7 @@ public class EntryPushDispatcher implements PushDispatcher {
         }
         queues.add(queue);
 
-        Subscription newSubscription = Subscription
+        EntrySubscription newSubscription = EntrySubscription
                 .newBuilder()
                 .channel(channel)
                 .handler(handler)
@@ -109,7 +114,17 @@ public class EntryPushDispatcher implements PushDispatcher {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Subscribe offset is expired, and will purse from commit log file, offset={} earlyOffset={}", offset, earlyOffset);
                     }
-                    // TODO submit purse from commit log file
+
+                    EntryTrace trace = EntryTrace
+                            .newBuilder()
+                            .offset(dispatchOffset)
+                            .cursor(handler.getNextCursor())
+                            .traceLimit(traceLimit)
+                            .alignLimit(alignLimit)
+                            .subscription(newSubscription)
+                            .build();
+                    EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
+                    task.trace();
                 } else {
                     dispatchOffset = offset;
                     newSubscription.setOffset(dispatchOffset);
@@ -146,8 +161,8 @@ public class EntryPushDispatcher implements PushDispatcher {
             return;
         }
 
-        ConcurrentMap<Channel, Subscription> subscriptionShips = handler.getSubscriptionShips();
-        Subscription subscription = subscriptionShips.get(channel);
+        ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+        EntrySubscription subscription = subscriptionShips.get(channel);
         if (subscription == null) {
             return;
         }
@@ -207,7 +222,7 @@ public class EntryPushDispatcher implements PushDispatcher {
             return;
         }
 
-        Collection<Subscription> subscriptionShips = handler.getSubscriptionShips().values();
+        Collection<EntrySubscription> subscriptionShips = handler.getSubscriptionShips().values();
 
         if (subscriptionShips.isEmpty()) {
             handler.getTriggered().set(false);
@@ -217,6 +232,7 @@ public class EntryPushDispatcher implements PushDispatcher {
         Offset nextOffset = handler.getNextOffset();
         try {
             ByteBuf payload;
+            int whole = 0;
             while ((payload = cursor.next()) != null) {
                 ByteBuf message = null;
 
@@ -226,6 +242,7 @@ public class EntryPushDispatcher implements PushDispatcher {
                 ByteBuf topicBuf = null;
                 String topic = null;
 
+                whole++;
                 try {
                     short version = payload.readShort();
 
@@ -245,13 +262,23 @@ public class EntryPushDispatcher implements PushDispatcher {
                     long index = payload.readLong();
 
                     Offset messageOffset = buildOffset(epoch, index);
-                    nextOffset = messageOffset;
-
-                    if (messageOffset.before(nextOffset)) {
+                    if (!messageOffset.after(nextOffset)) {
+                        if (whole > handleLimit) {
+                            break;
+                        }
                         continue;
                     }
 
-                    for (Subscription subscription : subscriptionShips) {
+                    nextOffset = messageOffset;
+
+                    for (EntrySubscription subscription : subscriptionShips) {
+                        if (subscription == null) {
+                            if (whole > handleLimit) {
+                                break;
+                            }
+                            continue;
+                        }
+
                         Channel channel = subscription.getChannel();
                         if (!channel.isActive()) {
                             if (logger.isWarnEnabled()) {
@@ -259,8 +286,6 @@ public class EntryPushDispatcher implements PushDispatcher {
                             }
                             continue;
                         }
-
-                        subscription.setOffset(messageOffset);
 
                         short subscriptionVersion = subscription.getVersion();
                         if (subscriptionVersion != -1 && subscriptionVersion != version) {
@@ -275,16 +300,32 @@ public class EntryPushDispatcher implements PushDispatcher {
                             continue;
                         }
 
+                        subscription.setOffset(messageOffset);
                         message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
 
                         if (!channel.isWritable()) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
                             }
-                            // TODO transfer to pursue
+
+                            EntryTrace trace = EntryTrace
+                                    .newBuilder()
+                                    .offset(messageOffset)
+                                    .traceLimit(traceLimit)
+                                    .alignLimit(alignLimit)
+                                    .cursor(cursor.copy())
+                                    .subscription(subscription)
+                                    .build();
+                            EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
+                            channel.writeAndFlush(message.retainedSlice(), task.newPromise());
+                            return;
                         }
                         channel.writeAndFlush(message.retainedSlice());
                      }
+
+                    if (whole > handleLimit) {
+                        break;
+                    }
                 } catch (Throwable t){
                     if (logger.isErrorEnabled()) {
                         logger.error("Channel push message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);

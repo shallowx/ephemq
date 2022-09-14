@@ -8,7 +8,7 @@ import org.shallow.Extras;
 import org.shallow.Message;
 import org.shallow.consumer.ConsumeListener;
 import org.shallow.consumer.ConsumerConfig;
-import org.shallow.consumer.MessagePostFilter;
+import org.shallow.consumer.MessagePostInterceptor;
 import org.shallow.internal.Listener;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
@@ -17,7 +17,6 @@ import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.util.ByteBufUtil;
-import org.shallow.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.util.Map;
@@ -34,18 +33,18 @@ final class PushConsumerListener implements Listener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PushConsumerListener.class);
 
     private MessagePushListener listener;
-    private MessagePostFilter filter;
-    private final MessageHandler[] handlers;
+    private MessagePostInterceptor interceptor;
+    private final MessageProcessor[] handlers;
     private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
     private final MessagePushConsumer pushConsumer;
 
     public PushConsumerListener(ConsumerConfig consumerConfig, MessagePushConsumer consumer) {
         EventExecutorGroup group = newEventExecutorGroup(consumerConfig.getMessageHandleThreadLimit(), "client-message-handle");
 
-        handlers = new MessageHandler[consumerConfig.getMessageHandleThreadLimit()];
+        handlers = new MessageProcessor[consumerConfig.getMessageHandleThreadLimit()];
         for (int i = 0; i < consumerConfig.getMessageHandleThreadLimit(); i++) {
             Semaphore semaphore = new Semaphore(consumerConfig.messageHandleSemaphoreLimit);
-            handlers[i] = new MessageHandler(String.valueOf(i), semaphore, group.next());
+            handlers[i] = new MessageProcessor(String.valueOf(i), semaphore, group.next());
         }
         this.pushConsumer = consumer;
     }
@@ -55,8 +54,8 @@ final class PushConsumerListener implements Listener {
         this.listener = (MessagePushListener) listener;
     }
 
-    public void registerFilter(MessagePostFilter filter) {
-        this.filter = filter;
+    public void registerInterceptor(MessagePostInterceptor interceptor) {
+        this.interceptor = interceptor;
     }
 
     public void set(int epoch, long index, String queue, int ledger, short version) {
@@ -129,8 +128,8 @@ final class PushConsumerListener implements Listener {
                 }
             }
 
-            MessageHandler handler = handlers[((Objects.hash(topic, queue) + ledgerId) & 0x7fffffff) % handlers.length];
-            handler.handle(message, listener, filter);
+            MessageProcessor handler = handlers[((Objects.hash(topic, queue) + ledgerId) & 0x7fffffff) % handlers.length];
+            handler.process(message, listener, interceptor);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to handle subscribe message, channel={} ledgerId={} topic={} queue={} version={} epoch={} index={} , error={}",

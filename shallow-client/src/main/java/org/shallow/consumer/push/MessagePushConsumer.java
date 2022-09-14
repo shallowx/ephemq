@@ -7,7 +7,7 @@ import io.netty.util.concurrent.Promise;
 import org.shallow.Client;
 import org.shallow.State;
 import org.shallow.consumer.ConsumerConfig;
-import org.shallow.consumer.MessagePostFilter;
+import org.shallow.consumer.MessagePostInterceptor;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -19,7 +19,6 @@ import org.shallow.proto.server.CleanSubscribeRequest;
 import org.shallow.proto.server.CleanSubscribeResponse;
 import org.shallow.proto.server.SubscribeRequest;
 import org.shallow.proto.server.SubscribeResponse;
-import org.shallow.util.NetworkUtil;
 import org.shallow.util.ObjectUtil;
 
 import java.net.SocketAddress;
@@ -90,8 +89,8 @@ public class MessagePushConsumer implements PushConsumer {
     }
 
     @Override
-    public void registerFilter(MessagePostFilter filter) {
-        pushConsumerListener.registerFilter(filter);
+    public void registerInterceptor(MessagePostInterceptor interceptor) {
+        pushConsumerListener.registerInterceptor(interceptor);
     }
 
     @Override

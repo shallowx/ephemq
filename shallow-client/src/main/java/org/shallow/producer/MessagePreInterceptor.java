@@ -1,8 +1,8 @@
-package org.shallow.consumer;
+package org.shallow.producer;
 
 import org.shallow.Message;
 
 @FunctionalInterface
-public interface MessagePostFilter {
+public interface MessagePreInterceptor {
     Message filter(Message message);
 }

@@ -7,7 +7,7 @@ import org.shallow.Message;
 import org.shallow.example.metadata.TopicMetadata;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.producer.MessagePreFilter;
+import org.shallow.producer.MessagePreInterceptor;
 import org.shallow.producer.Producer;
 import org.shallow.producer.ProducerConfig;
 
@@ -32,7 +32,7 @@ public class MessageProducer {
         producer.start();
 
         Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
-        MessagePreFilter filter = sendMessage -> sendMessage;
+        MessagePreInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
