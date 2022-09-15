@@ -35,26 +35,6 @@ public final class ServerProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_DelTopicResponse_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_RegisterNodeRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_RegisterNodeRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_RegisterNodeResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_UnRegisterNodeRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_shallow_protobuf_UnRegisterNodeResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_shallow_protobuf_UnRegisterNodeResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shallow_protobuf_QueryClusterNodeRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -145,46 +125,38 @@ public final class ServerProto {
       "nse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\022\022\n\nparti" +
       "tions\030\003 \001(\005\022\021\n\tlatencies\030\004 \001(\005\" \n\017DelTop" +
       "icRequest\022\r\n\005topic\030\001 \001(\t\".\n\020DelTopicResp" +
-      "onse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"X\n\023Regi" +
-      "sterNodeRequest\022\017\n\007cluster\030\001 \001(\t\0220\n\010meta" +
-      "data\030\002 \001(\0132\036.shallow.protobuf.NodeMetada" +
-      "ta\"S\n\024RegisterNodeResponse\022\014\n\004host\030\001 \001(\t" +
-      "\022\014\n\004port\030\002 \001(\005\022\020\n\010serverId\030\003 \001(\t\022\r\n\005stat" +
-      "e\030\004 \001(\t\"Z\n\025UnRegisterNodeRequest\022\017\n\007clus" +
-      "ter\030\001 \001(\t\0220\n\010metadata\030\002 \001(\0132\036.shallow.pr" +
-      "otobuf.NodeMetadata\"\030\n\026UnRegisterNodeRes" +
-      "ponse\"*\n\027QueryClusterNodeRequest\022\017\n\007clus" +
-      "ter\030\001 \001(\t\"I\n\030QueryClusterNodeResponse\022-\n" +
-      "\005nodes\030\001 \003(\0132\036.shallow.protobuf.NodeMeta" +
-      "data\"&\n\025QueryTopicInfoRequest\022\r\n\005topic\030\001" +
-      " \003(\t\"\256\001\n\026QueryTopicInfoResponse\022D\n\006topic" +
-      "s\030\001 \003(\01324.shallow.protobuf.QueryTopicInf" +
-      "oResponse.TopicsEntry\032N\n\013TopicsEntry\022\013\n\003" +
-      "key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shallow.proto" +
-      "buf.TopicMetadata:\0028\001\"o\n\020SubscribeReques" +
-      "t\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoc" +
-      "h\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\022" +
-      "\r\n\005topic\030\006 \001(\t\"a\n\021SubscribeResponse\022\r\n\005q" +
-      "ueue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(" +
-      "\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"G\n\025Cle" +
-      "anSubscribeRequest\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005" +
-      "queue\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"\030\n\026CleanSubsc" +
-      "ribeResponse\"B\n\022SendMessageRequest\022\016\n\006le" +
-      "dger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t" +
-      "\"\241\001\n\021SendMessageExtras\022\r\n\005topic\030\001 \001(\t\022\r\n" +
-      "\005queue\030\002 \001(\t\022?\n\006extras\030\003 \003(\0132/.shallow.p" +
-      "rotobuf.SendMessageExtras.ExtrasEntry\032-\n" +
-      "\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
-      ":\0028\001\"C\n\023SendMessageResponse\022\016\n\006ledger\030\001 " +
-      "\001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\"\200\001\n\022Pu" +
-      "llMessageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queu" +
-      "e\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n" +
-      "\005index\030\005 \001(\003\022\017\n\007version\030\006 \001(\005\022\r\n\005topic\030\007" +
-      " \001(\t\"p\n\023PullMessageResponse\022\r\n\005topic\030\001 \001" +
-      "(\t\022\r\n\005queue\030\002 \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledg" +
-      "er\030\004 \001(\005\022\r\n\005epoch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)" +
-      "\n\030org.shallow.proto.serverB\013ServerProtoP" +
-      "\001b\006proto3"
+      "onse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"*\n\027Quer" +
+      "yClusterNodeRequest\022\017\n\007cluster\030\001 \001(\t\"I\n\030" +
+      "QueryClusterNodeResponse\022-\n\005nodes\030\001 \003(\0132" +
+      "\036.shallow.protobuf.NodeMetadata\"&\n\025Query" +
+      "TopicInfoRequest\022\r\n\005topic\030\001 \003(\t\"\256\001\n\026Quer" +
+      "yTopicInfoResponse\022D\n\006topics\030\001 \003(\01324.sha" +
+      "llow.protobuf.QueryTopicInfoResponse.Top" +
+      "icsEntry\032N\n\013TopicsEntry\022\013\n\003key\030\001 \001(\t\022.\n\005" +
+      "value\030\002 \001(\0132\037.shallow.protobuf.TopicMeta" +
+      "data:\0028\001\"o\n\020SubscribeRequest\022\r\n\005queue\030\001 " +
+      "\001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005in" +
+      "dex\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\022\r\n\005topic\030\006 \001(" +
+      "\t\"a\n\021SubscribeResponse\022\r\n\005queue\030\001 \001(\t\022\016\n" +
+      "\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005index\030\004 " +
+      "\001(\003\022\017\n\007version\030\005 \001(\005\"G\n\025CleanSubscribeRe" +
+      "quest\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r" +
+      "\n\005topic\030\003 \001(\t\"\030\n\026CleanSubscribeResponse\"" +
+      "B\n\022SendMessageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n" +
+      "\005queue\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"\241\001\n\021SendMess" +
+      "ageExtras\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022" +
+      "?\n\006extras\030\003 \003(\0132/.shallow.protobuf.SendM" +
+      "essageExtras.ExtrasEntry\032-\n\013ExtrasEntry\022" +
+      "\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendM" +
+      "essageResponse\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030" +
+      "\002 \001(\005\022\r\n\005index\030\003 \001(\003\"\200\001\n\022PullMessageRequ" +
+      "est\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005li" +
+      "mit\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n\005index\030\005 \001(\003\022" +
+      "\017\n\007version\030\006 \001(\005\022\r\n\005topic\030\007 \001(\t\"p\n\023PullM" +
+      "essageResponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002" +
+      " \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n\005e" +
+      "poch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shallow" +
+      ".proto.serverB\013ServerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -215,50 +187,26 @@ public final class ServerProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_DelTopicResponse_descriptor,
         new java.lang.String[] { "Ack", "Topic", });
-    internal_static_shallow_protobuf_RegisterNodeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_shallow_protobuf_RegisterNodeRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_RegisterNodeRequest_descriptor,
-        new java.lang.String[] { "Cluster", "Metadata", });
-    internal_static_shallow_protobuf_RegisterNodeResponse_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_RegisterNodeResponse_descriptor,
-        new java.lang.String[] { "Host", "Port", "ServerId", "State", });
-    internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_shallow_protobuf_UnRegisterNodeRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor,
-        new java.lang.String[] { "Cluster", "Metadata", });
-    internal_static_shallow_protobuf_UnRegisterNodeResponse_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_shallow_protobuf_UnRegisterNodeResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_shallow_protobuf_UnRegisterNodeResponse_descriptor,
-        new java.lang.String[] { });
     internal_static_shallow_protobuf_QueryClusterNodeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_shallow_protobuf_QueryClusterNodeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_QueryClusterNodeRequest_descriptor,
         new java.lang.String[] { "Cluster", });
     internal_static_shallow_protobuf_QueryClusterNodeResponse_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_shallow_protobuf_QueryClusterNodeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_QueryClusterNodeResponse_descriptor,
         new java.lang.String[] { "Nodes", });
     internal_static_shallow_protobuf_QueryTopicInfoRequest_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_shallow_protobuf_QueryTopicInfoRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_QueryTopicInfoRequest_descriptor,
         new java.lang.String[] { "Topic", });
     internal_static_shallow_protobuf_QueryTopicInfoResponse_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_shallow_protobuf_QueryTopicInfoResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_QueryTopicInfoResponse_descriptor,
@@ -270,37 +218,37 @@ public final class ServerProto {
         internal_static_shallow_protobuf_QueryTopicInfoResponse_TopicsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_shallow_protobuf_SubscribeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_shallow_protobuf_SubscribeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SubscribeRequest_descriptor,
         new java.lang.String[] { "Queue", "Ledger", "Epoch", "Index", "Version", "Topic", });
     internal_static_shallow_protobuf_SubscribeResponse_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_shallow_protobuf_SubscribeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SubscribeResponse_descriptor,
         new java.lang.String[] { "Queue", "Ledger", "Epoch", "Index", "Version", });
     internal_static_shallow_protobuf_CleanSubscribeRequest_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_shallow_protobuf_CleanSubscribeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_CleanSubscribeRequest_descriptor,
         new java.lang.String[] { "LedgerId", "Queue", "Topic", });
     internal_static_shallow_protobuf_CleanSubscribeResponse_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_shallow_protobuf_CleanSubscribeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_CleanSubscribeResponse_descriptor,
         new java.lang.String[] { });
     internal_static_shallow_protobuf_SendMessageRequest_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_shallow_protobuf_SendMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SendMessageRequest_descriptor,
         new java.lang.String[] { "Ledger", "Queue", "Topic", });
     internal_static_shallow_protobuf_SendMessageExtras_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_shallow_protobuf_SendMessageExtras_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SendMessageExtras_descriptor,
@@ -312,19 +260,19 @@ public final class ServerProto {
         internal_static_shallow_protobuf_SendMessageExtras_ExtrasEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_shallow_protobuf_SendMessageResponse_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_shallow_protobuf_SendMessageResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_SendMessageResponse_descriptor,
         new java.lang.String[] { "Ledger", "Epoch", "Index", });
     internal_static_shallow_protobuf_PullMessageRequest_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_shallow_protobuf_PullMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageRequest_descriptor,
         new java.lang.String[] { "Ledger", "Queue", "Limit", "Epoch", "Index", "Version", "Topic", });
     internal_static_shallow_protobuf_PullMessageResponse_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_shallow_protobuf_PullMessageResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageResponse_descriptor,

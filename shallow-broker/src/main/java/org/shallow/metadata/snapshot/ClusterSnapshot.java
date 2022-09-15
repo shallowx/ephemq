@@ -3,11 +3,13 @@ package org.shallow.metadata.snapshot;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.shallow.internal.BrokerManager;
 import org.shallow.internal.ClientChannel;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.logging.InternalLogger;
@@ -15,13 +17,24 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.meta.NodeRecord;
 import org.shallow.metadata.MappingFileProcessor;
 import org.shallow.metadata.MetadataManager;
+import org.shallow.metadata.listener.ClusterChangedListener;
+import org.shallow.metadata.listener.ClusterListener;
 import org.shallow.metadata.sraft.LeaderElector;
 import org.shallow.metadata.sraft.RaftQuorumClient;
 import org.shallow.metadata.sraft.RaftVoteProcessor;
+import org.shallow.network.BrokerConnectionManager;
 import org.shallow.pool.ShallowChannelPool;
+import org.shallow.processor.ProcessCommand;
+import org.shallow.proto.NodeMetadata;
+import org.shallow.proto.elector.UnRegisterNodeRequest;
+import org.shallow.proto.elector.UnRegisterNodeResponse;
+import org.shallow.util.NetworkUtil;
+
 import java.net.SocketAddress;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import static org.shallow.util.NetworkUtil.*;
@@ -36,13 +49,16 @@ public class ClusterSnapshot {
     private final LeaderElector leaderElector;
     private final RaftQuorumClient client;
     private final EventExecutor retryTaskExecutor;
+    private final BrokerManager manager;
+    private final ClusterListener listener;
 
-    public ClusterSnapshot(MappingFileProcessor processor, BrokerConfig config, RaftVoteProcessor voteProcessor, RaftQuorumClient client) {
+    public ClusterSnapshot(MappingFileProcessor processor, BrokerConfig config, RaftVoteProcessor voteProcessor, RaftQuorumClient client, BrokerManager manager) {
         this.processor = processor;
         this.config = config;
         this.leaderElector = voteProcessor.getLeaderElector();
         this.client = client;
-
+        this.manager = manager;
+        this.listener = new ClusterChangedListener(manager);
         this.retryTaskExecutor = newEventExecutorGroup(1, "cluster-retry-task").next();
         this.clusters = Caffeine.newBuilder().build(new CacheLoader<>() {
             @Override
@@ -89,6 +105,58 @@ public class ClusterSnapshot {
             registerPromise.trySuccess(null);
         } catch (Throwable t) {
             registerPromise.tryFailure(t);
+        }
+    }
+
+    public void unRegisterNode() {
+        String cluster = config.getClusterName();
+        String serverId = config.getServerId();
+        String host = config.getExposedHost();
+        int port = config.getExposedPort();
+
+        UnRegisterNodeRequest request = UnRegisterNodeRequest
+                .newBuilder()
+                .setCluster(config.getClusterName())
+                .setMetadata(NodeMetadata
+                        .newBuilder()
+                        .setName(serverId)
+                        .setState(NodeRecord.DOWN)
+                        .setHost(host)
+                        .setCluster(cluster)
+                        .setPort(port)
+                        .build())
+                .build();
+
+        try {
+
+            if (logger.isWarnEnabled()) {
+                logger.warn("This cluster node is going offline, cluster={} name={} host={} port={}", cluster, serverId, host, port);
+            }
+
+            ShallowChannelPool chanelPool = client.getChanelPool();
+            SocketAddress address = leaderElector.getAddress();
+            ClientChannel clientChannel = chanelPool.acquireHealthyOrNew(address);
+
+            CountDownLatch latch = new CountDownLatch(1);
+            Promise<UnRegisterNodeResponse> promise = newImmediatePromise();
+            promise.addListener(new GenericFutureListener<Future<? super UnRegisterNodeResponse>>() {
+                @Override
+                public void operationComplete(Future<? super UnRegisterNodeResponse> future) throws Exception {
+                    latch.countDown();
+                }
+            });
+            clientChannel.invoker().invoke(ProcessCommand.Server.UN_REGISTER_NODE, config.getInvokeTimeMs(), promise, request, UnRegisterNodeResponse.class);
+
+            if (listener == null) {
+                return;
+            }
+            listener.onServerOffline(serverId, host, port);
+
+            latch.await(60, TimeUnit.SECONDS);
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("This clutser node is going offline unregister failure");
+            }
         }
     }
 

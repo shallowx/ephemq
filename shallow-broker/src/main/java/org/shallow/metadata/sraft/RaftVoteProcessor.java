@@ -42,7 +42,7 @@ public class RaftVoteProcessor {
         this.leaderElector = new LeaderElector(config, quorumAddress, client, atomicValue);
         this.standAloneProcessor = new StandAloneProcessor(quorumAddress, config);
 
-        this.clusterSnapshot = new ClusterSnapshot(fileProcessor, config, this, client);
+        this.clusterSnapshot = new ClusterSnapshot(fileProcessor, config, this, client, manager);
         this.topicSnapshot = new TopicSnapshot(fileProcessor, config, atomicValue, this, manager, client);
     }
 
@@ -134,6 +134,7 @@ public class RaftVoteProcessor {
     }
 
     public void shutdownGracefully() throws Exception {
+        clusterSnapshot.unRegisterNode();
         if (client != null) {
             client.shutdownGracefully();
         }

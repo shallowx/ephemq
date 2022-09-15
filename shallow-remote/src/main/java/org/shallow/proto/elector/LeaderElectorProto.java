@@ -34,6 +34,26 @@ public final class LeaderElectorProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_RaftHeartbeatResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_RegisterNodeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_RegisterNodeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_RegisterNodeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_UnRegisterNodeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_UnRegisterNodeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_UnRegisterNodeResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -49,8 +69,15 @@ public final class LeaderElectorProto {
       "\010\"_\n\024RaftHeartbeatRequest\022\014\n\004term\030\001 \001(\005\022" +
       "\017\n\007version\030\002 \001(\005\022\016\n\006leader\030\003 \001(\t\022\030\n\020dist" +
       "ributedValue\030\004 \001(\005\"\027\n\025RaftHeartbeatRespo" +
-      "nseB1\n\031org.shallow.proto.electorB\022Leader" +
-      "ElectorProtoP\001b\006proto3"
+      "nse\"X\n\023RegisterNodeRequest\022\017\n\007cluster\030\001 " +
+      "\001(\t\0220\n\010metadata\030\002 \001(\0132\036.shallow.protobuf" +
+      ".NodeMetadata\"S\n\024RegisterNodeResponse\022\014\n" +
+      "\004host\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\020\n\010serverId\030\003 " +
+      "\001(\t\022\r\n\005state\030\004 \001(\t\"Z\n\025UnRegisterNodeRequ" +
+      "est\022\017\n\007cluster\030\001 \001(\t\0220\n\010metadata\030\002 \001(\0132\036" +
+      ".shallow.protobuf.NodeMetadata\"\030\n\026UnRegi" +
+      "sterNodeResponseB1\n\031org.shallow.proto.el" +
+      "ectorB\022LeaderElectorProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -80,6 +107,30 @@ public final class LeaderElectorProto {
     internal_static_shallow_protobuf_RaftHeartbeatResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_RaftHeartbeatResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_shallow_protobuf_RegisterNodeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_shallow_protobuf_RegisterNodeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_RegisterNodeRequest_descriptor,
+        new java.lang.String[] { "Cluster", "Metadata", });
+    internal_static_shallow_protobuf_RegisterNodeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_shallow_protobuf_RegisterNodeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_RegisterNodeResponse_descriptor,
+        new java.lang.String[] { "Host", "Port", "ServerId", "State", });
+    internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_shallow_protobuf_UnRegisterNodeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_UnRegisterNodeRequest_descriptor,
+        new java.lang.String[] { "Cluster", "Metadata", });
+    internal_static_shallow_protobuf_UnRegisterNodeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_shallow_protobuf_UnRegisterNodeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_UnRegisterNodeResponse_descriptor,
         new java.lang.String[] { });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
