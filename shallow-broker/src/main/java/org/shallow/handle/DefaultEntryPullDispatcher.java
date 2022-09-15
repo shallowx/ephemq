@@ -20,6 +20,8 @@ import org.shallow.util.ProtoBufUtil;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.TimeUnit;
 
+import static org.shallow.codec.MessagePacket.HEADER_LENGTH;
+import static org.shallow.codec.MessagePacket.MAGIC_NUMBER;
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 
@@ -178,10 +180,10 @@ public class DefaultEntryPullDispatcher implements PullDispatchProcessor {
             int signalLength = ProtoBufUtil.protoLength(signal);
             int payloadLength = payload.readableBytes();
 
-            buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
+            buf = alloc.ioBuffer(HEADER_LENGTH + signalLength);
 
-            buf.writeByte(MessagePacket.MAGIC_NUMBER);
-            buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + payloadLength);
+            buf.writeByte(MAGIC_NUMBER);
+            buf.writeMedium(HEADER_LENGTH + signalLength + payloadLength);
             buf.writeShort(version);
             buf.writeByte(HANDLE_MESSAGE);
             buf.writeByte(Type.PULL.sequence());

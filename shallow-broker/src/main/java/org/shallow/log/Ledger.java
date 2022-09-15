@@ -242,7 +242,9 @@ public class Ledger {
     public void close() {
         if (state.compareAndSet(State.STARTED, State.CLOSED)) {
             storageExecutor.shutdownGracefully();
+
             storage.close();
+
             entryPullHandler.shutdownGracefully();
             entryPushHandler.shutdownGracefully();
             if (logger.isWarnEnabled()) {

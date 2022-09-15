@@ -37,7 +37,7 @@ public class LedgerManager {
     public void start() throws Exception {
     }
 
-    public void initLog(String topic, int partition, int epoch, int ledgerId) {
+    public void initLog(String topic, int partition, int epoch, int ledgerId, Promise<Void> promise) {
         try {
             Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> new Ledger(config, topic, partition, ledgerId, epoch));
             ledger.start();
@@ -47,10 +47,13 @@ public class LedgerManager {
             if (logger.isInfoEnabled()) {
                 logger.info("Initialize log successfully, topic={} partition={} ledger={}", topic, partition, ledgerId);
             }
+
+            promise.trySuccess(null);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Initialize log failed, topic={} partition={} ledger={}. error:{}", topic, partition, ledgerId, t);
             }
+            promise.tryFailure(t);
         }
     }
 
@@ -121,6 +124,7 @@ public class LedgerManager {
                 promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_PULL_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
                 return;
             }
+
             Promise<PullResult> pullResultPromise = NetworkUtil.newImmediatePromise();
             pullResultPromise.addListeners((GenericFutureListener<Future<PullResult>>) future -> {
                 if (future.isSuccess()) {

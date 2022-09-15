@@ -58,7 +58,7 @@ public class Storage {
 
             int bytes = topic.length() + queue.length() + 26 + payload.readableBytes();
             Segment segment = applySegment(bytes);
-            segment.writeBuf(topic, queue, version, payload, offset);
+            segment.write(topic, queue, version, payload, offset);
 
             this.current = offset;
 
@@ -106,7 +106,7 @@ public class Storage {
                         segment = next;
                     }
 
-                    ByteBuf payload = segment.readBufCompleted(position);
+                    ByteBuf payload = segment.readCompleted(position);
 
                     short theVersion = payload.getShort(4);
 
@@ -207,7 +207,7 @@ public class Storage {
 
     private Segment applySegment(int bytes) {
         Segment theTailSegment = tailSegment;
-        if (theTailSegment.freeWriteBytes() < bytes) {
+        if (theTailSegment.freeBytes() < bytes) {
             if (segmentLimit >= config.getLogSegmentLimit()) {
                 releaseSegment();
             }

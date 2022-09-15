@@ -39,7 +39,7 @@ public class Segment {
         this.tailLocation = this.headLocation = payload.writerIndex();
     }
 
-    public void writeBuf(String topic, String queue, short version, ByteBuf payload, Offset offset) {
+    public void write(String topic, String queue, short version, ByteBuf payload, Offset offset) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf finalBuf = finalHolder.payload;
@@ -76,7 +76,7 @@ public class Segment {
         throw new RuntimeException("Segment is recycled");
     }
 
-    public ByteBuf readBuf(int location) {
+    public ByteBuf read(int location) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf payload = finalHolder.payload;
@@ -86,7 +86,7 @@ public class Segment {
         return null;
     }
 
-    public ByteBuf readBufCompleted(int location) {
+    public ByteBuf readCompleted(int location) {
         ByteBufHolder finalHolder = holder;
         if (finalHolder != null) {
             ByteBuf payload = finalHolder.payload;
@@ -96,7 +96,7 @@ public class Segment {
         return null;
     }
 
-    public int freeWriteBytes() {
+    public int freeBytes() {
         ByteBufHolder theHolder = holder;
         return theHolder == null ? 0 : theHolder.payload.writableBytes();
     }
@@ -137,7 +137,7 @@ public class Segment {
     /**
      * The location of message sites is based on the storage order,
      * <p>offset</p> need to change the offset of the positioning.
-     * {@link Segment#writeBuf}
+     * {@link Segment#write}
      */
     public int locate(Offset offset) {
         if (offset == null) {
@@ -203,7 +203,7 @@ public class Segment {
 
     static {
         Runnable task = () -> {
-            while (true) {
+            for (;;) {
                 try {
                     Reference<? extends ByteBufHolder> reference = BYTE_BUF_HOLDER_REFERENCE_QUEUE.remove();
                     ByteBuf buf = BYTE_BUF_MAP.remove(reference);

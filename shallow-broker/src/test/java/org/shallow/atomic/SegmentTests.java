@@ -20,7 +20,7 @@ public class SegmentTests {
     public void testWriteBuf() {
         int bytes = topic.length() + queue.length() + 26 + payload.readableBytes();
         Segment segment = new Segment(0, PooledByteBufAllocator.DEFAULT.directBuffer(bytes, bytes), new Offset(-1, 0));
-        segment.writeBuf(topic, queue, (short) 0, payload, new Offset(-1, 1));
+        segment.write(topic, queue, (short) 0, payload, new Offset(-1, 1));
 
         ByteBufUtil.release(payload);
         segment.release();
@@ -30,9 +30,9 @@ public class SegmentTests {
     public void testReadBuf() {
         int bytes = topic.length() + queue.length() + 26 + payload.readableBytes();
         Segment segment = new Segment(0, PooledByteBufAllocator.DEFAULT.directBuffer(bytes, bytes), new Offset(-1, 0));
-        segment.writeBuf(topic, queue, (short) 0, payload, new Offset(-1, 1));
+        segment.write(topic, queue, (short) 0, payload, new Offset(-1, 1));
 
-        ByteBuf buf = segment.readBuf(segment.headLocation());
+        ByteBuf buf = segment.read(segment.headLocation());
 
         short version = buf.readShort();
 
@@ -54,9 +54,9 @@ public class SegmentTests {
     public void testReadCompletedBuf() {
         int bytes = topic.length() + queue.length() + 26 + payload.readableBytes();
         Segment segment = new Segment(0, PooledByteBufAllocator.DEFAULT.directBuffer(bytes, bytes), new Offset(-1, 0));
-        segment.writeBuf(topic, queue, (short) 0, payload, new Offset(-1, 1));
+        segment.write(topic, queue, (short) 0, payload, new Offset(-1, 1));
 
-        ByteBuf buf = segment.readBufCompleted(segment.headLocation());
+        ByteBuf buf = segment.readCompleted(segment.headLocation());
 
         buf.skipBytes(4);
         short version = buf.readShort();
@@ -83,7 +83,7 @@ public class SegmentTests {
 
         for (int i = 0; i < 10; i++) {
             payload.retain();
-            segment.writeBuf(topic, queue, (short) 0, payload, new Offset(-1, i + 1));
+            segment.write(topic, queue, (short) 0, payload, new Offset(-1, i + 1));
         }
 
         int locate = segment.locate(new Offset(-1, 5));

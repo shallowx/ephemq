@@ -340,7 +340,7 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                                     .offset(messageOffset)
                                     .traceLimit(traceLimit)
                                     .alignLimit(alignLimit)
-                                    .cursor(cursor.copy())
+                                    .cursor(cursor.cloneInstance())
                                     .subscription(subscription)
                                     .build();
                             EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);

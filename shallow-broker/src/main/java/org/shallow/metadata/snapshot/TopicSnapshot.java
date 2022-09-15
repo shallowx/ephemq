@@ -26,6 +26,7 @@ import org.shallow.metadata.sraft.LeaderElector;
 import org.shallow.metadata.sraft.RaftQuorumClient;
 import org.shallow.metadata.sraft.RaftVoteProcessor;
 import org.shallow.pool.ShallowChannelPool;
+import org.shallow.util.NetworkUtil;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -149,7 +150,7 @@ public class TopicSnapshot {
                         .latencies(replicas)
                         .leader(leader)
                         .build();
-                ledgerManager.initLog(topic, i, -1, ledgerId);
+                ledgerManager.initLog(topic, i, -1, ledgerId, newImmediatePromise());
                 partitionRecords.add(partitionRecord);
             }
 
@@ -176,6 +177,7 @@ public class TopicSnapshot {
         return topics.get(topic);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void fill() throws IOException {
         String content = fileProcessor.read();
 
@@ -192,7 +194,7 @@ public class TopicSnapshot {
                 Set<PartitionRecord> partitionRecords = record.getPartitionRecords();
                 for (PartitionRecord partitionRecord : partitionRecords) {
                     max = StrictMath.max(max, partitionRecord.getLatency());
-                    ledgerManager.initLog(topic, partitionRecord.getId(), -1, partitionRecord.getLatency());
+                    ledgerManager.initLog(topic, partitionRecord.getId(), -1, partitionRecord.getLatency(), newImmediatePromise());
                 }
             }
         }

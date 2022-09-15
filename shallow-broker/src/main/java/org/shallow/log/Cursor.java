@@ -25,14 +25,14 @@ public class Cursor {
     }
 
     @SuppressWarnings("unused")
-    public Cursor copy() {
+    public Cursor cloneInstance() {
         return new Cursor(storage, reference.get(), location);
     }
 
     public ByteBuf next() {
         Segment segment;
         while ((segment = efficientSegment()) != null) {
-            ByteBuf buf = segment.readBuf(location);
+            ByteBuf buf = segment.read(location);
             if (buf != null) {
                 location += 4 + buf.readableBytes();
                 return buf;
