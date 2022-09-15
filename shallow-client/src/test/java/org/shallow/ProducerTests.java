@@ -59,7 +59,7 @@ public class ProducerTests {
 
         producer.sendOneway(message, new MessagePreInterceptor() {
             @Override
-            public Message filter(Message message) {
+            public Message interceptor(Message message) {
                 return message;
             }
         });

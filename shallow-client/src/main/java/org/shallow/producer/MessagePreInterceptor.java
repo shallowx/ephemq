@@ -4,5 +4,5 @@ import org.shallow.Message;
 
 @FunctionalInterface
 public interface MessagePreInterceptor {
-    Message filter(Message message);
+    Message interceptor(Message message);
 }

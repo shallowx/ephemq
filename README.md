@@ -86,7 +86,7 @@ Producer producer = new MessageProducer("async-producer", producerConfig);
 producer.start();
 
 Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
-MessagePreFilter filter = sendMessage -> sendMessage;
+MessagePreInterceptor interceptor = sendMessage -> sendMessage;
 
 producer.sendAsync(message, filter, (sendResult, cause) -> {});
 ```

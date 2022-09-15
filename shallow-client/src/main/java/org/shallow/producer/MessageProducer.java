@@ -194,9 +194,9 @@ public class MessageProducer implements Producer{
         return metadata.build();
     }
 
-    private Message exchange(Message message, MessagePreInterceptor filter) {
-        if (null != filter) {
-           message = filter.filter(message);
+    private Message exchange(Message message, MessagePreInterceptor mPreInterceptor) {
+        if (null != mPreInterceptor) {
+           message = mPreInterceptor.interceptor(message);
         }
         return message;
     }
