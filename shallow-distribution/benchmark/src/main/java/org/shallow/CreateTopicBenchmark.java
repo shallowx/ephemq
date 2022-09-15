@@ -13,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.shallow.processor.ProcessCommand.Server.CREATE_TOPIC;
 
+/**
+ * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
+ */
 @BenchmarkMode(Mode.All)
 @State(Scope.Benchmark)
 @Measurement(iterations = 2, time = 2000, timeUnit = TimeUnit.MILLISECONDS, batchSize = 10)
@@ -20,13 +23,10 @@ import static org.shallow.processor.ProcessCommand.Server.CREATE_TOPIC;
 @Fork(value = 1, jvmArgsAppend = {
         "-XX:+UseLargePages",
         "-XX:+UseZGC",
-        "-XX:MinHeapSize=2G",
-        "-XX:InitialHeapSize=2G",
-        "-XX:MaxHeapSize=2G",
+        "-XX:MinHeapSize=4G",
+        "-XX:InitialHeapSize=4G",
+        "-XX:MaxHeapSize=4G",
         "-XX:MaxDirectMemorySize=10G",
-        "--add-exports java.base/jdk.internal.misc=ALL-UNNAMED",
-        "--add-opens java.base/java.nio=ALL-UNNAMED",
-        "-Dio.netty.tryReflectionSetAccessible=true",
         "-Dfile.encoding=UTF-8",
         "-Duser.timezone=Asia/Shanghai"
 })

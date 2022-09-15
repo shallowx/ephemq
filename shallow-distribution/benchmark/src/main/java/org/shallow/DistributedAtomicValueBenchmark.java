@@ -6,6 +6,9 @@ import org.shallow.internal.atomic.DistributedAtomicInteger;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
+ */
 @Warmup(iterations = 3, time = 1, batchSize = 1)
 @Measurement(iterations = 1, time = 100, timeUnit = TimeUnit.MILLISECONDS, batchSize = 10)
 @BenchmarkMode(Mode.All)
@@ -14,11 +17,10 @@ import java.util.concurrent.TimeUnit;
 @Fork(value = 1, jvmArgsAppend = {
         "-XX:+UseLargePages",
         "-XX:+UseZGC",
-        "-XX:MinHeapSize=2G",
-        "-XX:InitialHeapSize=2G",
-        "-XX:MaxHeapSize=2G",
+        "-XX:MinHeapSize=4G",
+        "-XX:InitialHeapSize=4G",
+        "-XX:MaxHeapSize=4G",
         "-XX:MaxDirectMemorySize=10G",
-        "-Dio.netty.tryReflectionSetAccessible=true",
         "-Dfile.encoding=UTF-8",
         "-Duser.timezone=Asia/Shanghai"
 })
