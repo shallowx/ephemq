@@ -291,11 +291,11 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             Subscription subscription = (Subscription)future.get();
                             SubscribeResponse response = SubscribeResponse
                                     .newBuilder()
-                                    .setEpoch(subscription.epoch())
+                                    .setEpoch(subscription.getEpoch())
                                     .setLedger(ledger)
-                                    .setIndex(subscription.index())
+                                    .setIndex(subscription.getIndex())
                                     .setQueue(queue)
-                                    .setVersion(subscription.version())
+                                    .setVersion(subscription.getVersion())
                                     .build();
 
                             if (answer != null) {
@@ -357,7 +357,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                         RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
                         TopicSnapshot topicSnapshot = voteProcessor.getTopicSnapshot();
-                        topicSnapshot.create(topic, partitions, latencies);
+                        topicSnapshot.create(topic, partitions, latencies, promise);
 
                         promise.trySuccess(null);
                     } catch (Exception e) {

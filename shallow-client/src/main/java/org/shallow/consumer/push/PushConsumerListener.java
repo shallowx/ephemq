@@ -61,7 +61,13 @@ final class PushConsumerListener implements Listener {
     public void set(int epoch, long index, String queue, int ledger, short version) {
         try {
             synchronized (subscriptionShips) {
-                Subscription subscription = new Subscription(epoch, index, queue, ledger, version);
+                Subscription subscription = Subscription
+                        .newBuilder()
+                        .epoch(epoch)
+                        .index(index)
+                        .ledger(ledger)
+                        .version(version)
+                        .build();
                 AtomicReference<Subscription> reference = subscriptionShips.get(ledger);
                 if (reference == null){
                     reference = new AtomicReference<>();
@@ -108,7 +114,14 @@ final class PushConsumerListener implements Listener {
             byte[] body = ByteBufUtil.buf2Bytes(data);
             Message message = new Message(topic, queue, version, body, epoch, index, new Extras(extras.getExtrasMap()));
 
-            Subscription theLastShip = new Subscription(epoch, index, queue, ledgerId, version);
+            Subscription theLastShip = Subscription
+                    .newBuilder()
+                    .epoch(epoch)
+                    .index(index)
+                    .queue(queue)
+                    .ledger(ledgerId)
+                    .version(version)
+                    .build();
 
             AtomicReference<Subscription> sequence = subscriptionShips.get(ledgerId);
             if (sequence == null) {
@@ -118,9 +131,9 @@ final class PushConsumerListener implements Listener {
             }
 
             Subscription preShip = sequence.get();
-            if (preShip == null || ((epoch == preShip.epoch() && index > theLastShip.index()) ||
-                            epoch > theLastShip.epoch() ||
-                            version > theLastShip.version())) {
+            if (preShip == null || ((epoch == preShip.getEpoch() && index > theLastShip.getIndex()) ||
+                            epoch > theLastShip.getEpoch() ||
+                            version > theLastShip.getVersion())) {
                 if (!sequence.compareAndSet(preShip, theLastShip)) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip, preShip);

@@ -122,7 +122,14 @@ public class MessagePushConsumer implements PushConsumer {
         try {
             doSubscribe(topic, queue, version, epoch, index, promise);
             SubscribeResponse response = promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
-            return new Subscription(response.getEpoch(), response.getIndex(), response.getQueue(), response.getLedger(), (short)response.getVersion());
+            return Subscription
+                    .newBuilder()
+                    .queue(response.getQueue())
+                    .epoch(response.getEpoch())
+                    .ledger(response.getLedger())
+                    .version((short) response.getVersion())
+                    .index(response.getIndex())
+                    .build();
         } catch (Throwable t) {
             throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s, error:%s", topic, queue, t));
         }
@@ -146,7 +153,15 @@ public class MessagePushConsumer implements PushConsumer {
         promise.addListener((GenericFutureListener<Future<SubscribeResponse>>) future -> {
             if (future.isSuccess()) {
                 SubscribeResponse response = future.get();
-                Subscription subscription = new Subscription(response.getEpoch(), response.getIndex(), response.getQueue(), response.getLedger(), (short) response.getVersion());
+                Subscription subscription = Subscription
+                        .newBuilder()
+                        .version((short) response.getVersion())
+                        .ledger(response.getLedger())
+                        .epoch(response.getEpoch())
+                        .index(response.getIndex())
+                        .queue(response.getQueue())
+                        .ledger(response.getLedger())
+                        .build();
                 callback.onCompleted(subscription, null);
             } else {
                 callback.onCompleted(null, future.cause());
@@ -339,9 +354,9 @@ public class MessagePushConsumer implements PushConsumer {
                     AtomicReference<Subscription> subscriptionShip = pushConsumerListener.getSubscriptionShip(ledger);
                     Subscription subscription = subscriptionShip.get();
 
-                    short version = subscription.version();
-                    int epoch = subscription.epoch();
-                    long index = subscription.index();
+                    short version = subscription.getVersion();
+                    int epoch = subscription.getEpoch();
+                    long index = subscription.getIndex();
 
                     subscribeAsync(topic, queue, version, index, null, messageListener);
                 }

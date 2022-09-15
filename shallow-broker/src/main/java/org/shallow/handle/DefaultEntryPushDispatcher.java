@@ -5,8 +5,10 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Promise;
 import org.shallow.Type;
 import org.shallow.codec.MessagePacket;
+import org.shallow.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.log.Cursor;
 import org.shallow.log.Offset;
@@ -15,6 +17,7 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.notify.MessagePushSignal;
 import org.shallow.util.ByteBufUtil;
+import org.shallow.util.NetworkUtil;
 import org.shallow.util.ProtoBufUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -23,6 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
+import static org.shallow.util.NetworkUtil.newImmediatePromise;
 
 @SuppressWarnings("all")
 @ThreadSafe
@@ -52,101 +56,116 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
     }
 
     @Override
-    public void subscribe(Channel channel, String topic, String queue, Offset offset, short version) {
-        if (!channel.isActive() || !channel.isWritable()) {
+    public void subscribe(Channel channel, String topic, String queue, Offset offset, short version, Promise<Subscription> subscribePromise) {
+        if (!channel.isActive()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Channel<{}> is not active for subscribe", channel.toString());
             }
+            subscribePromise.tryFailure(new RuntimeException(String.format("Channel<{}> is not active for subscribe", channel.toString())));
+            return;
         }
 
         try {
             EventExecutor executor = helper.channelExecutor(channel);
            if (executor.inEventLoop()) {
-                doSubscribe(channel, topic, queue, offset, version);
+                doSubscribe(channel, topic, queue, offset, version, subscribePromise);
            } else {
-                executor.execute(() -> doSubscribe(channel, topic, queue, offset, version));
+                executor.execute(() -> doSubscribe(channel, topic, queue, offset, version, subscribePromise));
            }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(t.getMessage(), t);
             }
+            subscribePromise.tryFailure(t);
         }
     }
 
-    private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version) {
-        EntryPushHandler handler = helper.applyHandler(channel, subscribeLimit);
-        ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
-        EntrySubscription oldSubscription = subscriptionShips.get(channel);
+    private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version, Promise<Subscription> subscribePromise) {
+        try {
+            EntryPushHandler handler = helper.applyHandler(channel, subscribeLimit);
+            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+            EntrySubscription oldSubscription = subscriptionShips.get(channel);
 
-        List<String> queues = new ArrayList<>();
-        if (oldSubscription != null) {
-            List<String> oldQueues = oldSubscription.getQueue();
-            queues.addAll(oldQueues);
-        }
-        queues.add(queue);
-
-        EntrySubscription newSubscription = EntrySubscription
-                .newBuilder()
-                .channel(channel)
-                .handler(handler)
-                .topic(topic)
-                .offset(offset)
-                .queue(queues)
-                .version(version)
-                .build();
-
-        EventExecutor dispatchExecutor = handler.getDispatchExecutor();
-        dispatchExecutor.execute(() -> {
-            if (handler.getNextCursor() == null) {
-
-                Offset currentOffset = storage.currentOffset();
-                handler.setNextOffset(currentOffset);
-                handler.setNextCursor(storage.locateCursor(currentOffset));
-
-                handlers.add(handler);
+            List<String> queues = new ArrayList<>();
+            if (oldSubscription != null) {
+                List<String> oldQueues = oldSubscription.getQueue();
+                queues.addAll(oldQueues);
             }
+            queues.add(queue);
 
-            Offset dispatchOffset;
-            if (offset != null) {
-                Offset earlyOffset = storage.headSegment().headOffset();
-                if (earlyOffset.after(offset)) {
-                    dispatchOffset = earlyOffset;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Subscribe offset is expired, and will purse from commit log file, offset={} earlyOffset={}", offset, earlyOffset);
+            EntrySubscription newSubscription = EntrySubscription
+                    .newBuilder()
+                    .channel(channel)
+                    .handler(handler)
+                    .topic(topic)
+                    .offset(offset)
+                    .queue(queues)
+                    .version(version)
+                    .build();
+
+            EventExecutor dispatchExecutor = handler.getDispatchExecutor();
+            dispatchExecutor.execute(() -> {
+                if (handler.getNextCursor() == null) {
+
+                    Offset currentOffset = storage.currentOffset();
+                    handler.setNextOffset(currentOffset);
+                    handler.setNextCursor(storage.locateCursor(currentOffset));
+
+                    handlers.add(handler);
+                }
+
+                Offset dispatchOffset;
+                if (offset != null) {
+                    Offset earlyOffset = storage.headSegment().headOffset();
+                    if (earlyOffset.after(offset)) {
+                        dispatchOffset = earlyOffset;
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Subscribe offset is expired, and will purse from commit log file, offset={} earlyOffset={}", offset, earlyOffset);
+                        }
+
+                        EntryTrace trace = EntryTrace
+                                .newBuilder()
+                                .offset(dispatchOffset)
+                                .cursor(handler.getNextCursor())
+                                .traceLimit(traceLimit)
+                                .alignLimit(alignLimit)
+                                .subscription(newSubscription)
+                                .build();
+                        EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
+                        task.trace();
+                    } else {
+                        dispatchOffset = offset;
+                        newSubscription.setOffset(dispatchOffset);
                     }
-
-                    EntryTrace trace = EntryTrace
-                            .newBuilder()
-                            .offset(dispatchOffset)
-                            .cursor(handler.getNextCursor())
-                            .traceLimit(traceLimit)
-                            .alignLimit(alignLimit)
-                            .subscription(newSubscription)
-                            .build();
-                    EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
-                    task.trace();
                 } else {
-                    dispatchOffset = offset;
+                    dispatchOffset = storage.currentOffset();
                     newSubscription.setOffset(dispatchOffset);
                 }
-            } else {
-                dispatchOffset = storage.currentOffset();
-                newSubscription.setOffset(dispatchOffset);
-            }
 
-            subscriptionShips.put(channel, newSubscription);
-            helper.putHandler(channel, handler);
-        });
+                subscriptionShips.put(channel, newSubscription);
+                helper.putHandler(channel, handler);
+
+                subscribePromise.trySuccess(Subscription
+                        .newBuilder()
+                                .epoch(dispatchOffset.epoch())
+                                .index(dispatchOffset.index())
+                                .version(version)
+                                .queue(queue)
+                        .build());
+            });
+        } catch (Throwable t) {
+            subscribePromise.tryFailure(t);
+        }
     }
 
     @Override
-    public void clean(Channel channel, String topic, String queue) {
+    public void clean(Channel channel, String topic, String queue, Promise<Void> promise) {
         try {
             EventExecutor executor = helper.channelExecutor(channel);
             if (executor.inEventLoop()) {
-                doClean(channel, topic, queue);
+                doClean(channel, topic, queue, promise);
             } else {
-                executor.execute(() -> doClean(channel, topic, queue));
+                executor.execute(() -> doClean(channel, topic, queue, promise));
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
@@ -155,32 +174,40 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
         }
     }
 
-    private void doClean(Channel channel, String topic, String queue) {
-        EntryPushHandler handler = helper.getHandler(channel);
-        if (handler == null) {
-            return;
-        }
-
-        ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
-        EntrySubscription subscription = subscriptionShips.get(channel);
-        if (subscription == null) {
-            return;
-        }
-
-        EventExecutor dispatchExecutor = handler.getDispatchExecutor();
-        dispatchExecutor.execute(() -> {
-            List<String> oldQueues = subscription.getQueue();
-            if (subscription.getTopic().equals(topic)) {
-                oldQueues.remove(queue);
+    private void doClean(Channel channel, String topic, String queue, Promise<Void> promise) {
+        try {
+            EntryPushHandler handler = helper.getHandler(channel);
+            if (handler == null) {
+                promise.trySuccess(null);
+                return;
             }
 
-            if (oldQueues.isEmpty()) {
-                handler.setNextCursor(null);
-                handler.setNextOffset(null);
-
-                subscriptionShips.remove(channel);
+            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+            EntrySubscription subscription = subscriptionShips.get(channel);
+            if (subscription == null) {
+                promise.trySuccess(null);
+                return;
             }
-        });
+
+            EventExecutor dispatchExecutor = handler.getDispatchExecutor();
+            dispatchExecutor.execute(() -> {
+                List<String> oldQueues = subscription.getQueue();
+                if (subscription.getTopic().equals(topic)) {
+                    oldQueues.remove(queue);
+                }
+
+                if (oldQueues.isEmpty()) {
+                    handler.setNextCursor(null);
+                    handler.setNextOffset(null);
+
+                    subscriptionShips.remove(channel);
+                }
+
+                promise.trySuccess(null);
+            });
+        } catch (Throwable t) {
+            promise.tryFailure(t);
+        }
     }
 
     @Override
@@ -403,7 +430,7 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
         helper.close(new EntryDispatchHelper.CloseFunction<Channel, String, String>() {
             @Override
             public void consume(Channel channel, String topic, String queue) {
-                doClean(channel, topic, queue);
+                doClean(channel, topic, queue, newImmediatePromise());
             }
         });
 

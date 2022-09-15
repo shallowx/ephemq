@@ -32,8 +32,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class MessageSendBenchmark {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageSendBenchmark.class);
-
     private MessageProducer producer;
 
     @Setup

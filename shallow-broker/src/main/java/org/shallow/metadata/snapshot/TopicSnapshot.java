@@ -125,45 +125,51 @@ public class TopicSnapshot {
         LeaderElector elector = voteProcessor.getLeaderElector();
         SocketAddress address = elector.getAddress();
 
-        ClientChannel clientChannel = client.getChanelPool().acquireHealthyOrNew(address);
-        return clientChannel;
+        return client.getChanelPool().acquireHealthyOrNew(address);
     }
 
-    public void create(String topic, int partitions, int latencies) throws Exception {
-        if (partitions <= 0 || latencies<= 0) {
-            throw new IllegalArgumentException(String.format("Partitions expect > 0, latency expect > 0, but partitions:%d latency:%d", partitions, latencies));
-        }
+    public void create(String topic, int partitions, int latencies, Promise<Void> promise) throws Exception {
+        try {
+            if (partitions <= 0 || latencies<= 0) {
+                RuntimeException illegalArgumentException = new IllegalArgumentException(String.format("Partitions expect > 0, latency expect > 0, but partitions:%d latency:%d", partitions, latencies));
+                promise.tryFailure(illegalArgumentException);
+                return;
+            }
 
-        Set<PartitionRecord> partitionRecords = new CopyOnWriteArraySet<>();
-        for (int i = 0; i < partitions; i++) {
-            List<String> replicas = leaderElector.assignLatencies(topic, partitions, latencies);
-            String leader = leaderElector.elect(topic, partitions, latencies);
+            Set<PartitionRecord> partitionRecords = new CopyOnWriteArraySet<>();
+            for (int i = 0; i < partitions; i++) {
+                List<String> replicas = leaderElector.assignLatencies(topic, partitions, latencies);
+                String leader = leaderElector.elect(topic, partitions, latencies);
 
-            int ledgerId = atomicValue.increment().preValue();
-            PartitionRecord partitionRecord = PartitionRecord
+                int ledgerId = atomicValue.increment().preValue();
+                PartitionRecord partitionRecord = PartitionRecord
+                        .newBuilder()
+                        .id(i)
+                        .latency(ledgerId)
+                        .latencies(replicas)
+                        .leader(leader)
+                        .build();
+                ledgerManager.initLog(topic, i, -1, ledgerId);
+                partitionRecords.add(partitionRecord);
+            }
+
+            TopicRecord record = TopicRecord
                     .newBuilder()
-                    .id(i)
-                    .latency(ledgerId)
-                    .latencies(replicas)
-                    .leader(leader)
+                    .name(topic)
+                    .partitions(partitions)
+                    .latencies(latencies)
+                    .partitionRecords(partitionRecords)
                     .build();
-            ledgerManager.initLog(topic, i, -1, ledgerId);
-            partitionRecords.add(partitionRecord);
+
+            topics.put(topic, record);
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            fileProcessor.write(gson.toJson(topics.asMap()));
+
+            promise.trySuccess(null);
+        } catch (Throwable t) {
+            promise.tryFailure(t);
         }
-
-        TopicRecord record = TopicRecord
-                .newBuilder()
-                .name(topic)
-                .partitions(partitions)
-                .latencies(latencies)
-                .partitionRecords(partitionRecords)
-                .build();
-
-        topics.put(topic, record);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        fileProcessor.write(gson.toJson(topics.asMap()));
-
     }
 
     public TopicRecord getRecord(String topic) {

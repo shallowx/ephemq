@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.shallow.consumer.ConsumerConfig;
 import org.shallow.consumer.push.MessagePushConsumer;
 import org.shallow.consumer.push.MessagePushListener;
+import org.shallow.consumer.push.SubscribeCallback;
 import org.shallow.consumer.push.Subscription;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -33,12 +34,53 @@ public class PushConsumerTests {
                 if (logger.isInfoEnabled()) {
                     logger.info("Recive message:{}", message);
                 }
-
             }
         });
         messagePushConsumer.start();
 
         Subscription subscribe = messagePushConsumer.subscribe("create", "message");
+        latch.await();
+
+        messagePushConsumer.shutdownGracefully();
+    }
+
+    @Test
+    public void subscribeAsync() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
+
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClientConfig(clientConfig);
+
+        org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+        messagePushConsumer.registerListener(new MessagePushListener() {
+            @Override
+            public void onMessage(Message message) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Recive message:{}", message);
+                }
+
+            }
+        });
+        messagePushConsumer.start();
+
+        messagePushConsumer.subscribeAsync("create", "message", new SubscribeCallback() {
+            @Override
+            public void onCompleted(Subscription subscription, Throwable cause) {
+                    if (cause != null) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error(cause);
+                        }
+                        return;
+                    }
+
+                    if (logger.isInfoEnabled()) {
+                        logger.info("subscription ship:{}", subscription);
+                    }
+            }
+        });
         latch.await();
 
         messagePushConsumer.shutdownGracefully();

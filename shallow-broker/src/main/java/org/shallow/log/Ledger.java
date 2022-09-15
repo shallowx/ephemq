@@ -3,6 +3,8 @@ package org.shallow.log;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.consumer.pull.PullResult;
 import org.shallow.consumer.push.Subscription;
@@ -87,8 +89,18 @@ public class Ledger {
                theOffset = offset;
             }
 
-            entryPushHandler.subscribe(channel, topic, queue, theOffset, version);
-            promise.trySuccess(new Subscription(theOffset.epoch(), theOffset.index(), queue, ledgerId, version));
+            Promise<Subscription> subscribePromise = storageExecutor.newPromise();
+            subscribePromise.addListener((GenericFutureListener<Future<Subscription>>) future -> {
+                if (future.isSuccess()) {
+                    Subscription subscription = future.get();
+                    subscription.setLedger(ledgerId);
+
+                    promise.trySuccess(subscription);
+                } else {
+                    promise.tryFailure(future.cause());
+                }
+            });
+            entryPushHandler.subscribe(channel, topic, queue, theOffset, version, subscribePromise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to subscribe, channel<{}> ledgerId={} topic={} queue={} offset={}", channel.toString(), ledgerId, topic, queue, offset);
@@ -111,8 +123,7 @@ public class Ledger {
 
     private void doClean(Channel channel, String topic, String queue, Promise<Void> promise) {
         try {
-            entryPushHandler.clean(channel, topic, queue);
-            promise.trySuccess(null);
+            entryPushHandler.clean(channel, topic, queue, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to clear subscribe, channel<{}> ledgerId={} topic={} queue={}", channel.toString(), ledgerId, topic, queue);
