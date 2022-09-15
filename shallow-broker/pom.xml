@@ -51,7 +51,7 @@
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
-
+<!-- if use log4f2 logging-->
 <!--        <dependency>-->
 <!--            <groupId>org.slf4j</groupId>-->
 <!--            <artifactId>slf4j-log4j12</artifactId>-->

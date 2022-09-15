@@ -13,8 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@Warmup(iterations = 3, time = 5000, timeUnit = TimeUnit.MILLISECONDS)
-@Measurement(iterations = 3, time = 5000, timeUnit = TimeUnit.MILLISECONDS)
+/**
+ * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
+ */
+@Warmup(iterations = 3, time = 10)
+@Measurement(iterations = 3, time = 10)
 @BenchmarkMode(Mode.All)
 @Threads(3)
 @Fork(value = 1, jvmArgsAppend = {
@@ -24,7 +27,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
         "-XX:InitialHeapSize=4G",
         "-XX:MaxHeapSize=4G",
         "-XX:MaxDirectMemorySize=10G",
-        "-Dio.netty.tryReflectionSetAccessible=true",
         "-Dfile.encoding=UTF-8",
         "-Duser.timezone=Asia/Shanghai"
 })

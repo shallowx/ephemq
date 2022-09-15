@@ -5,6 +5,9 @@ import org.openjdk.jmh.annotations.State;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
+ */
 @BenchmarkMode(Mode.All)
 @State(Scope.Thread)
 @Threads(10)
