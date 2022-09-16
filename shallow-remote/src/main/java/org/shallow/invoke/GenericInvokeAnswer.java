@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import static io.netty.util.ReferenceCountUtil.release;
 import static org.shallow.util.ObjectUtil.checkNotNull;
 
-public class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
+public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 
     @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<GenericInvokeAnswer> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokeAnswer.class, "completed");

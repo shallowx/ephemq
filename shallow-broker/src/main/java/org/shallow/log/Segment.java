@@ -224,4 +224,17 @@ public class Segment {
         BYTE_BUF_HOLDER_THREAD.setDaemon(true);
         BYTE_BUF_HOLDER_THREAD.start();
     }
+
+    @Override
+    public String toString() {
+        return "Segment{" +
+                "ledgerId=" + ledgerId +
+                ", head=" + head +
+                ", headLocation=" + headLocation +
+                ", tail=" + tail +
+                ", tailLocation=" + tailLocation +
+                ", holder=" + holder +
+                ", next=" + next +
+                '}';
+    }
 }

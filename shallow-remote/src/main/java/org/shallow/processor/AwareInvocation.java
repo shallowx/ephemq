@@ -13,7 +13,7 @@ import static org.shallow.util.ObjectUtil.checkPositive;
 import static org.shallow.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
-public class AwareInvocation extends AbstractReferenceCounted {
+public final class AwareInvocation extends AbstractReferenceCounted {
 
     private static final Recycler<AwareInvocation> RECYCLER = new Recycler<>() {
         @Override

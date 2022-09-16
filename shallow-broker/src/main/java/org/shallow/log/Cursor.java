@@ -1,6 +1,7 @@
 package org.shallow.log;
 
 import io.netty.buffer.ByteBuf;
+import org.checkerframework.checker.units.qual.C;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 
@@ -8,7 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.lang.ref.WeakReference;
 
 @ThreadSafe
-public class Cursor {
+public class Cursor implements Cloneable {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
 
     private final Storage storage;
@@ -24,9 +25,13 @@ public class Cursor {
         this.location = location;
     }
 
-    @SuppressWarnings("unused")
-    public Cursor cloneInstance() {
-        return new Cursor(storage, reference.get(), location);
+    @Override
+    public Cursor clone() throws CloneNotSupportedException {
+        try {
+            return (Cursor)super.clone();
+        } catch (Throwable t) {
+            throw new CloneNotSupportedException(String.format("Cursor clone failure, location=%d segment=%s", location, reference.get()));
+        }
     }
 
     public ByteBuf next() {

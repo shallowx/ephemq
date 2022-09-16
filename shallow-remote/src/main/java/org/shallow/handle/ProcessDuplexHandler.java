@@ -19,6 +19,7 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.processor.ProcessorAware;
 import org.shallow.processor.AwareInvocation;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -30,6 +31,7 @@ import static org.shallow.util.ByteBufUtil.buf2String;
 import static org.shallow.util.ByteBufUtil.release;
 import static org.shallow.util.NetworkUtil.*;
 
+@Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
 
