@@ -154,6 +154,9 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                         .build());
             });
         } catch (Throwable t) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Channel<{}> subscribe failure, topic={} queue={} version={} offset={}", channel, topic, queue, version, offset);
+            }
             subscribePromise.tryFailure(t);
         }
     }
@@ -206,6 +209,9 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                 promise.trySuccess(null);
             });
         } catch (Throwable t) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Channel<{}> clean subscribe failure, topic={} queue={} version={} offset={}", channel, topic, queue);
+            }
             promise.tryFailure(t);
         }
     }
@@ -340,7 +346,7 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                                     .offset(messageOffset)
                                     .traceLimit(traceLimit)
                                     .alignLimit(alignLimit)
-                                    .cursor(cursor.cloneInstance())
+                                    .cursor(cursor.clone())
                                     .subscription(subscription)
                                     .build();
                             EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);

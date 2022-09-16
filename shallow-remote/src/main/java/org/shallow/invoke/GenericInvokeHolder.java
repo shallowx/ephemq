@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.util.function.Consumer;
 
-public class GenericInvokeHolder<V> implements InvokeHolder<V> {
+public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
     private final Int2ObjectMap<Holder> holders;
     private int offset;

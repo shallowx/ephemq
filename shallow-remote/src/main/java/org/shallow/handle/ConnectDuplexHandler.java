@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 
-public class ConnectDuplexHandler extends ChannelDuplexHandler {
+public final class ConnectDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConnectDuplexHandler.class);
 
     private static final int INT_ZERO = 0;
@@ -58,6 +58,9 @@ public class ConnectDuplexHandler extends ChannelDuplexHandler {
                     if (delay > INT_ZERO) {
                         idleFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Channel<{}> is closed", ctx.channel().toString());
+                        }
                         ctx.close();
                     }
                 }
