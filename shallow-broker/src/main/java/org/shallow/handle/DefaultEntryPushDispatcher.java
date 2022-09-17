@@ -6,6 +6,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectCollection;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.shallow.Type;
 import org.shallow.codec.MessagePacket;
 import org.shallow.consumer.push.Subscription;
@@ -83,8 +86,8 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
     private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version, Promise<Subscription> subscribePromise) {
         try {
             EntryPushHandler handler = helper.applyHandler(channel, subscribeLimit);
-            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
-            EntrySubscription oldSubscription = subscriptionShips.get(channel);
+            ConcurrentMap<Channel, EntrySubscription> channelShips = handler.getChannelShips();
+            EntrySubscription oldSubscription = channelShips.get(channel);
 
             List<String> queues = new ArrayList<>();
             if (oldSubscription != null) {
@@ -142,9 +145,10 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                     newSubscription.setOffset(dispatchOffset);
                 }
 
-                subscriptionShips.put(channel, newSubscription);
+                channelShips.put(channel, newSubscription);
+                Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+                subscribeShips.put(topic + ":" + queue, newSubscription);
                 helper.putHandler(channel, handler);
-
                 subscribePromise.trySuccess(Subscription
                         .newBuilder()
                                 .epoch(dispatchOffset.epoch())
@@ -185,7 +189,7 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                 return;
             }
 
-            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getChannelShips();
             EntrySubscription subscription = subscriptionShips.get(channel);
             if (subscription == null) {
                 promise.trySuccess(null);
@@ -205,6 +209,9 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
 
                     subscriptionShips.remove(channel);
                 }
+
+                Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+                subscribeShips.remove(topic + ":" + queue);
 
                 promise.trySuccess(null);
             });
@@ -255,12 +262,20 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
             return;
         }
 
-        Collection<EntrySubscription> subscriptionShips = handler.getSubscriptionShips().values();
+        Collection<EntrySubscription> channelShips = handler.getChannelShips().values();
 
-        if (subscriptionShips.isEmpty()) {
+        if (channelShips.isEmpty()) {
             handler.getTriggered().set(false);
             return;
         }
+
+        Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+        if (subscribeShips.isEmpty()) {
+            handler.getTriggered().set(false);
+            return;
+        }
+
+        ObjectCollection<EntrySubscription> entrySubscriptions= subscribeShips.values();
 
         Offset nextOffset = handler.getNextOffset();
         try {
@@ -289,6 +304,14 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                     queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
                     queue = ByteBufUtil.buf2String(queueBuf, queueLength);
 
+                    EntrySubscription entrySubscription = subscribeShips.get(topic + ":" + queue);
+                    if (entrySubscription == null) {
+                        if (whole > handleLimit) {
+                            break;
+                        }
+                        continue;
+                    }
+
                     payload.skipBytes(queueLength);
 
                     int epoch = payload.readInt();
@@ -304,57 +327,40 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
 
                     nextOffset = messageOffset;
 
-                    for (EntrySubscription subscription : subscriptionShips) {
-                        if (subscription == null) {
-                            if (whole > handleLimit) {
-                                break;
-                            }
-                            continue;
+                    Channel channel = entrySubscription.getChannel();
+                    if (!channel.isActive()) {
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
+                        }
+                        continue;
+                    }
+
+                    short subscriptionVersion = entrySubscription.getVersion();
+                    if (subscriptionVersion != -1 && subscriptionVersion != version) {
+                        continue;
+                    }
+
+                    entrySubscription.setOffset(messageOffset);
+                    message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
+
+                    if (!channel.isWritable()) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
                         }
 
-                        Channel channel = subscription.getChannel();
-                        if (!channel.isActive()) {
-                            if (logger.isWarnEnabled()) {
-                                logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
-                            }
-                            continue;
-                        }
-
-                        short subscriptionVersion = subscription.getVersion();
-                        if (subscriptionVersion != -1 && subscriptionVersion != version) {
-                            continue;
-                        }
-
-                        if (!subscription.getQueue().contains(queue)) {
-                            continue;
-                        }
-
-                        if (!subscription.getTopic().equals(topic)) {
-                            continue;
-                        }
-
-                        subscription.setOffset(messageOffset);
-                        message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
-
-                        if (!channel.isWritable()) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
-                            }
-
-                            EntryTrace trace = EntryTrace
-                                    .newBuilder()
-                                    .offset(messageOffset)
-                                    .traceLimit(traceLimit)
-                                    .alignLimit(alignLimit)
-                                    .cursor(cursor.clone())
-                                    .subscription(subscription)
-                                    .build();
-                            EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
-                            channel.writeAndFlush(message.retainedSlice(), task.newPromise());
-                            return;
-                        }
-                        channel.writeAndFlush(message.retainedSlice());
-                     }
+                        EntryTrace trace = EntryTrace
+                                .newBuilder()
+                                .offset(messageOffset)
+                                .traceLimit(traceLimit)
+                                .alignLimit(alignLimit)
+                                .cursor(cursor.clone())
+                                .subscription(entrySubscription)
+                                .build();
+                        EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
+                        channel.writeAndFlush(message.retainedSlice(), task.newPromise());
+                        return;
+                    }
+                    channel.writeAndFlush(message.retainedSlice());
 
                     if (whole > handleLimit) {
                         break;

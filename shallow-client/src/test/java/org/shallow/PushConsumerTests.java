@@ -18,7 +18,7 @@ public class PushConsumerTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PushConsumerTests.class);
 
     @Test
-    public void subscribe() throws Exception {
+    public void subscribe1() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
 
         ClientConfig clientConfig = new ClientConfig();
@@ -38,7 +38,7 @@ public class PushConsumerTests {
         });
         messagePushConsumer.start();
 
-        Subscription subscribe = messagePushConsumer.subscribe("create", "message");
+        Subscription subscribe = messagePushConsumer.subscribe("test", "message");
         latch.await();
 
         messagePushConsumer.shutdownGracefully();
