@@ -148,7 +148,7 @@ public class ProducerTests {
     }
 
     @Test
-    public void testContinueSend() throws Exception {
+    public void testContinueSend1() throws Exception {
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
 
@@ -159,7 +159,7 @@ public class ProducerTests {
 
         CountDownLatch latch = new CountDownLatch(1);
         for (int i = 0; i < Long.MAX_VALUE; i++) {
-            Message message = new Message("create", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Extras());
+            Message message = new Message("test", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Extras());
             producer.sendAsync(message, filter, (sendResult, cause) -> {
                 if ( null == cause) {
                     if (logger.isInfoEnabled()) {

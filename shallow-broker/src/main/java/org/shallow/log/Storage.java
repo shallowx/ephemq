@@ -119,11 +119,12 @@ public class Storage {
                     String theQueue = ByteBufUtil.buf2String(queueBuf, queueLength);
 
                     position += payload.readableBytes();
-                    if (!theQueue.equals(queue)) {
+
+                    if (!theTopic.equals(topic)) {
                         continue;
                     }
 
-                    if (!theTopic.equals(topic)) {
+                    if (!theQueue.equals(queue)) {
                         continue;
                     }
 

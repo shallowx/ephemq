@@ -2,6 +2,7 @@ package org.shallow.handle;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
+import it.unimi.dsi.fastutil.objects.*;
 import org.shallow.log.Cursor;
 import org.shallow.log.Offset;
 
@@ -14,7 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EntryPushHandler {
 
     private final String id = UUID.randomUUID().toString();
-    private final ConcurrentMap<Channel, EntrySubscription> subscriptionShips = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Channel, EntrySubscription> channelShips = new ConcurrentHashMap<>();
+    private final Object2ObjectMap<String, EntrySubscription> subscribeShips = new Object2ObjectOpenHashMap<>();
     private final EventExecutor dispatchExecutor;
     private volatile Offset nextOffset;
     private volatile Cursor nextCursor;
@@ -29,8 +31,12 @@ public class EntryPushHandler {
         return id;
     }
 
-    public ConcurrentMap<Channel, EntrySubscription> getSubscriptionShips() {
-        return subscriptionShips;
+    public ConcurrentMap<Channel, EntrySubscription> getChannelShips() {
+        return channelShips;
+    }
+
+    public Object2ObjectMap<String, EntrySubscription> getSubscribeShips() {
+        return subscribeShips;
     }
 
     public EventExecutor getDispatchExecutor() {
@@ -49,7 +55,6 @@ public class EntryPushHandler {
         return triggered;
     }
 
-
     public void setNextOffset(Offset nextOffset) {
         this.nextOffset = nextOffset;
     }
@@ -62,7 +67,7 @@ public class EntryPushHandler {
     public String toString() {
         return "EntryPushHandler{" +
                 "id='" + id + '\'' +
-                ", subscriptionShips=" + subscriptionShips +
+                ", channelShips=" + channelShips +
                 ", dispatchExecutor=" + dispatchExecutor +
                 ", nextOffset=" + nextOffset +
                 ", nextCursor=" + nextCursor +

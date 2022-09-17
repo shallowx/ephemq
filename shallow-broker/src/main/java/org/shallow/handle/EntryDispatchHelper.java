@@ -64,7 +64,7 @@ public class EntryDispatchHelper {
             Map<EntryPushHandler, Integer> handlers = new HashMap<>();
             int bound = 0;
             for (EntryPushHandler entryHandler : applyHandlers.keySet()) {
-                int channelCount = entryHandler.getSubscriptionShips().size();
+                int channelCount = entryHandler.getChannelShips().size();
                 if (channelCount >= subscribeLimit) {
                     continue;
                 }
@@ -72,7 +72,7 @@ public class EntryDispatchHelper {
                 if (channelCount >= middleLimit) {
                     bound += subscribeLimit - channelCount;
                     handlers.put(entryHandler, channelCount);
-                } else if (handler == null || handler.getSubscriptionShips().size() < channelCount) {
+                } else if (handler == null || handler.getChannelShips().size() < channelCount) {
                     handler = entryHandler;
                 }
             }
@@ -130,7 +130,7 @@ public class EntryDispatchHelper {
         for (Map.Entry<Channel, EntryPushHandler> entry : entries) {
             Channel channel = entry.getKey();
             EntryPushHandler handler = getHandler(channel);
-            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getSubscriptionShips();
+            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getChannelShips();
             if (subscriptionShips == null || subscriptionShips.isEmpty()) {
                 continue;
             }

@@ -70,7 +70,7 @@ public class EntryTraceDelayTask {
         EntrySubscription subscription = entryTrace.getSubscription();
         EntryPushHandler handler = subscription.getHandler();
 
-        if (subscription != handler.getSubscriptionShips().get(channel)) {
+        if (subscription != handler.getChannelShips().get(channel)) {
             return;
         }
 
@@ -120,24 +120,16 @@ public class EntryTraceDelayTask {
                     nextOffset = messageOffset;
 
                     short subscriptionVersion = subscription.getVersion();
-                    if (subscriptionVersion != -1 && subscriptionVersion != version) {
-                        if (whole > traceLimit) {
-                            break;
-                        }
+                    if (!subscription.getTopic().equals(topic)) {
                         continue;
                     }
 
                     if (!subscription.getQueue().contains(queue)) {
-                        if (whole > traceLimit) {
-                            break;
-                        }
+
                         continue;
                     }
 
-                    if (!subscription.getTopic().equals(topic)) {
-                        if (whole > traceLimit) {
-                            break;
-                        }
+                    if (subscriptionVersion != -1 && subscriptionVersion != version) {
                         continue;
                     }
 
@@ -206,7 +198,7 @@ public class EntryTraceDelayTask {
         EntrySubscription subscription = entryTrace.getSubscription();
         EntryPushHandler handler = subscription.getHandler();
 
-        if (subscription != handler.getSubscriptionShips().get(channel)) {
+        if (subscription != handler.getChannelShips().get(channel)) {
             return;
         }
 
@@ -265,11 +257,11 @@ public class EntryTraceDelayTask {
                         continue;
                     }
 
-                    if (!subscription.getQueue().contains(queue)) {
+                    if (!subscription.getTopic().equals(topic)) {
                         continue;
                     }
 
-                    if (!subscription.getTopic().equals(topic)) {
+                    if (!subscription.getQueue().contains(queue)) {
                         continue;
                     }
 

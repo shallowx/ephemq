@@ -1,5 +1,7 @@
 package org.shallow;
 
+import com.google.common.base.Joiner;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,7 +81,7 @@ public class Message {
                 ", message=" + Arrays.toString(message) +
                 ", epoch=" + epoch +
                 ", index=" + index +
-                ", extras=" + extras +
+                ", extras=" + Joiner.on(",").withKeyValueSeparator("=").join(extras) +
                 '}';
     }
 }
