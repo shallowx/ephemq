@@ -118,11 +118,13 @@ public class FixedChannelPool implements ShallowChannelPool {
                     }
                     return actives.get(ThreadLocalRandom.current().nextInt(actives.size()));
                 }
-
-                channelPools.remove(address);
                 flip(address, client.getClientConfig().getChannelFixedPoolCapacity());
             }
             List<Future<ClientChannel>> activeFutures = channelPools.get(address);
+            if (activeFutures.size() == 1) {
+                return activeFutures.get(ThreadLocalRandom.current().nextInt(0));
+            }
+
             return activeFutures.get(ThreadLocalRandom.current().nextInt(activeFutures.size()));
         }
     }
