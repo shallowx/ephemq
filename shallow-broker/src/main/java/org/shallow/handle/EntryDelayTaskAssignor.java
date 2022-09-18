@@ -20,22 +20,22 @@ import javax.annotation.concurrent.ThreadSafe;
 import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 
 @ThreadSafe
-public class EntryTraceDelayTask {
+public class EntryDelayTaskAssignor {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryTraceDelayTask.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDelayTaskAssignor.class);
 
-    private final EntryTrace entryTrace;
+    private final EntryAttributes attributes;
     private final EntryDispatchHelper helper;
     private final Channel channel;
     private final int ledgerId;
     private final int traceLimit;
     private final int alignLimit;
 
-    public EntryTraceDelayTask(EntryTrace trace, EntryDispatchHelper helper, int ledgerId) {
-        this.entryTrace = trace;
+    public EntryDelayTaskAssignor(EntryAttributes trace, EntryDispatchHelper helper, int ledgerId) {
+        this.attributes = trace;
         this.helper = helper;
-        this.traceLimit = entryTrace.getTraceLimit();
-        this.alignLimit = entryTrace.getAlignLimit();
+        this.traceLimit = attributes.getAssignLimit();
+        this.alignLimit = attributes.getAlignLimit();
         this.ledgerId = ledgerId;
         this.channel = channel();
 
@@ -44,38 +44,38 @@ public class EntryTraceDelayTask {
     public ChannelPromise newPromise() {
         ChannelPromise promise = channel.newPromise();
         promise.addListener((ChannelFutureListener) f -> {
-            trace();
+            assign();
         });
         return promise;
     }
 
-    public void trace() {
+    public void assign() {
         try {
             EventExecutor executor = helper.channelExecutor(channel);
-            executor.execute(this::doTrace);
+            executor.execute(this::doAssign);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Submit entry trace failure, task={}. error:{}", entryTrace, t);
+                logger.error("Submit entry trace failure, task={}. error:{}", attributes, t);
             }
         }
     }
 
     private Channel channel() {
-        EntrySubscription subscription = entryTrace.getSubscription();
+        EntrySubscription subscription = attributes.getSubscription();
         return subscription.getChannel();
     }
 
 
-    private void doTrace() {
-        EntrySubscription subscription = entryTrace.getSubscription();
+    private void doAssign() {
+        EntrySubscription subscription = attributes.getSubscription();
         EntryPushHandler handler = subscription.getHandler();
 
         if (subscription != handler.getChannelShips().get(channel)) {
             return;
         }
 
-        Cursor cursor = entryTrace.getCursor();
-        Offset nextOffset = entryTrace.getOffset();
+        Cursor cursor = attributes.getCursor();
+        Offset nextOffset = attributes.getOffset();
 
         int whole = 0;
         try {
@@ -139,13 +139,13 @@ public class EntryTraceDelayTask {
 
                     if (!channel.isActive()) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel, entryTrace);
+                            logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel, attributes);
                         }
                         return;
                     }
 
                     if (!channel.isWritable()) {
-                        entryTrace.setOffset(nextOffset);
+                        attributes.setOffset(nextOffset);
                         channel.writeAndFlush(message.retainedSlice(), newPromise());
                     }
                     channel.writeAndFlush(message, channel.voidPromise());
@@ -171,19 +171,19 @@ public class EntryTraceDelayTask {
             }
         }
 
-        entryTrace.setOffset(nextOffset);
+        attributes.setOffset(nextOffset);
         Offset alignOffset = handler.getNextOffset();
         if (alignOffset != null && !nextOffset.before(alignOffset)) {
             align();
           return;
         }
 
-        trace();
+        assign();
     }
 
     private void align() {
         try {
-            EntrySubscription subscription = entryTrace.getSubscription();
+            EntrySubscription subscription = attributes.getSubscription();
             EntryPushHandler handler = subscription.getHandler();
             EventExecutor dispatchExecutor = handler.getDispatchExecutor();
             dispatchExecutor.execute(this::doAlign);
@@ -195,7 +195,7 @@ public class EntryTraceDelayTask {
     }
 
     private void doAlign() {
-        EntrySubscription subscription = entryTrace.getSubscription();
+        EntrySubscription subscription = attributes.getSubscription();
         EntryPushHandler handler = subscription.getHandler();
 
         if (subscription != handler.getChannelShips().get(channel)) {
@@ -203,8 +203,8 @@ public class EntryTraceDelayTask {
         }
 
         Offset alignOffset = handler.getNextOffset();
-        Cursor cursor = entryTrace.getCursor();
-        Offset nextOffset = entryTrace.getOffset();
+        Cursor cursor = attributes.getCursor();
+        Offset nextOffset = attributes.getOffset();
 
         int whole = 0;
         try {
@@ -270,13 +270,13 @@ public class EntryTraceDelayTask {
                     message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
                     if (!channel.isActive()) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel, entryTrace);
+                            logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel, attributes);
                         }
                         return;
                     }
 
                     if (!channel.isWritable()) {
-                        entryTrace.setOffset(nextOffset);
+                        attributes.setOffset(nextOffset);
                         channel.writeAndFlush(message.retainedSlice(), newPromise());
                     }
                     channel.writeAndFlush(message, channel.voidPromise());
@@ -302,8 +302,8 @@ public class EntryTraceDelayTask {
             }
         }
 
-        entryTrace.setOffset(nextOffset);
-        trace();
+        attributes.setOffset(nextOffset);
+        assign();
     }
 
     private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset , ByteBuf payload, ByteBufAllocator alloc) {

@@ -66,7 +66,12 @@ public class DefaultEntryPullDispatcher implements PullDispatchProcessor {
 
         EntryPullHandler handler = executionHandlers.get(requestId);
         handler = chain.preHandle(handler);
-        handler.executor().execute(() -> doDispatch(requestId, topic, queue, version, ledgerId, limit, offset, payload));
+        try {
+            handler.executor().execute(() -> doDispatch(requestId, topic, queue, version, ledgerId, limit, offset, payload));
+        } catch (Throwable t) {
+            Channel channel = channels.get(requestId);
+            transfer(requestId, payload, channel);
+        }
     }
 
     private void doDispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
