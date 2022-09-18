@@ -3,14 +3,14 @@ package org.shallow.handle;
 import org.shallow.log.Cursor;
 import org.shallow.log.Offset;
 
-public class EntryTrace {
+public class EntryAttributes {
     private EntrySubscription subscription;
     private Cursor cursor;
     private Offset offset;
-    private int traceLimit;
+    private int assignLimit;
     private int alignLimit;
 
-    private EntryTrace() {
+    private EntryAttributes() {
         //unsupported
     }
 
@@ -30,64 +30,64 @@ public class EntryTrace {
         this.offset = offset;
     }
 
-    public int getTraceLimit() {
-        return traceLimit;
+    public int getAssignLimit() {
+        return assignLimit;
     }
 
     public int getAlignLimit() {
         return alignLimit;
     }
 
-    public static TraceBuilder newBuilder() {
-        return new TraceBuilder();
+    public static AttributeBuilder newBuilder() {
+        return new AttributeBuilder();
     }
 
-    public static class TraceBuilder {
+    public static class AttributeBuilder {
         EntrySubscription subscription;
         Cursor cursor;
         Offset offset;
-        int traceLimit;
+        int assignLimit;
         int alignLimit;
 
-        private TraceBuilder() {
+        private AttributeBuilder() {
         }
 
-        public TraceBuilder subscription(EntrySubscription subscription) {
+        public AttributeBuilder subscription(EntrySubscription subscription) {
             this.subscription = subscription;
             return this;
         }
 
-        public TraceBuilder cursor(Cursor cursor) {
+        public AttributeBuilder cursor(Cursor cursor) {
             this.cursor = cursor;
             return this;
         }
 
 
-        public TraceBuilder traceLimit(int traceLimit) {
-            this.traceLimit = traceLimit;
+        public AttributeBuilder assignLimit(int assignLimit) {
+            this.assignLimit = assignLimit;
             return this;
         }
 
-        public TraceBuilder alignLimit(int alignLimit) {
+        public AttributeBuilder alignLimit(int alignLimit) {
             this.alignLimit = alignLimit;
             return this;
         }
 
-        public TraceBuilder offset(Offset offset) {
+        public AttributeBuilder offset(Offset offset) {
             this.offset = offset;
             return this;
         }
 
-        public EntryTrace build() {
-            EntryTrace trace = new EntryTrace();
+        public EntryAttributes build() {
+            EntryAttributes attributes = new EntryAttributes();
 
-            trace.subscription = this.subscription;
-            trace.cursor = this.cursor;
-            trace.offset = this.offset;
-            trace.traceLimit = this.traceLimit;
-            trace.alignLimit = this.alignLimit;
+            attributes.subscription = this.subscription;
+            attributes.cursor = this.cursor;
+            attributes.offset = this.offset;
+            attributes.assignLimit = this.assignLimit;
+            attributes.alignLimit = this.alignLimit;
 
-            return trace;
+            return attributes;
         }
     }
 
@@ -97,7 +97,7 @@ public class EntryTrace {
                 "subscription=" + subscription +
                 ", cursor=" + cursor +
                 ", offset=" + offset +
-                ", traceLimit=" + traceLimit +
+                ", assignLimit=" + assignLimit +
                 ", alignLimit=" + alignLimit +
                 '}';
     }

@@ -125,8 +125,8 @@ public class BrokerConfig {
         return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_LIMIT, 1000));
     }
 
-    public int getMessagePushHandleTraceLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_TRACE_LIMIT, 1000));
+    public int getMessagePushHandleAssignLimit() {
+        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_ASSIGN_LIMIT, 1000));
     }
 
     public int getMessagePushHandleAlignLimit() {

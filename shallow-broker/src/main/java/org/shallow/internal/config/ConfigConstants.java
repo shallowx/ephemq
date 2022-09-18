@@ -28,6 +28,6 @@ public interface ConfigConstants {
     String MESSAGE_PULL_BYTES_LIMIT = "message.pull.bytes.limit";
     String MESSAGE_PUSH_HANDLE_THREAD_LIMIT = "message.push.handle.thread.limit";
     String MESSAGE_PUSH_HANDLE_LIMIT = "message.push.handle.limit";
-    String MESSAGE_PUSH_HANDLE_TRACE_LIMIT = "message.push.handle.trace.limit";
+    String MESSAGE_PUSH_HANDLE_ASSIGN_LIMIT = "message.push.handle.assign.limit";
     String MESSAGE_PUSH_HANDLE_ALIGN_LIMIT = "message.push.handle.align.limit";
 }

@@ -8,7 +8,6 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.shallow.Type;
 import org.shallow.codec.MessagePacket;
 import org.shallow.consumer.push.Subscription;
@@ -20,7 +19,6 @@ import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.proto.notify.MessagePushSignal;
 import org.shallow.util.ByteBufUtil;
-import org.shallow.util.NetworkUtil;
 import org.shallow.util.ProtoBufUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -39,7 +37,7 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
     private final int ledgerId;
     private final int subscribeLimit;
     private final int handleLimit;
-    private final int traceLimit;
+    private final int assignLimit;
     private final int alignLimit;
 
     private final EntryDispatchHelper helper;
@@ -53,7 +51,7 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
         this.handleLimit = config.getMessagePushHandleLimit();
-        this.traceLimit = config.getMessagePushHandleTraceLimit();
+        this.assignLimit = config.getMessagePushHandleAssignLimit();
         this.alignLimit = config.getMessagePushHandleAlignLimit();
         this.helper = new EntryDispatchHelper(config);
     }
@@ -126,16 +124,16 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                             logger.debug("Subscribe offset is expired, and will purse from commit log file, offset={} earlyOffset={}", offset, earlyOffset);
                         }
 
-                        EntryTrace trace = EntryTrace
+                        EntryAttributes attributes = EntryAttributes
                                 .newBuilder()
                                 .offset(dispatchOffset)
                                 .cursor(handler.getNextCursor())
-                                .traceLimit(traceLimit)
+                                .assignLimit(assignLimit)
                                 .alignLimit(alignLimit)
                                 .subscription(newSubscription)
                                 .build();
-                        EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
-                        task.trace();
+                        EntryDelayTaskAssignor task = new EntryDelayTaskAssignor(attributes, helper, ledgerId);
+                        task.assign();
                     } else {
                         dispatchOffset = offset;
                         newSubscription.setOffset(dispatchOffset);
@@ -348,15 +346,15 @@ public class DefaultEntryPushDispatcher implements PushDispatchProcessor {
                             logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
                         }
 
-                        EntryTrace trace = EntryTrace
+                        EntryAttributes attributes = EntryAttributes
                                 .newBuilder()
                                 .offset(messageOffset)
-                                .traceLimit(traceLimit)
+                                .assignLimit(assignLimit)
                                 .alignLimit(alignLimit)
                                 .cursor(cursor.clone())
                                 .subscription(entrySubscription)
                                 .build();
-                        EntryTraceDelayTask task = new EntryTraceDelayTask(trace, helper, ledgerId);
+                        EntryDelayTaskAssignor task = new EntryDelayTaskAssignor(attributes, helper, ledgerId);
                         channel.writeAndFlush(message.retainedSlice(), task.newPromise());
                         return;
                     }
