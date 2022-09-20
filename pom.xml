@@ -18,6 +18,7 @@
         <module>shallow-distribution</module>
         <module>shallow-example</module>
         <module>shallow-common</module>
+        <module>shallow-client-spring-boot</module>
     </modules>
 
     <scm>
