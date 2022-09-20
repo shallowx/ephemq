@@ -13,6 +13,11 @@
     <artifactId>shallow-distribution</artifactId>
     <packaging>pom</packaging>
     <name>shallow-distribution</name>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <modules>
         <module>benchmark</module>
     </modules>
