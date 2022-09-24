@@ -1,17 +1,26 @@
 package org.shallow.configuration;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.shallow.ClientConfig;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import org.shallow.Client;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Getter
-@Setter
 @Configuration
-@ConfigurationProperties("client.config")
+@EnableConfigurationProperties(value = ClientProperties.class)
 public class ClientConfiguration {
-    @NestedConfigurationProperty
-    private ClientConfig clientConfig;
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnMissingClass
+    public Client newClient() {
+       return new Client(clientProperties.getName(), clientProperties.getConfig());
+    }
+
+    private final ClientProperties clientProperties;
+    public ClientConfiguration(ClientProperties clientProperties) {
+        this.clientProperties = clientProperties;
+    }
 }
