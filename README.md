@@ -40,12 +40,6 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 # Quickstart
 
-## how to start broker server
-### stand alone
-- shallow.stand.alone=true
-- shallow.process.roles=controller,broker
-- shallow.controller.quorum.voters=shallow@127.0.0.1:9127
-
 ## CreateTopic
 ```
 ClientConfig clientConfig = new ClientConfig();
