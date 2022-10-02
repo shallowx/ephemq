@@ -22,6 +22,8 @@ import org.shallow.meta.PartitionRecord;
 import org.shallow.meta.TopicRecord;
 import org.shallow.metadata.MappingFileProcessor;
 import org.shallow.metadata.MetadataManager;
+import org.shallow.metadata.listener.TopicChangedListener;
+import org.shallow.metadata.listener.TopicListener;
 import org.shallow.metadata.sraft.LeaderElector;
 import org.shallow.metadata.sraft.RaftQuorumClient;
 import org.shallow.metadata.sraft.RaftVoteProcessor;
@@ -33,6 +35,7 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
@@ -51,11 +54,13 @@ public class TopicSnapshot {
     private final LedgerManager ledgerManager;
     private final EventExecutor retryTaskExecutor;
     private final RaftQuorumClient client;
+    private final TopicListener listener;
 
     public TopicSnapshot(MappingFileProcessor processor, BrokerConfig config, DistributedAtomicInteger atomicValue, RaftVoteProcessor voteProcessor, BrokerManager manager, RaftQuorumClient client) {
         this.fileProcessor = processor;
         this.config = config;
         this.atomicValue = atomicValue;
+        this.listener = new TopicChangedListener(manager);
         this.ledgerManager = manager.getLedgerManager();
         this.voteProcessor = voteProcessor;
         this.leaderElector = new PartitionLeaderElector(voteProcessor);
@@ -168,7 +173,31 @@ public class TopicSnapshot {
             fileProcessor.write(gson.toJson(topics.asMap()));
 
             promise.trySuccess(null);
+
+            if (listener != null) {
+                listener.update(topic);
+            }
         } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to create topic, topic={}. {}", topic, t);
+            }
+            promise.tryFailure(t);
+        }
+    }
+
+    public void delete(String topic, Promise<Void> promise) {
+        try {
+            ConcurrentMap<String, TopicRecord> records = topics.asMap();
+            records.remove(topic);
+
+            promise.trySuccess(null);
+            if (listener != null) {
+                listener.update(topic);
+            }
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to delete topic, topic={}. {}", topic, t);
+            }
             promise.tryFailure(t);
         }
     }

@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PartitionChangedSignal() {
+    topic_ = "";
   }
 
   @java.lang.Override
@@ -48,6 +49,12 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            topic_ = s;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -80,6 +87,44 @@ private static final long serialVersionUID = 0L;
             org.shallow.proto.notify.PartitionChangedSignal.class, org.shallow.proto.notify.PartitionChangedSignal.Builder.class);
   }
 
+  public static final int TOPIC_FIELD_NUMBER = 1;
+  private volatile java.lang.Object topic_;
+  /**
+   * <code>string topic = 1;</code>
+   * @return The topic.
+   */
+  @java.lang.Override
+  public java.lang.String getTopic() {
+    java.lang.Object ref = topic_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      topic_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string topic = 1;</code>
+   * @return The bytes for topic.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTopicBytes() {
+    java.lang.Object ref = topic_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      topic_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -94,6 +139,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -103,6 +151,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -118,6 +169,8 @@ private static final long serialVersionUID = 0L;
     }
     org.shallow.proto.notify.PartitionChangedSignal other = (org.shallow.proto.notify.PartitionChangedSignal) obj;
 
+    if (!getTopic()
+        .equals(other.getTopic())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -129,6 +182,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+    hash = (53 * hash) + getTopic().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -262,6 +317,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      topic_ = "";
+
       return this;
     }
 
@@ -288,6 +345,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.shallow.proto.notify.PartitionChangedSignal buildPartial() {
       org.shallow.proto.notify.PartitionChangedSignal result = new org.shallow.proto.notify.PartitionChangedSignal(this);
+      result.topic_ = topic_;
       onBuilt();
       return result;
     }
@@ -336,6 +394,10 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.shallow.proto.notify.PartitionChangedSignal other) {
       if (other == org.shallow.proto.notify.PartitionChangedSignal.getDefaultInstance()) return this;
+      if (!other.getTopic().isEmpty()) {
+        topic_ = other.topic_;
+        onChanged();
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -362,6 +424,82 @@ private static final long serialVersionUID = 0L;
           mergeFrom(parsedMessage);
         }
       }
+      return this;
+    }
+
+    private java.lang.Object topic_ = "";
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @param value The topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopic(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      topic_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTopic() {
+      
+      topic_ = getDefaultInstance().getTopic();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @param value The bytes for topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopicBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      topic_ = value;
+      onChanged();
       return this;
     }
     @java.lang.Override

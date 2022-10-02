@@ -381,8 +381,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 commandExecutor.execute(() -> {
                     try {
-                        Promise<MessageLite> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<MessageLite>>) f -> {
+                        Promise<Void> promise = newImmediatePromise();
+                        promise.addListener((GenericFutureListener<Future<Void>>) f -> {
                             if (f.isSuccess()) {
                                 if (answer != null) {
                                     DelTopicResponse response = DelTopicResponse.newBuilder().build();
@@ -392,6 +392,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 answerFailed(answer, f.cause());
                             }
                         });
+                        RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
+                        TopicSnapshot topicSnapshot = voteProcessor.getTopicSnapshot();
+                        topicSnapshot.delete(topic, promise);
 
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
