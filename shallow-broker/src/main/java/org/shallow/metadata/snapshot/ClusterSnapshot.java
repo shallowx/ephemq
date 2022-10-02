@@ -103,6 +103,11 @@ public class ClusterSnapshot {
                 }
             }
             registerPromise.trySuccess(null);
+
+            if (listener == null) {
+                return;
+            }
+            listener.onServerRegistration(config.getServerId(), host, port);
         } catch (Throwable t) {
             registerPromise.tryFailure(t);
         }

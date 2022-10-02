@@ -9,6 +9,7 @@ import org.shallow.RemoteException;
 import org.shallow.Type;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.processor.ProcessCommand;
 import org.shallow.proto.notify.MessagePullSignal;
@@ -25,10 +26,12 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
 
     private final ClientChannel clientChannel;
     private final Listener listener;
+    private final Client client;
 
     public ClientServiceProcessorAware(ClientChannel clientChannel, Client client) {
         this.clientChannel = clientChannel;
         this.listener = client.getListener();
+        this.client = client;
     }
 
     @Override
@@ -57,7 +60,8 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                 }
 
                 case CLUSTER_CHANGED -> {
-
+                    MetadataManager metadataManager = client.getMetadataManager();
+                    metadataManager.refreshMetadata();
                 }
 
                 default -> {

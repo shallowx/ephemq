@@ -6,4 +6,16 @@ package org.shallow.proto.notify;
 public interface PartitionChangedSignalOrBuilder extends
     // @@protoc_insertion_point(interface_extends:shallow.protobuf.PartitionChangedSignal)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>string topic = 1;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 1;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 }

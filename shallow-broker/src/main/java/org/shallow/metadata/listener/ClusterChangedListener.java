@@ -12,6 +12,7 @@ import org.shallow.util.ByteBufUtil;
 import org.shallow.util.ProtoBufUtil;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import static org.shallow.processor.ProcessCommand.Client.CLUSTER_CHANGED;
 
@@ -30,15 +31,18 @@ public class ClusterChangedListener implements ClusterListener {
         if (logger.isDebugEnabled()) {
             logger.debug("This server is registered successfully, name={} host={} post={}", nodeId, host, port);
         }
-        // do nothing
+        handleServerOnChanged(nodeId, host, port);
     }
 
     @Override
     public void onServerOffline(String nodeId, String host, int port) {
-        handleServerOffline(nodeId, host, port);
+        if (logger.isDebugEnabled()) {
+            logger.debug("This server is offline successfully, name={} host={} post={}", nodeId, host, port);
+        }
+        handleServerOnChanged(nodeId, host, port);
     }
 
-    private void handleServerOffline(String nodeId, String host, int port) {
+    private void handleServerOnChanged(String nodeId, String host, int port) {
         BrokerConnectionManager connectionManager = manager.getBrokerConnectionManager();
 
         if (connectionManager.isEmpty()) {
