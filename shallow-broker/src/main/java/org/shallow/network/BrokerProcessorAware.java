@@ -1,6 +1,5 @@
 package org.shallow.network;
 
-import com.google.protobuf.MessageLite;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

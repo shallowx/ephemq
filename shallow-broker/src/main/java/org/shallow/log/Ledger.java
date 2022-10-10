@@ -42,9 +42,6 @@ public class Ledger {
         LATENT, STARTED, CLOSED
     }
 
-    /**
-     * Constructs a new object.
-     */
     public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
         this.partition = partition;
