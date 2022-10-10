@@ -16,9 +16,6 @@ public class Cursor implements Cloneable {
     private WeakReference<Segment> reference;
     private int location;
 
-    /**
-     * Constructs a new object.
-     */
     public Cursor(Storage storage, Segment segment, int location) {
         this.storage = storage;
         this.reference = buildWeakReference(segment);
