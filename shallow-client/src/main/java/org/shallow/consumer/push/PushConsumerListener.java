@@ -9,7 +9,7 @@ import org.shallow.Message;
 import org.shallow.consumer.ConsumeListener;
 import org.shallow.consumer.ConsumerConfig;
 import org.shallow.consumer.MessagePostInterceptor;
-import org.shallow.internal.Listener;
+import org.shallow.internal.ClientListener;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -28,7 +28,7 @@ import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.util.NetworkUtil.switchSocketAddress;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
-final class PushConsumerListener implements Listener {
+final class PushConsumerListener implements ClientListener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PushConsumerListener.class);
 

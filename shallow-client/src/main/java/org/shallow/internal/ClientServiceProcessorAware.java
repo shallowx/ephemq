@@ -25,7 +25,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientServiceProcessorAware.class);
 
     private final ClientChannel clientChannel;
-    private final Listener listener;
+    private final ClientListener listener;
     private final Client client;
 
     public ClientServiceProcessorAware(ClientChannel clientChannel, Client client) {

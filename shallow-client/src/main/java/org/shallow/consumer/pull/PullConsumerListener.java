@@ -6,7 +6,7 @@ import org.shallow.Extras;
 import org.shallow.Message;
 import org.shallow.consumer.ConsumeListener;
 import org.shallow.consumer.MessagePostInterceptor;
-import org.shallow.internal.Listener;
+import org.shallow.internal.ClientListener;
 import org.shallow.internal.ClientChannel;
 import org.shallow.logging.InternalLogger;
 import org.shallow.logging.InternalLoggerFactory;
@@ -22,7 +22,7 @@ import java.util.List;
 import static org.shallow.util.ProtoBufUtil.readProto;
 
 @Immutable
-final class PullConsumerListener implements Listener {
+final class PullConsumerListener implements ClientListener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PullConsumerListener.class);
 
