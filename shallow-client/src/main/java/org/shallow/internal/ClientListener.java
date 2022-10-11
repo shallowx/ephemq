@@ -7,7 +7,7 @@ import org.shallow.consumer.MessagePostInterceptor;
 import org.shallow.proto.notify.NodeOfflineSignal;
 import org.shallow.proto.notify.PartitionChangedSignal;
 
-public interface Listener {
+public interface ClientListener {
 
     default void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal){}
 

@@ -9,7 +9,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.shallow.internal.Listener;
+import org.shallow.internal.ClientListener;
 import org.shallow.metadata.MetadataManager;
 import org.shallow.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.logging.InternalLogger;
@@ -17,8 +17,6 @@ import org.shallow.logging.InternalLoggerFactory;
 import org.shallow.pool.ShallowChannelHealthChecker;
 import org.shallow.pool.ShallowChannelPool;
 import org.shallow.util.ObjectUtil;
-
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import static org.shallow.util.NetworkUtil.*;
 
@@ -32,18 +30,18 @@ public class Client {
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
     private final ShallowChannelHealthChecker healthChecker;
-    private Listener listener;
+    private ClientListener listener;
     private ShallowChannelPool pool;
 
     public Client(String name, ClientConfig config) {
         this(name, config, null);
     }
 
-    public Client(String name, ClientConfig config, Listener listener) {
+    public Client(String name, ClientConfig config, ClientListener listener) {
         this(name, config, listener, null);
     }
 
-    public Client(String name, ClientConfig config, Listener listener, ShallowChannelHealthChecker healthChecker) {
+    public Client(String name, ClientConfig config, ClientListener listener, ShallowChannelHealthChecker healthChecker) {
         this.name = ObjectUtil.checkNonEmpty(name, "Client name cannot be empty");
         this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
         this.listener = listener;
@@ -88,11 +86,11 @@ public class Client {
         return name;
     }
 
-    public Listener getListener() {
+    public ClientListener getListener() {
         return listener;
     }
 
-    public void registerListener(Listener listener) {
+    public void registerListener(ClientListener listener) {
         this.listener = listener;
     }
 
