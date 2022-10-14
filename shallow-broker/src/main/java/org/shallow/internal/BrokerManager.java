@@ -1,7 +1,7 @@
 package org.shallow.internal;
 
 import org.shallow.log.LedgerManager;
-import org.shallow.metadata.sraft.RaftVoteProcessor;
+import org.shallow.namespace.ZookeeperClient;
 import org.shallow.network.BrokerConnectionManager;
 
 public interface BrokerManager {
@@ -10,7 +10,7 @@ public interface BrokerManager {
 
     LedgerManager getLedgerManager();
 
-    RaftVoteProcessor getVoteProcessor();
-
     BrokerConnectionManager getBrokerConnectionManager();
+
+    ZookeeperClient getClient(String cluster);
 }

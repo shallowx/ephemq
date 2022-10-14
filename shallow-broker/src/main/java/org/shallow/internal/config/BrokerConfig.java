@@ -61,22 +61,6 @@ public class BrokerConfig {
         return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 
-    public String getProcessRoles() {
-        return object2String(config.getOrDefault(PROCESS_ROLES, "controller,broker"));
-    }
-
-    public String getControllerQuorumVoters() {
-        return object2String(config.getOrDefault(CONTROLLER_QUORUM_VOTERS, "shallow@127.0.0.1:9127"));
-    }
-
-    public String getWorkDirectory() {
-        return object2String(config.getOrDefault(WORK_DIRECTORY, "/tmp/shallow/raft"));
-    }
-
-    public boolean isStandAlone() {
-        return object2Boolean(config.getOrDefault(STAND_ALONE, true));
-    }
-
     public int getInvokeTimeMs() {
         return object2Int(config.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
     }
@@ -133,4 +117,23 @@ public class BrokerConfig {
         return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_ALIGN_LIMIT, 1000));
     }
 
+    public String getUri(){
+        return object2String(config.getOrDefault(NAME_SPACE_URI,""));
+    }
+
+    public int getSessionTimeoutMs() {
+        return object2Int(config.getOrDefault(SESSION_TIMEOUT_MS, 30000));
+    }
+
+    public int getConnectionTimeoutMs() {
+        return object2Int(config.getOrDefault(CONNECTION_TIMEOUT_MS, 30000));
+    }
+
+    public int getConnectionRetrySleepMs() {
+        return object2Int(config.getOrDefault(CONNECTION_RETRY_SLEEP_MS, 1000));
+    }
+
+    public int getConnectionMaxRetries() {
+        return object2Int(config.getOrDefault(CONNECTION_RETRY_SLEEP_MS, Integer.MAX_VALUE));
+    }
 }

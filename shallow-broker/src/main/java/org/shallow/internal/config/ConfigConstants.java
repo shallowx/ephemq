@@ -6,10 +6,6 @@ public interface ConfigConstants {
     String SERVER_ID = "server.id";
     String EXPOSED_HOST = "exposed.host";
     String EXPOSED_PORT = "exposed.port";
-    String STAND_ALONE = "raft.stand.alone";
-    String PROCESS_ROLES = "raft.process.roles";
-    String CONTROLLER_QUORUM_VOTERS = "raft.controller.quorum.voters";
-    String WORK_DIRECTORY = "raft.work.directory";
     String INVOKE_TIMEOUT_MS = "invoke.timeout.ms";
     String IO_THREAD_LIMIT = "io.thread.limit";
     String WORK_THREAD_LIMIT = "network.thread.limit";
@@ -30,4 +26,10 @@ public interface ConfigConstants {
     String MESSAGE_PUSH_HANDLE_LIMIT = "message.push.handle.limit";
     String MESSAGE_PUSH_HANDLE_ASSIGN_LIMIT = "message.push.handle.assign.limit";
     String MESSAGE_PUSH_HANDLE_ALIGN_LIMIT = "message.push.handle.align.limit";
+
+    String NAME_SPACE_URI = "namespace.uri";
+    String CONNECTION_TIMEOUT_MS = "connection.timeout.ms";
+    String SESSION_TIMEOUT_MS = "connection.session.timeout.ms";
+    String CONNECTION_RETRY_SLEEP_MS = "connection.retry.sleep.ms";
+    String CONNECTION_MAX_RETRIES = "connection.max.retries";
 }
