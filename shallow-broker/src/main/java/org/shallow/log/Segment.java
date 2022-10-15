@@ -70,7 +70,8 @@ public class Segment {
             tailLocation = finalBuf.writerIndex();
             return;
         }
-        throw new RuntimeException("Segment is recycled");
+
+        throw new RuntimeException("Segment has been recycled");
     }
 
     public ByteBuf read(int location) {
@@ -80,6 +81,11 @@ public class Segment {
             int length = payload.getInt(location);
             return payload.retainedSlice(location + 4, length);
         }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Segment has no readable message, location={}", location);
+        }
+
         return null;
     }
 
@@ -89,6 +95,10 @@ public class Segment {
             ByteBuf payload = finalHolder.payload;
             int length = payload.getInt(location);
             return payload.retainedSlice(location, length + 4);
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Segment has no readable completed message, location={}", location);
         }
         return null;
     }

@@ -179,5 +179,9 @@ public class LedgerManager {
         if (!ledgers.isEmpty()) {
             ledgers.values().forEach(Ledger::close);
         }
+
+        if (logger.isWarnEnabled()) {
+            logger.warn("Ledger manager close is starting...");
+        }
     }
 }
