@@ -244,6 +244,7 @@ public class Ledger {
 
             entryPullHandler.shutdownGracefully();
             entryPushHandler.shutdownGracefully();
+
             if (logger.isWarnEnabled()) {
                 logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
             }
