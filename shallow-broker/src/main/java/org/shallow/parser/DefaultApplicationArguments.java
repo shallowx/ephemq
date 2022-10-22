@@ -1,17 +1,14 @@
 package org.shallow.parser;
 
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.util.StringUtil;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-import static org.shallow.internal.config.ConfigConstants.STAND_ALONE;
-import static org.shallow.util.TypeUtil.*;
-import static org.shallow.util.TypeUtil.object2String;
+import static org.shallow.common.util.TypeUtil.*;
 
 public class DefaultApplicationArguments implements ApplicationArguments {
 
@@ -25,11 +22,6 @@ public class DefaultApplicationArguments implements ApplicationArguments {
 
     @Override
     public BrokerConfig config() {
-        String isStandAlone = System.getProperty(STAND_ALONE);
-        if (!StringUtil.isNullOrEmpty(isStandAlone)) {
-            properties.setProperty(STAND_ALONE, isStandAlone);
-        }
-
         BrokerConfig config = BrokerConfig.exchange(properties);
 
         checkAndPrintConfig(config);

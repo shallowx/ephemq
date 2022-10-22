@@ -1,8 +1,8 @@
 package org.shallow.log;
 
 import io.netty.buffer.ByteBuf;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.lang.ref.PhantomReference;

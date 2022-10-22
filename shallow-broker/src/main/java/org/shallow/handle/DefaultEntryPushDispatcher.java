@@ -8,26 +8,26 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import org.shallow.Type;
-import org.shallow.codec.MessagePacket;
-import org.shallow.consumer.push.Subscription;
+import org.shallow.remote.Type;
+import org.shallow.remote.codec.MessagePacket;
+import org.shallow.client.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.log.Cursor;
 import org.shallow.log.Offset;
 import org.shallow.log.Storage;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.proto.notify.MessagePushSignal;
-import org.shallow.util.ByteBufUtil;
-import org.shallow.util.ProtoBufUtil;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.remote.proto.notify.MessagePushSignal;
+import org.shallow.remote.util.ByteBufUtil;
+import org.shallow.remote.util.ProtoBufUtil;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
-import static org.shallow.util.NetworkUtil.newImmediatePromise;
+import static org.shallow.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
+import static org.shallow.remote.util.NetworkUtil.newImmediatePromise;
 
 @SuppressWarnings("all")
 @ThreadSafe

@@ -1,12 +1,12 @@
 package org.shallow.example.metadata;
 
 import org.junit.jupiter.api.Test;
-import org.shallow.Client;
-import org.shallow.ClientConfig;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.meta.NodeRecord;
-import org.shallow.pool.DefaultFixedChannelPoolFactory;
+import org.shallow.client.Client;
+import org.shallow.client.ClientConfig;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.common.meta.NodeRecord;
+import org.shallow.client.pool.DefaultFixedChannelPoolFactory;
 
 import java.util.List;
 import java.util.Set;

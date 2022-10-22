@@ -1,7 +1,6 @@
 package org.shallow.internal;
 
 import org.shallow.log.LedgerManager;
-import org.shallow.metadata.sraft.RaftVoteProcessor;
 import org.shallow.network.BrokerConnectionManager;
 
 public interface BrokerManager {
@@ -9,8 +8,6 @@ public interface BrokerManager {
     void shutdownGracefully() throws Exception;
 
     LedgerManager getLedgerManager();
-
-    RaftVoteProcessor getVoteProcessor();
 
     BrokerConnectionManager getBrokerConnectionManager();
 }

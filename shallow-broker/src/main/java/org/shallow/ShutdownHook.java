@@ -1,7 +1,7 @@
 package org.shallow;
 
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import java.util.concurrent.Callable;
 

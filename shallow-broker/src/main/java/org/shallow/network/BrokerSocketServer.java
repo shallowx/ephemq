@@ -6,11 +6,11 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.internal.BrokerManager;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
-import static org.shallow.util.NetworkUtil.newEventLoopGroup;
-import static org.shallow.util.NetworkUtil.preferServerChannelClass;
+import static org.shallow.remote.util.NetworkUtil.newEventLoopGroup;
+import static org.shallow.remote.util.NetworkUtil.preferServerChannelClass;
 
 public final class BrokerSocketServer {
 

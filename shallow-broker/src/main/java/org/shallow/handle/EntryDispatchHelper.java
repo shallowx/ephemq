@@ -4,15 +4,15 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
+import static org.shallow.remote.util.NetworkUtil.newEventExecutorGroup;
 
 public class EntryDispatchHelper {
 

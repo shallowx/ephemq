@@ -3,12 +3,12 @@ package org.shallow.log;
 import io.netty.buffer.*;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.shallow.RemoteException;
-import org.shallow.consumer.pull.PullResult;
+import org.shallow.remote.RemoteException;
+import org.shallow.client.consumer.pull.PullResult;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.util.ByteBufUtil;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.remote.util.ByteBufUtil;
 import javax.annotation.concurrent.ThreadSafe;
 
 @ThreadSafe

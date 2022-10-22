@@ -2,21 +2,18 @@ package org.shallow.example.metadata;
 
 import io.netty.util.concurrent.Promise;
 import org.junit.jupiter.api.Test;
-import org.shallow.Client;
-import org.shallow.ClientConfig;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.meta.TopicRecord;
-import org.shallow.pool.DefaultFixedChannelPoolFactory;
-import org.shallow.proto.server.CreateTopicResponse;
-import org.shallow.proto.server.DelTopicResponse;
+import org.shallow.client.Client;
+import org.shallow.client.ClientConfig;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.common.meta.TopicRecord;
+import org.shallow.client.pool.DefaultFixedChannelPoolFactory;
+import org.shallow.remote.proto.server.CreateTopicResponse;
+import org.shallow.remote.proto.server.DelTopicResponse;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static org.shallow.processor.ProcessCommand.Server.CREATE_TOPIC;
-import static org.shallow.processor.ProcessCommand.Server.DELETE_TOPIC;
 
 @SuppressWarnings("all")
 public class TopicMetadata {

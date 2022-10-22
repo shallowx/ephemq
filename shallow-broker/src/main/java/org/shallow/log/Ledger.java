@@ -6,22 +6,22 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.shallow.consumer.pull.PullResult;
-import org.shallow.consumer.push.Subscription;
+import org.shallow.client.consumer.pull.PullResult;
+import org.shallow.client.consumer.push.Subscription;
 import org.shallow.handle.DefaultEntryPullDispatcher;
 import org.shallow.handle.PullDispatchProcessor;
 import org.shallow.handle.DefaultEntryPushDispatcher;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.handle.PushDispatchProcessor;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.shallow.util.ByteBufUtil.release;
-import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
+import static org.shallow.remote.util.ByteBufUtil.release;
+import static org.shallow.remote.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
 public class Ledger {

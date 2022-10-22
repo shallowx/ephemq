@@ -2,8 +2,8 @@ package org.shallow.internal.config;
 
 import java.util.Properties;
 
+import static org.shallow.common.util.TypeUtil.*;
 import static org.shallow.internal.config.ConfigConstants.*;
-import static org.shallow.util.TypeUtil.*;
 
 public class BrokerConfig {
 

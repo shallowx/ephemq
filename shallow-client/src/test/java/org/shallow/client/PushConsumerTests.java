@@ -1,0 +1,87 @@
+package org.shallow.client;
+
+import org.shallow.client.consumer.push.MessagePushConsumer;
+import org.junit.Test;
+import org.shallow.client.consumer.ConsumerConfig;
+import org.shallow.client.consumer.push.MessagePushListener;
+import org.shallow.client.consumer.push.SubscribeCallback;
+import org.shallow.client.consumer.push.Subscription;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+@SuppressWarnings("all")
+public class PushConsumerTests {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PushConsumerTests.class);
+
+    @Test
+    public void subscribe1() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
+
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClientConfig(clientConfig);
+
+        org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+        messagePushConsumer.registerListener(new MessagePushListener() {
+            @Override
+            public void onMessage(Message message) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Recive message:{}", message);
+                }
+            }
+        });
+        messagePushConsumer.start();
+
+        Subscription subscribe = messagePushConsumer.subscribe("test", "message");
+        latch.await();
+
+        messagePushConsumer.shutdownGracefully();
+    }
+
+    @Test
+    public void subscribeAsync() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
+
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClientConfig(clientConfig);
+
+        org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+        messagePushConsumer.registerListener(new MessagePushListener() {
+            @Override
+            public void onMessage(Message message) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Recive message:{}", message);
+                }
+
+            }
+        });
+        messagePushConsumer.start();
+
+        messagePushConsumer.subscribeAsync("create", "message", new SubscribeCallback() {
+            @Override
+            public void onCompleted(Subscription subscription, Throwable cause) {
+                    if (cause != null) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error(cause);
+                        }
+                        return;
+                    }
+
+                    if (logger.isInfoEnabled()) {
+                        logger.info("subscription ship:{}", subscription);
+                    }
+            }
+        });
+        latch.await();
+
+        messagePushConsumer.shutdownGracefully();
+    }
+}

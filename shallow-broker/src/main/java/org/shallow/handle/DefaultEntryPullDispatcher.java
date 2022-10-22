@@ -8,22 +8,21 @@ import io.netty.util.concurrent.EventExecutor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import org.shallow.Type;
-import org.shallow.codec.MessagePacket;
-import org.shallow.internal.config.BrokerConfig;
 import org.shallow.log.Offset;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.proto.notify.MessagePullSignal;
-import org.shallow.util.ByteBufUtil;
-import org.shallow.util.ProtoBufUtil;
+import org.shallow.remote.Type;
+import org.shallow.internal.config.BrokerConfig;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.remote.proto.notify.MessagePullSignal;
+import org.shallow.remote.util.ByteBufUtil;
+import org.shallow.remote.util.ProtoBufUtil;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.TimeUnit;
 
-import static org.shallow.codec.MessagePacket.HEADER_LENGTH;
-import static org.shallow.codec.MessagePacket.MAGIC_NUMBER;
-import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
-import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
+import static org.shallow.remote.codec.MessagePacket.HEADER_LENGTH;
+import static org.shallow.remote.codec.MessagePacket.MAGIC_NUMBER;
+import static org.shallow.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
+import static org.shallow.remote.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
 public class DefaultEntryPullDispatcher implements PullDispatchProcessor {
@@ -59,7 +58,7 @@ public class DefaultEntryPullDispatcher implements PullDispatchProcessor {
         executionHandlers.computeIfAbsent(requestId, k -> handler);
     }
 
-    public void dispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset,  ByteBuf payload) {
+    public void dispatch(int requestId, String topic, String queue, short version, int ledgerId, int limit, Offset offset, ByteBuf payload) {
         if (channels.isEmpty()) {
             return;
         }

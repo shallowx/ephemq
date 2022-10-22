@@ -1,14 +1,14 @@
 package org.shallow.example.quickstart;
 
 import org.junit.jupiter.api.Test;
-import org.shallow.ClientConfig;
-import org.shallow.Message;
-import org.shallow.consumer.ConsumerConfig;
-import org.shallow.consumer.push.MessagePushConsumer;
-import org.shallow.consumer.push.MessagePushListener;
-import org.shallow.consumer.push.Subscription;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.client.ClientConfig;
+import org.shallow.client.Message;
+import org.shallow.client.consumer.ConsumerConfig;
+import org.shallow.client.consumer.push.MessagePushConsumer;
+import org.shallow.client.consumer.push.MessagePushListener;
+import org.shallow.client.consumer.push.Subscription;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -28,7 +28,7 @@ public class PushConsumer {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+        org.shallow.client.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
         messagePushConsumer.registerListener(new MessagePushListener() {
             @Override
             public void onMessage(Message message) {

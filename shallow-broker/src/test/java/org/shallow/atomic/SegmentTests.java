@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.shallow.log.Offset;
 import org.shallow.log.Segment;
-import org.shallow.util.ByteBufUtil;
+import org.shallow.remote.util.ByteBufUtil;
 
 import java.nio.charset.StandardCharsets;
 

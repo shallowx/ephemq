@@ -1,41 +1,26 @@
 package org.shallow.network;
 
-import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
-import org.shallow.RemoteException;
-import org.shallow.consumer.push.Subscription;
 import org.shallow.internal.BrokerManager;
-import org.shallow.internal.config.BrokerConfig;
-import org.shallow.invoke.InvokeAnswer;
-import org.shallow.log.LedgerManager;
 import org.shallow.log.Offset;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.meta.NodeRecord;
-import org.shallow.meta.PartitionRecord;
-import org.shallow.meta.TopicRecord;
-import org.shallow.metadata.sraft.LeaderElector;
-import org.shallow.metadata.sraft.RaftVoteProcessor;
-import org.shallow.metadata.snapshot.ClusterSnapshot;
-import org.shallow.metadata.snapshot.TopicSnapshot;
-import org.shallow.processor.Ack;
-import org.shallow.processor.AwareInvocation;
-import org.shallow.processor.ProcessCommand;
-import org.shallow.processor.ProcessorAware;
-import org.shallow.proto.NodeMetadata;
-import org.shallow.proto.PartitionMetadata;
-import org.shallow.proto.TopicMetadata;
-import org.shallow.proto.elector.*;
-import org.shallow.proto.server.*;
-import org.shallow.util.NetworkUtil;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.*;
-import static org.shallow.util.NetworkUtil.*;
-import static org.shallow.util.ProtoBufUtil.proto2Buf;
-import static org.shallow.util.ProtoBufUtil.readProto;
+import org.shallow.remote.RemoteException;
+import org.shallow.client.consumer.push.Subscription;
+import org.shallow.internal.config.BrokerConfig;
+import org.shallow.remote.invoke.InvokeAnswer;
+import org.shallow.log.LedgerManager;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.remote.processor.Ack;
+import org.shallow.remote.processor.ProcessCommand;
+import org.shallow.remote.processor.ProcessorAware;
+import org.shallow.remote.proto.NodeMetadata;
+import org.shallow.remote.proto.elector.*;
+import org.shallow.remote.proto.server.*;
+import static org.shallow.remote.util.NetworkUtil.*;
+import static org.shallow.remote.util.ProtoBufUtil.proto2Buf;
+import static org.shallow.remote.util.ProtoBufUtil.readProto;
 
 @SuppressWarnings("all")
 public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Server {
@@ -85,15 +70,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case SUBSCRIBE -> processSubscribeRequest(channel, data, answer);
 
-                case CLEAN_SUBSCRIBE -> processCleanSubscribeRequest(channel, command, data, answer, type, version);
-
                 case CREATE_TOPIC -> processCreateTopicRequest(channel, command, data, answer, type, version);
 
                 case DELETE_TOPIC -> processDelTopicRequest(channel, command, data, answer, type, version);
-
-                case FETCH_CLUSTER_RECORD -> processFetchClusterRecordRequest(channel, command, data, answer, type, version);
-
-                case FETCH_TOPIC_RECORD -> processFetchTopicRecordRequest(channel, command, data, answer, type, version);
 
                 case REGISTER_NODE -> processRegisterNodeRequest(channel, command, data, answer, type, version);
 
@@ -204,7 +183,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     int version = request.getVersion();
                     int term = request.getTerm();
 
-                    Promise<Boolean> promise = NetworkUtil.newImmediatePromise();
+                    Promise<Boolean> promise = newImmediatePromise();
                     promise.addListener((GenericFutureListener<Future<Boolean>>) future -> {
                         boolean callback = future.get();
                         VoteResponse response = VoteResponse
@@ -217,8 +196,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         }
                     });
 
-                    RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                    voteProcessor.handleVoteRequest(term, version, promise);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Failed to quorum vote with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
@@ -254,10 +231,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             answer.success(proto2Buf(channel.alloc(), response));
                         }
                     });
-
-                    RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                    SocketAddress socketAddress = channel.remoteAddress();
-                    voteProcessor.handleHeartbeatRequest(socketAddress, leader, theVersion, term, distributedValue);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Failed to send heartbeat with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
@@ -323,7 +296,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     private void processCreateTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-        transfer(channel, command, data, answer, type, version, () -> {
             try {
                 CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
                 commandExecutor.execute(() -> {
@@ -354,10 +326,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                        TopicSnapshot topicSnapshot = voteProcessor.getTopicSnapshot();
-                        topicSnapshot.create(topic, partitions, latencies, promise);
-
                         promise.trySuccess(null);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
@@ -369,11 +337,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             } catch (Exception e) {
                 answerFailed(answer, e);
             }
-        });
     }
 
     private void processDelTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-        transfer(channel, command, data, answer, type, version, () -> {
             try {
                 DelTopicRequest request = readProto(data, DelTopicRequest.parser());
                 String topic = request.getTopic();
@@ -391,9 +357,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                                 answerFailed(answer, f.cause());
                             }
                         });
-                        RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                        TopicSnapshot topicSnapshot = voteProcessor.getTopicSnapshot();
-                        topicSnapshot.delete(topic, promise);
+
 
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
@@ -408,11 +372,9 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 }
                 answerFailed(answer, e);
             }
-        });
     }
 
     private void processRegisterNodeRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-        transfer(channel, command, data, answer, type, version, () -> {
             try {
                 commandExecutor.execute(() -> {
                     try {
@@ -425,7 +387,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         String state = metadata.getState();
                         int port = metadata.getPort();
 
-                        Promise<Void> promise = NetworkUtil.newImmediatePromise();
+                        Promise<Void> promise = newImmediatePromise();
                         promise.addListener((GenericFutureListener<Future<Void>>) future -> {
                             if (future.isSuccess()) {
                                 RegisterNodeResponse response = RegisterNodeResponse
@@ -447,9 +409,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                        ClusterSnapshot clusterSnapshot = voteProcessor.getClusterSnapshot();
-                        clusterSnapshot.registerNode(cluster, name, host, port, state, promise);
                     } catch (Throwable t) {
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to register node, cause:{}", t);
@@ -463,207 +422,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 }
                 answerFailed(answer,t);
             }
-        });
-    }
-
-    private void processFetchTopicRecordRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-        transfer(channel, command, data, answer, type, version, () -> {
-            try {
-                QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
-                commandExecutor.execute(() -> {
-                    try {
-                        ProtocolStringList topics = request.getTopicList();
-                        RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                        TopicSnapshot topicSnapshot = voteProcessor.getTopicSnapshot();
-
-                        QueryTopicInfoResponse.Builder builder = QueryTopicInfoResponse.newBuilder();
-                        for (String topic : topics) {
-                            TopicRecord record = topicSnapshot.getRecord(topic);
-
-                            if (record == null) {
-                                continue;
-                            }
-
-                            Set<PartitionRecord> partitionRecords = record.getPartitionRecords();
-                            if (!partitionRecords.isEmpty()) {
-                                Iterator<PartitionRecord> iterator = partitionRecords.iterator();
-                                Map<Integer, PartitionMetadata> partitionMetadataMap = new HashMap<>();
-                                while (iterator.hasNext()) {
-                                    PartitionRecord partitionRecord = iterator.next();
-                                    partitionMetadataMap.put(partitionRecord.getId(), PartitionMetadata.newBuilder()
-                                            .setId(partitionRecord.getId())
-                                            .setLeader(partitionRecord.getLeader())
-                                            .setLatency(partitionRecord.getLatency())
-                                            .addAllReplicas(partitionRecord.getLatencies())
-                                            .build());
-                                }
-
-                                TopicMetadata metadata = TopicMetadata.newBuilder()
-                                        .setName(topic)
-                                        .putAllPartitions(partitionMetadataMap)
-                                        .build();
-
-                                Map<String, TopicMetadata> topicMetadataMap = new HashMap<>();
-                                topicMetadataMap.put(topic, metadata);
-                                builder.putAllTopics(topicMetadataMap);
-                            }
-                        }
-
-                        if (answer != null) {
-                            answer.success(proto2Buf(channel.alloc(), builder.build()));
-                        }
-
-                    } catch (Throwable t) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to query topic information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
-                        }
-                        answerFailed(answer, t);
-                    }
-                });
-            } catch (Throwable t){
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to query topic information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
-                }
-                answerFailed(answer,t);
-            }
-        });
-    }
-
-    private void processFetchClusterRecordRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-        transfer(channel, command, data, answer, type, version, () -> {
-            try {
-                QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
-                commandExecutor.execute(() -> {
-                    try {
-                        String cluster = request.getCluster();
-                        RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                        ClusterSnapshot clusterSnapshot = voteProcessor.getClusterSnapshot();
-                        Set<NodeRecord> nodeRecords = clusterSnapshot.getNodeRecord(cluster);
-
-                        QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
-                        if (answer != null) {
-                            if (nodeRecords.isEmpty()) {
-                                answer.success(proto2Buf(channel.alloc(), builder.build()));
-                                return;
-                            }
-
-                            for (NodeRecord record : nodeRecords) {
-                                InetSocketAddress socketAddress = (InetSocketAddress) record.getSocketAddress();
-
-                                String host = socketAddress.getHostName();
-                                int port = socketAddress.getPort();
-
-                                NodeMetadata metadata = NodeMetadata
-                                        .newBuilder()
-                                        .setCluster(record.getCluster())
-                                        .setPort(port)
-                                        .setHost(host)
-                                        .setState(record.getState())
-                                        .setName(record.getName())
-                                        .build();
-
-                                builder.addNodes(metadata);
-                            }
-
-                            answer.success(proto2Buf(channel.alloc(), builder.build()));
-                        }
-                    } catch (Throwable t) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to query cluster info");
-                            answerFailed(answer, t);
-                        }
-                    }
-                });
-            } catch (Throwable t){
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to query cluster information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
-                }
-                answerFailed(answer,t);
-            }
-        });
-    }
-
-    private void transfer(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version, TransferFunction function) {
-        try {
-            if (config.isStandAlone()) {
-                function.get();
-            } else {
-                RaftVoteProcessor voteProcessor = manager.getVoteProcessor();
-                LeaderElector leaderElector = voteProcessor.getLeaderElector();
-                String leader = leaderElector.getLeader();
-
-                Promise<Void> promise = newImmediatePromise();
-                promise.addListener(future -> {
-                    if (!future.isSuccess()) {
-                        answerFailed(answer, future.cause());
-                    }
-                });
-
-                boolean callback = true;
-
-                if (leader == null || leader.isEmpty()) {
-                    callback = false;
-                    promise.tryFailure(new RuntimeException("The quorum leader not found"));
-                }
-
-                if (!leaderElector.isLeader()) {
-                    callback = false;
-                    AwareInvocation invocation = AwareInvocation.newInvocation(command, version, data, type, 5000, answer);
-                    channel.writeAndFlush(invocation);
-                }
-
-                if (callback) {
-                    function.get();
-                }
-            }
-        } catch (Throwable t) {
-            answerFailed(answer, t);
-        }
-    }
-
-    private void processCleanSubscribeRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-        transfer(channel, command, data, answer, type, version, () -> {
-            try {
-                CleanSubscribeRequest request = readProto(data, CleanSubscribeRequest.parser());
-                commandExecutor.execute(() -> {
-                    try {
-                        String queue = request.getQueue();
-                        String topic = request.getTopic();
-                        int ledgerId = request.getLedgerId();
-
-                        Promise<Void> promise = newImmediatePromise();
-                        promise.addListener(future -> {
-                            if (future.isSuccess()) {
-                                CleanSubscribeResponse response = CleanSubscribeResponse.newBuilder().build();
-                                if (answer != null) {
-                                    answer.success(proto2Buf(channel.alloc(), response));
-                                } else {
-                                    answerFailed(answer, future.cause());
-                                }
-                            }
-                        });
-
-                        LedgerManager ledgerManager = manager.getLedgerManager();
-                        ledgerManager.clean(channel, topic, queue, ledgerId, promise);
-                    } catch (Throwable t) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to query cluster info");
-                            answerFailed(answer, t);
-                        }
-                    }
-                });
-            } catch (Throwable t){
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to query cluster information with address<{}>, cause:{}", channel.remoteAddress().toString(), t);
-                }
-                answerFailed(answer,t);
-            }
-        });
-    }
-
-    @FunctionalInterface
-    interface TransferFunction {
-        void get();
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {

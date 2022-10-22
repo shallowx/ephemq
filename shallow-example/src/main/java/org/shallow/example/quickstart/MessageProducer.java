@@ -1,15 +1,15 @@
 package org.shallow.example.quickstart;
 
 import org.junit.jupiter.api.Test;
-import org.shallow.ClientConfig;
-import org.shallow.Extras;
-import org.shallow.Message;
+import org.shallow.client.ClientConfig;
+import org.shallow.client.Extras;
+import org.shallow.client.Message;
 import org.shallow.example.metadata.TopicMetadata;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.producer.MessagePreInterceptor;
-import org.shallow.producer.Producer;
-import org.shallow.producer.ProducerConfig;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.client.producer.MessagePreInterceptor;
+import org.shallow.client.producer.Producer;
+import org.shallow.client.producer.ProducerConfig;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -28,7 +28,7 @@ public class MessageProducer {
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
 
-        Producer producer = new org.shallow.producer.MessageProducer("async-producer", producerConfig);
+        Producer producer = new org.shallow.client.producer.MessageProducer("async-producer", producerConfig);
         producer.start();
 
         Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras());

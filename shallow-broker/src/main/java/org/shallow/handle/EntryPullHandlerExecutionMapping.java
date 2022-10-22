@@ -3,18 +3,17 @@ package org.shallow.handle;
 import io.netty.util.concurrent.EventExecutor;
 import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
-import static org.shallow.util.NetworkUtil.newEventExecutorGroup;
+import static org.shallow.remote.util.NetworkUtil.newEventExecutorGroup;
 
 @ThreadSafe
 public class EntryPullHandlerExecutionMapping implements HandlerMapping {

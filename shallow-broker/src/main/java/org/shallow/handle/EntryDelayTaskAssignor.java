@@ -7,17 +7,17 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.shallow.Type;
-import org.shallow.codec.MessagePacket;
+import org.shallow.remote.Type;
+import org.shallow.remote.codec.MessagePacket;
 import org.shallow.log.Cursor;
 import org.shallow.log.Offset;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.proto.notify.MessagePushSignal;
-import org.shallow.util.ByteBufUtil;
-import org.shallow.util.ProtoBufUtil;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.remote.proto.notify.MessagePushSignal;
+import org.shallow.remote.util.ByteBufUtil;
+import org.shallow.remote.util.ProtoBufUtil;
 import javax.annotation.concurrent.ThreadSafe;
-import static org.shallow.processor.ProcessCommand.Client.HANDLE_MESSAGE;
+import static org.shallow.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 
 @ThreadSafe
 public class EntryDelayTaskAssignor {

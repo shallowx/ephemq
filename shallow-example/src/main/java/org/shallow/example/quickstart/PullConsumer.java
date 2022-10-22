@@ -4,15 +4,15 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.junit.jupiter.api.Test;
-import org.shallow.ClientConfig;
-import org.shallow.consumer.ConsumerConfig;
-import org.shallow.consumer.pull.MessagePullConsumer;
-import org.shallow.consumer.pull.MessagePullListener;
-import org.shallow.consumer.pull.PullResult;
-import org.shallow.logging.InternalLogger;
-import org.shallow.logging.InternalLoggerFactory;
-import org.shallow.proto.server.PullMessageResponse;
-import org.shallow.util.NetworkUtil;
+import org.shallow.client.ClientConfig;
+import org.shallow.client.consumer.ConsumerConfig;
+import org.shallow.client.consumer.pull.MessagePullConsumer;
+import org.shallow.client.consumer.pull.MessagePullListener;
+import org.shallow.client.consumer.pull.PullResult;
+import org.shallow.common.logging.InternalLogger;
+import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.remote.proto.server.PullMessageResponse;
+import org.shallow.remote.util.NetworkUtil;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -32,7 +32,7 @@ public class PullConsumer {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        org.shallow.consumer.pull.PullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer");
+        org.shallow.client.consumer.pull.PullConsumer messagePullConsumer = new MessagePullConsumer(consumerConfig, "pull-consumer");
         messagePullConsumer.registerListener(new MessagePullListener() {
             @Override
             public void onMessage(PullResult result) {
