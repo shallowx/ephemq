@@ -89,7 +89,7 @@
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
-                <artifactId>shallow-metadata</artifactId>
+                <artifactId>shallow-mertics</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>

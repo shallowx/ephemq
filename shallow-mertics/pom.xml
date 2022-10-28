@@ -11,9 +11,22 @@
 
     <artifactId>shallow-mertics</artifactId>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.shallow</groupId>
+            <artifactId>shallow-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.9.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>
