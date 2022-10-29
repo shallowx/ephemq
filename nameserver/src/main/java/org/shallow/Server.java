@@ -138,7 +138,7 @@ public class Server {
 
     private static Options buildCommandOptions() {
         Options options = new Options();
-        Option opt = new Option("c", "configFile", true, "Broker config properties file");
+        Option opt = new Option("c", "configFile", true, "Nameserver config properties file");
         opt.setRequired(false);
         options.addOption(opt);
 
