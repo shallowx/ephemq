@@ -12,13 +12,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>shallow-broker</module>
-        <module>shallow-client</module>
-        <module>shallow-remote</module>
-        <module>shallow-distribution</module>
-        <module>shallow-example</module>
-        <module>shallow-common</module>
-        <module>shallow-mertics</module>
+        <module>broker</module>
+        <module>client</module>
+        <module>remote</module>
+        <module>distribution</module>
+        <module>example</module>
+        <module>common</module>
+        <module>metrics</module>
     </modules>
 
     <scm>
@@ -69,32 +69,27 @@
         <dependencies>
             <dependency>
                 <groupId>org.shallow</groupId>
-                <artifactId>shallow-client</artifactId>
+                <artifactId>client</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
-                <artifactId>shallow-broker</artifactId>
+                <artifactId>broker</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
-                <artifactId>shallow-common</artifactId>
+                <artifactId>common</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
-                <artifactId>shallow-remote</artifactId>
+                <artifactId>remote</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.shallow</groupId>
-                <artifactId>shallow-mertics</artifactId>
-                <version>${shallow.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.shallow</groupId>
-                <artifactId>shallow-serialization</artifactId>
+                <artifactId>mertics</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
