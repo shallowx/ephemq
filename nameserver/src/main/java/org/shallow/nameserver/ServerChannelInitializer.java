@@ -1,0 +1,24 @@
+package org.shallow.nameserver;
+
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
+import org.shallow.remote.codec.MessageDecoder;
+import org.shallow.remote.codec.MessageEncoder;
+import org.shallow.remote.handle.ConnectDuplexHandler;
+
+public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
+
+    public ServerChannelInitializer() {
+    }
+
+    @Override
+    protected void initChannel(SocketChannel socketChannel) throws Exception {
+        ChannelPipeline pipeline = socketChannel.pipeline();
+
+        pipeline.addLast("encoder", MessageEncoder.instance());
+        pipeline.addLast("decoder", new MessageDecoder());
+        pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
+        pipeline.addLast("service-handler", new ServiceDuplexHandler(new NameserverProcessorAware()));
+    }
+}

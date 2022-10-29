@@ -1,4 +1,4 @@
-package org.shallow;
+package org.shallow.common.thread;
 
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;

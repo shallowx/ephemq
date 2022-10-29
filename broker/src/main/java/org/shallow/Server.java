@@ -1,5 +1,6 @@
 package org.shallow;
 
+import org.shallow.common.thread.ShutdownHook;
 import org.shallow.internal.BrokerServer;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.common.logging.InternalLogger;

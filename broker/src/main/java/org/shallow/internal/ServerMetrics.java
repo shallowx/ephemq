@@ -2,7 +2,6 @@ package org.shallow.internal;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
-import org.shallow.ShutdownHook;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.internal.config.BrokerConfig;

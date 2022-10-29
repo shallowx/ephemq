@@ -7,14 +7,13 @@ public interface ProcessCommand {
         byte DELETE_TOPIC = 2;
         byte FETCH_CLUSTER_RECORD = 3;
         byte FETCH_TOPIC_RECORD = 4;
-        byte QUORUM_VOTE = 5;
-        byte HEARTBEAT = 6;
-        byte REGISTER_NODE = 7;
-        byte SEND_MESSAGE = 8;
-        byte SUBSCRIBE = 9;
-        byte PULL_MESSAGE = 10;
-        byte CLEAN_SUBSCRIBE = 11;
-        byte UN_REGISTER_NODE = 12;
+        byte HEARTBEAT = 5;
+        byte REGISTER_NODE = 6;
+        byte SEND_MESSAGE = 7;
+        byte SUBSCRIBE = 8;
+        byte PULL_MESSAGE = 9;
+        byte CLEAN_SUBSCRIBE = 10;
+        byte UN_REGISTER_NODE = 11;
     }
 
     interface Client {

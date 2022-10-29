@@ -30,7 +30,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     private final BrokerConfig config;
     private final BrokerManager manager;
     private final EventExecutor commandExecutor;
-    private final EventExecutor quorumVoteExecutor;
 
     public BrokerProcessorAware(BrokerConfig config, BrokerManager manager) {
         this.config = config;
@@ -38,7 +37,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
         EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command").next();
         this.commandExecutor = group.next();
-        this.quorumVoteExecutor = group.next();
     }
 
     @Override
@@ -63,8 +61,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case SEND_MESSAGE -> processSendRequest(channel, data, answer, version);
 
                 case PULL_MESSAGE -> processPullRequest(channel, data, answer);
-
-                case QUORUM_VOTE -> processQuorumVoteRequest(channel, data, answer);
 
                 case HEARTBEAT -> processHeartbeatRequest(channel, data, answer);
 
@@ -175,74 +171,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         }
     }
 
-    private void processQuorumVoteRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer)  {
-        try {
-            VoteRequest request = readProto(data, VoteRequest.parser());
-            quorumVoteExecutor.execute(() -> {
-                try {
-                    int version = request.getVersion();
-                    int term = request.getTerm();
-
-                    Promise<Boolean> promise = newImmediatePromise();
-                    promise.addListener((GenericFutureListener<Future<Boolean>>) future -> {
-                        boolean callback = future.get();
-                        VoteResponse response = VoteResponse
-                                .newBuilder()
-                                .setAck(callback)
-                                .build();
-
-                        if (answer != null) {
-                            answer.success(proto2Buf(channel.alloc(), response));
-                        }
-                    });
-
-                } catch (Exception e) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to quorum vote with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
-                    }
-                    answerFailed(answer, e);
-                }
-            });
-        } catch (Exception e) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to quorum vote with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
-            }
-            answerFailed(answer, e);
-        }
-    }
-
     private void processHeartbeatRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        try {
-            RaftHeartbeatRequest request = readProto(data, RaftHeartbeatRequest.parser());
-            quorumVoteExecutor.execute(() -> {
-                try {
-                    int term = request.getTerm();
-                    int distributedValue = request.getDistributedValue();
-                    int theVersion = request.getVersion();
-                    String leader = request.getLeader();
 
-                    Promise<RaftHeartbeatResponse> promise = newImmediatePromise();
-                    promise.addListener((GenericFutureListener<Future<RaftHeartbeatResponse>>) future -> {
-                        RaftHeartbeatResponse response = RaftHeartbeatResponse
-                                .newBuilder()
-                                .build();
-
-                        if (answer != null) {
-                            answer.success(proto2Buf(channel.alloc(), response));
-                        }
-                    });
-                } catch (Exception e) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to send heartbeat with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
-                    }
-                    answerFailed(answer, e);
-                }
-            });
-        } catch (Exception e) {
-            if (logger.isErrorEnabled()) {
-                logger.error(e.getMessage(), e);
-            }
-        }
     }
 
     private void processSubscribeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
