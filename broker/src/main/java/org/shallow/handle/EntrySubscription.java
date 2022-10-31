@@ -1,7 +1,7 @@
 package org.shallow.handle;
 
 import io.netty.channel.Channel;
-import org.shallow.log.Offset;
+import org.shallow.ledger.Offset;
 
 import java.util.List;
 

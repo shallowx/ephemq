@@ -1,0 +1,7 @@
+org/shallow/nameserver/NameserverSocketServer.class
+org/shallow/Server.class
+org/shallow/nameserver/ServerChannelInitializer.class
+org/shallow/nameserver/ServiceDuplexHandler.class
+org/shallow/NameserverConfig.class
+org/shallow/nameserver/NameCoreServer.class
+org/shallow/nameserver/NameserverProcessorAware.class

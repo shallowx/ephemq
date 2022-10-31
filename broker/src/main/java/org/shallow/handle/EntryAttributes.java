@@ -1,7 +1,7 @@
 package org.shallow.handle;
 
-import org.shallow.log.Cursor;
-import org.shallow.log.Offset;
+import org.shallow.ledger.Cursor;
+import org.shallow.ledger.Offset;
 
 public class EntryAttributes {
     private EntrySubscription subscription;

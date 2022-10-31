@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Assert;
 import org.junit.Test;
-import org.shallow.log.Offset;
-import org.shallow.log.Segment;
+import org.shallow.ledger.Offset;
+import org.shallow.ledger.Segment;
 import org.shallow.remote.util.ByteBufUtil;
 
 import java.nio.charset.StandardCharsets;

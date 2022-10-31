@@ -1,4 +1,4 @@
-package org.shallow.log;
+package org.shallow.ledger;
 
 import io.netty.buffer.*;
 import io.netty.util.concurrent.EventExecutor;

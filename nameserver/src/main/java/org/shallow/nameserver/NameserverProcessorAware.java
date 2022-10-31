@@ -35,6 +35,16 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
     public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
         try {
             switch (command) {
+                case NEW_NODE -> processNewTopicRequest(channel, data, answer);
+
+                case NEW_TOPIC -> processNewNodeRequest(channel, data, answer);
+
+                case QUERY_NODE -> processQueryNodeRequest(channel, data, answer);
+
+                case QUERY_TOPIC -> processQueryTopicRequest(channel, data, answer);
+
+                case HEARTBEAT -> processHeartbeatRequest(channel, data, answer);
+
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
@@ -48,6 +58,26 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             }
             answerFailed(answer, cause);
         }
+    }
+
+    private void processNewTopicRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+
+    }
+
+    private void processNewNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+
+    }
+
+    private void processQueryTopicRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+
+    }
+
+    private void processQueryNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+
+    }
+
+    private void processHeartbeatRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {

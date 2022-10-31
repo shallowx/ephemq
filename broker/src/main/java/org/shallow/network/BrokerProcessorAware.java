@@ -4,19 +4,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
 import org.shallow.internal.BrokerManager;
-import org.shallow.log.Offset;
+import org.shallow.internal.metadata.TopicPartitionRequestCache;
+import org.shallow.ledger.Offset;
 import org.shallow.remote.RemoteException;
 import org.shallow.client.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.remote.invoke.InvokeAnswer;
-import org.shallow.log.LedgerManager;
+import org.shallow.ledger.LedgerManager;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.remote.processor.Ack;
 import org.shallow.remote.processor.ProcessCommand;
 import org.shallow.remote.processor.ProcessorAware;
-import org.shallow.remote.proto.NodeMetadata;
-import org.shallow.remote.proto.elector.*;
 import org.shallow.remote.proto.server.*;
 import static org.shallow.remote.util.NetworkUtil.*;
 import static org.shallow.remote.util.ProtoBufUtil.proto2Buf;
@@ -62,16 +61,15 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case PULL_MESSAGE -> processPullRequest(channel, data, answer);
 
-                case HEARTBEAT -> processHeartbeatRequest(channel, data, answer);
-
                 case SUBSCRIBE -> processSubscribeRequest(channel, data, answer);
 
                 case CREATE_TOPIC -> processCreateTopicRequest(channel, command, data, answer, type, version);
 
                 case DELETE_TOPIC -> processDelTopicRequest(channel, command, data, answer, type, version);
 
-                case REGISTER_NODE -> processRegisterNodeRequest(channel, command, data, answer, type, version);
+                case FETCH_TOPIC_RECORD -> processFetchTopicRecordsRequest(channel, data, answer, version);
 
+                case FETCH_CLUSTER_RECORD ->  processFetchClusterNodeRecordsRequest(channel, data, answer, version);
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
@@ -85,6 +83,14 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             }
             answerFailed(answer, cause);
         }
+    }
+
+    private void processFetchTopicRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
+
+    }
+
+    private void processFetchClusterNodeRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
+
     }
 
     private void processSendRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
@@ -171,10 +177,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         }
     }
 
-    private void processHeartbeatRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
-    }
-
     private void processSubscribeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
             SubscribeRequest request = readProto(data, SubscribeRequest.parser());
@@ -256,7 +258,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        promise.trySuccess(null);
+                        TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
+                        topicPartitionCache.createTopic(topic, partitions, latencies, promise);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to create topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
@@ -288,7 +291,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-
+                        TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
+                        topicPartitionCache.delTopic(topic, promise);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
                             logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
@@ -301,56 +305,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
                 }
                 answerFailed(answer, e);
-            }
-    }
-
-    private void processRegisterNodeRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-            try {
-                commandExecutor.execute(() -> {
-                    try {
-                        RegisterNodeRequest request = readProto(data, RegisterNodeRequest.parser());
-                        String cluster = request.getCluster();
-
-                        NodeMetadata metadata = request.getMetadata();
-                        String name = metadata.getName();
-                        String host = metadata.getHost();
-                        String state = metadata.getState();
-                        int port = metadata.getPort();
-
-                        Promise<Void> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<Void>>) future -> {
-                            if (future.isSuccess()) {
-                                RegisterNodeResponse response = RegisterNodeResponse
-                                        .newBuilder()
-                                        .setServerId(name)
-                                        .setPort(port)
-                                        .setState(state)
-                                        .setHost(host)
-                                        .build();
-
-                                if (answer != null) {
-                                    answer.success(proto2Buf(channel.alloc(), response));
-                                }
-                            } else {
-                                if (logger.isErrorEnabled()) {
-                                    logger.error("Failed to register node, cause:{}", future.cause());
-                                }
-                                answerFailed(answer,future.cause());
-                            }
-                        });
-
-                    } catch (Throwable t) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to register node, cause:{}", t);
-                        }
-                        answerFailed(answer,t);
-                    }
-                });
-            } catch (Throwable t){
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to register node, cause:{}", t);
-                }
-                answerFailed(answer,t);
             }
     }
 

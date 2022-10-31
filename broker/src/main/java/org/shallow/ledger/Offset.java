@@ -1,4 +1,4 @@
-package org.shallow.log;
+package org.shallow.ledger;
 
 import javax.annotation.concurrent.Immutable;
 

@@ -1,6 +1,9 @@
 package org.shallow.internal;
 
-import org.shallow.log.LedgerManager;
+import org.shallow.client.Client;
+import org.shallow.internal.metadata.ClusterNodeCache;
+import org.shallow.internal.metadata.TopicPartitionRequestCache;
+import org.shallow.ledger.LedgerManager;
 import org.shallow.network.BrokerConnectionManager;
 
 public interface BrokerManager {
@@ -10,4 +13,10 @@ public interface BrokerManager {
     LedgerManager getLedgerManager();
 
     BrokerConnectionManager getBrokerConnectionManager();
+
+    TopicPartitionRequestCache getTopicPartitionCache();
+
+    ClusterNodeCache getClusterCache();
+
+     Client getInternalClient();
 }

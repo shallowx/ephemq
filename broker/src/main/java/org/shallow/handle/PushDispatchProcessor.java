@@ -3,7 +3,7 @@ package org.shallow.handle;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Promise;
 import org.shallow.client.consumer.push.Subscription;
-import org.shallow.log.Offset;
+import org.shallow.ledger.Offset;
 
 public interface PushDispatchProcessor {
 

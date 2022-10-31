@@ -117,4 +117,7 @@ public class BrokerConfig {
         return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_ALIGN_LIMIT, 1000));
     }
 
+    public String getNameserverUrl() {
+        return object2String(config.getOrDefault(NAMESERVER_URL, "127.0.0.1:9100"));
+    }
 }

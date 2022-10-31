@@ -3,8 +3,8 @@ package org.shallow.handle;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import it.unimi.dsi.fastutil.objects.*;
-import org.shallow.log.Cursor;
-import org.shallow.log.Offset;
+import org.shallow.ledger.Cursor;
+import org.shallow.ledger.Offset;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

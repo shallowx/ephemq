@@ -1,4 +1,4 @@
-package org.shallow.log;
+package org.shallow.ledger;
 
 import io.netty.buffer.ByteBuf;
 import org.shallow.common.logging.InternalLogger;

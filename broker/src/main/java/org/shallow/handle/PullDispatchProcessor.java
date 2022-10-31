@@ -2,7 +2,7 @@ package org.shallow.handle;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import org.shallow.log.Offset;
+import org.shallow.ledger.Offset;
 
 public interface PullDispatchProcessor {
     void register(int requestId, Channel channel);
