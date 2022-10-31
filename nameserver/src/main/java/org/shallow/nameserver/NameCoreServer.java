@@ -15,7 +15,7 @@ public final class NameCoreServer {
     private final NameserverSocketServer socketServer;
 
     public NameCoreServer(NameserverConfig config) throws Exception {
-        this.socketServer = new NameserverSocketServer();
+        this.socketServer = new NameserverSocketServer(config);
     }
 
     public void start() throws Exception {

@@ -3,6 +3,7 @@ package org.shallow.nameserver;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
+import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.remote.RemoteException;
@@ -13,11 +14,14 @@ import org.shallow.remote.processor.ProcessorAware;
 import static org.shallow.remote.util.NetworkUtil.switchAddress;
 
 @SuppressWarnings("all")
-public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.Server {
+public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.Nameserver {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(NameserverProcessorAware.class);
 
-    public NameserverProcessorAware() {
+    private final NameserverConfig config;
+
+    public NameserverProcessorAware(NameserverConfig config) {
+        this.config = config;
     }
 
     @Override

@@ -23,7 +23,6 @@ public class Server {
     private static final char UNIX_NAME_SEPARATOR = '/';
     private static final char WINDOWS_NAME_SEPARATOR = '\\';
 
-
     public static void main(String[] args ) {
         try {
             run(args);

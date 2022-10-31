@@ -2,6 +2,9 @@ package org.shallow.nameserver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 
@@ -16,18 +19,20 @@ public final class NameserverSocketServer {
     private  EventLoopGroup bossGroup;
     private  EventLoopGroup workGroup;
     private  ChannelFuture closedFuture;
+    private final NameserverConfig config;
 
-    public NameserverSocketServer() {
-        this.serverChannelInitializer = new ServerChannelInitializer();
+    public NameserverSocketServer(NameserverConfig config) {
+        this.config = config;
+        this.serverChannelInitializer = new ServerChannelInitializer(config);
     }
 
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(true, 1, "server-acceptor");
-        workGroup = newEventLoopGroup(true, 16, "server-processor");
+        bossGroup = newEventLoopGroup(config.isOsEpollPrefer(), config.getIoThreadLimit(), "nameserver-acceptor");
+        workGroup = newEventLoopGroup(config.isOsEpollPrefer(), config.getWorkThreadLimit(), "nameserver-processor");
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
-                .channel(preferServerChannelClass(true))
+                .channel(preferServerChannelClass(config.isOsEpollPrefer()))
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
@@ -36,10 +41,14 @@ public final class NameserverSocketServer {
                 .childOption(ChannelOption.SO_RCVBUF, 65536)
                 .childHandler(serverChannelInitializer);
 
-        WriteBufferWaterMark mark = new WriteBufferWaterMark(1024 >> 1 , 1024);
+        if (config.isNetworkLoggingDebugEnabled()) {
+            bootstrap.handler(new LoggingHandler(LogLevel.DEBUG));
+        }
+
+        WriteBufferWaterMark mark = new WriteBufferWaterMark(config.getSocketWriteHighWaterMark() >> 1 , config.getSocketWriteHighWaterMark());
         bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, mark);
 
-        ChannelFuture future = bootstrap.bind("", 9000)
+        ChannelFuture future = bootstrap.bind(config.getExposedHost(), config.getExposedPort())
                 .addListener((ChannelFutureListener) f -> {
                     if (f.isSuccess() && logger.isInfoEnabled()) {
                         logger.info("Socket server is listening at {}", f.channel().localAddress());

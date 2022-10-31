@@ -13,7 +13,6 @@ public interface ProcessCommand {
         byte SUBSCRIBE = 8;
         byte PULL_MESSAGE = 9;
         byte CLEAN_SUBSCRIBE = 10;
-        byte UN_REGISTER_NODE = 11;
     }
 
     interface Client {
@@ -35,5 +34,9 @@ public interface ProcessCommand {
        default String get(byte command) {
            return null;
        }
+    }
+
+    interface Nameserver {
+
     }
 }
