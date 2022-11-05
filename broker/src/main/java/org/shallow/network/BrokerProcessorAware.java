@@ -1,8 +1,11 @@
 package org.shallow.network;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
+import org.shallow.common.meta.PartitionRecord;
 import org.shallow.internal.BrokerManager;
 import org.shallow.internal.metadata.TopicPartitionRequestCache;
 import org.shallow.ledger.Offset;
@@ -17,6 +20,9 @@ import org.shallow.remote.processor.Ack;
 import org.shallow.remote.processor.ProcessCommand;
 import org.shallow.remote.processor.ProcessorAware;
 import org.shallow.remote.proto.server.*;
+
+import java.util.Set;
+
 import static org.shallow.remote.util.NetworkUtil.*;
 import static org.shallow.remote.util.ProtoBufUtil.proto2Buf;
 import static org.shallow.remote.util.ProtoBufUtil.readProto;
@@ -86,7 +92,14 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     private void processFetchTopicRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
+        try {
+            QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
+            ProtocolStringList topicList = request.getTopicList();
+            TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
+            Set<PartitionRecord> records = topicPartitionCache.loadAll(topicList);
+        } catch (Throwable t) {
 
+        }
     }
 
     private void processFetchClusterNodeRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {

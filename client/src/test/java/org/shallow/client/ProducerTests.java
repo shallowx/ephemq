@@ -1,13 +1,12 @@
 package org.shallow.client;
 
-import org.shallow.client.producer.MessageProducer;
+import org.shallow.client.producer.*;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
-import org.shallow.producer.*;
 
 import java.util.HashMap;
 import java.util.List;

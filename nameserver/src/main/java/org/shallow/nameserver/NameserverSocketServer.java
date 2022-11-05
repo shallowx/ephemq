@@ -4,6 +4,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import org.shallow.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
@@ -21,9 +22,9 @@ public final class NameserverSocketServer {
     private  ChannelFuture closedFuture;
     private final NameserverConfig config;
 
-    public NameserverSocketServer(NameserverConfig config) {
+    public NameserverSocketServer(NameserverConfig config, Manager manager) {
         this.config = config;
-        this.serverChannelInitializer = new ServerChannelInitializer(config);
+        this.serverChannelInitializer = new ServerChannelInitializer(config, manager);
     }
 
     public void start() throws Exception {

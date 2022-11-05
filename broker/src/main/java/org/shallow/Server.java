@@ -34,7 +34,7 @@ public class Server {
         BrokerConfig config = arguments.config();
         BrokerServer server = new BrokerServer(config);
 
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>("broker server", () -> {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>("Broker server", () -> {
             server.shutdownGracefully();
             return  null;
         }));

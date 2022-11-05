@@ -72,13 +72,9 @@ public class OperationInvoker implements ProcessCommand.Server {
         }
     }
 
-    public void invoke(byte command, int timeoutMs, MessageLite request, Class<?> clz) {
-        invoke(command, timeoutMs, null, request, clz);
-    }
-
     public void invoke(byte command, int timeoutMs, Promise<?> promise, MessageLite request, Class<?> clz) {
         invoke(command, timeoutMs, (byte) Type.PUSH.sequence(), promise, request, clz);
-   }
+    }
 
     public void invoke(byte command, int timeoutMs, byte type, Promise<?> promise, MessageLite request, Class<?> clz) {
         try {

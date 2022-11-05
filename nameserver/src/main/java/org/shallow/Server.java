@@ -7,11 +7,16 @@ import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.common.thread.ShutdownHook;
 import org.shallow.nameserver.NameCoreServer;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Properties;
+
+import static org.shallow.common.util.TypeUtil.*;
+import static org.shallow.common.util.TypeUtil.object2String;
 
 public class Server {
 
@@ -36,10 +41,11 @@ public class Server {
 
     private static void run(String[] args) throws Exception {
         NameserverConfig config = argumentsPrepared(args);
+        checkAndPrintConfig(config);
 
         NameCoreServer server = new NameCoreServer(config);
 
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>("broker server", () -> {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook<>("Name server", () -> {
             server.shutdownGracefully();
             return  null;
         }));
@@ -142,5 +148,48 @@ public class Server {
         options.addOption(opt);
 
         return options;
+    }
+
+    private static void checkAndPrintConfig(NameserverConfig config) {
+        Method[] methods = NameserverConfig.class.getDeclaredMethods();
+        StringBuilder sb = new StringBuilder("Print the broker startup options: \n");
+        String option;
+
+        for (Method method : methods) {
+            final String name = method.getName();
+            if (name.startsWith("get")) {
+                option = name.substring(3);
+                checkReturnType(method, config, sb, option);
+            }
+
+            if (name.startsWith("is")) {
+                option = name.substring(2);
+                checkReturnType(method, config, sb, option);
+            }
+        }
+
+        if (logger.isInfoEnabled()) {
+            logger.info(sb.toString());
+        }
+    }
+
+
+    private static void checkReturnType(Method method, NameserverConfig config, StringBuilder sb, String name) {
+        String type = method.getReturnType().getSimpleName();
+        Object invoke;
+        try {
+            switch (type) {
+                case "int", "Integer" -> invoke = object2Int(method.invoke(config));
+                case "long", "Long" -> invoke = object2Long(method.invoke(config));
+                case "double", "Double" -> invoke = object2Double(method.invoke(config));
+                case "float", "Float" -> invoke = object2Float(method.invoke(config));
+                case "boolean", "Boolean" -> invoke = object2Boolean(method.invoke(config));
+                case "String" -> invoke = object2String(method.invoke(config));
+                default -> throw new OperationNotSupportedException("Not support type");
+            }
+            sb.append(String.format("\t%s=%s", name, invoke)).append("\n");
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Failed to check config type, type:%s name:%s error:%s", type, name, e));
+        }
     }
 }

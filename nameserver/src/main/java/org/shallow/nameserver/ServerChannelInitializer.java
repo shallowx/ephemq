@@ -5,6 +5,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import org.shallow.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.remote.codec.MessageDecoder;
 import org.shallow.remote.codec.MessageEncoder;
@@ -13,8 +14,10 @@ import org.shallow.remote.handle.ConnectDuplexHandler;
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final NameserverConfig config;
+    private final Manager manager;
 
-    public ServerChannelInitializer(NameserverConfig config) {
+    public ServerChannelInitializer(NameserverConfig config, Manager manager) {
+        this.manager = manager;
         this.config = config;
     }
 
@@ -29,6 +32,6 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
-        pipeline.addLast("service-handler", new ServiceDuplexHandler(new NameserverProcessorAware(config)));
+        pipeline.addLast("service-handler", new ServiceDuplexHandler(new NameserverProcessorAware(config, manager)));
     }
 }

@@ -1,11 +1,8 @@
 package org.shallow.client;
 
-import org.shallow.client.consumer.push.MessagePushConsumer;
+import org.shallow.client.consumer.push.*;
 import org.junit.Test;
 import org.shallow.client.consumer.ConsumerConfig;
-import org.shallow.client.consumer.push.MessagePushListener;
-import org.shallow.client.consumer.push.SubscribeCallback;
-import org.shallow.client.consumer.push.Subscription;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 
@@ -26,7 +23,7 @@ public class PushConsumerTests {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+        PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
         messagePushConsumer.registerListener(new MessagePushListener() {
             @Override
             public void onMessage(Message message) {
@@ -53,7 +50,7 @@ public class PushConsumerTests {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+        PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
         messagePushConsumer.registerListener(new MessagePushListener() {
             @Override
             public void onMessage(Message message) {

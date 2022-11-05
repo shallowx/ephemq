@@ -1,6 +1,8 @@
 package org.shallow.nameserver;
 
 import io.netty.util.concurrent.ScheduledFuture;
+import org.shallow.DefaultManager;
+import org.shallow.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
@@ -15,7 +17,8 @@ public final class NameCoreServer {
     private final NameserverSocketServer socketServer;
 
     public NameCoreServer(NameserverConfig config) throws Exception {
-        this.socketServer = new NameserverSocketServer(config);
+        Manager manager = new DefaultManager();
+        this.socketServer = new NameserverSocketServer(config, manager);
     }
 
     public void start() throws Exception {
@@ -37,7 +40,7 @@ public final class NameCoreServer {
 
         latch.await();
         if (logger.isInfoEnabled()){
-            logger.info("The broker server started successfully");
+            logger.info("The name server started successfully");
         }
     }
 

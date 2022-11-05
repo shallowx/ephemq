@@ -19,11 +19,6 @@ public class DefaultBrokerManager implements BrokerManager {
     private final Client client;
 
     public DefaultBrokerManager(BrokerConfig config) throws Exception {
-        ClientConfig quorumVoterClientConfig = new ClientConfig();
-
-        quorumVoterClientConfig.setChannelFixedPoolCapacity(config.getInternalChannelPoolLimit());
-        quorumVoterClientConfig.setInvokeExpiredMs(config.getInvokeTimeMs());
-
         this.logManager = new LedgerManager(config);
         this.connectionManager = new BrokerConnectionManager();
 
@@ -31,42 +26,44 @@ public class DefaultBrokerManager implements BrokerManager {
         clientConfig.setBootstrapSocketAddress(List.of(config.getNameserverUrl()));
         this.client = new Client("nameserver-client", clientConfig);
 
-        this.topicPartitionRequestCache = new TopicPartitionRequestCache(config, client);
+        this.topicPartitionRequestCache = new TopicPartitionRequestCache(config, this);
         this.clusterNodeCache = new ClusterNodeCache(config, client);
     }
 
     @Override
     public void start() throws Exception {
-        logManager.start();
+        this.client.start();
+
+        this.logManager.start();
     }
 
     @Override
     public LedgerManager getLedgerManager() {
-        return logManager;
+        return this.logManager;
     }
 
     @Override
     public BrokerConnectionManager getBrokerConnectionManager() {
-        return connectionManager;
+        return this.connectionManager;
     }
 
     @Override
     public TopicPartitionRequestCache getTopicPartitionCache() {
-        return topicPartitionRequestCache;
+        return this.topicPartitionRequestCache;
     }
 
     @Override
     public ClusterNodeCache getClusterCache() {
-        return clusterNodeCache;
+        return this.clusterNodeCache;
     }
 
     @Override
     public Client getInternalClient() {
-        return client;
+        return this.client;
     }
 
     @Override
     public void shutdownGracefully() throws Exception {
-        logManager.close();
+        this.logManager.close();
     }
 }
