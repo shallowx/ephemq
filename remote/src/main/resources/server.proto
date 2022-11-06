@@ -109,3 +109,18 @@ message PullMessageResponse {
   int64 index = 6;
 }
 
+message NodeRegistrationRequest {
+  string cluster = 1;
+  string server = 2;
+  string host = 3;
+  int32 port = 4;
+}
+
+message NodeRegistrationResponse {}
+
+message NodeUnregistrationRequest{
+  string cluster = 1;
+  string server = 2;
+}
+
+message NodeUnregistrationResponse {}

@@ -109,6 +109,26 @@ public final class ServerProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shallow_protobuf_PullMessageResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_NodeRegistrationRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_NodeRegistrationRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_NodeRegistrationResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_NodeRegistrationResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_NodeUnregistrationRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_NodeUnregistrationRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shallow_protobuf_NodeUnregistrationResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shallow_protobuf_NodeUnregistrationResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -155,8 +175,14 @@ public final class ServerProto {
       "\017\n\007version\030\006 \001(\005\022\r\n\005topic\030\007 \001(\t\"p\n\023PullM" +
       "essageResponse\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002" +
       " \001(\t\022\r\n\005limit\030\003 \001(\005\022\016\n\006ledger\030\004 \001(\005\022\r\n\005e" +
-      "poch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003B)\n\030org.shallow" +
-      ".proto.serverB\013ServerProtoP\001b\006proto3"
+      "poch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003\"V\n\027NodeRegistr" +
+      "ationRequest\022\017\n\007cluster\030\001 \001(\t\022\016\n\006server\030" +
+      "\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\"\032\n\030Nod" +
+      "eRegistrationResponse\"<\n\031NodeUnregistrat" +
+      "ionRequest\022\017\n\007cluster\030\001 \001(\t\022\016\n\006server\030\002 " +
+      "\001(\t\"\034\n\032NodeUnregistrationResponseB)\n\030org" +
+      ".shallow.proto.serverB\013ServerProtoP\001b\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -277,6 +303,30 @@ public final class ServerProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_PullMessageResponse_descriptor,
         new java.lang.String[] { "Topic", "Queue", "Limit", "Ledger", "Epoch", "Index", });
+    internal_static_shallow_protobuf_NodeRegistrationRequest_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_shallow_protobuf_NodeRegistrationRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_NodeRegistrationRequest_descriptor,
+        new java.lang.String[] { "Cluster", "Server", "Host", "Port", });
+    internal_static_shallow_protobuf_NodeRegistrationResponse_descriptor =
+      getDescriptor().getMessageTypes().get(18);
+    internal_static_shallow_protobuf_NodeRegistrationResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_NodeRegistrationResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_shallow_protobuf_NodeUnregistrationRequest_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_shallow_protobuf_NodeUnregistrationRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_NodeUnregistrationRequest_descriptor,
+        new java.lang.String[] { "Cluster", "Server", });
+    internal_static_shallow_protobuf_NodeUnregistrationResponse_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_shallow_protobuf_NodeUnregistrationResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shallow_protobuf_NodeUnregistrationResponse_descriptor,
+        new java.lang.String[] { });
     org.shallow.proto.MessageMetadataProto.getDescriptor();
   }
 

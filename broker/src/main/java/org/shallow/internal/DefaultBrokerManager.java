@@ -26,13 +26,14 @@ public class DefaultBrokerManager implements BrokerManager {
         clientConfig.setBootstrapSocketAddress(List.of(config.getNameserverUrl()));
         this.client = new Client("nameserver-client", clientConfig);
 
-        this.topicPartitionRequestCache = new TopicPartitionRequestCache(config, this);
         this.clusterNodeCache = new ClusterNodeCache(config, client);
+        this.topicPartitionRequestCache = new TopicPartitionRequestCache(config, this);
     }
 
     @Override
     public void start() throws Exception {
         this.client.start();
+        this.clusterNodeCache.start();
 
         this.logManager.start();
     }
@@ -65,5 +66,6 @@ public class DefaultBrokerManager implements BrokerManager {
     @Override
     public void shutdownGracefully() throws Exception {
         this.logManager.close();
+        this.clusterNodeCache.shutdown();
     }
 }

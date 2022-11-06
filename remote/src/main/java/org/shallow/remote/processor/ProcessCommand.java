@@ -12,6 +12,7 @@ public interface ProcessCommand {
         byte SUBSCRIBE = 7;
         byte PULL_MESSAGE = 8;
         byte CLEAN_SUBSCRIBE = 9;
+        byte UN_REGISTER_NODE = 10;
     }
 
     interface Client {

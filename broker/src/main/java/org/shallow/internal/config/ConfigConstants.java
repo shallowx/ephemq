@@ -4,7 +4,10 @@ public interface ConfigConstants {
 
     String CLUSTER_NAME = "cluster";
     String SERVER_ID = "server.id";
+
     String NAMESERVER_URL = "nameserver.url";
+    String HEARTBEAT_SCHEDULE_FIXED_DELAY_MS = "heartbeat.schedule.fixed.delay.ms";
+
     String EXPOSED_HOST = "exposed.host";
     String EXPOSED_PORT = "exposed.port";
 

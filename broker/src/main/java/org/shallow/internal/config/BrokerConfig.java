@@ -120,4 +120,8 @@ public class BrokerConfig {
     public String getNameserverUrl() {
         return object2String(config.getOrDefault(NAMESERVER_URL, "127.0.0.1:9100"));
     }
+
+    public int getHeartbeatScheduleFixedDelayMs() {
+        return object2Int(config.getOrDefault(HEARTBEAT_SCHEDULE_FIXED_DELAY_MS, 30000));
+    }
 }
