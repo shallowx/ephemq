@@ -1,5 +1,6 @@
 package org.shallow.nameserver;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -11,6 +12,7 @@ import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.metadata.TopicManager;
+import org.shallow.proto.heartbeat.HeartbeatRequest;
 import org.shallow.remote.RemoteException;
 import org.shallow.remote.invoke.InvokeAnswer;
 import org.shallow.remote.processor.Ack;
@@ -23,6 +25,7 @@ import java.io.IOException;
 
 import static org.shallow.remote.util.NetworkUtil.switchAddress;
 import static org.shallow.remote.util.ProtoBufUtil.proto2Buf;
+import static org.shallow.remote.util.ProtoBufUtil.readProto;
 
 @SuppressWarnings("all")
 public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.Nameserver {
@@ -114,7 +117,14 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
     }
 
     private void processHeartbeatRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            HeartbeatRequest request = readProto(data, HeartbeatRequest.parser());
+            String cluster = request.getCluster();
+            String server = request.getServer();
 
+        } catch (Throwable t) {
+            answerFailed(answer, t);
+        }
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {
