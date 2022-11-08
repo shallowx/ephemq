@@ -1,8 +1,8 @@
 package org.shallow.nameserver;
 
 import io.netty.util.concurrent.ScheduledFuture;
-import org.shallow.metadata.DefaultManager;
-import org.shallow.metadata.Manager;
+import org.shallow.nameserver.metadata.DefaultManager;
+import org.shallow.nameserver.metadata.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;

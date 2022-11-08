@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.shallow.ledger.Offset;
-import org.shallow.proto.notify.MessagePullSignal;
+import org.shallow.remote.proto.notify.MessagePullSignal;
 import org.shallow.remote.Type;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.common.logging.InternalLogger;

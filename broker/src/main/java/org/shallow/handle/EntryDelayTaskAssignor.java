@@ -7,7 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.shallow.proto.notify.MessagePushSignal;
+import org.shallow.remote.proto.notify.MessagePushSignal;
 import org.shallow.remote.Type;
 import org.shallow.remote.codec.MessagePacket;
 import org.shallow.ledger.Cursor;

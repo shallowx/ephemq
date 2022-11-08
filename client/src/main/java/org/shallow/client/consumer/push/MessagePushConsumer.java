@@ -16,10 +16,10 @@ import org.shallow.client.metadata.MessageRoutingHolder;
 import org.shallow.client.metadata.MetadataManager;
 import org.shallow.client.pool.ShallowChannelPool;
 import org.shallow.common.util.ObjectUtil;
-import org.shallow.proto.server.CleanSubscribeRequest;
-import org.shallow.proto.server.CleanSubscribeResponse;
-import org.shallow.proto.server.SubscribeRequest;
-import org.shallow.proto.server.SubscribeResponse;
+import org.shallow.remote.proto.server.CleanSubscribeRequest;
+import org.shallow.remote.proto.server.CleanSubscribeResponse;
+import org.shallow.remote.proto.server.SubscribeRequest;
+import org.shallow.remote.proto.server.SubscribeResponse;
 
 import java.net.SocketAddress;
 import java.util.Collection;

@@ -11,7 +11,7 @@ import org.shallow.client.consumer.pull.MessagePullListener;
 import org.shallow.client.consumer.pull.PullResult;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
-import org.shallow.proto.server.PullMessageResponse;
+import org.shallow.remote.proto.server.PullMessageResponse;
 import org.shallow.remote.util.NetworkUtil;
 
 import java.util.List;

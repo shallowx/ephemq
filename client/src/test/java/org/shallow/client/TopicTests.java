@@ -7,8 +7,8 @@ import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.common.meta.TopicRecord;
 import org.shallow.client.pool.DefaultFixedChannelPoolFactory;
-import org.shallow.proto.server.CreateTopicResponse;
-import org.shallow.proto.server.DelTopicResponse;
+import org.shallow.remote.proto.server.CreateTopicResponse;
+import org.shallow.remote.proto.server.DelTopicResponse;
 import org.shallow.remote.processor.Ack;
 
 import java.util.List;

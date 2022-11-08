@@ -7,7 +7,7 @@ import org.shallow.client.ClientConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.openjdk.jmh.annotations.State;
-import org.shallow.proto.server.CreateTopicResponse;
+import org.shallow.remote.proto.server.CreateTopicResponse;
 
 import java.util.List;
 import java.util.UUID;

@@ -8,7 +8,7 @@ import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import org.shallow.proto.server.PullMessageResponse;
+import org.shallow.remote.proto.server.PullMessageResponse;
 import org.shallow.remote.RemoteException;
 import org.shallow.client.consumer.pull.PullResult;
 import org.shallow.client.consumer.push.Subscription;

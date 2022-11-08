@@ -17,9 +17,9 @@ import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.client.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.client.pool.ShallowChannelPool;
-import org.shallow.proto.server.SendMessageExtras;
-import org.shallow.proto.server.SendMessageRequest;
-import org.shallow.proto.server.SendMessageResponse;
+import org.shallow.remote.proto.server.SendMessageExtras;
+import org.shallow.remote.proto.server.SendMessageRequest;
+import org.shallow.remote.proto.server.SendMessageResponse;
 import org.shallow.remote.util.ByteBufUtil;
 import org.shallow.common.util.ObjectUtil;
 

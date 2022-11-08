@@ -10,8 +10,7 @@ import org.shallow.internal.BrokerManager;
 import org.shallow.internal.metadata.ClusterNodeCache;
 import org.shallow.internal.metadata.TopicPartitionRequestCache;
 import org.shallow.ledger.Offset;
-import org.shallow.proto.NodeMetadata;
-import org.shallow.proto.server.*;
+import org.shallow.remote.proto.NodeMetadata;
 import org.shallow.remote.RemoteException;
 import org.shallow.client.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
@@ -22,6 +21,8 @@ import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.remote.processor.Ack;
 import org.shallow.remote.processor.ProcessCommand;
 import org.shallow.remote.processor.ProcessorAware;
+import org.shallow.remote.proto.server.*;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -116,7 +117,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             ClusterNodeCache cache = manager.getClusterCache();
             Set<NodeRecord> records = cache.load(cluster);
 
-            org.shallow.proto.server.QueryClusterNodeResponse.Builder builder = org.shallow.proto.server.QueryClusterNodeResponse.newBuilder();
+            QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
             if (records == null || records.isEmpty()) {
                 answer.success(proto2Buf(channel.alloc(), builder.build()));
             } else {

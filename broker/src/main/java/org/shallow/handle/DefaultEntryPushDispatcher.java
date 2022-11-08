@@ -8,7 +8,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import org.shallow.proto.notify.MessagePushSignal;
+import org.shallow.remote.proto.notify.MessagePushSignal;
 import org.shallow.remote.Type;
 import org.shallow.remote.codec.MessagePacket;
 import org.shallow.client.consumer.push.Subscription;

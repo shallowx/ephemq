@@ -16,10 +16,10 @@ import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.common.meta.NodeRecord;
 import org.shallow.common.util.StringUtil;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.proto.NodeMetadata;
-import org.shallow.proto.heartbeat.HeartbeatRequest;
-import org.shallow.proto.heartbeat.HeartbeatResponse;
-import org.shallow.proto.server.*;
+import org.shallow.remote.proto.NodeMetadata;
+import org.shallow.remote.proto.heartbeat.HeartbeatRequest;
+import org.shallow.remote.proto.heartbeat.HeartbeatResponse;
+import org.shallow.remote.proto.server.*;
 import org.shallow.remote.util.NetworkUtil;
 
 import java.util.Iterator;

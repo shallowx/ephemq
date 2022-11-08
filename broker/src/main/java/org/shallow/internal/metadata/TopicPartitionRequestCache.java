@@ -14,12 +14,12 @@ import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.common.meta.PartitionRecord;
 import org.shallow.internal.BrokerManager;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.proto.PartitionMetadata;
-import org.shallow.proto.TopicMetadata;
-import org.shallow.proto.server.CreateTopicRequest;
-import org.shallow.proto.server.CreateTopicResponse;
-import org.shallow.proto.server.QueryTopicInfoRequest;
-import org.shallow.proto.server.QueryTopicInfoResponse;
+import org.shallow.remote.proto.PartitionMetadata;
+import org.shallow.remote.proto.TopicMetadata;
+import org.shallow.remote.proto.server.CreateTopicRequest;
+import org.shallow.remote.proto.server.CreateTopicResponse;
+import org.shallow.remote.proto.server.QueryTopicInfoRequest;
+import org.shallow.remote.proto.server.QueryTopicInfoResponse;
 import org.shallow.remote.processor.ProcessCommand;
 import org.shallow.remote.util.NetworkUtil;
 
@@ -130,7 +130,7 @@ public class TopicPartitionRequestCache {
         OperationInvoker invoker = acquireInvokerByRandomClientChannel();
         Promise<QueryTopicInfoResponse> promise = NetworkUtil.newImmediatePromise();
 
-        invoker.invoke(ProcessCommand.Server.FETCH_TOPIC_RECORD, config.getInvokeTimeMs(), promise, request, org.shallow.proto.server.QueryTopicInfoResponse.class);
+        invoker.invoke(ProcessCommand.Server.FETCH_TOPIC_RECORD, config.getInvokeTimeMs(), promise, request, QueryTopicInfoResponse.class);
         Map<String, TopicMetadata> records = promise.get().getTopicsMap();
 
         if (records.isEmpty()) {
