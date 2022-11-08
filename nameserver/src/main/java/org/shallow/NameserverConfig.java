@@ -15,6 +15,7 @@ public class NameserverConfig {
     private static final String WORK_THREAD_LIMIT = "network.thread.limit";
     private static final String OS_IS_EPOLL_PREFER= "os.epoll.prefer";
     private static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
+    private static final String HEARTBEAT_DELAY_PERIOD = "heartbeat.delay.period";
 
     public static NameserverConfig exchange(Properties properties) {
         return new NameserverConfig(properties);
@@ -50,5 +51,9 @@ public class NameserverConfig {
 
     public boolean isOsEpollPrefer() {
         return object2Boolean(config.getOrDefault(OS_IS_EPOLL_PREFER, true));
+    }
+
+    public int getHeartbeatDelayPeriod() {
+        return object2Int(config.getOrDefault(HEARTBEAT_DELAY_PERIOD, 30000));
     }
 }

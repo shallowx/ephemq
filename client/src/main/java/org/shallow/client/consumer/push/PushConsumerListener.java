@@ -13,9 +13,9 @@ import org.shallow.client.internal.ClientListener;
 import org.shallow.client.internal.ClientChannel;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
-import org.shallow.remote.proto.notify.NodeOfflineSignal;
-import org.shallow.remote.proto.notify.PartitionChangedSignal;
-import org.shallow.remote.proto.server.SendMessageExtras;
+import org.shallow.proto.notify.NodeOfflineSignal;
+import org.shallow.proto.notify.PartitionChangedSignal;
+import org.shallow.proto.server.SendMessageExtras;
 import org.shallow.remote.util.ByteBufUtil;
 
 import java.net.SocketAddress;

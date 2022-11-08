@@ -1,14 +1,17 @@
 package org.shallow.network;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
+import org.shallow.common.meta.NodeRecord;
 import org.shallow.common.meta.PartitionRecord;
 import org.shallow.internal.BrokerManager;
+import org.shallow.internal.metadata.ClusterNodeCache;
 import org.shallow.internal.metadata.TopicPartitionRequestCache;
 import org.shallow.ledger.Offset;
+import org.shallow.proto.NodeMetadata;
+import org.shallow.proto.server.*;
 import org.shallow.remote.RemoteException;
 import org.shallow.client.consumer.push.Subscription;
 import org.shallow.internal.config.BrokerConfig;
@@ -19,9 +22,11 @@ import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.remote.processor.Ack;
 import org.shallow.remote.processor.ProcessCommand;
 import org.shallow.remote.processor.ProcessorAware;
-import org.shallow.remote.proto.server.*;
-
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.shallow.remote.util.NetworkUtil.*;
 import static org.shallow.remote.util.ProtoBufUtil.proto2Buf;
@@ -76,6 +81,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                 case FETCH_TOPIC_RECORD -> processFetchTopicRecordsRequest(channel, data, answer, version);
 
                 case FETCH_CLUSTER_RECORD ->  processFetchClusterNodeRecordsRequest(channel, data, answer, version);
+
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
@@ -97,13 +103,43 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             ProtocolStringList topicList = request.getTopicList();
             TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
             Set<PartitionRecord> records = topicPartitionCache.loadAll(topicList);
+
         } catch (Throwable t) {
 
         }
     }
 
     private void processFetchClusterNodeRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
+        try {
+            QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
+            String cluster = request.getCluster();
+            ClusterNodeCache cache = manager.getClusterCache();
+            Set<NodeRecord> records = cache.load(cluster);
 
+            org.shallow.proto.server.QueryClusterNodeResponse.Builder builder = org.shallow.proto.server.QueryClusterNodeResponse.newBuilder();
+            if (records == null || records.isEmpty()) {
+                answer.success(proto2Buf(channel.alloc(), builder.build()));
+            } else {
+                List<NodeMetadata> metadatas = records.stream().map(record -> {
+                    SocketAddress socketAddress = record.getSocketAddress();
+                    return NodeMetadata.newBuilder()
+                            .setName(record.getName())
+                            .setCluster(record.getCluster())
+                            .setState(record.getState())
+                            .setHost(((InetSocketAddress)socketAddress).getHostName())
+                            .setPort(((InetSocketAddress)socketAddress).getPort())
+                            .build();
+                }).collect(Collectors.toList());
+
+                builder.addAllNodes(metadatas);
+
+                if (answer != null) {
+                    answer.success(proto2Buf(channel.alloc(), builder.build()));
+                }
+            }
+        } catch (Throwable t) {
+            answerFailed(answer, t);
+        }
     }
 
     private void processSendRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {

@@ -5,7 +5,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.shallow.Manager;
+import org.shallow.metadata.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.remote.codec.MessageDecoder;
 import org.shallow.remote.codec.MessageEncoder;

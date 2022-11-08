@@ -2,7 +2,7 @@ package org.shallow.client.consumer.pull;
 
 import io.netty.util.concurrent.Promise;
 import org.shallow.client.consumer.MessagePostInterceptor;
-import org.shallow.remote.proto.server.PullMessageResponse;
+import org.shallow.proto.server.PullMessageResponse;
 
 public interface PullConsumer {
 

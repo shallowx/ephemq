@@ -65,10 +65,11 @@ public final class MessageMetadataProto {
       ".shallow.protobuf.ClusterMetadata.Metada" +
       "taEntry\032O\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022-\n" +
       "\005value\030\002 \001(\0132\036.shallow.protobuf.NodeMeta" +
-      "data:\0028\001\"X\n\014NodeMetadata\022\017\n\007cluster\030\001 \001(" +
+      "data:\0028\001\"r\n\014NodeMetadata\022\017\n\007cluster\030\001 \001(" +
       "\t\022\014\n\004name\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 " +
-      "\001(\005\022\r\n\005state\030\005 \001(\tB+\n\021org.shallow.protoB" +
-      "\024MessageMetadataProtoP\001b\006proto3"
+      "\001(\005\022\r\n\005state\030\005 \001(\t\022\030\n\020lastKeepLiveTime\030\006" +
+      " \001(\003B+\n\021org.shallow.protoB\024MessageMetada" +
+      "taProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -109,7 +110,7 @@ public final class MessageMetadataProto {
     internal_static_shallow_protobuf_NodeMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shallow_protobuf_NodeMetadata_descriptor,
-        new java.lang.String[] { "Cluster", "Name", "Host", "Port", "State", });
+        new java.lang.String[] { "Cluster", "Name", "Host", "Port", "State", "LastKeepLiveTime", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

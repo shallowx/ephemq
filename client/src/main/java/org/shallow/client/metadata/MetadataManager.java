@@ -17,12 +17,11 @@ import org.shallow.common.meta.PartitionRecord;
 import org.shallow.common.meta.TopicRecord;
 import org.shallow.client.pool.DefaultFixedChannelPoolFactory;
 import org.shallow.client.pool.ShallowChannelPool;
+import org.shallow.proto.NodeMetadata;
+import org.shallow.proto.PartitionMetadata;
+import org.shallow.proto.TopicMetadata;
+import org.shallow.proto.server.*;
 import org.shallow.remote.processor.ProcessCommand;
-import org.shallow.remote.proto.NodeMetadata;
-import org.shallow.remote.proto.PartitionMetadata;
-import org.shallow.remote.proto.TopicMetadata;
-import org.shallow.remote.proto.server.*;
-
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -141,7 +140,7 @@ public class MetadataManager implements ProcessCommand.Server {
 
         Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
         clientChannel.invoker().invoke(FETCH_CLUSTER_RECORD, config.getInvokeExpiredMs(), promise, request, QueryClusterNodeResponse.class);
-        List<NodeMetadata> nodes = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
+        List<NodeMetadata> nodes =  promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
         if (nodes.isEmpty()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Query node record is empty");
@@ -155,6 +154,7 @@ public class MetadataManager implements ProcessCommand.Server {
                          .cluster(nodeMetadata.getCluster())
                          .name(nodeMetadata.getName())
                          .state(nodeMetadata.getState())
+                         .lastKeepLiveTime(nodeMetadata.getLastKeepLiveTime())
                          .socketAddress(switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort()))
                          .build())
                  .collect(Collectors.toSet());

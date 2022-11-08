@@ -210,6 +210,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int LASTKEEPLIVETIME_FIELD_NUMBER = 6;
+  private long lastKeepLiveTime_;
+  /**
+   * <code>int64 lastKeepLiveTime = 6;</code>
+   * @return The lastKeepLiveTime.
+   */
+  @java.lang.Override
+  public long getLastKeepLiveTime() {
+    return lastKeepLiveTime_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -239,6 +250,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(state_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 5, state_);
     }
+    if (lastKeepLiveTime_ != 0L) {
+      output.writeInt64(6, lastKeepLiveTime_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -263,6 +277,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(state_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, state_);
+    }
+    if (lastKeepLiveTime_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(6, lastKeepLiveTime_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -289,6 +307,8 @@ private static final long serialVersionUID = 0L;
         != other.getPort()) return false;
     if (!getState()
         .equals(other.getState())) return false;
+    if (getLastKeepLiveTime()
+        != other.getLastKeepLiveTime()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -310,6 +330,9 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getPort();
     hash = (37 * hash) + STATE_FIELD_NUMBER;
     hash = (53 * hash) + getState().hashCode();
+    hash = (37 * hash) + LASTKEEPLIVETIME_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getLastKeepLiveTime());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -448,6 +471,8 @@ private static final long serialVersionUID = 0L;
 
       state_ = "";
 
+      lastKeepLiveTime_ = 0L;
+
       return this;
     }
 
@@ -479,6 +504,7 @@ private static final long serialVersionUID = 0L;
       result.host_ = host_;
       result.port_ = port_;
       result.state_ = state_;
+      result.lastKeepLiveTime_ = lastKeepLiveTime_;
       onBuilt();
       return result;
     }
@@ -546,6 +572,9 @@ private static final long serialVersionUID = 0L;
         state_ = other.state_;
         onChanged();
       }
+      if (other.getLastKeepLiveTime() != 0L) {
+        setLastKeepLiveTime(other.getLastKeepLiveTime());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -597,6 +626,11 @@ private static final long serialVersionUID = 0L;
 
               break;
             } // case 42
+            case 48: {
+              lastKeepLiveTime_ = input.readInt64();
+
+              break;
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -944,6 +978,37 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       state_ = value;
+      onChanged();
+      return this;
+    }
+
+    private long lastKeepLiveTime_ ;
+    /**
+     * <code>int64 lastKeepLiveTime = 6;</code>
+     * @return The lastKeepLiveTime.
+     */
+    @java.lang.Override
+    public long getLastKeepLiveTime() {
+      return lastKeepLiveTime_;
+    }
+    /**
+     * <code>int64 lastKeepLiveTime = 6;</code>
+     * @param value The lastKeepLiveTime to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLastKeepLiveTime(long value) {
+      
+      lastKeepLiveTime_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 lastKeepLiveTime = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLastKeepLiveTime() {
+      
+      lastKeepLiveTime_ = 0L;
       onChanged();
       return this;
     }

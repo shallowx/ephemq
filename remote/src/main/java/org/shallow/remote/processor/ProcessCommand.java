@@ -7,12 +7,11 @@ public interface ProcessCommand {
         byte DELETE_TOPIC = 2;
         byte FETCH_CLUSTER_RECORD = 3;
         byte FETCH_TOPIC_RECORD = 4;
-        byte REGISTER_NODE = 5;
-        byte SEND_MESSAGE = 6;
-        byte SUBSCRIBE = 7;
-        byte PULL_MESSAGE = 8;
-        byte CLEAN_SUBSCRIBE = 9;
-        byte UN_REGISTER_NODE = 10;
+        byte SEND_MESSAGE = 5;
+        byte SUBSCRIBE = 6;
+        byte PULL_MESSAGE = 7;
+        byte CLEAN_SUBSCRIBE = 8;
+
     }
 
     interface Client {
@@ -38,9 +37,10 @@ public interface ProcessCommand {
 
     interface Nameserver {
         byte NEW_TOPIC = 1;
-        byte NEW_NODE = 2;
+        byte REGISTER_NODE = 2;
         byte QUERY_TOPIC = 3;
         byte QUERY_NODE = 4;
         byte HEARTBEAT = 5;
+        byte UN_REGISTER_NODE = 6;
     }
 }

@@ -6,8 +6,9 @@ import java.util.Objects;
 public class NodeRecord {
     private String cluster;
     private String name;
-    private String state;
     private SocketAddress socketAddress;
+    private long lastKeepLiveTime;
+    private String state;
 
     private NodeRecord() {
         // unsupported
@@ -29,19 +30,24 @@ public class NodeRecord {
         return socketAddress;
     }
 
-    public String getState() {
-        return state;
+    public long getLastKeepLiveTime() {
+        return lastKeepLiveTime;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void updateLastKeepLiveTime(long lastKeepLiveTime) {
+        this.lastKeepLiveTime = lastKeepLiveTime;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public static class NodeBuilder {
         private String cluster;
         private String name;
-        private String state;
         private SocketAddress socketAddress;
+        private long lastKeepLiveTime;
+        private String state;
 
         private NodeBuilder() {
         }
@@ -56,13 +62,18 @@ public class NodeRecord {
             return this;
         }
 
-        public NodeBuilder state(String state) {
-            this.state = state;
+        public NodeBuilder socketAddress(SocketAddress socketAddress) {
+            this.socketAddress = socketAddress;
             return this;
         }
 
-        public NodeBuilder socketAddress(SocketAddress socketAddress) {
-            this.socketAddress = socketAddress;
+        public NodeBuilder lastKeepLiveTime(long lastKeepLiveTime) {
+            this.lastKeepLiveTime = lastKeepLiveTime;
+            return this;
+        }
+
+        public NodeBuilder state(String state) {
+            this.state = state;
             return this;
         }
 
@@ -71,8 +82,9 @@ public class NodeRecord {
 
             record.cluster = this.cluster;
             record.name = this.name;
-            record.state = this.state;
             record.socketAddress = this.socketAddress;
+            record.lastKeepLiveTime = lastKeepLiveTime;
+            record.state = this.state;
 
             return record;
         }
@@ -98,12 +110,9 @@ public class NodeRecord {
         return "NodeRecord{" +
                 "cluster='" + cluster + '\'' +
                 ", name='" + name + '\'' +
-                ", state='" + state + '\'' +
                 ", socketAddress=" + socketAddress +
+                ", state=" + state +
+                ", lastKeepLiveTime=" + lastKeepLiveTime +
                 '}';
     }
-
-    public static final String UN_COMMIT = "UN_COMMIT";
-    public static final String UP = "UP";
-    public static final String DOWN = "DOWN";
 }

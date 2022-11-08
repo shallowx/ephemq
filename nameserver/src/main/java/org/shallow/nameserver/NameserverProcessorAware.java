@@ -1,27 +1,34 @@
 package org.shallow.nameserver;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.shallow.Manager;
+import org.shallow.common.meta.NodeRecord;
+import org.shallow.metadata.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
+import org.shallow.metadata.ClusterManager;
 import org.shallow.metadata.TopicManager;
+import org.shallow.proto.NodeMetadata;
 import org.shallow.proto.heartbeat.HeartbeatRequest;
+import org.shallow.proto.heartbeat.HeartbeatResponse;
+import org.shallow.proto.server.*;
 import org.shallow.remote.RemoteException;
 import org.shallow.remote.invoke.InvokeAnswer;
 import org.shallow.remote.processor.Ack;
 import org.shallow.remote.processor.ProcessCommand;
 import org.shallow.remote.processor.ProcessorAware;
-import org.shallow.remote.proto.server.CreateTopicResponse;
 import org.shallow.remote.util.NetworkUtil;
 
-import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.shallow.remote.util.NetworkUtil.switchAddress;
 import static org.shallow.remote.util.ProtoBufUtil.proto2Buf;
@@ -51,7 +58,8 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
     public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
         try {
             switch (command) {
-                case NEW_NODE -> processNewNodeRequest(channel, data, answer);
+                case REGISTER_NODE -> processRegisterNodeRequest(channel, data, answer);
+                case UN_REGISTER_NODE ->  processUnRegisterNodeRequest(channel, data, answer);
 
                 case NEW_TOPIC -> processNewTopicRequest(channel, data, answer);
 
@@ -104,8 +112,61 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
         }
     }
 
-    private void processNewNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    private void processRegisterNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            NodeRegistrationRequest request = readProto(data, NodeRegistrationRequest.parser());
+            String cluster = request.getCluster();
+            String server = request.getServer();
+            String host = request.getHost();
+            int port = request.getPort();
 
+            ClusterManager clusterManager = manager.getClusterManager();
+            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            promise.addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override
+                public void operationComplete(Future<? super Void> future) throws Exception {
+                    if (future.isSuccess()) {
+                        if (answer != null) {
+                            NodeRegistrationResponse response = NodeRegistrationResponse.newBuilder().build();
+                            answer.success(proto2Buf(channel.alloc(),response));
+                        } else {
+                            answerFailed(answer, future.cause());
+                        }
+                    }
+                }
+            });
+            clusterManager.register(cluster, server, host, port, promise);
+        } catch (Throwable t) {
+            answerFailed(answer, t);
+        }
+    }
+
+    public void processUnRegisterNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            NodeUnregistrationRequest request = readProto(data, NodeUnregistrationRequest.parser());
+            String cluster = request.getCluster();
+            String server = request.getServer();
+
+            ClusterManager clusterManager = manager.getClusterManager();
+            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            promise.addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override
+                public void operationComplete(Future<? super Void> future) throws Exception {
+                    if (future.isSuccess()) {
+                        if (answer != null) {
+                            NodeUnregistrationResponse response = NodeUnregistrationResponse.newBuilder().build();
+                            answer.success(proto2Buf(channel.alloc(), response));
+                        } else {
+                            answerFailed(answer, future.cause());
+                        }
+                    }
+                }
+            });
+
+            clusterManager.unregister(cluster, server, promise);
+        } catch (Throwable t) {
+            answerFailed(answer, t);
+        }
     }
 
     private void processQueryTopicRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
@@ -113,7 +174,38 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
     }
 
     private void processQueryNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
+            String cluster = request.getCluster();
+            ClusterManager clusterManager = manager.getClusterManager();
+            Set<NodeRecord> records = clusterManager.load(cluster);
 
+            QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
+            if (records == null || records.isEmpty()) {
+                if (answer != null) {
+                    answer.success(proto2Buf(channel.alloc(), builder.build()));
+                }
+            } else {
+                List<NodeMetadata> metadatas = records.stream().map(record -> {
+                            SocketAddress socketAddress = record.getSocketAddress();
+                           return NodeMetadata.newBuilder()
+                                    .setName(record.getName())
+                                    .setCluster(record.getCluster())
+                                    .setState(record.getState())
+                                    .setHost(((InetSocketAddress)socketAddress).getHostName())
+                                    .setPort(((InetSocketAddress)socketAddress).getPort())
+                                    .build();
+                        }).collect(Collectors.toList());
+
+                builder.addAllNodes(metadatas);
+
+                if (answer != null) {
+                    answer.success(proto2Buf(channel.alloc(), builder.build()));
+                }
+            }
+        } catch (Throwable t) {
+            answerFailed(answer, t);
+        }
     }
 
     private void processHeartbeatRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
@@ -121,6 +213,13 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             HeartbeatRequest request = readProto(data, HeartbeatRequest.parser());
             String cluster = request.getCluster();
             String server = request.getServer();
+
+            Promise<HeartbeatResponse> promise = NetworkUtil.newImmediatePromise();
+
+            ClusterManager clusterManager = manager.getClusterManager();
+            clusterManager.heartbeat(cluster, server);
+
+            promise.trySuccess(HeartbeatResponse.newBuilder().build());
 
         } catch (Throwable t) {
             answerFailed(answer, t);

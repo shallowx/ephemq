@@ -60,4 +60,10 @@ public interface NodeMetadataOrBuilder extends
    */
   com.google.protobuf.ByteString
       getStateBytes();
+
+  /**
+   * <code>int64 lastKeepLiveTime = 6;</code>
+   * @return The lastKeepLiveTime.
+   */
+  long getLastKeepLiveTime();
 }

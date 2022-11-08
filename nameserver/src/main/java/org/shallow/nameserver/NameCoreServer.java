@@ -1,8 +1,8 @@
 package org.shallow.nameserver;
 
 import io.netty.util.concurrent.ScheduledFuture;
-import org.shallow.DefaultManager;
-import org.shallow.Manager;
+import org.shallow.metadata.DefaultManager;
+import org.shallow.metadata.Manager;
 import org.shallow.NameserverConfig;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
@@ -17,7 +17,7 @@ public final class NameCoreServer {
     private final NameserverSocketServer socketServer;
 
     public NameCoreServer(NameserverConfig config) throws Exception {
-        Manager manager = new DefaultManager();
+        Manager manager = new DefaultManager(config);
         this.socketServer = new NameserverSocketServer(config, manager);
     }
 

@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.shallow.client.consumer.ConsumeListener;
 import org.shallow.client.consumer.MessagePostInterceptor;
-import org.shallow.remote.proto.notify.NodeOfflineSignal;
-import org.shallow.remote.proto.notify.PartitionChangedSignal;
+import org.shallow.proto.notify.NodeOfflineSignal;
+import org.shallow.proto.notify.PartitionChangedSignal;
 
 public interface ClientListener {
 

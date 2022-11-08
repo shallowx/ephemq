@@ -2,7 +2,6 @@ package org.shallow.metadata;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import org.shallow.Manager;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.common.meta.PartitionRecord;
@@ -13,11 +12,11 @@ public class TopicManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicManager.class);
 
     private final Manager manager;
-    private final LoadingCache<String, Set<PartitionRecord>> topics;
+    private final LoadingCache<String, Set<PartitionRecord>> cache;
 
     public TopicManager(Manager manager) {
         this.manager = manager;
-        this.topics = Caffeine.newBuilder().build(key -> null);
+        this.cache = Caffeine.newBuilder().build(key -> null);
     }
 
     public void add() {

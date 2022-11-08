@@ -28,4 +28,5 @@ message NodeMetadata{
   string host = 3;
   int32 port = 4;
   string state = 5;
+  int64 lastKeepLiveTime=6;
 }

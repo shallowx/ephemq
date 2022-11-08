@@ -15,11 +15,11 @@ import org.shallow.client.metadata.MessageRouter;
 import org.shallow.client.metadata.MessageRoutingHolder;
 import org.shallow.client.metadata.MetadataManager;
 import org.shallow.client.pool.ShallowChannelPool;
-import org.shallow.remote.proto.server.CleanSubscribeRequest;
-import org.shallow.remote.proto.server.CleanSubscribeResponse;
-import org.shallow.remote.proto.server.SubscribeRequest;
-import org.shallow.remote.proto.server.SubscribeResponse;
 import org.shallow.common.util.ObjectUtil;
+import org.shallow.proto.server.CleanSubscribeRequest;
+import org.shallow.proto.server.CleanSubscribeResponse;
+import org.shallow.proto.server.SubscribeRequest;
+import org.shallow.proto.server.SubscribeResponse;
 
 import java.net.SocketAddress;
 import java.util.Collection;
@@ -253,8 +253,7 @@ public class MessagePushConsumer implements PushConsumer {
             throw new RuntimeException(String.format("Any active channel not found for topic<%s> of ledger<%d>", topic, holder.ledger()));
         }
 
-        SubscribeRequest request = SubscribeRequest
-                .newBuilder()
+        SubscribeRequest request = SubscribeRequest.newBuilder()
                 .setQueue(queue)
                 .setTopic(topic)
                 .setLedger(ledger)
