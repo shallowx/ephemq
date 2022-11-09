@@ -19,11 +19,17 @@ public class TopicManager {
         this.cache = Caffeine.newBuilder().build(key -> null);
     }
 
-    public void add() {
+    public void create() {
 
+    }
+
+    public Set<PartitionRecord> load(String topic) {
+        return null;
     }
 
     public void remove() {
 
     }
+
+
 }
