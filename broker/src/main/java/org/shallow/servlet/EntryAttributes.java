@@ -1,4 +1,4 @@
-package org.shallow.handle;
+package org.shallow.servlet;
 
 import org.shallow.ledger.Cursor;
 import org.shallow.ledger.Offset;

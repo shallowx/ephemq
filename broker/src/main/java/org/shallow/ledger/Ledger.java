@@ -8,11 +8,11 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.shallow.client.consumer.pull.PullResult;
 import org.shallow.client.consumer.push.Subscription;
-import org.shallow.handle.DefaultEntryPullDispatcher;
-import org.shallow.handle.PullDispatchProcessor;
-import org.shallow.handle.DefaultEntryPushDispatcher;
+import org.shallow.servlet.DefaultEntryPullDispatcher;
+import org.shallow.servlet.PullDispatchProcessor;
+import org.shallow.servlet.DefaultEntryPushDispatcher;
 import org.shallow.internal.config.BrokerConfig;
-import org.shallow.handle.PushDispatchProcessor;
+import org.shallow.servlet.PushDispatchProcessor;
 import org.shallow.common.logging.InternalLogger;
 import org.shallow.common.logging.InternalLoggerFactory;
 

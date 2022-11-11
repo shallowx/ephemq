@@ -1,4 +1,4 @@
-package org.shallow.handle;
+package org.shallow.servlet;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

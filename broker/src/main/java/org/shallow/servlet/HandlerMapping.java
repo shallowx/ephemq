@@ -1,4 +1,4 @@
-package org.shallow.handle;
+package org.shallow.servlet;
 
 public interface HandlerMapping {
     EntryPullHandler applyHandler();
