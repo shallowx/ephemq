@@ -8,6 +8,7 @@ import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
+import org.shallow.internal.metrics.LedgerMetricsListener;
 import org.shallow.remote.proto.server.PullMessageResponse;
 import org.shallow.remote.RemoteException;
 import org.shallow.client.consumer.pull.PullResult;
@@ -18,6 +19,9 @@ import org.shallow.common.logging.InternalLoggerFactory;
 import org.shallow.internal.atomic.DistributedAtomicInteger;
 import org.shallow.remote.util.NetworkUtil;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class LedgerManager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
@@ -25,7 +29,7 @@ public class LedgerManager {
     private final BrokerConfig config;
     private final DistributedAtomicInteger atomicRequestValue;
     private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
-
+    private final List<LedgerMetricsListener> listeners = new LinkedList<>();
 
     public LedgerManager(BrokerConfig config) {
         this.config = config;
@@ -44,6 +48,10 @@ public class LedgerManager {
 
             if (logger.isInfoEnabled()) {
                 logger.info("Initialize log successfully, topic={} partition={} ledger={}", topic, partition, ledgerId);
+            }
+
+            for (LedgerMetricsListener listener : listeners) {
+                listener.onInitLedger(ledger);
             }
 
             promise.trySuccess(null);
@@ -104,6 +112,10 @@ public class LedgerManager {
             }
 
             checkLedgerState(ledger);
+
+            for (LedgerMetricsListener listener : listeners) {
+                listener.onReceiveMessage(ledger.getTopic(), queue, ledger.getLedgerId(), 1);
+            }
 
             ledger.append(queue, version, payload, promise);
         } catch (Throwable t) {

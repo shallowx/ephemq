@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 import static org.shallow.remote.processor.ProcessCommand.Nameserver.NEW_TOPIC;
 import static org.shallow.remote.util.NetworkUtil.newImmediatePromise;
 
-public class TopicPartitionRequestCache {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCache.class);
+public class TopicPartitionRequestCacheSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheSupport.class);
 
     private final BrokerConfig config;
     private final Client internalClient;
@@ -39,7 +39,7 @@ public class TopicPartitionRequestCache {
 
     private final LoadingCache<String, Set<PartitionRecord>> cache;
 
-    public TopicPartitionRequestCache(BrokerConfig config, BrokerManager manager) {
+    public TopicPartitionRequestCacheSupport(BrokerConfig config, BrokerManager manager) {
         this.config = config;
         this.internalClient = manager.getInternalClient();
         this.leaderElector = new PartitionLeaderElector(manager);

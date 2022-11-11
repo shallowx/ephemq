@@ -1,8 +1,8 @@
 package org.shallow.internal;
 
 import org.shallow.client.Client;
-import org.shallow.internal.metadata.ClusterNodeCache;
-import org.shallow.internal.metadata.TopicPartitionRequestCache;
+import org.shallow.internal.metadata.ClusterNodeCacheSupport;
+import org.shallow.internal.metadata.TopicPartitionRequestCacheSupport;
 import org.shallow.ledger.LedgerManager;
 import org.shallow.network.BrokerConnectionManager;
 
@@ -14,9 +14,9 @@ public interface BrokerManager {
 
     BrokerConnectionManager getBrokerConnectionManager();
 
-    TopicPartitionRequestCache getTopicPartitionCache();
+    TopicPartitionRequestCacheSupport getTopicPartitionCache();
 
-    ClusterNodeCache getClusterCache();
+    ClusterNodeCacheSupport getClusterCache();
 
      Client getInternalClient();
 }

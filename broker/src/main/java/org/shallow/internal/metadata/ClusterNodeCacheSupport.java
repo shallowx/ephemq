@@ -32,8 +32,8 @@ import static org.shallow.remote.processor.ProcessCommand.Nameserver.*;
 import static org.shallow.remote.util.NetworkUtil.newEventExecutorGroup;
 import static org.shallow.remote.util.NetworkUtil.switchSocketAddress;
 
-public class ClusterNodeCache {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterNodeCache.class);
+public class ClusterNodeCacheSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterNodeCacheSupport.class);
 
     private final BrokerConfig config;
     private final Client internalClient;
@@ -43,7 +43,7 @@ public class ClusterNodeCache {
     private final CountDownLatch latch = new CountDownLatch(1);
     private final ObjectOpenHashSet<String> failureRegistryUrl = new ObjectOpenHashSet<>();
 
-    public ClusterNodeCache(BrokerConfig config, Client internalClient) {
+    public ClusterNodeCacheSupport(BrokerConfig config, Client internalClient) {
         this.config = config;
         this.internalClient = internalClient;
         this.cache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)

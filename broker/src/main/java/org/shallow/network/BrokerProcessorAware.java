@@ -7,8 +7,8 @@ import io.netty.util.concurrent.*;
 import org.shallow.common.meta.NodeRecord;
 import org.shallow.common.meta.PartitionRecord;
 import org.shallow.internal.BrokerManager;
-import org.shallow.internal.metadata.ClusterNodeCache;
-import org.shallow.internal.metadata.TopicPartitionRequestCache;
+import org.shallow.internal.metadata.ClusterNodeCacheSupport;
+import org.shallow.internal.metadata.TopicPartitionRequestCacheSupport;
 import org.shallow.ledger.Offset;
 import org.shallow.remote.proto.NodeMetadata;
 import org.shallow.remote.RemoteException;
@@ -102,7 +102,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
             ProtocolStringList topicList = request.getTopicList();
-            TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
+            TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
             Set<PartitionRecord> records = topicPartitionCache.loadAll(topicList);
 
         } catch (Throwable t) {
@@ -114,7 +114,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
             String cluster = request.getCluster();
-            ClusterNodeCache cache = manager.getClusterCache();
+            ClusterNodeCacheSupport cache = manager.getClusterCache();
             Set<NodeRecord> records = cache.load(cluster);
 
             QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
@@ -308,7 +308,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
+                        TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
                         topicPartitionCache.createTopic(topic, partitions, latencies, promise);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
@@ -341,7 +341,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        TopicPartitionRequestCache topicPartitionCache = manager.getTopicPartitionCache();
+                        TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
                         topicPartitionCache.delTopic(topic, promise);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {

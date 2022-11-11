@@ -2,8 +2,8 @@ package org.shallow.internal;
 
 import org.shallow.client.Client;
 import org.shallow.client.ClientConfig;
-import org.shallow.internal.metadata.ClusterNodeCache;
-import org.shallow.internal.metadata.TopicPartitionRequestCache;
+import org.shallow.internal.metadata.ClusterNodeCacheSupport;
+import org.shallow.internal.metadata.TopicPartitionRequestCacheSupport;
 import org.shallow.ledger.LedgerManager;
 import org.shallow.internal.config.BrokerConfig;
 import org.shallow.network.BrokerConnectionManager;
@@ -14,8 +14,8 @@ public class DefaultBrokerManager implements BrokerManager {
 
     private final LedgerManager logManager;
     private final BrokerConnectionManager connectionManager;
-    private final TopicPartitionRequestCache topicPartitionRequestCache;
-    private final ClusterNodeCache clusterNodeCache;
+    private final TopicPartitionRequestCacheSupport topicPartitionRequestCache;
+    private final ClusterNodeCacheSupport clusterNodeCache;
     private final Client client;
 
     public DefaultBrokerManager(BrokerConfig config) throws Exception {
@@ -26,8 +26,8 @@ public class DefaultBrokerManager implements BrokerManager {
         clientConfig.setBootstrapSocketAddress(List.of(config.getNameserverUrl()));
         this.client = new Client("nameserver-client", clientConfig);
 
-        this.clusterNodeCache = new ClusterNodeCache(config, client);
-        this.topicPartitionRequestCache = new TopicPartitionRequestCache(config, this);
+        this.clusterNodeCache = new ClusterNodeCacheSupport(config, client);
+        this.topicPartitionRequestCache = new TopicPartitionRequestCacheSupport(config, this);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public TopicPartitionRequestCache getTopicPartitionCache() {
+    public TopicPartitionRequestCacheSupport getTopicPartitionCache() {
         return this.topicPartitionRequestCache;
     }
 
     @Override
-    public ClusterNodeCache getClusterCache() {
+    public ClusterNodeCacheSupport getClusterCache() {
         return this.clusterNodeCache;
     }
 
