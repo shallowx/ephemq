@@ -43,7 +43,7 @@ clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 ConsumerConfig consumerConfig = new ConsumerConfig();
 consumerConfig.setClientConfig(clientConfig);
 
-org.shallow.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
+org.leopard.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
 messagePushConsumer.registerListener(new MessagePushListener() {
         @Override
         public void onMessage(Message message) {

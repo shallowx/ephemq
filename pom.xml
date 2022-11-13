@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
     <inceptionYear>2022</inceptionYear>
 
-    <groupId>org.shallow</groupId>
-    <artifactId>shallow</artifactId>
+    <groupId>org.leopard</groupId>
+    <artifactId>leopard</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -23,10 +23,10 @@
     </modules>
 
     <scm>
-        <connection>scm:git@github.com:shallow-rs/shallow.git</connection>
-        <developerConnection>scm:git@github.com:shallow-rs/shallow.git</developerConnection>
-        <url>git@github.com:shallow-rs/shallow.git</url>
-        <tag>shallow-all-${version}</tag>
+        <connection>scm:git@github.com:shallow-rs/LeopardMQ.git</connection>
+        <developerConnection>scm:git@github.com:shallow-rs/LeopardMQ.git</developerConnection>
+        <url>git@github.com:shallow-rs/LeopardMQ.git</url>
+        <tag>leopard-all-${version}</tag>
     </scm>
 
     <licenses>
@@ -69,27 +69,27 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.shallow</groupId>
+                <groupId>org.leopard</groupId>
                 <artifactId>client</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.shallow</groupId>
+                <groupId>org.leopard</groupId>
                 <artifactId>broker</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.shallow</groupId>
+                <groupId>org.leopard</groupId>
                 <artifactId>common</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.shallow</groupId>
+                <groupId>org.leopard</groupId>
                 <artifactId>remote</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.shallow</groupId>
+                <groupId>org.leopard</groupId>
                 <artifactId>mertics</artifactId>
                 <version>${shallow.version}</version>
             </dependency>
