@@ -161,6 +161,10 @@ public class TopicPartitionRequestCacheSupport {
         }).findFirst().orElse(null);
     }
 
+    public Set<PartitionRecord> queryOfTopic() {
+        return null;
+    }
+
     private OperationInvoker acquireInvokerByRandomClientChannel() {
         ShallowChannelPool chanelPool = internalClient.getChanelPool();
         ClientChannel clientChannel = chanelPool.acquireWithRandomly();
