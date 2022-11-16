@@ -3,6 +3,8 @@ package org.leopard.internal.metadata;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.leopard.client.Client;
@@ -16,10 +18,7 @@ import org.leopard.internal.BrokerManager;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
-import org.leopard.remote.proto.server.CreateTopicRequest;
-import org.leopard.remote.proto.server.CreateTopicResponse;
-import org.leopard.remote.proto.server.QueryTopicInfoRequest;
-import org.leopard.remote.proto.server.QueryTopicInfoResponse;
+import org.leopard.remote.proto.server.*;
 import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.util.NetworkUtil;
 
@@ -97,6 +96,27 @@ public class TopicPartitionRequestCacheSupport {
                 promise.tryFailure(new IllegalStateException(String.format("Topic not exists, and topic=%s", topic)));
                 return;
             }
+
+            DelTopicRequest request = DelTopicRequest.newBuilder()
+                    .setTopic(topic)
+                    .build();
+
+            OperationInvoker invoker = acquireInvokerByRandomClientChannel();
+
+            promise.addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override
+                public void operationComplete(Future<? super Void> future) throws Exception {
+                    if (future.isSuccess()) {
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Delete topic successfully, topic={}", topic);
+                        }
+                    } else {
+                        promise.tryFailure(future.cause());
+                    }
+                }
+            });
+
+            invoker.invoke(NEW_TOPIC, config.getInvokeTimeMs(), promise, request, DelTopicResponse.class);
 
         } catch (Throwable t) {
             promise.tryFailure(t);
