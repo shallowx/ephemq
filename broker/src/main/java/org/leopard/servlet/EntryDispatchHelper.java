@@ -123,6 +123,9 @@ public class EntryDispatchHelper {
 
     public void close(CloseFunction<Channel, String, String> function) {
         if (applyHandlers.isEmpty()) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Available handlers are empty");
+            }
             return;
         }
 

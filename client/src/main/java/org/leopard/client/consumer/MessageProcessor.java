@@ -1,8 +1,7 @@
-package org.leopard.client.consumer.push;
+package org.leopard.client.consumer;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.leopard.client.Message;
-import org.leopard.client.consumer.MessagePostInterceptor;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 

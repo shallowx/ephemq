@@ -2,7 +2,7 @@ package org.leopard.servlet;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.consumer.push.Subscription;
+import org.leopard.client.consumer.Subscription;
 import org.leopard.ledger.Offset;
 
 public interface PushDispatchProcessor {

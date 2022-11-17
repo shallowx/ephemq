@@ -1,4 +1,4 @@
-package org.leopard.client.consumer.push;
+package org.leopard.client.consumer;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
@@ -6,8 +6,6 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.client.Client;
 import org.leopard.client.State;
-import org.leopard.client.consumer.ConsumerConfig;
-import org.leopard.client.consumer.MessagePostInterceptor;
 import org.leopard.client.internal.ClientChannel;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;

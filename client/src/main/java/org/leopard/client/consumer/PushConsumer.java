@@ -1,6 +1,4 @@
-package org.leopard.client.consumer.push;
-
-import org.leopard.client.consumer.MessagePostInterceptor;
+package org.leopard.client.consumer;
 
 public interface PushConsumer {
 

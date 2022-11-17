@@ -1,4 +1,4 @@
-package org.leopard.client.consumer.push;
+package org.leopard.client.consumer;
 
 public class Subscription {
 

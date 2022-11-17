@@ -12,7 +12,7 @@ import org.leopard.internal.metadata.TopicPartitionRequestCacheSupport;
 import org.leopard.ledger.Offset;
 import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.RemoteException;
-import org.leopard.client.consumer.push.Subscription;
+import org.leopard.client.consumer.Subscription;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.remote.invoke.InvokeAnswer;
 import org.leopard.ledger.LedgerManager;
@@ -70,8 +70,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             switch (command) {
 
                 case SEND_MESSAGE -> processSendRequest(channel, data, answer, version);
-
-                case PULL_MESSAGE -> processPullRequest(channel, data, answer);
 
                 case SUBSCRIBE -> processSubscribeRequest(channel, data, answer);
 
@@ -181,47 +179,6 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         } catch (Throwable t){
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to append message record", t);
-            }
-            answerFailed(answer,t);
-        }
-    }
-
-    private void processPullRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer)  {
-        try {
-            PullMessageRequest request = readProto(data, PullMessageRequest.parser());
-            commandExecutor.execute(() -> {
-                try {
-                    int ledger = request.getLedger();
-                    int limit = request.getLimit();
-                    String queue = request.getQueue();
-                    short theVersion = (short) request.getVersion();
-                    int epoch = request.getEpoch() ;
-                    long index = request.getIndex();
-                    String topic = request.getTopic();
-
-                    Promise<PullMessageResponse> promise = newImmediatePromise();
-                    promise.addListener((GenericFutureListener<Future<PullMessageResponse>>) future -> {
-                        if (future.isSuccess()) {
-                            if (answer != null) {
-                                answer.success(proto2Buf(channel.alloc(), future.get()));
-                            }
-                        } else {
-                            answerFailed(answer, future.cause());
-                        }
-                    });
-
-                    LedgerManager logManager = manager.getLedgerManager();
-                    logManager.pull(channel, ledger, topic, queue, theVersion, epoch, index, limit, promise);
-                } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to pull message record", t);
-                    }
-                    answerFailed(answer,t);
-                }
-            });
-        } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to pull message record", t);
             }
             answerFailed(answer,t);
         }

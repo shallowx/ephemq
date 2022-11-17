@@ -4,7 +4,6 @@ import io.netty.buffer.*;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.leopard.remote.RemoteException;
-import org.leopard.client.consumer.pull.PullResult;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
@@ -68,117 +67,8 @@ public class Storage {
         }
     }
 
-    public void read(int requestId, String topic, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
-        if (storageExecutor.inEventLoop()) {
-            doRead(requestId, topic, queue, version, offset, limit, promise);
-        } else {
-            storageExecutor.execute(() -> doRead(requestId, topic, queue, version, offset,  limit, promise));
-        }
-    }
-
-    @SuppressWarnings("all")
-    private void doRead(int requestId, String topic, String queue, short version, Offset offset, int limit, Promise<PullResult> promise) {
-        try {
-            Segment segment = locateSegment(offset);
-            if (segment == null) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("The Segment not found, and the offset<epoch= %d index=%d>", offset.epoch(), offset.index())));
-                return;
-            }
-
-            int position = segment.locate(offset);
-            CompositeByteBuf compositeByteBuf = null;
-            int current = 0;
-
-            int limitBytes = config.getMessagePullBytesLimit();
-            while (current < limit) {
-                ByteBuf queueBuf = null;
-                ByteBuf topicBuf = null;
-                try {
-                    int tailLocation = segment.tailLocation();
-                    if (position >= tailLocation) {
-                        Segment next = segment.next();
-                        if (next == null) {
-                            break;
-                        }
-                        segment = next;
-                    }
-
-                    ByteBuf payload = segment.readCompleted(position);
-
-                    short theVersion = payload.getShort(4);
-
-                    int topicLength = payload.getInt(6);
-                    topicBuf = payload.retainedSlice(10, topicLength);
-                    String theTopic = ByteBufUtil.buf2String(topicBuf, topicLength);
-
-                    int queueLength = payload.getInt(10 + topicLength);
-                    queueBuf = payload.retainedSlice(14 + topicLength, queueLength);
-                    String theQueue = ByteBufUtil.buf2String(queueBuf, queueLength);
-
-                    position += payload.readableBytes();
-
-                    if (!theTopic.equals(topic)) {
-                        continue;
-                    }
-
-                    if (!theQueue.equals(queue)) {
-                        continue;
-                    }
-
-                    if (version != -1 && theVersion != version) {
-                        continue;
-                    }
-
-                    if (compositeByteBuf == null) {
-                        if (payload.readableBytes() > limitBytes) {
-                            break;
-                        }
-
-                        compositeByteBuf = newComposite(payload, limit);
-                        continue;
-                    }
-
-                    int readableBytes = compositeByteBuf.readableBytes() + payload.readableBytes();
-                    if (readableBytes > limitBytes) {
-                        break;
-                    }
-
-                    compositeByteBuf.addFlattenedComponents(true, payload);
-                    current++;
-                } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Read message failed, error:{}", t);
-                    }
-                    continue;
-                } finally {
-                    ByteBufUtil.release(queueBuf);
-                }
-            }
-
-            triggerPull(requestId, queue, version, ledger, limit, offset, compositeByteBuf == null ? Unpooled.EMPTY_BUFFER : compositeByteBuf);
-
-            Offset tailOffset = segment.tailOffset();
-            promise.trySuccess(new PullResult(ledger, null, queue, limit, tailOffset.epoch(), tailOffset.index(), null));
-        } catch (Throwable t) {
-            promise.tryFailure(t);
-        }
-    }
-
     private CompositeByteBuf newComposite(ByteBuf buf, int limit) {
         return Unpooled.compositeBuffer(limit).addFlattenedComponents(true, buf);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void triggerPull(int requestId, String queue, short version, int ledger, int limit, Offset offset, ByteBuf buf) {
-        if (trigger != null) {
-            try {
-                trigger.onPull(requestId, queue, version, ledger, limit, offset, buf);
-            } catch (Throwable t) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("trigger pull error: ledger={} limit={} offset={}. error:{}", ledger, limit, offset, t);
-                }
-            }
-        }
     }
 
     @SuppressWarnings("SameParameterValue")

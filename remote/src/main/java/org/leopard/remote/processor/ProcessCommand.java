@@ -9,8 +9,7 @@ public interface ProcessCommand {
         byte FETCH_TOPIC_RECORD = 4;
         byte SEND_MESSAGE = 5;
         byte SUBSCRIBE = 6;
-        byte PULL_MESSAGE = 7;
-        byte CLEAN_SUBSCRIBE = 8;
+        byte CLEAN_SUBSCRIBE = 7;
 
     }
 

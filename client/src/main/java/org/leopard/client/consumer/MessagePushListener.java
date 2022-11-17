@@ -1,4 +1,4 @@
-package org.leopard.client.consumer.push;
+package org.leopard.client.consumer;
 
 import org.leopard.client.Message;
 import org.leopard.client.consumer.ConsumeListener;

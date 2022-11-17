@@ -1,4 +1,4 @@
-org/shallow/mertics/NettyMetrics.class
-org/shallow/mertics/PrometheusMeterRegistrySetup.class
-org/shallow/mertics/MeterConfig.class
-org/shallow/mertics/MeterRegistrySetup.class
+org/leopard/mertics/PrometheusMeterRegistrySetup.class
+org/leopard/mertics/MeterConfig.class
+org/leopard/mertics/MeterRegistrySetup.class
+org/leopard/mertics/NettyMetrics.class

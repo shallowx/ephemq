@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import org.leopard.remote.proto.notify.MessagePushSignal;
 import org.leopard.remote.Type;
 import org.leopard.remote.codec.MessagePacket;
-import org.leopard.client.consumer.push.Subscription;
+import org.leopard.client.consumer.Subscription;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.ledger.Cursor;
 import org.leopard.ledger.Offset;

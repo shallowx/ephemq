@@ -106,7 +106,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             });
 
             TopicManager topicManager = manager.getTopicManager();
-            topicManager.add();
+            topicManager.create();
         } catch (Throwable t) {
             answerFailed(answer, t);
         }

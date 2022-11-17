@@ -6,10 +6,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.consumer.pull.PullResult;
-import org.leopard.client.consumer.push.Subscription;
-import org.leopard.servlet.DefaultEntryPullDispatcher;
-import org.leopard.servlet.PullDispatchProcessor;
+import org.leopard.client.consumer.Subscription;
 import org.leopard.servlet.DefaultEntryPushDispatcher;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.servlet.PushDispatchProcessor;
@@ -34,7 +31,6 @@ public class Ledger {
     private int epoch;
     private final Storage storage;
     private final EventExecutor storageExecutor;
-    private final PullDispatchProcessor entryPullHandler;
     private final PushDispatchProcessor entryPushHandler;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
@@ -49,7 +45,6 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.entryPullHandler = new DefaultEntryPullDispatcher(config);
         this.entryPushHandler = new DefaultEntryPushDispatcher(ledgerId, config, storage);
     }
 
@@ -152,38 +147,6 @@ public class Ledger {
         }
     }
 
-    public void pull(int requestId, Channel channel, String topic, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
-        if (storageExecutor.inEventLoop()) {
-            doPull(requestId, channel, topic, queue, version, epoch, index, limit, promise);
-        } else {
-            try {
-                storageExecutor.execute(() -> doPull(requestId, channel, topic, queue, version, epoch, index, limit, promise));
-            } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to pull message, topic={} partition={} queue={} version={} ledgerId={} epoch={} index={} requestId={}. error cause:{}",
-                            topic, partition, queue, version, ledgerId, epoch, index, requestId, t);
-
-                }
-                promise.tryFailure(t);
-            }
-        }
-    }
-
-    private void doPull(int requestId, Channel channel, String topic, String queue, short version, int epoch, long index, int limit, Promise<PullResult> promise) {
-        Offset offset = new Offset(epoch, index);
-        try {
-            entryPullHandler.register(requestId, channel);
-            storage.read(requestId, topic, queue, version, offset, limit, promise);
-        } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to doPull message, topic={} partition={} queue={} version={} ledgerId={} epoch={} index={} requestId={}. error cause:{}",
-                        topic, partition, queue, version, ledgerId, epoch, index, requestId, t);
-
-            }
-            promise.tryFailure(t);
-        }
-    }
-
     public void clearChannel(Channel channel) {
         entryPushHandler.clearChannel(channel);
     }
@@ -193,20 +156,12 @@ public class Ledger {
         entryPushHandler.handle(topic);
     }
 
-    public void onTriggerPull(int requestId, String queue, short version, int ledgerId, int limit, Offset  offset, ByteBuf buf) {
-        entryPullHandler.dispatch(requestId, topic, queue, version, ledgerId, limit, offset, buf);
-    }
-
     private class MessageTrigger implements LedgerTrigger {
         @Override
         public void onAppend(int limit, Offset tail) {
             onTriggerAppend(limit, tail);
         }
 
-        @Override
-        public void onPull(int requestId, String queue, short version, int ledgerId, int limit, Offset head, ByteBuf buf) {
-            onTriggerPull(requestId, queue, version, ledgerId, limit, head, buf);
-        }
     }
 
     public String getTopic() {
@@ -241,8 +196,6 @@ public class Ledger {
             storageExecutor.shutdownGracefully();
 
             storage.close();
-
-            entryPullHandler.shutdownGracefully();
             entryPushHandler.shutdownGracefully();
 
             if (logger.isWarnEnabled()) {

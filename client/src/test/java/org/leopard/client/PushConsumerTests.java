@@ -1,8 +1,7 @@
 package org.leopard.client;
 
-import org.leopard.client.consumer.push.*;
+import org.leopard.client.consumer.*;
 import org.junit.Test;
-import org.leopard.client.consumer.ConsumerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 

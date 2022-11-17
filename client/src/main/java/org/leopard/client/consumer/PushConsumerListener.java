@@ -1,4 +1,4 @@
-package org.leopard.client.consumer.push;
+package org.leopard.client.consumer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -6,9 +6,6 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
-import org.leopard.client.consumer.ConsumeListener;
-import org.leopard.client.consumer.ConsumerConfig;
-import org.leopard.client.consumer.MessagePostInterceptor;
 import org.leopard.client.internal.ClientListener;
 import org.leopard.client.internal.ClientChannel;
 import org.leopard.common.logging.InternalLogger;
