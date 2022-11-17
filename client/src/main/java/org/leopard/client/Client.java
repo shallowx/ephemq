@@ -16,7 +16,7 @@ import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.client.pool.ShallowChannelHealthChecker;
 import org.leopard.client.pool.ShallowChannelPool;
-import org.leopard.common.util.ObjectUtil;
+import org.leopard.common.util.ObjectUtils;
 
 import static org.leopard.remote.util.NetworkUtil.newEventLoopGroup;
 import static org.leopard.remote.util.NetworkUtil.preferChannelClass;
@@ -43,8 +43,8 @@ public class Client {
     }
 
     public Client(String name, ClientConfig config, ClientListener listener, ShallowChannelHealthChecker healthChecker) {
-        this.name = ObjectUtil.checkNonEmpty(name, "Client name cannot be empty");
-        this.config = ObjectUtil.checkNotNull(config, "Client config cannot be null");
+        this.name = ObjectUtils.checkNonEmpty(name, "Client name cannot be empty");
+        this.config = ObjectUtils.checkNotNull(config, "Client config cannot be null");
         this.listener = listener;
         this.healthChecker = healthChecker;
     }

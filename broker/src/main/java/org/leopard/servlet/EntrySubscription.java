@@ -11,7 +11,7 @@ public class EntrySubscription {
     private Offset offset;
     private short version;
     private String topic;
-    private EntryPushHandler handler;
+    private EntryHandler handler;
 
     private EntrySubscription() {
         //unsupported
@@ -41,7 +41,7 @@ public class EntrySubscription {
         this.offset = offset;
     }
 
-    public EntryPushHandler getHandler() {
+    public EntryHandler getHandler() {
         return handler;
     }
 
@@ -54,7 +54,7 @@ public class EntrySubscription {
         private List<String> queue;
         private Offset offset;
         private short version;
-        private EntryPushHandler handler;
+        private EntryHandler handler;
         private String topic;
 
         private SubscribeBuilder() {
@@ -80,7 +80,7 @@ public class EntrySubscription {
             return this;
         }
 
-        public SubscribeBuilder handler(EntryPushHandler handler) {
+        public SubscribeBuilder handler(EntryHandler handler) {
             this.handler = handler;
             return this;
         }

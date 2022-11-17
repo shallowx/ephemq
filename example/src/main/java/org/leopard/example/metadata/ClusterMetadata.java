@@ -5,7 +5,7 @@ import org.leopard.client.Client;
 import org.leopard.client.ClientConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.meta.NodeRecord;
+import org.leopard.common.metadata.NodeRecord;
 import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 
 import java.util.List;

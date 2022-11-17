@@ -9,7 +9,7 @@ import org.leopard.remote.invoke.InvokeAnswer;
 
 import javax.annotation.concurrent.Immutable;
 
-import static org.leopard.common.util.ObjectUtil.checkPositive;
+import static org.leopard.common.util.ObjectUtils.checkPositive;
 import static org.leopard.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable

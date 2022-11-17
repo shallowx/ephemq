@@ -1,6 +1,6 @@
 package org.leopard.mertics;
 
-import org.leopard.common.util.TypeUtil;
+import org.leopard.common.util.TypeUtils;
 import java.util.Properties;
 
 public class MeterConfig {
@@ -21,18 +21,18 @@ public class MeterConfig {
     }
 
     public String getMetricsScrapeUrl() {
-        return TypeUtil.object2String(config.getOrDefault(METRICS_SCRAPE_URL, "/prometheus"));
+        return TypeUtils.object2String(config.getOrDefault(METRICS_SCRAPE_URL, "/prometheus"));
     }
 
     public String getMetricsAddress() {
-        return TypeUtil.object2String(config.getOrDefault(METRICS_ADDRESS, "0.0.0.0"));
+        return TypeUtils.object2String(config.getOrDefault(METRICS_ADDRESS, "0.0.0.0"));
     }
 
     public boolean getMetricsEnabled() {
-        return TypeUtil.object2Boolean(config.getOrDefault(METRICS_ENABLED, true));
+        return TypeUtils.object2Boolean(config.getOrDefault(METRICS_ENABLED, true));
     }
 
     public int getMetricsPort() {
-        return TypeUtil.object2Int(config.getOrDefault(METRICS_PORT, 9000));
+        return TypeUtils.object2Int(config.getOrDefault(METRICS_PORT, 9000));
     }
 }

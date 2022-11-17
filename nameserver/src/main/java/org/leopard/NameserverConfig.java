@@ -2,7 +2,7 @@ package org.leopard;
 
 import java.util.Properties;
 
-import static org.leopard.common.util.TypeUtil.*;
+import static org.leopard.common.util.TypeUtils.*;
 
 public class NameserverConfig {
 

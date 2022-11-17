@@ -21,7 +21,7 @@ import org.leopard.remote.proto.server.SendMessageExtras;
 import org.leopard.remote.proto.server.SendMessageRequest;
 import org.leopard.remote.proto.server.SendMessageResponse;
 import org.leopard.remote.util.ByteBufUtil;
-import org.leopard.common.util.ObjectUtil;
+import org.leopard.common.util.ObjectUtils;
 
 import java.net.SocketAddress;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class MessageProducer implements Producer{
     private final Map<Integer, ClientChannel> activeChannels = new Int2ObjectOpenHashMap<>();
 
     public MessageProducer(String name, ProducerConfig config) {
-        this.name = ObjectUtil.checkNonEmpty(name, "Message producer name cannot be null");
+        this.name = ObjectUtils.checkNonEmpty(name, "Message producer name cannot be null");
         this.client = new Client("producer-client", config.getClientConfig());
         this.config = config;
     }

@@ -13,8 +13,8 @@ import org.leopard.client.internal.OperationInvoker;
 import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.meta.NodeRecord;
-import org.leopard.common.util.StringUtil;
+import org.leopard.common.metadata.NodeRecord;
+import org.leopard.common.util.StringUtils;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.proto.heartbeat.HeartbeatRequest;
@@ -154,7 +154,7 @@ public class ClusterNodeCacheSupport {
     }
 
     public Set<NodeRecord> load(String cluster) throws Exception {
-        if (StringUtil.isNullOrEmpty(cluster)) {
+        if (StringUtils.isNullOrEmpty(cluster)) {
             cluster = config.getClusterName();
         }
         return cache.get(cluster);
@@ -208,13 +208,13 @@ public class ClusterNodeCacheSupport {
 
     private OperationInvoker acquireInvokerOrRandomClientChannel(String url) {
         ShallowChannelPool chanelPool = internalClient.getChanelPool();
-        ClientChannel clientChannel = StringUtil.isNullOrEmpty(url) ? chanelPool.acquireWithRandomly() : chanelPool.acquireHealthyOrNew(switchSocketAddress(url));
+        ClientChannel clientChannel = StringUtils.isNullOrEmpty(url) ? chanelPool.acquireWithRandomly() : chanelPool.acquireHealthyOrNew(switchSocketAddress(url));
         return clientChannel.invoker();
     }
 
     private String[] getNameserverUrl() {
         String nameserverUrl = config.getNameserverUrl();
-        if (StringUtil.isNullOrEmpty(nameserverUrl)) {
+        if (StringUtils.isNullOrEmpty(nameserverUrl)) {
             throw new IllegalArgumentException("Invalid parameter, and nameserver url cannot be empty");
         }
 

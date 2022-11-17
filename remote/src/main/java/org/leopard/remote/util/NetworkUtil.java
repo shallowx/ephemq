@@ -12,7 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.*;
-import org.leopard.common.util.ObjectUtil;
+import org.leopard.common.util.ObjectUtils;
 import org.leopard.remote.RemoteException;
 import org.leopard.remote.codec.MessagePacket;
 
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 import static org.leopard.remote.util.ByteBufUtil.string2Buf;
-import static org.leopard.common.util.ObjectUtil.checkPositive;
+import static org.leopard.common.util.ObjectUtils.checkPositive;
 
 public final class NetworkUtil {
 
@@ -49,7 +49,7 @@ public final class NetworkUtil {
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
         final int size = addresses == null ? INT_ZERO : addresses.size();
-        if (ObjectUtil.checkPositive(size, "bootstrap address") > INT_ZERO) {
+        if (ObjectUtils.checkPositive(size, "bootstrap address") > INT_ZERO) {
             List<SocketAddress> answers = new LinkedList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);

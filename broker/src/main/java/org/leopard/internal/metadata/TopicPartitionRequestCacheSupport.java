@@ -13,7 +13,7 @@ import org.leopard.client.internal.OperationInvoker;
 import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.meta.PartitionRecord;
+import org.leopard.common.metadata.PartitionRecord;
 import org.leopard.internal.BrokerManager;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.remote.proto.PartitionMetadata;

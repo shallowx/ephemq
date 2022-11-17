@@ -19,8 +19,8 @@ public class EntryDispatchHelper {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDispatchHelper.class);
 
     private final EventExecutor[] executors;
-    private final ConcurrentMap<Channel, EntryPushHandler> channelOfHandlers = new ConcurrentHashMap<>();
-    private final WeakHashMap<EntryPushHandler, Integer> applyHandlers = new WeakHashMap<>();
+    private final ConcurrentMap<Channel, EntryHandler> channelOfHandlers = new ConcurrentHashMap<>();
+    private final WeakHashMap<EntryHandler, Integer> applyHandlers = new WeakHashMap<>();
 
     public EntryDispatchHelper(BrokerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class EntryDispatchHelper {
         return executors[(channel.hashCode() & 0x7fffffff) % executors.length];
     }
 
-    public void putHandler(Channel channel, EntryPushHandler handler) {
+    public void putHandler(Channel channel, EntryHandler handler) {
         channelOfHandlers.put(channel, handler);
     }
 
@@ -44,12 +44,12 @@ public class EntryDispatchHelper {
         channelOfHandlers.remove(channel);
     }
 
-    public EntryPushHandler getHandler(Channel channel) {
+    public EntryHandler getHandler(Channel channel) {
         return channelOfHandlers.get(channel);
     }
 
-    public EntryPushHandler applyHandler(Channel channel, int subscribeLimit) {
-        EntryPushHandler handler = channelOfHandlers.get(channel);
+    public EntryHandler applyHandler(Channel channel, int subscribeLimit) {
+        EntryHandler handler = channelOfHandlers.get(channel);
         if (handler != null) {
             return handler;
         }
@@ -61,9 +61,9 @@ public class EntryDispatchHelper {
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
             int middleLimit = subscribeLimit / 2;
-            Map<EntryPushHandler, Integer> handlers = new HashMap<>();
+            Map<EntryHandler, Integer> handlers = new HashMap<>();
             int bound = 0;
-            for (EntryPushHandler entryHandler : applyHandlers.keySet()) {
+            for (EntryHandler entryHandler : applyHandlers.keySet()) {
                 int channelCount = entryHandler.getChannelShips().size();
                 if (channelCount >= subscribeLimit) {
                     continue;
@@ -84,7 +84,7 @@ public class EntryDispatchHelper {
             int index = random.nextInt(bound);
             int count = 0;
 
-            for (Map.Entry<EntryPushHandler, Integer> entry : handlers.entrySet()) {
+            for (Map.Entry<EntryHandler, Integer> entry : handlers.entrySet()) {
                 count += subscribeLimit - entry.getValue();
                 if (index < count) {
                     return entry.getKey();
@@ -95,7 +95,7 @@ public class EntryDispatchHelper {
         }
     }
 
-    private EntryPushHandler newHandler() {
+    private EntryHandler newHandler() {
         synchronized (applyHandlers) {
             int[] limitArray = new int[executors.length];
             applyHandlers.values().forEach(i -> limitArray[i]++);
@@ -115,7 +115,7 @@ public class EntryDispatchHelper {
                 }
             }
 
-            EntryPushHandler handler = new EntryPushHandler(executors[index]);
+            EntryHandler handler = new EntryHandler(executors[index]);
             applyHandlers.put(handler, index);
             return handler;
         }
@@ -129,10 +129,10 @@ public class EntryDispatchHelper {
             return;
         }
 
-        Set<Map.Entry<Channel, EntryPushHandler>> entries = channelOfHandlers.entrySet();
-        for (Map.Entry<Channel, EntryPushHandler> entry : entries) {
+        Set<Map.Entry<Channel, EntryHandler>> entries = channelOfHandlers.entrySet();
+        for (Map.Entry<Channel, EntryHandler> entry : entries) {
             Channel channel = entry.getKey();
-            EntryPushHandler handler = getHandler(channel);
+            EntryHandler handler = getHandler(channel);
             ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getChannelShips();
             if (subscriptionShips == null || subscriptionShips.isEmpty()) {
                 continue;

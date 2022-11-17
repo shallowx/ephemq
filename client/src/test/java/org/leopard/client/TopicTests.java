@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.meta.TopicRecord;
+import org.leopard.common.metadata.TopicRecord;
 import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.remote.proto.server.CreateTopicResponse;
 import org.leopard.remote.proto.server.DelTopicResponse;

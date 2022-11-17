@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static org.leopard.common.util.ObjectUtil.checkNotNull;
+import static org.leopard.common.util.ObjectUtils.checkNotNull;
 import static org.leopard.remote.RemoteException.of;
 import static org.leopard.remote.util.ByteBufUtil.buf2String;
 import static org.leopard.remote.util.ByteBufUtil.release;

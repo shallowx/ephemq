@@ -1,7 +1,7 @@
 package org.leopard.common.logging;
 
-import org.leopard.common.util.ObjectUtil;
-import org.leopard.common.util.StringUtil;
+import org.leopard.common.util.ObjectUtils;
+import org.leopard.common.util.StringUtils;
 
 import java.io.ObjectStreamException;
 import java.io.Serial;
@@ -16,7 +16,7 @@ public abstract class AbstractInternalLogger implements InternalLogger, Serializ
     private final String name;
 
     protected AbstractInternalLogger(String name) {
-        this.name = ObjectUtil.checkNotNull(name, "name");
+        this.name = ObjectUtils.checkNotNull(name, "name");
     }
 
     @Override
@@ -139,6 +139,6 @@ public abstract class AbstractInternalLogger implements InternalLogger, Serializ
 
     @Override
     public String toString() {
-        return StringUtil.simpleClassName(this) + '(' + name() + ')';
+        return StringUtils.simpleClassName(this) + '(' + name() + ')';
     }
 }

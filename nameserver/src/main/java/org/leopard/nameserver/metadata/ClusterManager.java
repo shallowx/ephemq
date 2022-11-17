@@ -7,8 +7,8 @@ import io.netty.util.concurrent.Promise;
 import org.leopard.NameserverConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.meta.NodeRecord;
-import org.leopard.common.util.StringUtil;
+import org.leopard.common.metadata.NodeRecord;
+import org.leopard.common.util.StringUtils;
 import org.leopard.remote.util.NetworkUtil;
 
 import java.util.HashSet;
@@ -60,17 +60,17 @@ public class ClusterManager {
 
     public void register(String cluster, String name, String host, int port, Promise<Void> promise) {
         try {
-            if (StringUtil.isNullOrEmpty(cluster)) {
+            if (StringUtils.isNullOrEmpty(cluster)) {
 
                 promise.tryFailure(new IllegalStateException("invalid parameter, cluster-name cannot be empty"));
             }
 
-            if (StringUtil.isNullOrEmpty(name)) {
+            if (StringUtils.isNullOrEmpty(name)) {
 
                 promise.tryFailure(new IllegalStateException("invalid parameter, server-id cannot be empty"));
             }
 
-            if (StringUtil.isNullOrEmpty(host)) {
+            if (StringUtils.isNullOrEmpty(host)) {
                 promise.tryFailure(new IllegalStateException("invalid parameter, server-host "));
             }
 
@@ -103,12 +103,12 @@ public class ClusterManager {
 
     public void unregister(String cluster, String server, Promise<Void> promise) {
         try {
-            if (StringUtil.isNullOrEmpty(cluster)) {
+            if (StringUtils.isNullOrEmpty(cluster)) {
 
                 promise.tryFailure(new IllegalStateException("invalid parameter, cluster-name cannot be empty"));
             }
 
-            if (StringUtil.isNullOrEmpty(server)) {
+            if (StringUtils.isNullOrEmpty(server)) {
 
                 promise.tryFailure(new IllegalStateException("invalid parameter, server-id cannot be empty"));
             }
@@ -122,7 +122,7 @@ public class ClusterManager {
     }
 
     public Set<NodeRecord> load(String cluster) {
-        if (StringUtil.isNullOrEmpty(cluster)) {
+        if (StringUtils.isNullOrEmpty(cluster)) {
             return null;
         }
         return cache.get(cluster);
@@ -130,7 +130,7 @@ public class ClusterManager {
 
     public void heartbeat(String cluster, String server) {
         try {
-            if (StringUtil.isNullOrEmpty(cluster) || StringUtil.isNullOrEmpty(server)) {
+            if (StringUtils.isNullOrEmpty(cluster) || StringUtils.isNullOrEmpty(server)) {
                 return;
             }
 

@@ -15,8 +15,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-import static org.leopard.common.util.TypeUtil.*;
-import static org.leopard.common.util.TypeUtil.object2String;
+import static org.leopard.common.util.TypeUtils.*;
+import static org.leopard.common.util.TypeUtils.object2String;
 
 public class Server {
 

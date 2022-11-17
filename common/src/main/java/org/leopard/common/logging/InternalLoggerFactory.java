@@ -1,6 +1,6 @@
 package org.leopard.common.logging;
 
-import org.leopard.common.util.ObjectUtil;
+import org.leopard.common.util.ObjectUtils;
 
 public abstract class InternalLoggerFactory {
 
@@ -79,7 +79,7 @@ public abstract class InternalLoggerFactory {
     }
 
     public static void setDefaultFactory(InternalLoggerFactory defaultFactory) {
-        InternalLoggerFactory.defaultFactory = ObjectUtil.checkNotNull(defaultFactory, "defaultFactory");
+        InternalLoggerFactory.defaultFactory = ObjectUtils.checkNotNull(defaultFactory, "defaultFactory");
     }
 
 

@@ -6,7 +6,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.leopard.common.meta.NodeRecord;
+import org.leopard.common.metadata.NodeRecord;
 import org.leopard.nameserver.metadata.Manager;
 import org.leopard.NameserverConfig;
 import org.leopard.common.logging.InternalLogger;

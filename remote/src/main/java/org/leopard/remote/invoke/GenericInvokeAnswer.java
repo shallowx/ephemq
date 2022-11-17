@@ -4,7 +4,7 @@ import io.netty.util.ReferenceCounted;
 
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import static io.netty.util.ReferenceCountUtil.release;
-import static org.leopard.common.util.ObjectUtil.checkNotNull;
+import static org.leopard.common.util.ObjectUtils.checkNotNull;
 
 public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 

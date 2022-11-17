@@ -7,9 +7,9 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.client.consumer.Subscription;
-import org.leopard.servlet.DefaultEntryPushDispatcher;
+import org.leopard.servlet.DefaultEntryDispatcher;
 import org.leopard.internal.config.BrokerConfig;
-import org.leopard.servlet.PushDispatchProcessor;
+import org.leopard.servlet.DispatchProcessor;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 
@@ -31,7 +31,7 @@ public class Ledger {
     private int epoch;
     private final Storage storage;
     private final EventExecutor storageExecutor;
-    private final PushDispatchProcessor entryPushHandler;
+    private final DispatchProcessor entryPushHandler;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     enum State {
@@ -45,7 +45,7 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.entryPushHandler = new DefaultEntryPushDispatcher(ledgerId, config, storage);
+        this.entryPushHandler = new DefaultEntryDispatcher(ledgerId, config, storage);
     }
 
     public void start() throws Exception {

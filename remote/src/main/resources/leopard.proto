@@ -1,0 +1,32 @@
+syntax="proto3";
+
+package leopard.protobuf;
+option java_package = "org.leopard.remote.proto";
+option java_outer_classname = "MessageMetadataProto";
+option java_multiple_files = true;
+
+message TopicMetadata {
+  string name = 1;
+  map<int32, PartitionMetadata> partitions = 2;
+}
+
+message PartitionMetadata {
+  int32 id = 1;
+  int32 latency = 2;
+  string leader = 3;
+  repeated string replicas = 4;
+}
+
+message ClusterMetadata {
+  string name = 1;
+  map<string, NodeMetadata> metadata = 2;
+}
+
+message NodeMetadata{
+  string cluster = 1;
+  string name = 2;
+  string host = 3;
+  int32 port = 4;
+  string state = 5;
+  int64 lastKeepLiveTime=6;
+}

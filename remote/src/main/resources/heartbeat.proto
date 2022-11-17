@@ -1,9 +1,9 @@
 syntax="proto3";
 
-package shallow.protobuf;
-import "shallow.proto";
+package leopard.protobuf;
+import "leopard.proto";
 
-option java_package = "org.shallow.remote.proto.heartbeat";
+option java_package = "org.leopard.remote.proto.heartbeat";
 option java_outer_classname = "HeartbeatProto";
 option java_multiple_files = true;
 

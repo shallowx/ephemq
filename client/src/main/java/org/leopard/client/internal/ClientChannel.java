@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import org.leopard.client.ClientConfig;
-import org.leopard.common.util.ObjectUtil;
+import org.leopard.common.util.ObjectUtils;
 
 import java.net.SocketAddress;
 import java.util.Objects;
@@ -17,9 +17,9 @@ public class ClientChannel{
     private final OperationInvoker invoker;
 
     public ClientChannel(Channel channel, ClientConfig config, SocketAddress address) {
-        this.channel = ObjectUtil.checkNotNull(channel, "Channel cannot be null");
-        this.name = ObjectUtil.checkNotNull(channel.id().asLongText(), "Name cannot be null");
-        this.address = ObjectUtil.checkNotNull(address, "Socket address cannot be null");
+        this.channel = ObjectUtils.checkNotNull(channel, "Channel cannot be null");
+        this.name = ObjectUtils.checkNotNull(channel.id().asLongText(), "Name cannot be null");
+        this.address = ObjectUtils.checkNotNull(address, "Socket address cannot be null");
         this.invoker = new OperationInvoker(this, config);
     }
 

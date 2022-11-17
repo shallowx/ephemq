@@ -10,7 +10,7 @@ import org.leopard.client.Client;
 import org.leopard.client.internal.ClientChannel;
 import org.leopard.client.internal.ClientChannelInitializer;
 import org.leopard.client.ClientConfig;
-import org.leopard.common.util.ObjectUtil;
+import org.leopard.common.util.ObjectUtils;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 
@@ -77,7 +77,7 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private List<SocketAddress> constructBootstrap() {
-        return ObjectUtil.checkNotNull(switchSocketAddress(clientConfig.getBootstrapSocketAddress()), "Client bootstrap address cannot be null");
+        return ObjectUtils.checkNotNull(switchSocketAddress(clientConfig.getBootstrapSocketAddress()), "Client bootstrap address cannot be null");
     }
 
     @Override

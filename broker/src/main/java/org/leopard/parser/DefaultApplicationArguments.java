@@ -8,7 +8,7 @@ import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-import static org.leopard.common.util.TypeUtil.*;
+import static org.leopard.common.util.TypeUtils.*;
 
 public class DefaultApplicationArguments implements ApplicationArguments {
 

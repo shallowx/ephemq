@@ -21,7 +21,7 @@ public class MessageProcessor {
         this.executor = executor;
     }
 
-    public void process(Message message, MessagePushListener listener, MessagePostInterceptor filter) {
+    public void process(Message message, MessageListener listener, MessagePostInterceptor filter) {
         if (executor.isShutdown()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Event executor is shutdown");
@@ -40,7 +40,7 @@ public class MessageProcessor {
         }
     }
 
-    public void doProcess(Message message, MessagePushListener listener, MessagePostInterceptor mpInterceptor) {
+    public void doProcess(Message message, MessageListener listener, MessagePostInterceptor mpInterceptor) {
         try {
             if (mpInterceptor != null) {
                 message = mpInterceptor.interceptor(message);

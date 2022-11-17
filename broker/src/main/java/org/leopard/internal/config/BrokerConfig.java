@@ -2,7 +2,7 @@ package org.leopard.internal.config;
 
 import java.util.Properties;
 
-import static org.leopard.common.util.TypeUtil.*;
+import static org.leopard.common.util.TypeUtils.*;
 import static org.leopard.internal.config.ConfigConstants.*;
 
 public class BrokerConfig {
