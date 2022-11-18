@@ -33,7 +33,7 @@ final class MessageConsumerListener implements ClientListener {
     private MessagePostInterceptor interceptor;
     private final MessageProcessor[] handlers;
     private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
-    private final MessageConsumer pushConsumer;
+    private final MessageConsumer consumer;
 
     public MessageConsumerListener(ConsumerConfig consumerConfig, MessageConsumer consumer) {
         EventExecutorGroup group = newEventExecutorGroup(consumerConfig.getMessageHandleThreadLimit(), "client-message-handle");
@@ -43,7 +43,7 @@ final class MessageConsumerListener implements ClientListener {
             Semaphore semaphore = new Semaphore(consumerConfig.messageHandleSemaphoreLimit);
             handlers[i] = new MessageProcessor(String.valueOf(i), semaphore, group.next());
         }
-        this.pushConsumer = consumer;
+        this.consumer = consumer;
     }
 
     @Override
@@ -101,7 +101,7 @@ final class MessageConsumerListener implements ClientListener {
         int port = signal.getPort();
 
         SocketAddress address = switchSocketAddress(host, port);
-        pushConsumer.resetSuscribe(address);
+        consumer.resetSuscribe(address);
     }
 
     @Override
