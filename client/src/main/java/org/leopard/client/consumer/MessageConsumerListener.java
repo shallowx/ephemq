@@ -38,7 +38,7 @@ final class MessageConsumerListener implements ClientListener {
     public MessageConsumerListener(ConsumerConfig consumerConfig, MessageConsumer consumer) {
         EventExecutorGroup group = newEventExecutorGroup(consumerConfig.getMessageHandleThreadLimit(), "client-message-handle");
 
-        handlers = new MessageProcessor[consumerConfig.getMessageHandleThreadLimit()];
+        handlers = new MessageProcessor[tableSizeFor(consumerConfig.getMessageHandleThreadLimit())];
         for (int i = 0; i < consumerConfig.getMessageHandleThreadLimit(); i++) {
             Semaphore semaphore = new Semaphore(consumerConfig.messageHandleSemaphoreLimit);
             handlers[i] = new MessageProcessor(String.valueOf(i), semaphore, group.next());
@@ -138,7 +138,7 @@ final class MessageConsumerListener implements ClientListener {
                 }
             }
 
-            MessageProcessor handler = handlers[((Objects.hash(topic, queue) + ledgerId) & 0x7fffffff) % handlers.length];
+            MessageProcessor handler = handlers[hash(Objects.hash(topic, queue) + ledgerId)];
             handler.process(message, listener, interceptor);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
@@ -146,5 +146,15 @@ final class MessageConsumerListener implements ClientListener {
                         channel.toString(), ledgerId, topic, queue, version, epoch, index, t);
             }
         }
+    }
+
+    private int tableSizeFor(int cap) {
+        int n = -1 >>> Integer.numberOfLeadingZeros(cap - 1);
+        int MAXIMUM_CAPACITY = 1 << 30;
+        return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
+    }
+
+    private int hash(int h) {
+        return h ^ (h >>> 16);
     }
 }
