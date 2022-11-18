@@ -62,6 +62,7 @@ final class MessageConsumerListener implements ClientListener {
                         .newBuilder()
                         .epoch(epoch)
                         .index(index)
+                        .queue(queue)
                         .ledger(ledger)
                         .version(version)
                         .build();
