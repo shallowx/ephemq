@@ -1,4 +1,4 @@
-package org.leopard.servlet;
+package org.leopard.dispatch;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;

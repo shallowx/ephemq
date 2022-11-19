@@ -7,9 +7,9 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.client.consumer.Subscription;
-import org.leopard.servlet.DefaultEntryDispatchProcessor;
+import org.leopard.dispatch.DefaultEntryDispatchProcessor;
 import org.leopard.internal.config.BrokerConfig;
-import org.leopard.servlet.DispatchProcessor;
+import org.leopard.dispatch.DispatchProcessor;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 

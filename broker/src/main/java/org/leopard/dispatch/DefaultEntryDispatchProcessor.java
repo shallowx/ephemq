@@ -1,4 +1,4 @@
-package org.leopard.servlet;
+package org.leopard.dispatch;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;

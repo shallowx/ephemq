@@ -1,4 +1,4 @@
-package org.leopard.servlet;
+package org.leopard.dispatch;
 
 import org.leopard.ledger.Cursor;
 import org.leopard.ledger.Offset;
