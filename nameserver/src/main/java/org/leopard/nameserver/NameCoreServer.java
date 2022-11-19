@@ -1,11 +1,12 @@
 package org.leopard.nameserver;
 
 import io.netty.util.concurrent.ScheduledFuture;
-import org.leopard.nameserver.metadata.DefaultManager;
-import org.leopard.nameserver.metadata.Manager;
 import org.leopard.NameserverConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.nameserver.metadata.DefaultManager;
+import org.leopard.nameserver.metadata.Manager;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +40,7 @@ public final class NameCoreServer {
         socketStartFuture.get();
 
         latch.await();
-        if (logger.isInfoEnabled()){
+        if (logger.isInfoEnabled()) {
             logger.info("The name server started successfully");
         }
     }

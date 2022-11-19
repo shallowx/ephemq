@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 public abstract class AbstractInternalLogger implements InternalLogger, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6382972526573193470L;
 
     static final String EXCEPTION_MESSAGE = "Unexpected exception:";
