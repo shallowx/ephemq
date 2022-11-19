@@ -31,8 +31,8 @@ import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 @SuppressWarnings("all")
 @ThreadSafe
-public class DefaultEntryDispatcher implements DispatchProcessor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryDispatcher.class);
+public class DefaultEntryDispatcherProcessor implements DispatchProcessor {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryDispatcherProcessor.class);
 
     private final int ledgerId;
     private final int subscribeLimit;
@@ -44,14 +44,16 @@ public class DefaultEntryDispatcher implements DispatchProcessor {
     private final Storage storage;
     private final List<EntryHandler> handlers = new ArrayList<>();
 
-    public DefaultEntryDispatcher(int ledgerId, BrokerConfig config, Storage storage) {
+    public DefaultEntryDispatcherProcessor(int ledgerId, BrokerConfig config, Storage storage) {
         this.storage = storage;
         Offset currentOffset = storage.currentOffset();
+
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
         this.handleLimit = config.getMessagePushHandleLimit();
         this.assignLimit = config.getMessagePushHandleAssignLimit();
         this.alignLimit = config.getMessagePushHandleAlignLimit();
+
         this.helper = new EntryDispatchHelper(config);
     }
 
@@ -226,7 +228,7 @@ public class DefaultEntryDispatcher implements DispatchProcessor {
     }
 
     @Override
-    public void handle(String topic) {
+    public void handleRequest(String topic) {
         if (handlers.isEmpty()) {
             return;
         }

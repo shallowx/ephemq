@@ -13,7 +13,7 @@ public interface DispatchProcessor {
 
     void clearChannel(Channel channel);
 
-    void handle(String topic);
+    void handleRequest(String topic);
 
     void shutdownGracefully();
 }

@@ -7,7 +7,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.client.consumer.Subscription;
-import org.leopard.servlet.DefaultEntryDispatcher;
+import org.leopard.servlet.DefaultEntryDispatcherProcessor;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.servlet.DispatchProcessor;
 import org.leopard.common.logging.InternalLogger;
@@ -31,7 +31,7 @@ public class Ledger {
     private int epoch;
     private final Storage storage;
     private final EventExecutor storageExecutor;
-    private final DispatchProcessor entryPushHandler;
+    private final DispatchProcessor processor;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     enum State {
@@ -45,7 +45,7 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.entryPushHandler = new DefaultEntryDispatcher(ledgerId, config, storage);
+        this.processor = new DefaultEntryDispatcherProcessor(ledgerId, config, storage);
     }
 
     public void start() throws Exception {
@@ -92,7 +92,7 @@ public class Ledger {
                     promise.tryFailure(future.cause());
                 }
             });
-            entryPushHandler.subscribe(channel, topic, queue, theOffset, version, subscribePromise);
+            processor.subscribe(channel, topic, queue, theOffset, version, subscribePromise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to subscribe, channel<{}> ledgerId={} topic={} queue={} offset={}", channel.toString(), ledgerId, topic, queue, offset);
@@ -115,7 +115,7 @@ public class Ledger {
 
     private void doClean(Channel channel, String topic, String queue, Promise<Void> promise) {
         try {
-            entryPushHandler.clean(channel, topic, queue, promise);
+            processor.clean(channel, topic, queue, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to clear subscribe, channel<{}> ledgerId={} topic={} queue={}", channel.toString(), ledgerId, topic, queue);
@@ -148,12 +148,12 @@ public class Ledger {
     }
 
     public void clearChannel(Channel channel) {
-        entryPushHandler.clearChannel(channel);
+        processor.clearChannel(channel);
     }
 
     @SuppressWarnings("unused")
     public void onTriggerAppend(int limit, Offset offset) {
-        entryPushHandler.handle(topic);
+        processor.handleRequest(topic);
     }
 
     private class MessageTrigger implements LedgerTrigger {
@@ -196,7 +196,7 @@ public class Ledger {
             storageExecutor.shutdownGracefully();
 
             storage.close();
-            entryPushHandler.shutdownGracefully();
+            processor.shutdownGracefully();
 
             if (logger.isWarnEnabled()) {
                 logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
