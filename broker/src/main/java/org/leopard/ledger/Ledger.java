@@ -7,7 +7,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.client.consumer.Subscription;
-import org.leopard.servlet.DefaultEntryDispatcherProcessor;
+import org.leopard.servlet.DefaultEntryDispatchProcessor;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.servlet.DispatchProcessor;
 import org.leopard.common.logging.InternalLogger;
@@ -45,7 +45,7 @@ public class Ledger {
         this.epoch = epoch;
         this.storageExecutor = newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.processor = new DefaultEntryDispatcherProcessor(ledgerId, config, storage);
+        this.processor = new DefaultEntryDispatchProcessor(ledgerId, config, storage);
     }
 
     public void start() throws Exception {

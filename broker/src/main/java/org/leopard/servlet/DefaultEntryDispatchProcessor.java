@@ -31,8 +31,8 @@ import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 @SuppressWarnings("all")
 @ThreadSafe
-public class DefaultEntryDispatcherProcessor implements DispatchProcessor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryDispatcherProcessor.class);
+public class DefaultEntryDispatchProcessor implements DispatchProcessor {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryDispatchProcessor.class);
 
     private final int ledgerId;
     private final int subscribeLimit;
@@ -44,7 +44,7 @@ public class DefaultEntryDispatcherProcessor implements DispatchProcessor {
     private final Storage storage;
     private final List<EntryHandler> handlers = new ArrayList<>();
 
-    public DefaultEntryDispatcherProcessor(int ledgerId, BrokerConfig config, Storage storage) {
+    public DefaultEntryDispatchProcessor(int ledgerId, BrokerConfig config, Storage storage) {
         this.storage = storage;
         Offset currentOffset = storage.currentOffset();
 
