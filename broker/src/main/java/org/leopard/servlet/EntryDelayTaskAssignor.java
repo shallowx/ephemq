@@ -68,7 +68,7 @@ public class EntryDelayTaskAssignor {
 
     private void doAssign() {
         EntrySubscription subscription = attributes.getSubscription();
-        EntryHandler handler = subscription.getHandler();
+        EntryEventExecutorHandler handler = subscription.getHandler();
 
         if (subscription != handler.getChannelShips().get(channel)) {
             return;
@@ -184,7 +184,7 @@ public class EntryDelayTaskAssignor {
     private void align() {
         try {
             EntrySubscription subscription = attributes.getSubscription();
-            EntryHandler handler = subscription.getHandler();
+            EntryEventExecutorHandler handler = subscription.getHandler();
             EventExecutor dispatchExecutor = handler.getDispatchExecutor();
             dispatchExecutor.execute(this::doAlign);
         } catch (Throwable t) {
@@ -196,7 +196,7 @@ public class EntryDelayTaskAssignor {
 
     private void doAlign() {
         EntrySubscription subscription = attributes.getSubscription();
-        EntryHandler handler = subscription.getHandler();
+        EntryEventExecutorHandler handler = subscription.getHandler();
 
         if (subscription != handler.getChannelShips().get(channel)) {
             return;

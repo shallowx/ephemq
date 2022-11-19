@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("all")
-public class EntryHandler {
+public class EntryEventExecutorHandler {
 
     private final String id = UUID.randomUUID().toString();
     private final ConcurrentMap<Channel, EntrySubscription> channelShips = new ConcurrentHashMap<>();
@@ -23,7 +23,7 @@ public class EntryHandler {
 
     private volatile AtomicBoolean triggered = new AtomicBoolean(false);
 
-    public EntryHandler(EventExecutor executor) {
+    public EntryEventExecutorHandler(EventExecutor executor) {
         this.dispatchExecutor = executor;
     }
 

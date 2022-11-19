@@ -42,7 +42,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     private final EntryDispatchHelper helper;
     private final Storage storage;
-    private final List<EntryHandler> handlers = new ArrayList<>();
+    private final List<EntryEventExecutorHandler> handlers = new ArrayList<>();
 
     public DefaultEntryDispatchProcessor(int ledgerId, BrokerConfig config, Storage storage) {
         this.storage = storage;
@@ -84,7 +84,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version, Promise<Subscription> subscribePromise) {
         try {
-            EntryHandler handler = helper.applyHandler(channel, subscribeLimit);
+            EntryEventExecutorHandler handler = helper.applyHandler(channel, subscribeLimit);
             ConcurrentMap<Channel, EntrySubscription> channelShips = handler.getChannelShips();
             EntrySubscription oldSubscription = channelShips.get(channel);
 
@@ -182,7 +182,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     private void doClean(Channel channel, String topic, String queue, Promise<Void> promise) {
         try {
-            EntryHandler handler = helper.getHandler(channel);
+            EntryEventExecutorHandler handler = helper.getHandler(channel);
             if (handler == null) {
                 promise.trySuccess(null);
                 return;
@@ -233,7 +233,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             return;
         }
 
-        for (EntryHandler handler : handlers) {
+        for (EntryEventExecutorHandler handler : handlers) {
             Cursor nextCursor = handler.getNextCursor();
             if (nextCursor != null) {
                 doHandle(handler);
@@ -241,7 +241,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         }
     }
 
-    private void doHandle(EntryHandler handler) {
+    private void doHandle(EntryEventExecutorHandler handler) {
         AtomicBoolean triggered = handler.getTriggered();
         if (triggered.compareAndSet(false, true)) {
             try {
@@ -254,7 +254,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         }
     }
 
-    private void dispatch(EntryHandler handler) {
+    private void dispatch(EntryEventExecutorHandler handler) {
         Cursor cursor = handler.getNextCursor();
         if (cursor == null) {
             handler.getTriggered().set(false);
