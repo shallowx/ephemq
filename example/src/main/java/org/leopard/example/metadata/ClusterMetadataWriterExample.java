@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("all")
-public class ClusterMetadata {
+public class ClusterMetadataWriterExample {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterMetadata.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterMetadataWriterExample.class);
 
     @Test
     public void query() throws Exception {

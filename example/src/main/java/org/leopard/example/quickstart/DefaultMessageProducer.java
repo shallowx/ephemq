@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.leopard.client.ClientConfig;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
-import org.leopard.client.producer.MessageProducer;
-import org.leopard.example.metadata.TopicMetadata;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.client.producer.MessagePreInterceptor;
+import org.leopard.client.producer.MessageProducer;
 import org.leopard.client.producer.Producer;
 import org.leopard.client.producer.ProducerConfig;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.example.metadata.TopicMetadataWriterExample;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -19,7 +19,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("all")
 public class DefaultMessageProducer {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicMetadata.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicMetadataWriterExample.class);
 
     @Test
     public void sendAsync() throws Exception {

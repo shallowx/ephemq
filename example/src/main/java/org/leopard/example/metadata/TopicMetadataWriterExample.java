@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("all")
-public class TopicMetadata {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicMetadata.class);
+public class TopicMetadataWriterExample {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicMetadataWriterExample.class);
 
     @Test
     public void createTopic() throws Exception {
