@@ -7,8 +7,8 @@ import io.netty.util.concurrent.*;
 import org.leopard.common.metadata.NodeRecord;
 import org.leopard.common.metadata.PartitionRecord;
 import org.leopard.internal.BrokerManager;
-import org.leopard.internal.metadata.ClusterNodeCacheSupport;
-import org.leopard.internal.metadata.TopicPartitionRequestCacheSupport;
+import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
+import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
 import org.leopard.ledger.Offset;
 import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.RemoteException;
@@ -33,9 +33,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static org.leopard.remote.util.NetworkUtil.*;
-import static org.leopard.remote.util.ProtoBufUtil.proto2Buf;
-import static org.leopard.remote.util.ProtoBufUtil.readProto;
+import static org.leopard.remote.util.NetworkUtils.*;
+import static org.leopard.remote.util.ProtoBufUtils.proto2Buf;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 
 @SuppressWarnings("all")
 public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Server {
@@ -104,7 +104,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
             ProtocolStringList topicList = request.getTopicList();
-            TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
+            TopicPartitionRequestCacheWriterSupport topicPartitionCache = manager.getTopicPartitionCache();
             Set<PartitionRecord> records = topicPartitionCache.loadAll(topicList);
 
             if (records.isEmpty()) {
@@ -148,7 +148,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
             String cluster = request.getCluster();
-            ClusterNodeCacheSupport cache = manager.getClusterCache();
+            ClusterNodeCacheWriterSupport cache = manager.getClusterCache();
             Set<NodeRecord> records = cache.load(cluster);
 
             QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
@@ -301,7 +301,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
+                        TopicPartitionRequestCacheWriterSupport topicPartitionCache = manager.getTopicPartitionCache();
                         topicPartitionCache.createTopic(topic, partitions, latencies, promise);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
@@ -334,7 +334,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             }
                         });
 
-                        TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
+                        TopicPartitionRequestCacheWriterSupport topicPartitionCache = manager.getTopicPartitionCache();
                         topicPartitionCache.delTopic(topic, promise);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {

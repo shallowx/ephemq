@@ -7,7 +7,7 @@ import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.client.pool.ShallowChannelPool;
 import java.util.List;
 
-import static org.leopard.remote.util.NetworkUtil.switchSocketAddress;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
 
 public class ClientTests {
 

@@ -17,8 +17,8 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.leopard.remote.util.ByteBufUtil.release;
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
+import static org.leopard.remote.util.ByteBufUtils.release;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
 
 @ThreadSafe
 public class Ledger {

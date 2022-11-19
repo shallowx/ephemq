@@ -9,8 +9,8 @@ import org.leopard.internal.BrokerManager;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 
-import static org.leopard.remote.util.NetworkUtil.newEventLoopGroup;
-import static org.leopard.remote.util.NetworkUtil.preferServerChannelClass;
+import static org.leopard.remote.util.NetworkUtils.newEventLoopGroup;
+import static org.leopard.remote.util.NetworkUtils.preferServerChannelClass;
 
 public final class BrokerSocketServer {
 

@@ -26,9 +26,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.leopard.common.util.ObjectUtils.checkNotNull;
 import static org.leopard.remote.RemoteException.of;
-import static org.leopard.remote.util.ByteBufUtil.buf2String;
-import static org.leopard.remote.util.ByteBufUtil.release;
-import static org.leopard.remote.util.NetworkUtil.*;
+import static org.leopard.remote.util.ByteBufUtils.buf2String;
+import static org.leopard.remote.util.ByteBufUtils.release;
+import static org.leopard.remote.util.NetworkUtils.*;
 
 @Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {

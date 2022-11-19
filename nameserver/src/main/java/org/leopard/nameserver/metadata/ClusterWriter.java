@@ -9,7 +9,7 @@ import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.NodeRecord;
 import org.leopard.common.util.StringUtils;
-import org.leopard.remote.util.NetworkUtil;
+import org.leopard.remote.util.NetworkUtils;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 
-public class ClusterManager {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterManager.class);
+public class ClusterWriter {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterWriter.class);
 
     private final LoadingCache<String, Set<NodeRecord>> cache;
     private final NameserverConfig config;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("clear"));
 
-    public ClusterManager(NameserverConfig config) {
+    public ClusterWriter(NameserverConfig config) {
         this.config = config;
         this.cache = Caffeine.newBuilder().build(key -> null);
     }
@@ -82,7 +82,7 @@ public class ClusterManager {
                     .name(name)
                     .cluster(cluster)
                     .state("UP")
-                    .socketAddress(NetworkUtil.switchSocketAddress(host, port))
+                    .socketAddress(NetworkUtils.switchSocketAddress(host, port))
                     .lastKeepLiveTime(System.currentTimeMillis())
                     .build();
 

@@ -31,17 +31,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.leopard.remote.util.NetworkUtil.*;
+import static org.leopard.remote.util.NetworkUtils.*;
 
-public class MetadataManager implements ProcessCommand.Server {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataManager.class);
+public class MetadataWriter implements ProcessCommand.Server {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataWriter.class);
 
     private final ShallowChannelPool pool;
     private final ClientConfig config;
     private final LoadingCache<String, MessageRouter> routers;
     private final EventExecutor scheduledMetadataTask;
 
-    public MetadataManager(Client client) {
+    public MetadataWriter(Client client) {
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
         this.config = client.getClientConfig();
 

@@ -11,11 +11,11 @@ import io.netty.buffer.ByteBufOutputStream;
 import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
-import static org.leopard.remote.util.ByteBufUtil.release;
+import static org.leopard.remote.util.ByteBufUtils.release;
 
-public class ProtoBufUtil {
+public class ProtoBufUtils {
 
-    private ProtoBufUtil() throws OperationNotSupportedException {
+    private ProtoBufUtils() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }

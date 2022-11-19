@@ -6,7 +6,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.leopard.client.internal.ClientChannel;
-import org.leopard.client.metadata.MetadataManager;
+import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.Client;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
@@ -20,7 +20,7 @@ import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.remote.proto.server.SendMessageExtras;
 import org.leopard.remote.proto.server.SendMessageRequest;
 import org.leopard.remote.proto.server.SendMessageResponse;
-import org.leopard.remote.util.ByteBufUtil;
+import org.leopard.remote.util.ByteBufUtils;
 import org.leopard.common.util.ObjectUtils;
 
 import java.net.SocketAddress;
@@ -28,13 +28,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.leopard.remote.util.NetworkUtil.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 public class MessageProducer implements Producer{
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProducer.class);
 
-    private MetadataManager manager;
+    private MetadataWriter manager;
     private final ProducerConfig config;
     private ShallowChannelPool pool;
     private final String name;
@@ -150,7 +150,7 @@ public class MessageProducer implements Producer{
 
         SendMessageExtras extras = buildExtras(topic, queue, message.extras());
         try {
-             ByteBuf body = ByteBufUtil.byte2Buf(message.message());
+             ByteBuf body = ByteBufUtils.byte2Buf(message.message());
 
              ClientChannel clientChannel = fetchHealthyChannel(ledger, leader);
              clientChannel.invoker().invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.leopard.remote.util.ByteBufUtil.*;
+import static org.leopard.remote.util.ByteBufUtils.*;
 
 public class ByteUtilTests {
 

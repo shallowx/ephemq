@@ -24,14 +24,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-import static org.leopard.remote.util.ByteBufUtil.string2Buf;
+import static org.leopard.remote.util.ByteBufUtils.string2Buf;
 import static org.leopard.common.util.ObjectUtils.checkPositive;
 
-public final class NetworkUtil {
+public final class NetworkUtils {
 
     private static final int INT_ZERO = 0;
 
-    private NetworkUtil() throws OperationNotSupportedException {
+    private NetworkUtils() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }

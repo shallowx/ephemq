@@ -19,8 +19,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-import static org.leopard.remote.util.NetworkUtil.newImmediatePromise;
-import static org.leopard.remote.util.NetworkUtil.switchSocketAddress;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
 
 public class FixedChannelPool implements ShallowChannelPool {
 

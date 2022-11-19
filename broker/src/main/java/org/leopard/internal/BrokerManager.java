@@ -1,8 +1,8 @@
 package org.leopard.internal;
 
 import org.leopard.client.Client;
-import org.leopard.internal.metadata.ClusterNodeCacheSupport;
-import org.leopard.internal.metadata.TopicPartitionRequestCacheSupport;
+import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
+import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
 import org.leopard.ledger.LedgerManager;
 import org.leopard.network.BrokerConnectionManager;
 
@@ -14,9 +14,9 @@ public interface BrokerManager {
 
     BrokerConnectionManager getBrokerConnectionManager();
 
-    TopicPartitionRequestCacheSupport getTopicPartitionCache();
+    TopicPartitionRequestCacheWriterSupport getTopicPartitionCache();
 
-    ClusterNodeCacheSupport getClusterCache();
+    ClusterNodeCacheWriterSupport getClusterCache();
 
      Client getInternalClient();
 }

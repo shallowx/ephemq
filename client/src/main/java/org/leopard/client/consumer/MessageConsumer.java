@@ -11,7 +11,7 @@ import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.client.metadata.MessageRouter;
 import org.leopard.client.metadata.MessageRoutingHolder;
-import org.leopard.client.metadata.MetadataManager;
+import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.util.ObjectUtils;
 import org.leopard.remote.proto.server.CleanSubscribeRequest;
@@ -29,15 +29,15 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.leopard.remote.processor.ProcessCommand.Server.CLEAN_SUBSCRIBE;
 import static org.leopard.remote.processor.ProcessCommand.Server.SUBSCRIBE;
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
-import static org.leopard.remote.util.NetworkUtil.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 @SuppressWarnings("all")
 public class MessageConsumer implements Consumer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageConsumer.class);
 
-    private MetadataManager manager;
+    private MetadataWriter manager;
     private final ConsumerConfig config;
     private MessageListener messageListener;
     private ShallowChannelPool pool;

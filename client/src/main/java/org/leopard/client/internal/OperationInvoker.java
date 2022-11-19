@@ -22,8 +22,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.leopard.remote.util.ByteBufUtil.*;
-import static org.leopard.remote.util.ProtoBufUtil.*;
+import static org.leopard.remote.util.ByteBufUtils.*;
+import static org.leopard.remote.util.ProtoBufUtils.*;
 
 public class OperationInvoker implements ProcessCommand.Server {
 

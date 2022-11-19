@@ -9,7 +9,7 @@ import org.leopard.common.logging.InternalLoggerFactory;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
 
 public final class NameCoreServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(NameCoreServer.class);

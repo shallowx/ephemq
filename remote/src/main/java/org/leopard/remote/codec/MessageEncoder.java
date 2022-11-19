@@ -9,7 +9,7 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
 
-import static org.leopard.remote.util.ByteBufUtil.release;
+import static org.leopard.remote.util.ByteBufUtils.release;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {

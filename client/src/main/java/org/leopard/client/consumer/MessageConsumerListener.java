@@ -13,7 +13,7 @@ import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.remote.proto.notify.NodeOfflineSignal;
 import org.leopard.remote.proto.notify.PartitionChangedSignal;
 import org.leopard.remote.proto.server.SendMessageExtras;
-import org.leopard.remote.util.ByteBufUtil;
+import org.leopard.remote.util.ByteBufUtils;
 
 import java.net.SocketAddress;
 import java.util.Map;
@@ -21,9 +21,9 @@ import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
-import static org.leopard.remote.util.NetworkUtil.switchSocketAddress;
-import static org.leopard.remote.util.ProtoBufUtil.readProto;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 
 final class MessageConsumerListener implements ClientListener {
 
@@ -109,7 +109,7 @@ final class MessageConsumerListener implements ClientListener {
         try {
             SendMessageExtras extras = readProto(data, SendMessageExtras.parser());
 
-            byte[] body = ByteBufUtil.buf2Bytes(data);
+            byte[] body = ByteBufUtils.buf2Bytes(data);
             Message message = new Message(topic, queue, version, body, epoch, index, new Extras(extras.getExtrasMap()));
 
             Subscription theLastShip = Subscription

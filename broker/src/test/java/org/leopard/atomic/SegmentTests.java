@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.leopard.ledger.Offset;
 import org.leopard.ledger.Segment;
-import org.leopard.remote.util.ByteBufUtil;
+import org.leopard.remote.util.ByteBufUtils;
 
 import java.nio.charset.StandardCharsets;
 
@@ -14,7 +14,7 @@ public class SegmentTests {
 
     private final String topic = "test-topic";
     private final String queue = "test-queue";
-    private final ByteBuf payload = ByteBufUtil.byte2Buf("testWriteBuf".getBytes(StandardCharsets.UTF_8));
+    private final ByteBuf payload = ByteBufUtils.byte2Buf("testWriteBuf".getBytes(StandardCharsets.UTF_8));
 
     @Test
     public void testWriteBuf() {
@@ -22,7 +22,7 @@ public class SegmentTests {
         Segment segment = new Segment(0, PooledByteBufAllocator.DEFAULT.directBuffer(bytes, bytes), new Offset(-1, 0));
         segment.write(topic, queue, (short) 0, payload, new Offset(-1, 1));
 
-        ByteBufUtil.release(payload);
+        ByteBufUtils.release(payload);
         segment.release();
     }
 
@@ -38,14 +38,14 @@ public class SegmentTests {
 
         int topicLength = buf.readInt();
         ByteBuf topicBuf = buf.retainedSlice(buf.readerIndex(), topicLength);
-        String topic = ByteBufUtil.buf2String(topicBuf, topicLength);
+        String topic = ByteBufUtils.buf2String(topicBuf, topicLength);
 
 
         Assert.assertEquals(topic, topic);
         Assert.assertEquals(0, version);
 
-        ByteBufUtil.release(topicBuf);
-        ByteBufUtil.release(payload);
+        ByteBufUtils.release(topicBuf);
+        ByteBufUtils.release(payload);
 
         segment.release();
     }
@@ -63,14 +63,14 @@ public class SegmentTests {
 
         int topicLength = buf.readInt();
         ByteBuf topicBuf = buf.retainedSlice(buf.readerIndex(), topicLength);
-        String topic = ByteBufUtil.buf2String(topicBuf, topicLength);
+        String topic = ByteBufUtils.buf2String(topicBuf, topicLength);
 
 
         Assert.assertEquals(topic, topic);
         Assert.assertEquals(0, version);
 
-        ByteBufUtil.release(topicBuf);
-        ByteBufUtil.release(payload);
+        ByteBufUtils.release(topicBuf);
+        ByteBufUtils.release(payload);
 
         segment.release();
     }
@@ -89,7 +89,7 @@ public class SegmentTests {
         int locate = segment.locate(new Offset(-1, 5));
         Assert.assertEquals(242, locate);
 
-        ByteBufUtil.release(payload);
+        ByteBufUtils.release(payload);
         segment.release();
     }
 

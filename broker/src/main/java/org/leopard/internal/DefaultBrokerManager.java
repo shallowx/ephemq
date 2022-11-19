@@ -2,8 +2,8 @@ package org.leopard.internal;
 
 import org.leopard.client.Client;
 import org.leopard.client.ClientConfig;
-import org.leopard.internal.metadata.ClusterNodeCacheSupport;
-import org.leopard.internal.metadata.TopicPartitionRequestCacheSupport;
+import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
+import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
 import org.leopard.ledger.LedgerManager;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.network.BrokerConnectionManager;
@@ -14,8 +14,8 @@ public class DefaultBrokerManager implements BrokerManager {
 
     private final LedgerManager logManager;
     private final BrokerConnectionManager connectionManager;
-    private final TopicPartitionRequestCacheSupport topicPartitionRequestCache;
-    private final ClusterNodeCacheSupport clusterNodeCache;
+    private final TopicPartitionRequestCacheWriterSupport topicPartitionRequestCache;
+    private final ClusterNodeCacheWriterSupport clusterNodeCache;
     private final Client client;
 
     public DefaultBrokerManager(BrokerConfig config) throws Exception {
@@ -26,8 +26,8 @@ public class DefaultBrokerManager implements BrokerManager {
         clientConfig.setBootstrapSocketAddress(List.of(config.getNameserverUrl()));
         this.client = new Client("nameserver-client", clientConfig);
 
-        this.clusterNodeCache = new ClusterNodeCacheSupport(config, client);
-        this.topicPartitionRequestCache = new TopicPartitionRequestCacheSupport(config, this);
+        this.clusterNodeCache = new ClusterNodeCacheWriterSupport(config, client);
+        this.topicPartitionRequestCache = new TopicPartitionRequestCacheWriterSupport(config, this);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public TopicPartitionRequestCacheSupport getTopicPartitionCache() {
+    public TopicPartitionRequestCacheWriterSupport getTopicPartitionCache() {
         return this.topicPartitionRequestCache;
     }
 
     @Override
-    public ClusterNodeCacheSupport getClusterCache() {
+    public ClusterNodeCacheWriterSupport getClusterCache() {
         return this.clusterNodeCache;
     }
 

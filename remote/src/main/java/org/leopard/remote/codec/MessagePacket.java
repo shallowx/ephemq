@@ -9,7 +9,7 @@ import org.leopard.remote.Type;
 
 import javax.annotation.concurrent.Immutable;
 
-import static org.leopard.remote.util.ByteBufUtil.*;
+import static org.leopard.remote.util.ByteBufUtils.*;
 
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {

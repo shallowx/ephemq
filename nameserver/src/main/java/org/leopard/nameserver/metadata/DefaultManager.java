@@ -4,26 +4,26 @@ import org.leopard.NameserverConfig;
 
 public class DefaultManager implements Manager {
 
-    private final TopicManager topicManager;
-    private final ClusterManager clusterManager;
+    private final TopicWriter topicWriter;
+    private final ClusterWriter clusterWriter;
 
     public DefaultManager(NameserverConfig config) {
-        this.topicManager = new TopicManager();
-        this.clusterManager = new ClusterManager(config);
+        this.topicWriter = new TopicWriter();
+        this.clusterWriter = new ClusterWriter(config);
     }
 
     @Override
     public void start() throws Exception {
-        this.clusterManager.start();
+        this.clusterWriter.start();
     }
 
     @Override
-    public TopicManager getTopicManager() {
-        return this.topicManager;
+    public TopicWriter getTopicManager() {
+        return this.topicWriter;
     }
 
     @Override
-    public ClusterManager getClusterManager() {
-        return this.clusterManager;
+    public ClusterWriter getClusterManager() {
+        return this.clusterWriter;
     }
 }

@@ -9,7 +9,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.leopard.client.metadata.MetadataManager;
+import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.internal.ClientListener;
 import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
@@ -18,15 +18,15 @@ import org.leopard.client.pool.ShallowChannelHealthChecker;
 import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.util.ObjectUtils;
 
-import static org.leopard.remote.util.NetworkUtil.newEventLoopGroup;
-import static org.leopard.remote.util.NetworkUtil.preferChannelClass;
+import static org.leopard.remote.util.NetworkUtils.newEventLoopGroup;
+import static org.leopard.remote.util.NetworkUtils.preferChannelClass;
 
 public class Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
 
     private final String name;
     private final ClientConfig config;
-    private MetadataManager manager;
+    private MetadataWriter manager;
     private volatile boolean state = false;
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
@@ -75,7 +75,7 @@ public class Client {
 
         pool = DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(this);
 
-        this.manager = new MetadataManager(this);
+        this.manager = new MetadataWriter(this);
         manager.start();
 
         if (logger.isInfoEnabled()) {
@@ -111,7 +111,7 @@ public class Client {
         return healthChecker;
     }
 
-    public MetadataManager getMetadataManager() {
+    public MetadataWriter getMetadataManager() {
         return manager;
     }
 

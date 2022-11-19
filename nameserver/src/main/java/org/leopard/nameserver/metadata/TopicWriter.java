@@ -10,12 +10,12 @@ import org.leopard.remote.proto.server.QueryTopicInfoResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TopicManager {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicManager.class);
+public class TopicWriter {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicWriter.class);
 
     private final Map<String, Map<String, Set<PartitionRecord>>> cache = new ConcurrentHashMap<>();
 
-    public TopicManager() {
+    public TopicWriter() {
     }
 
     public void create(String topic, String cluster, Set<PartitionRecord> partitionRecords, Promise<Void> promise) {

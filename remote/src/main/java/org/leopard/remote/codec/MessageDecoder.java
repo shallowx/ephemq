@@ -9,7 +9,7 @@ import io.netty.handler.codec.DecoderException;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.leopard.remote.codec.MessageDecoder.State.*;
-import static org.leopard.remote.util.ByteBufUtil.release;
+import static org.leopard.remote.util.ByteBufUtils.release;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 

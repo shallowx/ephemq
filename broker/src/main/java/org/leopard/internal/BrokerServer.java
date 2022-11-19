@@ -9,7 +9,7 @@ import org.leopard.network.BrokerSocketServer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
 
 public final class BrokerServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerServer.class);

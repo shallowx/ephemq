@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.metadata.MetadataManager;
+import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.Client;
 import org.leopard.remote.proto.notify.MessagePullSignal;
 import org.leopard.remote.proto.notify.MessagePushSignal;
@@ -14,11 +14,11 @@ import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.remote.processor.ProcessCommand;
-import org.leopard.remote.util.NetworkUtil;
+import org.leopard.remote.util.NetworkUtils;
 import org.leopard.remote.invoke.InvokeAnswer;
 import org.leopard.remote.processor.ProcessorAware;
 
-import static org.leopard.remote.util.ProtoBufUtil.readProto;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 
 public class ClientServiceProcessorAware implements ProcessorAware, ProcessCommand.Client {
 
@@ -60,7 +60,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                 }
 
                 case CLUSTER_CHANGED -> {
-                    MetadataManager metadataManager = client.getMetadataManager();
+                    MetadataWriter metadataManager = client.getMetadataManager();
                     metadataManager.refreshMetadata();
                 }
 
@@ -76,7 +76,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Client process <{}> code:[{}] process error", NetworkUtil.switchAddress(channel), ProcessCommand.Client.ACTIVE.get(command));
+                logger.error("Client process <{}> code:[{}] process error", NetworkUtils.switchAddress(channel), ProcessCommand.Client.ACTIVE.get(command));
             }
             tryFailure(answer, t);
         }

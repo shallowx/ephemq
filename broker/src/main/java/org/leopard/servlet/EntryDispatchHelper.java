@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
 
 public class EntryDispatchHelper {
 

@@ -18,8 +18,8 @@ import org.leopard.ledger.Offset;
 import org.leopard.ledger.Storage;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.remote.util.ByteBufUtil;
-import org.leopard.remote.util.ProtoBufUtil;
+import org.leopard.remote.util.ByteBufUtils;
+import org.leopard.remote.util.ProtoBufUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.*;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.leopard.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
-import static org.leopard.remote.util.NetworkUtil.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 @SuppressWarnings("all")
 @ThreadSafe
@@ -293,13 +293,13 @@ public class DefaultEntryDispatcher implements DispatchProcessor {
 
                     int topicLength = payload.readInt();
                     topicBuf = payload.retainedSlice(payload.readerIndex(), topicLength);
-                    topic = ByteBufUtil.buf2String(topicBuf, topicLength);
+                    topic = ByteBufUtils.buf2String(topicBuf, topicLength);
 
                     payload.skipBytes(topicLength);
 
                     int queueLength = payload.readInt();
                     queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
-                    queue = ByteBufUtil.buf2String(queueBuf, queueLength);
+                    queue = ByteBufUtils.buf2String(queueBuf, queueLength);
 
                     EntrySubscription entrySubscription = subscribeShips.get(topic + ":" + queue);
                     if (entrySubscription == null) {
@@ -367,10 +367,10 @@ public class DefaultEntryDispatcher implements DispatchProcessor {
                         logger.error("Channel push message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);
                     }
                 } finally {
-                    ByteBufUtil.release(message);
-                    ByteBufUtil.release(payload);
-                    ByteBufUtil.release(queueBuf);
-                    ByteBufUtil.release(topicBuf);
+                    ByteBufUtils.release(message);
+                    ByteBufUtils.release(payload);
+                    ByteBufUtils.release(queueBuf);
+                    ByteBufUtils.release(topicBuf);
                 }
             }
         } catch (Throwable t) {
@@ -399,7 +399,7 @@ public class DefaultEntryDispatcher implements DispatchProcessor {
                     .setIndex(offset.index())
                     .build();
 
-            int signalLength = ProtoBufUtil.protoLength(signal);
+            int signalLength = ProtoBufUtils.protoLength(signal);
             int payloadLength = payload.readableBytes();
 
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
@@ -411,13 +411,13 @@ public class DefaultEntryDispatcher implements DispatchProcessor {
             buf.writeByte(Type.PUSH.sequence());
             buf.writeInt(0);
 
-            ProtoBufUtil.writeProto(buf, signal);
+            ProtoBufUtils.writeProto(buf, signal);
 
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, payload.retainedSlice(payload.readerIndex(), payloadLength));
 
             return buf;
         } catch (Throwable t) {
-            ByteBufUtil.release(buf);
+            ByteBufUtils.release(buf);
             throw new RuntimeException(String.format("Failed to build payload: queue=%s", queue), t);
         }
     }

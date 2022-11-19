@@ -13,10 +13,9 @@ import org.leopard.nameserver.metadata.Manager;
 import org.leopard.NameserverConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.nameserver.metadata.ClusterManager;
-import org.leopard.nameserver.metadata.TopicManager;
+import org.leopard.nameserver.metadata.ClusterWriter;
+import org.leopard.nameserver.metadata.TopicWriter;
 import org.leopard.remote.proto.NodeMetadata;
-import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.heartbeat.HeartbeatRequest;
 import org.leopard.remote.proto.heartbeat.HeartbeatResponse;
 import org.leopard.remote.RemoteException;
@@ -25,7 +24,7 @@ import org.leopard.remote.processor.Ack;
 import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.processor.ProcessorAware;
 import org.leopard.remote.proto.server.*;
-import org.leopard.remote.util.NetworkUtil;
+import org.leopard.remote.util.NetworkUtils;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -33,9 +32,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.leopard.remote.util.NetworkUtil.switchAddress;
-import static org.leopard.remote.util.ProtoBufUtil.proto2Buf;
-import static org.leopard.remote.util.ProtoBufUtil.readProto;
+import static org.leopard.remote.util.NetworkUtils.switchAddress;
+import static org.leopard.remote.util.ProtoBufUtils.proto2Buf;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 
 @SuppressWarnings("all")
 public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.Nameserver {
@@ -105,7 +104,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
                         .build();
             }).collect(Collectors.toSet());
 
-            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            Promise<Void> promise = NetworkUtils.newImmediatePromise();
             promise.addListener(new GenericFutureListener<Future<Void>>() {
                 @Override
                 public void operationComplete(Future<Void> future) throws Exception {
@@ -123,7 +122,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
                 }
             });
 
-            TopicManager topicManager = manager.getTopicManager();
+            TopicWriter topicManager = manager.getTopicManager();
             topicManager.create(topic, cluster, partitionRecords, promise);
         } catch (Throwable t) {
             answerFailed(answer, t);
@@ -138,8 +137,8 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             String host = request.getHost();
             int port = request.getPort();
 
-            ClusterManager clusterManager = manager.getClusterManager();
-            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            ClusterWriter clusterManager = manager.getClusterManager();
+            Promise<Void> promise = NetworkUtils.newImmediatePromise();
             promise.addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override
                 public void operationComplete(Future<? super Void> future) throws Exception {
@@ -165,8 +164,8 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             String cluster = request.getCluster();
             String server = request.getServer();
 
-            ClusterManager clusterManager = manager.getClusterManager();
-            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            ClusterWriter clusterManager = manager.getClusterManager();
+            Promise<Void> promise = NetworkUtils.newImmediatePromise();
             promise.addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override
                 public void operationComplete(Future<? super Void> future) throws Exception {
@@ -193,7 +192,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             ProtocolStringList topicList = request.getTopicList();
             String cluster = request.getCluster();
 
-            Promise<QueryTopicInfoResponse> promise = NetworkUtil.newImmediatePromise();
+            Promise<QueryTopicInfoResponse> promise = NetworkUtils.newImmediatePromise();
             promise.addListener(new GenericFutureListener<Future<QueryTopicInfoResponse>>() {
                 @Override
                 public void operationComplete(Future<QueryTopicInfoResponse> future) throws Exception {
@@ -208,7 +207,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
                 }
             });
 
-            TopicManager topicManager = manager.getTopicManager();
+            TopicWriter topicManager = manager.getTopicManager();
             topicManager.load(topicList, cluster, promise);
         } catch (Throwable t) {
             answerFailed(answer, t);
@@ -219,7 +218,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
             String cluster = request.getCluster();
-            ClusterManager clusterManager = manager.getClusterManager();
+            ClusterWriter clusterManager = manager.getClusterManager();
             Set<NodeRecord> records = clusterManager.load(cluster);
 
             QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
@@ -256,9 +255,9 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             String cluster = request.getCluster();
             String server = request.getServer();
 
-            Promise<HeartbeatResponse> promise = NetworkUtil.newImmediatePromise();
+            Promise<HeartbeatResponse> promise = NetworkUtils.newImmediatePromise();
 
-            ClusterManager clusterManager = manager.getClusterManager();
+            ClusterWriter clusterManager = manager.getClusterManager();
             clusterManager.heartbeat(cluster, server);
 
             promise.trySuccess(HeartbeatResponse.newBuilder().build());
@@ -280,7 +279,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             String cluster = request.getCluster();
             String topic = request.getTopic();
 
-            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            Promise<Void> promise = NetworkUtils.newImmediatePromise();
             promise.addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override
                 public void operationComplete(Future<? super Void> future) throws Exception {
@@ -296,7 +295,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
                     }
                 }
             });
-            TopicManager topicManager = manager.getTopicManager();
+            TopicWriter topicManager = manager.getTopicManager();
             topicManager.remove(cluster, topic, promise);
         } catch (Throwable t) {
             answerFailed(answer, t);

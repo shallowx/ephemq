@@ -14,8 +14,8 @@ import org.leopard.ledger.Cursor;
 import org.leopard.ledger.Offset;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.remote.util.ByteBufUtil;
-import org.leopard.remote.util.ProtoBufUtil;
+import org.leopard.remote.util.ByteBufUtils;
+import org.leopard.remote.util.ProtoBufUtils;
 import javax.annotation.concurrent.ThreadSafe;
 import static org.leopard.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 
@@ -95,13 +95,13 @@ public class EntryDelayTaskAssignor {
 
                     int topicLength = payload.readInt();
                     topicBuf = payload.retainedSlice(payload.readerIndex(), topicLength);
-                    topic = ByteBufUtil.buf2String(topicBuf, topicLength);
+                    topic = ByteBufUtils.buf2String(topicBuf, topicLength);
 
                     payload.skipBytes(topicLength);
 
                     int queueLength = payload.readInt();
                     queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
-                    queue = ByteBufUtil.buf2String(queueBuf, queueLength);
+                    queue = ByteBufUtils.buf2String(queueBuf, queueLength);
 
                     payload.skipBytes(queueLength);
 
@@ -159,10 +159,10 @@ public class EntryDelayTaskAssignor {
                         logger.error("Channel trace message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);
                     }
                 } finally {
-                    ByteBufUtil.release(message);
-                    ByteBufUtil.release(payload);
-                    ByteBufUtil.release(queueBuf);
-                    ByteBufUtil.release(topicBuf);
+                    ByteBufUtils.release(message);
+                    ByteBufUtils.release(payload);
+                    ByteBufUtils.release(queueBuf);
+                    ByteBufUtils.release(topicBuf);
                 }
             }
         } catch (Throwable t) {
@@ -224,13 +224,13 @@ public class EntryDelayTaskAssignor {
 
                     int topicLength = payload.readInt();
                     topicBuf = payload.retainedSlice(payload.readerIndex(), topicLength);
-                    topic = ByteBufUtil.buf2String(topicBuf, topicLength);
+                    topic = ByteBufUtils.buf2String(topicBuf, topicLength);
 
                     payload.skipBytes(topicLength);
 
                     int queueLength = payload.readInt();
                     queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
-                    queue = ByteBufUtil.buf2String(queueBuf, queueLength);
+                    queue = ByteBufUtils.buf2String(queueBuf, queueLength);
 
                     payload.skipBytes(queueLength);
 
@@ -290,10 +290,10 @@ public class EntryDelayTaskAssignor {
                         logger.error("Channel trace message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);
                     }
                 } finally {
-                    ByteBufUtil.release(message);
-                    ByteBufUtil.release(payload);
-                    ByteBufUtil.release(queueBuf);
-                    ByteBufUtil.release(topicBuf);
+                    ByteBufUtils.release(message);
+                    ByteBufUtils.release(payload);
+                    ByteBufUtils.release(queueBuf);
+                    ByteBufUtils.release(topicBuf);
                 }
             }
         } catch (Throwable t) {
@@ -318,7 +318,7 @@ public class EntryDelayTaskAssignor {
                     .setIndex(offset.index())
                     .build();
 
-            int signalLength = ProtoBufUtil.protoLength(signal);
+            int signalLength = ProtoBufUtils.protoLength(signal);
             int payloadLength = payload.readableBytes();
 
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
@@ -330,13 +330,13 @@ public class EntryDelayTaskAssignor {
             buf.writeByte(Type.PUSH.sequence());
             buf.writeInt(0);
 
-            ProtoBufUtil.writeProto(buf, signal);
+            ProtoBufUtils.writeProto(buf, signal);
 
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, payload.retainedSlice(payload.readerIndex(), payloadLength));
 
             return buf;
         } catch (Throwable t) {
-            ByteBufUtil.release(buf);
+            ByteBufUtils.release(buf);
             throw new RuntimeException(String.format("Failed to build payload: queue=%s", queue), t);
         }
     }

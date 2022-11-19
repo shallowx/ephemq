@@ -20,7 +20,7 @@ import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.proto.heartbeat.HeartbeatRequest;
 import org.leopard.remote.proto.heartbeat.HeartbeatResponse;
 import org.leopard.remote.proto.server.*;
-import org.leopard.remote.util.NetworkUtil;
+import org.leopard.remote.util.NetworkUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -29,11 +29,11 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static org.leopard.remote.processor.ProcessCommand.Nameserver.*;
-import static org.leopard.remote.util.NetworkUtil.newEventExecutorGroup;
-import static org.leopard.remote.util.NetworkUtil.switchSocketAddress;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
 
-public class ClusterNodeCacheSupport {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterNodeCacheSupport.class);
+public class ClusterNodeCacheWriterSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterNodeCacheWriterSupport.class);
 
     private final BrokerConfig config;
     private final Client internalClient;
@@ -43,7 +43,7 @@ public class ClusterNodeCacheSupport {
     private final CountDownLatch latch = new CountDownLatch(1);
     private final ObjectOpenHashSet<String> failureRegistryUrl = new ObjectOpenHashSet<>();
 
-    public ClusterNodeCacheSupport(BrokerConfig config, Client internalClient) {
+    public ClusterNodeCacheWriterSupport(BrokerConfig config, Client internalClient) {
         this.config = config;
         this.internalClient = internalClient;
         this.cache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
@@ -67,7 +67,7 @@ public class ClusterNodeCacheSupport {
                 .next()
                 .schedule(() -> {
                     try {
-                        Promise<Void> promise = NetworkUtil.newImmediatePromise();
+                        Promise<Void> promise = NetworkUtils.newImmediatePromise();
                         promise.addListener(future -> {
                             if (future.isSuccess()) {
                                 latch.countDown();
@@ -97,7 +97,7 @@ public class ClusterNodeCacheSupport {
             while (iterator.hasNext()) {
                 String url = iterator.next();
                 try {
-                    Promise<Void> promise = NetworkUtil.newImmediatePromise();
+                    Promise<Void> promise = NetworkUtils.newImmediatePromise();
                     promise.addListener(future -> {
                         if (future.isSuccess()) {
                             failureRegistryUrl.remove(url);
@@ -144,7 +144,7 @@ public class ClusterNodeCacheSupport {
         String[] urls = getNameserverUrl();
         for (String url : urls) {
             try {
-                Promise<Void> promise = NetworkUtil.newImmediatePromise();
+                Promise<Void> promise = NetworkUtils.newImmediatePromise();
                 promise.addListener(future -> {});
 
                 OperationInvoker invoker = acquireInvokerOrRandomClientChannel(url);
@@ -165,7 +165,7 @@ public class ClusterNodeCacheSupport {
                 .setCluster(cluster)
                 .build();
 
-        Promise<QueryClusterNodeResponse> promise = NetworkUtil.newImmediatePromise();
+        Promise<QueryClusterNodeResponse> promise = NetworkUtils.newImmediatePromise();
 
         OperationInvoker invoker = acquireInvokerOrRandomClientChannel(null);
         invoker.invoke(QUERY_NODE, config.getInvokeTimeMs(), promise, request, QueryClusterNodeResponse.class);
@@ -198,7 +198,7 @@ public class ClusterNodeCacheSupport {
         String[] urls = getNameserverUrl();
         for (String url : urls) {
             try {
-                Promise<Void> promise = NetworkUtil.newImmediatePromise();
+                Promise<Void> promise = NetworkUtils.newImmediatePromise();
 
                 OperationInvoker invoker = acquireInvokerOrRandomClientChannel(url);
                 invoker.invoke(HEARTBEAT, config.getInvokeTimeMs(), promise, request, HeartbeatResponse.class);

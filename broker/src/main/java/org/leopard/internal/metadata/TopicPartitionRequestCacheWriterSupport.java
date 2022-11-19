@@ -3,8 +3,6 @@ package org.leopard.internal.metadata;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.leopard.client.Client;
@@ -20,7 +18,7 @@ import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
 import org.leopard.remote.proto.server.*;
 import org.leopard.remote.processor.ProcessCommand;
-import org.leopard.remote.util.NetworkUtil;
+import org.leopard.remote.util.NetworkUtils;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -28,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.leopard.remote.processor.ProcessCommand.Nameserver.NEW_TOPIC;
-import static org.leopard.remote.util.NetworkUtil.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
-public class TopicPartitionRequestCacheSupport {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheSupport.class);
+public class TopicPartitionRequestCacheWriterSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
 
     private final BrokerConfig config;
     private final Client internalClient;
@@ -39,7 +37,7 @@ public class TopicPartitionRequestCacheSupport {
 
     private final LoadingCache<String, Set<PartitionRecord>> cache;
 
-    public TopicPartitionRequestCacheSupport(BrokerConfig config, BrokerManager manager) {
+    public TopicPartitionRequestCacheWriterSupport(BrokerConfig config, BrokerManager manager) {
         this.config = config;
         this.internalClient = manager.getInternalClient();
         this.leaderElector = new PartitionLeaderElector(manager);
@@ -156,7 +154,7 @@ public class TopicPartitionRequestCacheSupport {
                 .build();
 
         OperationInvoker invoker = acquireInvokerByRandomClientChannel();
-        Promise<QueryTopicInfoResponse> promise = NetworkUtil.newImmediatePromise();
+        Promise<QueryTopicInfoResponse> promise = NetworkUtils.newImmediatePromise();
 
         invoker.invoke(ProcessCommand.Server.FETCH_TOPIC_RECORD, config.getInvokeTimeMs(), promise, request, QueryTopicInfoResponse.class);
         Map<String, TopicMetadata> records = promise.get().getTopicsMap();
