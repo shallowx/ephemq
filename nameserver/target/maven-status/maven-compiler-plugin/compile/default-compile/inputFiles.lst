@@ -1,0 +1,11 @@
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/NameCoreServer.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/ServerChannelInitializer.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/metadata/Manager.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/metadata/ClusterManager.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/metadata/TopicManager.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/ServiceDuplexHandler.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/metadata/DefaultManager.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/NameserverConfig.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/NameserverProcessorAware.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/Server.java
+/Users/eel/Documents/code/LeopardMQ/nameserver/src/main/java/org/leopard/nameserver/NameserverSocketServer.java

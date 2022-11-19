@@ -41,5 +41,6 @@ public interface ProcessCommand {
         byte QUERY_NODE = 4;
         byte HEARTBEAT = 5;
         byte UN_REGISTER_NODE = 6;
+        byte REMOVE_TOPIC = 7;
     }
 }

@@ -23,6 +23,7 @@ message CreateTopicResponse {
 
 message DelTopicRequest {
   string topic = 1;
+  string cluster = 2;
 }
 
 message DelTopicResponse {
@@ -39,7 +40,8 @@ message QueryClusterNodeResponse {
 }
 
 message QueryTopicInfoRequest {
-  repeated string topic = 1;
+  string cluster = 1;
+  repeated string topic = 2;
 }
 
 message QueryTopicInfoResponse {
@@ -90,25 +92,6 @@ message SendMessageResponse {
   int64 index = 3;
 }
 
-message PullMessageRequest {
-  int32 ledger = 1;
-  string queue = 2;
-  int32 limit = 3;
-  int32 epoch = 4;
-  int64 index = 5;
-  int32 version = 6;
-  string topic = 7;
-}
-
-message PullMessageResponse {
-  string topic = 1;
-  string queue = 2;
-  int32 limit = 3;
-  int32 ledger = 4;
-  int32 epoch = 5;
-  int64 index = 6;
-}
-
 message NodeRegistrationRequest {
   string cluster = 1;
   string server = 2;
@@ -124,3 +107,11 @@ message NodeUnregistrationRequest{
 }
 
 message NodeUnregistrationResponse {}
+
+message RemoteCreateTopicRequest {
+  string topic = 1;
+  string cluster = 2;
+  repeated PartitionMetadata partitions = 3;
+}
+
+message RemoteCreateTopicResponse {}

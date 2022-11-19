@@ -1,35 +1,100 @@
 package org.leopard.nameserver.metadata;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.netty.util.concurrent.Promise;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.PartitionRecord;
-
-import java.util.Set;
+import org.leopard.remote.proto.PartitionMetadata;
+import org.leopard.remote.proto.TopicMetadata;
+import org.leopard.remote.proto.server.QueryTopicInfoResponse;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TopicManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicManager.class);
 
-    private final Manager manager;
-    private final LoadingCache<String, Set<PartitionRecord>> cache;
+    private final Map<String, Map<String, Set<PartitionRecord>>> cache = new ConcurrentHashMap<>();
 
-    public TopicManager(Manager manager) {
-        this.manager = manager;
-        this.cache = Caffeine.newBuilder().build(key -> null);
+    public TopicManager() {
     }
 
-    public void create() {
+    public void create(String topic, String cluster, Set<PartitionRecord> partitionRecords, Promise<Void> promise) {
+        Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
+        if (clusterRecords == null) {
+            clusterRecords = new ConcurrentHashMap<>();
+        }
 
+        if (clusterRecords.containsKey(topic)) {
+            promise.tryFailure(new IllegalStateException(String.format("The topic is exists, topic = %s", topic)));
+            return;
+        }
+
+        clusterRecords.put(topic, partitionRecords);
+        cache.put(cluster, clusterRecords);
+
+        promise.trySuccess(null);
     }
 
-    public Set<PartitionRecord> load(String topic) {
-        return null;
+    public void load(List<String> topics, String cluster, Promise<QueryTopicInfoResponse> promise) {
+        Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
+        if (clusterRecords == null || clusterRecords.isEmpty()) {
+            promise.trySuccess(null);
+            return;
+        }
+
+        if (topics == null || topics.isEmpty()) {
+            promise.trySuccess(null);
+            return;
+        }
+
+        Map<String, TopicMetadata> results = new ConcurrentHashMap<>();
+        for (String topic : topics) {
+            Set<PartitionRecord> partitionRecords = clusterRecords.get(topic);
+            if (partitionRecords.isEmpty()) {
+                continue;
+            }
+
+            Map<Integer, PartitionMetadata> partitionMetadataMap = new ConcurrentHashMap<>();
+
+            for (PartitionRecord partitionRecord : partitionRecords) {
+                PartitionMetadata partitionMetadata = PartitionMetadata.newBuilder()
+                        .addAllReplicas(partitionRecord.getLatencies())
+                        .setLeader(partitionRecord.getLeader())
+                        .setId(partitionRecord.getId())
+                        .setLatency(partitionRecord.getLatency())
+                        .build();
+
+                partitionMetadataMap.put(partitionMetadata.getId(), partitionMetadata);
+            }
+
+            TopicMetadata topicMetadata = TopicMetadata.newBuilder()
+                    .setName(cluster)
+                    .putAllPartitions(partitionMetadataMap)
+                    .build();
+
+            results.put(topic, topicMetadata);
+        }
+
+        QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
+                .putAllTopics(results)
+                .build();
+
+        promise.trySuccess(response);
     }
 
-    public void remove() {
+    public void remove(String cluster, String topic, Promise<Void> promise) {
+        try {
+            Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
+            if (clusterRecords != null && !clusterRecords.isEmpty()) {
+                clusterRecords.remove(topic);
+            }
 
+            promise.trySuccess(null);
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Remove topic from cluster failure, topic={} cluster={}", topic, cluster, t);
+            }
+            promise.tryFailure(t);
+        }
     }
-
-
 }

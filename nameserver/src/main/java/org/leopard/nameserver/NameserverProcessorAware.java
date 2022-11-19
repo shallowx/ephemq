@@ -1,5 +1,6 @@
 package org.leopard.nameserver;
 
+import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -7,6 +8,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.common.metadata.NodeRecord;
+import org.leopard.common.metadata.PartitionRecord;
 import org.leopard.nameserver.metadata.Manager;
 import org.leopard.NameserverConfig;
 import org.leopard.common.logging.InternalLogger;
@@ -14,6 +16,7 @@ import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.nameserver.metadata.ClusterManager;
 import org.leopard.nameserver.metadata.TopicManager;
 import org.leopard.remote.proto.NodeMetadata;
+import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.heartbeat.HeartbeatRequest;
 import org.leopard.remote.proto.heartbeat.HeartbeatResponse;
 import org.leopard.remote.RemoteException;
@@ -59,6 +62,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
         try {
             switch (command) {
                 case REGISTER_NODE -> processRegisterNodeRequest(channel, data, answer);
+
                 case UN_REGISTER_NODE ->  processUnRegisterNodeRequest(channel, data, answer);
 
                 case NEW_TOPIC -> processNewTopicRequest(channel, data, answer);
@@ -68,6 +72,8 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
                 case QUERY_TOPIC -> processQueryTopicRequest(channel, data, answer);
 
                 case HEARTBEAT -> processHeartbeatRequest(channel, data, answer);
+
+                case REMOVE_TOPIC -> processRemoveTopicRequest(channel, data, answer);
 
                 default -> {
                     if (logger.isDebugEnabled()) {
@@ -86,15 +92,27 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
 
     private void processNewTopicRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         try {
+            RemoteCreateTopicRequest request = readProto(data, RemoteCreateTopicRequest.parser());
+            String topic = request.getTopic();
+            String cluster = request.getCluster();
+            Set<PartitionRecord> partitionRecords = request.getPartitionsList().stream()
+                    .map(partitionMetadata -> {
+                return PartitionRecord.newBuilder()
+                        .id(partitionMetadata.getId())
+                        .latencies(partitionMetadata.getReplicasList())
+                        .latency(partitionMetadata.getLatency())
+                        .leader(partitionMetadata.getLeader())
+                        .build();
+            }).collect(Collectors.toSet());
+
             Promise<Void> promise = NetworkUtil.newImmediatePromise();
             promise.addListener(new GenericFutureListener<Future<Void>>() {
                 @Override
                 public void operationComplete(Future<Void> future) throws Exception {
                     if (future.isSuccess()) {
                         if (answer != null) {
-                            CreateTopicResponse response = CreateTopicResponse
+                            RemoteCreateTopicResponse response = RemoteCreateTopicResponse
                                     .newBuilder()
-                                    .setAck(Ack.SUCCESS)
                                     .build();
 
                             answer.success(proto2Buf(channel.alloc(), response));
@@ -106,7 +124,7 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
             });
 
             TopicManager topicManager = manager.getTopicManager();
-            topicManager.create();
+            topicManager.create(topic, cluster, partitionRecords, promise);
         } catch (Throwable t) {
             answerFailed(answer, t);
         }
@@ -170,7 +188,31 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
     }
 
     private void processQueryTopicRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
+            ProtocolStringList topicList = request.getTopicList();
+            String cluster = request.getCluster();
 
+            Promise<QueryTopicInfoResponse> promise = NetworkUtil.newImmediatePromise();
+            promise.addListener(new GenericFutureListener<Future<QueryTopicInfoResponse>>() {
+                @Override
+                public void operationComplete(Future<QueryTopicInfoResponse> future) throws Exception {
+                    if (future.isSuccess()) {
+                        if (answer != null) {
+                            QueryTopicInfoResponse response = future.get();
+                            answer.success(proto2Buf(channel.alloc(), response == null ? QueryTopicInfoResponse.newBuilder().build() : response));
+                        }
+                    } else {
+                        answerFailed(answer, future.cause());
+                    }
+                }
+            });
+
+            TopicManager topicManager = manager.getTopicManager();
+            topicManager.load(topicList, cluster, promise);
+        } catch (Throwable t) {
+            answerFailed(answer, t);
+        }
     }
 
     private void processQueryNodeRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
@@ -229,6 +271,35 @@ public class NameserverProcessorAware implements ProcessorAware, ProcessCommand.
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {
         if (answer != null) {
             answer.failure(cause);
+        }
+    }
+
+    private void processRemoveTopicRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        try {
+            DelTopicRequest request = readProto(data, DelTopicRequest.parser());
+            String cluster = request.getCluster();
+            String topic = request.getTopic();
+
+            Promise<Void> promise = NetworkUtil.newImmediatePromise();
+            promise.addListener(new GenericFutureListener<Future<? super Void>>() {
+                @Override
+                public void operationComplete(Future<? super Void> future) throws Exception {
+                    if (future.isSuccess()) {
+                        if (answer != null) {
+                            answer.success(proto2Buf(channel.alloc(), DelTopicResponse.newBuilder()
+                                    .setAck(Ack.SUCCESS)
+                                    .setTopic(topic)
+                                    .build()));
+                        }
+                    } else {
+                        answerFailed(answer, future.cause());
+                    }
+                }
+            });
+            TopicManager topicManager = manager.getTopicManager();
+            topicManager.remove(cluster, topic, promise);
+        } catch (Throwable t) {
+            answerFailed(answer, t);
         }
     }
 }

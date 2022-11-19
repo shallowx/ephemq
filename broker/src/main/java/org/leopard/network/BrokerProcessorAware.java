@@ -21,12 +21,16 @@ import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.remote.processor.Ack;
 import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.processor.ProcessorAware;
+import org.leopard.remote.proto.PartitionMetadata;
+import org.leopard.remote.proto.TopicMetadata;
 import org.leopard.remote.proto.server.*;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.leopard.remote.util.NetworkUtil.*;
@@ -103,8 +107,40 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             TopicPartitionRequestCacheSupport topicPartitionCache = manager.getTopicPartitionCache();
             Set<PartitionRecord> records = topicPartitionCache.loadAll(topicList);
 
-        } catch (Throwable t) {
+            if (records.isEmpty()) {
+                answer.success(proto2Buf(channel.alloc(), QueryTopicInfoResponse.newBuilder().build()));
+                return;
+            }
 
+            Map<Integer, PartitionMetadata> partitionMetadataMap = new ConcurrentHashMap<>();
+            Map<String, TopicMetadata> results = new ConcurrentHashMap<>();
+
+            for (PartitionRecord partitionRecord : records) {
+                PartitionMetadata partitionMetadata = PartitionMetadata.newBuilder()
+                        .addAllReplicas(partitionRecord.getLatencies())
+                        .setLeader(partitionRecord.getLeader())
+                        .setId(partitionRecord.getId())
+                        .setLatency(partitionRecord.getLatency())
+                        .build();
+
+                partitionMetadataMap.put(partitionMetadata.getId(), partitionMetadata);
+            }
+
+            TopicMetadata topicMetadata = TopicMetadata.newBuilder()
+                    .setName(config.getClusterName())
+                    .putAllPartitions(partitionMetadataMap)
+                    .build();
+
+            results.put(config.getClusterName(), topicMetadata);
+
+          QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
+                .putAllTopics(results)
+                .build();
+
+          answer.success(proto2Buf(channel.alloc(), response));
+
+        } catch (Throwable t) {
+            answerFailed(answer, t);
         }
     }
 

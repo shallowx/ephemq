@@ -25,6 +25,7 @@ import org.leopard.remote.util.NetworkUtil;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.leopard.remote.processor.ProcessCommand.Nameserver.NEW_TOPIC;
 import static org.leopard.remote.util.NetworkUtil.newImmediatePromise;
@@ -66,11 +67,21 @@ public class TopicPartitionRequestCacheSupport {
 
             OperationInvoker invoker = acquireInvokerByRandomClientChannel();
 
-            leaderElector.elect();
+            Set<PartitionRecord> records = leaderElector.elect(topic, partitions, latencies);
+            List<PartitionMetadata> newPartitions = records.stream()
+                    .map(record ->
+                            PartitionMetadata.newBuilder()
+                                .setId(record.getId())
+                                .setLatency(latencies)
+                                .setLeader(record.getLeader())
+                                .addAllReplicas(record.getLatencies())
+                                .build()
+                    ).collect(Collectors.toList());
 
-            CreateTopicRequest request = CreateTopicRequest.newBuilder()
+            RemoteCreateTopicRequest request = RemoteCreateTopicRequest.newBuilder()
                     .setTopic(topic)
-                    .setPartitions(partitions)
+                    .addAllPartitions(newPartitions)
+                    .setCluster(config.getClusterName())
                     .build();
 
             Promise<Void> voidPromise = newImmediatePromise();
@@ -103,16 +114,13 @@ public class TopicPartitionRequestCacheSupport {
 
             OperationInvoker invoker = acquireInvokerByRandomClientChannel();
 
-            promise.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override
-                public void operationComplete(Future<? super Void> future) throws Exception {
-                    if (future.isSuccess()) {
-                        if (logger.isInfoEnabled()) {
-                            logger.info("Delete topic successfully, topic={}", topic);
-                        }
-                    } else {
-                        promise.tryFailure(future.cause());
+            promise.addListener(future -> {
+                if (future.isSuccess()) {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Delete topic successfully, topic={}", topic);
                     }
+                } else {
+                    promise.tryFailure(future.cause());
                 }
             });
 
@@ -179,10 +187,6 @@ public class TopicPartitionRequestCacheSupport {
             }
             return partitionRecords;
         }).findFirst().orElse(null);
-    }
-
-    public Set<PartitionRecord> queryOfTopic() {
-        return null;
     }
 
     private OperationInvoker acquireInvokerByRandomClientChannel() {

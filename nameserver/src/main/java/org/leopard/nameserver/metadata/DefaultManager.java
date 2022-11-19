@@ -8,7 +8,7 @@ public class DefaultManager implements Manager {
     private final ClusterManager clusterManager;
 
     public DefaultManager(NameserverConfig config) {
-        this.topicManager = new TopicManager(this);
+        this.topicManager = new TopicManager();
         this.clusterManager = new ClusterManager(config);
     }
 
