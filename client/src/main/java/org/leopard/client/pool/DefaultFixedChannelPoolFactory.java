@@ -11,7 +11,7 @@ public class DefaultFixedChannelPoolFactory {
         return newChannelPool(client, client.getHealthChecker());
     }
 
-    public ShallowChannelPool newChannelPool(Client client,  ShallowChannelHealthChecker healthChecker) throws Exception {
+    public ShallowChannelPool newChannelPool(Client client, ShallowChannelHealthChecker healthChecker) throws Exception {
         if (client == null) {
             throw new RuntimeException("Shallow client is null");
         }
@@ -21,7 +21,7 @@ public class DefaultFixedChannelPoolFactory {
         return pool;
     }
 
-    public ShallowChannelPool acquireChannelPool() {
+    public ShallowChannelPool accessChannelPool() {
         if (pool == null) {
             throw new RuntimeException("Shallow channel pool is null");
         }

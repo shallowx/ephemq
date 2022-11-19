@@ -8,21 +8,23 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import org.leopard.remote.proto.notify.MessagePushSignal;
-import org.leopard.remote.Type;
-import org.leopard.remote.codec.MessagePacket;
 import org.leopard.client.consumer.Subscription;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.ledger.Cursor;
 import org.leopard.ledger.Offset;
 import org.leopard.ledger.Storage;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.remote.Type;
+import org.leopard.remote.codec.MessagePacket;
+import org.leopard.remote.proto.notify.MessagePushSignal;
 import org.leopard.remote.util.ByteBufUtils;
 import org.leopard.remote.util.ProtoBufUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -69,11 +71,11 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
         try {
             EventExecutor executor = helper.channelExecutor(channel);
-           if (executor.inEventLoop()) {
+            if (executor.inEventLoop()) {
                 doSubscribe(channel, topic, queue, offset, version, subscribePromise);
-           } else {
+            } else {
                 executor.execute(() -> doSubscribe(channel, topic, queue, offset, version, subscribePromise));
-           }
+            }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(t.getMessage(), t);
@@ -84,7 +86,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version, Promise<Subscription> subscribePromise) {
         try {
-            EntryEventExecutorHandler handler = helper.applyHandler(channel, subscribeLimit);
+            EntryEventExecutorHandler handler = helper.accessCheckedHandler(channel, subscribeLimit);
             ConcurrentMap<Channel, EntrySubscription> channelShips = handler.getChannelShips();
             EntrySubscription oldSubscription = channelShips.get(channel);
 
@@ -150,10 +152,10 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 helper.putHandler(channel, handler);
                 subscribePromise.trySuccess(Subscription
                         .newBuilder()
-                                .epoch(dispatchOffset.epoch())
-                                .index(dispatchOffset.index())
-                                .version(version)
-                                .queue(queue)
+                        .epoch(dispatchOffset.epoch())
+                        .index(dispatchOffset.index())
+                        .version(version)
+                        .queue(queue)
                         .build());
             });
         } catch (Throwable t) {
@@ -274,7 +276,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             return;
         }
 
-        ObjectCollection<EntrySubscription> entrySubscriptions= subscribeShips.values();
+        ObjectCollection<EntrySubscription> entrySubscriptions = subscribeShips.values();
 
         Offset nextOffset = handler.getNextOffset();
         try {
@@ -364,7 +366,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                     if (whole > handleLimit) {
                         break;
                     }
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Channel push message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);
                     }
@@ -389,7 +391,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         }
     }
 
-    private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset , ByteBuf payload, ByteBufAllocator alloc) {
+    private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset, ByteBuf payload, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             MessagePushSignal signal = MessagePushSignal

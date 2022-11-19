@@ -3,9 +3,9 @@ package org.leopard.dispatch;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.leopard.internal.config.BrokerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.internal.config.BrokerConfig;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +20,7 @@ public class EntryDispatchHelper {
 
     private final EventExecutor[] executors;
     private final ConcurrentMap<Channel, EntryEventExecutorHandler> channelOfHandlers = new ConcurrentHashMap<>();
-    private final WeakHashMap<EntryEventExecutorHandler, Integer> applyHandlers = new WeakHashMap<>();
+    private final WeakHashMap<EntryEventExecutorHandler, Integer> eventExecutorHandlers = new WeakHashMap<>();
 
     public EntryDispatchHelper(BrokerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
@@ -48,14 +48,14 @@ public class EntryDispatchHelper {
         return channelOfHandlers.get(channel);
     }
 
-    public EntryEventExecutorHandler applyHandler(Channel channel, int subscribeLimit) {
+    public EntryEventExecutorHandler accessCheckedHandler(Channel channel, int subscribeLimit) {
         EntryEventExecutorHandler handler = channelOfHandlers.get(channel);
         if (handler != null) {
             return handler;
         }
 
-        synchronized (applyHandlers) {
-            if (applyHandlers.isEmpty()) {
+        synchronized (eventExecutorHandlers) {
+            if (eventExecutorHandlers.isEmpty()) {
                 return newHandler();
             }
 
@@ -63,7 +63,7 @@ public class EntryDispatchHelper {
             int middleLimit = subscribeLimit / 2;
             Map<EntryEventExecutorHandler, Integer> handlers = new HashMap<>();
             int bound = 0;
-            for (EntryEventExecutorHandler entryHandler : applyHandlers.keySet()) {
+            for (EntryEventExecutorHandler entryHandler : eventExecutorHandlers.keySet()) {
                 int channelCount = entryHandler.getChannelShips().size();
                 if (channelCount >= subscribeLimit) {
                     continue;
@@ -96,9 +96,9 @@ public class EntryDispatchHelper {
     }
 
     private EntryEventExecutorHandler newHandler() {
-        synchronized (applyHandlers) {
+        synchronized (eventExecutorHandlers) {
             int[] limitArray = new int[executors.length];
-            applyHandlers.values().forEach(i -> limitArray[i]++);
+            eventExecutorHandlers.values().forEach(i -> limitArray[i]++);
 
             int index = 0;
             if (limitArray[index] > 0) {
@@ -116,14 +116,14 @@ public class EntryDispatchHelper {
             }
 
             EntryEventExecutorHandler handler = new EntryEventExecutorHandler(executors[index]);
-            applyHandlers.put(handler, index);
+            eventExecutorHandlers.put(handler, index);
             return handler;
         }
     }
 
     public void close(CloseFunction<Channel, String, String> function) {
-        if (applyHandlers.isEmpty()) {
-            if(logger.isDebugEnabled()) {
+        if (eventExecutorHandlers.isEmpty()) {
+            if (logger.isDebugEnabled()) {
                 logger.debug("Available handlers are empty");
             }
             return;
@@ -161,7 +161,7 @@ public class EntryDispatchHelper {
             dispatchExecutor.shutdownGracefully();
         }
 
-        applyHandlers.clear();
+        eventExecutorHandlers.clear();
     }
 
     @FunctionalInterface

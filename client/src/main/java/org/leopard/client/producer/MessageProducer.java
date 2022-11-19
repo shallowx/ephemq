@@ -5,23 +5,23 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.leopard.client.internal.ClientChannel;
-import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.Client;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
 import org.leopard.client.State;
+import org.leopard.client.internal.ClientChannel;
 import org.leopard.client.metadata.MessageRouter;
 import org.leopard.client.metadata.MessageRoutingHolder;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.client.pool.ShallowChannelPool;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.util.ObjectUtils;
 import org.leopard.remote.proto.server.SendMessageExtras;
 import org.leopard.remote.proto.server.SendMessageRequest;
 import org.leopard.remote.proto.server.SendMessageResponse;
 import org.leopard.remote.util.ByteBufUtils;
-import org.leopard.common.util.ObjectUtils;
 
 import java.net.SocketAddress;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
-public class MessageProducer implements Producer{
+public class MessageProducer implements Producer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProducer.class);
 
@@ -51,12 +51,12 @@ public class MessageProducer implements Producer{
     @Override
     public void start() throws Exception {
         if (!state.compareAndSet(State.LATENT, State.STARTED)) {
-            throw new UnsupportedOperationException("The message producer<"+ name +"> was started");
+            throw new UnsupportedOperationException("The message producer<" + name + "> was started");
         }
 
         client.start();
 
-        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
+        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool();
         this.manager = client.getMetadataManager();
     }
 
@@ -71,7 +71,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void sendAsync(Message message, SendCallback callback)  {
+    public void sendAsync(Message message, SendCallback callback) {
         sendAsync(message, null, callback);
     }
 
@@ -101,7 +101,7 @@ public class MessageProducer implements Producer{
     }
 
     @Override
-    public void sendAsync(Message message, MessagePreInterceptor messageFilter, SendCallback callback)  {
+    public void sendAsync(Message message, MessagePreInterceptor messageFilter, SendCallback callback) {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
@@ -150,10 +150,10 @@ public class MessageProducer implements Producer{
 
         SendMessageExtras extras = buildExtras(topic, queue, message.extras());
         try {
-             ByteBuf body = ByteBufUtils.byte2Buf(message.message());
+            ByteBuf body = ByteBufUtils.byte2Buf(message.message());
 
-             ClientChannel clientChannel = fetchHealthyChannel(ledger, leader);
-             clientChannel.invoker().invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);
+            ClientChannel clientChannel = fetchHealthyChannel(ledger, leader);
+            clientChannel.invoker().invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);
         } catch (Throwable t) {
             throw new RuntimeException(String.format("Failed to send async message, topic=%s, queue=%s name=%s", topic, queue, name));
         }
@@ -196,7 +196,7 @@ public class MessageProducer implements Producer{
 
     private Message exchange(Message message, MessagePreInterceptor mPreInterceptor) {
         if (null != mPreInterceptor) {
-           message = mPreInterceptor.interceptor(message);
+            message = mPreInterceptor.interceptor(message);
         }
         return message;
     }

@@ -4,19 +4,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.Client;
-import org.leopard.remote.proto.notify.MessagePullSignal;
-import org.leopard.remote.proto.notify.MessagePushSignal;
-import org.leopard.remote.RemoteException;
-import org.leopard.remote.Type;
+import org.leopard.client.metadata.MetadataWriter;
+import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
-import org.leopard.remote.processor.ProcessCommand;
-import org.leopard.remote.util.NetworkUtils;
+import org.leopard.remote.RemoteException;
+import org.leopard.remote.Type;
 import org.leopard.remote.invoke.InvokeAnswer;
+import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.processor.ProcessorAware;
+import org.leopard.remote.proto.notify.MessagePullSignal;
+import org.leopard.remote.proto.notify.MessagePushSignal;
+import org.leopard.remote.util.NetworkUtils;
 
 import static org.leopard.remote.util.ProtoBufUtils.readProto;
 
@@ -36,7 +36,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
-        Promise<ClientChannel> promise = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().assemblePromise(channel);
+        Promise<ClientChannel> promise = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().assemblePromise(channel);
         if (null != promise) {
             promise.setSuccess(clientChannel);
         }
@@ -70,7 +70,7 @@ public class ClientServiceProcessorAware implements ProcessorAware, ProcessComma
                     }
 
                     if (null != answer) {
-                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,"Unsupported command exception <" + command + ">"));
+                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Unsupported command exception <" + command + ">"));
                     }
                 }
             }

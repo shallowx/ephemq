@@ -10,17 +10,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.leopard.client.Client;
 import org.leopard.client.ClientConfig;
 import org.leopard.client.internal.ClientChannel;
+import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
+import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.NodeRecord;
 import org.leopard.common.metadata.PartitionRecord;
 import org.leopard.common.metadata.TopicRecord;
-import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
-import org.leopard.client.pool.ShallowChannelPool;
+import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
-import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.proto.server.*;
 
 import java.net.SocketAddress;
@@ -42,24 +42,24 @@ public class MetadataWriter implements ProcessCommand.Server {
     private final EventExecutor scheduledMetadataTask;
 
     public MetadataWriter(Client client) {
-        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool();
+        this.pool = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool();
         this.config = client.getClientConfig();
 
         this.routers = Caffeine.newBuilder()
                 .expireAfterAccess(config.getMetadataExpiredMs(), TimeUnit.MILLISECONDS)
                 .expireAfterWrite(config.getMetadataExpiredMs(), TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {
-            @Override
-            public @Nullable MessageRouter load(String key) throws Exception {
-                TopicRecord topicRecord = queryTopicRecord(pool.acquireWithRandomly(), List.of(key)).get(key);
-                Set<NodeRecord> nodeRecords = queryNodeRecord(pool.acquireWithRandomly());
-                return assembleRouter(key, topicRecord, nodeRecords);
-            }
-        });
+                    @Override
+                    public @Nullable MessageRouter load(String key) throws Exception {
+                        TopicRecord topicRecord = queryTopicRecord(pool.acquireWithRandomly(), List.of(key)).get(key);
+                        Set<NodeRecord> nodeRecords = queryNodeRecord(pool.acquireWithRandomly());
+                        return assembleRouter(key, topicRecord, nodeRecords);
+                    }
+                });
         this.scheduledMetadataTask = newEventExecutorGroup(1, "metadata-task").next();
     }
 
-    public void start() throws Exception{
+    public void start() throws Exception {
         scheduledMetadataTask.scheduleAtFixedRate(this::refreshMetadata, 5000,
                 config.getRefreshMetadataIntervalMs(), TimeUnit.MILLISECONDS);
     }
@@ -141,7 +141,7 @@ public class MetadataWriter implements ProcessCommand.Server {
 
         Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
         clientChannel.invoker().invoke(FETCH_CLUSTER_RECORD, config.getInvokeExpiredMs(), promise, request, QueryClusterNodeResponse.class);
-        List<NodeMetadata> nodes =  promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
+        List<NodeMetadata> nodes = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
         if (nodes.isEmpty()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Query node record is empty");
@@ -150,15 +150,15 @@ public class MetadataWriter implements ProcessCommand.Server {
         }
 
         return nodes.stream()
-                 .map(nodeMetadata -> NodeRecord
-                         .newBuilder()
-                         .cluster(nodeMetadata.getCluster())
-                         .name(nodeMetadata.getName())
-                         .state(nodeMetadata.getState())
-                         .lastKeepLiveTime(nodeMetadata.getLastKeepLiveTime())
-                         .socketAddress(switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort()))
-                         .build())
-                 .collect(Collectors.toSet());
+                .map(nodeMetadata -> NodeRecord
+                        .newBuilder()
+                        .cluster(nodeMetadata.getCluster())
+                        .name(nodeMetadata.getName())
+                        .state(nodeMetadata.getState())
+                        .lastKeepLiveTime(nodeMetadata.getLastKeepLiveTime())
+                        .socketAddress(switchSocketAddress(nodeMetadata.getHost(), nodeMetadata.getPort()))
+                        .build())
+                .collect(Collectors.toSet());
     }
 
     public Map<String, MessageRouter> getWholesRoutes() {
@@ -225,7 +225,7 @@ public class MetadataWriter implements ProcessCommand.Server {
         return new MessageRouter(topic, holders);
     }
 
-   public void refreshMetadata() {
+    public void refreshMetadata() {
         try {
             List<String> topics = new ArrayList<>(routers.asMap().keySet());
             if (topics.isEmpty()) {
@@ -268,9 +268,9 @@ public class MetadataWriter implements ProcessCommand.Server {
                 routers.put(topic, messageRouter);
             }
         } catch (Exception e) {
-          if (logger.isErrorEnabled()) {
-              logger.error("Failed to refresh metadata, cause:{}", e);
-          }
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to refresh metadata, cause:{}", e);
+            }
         }
     }
 
