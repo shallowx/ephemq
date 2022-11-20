@@ -4,10 +4,10 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.leopard.internal.config.BrokerConfig;
-import org.leopard.internal.BrokerManager;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.internal.ResourceContext;
+import org.leopard.internal.config.BrokerConfig;
 
 import static org.leopard.remote.util.NetworkUtils.newEventLoopGroup;
 import static org.leopard.remote.util.NetworkUtils.preferServerChannelClass;
@@ -18,11 +18,11 @@ public final class BrokerSocketServer {
 
     private final BrokerConfig config;
     private final ServerChannelInitializer serverChannelInitializer;
-    private  EventLoopGroup bossGroup;
-    private  EventLoopGroup workGroup;
-    private  ChannelFuture closedFuture;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workGroup;
+    private ChannelFuture closedFuture;
 
-    public BrokerSocketServer(BrokerConfig config, BrokerManager manager) {
+    public BrokerSocketServer(BrokerConfig config, ResourceContext manager) {
         this.config = config;
         this.serverChannelInitializer = new ServerChannelInitializer(config, manager);
     }
@@ -46,14 +46,14 @@ public final class BrokerSocketServer {
             bootstrap.handler(new LoggingHandler(LogLevel.DEBUG));
         }
 
-        WriteBufferWaterMark mark = new WriteBufferWaterMark(config.getSocketWriteHighWaterMark() >> 1 , config.getSocketWriteHighWaterMark());
+        WriteBufferWaterMark mark = new WriteBufferWaterMark(config.getSocketWriteHighWaterMark() >> 1, config.getSocketWriteHighWaterMark());
         bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, mark);
 
         ChannelFuture future = bootstrap.bind(config.getExposedHost(), config.getExposedPort())
                 .addListener((ChannelFutureListener) f -> {
                     if (f.isSuccess() && logger.isInfoEnabled()) {
                         logger.info("Socket server is listening at {}", f.channel().localAddress());
-                    } else  {
+                    } else {
                         if (logger.isErrorEnabled()) {
                             logger.error("Socket server start failed", f.cause());
                         }
@@ -63,7 +63,7 @@ public final class BrokerSocketServer {
         closedFuture = future.channel().closeFuture();
     }
 
-    public void awaitShutdownGracefully(){
+    public void awaitShutdownGracefully() {
         try {
             closedFuture.sync();
         } catch (InterruptedException e) {

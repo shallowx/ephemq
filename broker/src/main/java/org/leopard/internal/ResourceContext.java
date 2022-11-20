@@ -4,19 +4,20 @@ import org.leopard.client.Client;
 import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
 import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
 import org.leopard.ledger.LedgerManager;
-import org.leopard.network.BrokerConnectionManager;
+import org.leopard.network.ChannelBoundContext;
 
-public interface BrokerManager {
+public interface ResourceContext {
     void start() throws Exception;
+
     void shutdownGracefully() throws Exception;
 
     LedgerManager getLedgerManager();
 
-    BrokerConnectionManager getBrokerConnectionManager();
+    ChannelBoundContext getChannelBoundContext();
 
-    TopicPartitionRequestCacheWriterSupport getTopicPartitionCache();
+    TopicPartitionRequestCacheWriterSupport getPartitionRequestCacheWriterSupport();
 
-    ClusterNodeCacheWriterSupport getClusterCache();
+    ClusterNodeCacheWriterSupport getNodeCacheWriterSupport();
 
-     Client getInternalClient();
+    Client getInternalClient();
 }

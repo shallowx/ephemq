@@ -2,38 +2,38 @@ package org.leopard.internal;
 
 import org.leopard.client.Client;
 import org.leopard.client.ClientConfig;
+import org.leopard.internal.config.BrokerConfig;
 import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
 import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
 import org.leopard.ledger.LedgerManager;
-import org.leopard.internal.config.BrokerConfig;
-import org.leopard.network.BrokerConnectionManager;
+import org.leopard.network.ChannelBoundContext;
 
 import java.util.List;
 
-public class DefaultBrokerManager implements BrokerManager {
+public class DefaultResourceContext implements ResourceContext {
 
     private final LedgerManager logManager;
-    private final BrokerConnectionManager connectionManager;
-    private final TopicPartitionRequestCacheWriterSupport topicPartitionRequestCache;
-    private final ClusterNodeCacheWriterSupport clusterNodeCache;
+    private final ChannelBoundContext boundContext;
+    private final TopicPartitionRequestCacheWriterSupport partitionRequestCacheWriterSupport;
+    private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
     private final Client client;
 
-    public DefaultBrokerManager(BrokerConfig config) throws Exception {
+    public DefaultResourceContext(BrokerConfig config) throws Exception {
         this.logManager = new LedgerManager(config);
-        this.connectionManager = new BrokerConnectionManager();
+        this.boundContext = new ChannelBoundContext();
 
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapSocketAddress(List.of(config.getNameserverUrl()));
         this.client = new Client("nameserver-client", clientConfig);
 
-        this.clusterNodeCache = new ClusterNodeCacheWriterSupport(config, client);
-        this.topicPartitionRequestCache = new TopicPartitionRequestCacheWriterSupport(config, this);
+        this.nodeCacheWriterSupport = new ClusterNodeCacheWriterSupport(config, client);
+        this.partitionRequestCacheWriterSupport = new TopicPartitionRequestCacheWriterSupport(config, this);
     }
 
     @Override
     public void start() throws Exception {
         this.client.start();
-        this.clusterNodeCache.start();
+        this.nodeCacheWriterSupport.start();
 
         this.logManager.start();
     }
@@ -44,18 +44,18 @@ public class DefaultBrokerManager implements BrokerManager {
     }
 
     @Override
-    public BrokerConnectionManager getBrokerConnectionManager() {
-        return this.connectionManager;
+    public ChannelBoundContext getChannelBoundContext() {
+        return this.boundContext;
     }
 
     @Override
-    public TopicPartitionRequestCacheWriterSupport getTopicPartitionCache() {
-        return this.topicPartitionRequestCache;
+    public TopicPartitionRequestCacheWriterSupport getPartitionRequestCacheWriterSupport() {
+        return this.partitionRequestCacheWriterSupport;
     }
 
     @Override
-    public ClusterNodeCacheWriterSupport getClusterCache() {
-        return this.clusterNodeCache;
+    public ClusterNodeCacheWriterSupport getNodeCacheWriterSupport() {
+        return this.nodeCacheWriterSupport;
     }
 
     @Override
@@ -66,6 +66,6 @@ public class DefaultBrokerManager implements BrokerManager {
     @Override
     public void shutdownGracefully() throws Exception {
         this.logManager.close();
-        this.clusterNodeCache.shutdown();
+        this.nodeCacheWriterSupport.shutdown();
     }
 }

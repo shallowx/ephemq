@@ -1,9 +1,9 @@
 package org.leopard.internal;
 
 import io.netty.util.concurrent.ScheduledFuture;
-import org.leopard.internal.config.BrokerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.internal.config.BrokerConfig;
 import org.leopard.network.BrokerSocketServer;
 
 import java.util.concurrent.CountDownLatch;
@@ -15,10 +15,10 @@ public final class BrokerServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerServer.class);
 
     private final BrokerSocketServer socketServer;
-    private final BrokerManager manager;
+    private final ResourceContext manager;
 
     public BrokerServer(BrokerConfig config) throws Exception {
-        this.manager = new DefaultBrokerManager(config);
+        this.manager = new DefaultResourceContext(config);
         this.socketServer = new BrokerSocketServer(config, manager);
 
     }
@@ -43,7 +43,7 @@ public final class BrokerServer {
         manager.start();
 
         latch.await();
-        if (logger.isInfoEnabled()){
+        if (logger.isInfoEnabled()) {
             logger.info("The broker server started successfully");
         }
     }

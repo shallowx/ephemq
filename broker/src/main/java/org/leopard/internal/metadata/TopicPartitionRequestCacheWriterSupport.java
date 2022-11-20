@@ -12,12 +12,12 @@ import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.PartitionRecord;
-import org.leopard.internal.BrokerManager;
+import org.leopard.internal.ResourceContext;
 import org.leopard.internal.config.BrokerConfig;
+import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
 import org.leopard.remote.proto.server.*;
-import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.util.NetworkUtils;
 
 import java.util.*;
@@ -37,7 +37,7 @@ public class TopicPartitionRequestCacheWriterSupport {
 
     private final LoadingCache<String, Set<PartitionRecord>> cache;
 
-    public TopicPartitionRequestCacheWriterSupport(BrokerConfig config, BrokerManager manager) {
+    public TopicPartitionRequestCacheWriterSupport(BrokerConfig config, ResourceContext manager) {
         this.config = config;
         this.internalClient = manager.getInternalClient();
         this.leaderElector = new PartitionLeaderElector(manager);
@@ -69,11 +69,11 @@ public class TopicPartitionRequestCacheWriterSupport {
             List<PartitionMetadata> newPartitions = records.stream()
                     .map(record ->
                             PartitionMetadata.newBuilder()
-                                .setId(record.getId())
-                                .setLatency(latencies)
-                                .setLeader(record.getLeader())
-                                .addAllReplicas(record.getLatencies())
-                                .build()
+                                    .setId(record.getId())
+                                    .setLatency(latencies)
+                                    .setLeader(record.getLeader())
+                                    .addAllReplicas(record.getLatencies())
+                                    .build()
                     ).collect(Collectors.toList());
 
             RemoteCreateTopicRequest request = RemoteCreateTopicRequest.newBuilder()

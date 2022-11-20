@@ -4,23 +4,23 @@ import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
-import org.leopard.common.metadata.NodeRecord;
-import org.leopard.common.metadata.PartitionRecord;
-import org.leopard.internal.BrokerManager;
-import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
-import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
-import org.leopard.ledger.Offset;
-import org.leopard.remote.proto.NodeMetadata;
-import org.leopard.remote.RemoteException;
 import org.leopard.client.consumer.Subscription;
-import org.leopard.internal.config.BrokerConfig;
-import org.leopard.remote.invoke.InvokeAnswer;
-import org.leopard.ledger.LedgerManager;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.metadata.NodeRecord;
+import org.leopard.common.metadata.PartitionRecord;
+import org.leopard.internal.ResourceContext;
+import org.leopard.internal.config.BrokerConfig;
+import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
+import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
+import org.leopard.ledger.LedgerManager;
+import org.leopard.ledger.Offset;
+import org.leopard.remote.RemoteException;
+import org.leopard.remote.invoke.InvokeAnswer;
 import org.leopard.remote.processor.Ack;
 import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.processor.ProcessorAware;
+import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
 import org.leopard.remote.proto.server.*;
@@ -43,12 +43,12 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(BrokerProcessorAware.class);
 
     private final BrokerConfig config;
-    private final BrokerManager manager;
+    private final ResourceContext resourceContext;
     private final EventExecutor commandExecutor;
-
-    public BrokerProcessorAware(BrokerConfig config, BrokerManager manager) {
+    
+    public BrokerProcessorAware(BrokerConfig config, ResourceContext resourceContext) {
         this.config = config;
-        this.manager = manager;
+        this.resourceContext = resourceContext;
 
         EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command").next();
         this.commandExecutor = group.next();
@@ -60,10 +60,10 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
             logger.debug("Get remote active address<{}> successfully", channel.remoteAddress().toString());
         }
 
-        manager.getBrokerConnectionManager().add(channel);
+        resourceContext.getChannelBoundContext().add(channel);
 
         channel.closeFuture().addListener(f -> {
-            LedgerManager ledgerManager = manager.getLedgerManager();
+            LedgerManager ledgerManager = resourceContext.getLedgerManager();
             ledgerManager.clearChannel(channel);
         });
     }
@@ -83,13 +83,13 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
                 case FETCH_TOPIC_RECORD -> processFetchTopicRecordsRequest(channel, data, answer, version);
 
-                case FETCH_CLUSTER_RECORD ->  processFetchClusterNodeRecordsRequest(channel, data, answer, version);
+                case FETCH_CLUSTER_RECORD -> processFetchClusterNodeRecordsRequest(channel, data, answer, version);
 
                 default -> {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
                     }
-                    answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command ["+ command +"]"));
+                    answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command [" + command + "]"));
                 }
             }
         } catch (Throwable cause) {
@@ -104,8 +104,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
             ProtocolStringList topicList = request.getTopicList();
-            TopicPartitionRequestCacheWriterSupport topicPartitionCache = manager.getTopicPartitionCache();
-            Set<PartitionRecord> records = topicPartitionCache.loadAll(topicList);
+            TopicPartitionRequestCacheWriterSupport writerSupport = resourceContext.getPartitionRequestCacheWriterSupport();
+            Set<PartitionRecord> records = writerSupport.loadAll(topicList);
 
             if (records.isEmpty()) {
                 answer.success(proto2Buf(channel.alloc(), QueryTopicInfoResponse.newBuilder().build()));
@@ -133,11 +133,11 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
 
             results.put(config.getClusterName(), topicMetadata);
 
-          QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
-                .putAllTopics(results)
-                .build();
+            QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
+                    .putAllTopics(results)
+                    .build();
 
-          answer.success(proto2Buf(channel.alloc(), response));
+            answer.success(proto2Buf(channel.alloc(), response));
 
         } catch (Throwable t) {
             answerFailed(answer, t);
@@ -148,8 +148,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
             String cluster = request.getCluster();
-            ClusterNodeCacheWriterSupport cache = manager.getClusterCache();
-            Set<NodeRecord> records = cache.load(cluster);
+            ClusterNodeCacheWriterSupport writerSupport = resourceContext.getNodeCacheWriterSupport();
+            Set<NodeRecord> records = writerSupport.load(cluster);
 
             QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
             if (records == null || records.isEmpty()) {
@@ -161,8 +161,8 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             .setName(record.getName())
                             .setCluster(record.getCluster())
                             .setState(record.getState())
-                            .setHost(((InetSocketAddress)socketAddress).getHostName())
-                            .setPort(((InetSocketAddress)socketAddress).getPort())
+                            .setHost(((InetSocketAddress) socketAddress).getHostName())
+                            .setPort(((InetSocketAddress) socketAddress).getPort())
                             .build();
                 }).collect(Collectors.toList());
 
@@ -204,19 +204,19 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                         answerFailed(answer, f.cause());
                     }
                 });
-                LedgerManager logManager = manager.getLedgerManager();
+                LedgerManager logManager = resourceContext.getLedgerManager();
                 logManager.append(ledger, queue, retain, version, promise);
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Failed to append message record", t);
                 }
-                answerFailed(answer,t);
+                answerFailed(answer, t);
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to append message record", t);
             }
-            answerFailed(answer,t);
+            answerFailed(answer, t);
         }
     }
 
@@ -235,7 +235,7 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                     Promise<Subscription> promise = newImmediatePromise();
                     promise.addListener(future -> {
                         if (future.isSuccess()) {
-                            Subscription subscription = (Subscription)future.get();
+                            Subscription subscription = (Subscription) future.get();
                             SubscribeResponse response = SubscribeResponse
                                     .newBuilder()
                                     .setEpoch(subscription.getEpoch())
@@ -248,12 +248,12 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
                             if (answer != null) {
                                 answer.success(proto2Buf(channel.alloc(), response));
                             }
-                        }else {
+                        } else {
                             answerFailed(answer, future.cause());
                         }
                     });
 
-                    LedgerManager logManager = manager.getLedgerManager();
+                    LedgerManager logManager = resourceContext.getLedgerManager();
                     logManager.subscribe(channel, topic, queue, theVersion, ledger, epoch, index, promise);
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {
@@ -271,84 +271,84 @@ public class BrokerProcessorAware implements ProcessorAware, ProcessCommand.Serv
     }
 
     private void processCreateTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-            try {
-                CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
-                commandExecutor.execute(() -> {
-                    try {
-                        String topic = request.getTopic();
-                        int partitions = request.getPartitions();
-                        int latencies = request.getLatencies();
+        try {
+            CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
+            commandExecutor.execute(() -> {
+                try {
+                    String topic = request.getTopic();
+                    int partitions = request.getPartitions();
+                    int latencies = request.getLatencies();
 
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("The topic<{}> partitions<{}> latency<{}>", topic, partitions, latencies);
-                        }
-
-                        Promise<Void> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<Void>>) f -> {
-                            if (f.isSuccess()) {
-                                if (answer != null) {
-                                    CreateTopicResponse response = CreateTopicResponse
-                                            .newBuilder()
-                                            .setTopic(topic)
-                                            .setPartitions(partitions)
-                                            .setLatencies(latencies)
-                                            .setAck(Ack.SUCCESS)
-                                            .build();
-                                    answer.success(proto2Buf(channel.alloc(), response));
-                                }
-                            } else {
-                                answerFailed(answer, f.cause());
-                            }
-                        });
-
-                        TopicPartitionRequestCacheWriterSupport topicPartitionCache = manager.getTopicPartitionCache();
-                        topicPartitionCache.createTopic(topic, partitions, latencies, promise);
-                    } catch (Exception e) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to create topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
-                        }
-                        answerFailed(answer, e);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("The topic<{}> partitions<{}> latency<{}>", topic, partitions, latencies);
                     }
-                });
-            } catch (Exception e) {
-                answerFailed(answer, e);
-            }
+
+                    Promise<Void> promise = newImmediatePromise();
+                    promise.addListener((GenericFutureListener<Future<Void>>) f -> {
+                        if (f.isSuccess()) {
+                            if (answer != null) {
+                                CreateTopicResponse response = CreateTopicResponse
+                                        .newBuilder()
+                                        .setTopic(topic)
+                                        .setPartitions(partitions)
+                                        .setLatencies(latencies)
+                                        .setAck(Ack.SUCCESS)
+                                        .build();
+                                answer.success(proto2Buf(channel.alloc(), response));
+                            }
+                        } else {
+                            answerFailed(answer, f.cause());
+                        }
+                    });
+
+                    TopicPartitionRequestCacheWriterSupport writerSupport = resourceContext.getPartitionRequestCacheWriterSupport();
+                    writerSupport.createTopic(topic, partitions, latencies, promise);
+                } catch (Exception e) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Failed to create topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                    }
+                    answerFailed(answer, e);
+                }
+            });
+        } catch (Exception e) {
+            answerFailed(answer, e);
+        }
     }
 
     private void processDelTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
-            try {
-                DelTopicRequest request = readProto(data, DelTopicRequest.parser());
-                String topic = request.getTopic();
+        try {
+            DelTopicRequest request = readProto(data, DelTopicRequest.parser());
+            String topic = request.getTopic();
 
-                commandExecutor.execute(() -> {
-                    try {
-                        Promise<Void> promise = newImmediatePromise();
-                        promise.addListener((GenericFutureListener<Future<Void>>) f -> {
-                            if (f.isSuccess()) {
-                                if (answer != null) {
-                                    DelTopicResponse response = DelTopicResponse.newBuilder().build();
-                                    answer.success(proto2Buf(channel.alloc(), response));
-                                }
-                            } else {
-                                answerFailed(answer, f.cause());
+            commandExecutor.execute(() -> {
+                try {
+                    Promise<Void> promise = newImmediatePromise();
+                    promise.addListener((GenericFutureListener<Future<Void>>) f -> {
+                        if (f.isSuccess()) {
+                            if (answer != null) {
+                                DelTopicResponse response = DelTopicResponse.newBuilder().build();
+                                answer.success(proto2Buf(channel.alloc(), response));
                             }
-                        });
-
-                        TopicPartitionRequestCacheWriterSupport topicPartitionCache = manager.getTopicPartitionCache();
-                        topicPartitionCache.delTopic(topic, promise);
-                    } catch (Exception e) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
+                        } else {
+                            answerFailed(answer, f.cause());
                         }
-                        answerFailed(answer, e);
+                    });
+
+                    TopicPartitionRequestCacheWriterSupport writerSupport = resourceContext.getPartitionRequestCacheWriterSupport();
+                    writerSupport.delTopic(topic, promise);
+                } catch (Exception e) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
                     }
-                });
-            } catch (Exception e) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                    answerFailed(answer, e);
                 }
-                answerFailed(answer, e);
+            });
+        } catch (Exception e) {
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
             }
+            answerFailed(answer, e);
+        }
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {

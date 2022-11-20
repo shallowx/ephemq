@@ -5,18 +5,18 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.leopard.remote.handle.ConnectDuplexHandler;
+import org.leopard.internal.ResourceContext;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.remote.codec.MessageDecoder;
 import org.leopard.remote.codec.MessageEncoder;
-import org.leopard.internal.BrokerManager;
+import org.leopard.remote.handle.ConnectDuplexHandler;
 
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final BrokerConfig config;
-    private final BrokerManager manager;
+    private final ResourceContext manager;
 
-    public ServerChannelInitializer(BrokerConfig config, BrokerManager manager) {
+    public ServerChannelInitializer(BrokerConfig config, ResourceContext manager) {
         this.config = config;
         this.manager = manager;
     }
