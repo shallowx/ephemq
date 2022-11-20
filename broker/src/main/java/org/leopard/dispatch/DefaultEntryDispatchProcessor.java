@@ -52,9 +52,9 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
-        this.handleLimit = config.getMessagePushHandleLimit();
-        this.assignLimit = config.getMessagePushHandleAssignLimit();
-        this.alignLimit = config.getMessagePushHandleAlignLimit();
+        this.handleLimit = config.getMessageHandleLimit();
+        this.assignLimit = config.getMessageHandleAssignLimit();
+        this.alignLimit = config.getMessageHandleAlignLimit();
 
         this.helper = new EntryDispatchHelper(config);
     }

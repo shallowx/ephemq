@@ -1,38 +1,33 @@
 package org.leopard.internal.config;
 
-public interface ConfigConstants {
+public class ConfigConstants {
 
-    String CLUSTER_NAME = "cluster";
-    String SERVER_ID = "server.id";
+    public static final String CLUSTER_NAME = "cluster";
+    public static final String SERVER_ID = "server.id";
 
-    String NAMESERVER_URL = "nameserver.url";
-    String HEARTBEAT_SCHEDULE_FIXED_DELAY_MS = "heartbeat.schedule.fixed.delay.ms";
+    public static final String NAMESERVER_URL = "nameserver.url";
+    public static final String HEARTBEAT_SCHEDULE_FIXED_DELAY_MS = "heartbeat.schedule.fixed.delay.ms";
 
-    String EXPOSED_HOST = "exposed.host";
-    String EXPOSED_PORT = "exposed.port";
+    public static final String EXPOSED_HOST = "exposed.host";
+    public static final String EXPOSED_PORT = "exposed.port";
 
-    String INVOKE_TIMEOUT_MS = "invoke.timeout.ms";
-    String IO_THREAD_LIMIT = "io.thread.limit";
-    String WORK_THREAD_LIMIT = "network.thread.limit";
-    String OS_IS_EPOLL_PREFER= "os.epoll.prefer";
+    public static final String INVOKE_TIMEOUT_MS = "invoke.timeout.ms";
+    public static final String IO_THREAD_LIMIT = "io.thread.limit";
+    public static final String WORK_THREAD_LIMIT = "network.thread.limit";
+    public static final String OS_IS_EPOLL_PREFER = "os.epoll.prefer";
 
-    String SOCKET_WRITE_HIGH_WATER_MARK = "socket.write.high.water.mark";
-    String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
-    String INTERNAL_CHANNEL_POOL_LIMIT = "internal.channel.pool.limit";
+    public static final String SOCKET_WRITE_HIGH_WATER_MARK = "socket.write.high.water.mark";
+    public static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
+    public static final String INTERNAL_CHANNEL_POOL_LIMIT = "internal.channel.pool.limit";
 
-    String LOG_SEGMENT_LIMIT = "ledger.segment.limit";
-    String LOG_SEGMENT_SIZE = "ledger.segment.size";
+    public static final String LOG_SEGMENT_LIMIT = "ledger.segment.limit";
+    public static final String LOG_SEGMENT_SIZE = "ledger.segment.size";
 
-    String PULL_HANDLER_RETRY_TASK_DELAY_TIME_MS = "pull.handler.retry.task.delay.time.ms";
-    String PULL_HANDLE_THREAD_LIMIT = "pull.handle.thread.limit";
-    String PROCESS_COMMAND_HANDLE_THREAD_LIMIT = "process.command.handle.thread.limit";
-    String MESSAGE_COMMAND_HANDLE_THREAD_LIMIT = "message.storage.handle.thread.limit";
-    String MESSAGE_PULL_TRANSFER_THREAD_LIMIT = "message.pull.transfer.thread.limit";
-    String MESSAGE_PULL_CHAIN_THREAD_LIMIT = "message.pull.chain.thread.limit";
-    String MESSAGE_PULL_BYTES_LIMIT = "message.pull.bytes.limit";
+    public static final String PROCESS_COMMAND_HANDLE_THREAD_LIMIT = "process.command.handle.thread.limit";
+    public static final String MESSAGE_COMMAND_HANDLE_THREAD_LIMIT = "message.storage.handle.thread.limit";
 
-    String MESSAGE_PUSH_HANDLE_THREAD_LIMIT = "message.push.handle.thread.limit";
-    String MESSAGE_PUSH_HANDLE_LIMIT = "message.push.handle.limit";
-    String MESSAGE_PUSH_HANDLE_ASSIGN_LIMIT = "message.push.handle.assign.limit";
-    String MESSAGE_PUSH_HANDLE_ALIGN_LIMIT = "message.push.handle.align.limit";
+    public static final String MESSAGE_HANDLE_THREAD_LIMIT = "message.handle.thread.limit";
+    public static final String MESSAGE_HANDLE_LIMIT = "message.handle.limit";
+    public static final String MESSAGE_HANDLE_ASSIGN_LIMIT = "message.handle.assign.limit";
+    public static final String MESSAGE_HANDLE_ALIGN_LIMIT = "message.handle.align.limit";
 }

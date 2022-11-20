@@ -9,8 +9,8 @@ import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.internal.config.BrokerConfig;
 import org.leopard.ledger.Ledger;
-import org.leopard.mertics.MeterRegistrySetup;
-import org.leopard.mertics.NettyMetrics;
+import org.leopard.metrics.MeterRegistrySetup;
+import org.leopard.metrics.NettyMetrics;
 
 import java.util.Map;
 import java.util.Properties;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.leopard.internal.metrics.MetricsConstants.*;
 
 @SuppressWarnings("all")
-public class ServerMetrics implements LedgerMetricsListener, AutoCloseable{
+public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServerMetrics.class);
 

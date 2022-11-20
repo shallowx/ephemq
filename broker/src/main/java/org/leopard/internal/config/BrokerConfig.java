@@ -7,14 +7,14 @@ import static org.leopard.internal.config.ConfigConstants.*;
 
 public class BrokerConfig {
 
-    private final Properties config;
+    private final Properties props;
 
-    public static BrokerConfig exchange(Properties properties) {
-        return new BrokerConfig(properties);
+    public static BrokerConfig exchange(Properties props) {
+        return new BrokerConfig(props);
     }
 
-    private BrokerConfig(Properties config) {
-        this.config = config;
+    private BrokerConfig(Properties props) {
+        this.props = props;
     }
 
     private int availableProcessor() {
@@ -22,106 +22,86 @@ public class BrokerConfig {
     }
 
     public String getServerId() {
-        return object2String(config.getOrDefault(SERVER_ID, "shallow"));
+        return object2String(props.getOrDefault(SERVER_ID, "leopard"));
     }
 
-    public int getIoThreadLimit(){
-        return object2Int(config.getOrDefault(IO_THREAD_LIMIT, 1));
+    public int getIoThreadLimit() {
+        return object2Int(props.getOrDefault(IO_THREAD_LIMIT, 1));
     }
 
-    public int getNetworkThreadLimit(){
-        return object2Int(config.getOrDefault(WORK_THREAD_LIMIT, availableProcessor()));
+    public int getNetworkThreadLimit() {
+        return object2Int(props.getOrDefault(WORK_THREAD_LIMIT, availableProcessor()));
     }
 
-    public boolean isOsEpollPrefer(){
-        return object2Boolean(config.getOrDefault(OS_IS_EPOLL_PREFER, true));
+    public boolean isOsEpollPrefer() {
+        return object2Boolean(props.getOrDefault(OS_IS_EPOLL_PREFER, true));
     }
 
-    public int getSocketWriteHighWaterMark(){
-        return object2Int(config.getOrDefault(SOCKET_WRITE_HIGH_WATER_MARK, 20 * 1024 * 1024));
+    public int getSocketWriteHighWaterMark() {
+        return object2Int(props.getOrDefault(SOCKET_WRITE_HIGH_WATER_MARK, 20 * 1024 * 1024));
     }
 
-    public String getExposedHost(){
-        return object2String(config.getOrDefault(EXPOSED_HOST, "127.0.0.1"));
+    public String getExposedHost() {
+        return object2String(props.getOrDefault(EXPOSED_HOST, "127.0.0.1"));
     }
 
-    public int getExposedPort(){
-        return object2Int(config.getOrDefault(EXPOSED_PORT, 9127));
+    public int getExposedPort() {
+        return object2Int(props.getOrDefault(EXPOSED_PORT, 9127));
     }
 
     public boolean isNetworkLoggingDebugEnabled() {
-        return object2Boolean(config.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
+        return object2Boolean(props.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
     }
 
     public int getInternalChannelPoolLimit() {
-        return object2Int(config.getOrDefault(INTERNAL_CHANNEL_POOL_LIMIT, 1));
+        return object2Int(props.getOrDefault(INTERNAL_CHANNEL_POOL_LIMIT, 1));
     }
 
     public String getClusterName() {
-        return object2String(config.getOrDefault(CLUSTER_NAME, "shallow"));
+        return object2String(props.getOrDefault(CLUSTER_NAME, "shallow"));
     }
 
     public int getInvokeTimeMs() {
-        return object2Int(config.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
+        return object2Int(props.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
     }
 
     public int getLogSegmentLimit() {
-        return object2Int(config.getOrDefault(LOG_SEGMENT_LIMIT, 2));
+        return object2Int(props.getOrDefault(LOG_SEGMENT_LIMIT, 2));
     }
 
     public int getLogSegmentSize() {
-        return object2Int(config.getOrDefault(LOG_SEGMENT_SIZE, 4194304));
-    }
-
-    public int getPullRetryTaskDelayTimeMs() {
-        return object2Int(config.getOrDefault(PULL_HANDLER_RETRY_TASK_DELAY_TIME_MS, 1000));
-    }
-
-    public int getPullHandleThreadLimit() {
-        return object2Int(config.getOrDefault(PULL_HANDLE_THREAD_LIMIT, 100));
+        return object2Int(props.getOrDefault(LOG_SEGMENT_SIZE, 4194304));
     }
 
     public int getProcessCommandHandleThreadLimit() {
-        return object2Int(config.getOrDefault(PROCESS_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
+        return object2Int(props.getOrDefault(PROCESS_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
     }
 
     public int getMessageStorageHandleThreadLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
+        return object2Int(props.getOrDefault(MESSAGE_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
     }
 
-    public int getMessagePullTransferThreadLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PULL_TRANSFER_THREAD_LIMIT, availableProcessor()));
+    public int getMessageHandleThreadLimit() {
+        return object2Int(props.getOrDefault(MESSAGE_HANDLE_THREAD_LIMIT, availableProcessor()));
     }
 
-    public int getMessagePullChainThreadLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PULL_CHAIN_THREAD_LIMIT, availableProcessor()));
+    public int getMessageHandleLimit() {
+        return object2Int(props.getOrDefault(MESSAGE_HANDLE_LIMIT, 1000));
     }
 
-    public int getMessagePushHandleThreadLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_THREAD_LIMIT, availableProcessor()));
+    public int getMessageHandleAssignLimit() {
+        return object2Int(props.getOrDefault(MESSAGE_HANDLE_ASSIGN_LIMIT, 1000));
     }
 
-    public int getMessagePullBytesLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PULL_BYTES_LIMIT, 4194304));
-    }
-
-    public int getMessagePushHandleLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_LIMIT, 1000));
-    }
-
-    public int getMessagePushHandleAssignLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_ASSIGN_LIMIT, 1000));
-    }
-
-    public int getMessagePushHandleAlignLimit() {
-        return object2Int(config.getOrDefault(MESSAGE_PUSH_HANDLE_ALIGN_LIMIT, 1000));
+    public int getMessageHandleAlignLimit() {
+        return object2Int(props.getOrDefault(MESSAGE_HANDLE_ALIGN_LIMIT, 1000));
     }
 
     public String getNameserverUrl() {
-        return object2String(config.getOrDefault(NAMESERVER_URL, "127.0.0.1:9100"));
+        return object2String(props.getOrDefault(NAMESERVER_URL, "127.0.0.1:9100"));
     }
 
     public int getHeartbeatScheduleFixedDelayMs() {
-        return object2Int(config.getOrDefault(HEARTBEAT_SCHEDULE_FIXED_DELAY_MS, 30000));
+        return object2Int(props.getOrDefault(HEARTBEAT_SCHEDULE_FIXED_DELAY_MS, 30000));
     }
 }

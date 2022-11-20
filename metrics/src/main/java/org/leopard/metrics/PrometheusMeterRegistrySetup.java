@@ -1,4 +1,4 @@
-package org.leopard.mertics;
+package org.leopard.metrics;
 
 import com.sun.net.httpserver.HttpServer;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -21,8 +21,8 @@ public class PrometheusMeterRegistrySetup implements MeterRegistrySetup {
     private MeterRegistry registry;
 
     @Override
-    public void setUp(Properties properties) {
-        final MeterConfig config = MeterConfig.exchange(properties);
+    public void setUp(Properties props) {
+        MeterConfig config = MeterConfig.exchange(props);
         if (config.getMetricsEnabled()) {
             this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
             Metrics.addRegistry(registry);
@@ -33,10 +33,10 @@ public class PrometheusMeterRegistrySetup implements MeterRegistrySetup {
 
     private void setHttpServer(MeterConfig config) {
         try {
-            final InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
+            InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
             this.server = HttpServer.create(socketAddress, 0);
 
-            final String url = config.getMetricsScrapeUrl();
+            String url = config.getMetricsScrapeUrl();
 
             this.server.createContext(url, exchange -> {
                 String scrape = ((PrometheusMeterRegistry) registry).scrape();

@@ -25,7 +25,7 @@ public class EntryDispatchHelper {
     public EntryDispatchHelper(BrokerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
-        EventExecutorGroup group = newEventExecutorGroup(config.getMessagePushHandleThreadLimit(), "push-handler-group");
+        EventExecutorGroup group = newEventExecutorGroup(config.getMessageHandleThreadLimit(), "push-handler-group");
         group.forEach(eventExecutorList::add);
         Collections.shuffle(eventExecutorList);
 

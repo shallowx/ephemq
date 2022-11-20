@@ -1,4 +1,4 @@
-package org.leopard.mertics;
+package org.leopard.metrics;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
