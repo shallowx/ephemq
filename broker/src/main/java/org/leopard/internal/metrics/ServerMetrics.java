@@ -7,7 +7,7 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.internal.config.BrokerConfig;
+import org.leopard.internal.config.ServerConfig;
 import org.leopard.ledger.Ledger;
 import org.leopard.metrics.MeterRegistrySetup;
 import org.leopard.metrics.NettyMetrics;
@@ -27,7 +27,7 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
 
     private final MeterRegistry registry = Metrics.globalRegistry;
     protected final ServiceLoader<MeterRegistrySetup> serviceLoader;
-    private final BrokerConfig config;
+    private final ServerConfig config;
 
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
 
@@ -35,7 +35,7 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
 
 
-    public ServerMetrics(Properties properties, BrokerConfig config) {
+    public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
         this.serviceLoader = ServiceLoader.load(MeterRegistrySetup.class);
         for (MeterRegistrySetup meterRegistrySetup : serviceLoader) {
@@ -92,7 +92,7 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
     }
 
     @Override
-    public void onPushMessage(String topic, int ledger, int count) {
+    public void onDispatchMessage(String topic, int ledger, int count) {
 
     }
 }

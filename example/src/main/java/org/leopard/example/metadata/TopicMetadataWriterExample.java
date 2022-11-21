@@ -4,10 +4,10 @@ import io.netty.util.concurrent.Promise;
 import org.junit.jupiter.api.Test;
 import org.leopard.client.Client;
 import org.leopard.client.ClientConfig;
-import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
+import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.metadata.TopicRecord;
+import org.leopard.common.metadata.Topic;
 import org.leopard.remote.proto.server.CreateTopicResponse;
 import org.leopard.remote.proto.server.DelTopicResponse;
 
@@ -52,7 +52,7 @@ public class TopicMetadataWriterExample {
         Client client = new Client("query-client", clientConfig);
         client.start();
 
-        Map<String, TopicRecord> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(), List.of("create"));
+        Map<String, Topic> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(), List.of("create"));
 
         logger.info("result:{}", recordMap);
     }

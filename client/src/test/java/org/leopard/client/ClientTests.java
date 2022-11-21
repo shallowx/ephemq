@@ -3,8 +3,9 @@ package org.leopard.client;
 import org.junit.Assert;
 import org.junit.Test;
 import org.leopard.client.internal.ClientChannel;
-import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
-import org.leopard.client.pool.ShallowChannelPool;
+import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
+import org.leopard.client.internal.pool.ShallowChannelPool;
+
 import java.util.List;
 
 import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;

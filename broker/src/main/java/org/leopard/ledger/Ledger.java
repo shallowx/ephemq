@@ -6,15 +6,14 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.consumer.Subscription;
-import org.leopard.dispatch.DefaultEntryDispatchProcessor;
-import org.leopard.internal.config.BrokerConfig;
-import org.leopard.dispatch.DispatchProcessor;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.metadata.Subscription;
+import org.leopard.dispatch.DefaultEntryDispatchProcessor;
+import org.leopard.dispatch.DispatchProcessor;
+import org.leopard.internal.config.ServerConfig;
 
 import javax.annotation.concurrent.ThreadSafe;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.leopard.remote.util.ByteBufUtils.release;
@@ -38,7 +37,7 @@ public class Ledger {
         LATENT, STARTED, CLOSED
     }
 
-    public Ledger(BrokerConfig config, String topic, int partition, int ledgerId, int epoch) {
+    public Ledger(ServerConfig config, String topic, int partition, int ledgerId, int epoch) {
         this.topic = topic;
         this.partition = partition;
         this.ledgerId = ledgerId;
@@ -78,7 +77,7 @@ public class Ledger {
                 Segment segment = storage.tailSegment();
                 theOffset = segment.tailOffset();
             } else {
-               theOffset = offset;
+                theOffset = offset;
             }
 
             Promise<Subscription> subscribePromise = storageExecutor.newPromise();
@@ -137,13 +136,13 @@ public class Ledger {
         }
     }
 
-    private void doAppend(String topic, String queue, short version,  ByteBuf payload, Promise<Offset> promise) {
+    private void doAppend(String topic, String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         try {
             storage.append(topic, queue, version, payload, promise);
         } catch (Throwable t) {
             promise.tryFailure(t);
         } finally {
-           release(payload);
+            release(payload);
         }
     }
 

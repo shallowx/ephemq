@@ -93,26 +93,26 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PARTITIONS_FIELD_NUMBER = 3;
-  private int partitions_;
+  public static final int PARTITIONLIMIT_FIELD_NUMBER = 3;
+  private int partitionLimit_;
   /**
-   * <code>int32 partitions = 3;</code>
-   * @return The partitions.
+   * <code>int32 partitionLimit = 3;</code>
+   * @return The partitionLimit.
    */
   @java.lang.Override
-  public int getPartitions() {
-    return partitions_;
+  public int getPartitionLimit() {
+    return partitionLimit_;
   }
 
-  public static final int LATENCIES_FIELD_NUMBER = 4;
-  private int latencies_;
+  public static final int REPLICATELIMIT_FIELD_NUMBER = 4;
+  private int replicateLimit_;
   /**
-   * <code>int32 latencies = 4;</code>
-   * @return The latencies.
+   * <code>int32 replicateLimit = 4;</code>
+   * @return The replicateLimit.
    */
   @java.lang.Override
-  public int getLatencies() {
-    return latencies_;
+  public int getReplicateLimit() {
+    return replicateLimit_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -135,11 +135,11 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
     }
-    if (partitions_ != 0) {
-      output.writeInt32(3, partitions_);
+    if (partitionLimit_ != 0) {
+      output.writeInt32(3, partitionLimit_);
     }
-    if (latencies_ != 0) {
-      output.writeInt32(4, latencies_);
+    if (replicateLimit_ != 0) {
+      output.writeInt32(4, replicateLimit_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -157,13 +157,13 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
     }
-    if (partitions_ != 0) {
+    if (partitionLimit_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, partitions_);
+        .computeInt32Size(3, partitionLimit_);
     }
-    if (latencies_ != 0) {
+    if (replicateLimit_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, latencies_);
+        .computeInt32Size(4, replicateLimit_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -184,10 +184,10 @@ private static final long serialVersionUID = 0L;
         != other.getAck()) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
-    if (getPartitions()
-        != other.getPartitions()) return false;
-    if (getLatencies()
-        != other.getLatencies()) return false;
+    if (getPartitionLimit()
+        != other.getPartitionLimit()) return false;
+    if (getReplicateLimit()
+        != other.getReplicateLimit()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -203,10 +203,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getAck();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
-    hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
-    hash = (53 * hash) + getPartitions();
-    hash = (37 * hash) + LATENCIES_FIELD_NUMBER;
-    hash = (53 * hash) + getLatencies();
+    hash = (37 * hash) + PARTITIONLIMIT_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitionLimit();
+    hash = (37 * hash) + REPLICATELIMIT_FIELD_NUMBER;
+    hash = (53 * hash) + getReplicateLimit();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -339,9 +339,9 @@ private static final long serialVersionUID = 0L;
 
       topic_ = "";
 
-      partitions_ = 0;
+      partitionLimit_ = 0;
 
-      latencies_ = 0;
+      replicateLimit_ = 0;
 
       return this;
     }
@@ -371,8 +371,8 @@ private static final long serialVersionUID = 0L;
       org.leopard.remote.proto.server.CreateTopicResponse result = new org.leopard.remote.proto.server.CreateTopicResponse(this);
       result.ack_ = ack_;
       result.topic_ = topic_;
-      result.partitions_ = partitions_;
-      result.latencies_ = latencies_;
+      result.partitionLimit_ = partitionLimit_;
+      result.replicateLimit_ = replicateLimit_;
       onBuilt();
       return result;
     }
@@ -428,11 +428,11 @@ private static final long serialVersionUID = 0L;
         topic_ = other.topic_;
         onChanged();
       }
-      if (other.getPartitions() != 0) {
-        setPartitions(other.getPartitions());
+      if (other.getPartitionLimit() != 0) {
+        setPartitionLimit(other.getPartitionLimit());
       }
-      if (other.getLatencies() != 0) {
-        setLatencies(other.getLatencies());
+      if (other.getReplicateLimit() != 0) {
+        setReplicateLimit(other.getReplicateLimit());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -471,12 +471,12 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 24: {
-              partitions_ = input.readInt32();
+              partitionLimit_ = input.readInt32();
 
               break;
             } // case 24
             case 32: {
-              latencies_ = input.readInt32();
+              replicateLimit_ = input.readInt32();
 
               break;
             } // case 32
@@ -603,64 +603,64 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int partitions_ ;
+    private int partitionLimit_ ;
     /**
-     * <code>int32 partitions = 3;</code>
-     * @return The partitions.
+     * <code>int32 partitionLimit = 3;</code>
+     * @return The partitionLimit.
      */
     @java.lang.Override
-    public int getPartitions() {
-      return partitions_;
+    public int getPartitionLimit() {
+      return partitionLimit_;
     }
     /**
-     * <code>int32 partitions = 3;</code>
-     * @param value The partitions to set.
+     * <code>int32 partitionLimit = 3;</code>
+     * @param value The partitionLimit to set.
      * @return This builder for chaining.
      */
-    public Builder setPartitions(int value) {
+    public Builder setPartitionLimit(int value) {
       
-      partitions_ = value;
+      partitionLimit_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 partitions = 3;</code>
+     * <code>int32 partitionLimit = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPartitions() {
+    public Builder clearPartitionLimit() {
       
-      partitions_ = 0;
+      partitionLimit_ = 0;
       onChanged();
       return this;
     }
 
-    private int latencies_ ;
+    private int replicateLimit_ ;
     /**
-     * <code>int32 latencies = 4;</code>
-     * @return The latencies.
+     * <code>int32 replicateLimit = 4;</code>
+     * @return The replicateLimit.
      */
     @java.lang.Override
-    public int getLatencies() {
-      return latencies_;
+    public int getReplicateLimit() {
+      return replicateLimit_;
     }
     /**
-     * <code>int32 latencies = 4;</code>
-     * @param value The latencies to set.
+     * <code>int32 replicateLimit = 4;</code>
+     * @param value The replicateLimit to set.
      * @return This builder for chaining.
      */
-    public Builder setLatencies(int value) {
+    public Builder setReplicateLimit(int value) {
       
-      latencies_ = value;
+      replicateLimit_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 latencies = 4;</code>
+     * <code>int32 replicateLimit = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLatencies() {
+    public Builder clearReplicateLimit() {
       
-      latencies_ = 0;
+      replicateLimit_ = 0;
       onChanged();
       return this;
     }

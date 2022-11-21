@@ -1,6 +1,7 @@
 package org.leopard.parser;
 
-import org.leopard.internal.config.BrokerConfig;
+import org.leopard.internal.config.ServerConfig;
+
 public interface ApplicationArguments {
-    BrokerConfig config();
+    ServerConfig config();
 }

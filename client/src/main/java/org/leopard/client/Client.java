@@ -9,13 +9,13 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.leopard.client.metadata.MetadataWriter;
 import org.leopard.client.internal.ClientListener;
-import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
+import org.leopard.client.internal.metadata.MetadataWriter;
+import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
+import org.leopard.client.internal.pool.ShallowChannelHealthChecker;
+import org.leopard.client.internal.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.client.pool.ShallowChannelHealthChecker;
-import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.util.ObjectUtils;
 
 import static org.leopard.remote.util.NetworkUtils.newEventLoopGroup;

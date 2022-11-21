@@ -5,7 +5,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.internal.config.BrokerConfig;
+import org.leopard.internal.config.ServerConfig;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +22,7 @@ public class EntryDispatchHelper {
     private final ConcurrentMap<Channel, EntryEventExecutorHandler> channelOfHandlers = new ConcurrentHashMap<>();
     private final WeakHashMap<EntryEventExecutorHandler, Integer> eventExecutorHandlers = new WeakHashMap<>();
 
-    public EntryDispatchHelper(BrokerConfig config) {
+    public EntryDispatchHelper(ServerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
         EventExecutorGroup group = newEventExecutorGroup(config.getMessageHandleThreadLimit(), "push-handler-group");

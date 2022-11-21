@@ -29,18 +29,9 @@ public interface ProcessCommand {
         byte HANDLE_MESSAGE = 1;
         byte TOPIC_CHANGED = 2;
         byte CLUSTER_CHANGED = 3;
-       default String get(byte command) {
-           return null;
-       }
-    }
 
-    interface Nameserver {
-        byte NEW_TOPIC = 1;
-        byte REGISTER_NODE = 2;
-        byte QUERY_TOPIC = 3;
-        byte QUERY_NODE = 4;
-        byte HEARTBEAT = 5;
-        byte UN_REGISTER_NODE = 6;
-        byte REMOVE_TOPIC = 7;
+        default String get(byte command) {
+            return null;
+        }
     }
 }

@@ -1,11 +1,14 @@
 package org.leopard.ledger;
 
-import io.netty.buffer.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.CompositeByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.leopard.internal.config.BrokerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.internal.config.ServerConfig;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -20,10 +23,10 @@ public class Storage {
     private volatile Offset current;
     private volatile Segment headSegment;
     private volatile Segment tailSegment;
-    private final BrokerConfig config;
+    private final ServerConfig config;
     private final LedgerTrigger trigger;
 
-    public Storage(EventExecutor storageExecutor, int ledger, BrokerConfig config, int epoch, LedgerTrigger trigger) {
+    public Storage(EventExecutor storageExecutor, int ledger, ServerConfig config, int epoch, LedgerTrigger trigger) {
         this.storageExecutor = storageExecutor;
         this.ledger = ledger;
         this.config = config;
@@ -140,7 +143,7 @@ public class Storage {
         Segment theHeadSegment = headSegment;
         if (limit > 1) {
             headSegment = theHeadSegment.next();
-        } else if (limit == 1){
+        } else if (limit == 1) {
             Segment empty = new Segment(ledger, Unpooled.EMPTY_BUFFER, theHeadSegment.tailOffset());
             theHeadSegment.tail(empty);
             headSegment = tailSegment = empty;
