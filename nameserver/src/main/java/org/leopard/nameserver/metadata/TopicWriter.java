@@ -7,9 +7,14 @@ import org.leopard.common.metadata.PartitionRecord;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
 import org.leopard.remote.proto.server.QueryTopicInfoResponse;
-import java.util.*;
+
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@ThreadSafe
 public class TopicWriter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicWriter.class);
 
@@ -19,18 +24,20 @@ public class TopicWriter {
     }
 
     public void create(String topic, String cluster, Set<PartitionRecord> partitionRecords, Promise<Void> promise) {
-        Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
-        if (clusterRecords == null) {
-            clusterRecords = new ConcurrentHashMap<>();
-        }
+        synchronized (cache) {
+            Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
+            if (clusterRecords == null) {
+                clusterRecords = new ConcurrentHashMap<>();
+            }
 
-        if (clusterRecords.containsKey(topic)) {
-            promise.tryFailure(new IllegalStateException(String.format("The topic is exists, topic = %s", topic)));
-            return;
-        }
+            if (clusterRecords.containsKey(topic)) {
+                promise.tryFailure(new IllegalStateException(String.format("The topic is exists, topic = %s", topic)));
+                return;
+            }
 
-        clusterRecords.put(topic, partitionRecords);
-        cache.put(cluster, clusterRecords);
+            clusterRecords.put(topic, partitionRecords);
+            cache.put(cluster, clusterRecords);
+        }
 
         promise.trySuccess(null);
     }
@@ -84,11 +91,12 @@ public class TopicWriter {
 
     public void remove(String cluster, String topic, Promise<Void> promise) {
         try {
-            Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
-            if (clusterRecords != null && !clusterRecords.isEmpty()) {
-                clusterRecords.remove(topic);
+            synchronized (cache) {
+                Map<String, Set<PartitionRecord>> clusterRecords = cache.get(cluster);
+                if (clusterRecords != null && !clusterRecords.isEmpty()) {
+                    clusterRecords.remove(topic);
+                }
             }
-
             promise.trySuccess(null);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {

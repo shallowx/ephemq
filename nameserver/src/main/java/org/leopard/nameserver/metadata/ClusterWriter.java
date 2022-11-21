@@ -11,12 +11,17 @@ import org.leopard.common.metadata.NodeRecord;
 import org.leopard.common.util.StringUtils;
 import org.leopard.remote.util.NetworkUtils;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+@ThreadSafe
 public class ClusterWriter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterWriter.class);
 
@@ -55,46 +60,47 @@ public class ClusterWriter {
                     }
                 }
             }
-        },0, config.getHeartbeatDelayPeriod(), TimeUnit.MILLISECONDS);
+        }, 0, config.getHeartbeatDelayPeriod(), TimeUnit.MILLISECONDS);
     }
 
     public void register(String cluster, String name, String host, int port, Promise<Void> promise) {
         try {
-            if (StringUtils.isNullOrEmpty(cluster)) {
+            synchronized (cache) {
+                if (StringUtils.isNullOrEmpty(cluster)) {
 
-                promise.tryFailure(new IllegalStateException("invalid parameter, cluster-name cannot be empty"));
+                    promise.tryFailure(new IllegalStateException("invalid parameter, cluster-name cannot be empty"));
+                }
+
+                if (StringUtils.isNullOrEmpty(name)) {
+
+                    promise.tryFailure(new IllegalStateException("invalid parameter, server-id cannot be empty"));
+                }
+
+                if (StringUtils.isNullOrEmpty(host)) {
+                    promise.tryFailure(new IllegalStateException("invalid parameter, server-host "));
+                }
+
+                if (port < 0 || port > 0xFFFF) {
+                    promise.tryFailure(new IllegalStateException(String.format("invalid parameter, and port=%d", port)));
+                }
+
+                NodeRecord record = NodeRecord.newBuilder()
+                        .name(name)
+                        .cluster(cluster)
+                        .state("UP")
+                        .socketAddress(NetworkUtils.switchSocketAddress(host, port))
+                        .lastKeepLiveTime(System.currentTimeMillis())
+                        .build();
+
+                Set<NodeRecord> records = cache.get(cluster);
+                if (records == null) {
+                    records = new HashSet<>();
+                    records.add(record);
+                    cache.put(cluster, records);
+                } else {
+                    records.add(record);
+                }
             }
-
-            if (StringUtils.isNullOrEmpty(name)) {
-
-                promise.tryFailure(new IllegalStateException("invalid parameter, server-id cannot be empty"));
-            }
-
-            if (StringUtils.isNullOrEmpty(host)) {
-                promise.tryFailure(new IllegalStateException("invalid parameter, server-host "));
-            }
-
-            if (port < 0 || port > 0xFFFF) {
-                promise.tryFailure(new IllegalStateException(String.format("invalid parameter, and port=%d", port)));
-            }
-
-            NodeRecord record = NodeRecord.newBuilder()
-                    .name(name)
-                    .cluster(cluster)
-                    .state("UP")
-                    .socketAddress(NetworkUtils.switchSocketAddress(host, port))
-                    .lastKeepLiveTime(System.currentTimeMillis())
-                    .build();
-
-            Set<NodeRecord> records = cache.get(cluster);
-            if (records == null) {
-                records = new HashSet<>();
-                records.add(record);
-                cache.put(cluster, records);
-            } else {
-                records.add(record);
-            }
-
             promise.trySuccess(null);
         } catch (Throwable t) {
             promise.tryFailure(t);
@@ -103,18 +109,20 @@ public class ClusterWriter {
 
     public void unregister(String cluster, String server, Promise<Void> promise) {
         try {
-            if (StringUtils.isNullOrEmpty(cluster)) {
+            synchronized (cache) {
+                if (StringUtils.isNullOrEmpty(cluster)) {
 
-                promise.tryFailure(new IllegalStateException("invalid parameter, cluster-name cannot be empty"));
+                    promise.tryFailure(new IllegalStateException("invalid parameter, cluster-name cannot be empty"));
+                }
+
+                if (StringUtils.isNullOrEmpty(server)) {
+
+                    promise.tryFailure(new IllegalStateException("invalid parameter, server-id cannot be empty"));
+                }
+
+                Set<NodeRecord> records = cache.get(cluster);
+                records.removeIf(record -> record.getName().equals(server));
             }
-
-            if (StringUtils.isNullOrEmpty(server)) {
-
-                promise.tryFailure(new IllegalStateException("invalid parameter, server-id cannot be empty"));
-            }
-
-            Set<NodeRecord> records = cache.get(cluster);
-            records.removeIf(record -> record.getName().equals(server));
             promise.trySuccess(null);
         } catch (Throwable t) {
             promise.tryFailure(t);
