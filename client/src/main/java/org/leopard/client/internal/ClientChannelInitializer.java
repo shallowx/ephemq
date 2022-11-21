@@ -27,7 +27,7 @@ public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> 
                 .addLast("decoder", new MessageDecoder())
                 .addLast("connect-handler", new ConnectDuplexHandler(30000, 40000))
                 .addLast("service-handler", new ProcessDuplexHandler(
-                        new ClientServiceProcessorAware(
-                                new ClientChannel(socketChannel, client.getClientConfig(), socketAddress),client)));
+                        new MessageProcessorAware(
+                                new ClientChannel(socketChannel, client.getClientConfig(), socketAddress), client)));
     }
 }

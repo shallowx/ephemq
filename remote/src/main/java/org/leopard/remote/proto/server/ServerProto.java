@@ -139,48 +139,49 @@ public final class ServerProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\014server.proto\022\020leopard.protobuf\032\rleopar" +
-      "d.proto\"[\n\022CreateTopicRequest\022\r\n\005topic\030\001" +
-      " \001(\t\022\022\n\npartitions\030\002 \001(\005\022\021\n\tlatencies\030\003 " +
-      "\001(\005\022\017\n\007cluster\030\004 \001(\t\"X\n\023CreateTopicRespo" +
-      "nse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\022\022\n\nparti" +
-      "tions\030\003 \001(\005\022\021\n\tlatencies\030\004 \001(\005\"1\n\017DelTop" +
-      "icRequest\022\r\n\005topic\030\001 \001(\t\022\017\n\007cluster\030\002 \001(" +
-      "\t\".\n\020DelTopicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n\005to" +
-      "pic\030\002 \001(\t\"*\n\027QueryClusterNodeRequest\022\017\n\007" +
-      "cluster\030\001 \001(\t\"I\n\030QueryClusterNodeRespons" +
-      "e\022-\n\005nodes\030\001 \003(\0132\036.leopard.protobuf.Node" +
-      "Metadata\"7\n\025QueryTopicInfoRequest\022\017\n\007clu" +
-      "ster\030\001 \001(\t\022\r\n\005topic\030\002 \003(\t\"\256\001\n\026QueryTopic" +
-      "InfoResponse\022D\n\006topics\030\001 \003(\01324.leopard.p" +
-      "rotobuf.QueryTopicInfoResponse.TopicsEnt" +
-      "ry\032N\n\013TopicsEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030" +
-      "\002 \001(\0132\037.leopard.protobuf.TopicMetadata:\002" +
-      "8\001\"o\n\020SubscribeRequest\022\r\n\005queue\030\001 \001(\t\022\016\n" +
-      "\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005index\030\004 " +
-      "\001(\003\022\017\n\007version\030\005 \001(\005\022\r\n\005topic\030\006 \001(\t\"a\n\021S" +
-      "ubscribeResponse\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledge" +
-      "r\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n" +
-      "\007version\030\005 \001(\005\"G\n\025CleanSubscribeRequest\022" +
-      "\020\n\010ledgerId\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005topi" +
-      "c\030\003 \001(\t\"\030\n\026CleanSubscribeResponse\"B\n\022Sen" +
-      "dMessageRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005queue" +
-      "\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"\241\001\n\021SendMessageExt" +
-      "ras\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022?\n\006ext" +
-      "ras\030\003 \003(\0132/.leopard.protobuf.SendMessage" +
-      "Extras.ExtrasEntry\032-\n\013ExtrasEntry\022\013\n\003key" +
-      "\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"C\n\023SendMessage" +
-      "Response\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022" +
-      "\r\n\005index\030\003 \001(\003\"V\n\027NodeRegistrationReques" +
-      "t\022\017\n\007cluster\030\001 \001(\t\022\016\n\006server\030\002 \001(\t\022\014\n\004ho" +
-      "st\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\"\032\n\030NodeRegistrati" +
-      "onResponse\"<\n\031NodeUnregistrationRequest\022" +
-      "\017\n\007cluster\030\001 \001(\t\022\016\n\006server\030\002 \001(\t\"\034\n\032Node" +
-      "UnregistrationResponse\"s\n\030RemoteCreateTo" +
-      "picRequest\022\r\n\005topic\030\001 \001(\t\022\017\n\007cluster\030\002 \001" +
-      "(\t\0227\n\npartitions\030\003 \003(\0132#.leopard.protobu" +
-      "f.PartitionMetadata\"\033\n\031RemoteCreateTopic" +
-      "ResponseB0\n\037org.leopard.remote.proto.ser" +
-      "verB\013ServerProtoP\001b\006proto3"
+      "d.proto\"d\n\022CreateTopicRequest\022\r\n\005topic\030\001" +
+      " \001(\t\022\026\n\016partitionLimit\030\002 \001(\005\022\026\n\016replicat" +
+      "eLimit\030\003 \001(\005\022\017\n\007cluster\030\004 \001(\t\"a\n\023CreateT" +
+      "opicResponse\022\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t" +
+      "\022\026\n\016partitionLimit\030\003 \001(\005\022\026\n\016replicateLim" +
+      "it\030\004 \001(\005\"1\n\017DelTopicRequest\022\r\n\005topic\030\001 \001" +
+      "(\t\022\017\n\007cluster\030\002 \001(\t\".\n\020DelTopicResponse\022" +
+      "\013\n\003ack\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"*\n\027QueryClus" +
+      "terNodeRequest\022\017\n\007cluster\030\001 \001(\t\"I\n\030Query" +
+      "ClusterNodeResponse\022-\n\005nodes\030\001 \003(\0132\036.leo" +
+      "pard.protobuf.NodeMetadata\"7\n\025QueryTopic" +
+      "InfoRequest\022\017\n\007cluster\030\001 \001(\t\022\r\n\005topic\030\002 " +
+      "\003(\t\"\256\001\n\026QueryTopicInfoResponse\022D\n\006topics" +
+      "\030\001 \003(\01324.leopard.protobuf.QueryTopicInfo" +
+      "Response.TopicsEntry\032N\n\013TopicsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.leopard.protob" +
+      "uf.TopicMetadata:\0028\001\"o\n\020SubscribeRequest" +
+      "\022\r\n\005queue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch" +
+      "\030\003 \001(\005\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\022\r" +
+      "\n\005topic\030\006 \001(\t\"a\n\021SubscribeResponse\022\r\n\005qu" +
+      "eue\030\001 \001(\t\022\016\n\006ledger\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005" +
+      "\022\r\n\005index\030\004 \001(\003\022\017\n\007version\030\005 \001(\005\"G\n\025Clea" +
+      "nSubscribeRequest\022\020\n\010ledgerId\030\001 \001(\005\022\r\n\005q" +
+      "ueue\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"\030\n\026CleanSubscr" +
+      "ibeResponse\"B\n\022SendMessageRequest\022\016\n\006led" +
+      "ger\030\001 \001(\005\022\r\n\005queue\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"" +
+      "\241\001\n\021SendMessageExtras\022\r\n\005topic\030\001 \001(\t\022\r\n\005" +
+      "queue\030\002 \001(\t\022?\n\006extras\030\003 \003(\0132/.leopard.pr" +
+      "otobuf.SendMessageExtras.ExtrasEntry\032-\n\013" +
+      "ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:" +
+      "\0028\001\"C\n\023SendMessageResponse\022\016\n\006ledger\030\001 \001" +
+      "(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\"V\n\027Node" +
+      "RegistrationRequest\022\017\n\007cluster\030\001 \001(\t\022\016\n\006" +
+      "server\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 \001(\005" +
+      "\"\032\n\030NodeRegistrationResponse\"<\n\031NodeUnre" +
+      "gistrationRequest\022\017\n\007cluster\030\001 \001(\t\022\016\n\006se" +
+      "rver\030\002 \001(\t\"\034\n\032NodeUnregistrationResponse" +
+      "\"s\n\030RemoteCreateTopicRequest\022\r\n\005topic\030\001 " +
+      "\001(\t\022\017\n\007cluster\030\002 \001(\t\0227\n\npartitions\030\003 \003(\013" +
+      "2#.leopard.protobuf.PartitionMetadata\"\033\n" +
+      "\031RemoteCreateTopicResponseB0\n\037org.leopar" +
+      "d.remote.proto.serverB\013ServerProtoP\001b\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -192,13 +193,13 @@ public final class ServerProto {
     internal_static_leopard_protobuf_CreateTopicRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_leopard_protobuf_CreateTopicRequest_descriptor,
-        new java.lang.String[] { "Topic", "Partitions", "Latencies", "Cluster", });
+        new java.lang.String[] { "Topic", "PartitionLimit", "ReplicateLimit", "Cluster", });
     internal_static_leopard_protobuf_CreateTopicResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_leopard_protobuf_CreateTopicResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_leopard_protobuf_CreateTopicResponse_descriptor,
-        new java.lang.String[] { "Ack", "Topic", "Partitions", "Latencies", });
+        new java.lang.String[] { "Ack", "Topic", "PartitionLimit", "ReplicateLimit", });
     internal_static_leopard_protobuf_DelTopicRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_leopard_protobuf_DelTopicRequest_fieldAccessorTable = new

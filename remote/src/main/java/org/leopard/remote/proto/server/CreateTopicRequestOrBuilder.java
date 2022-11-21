@@ -20,16 +20,16 @@ public interface CreateTopicRequestOrBuilder extends
       getTopicBytes();
 
   /**
-   * <code>int32 partitions = 2;</code>
-   * @return The partitions.
+   * <code>int32 partitionLimit = 2;</code>
+   * @return The partitionLimit.
    */
-  int getPartitions();
+  int getPartitionLimit();
 
   /**
-   * <code>int32 latencies = 3;</code>
-   * @return The latencies.
+   * <code>int32 replicateLimit = 3;</code>
+   * @return The replicateLimit.
    */
-  int getLatencies();
+  int getReplicateLimit();
 
   /**
    * <code>string cluster = 4;</code>

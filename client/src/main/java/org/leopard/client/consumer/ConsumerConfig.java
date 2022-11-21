@@ -5,9 +5,8 @@ import org.leopard.client.ClientConfig;
 public class ConsumerConfig {
 
     private ClientConfig clientConfig;
-    public int pullInvokeTimeMs = 5000;
-    public int pushSubscribeInvokeTimeMs = 5000;
-    public int pushCleanSubscribeInvokeTimeMs = 5000;
+    public int subscribeInvokeTimeMs = 5000;
+    public int cleanSubscribeInvokeTimeMs = 5000;
     public int messageHandleThreadLimit = Runtime.getRuntime().availableProcessors();
     public int messageHandleSemaphoreLimit = 100;
 
@@ -19,28 +18,20 @@ public class ConsumerConfig {
         this.clientConfig = clientConfig;
     }
 
-    public int getPullInvokeTimeMs() {
-        return pullInvokeTimeMs;
+    public int getSubscribeInvokeTimeMs() {
+        return subscribeInvokeTimeMs;
     }
 
-    public void setPullInvokeTimeMs(int pullInvokeTimeMs) {
-        this.pullInvokeTimeMs = pullInvokeTimeMs;
+    public void setSubscribeInvokeTimeMs(int pushSubscribeInvokeTimeMs) {
+        this.subscribeInvokeTimeMs = pushSubscribeInvokeTimeMs;
     }
 
-    public int getPushSubscribeInvokeTimeMs() {
-        return pushSubscribeInvokeTimeMs;
+    public int getCleanSubscribeInvokeTimeMs() {
+        return cleanSubscribeInvokeTimeMs;
     }
 
-    public void setPushSubscribeInvokeTimeMs(int pushSubscribeInvokeTimeMs) {
-        this.pushSubscribeInvokeTimeMs = pushSubscribeInvokeTimeMs;
-    }
-
-    public int getPushCleanSubscribeInvokeTimeMs() {
-        return pushCleanSubscribeInvokeTimeMs;
-    }
-
-    public void setPushCleanSubscribeInvokeTimeMs(int pushCleanSubscribeInvokeTimeMs) {
-        this.pushCleanSubscribeInvokeTimeMs = pushCleanSubscribeInvokeTimeMs;
+    public void setCleanSubscribeInvokeTimeMs(int cleanSubscribeInvokeTimeMs) {
+        this.cleanSubscribeInvokeTimeMs = cleanSubscribeInvokeTimeMs;
     }
 
     public int getMessageHandleThreadLimit() {

@@ -8,10 +8,10 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
-import org.leopard.client.consumer.Subscription;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.internal.config.BrokerConfig;
+import org.leopard.common.metadata.Subscription;
+import org.leopard.internal.config.ServerConfig;
 import org.leopard.ledger.Cursor;
 import org.leopard.ledger.Offset;
 import org.leopard.ledger.Storage;
@@ -46,7 +46,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
     private final Storage storage;
     private final List<EntryEventExecutorHandler> handlers = new ArrayList<>();
 
-    public DefaultEntryDispatchProcessor(int ledgerId, BrokerConfig config, Storage storage) {
+    public DefaultEntryDispatchProcessor(int ledgerId, ServerConfig config, Storage storage) {
         this.storage = storage;
         Offset currentOffset = storage.currentOffset();
 
@@ -57,6 +57,207 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         this.alignLimit = config.getMessageHandleAlignLimit();
 
         this.helper = new EntryDispatchHelper(config);
+    }
+
+    @Override
+    public void handleRequest(String topic) {
+        if (handlers.isEmpty()) {
+            return;
+        }
+
+        for (EntryEventExecutorHandler handler : handlers) {
+            Cursor nextCursor = handler.getNextCursor();
+            if (nextCursor != null) {
+                doHandle(handler);
+            }
+        }
+    }
+
+    private void doHandle(EntryEventExecutorHandler handler) {
+        AtomicBoolean triggered = handler.getTriggered();
+        if (triggered.compareAndSet(false, true)) {
+            try {
+                handler.getDispatchExecutor().execute(() -> dispatch(handler));
+            } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Entry dispatch processor submit failure");
+                }
+            }
+        }
+    }
+
+    private void dispatch(EntryEventExecutorHandler handler) {
+        Cursor cursor = handler.getNextCursor();
+        if (cursor == null) {
+            handler.getTriggered().set(false);
+            return;
+        }
+
+        Collection<EntrySubscription> channelShips = handler.getChannelShips().values();
+
+        if (channelShips.isEmpty()) {
+            handler.getTriggered().set(false);
+            return;
+        }
+
+        Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+        if (subscribeShips.isEmpty()) {
+            handler.getTriggered().set(false);
+            return;
+        }
+
+        ObjectCollection<EntrySubscription> entrySubscriptions = subscribeShips.values();
+
+        Offset nextOffset = handler.getNextOffset();
+        try {
+            ByteBuf payload;
+            int whole = 0;
+            while ((payload = cursor.next()) != null) {
+                ByteBuf message = null;
+
+                ByteBuf queueBuf = null;
+                String queue = null;
+
+                ByteBuf topicBuf = null;
+                String topic = null;
+
+                whole++;
+                try {
+                    short version = payload.readShort();
+
+                    int topicLength = payload.readInt();
+                    topicBuf = payload.retainedSlice(payload.readerIndex(), topicLength);
+                    topic = ByteBufUtils.buf2String(topicBuf, topicLength);
+
+                    payload.skipBytes(topicLength);
+
+                    int queueLength = payload.readInt();
+                    queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
+                    queue = ByteBufUtils.buf2String(queueBuf, queueLength);
+
+                    EntrySubscription entrySubscription = subscribeShips.get(topic + ":" + queue);
+                    if (entrySubscription == null) {
+                        if (whole > handleLimit) {
+                            break;
+                        }
+                        continue;
+                    }
+
+                    payload.skipBytes(queueLength);
+
+                    int epoch = payload.readInt();
+                    long index = payload.readLong();
+
+                    Offset messageOffset = buildOffset(epoch, index);
+                    if (!messageOffset.after(nextOffset)) {
+                        if (whole > handleLimit) {
+                            break;
+                        }
+                        continue;
+                    }
+
+                    nextOffset = messageOffset;
+
+                    Channel channel = entrySubscription.getChannel();
+                    if (!channel.isActive()) {
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
+                        }
+                        continue;
+                    }
+
+                    short subscriptionVersion = entrySubscription.getVersion();
+                    if (subscriptionVersion != -1 && subscriptionVersion != version) {
+                        continue;
+                    }
+
+                    entrySubscription.setOffset(messageOffset);
+                    message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
+
+                    if (!channel.isWritable()) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
+                        }
+
+                        EntryAttributes attributes = EntryAttributes
+                                .newBuilder()
+                                .offset(messageOffset)
+                                .assignLimit(assignLimit)
+                                .alignLimit(alignLimit)
+                                .cursor(cursor.clone())
+                                .subscription(entrySubscription)
+                                .build();
+                        EntryDelayTaskAssignor task = new EntryDelayTaskAssignor(attributes, helper, ledgerId);
+                        channel.writeAndFlush(message.retainedSlice(), task.newPromise());
+                        return;
+                    }
+                    channel.writeAndFlush(message.retainedSlice());
+
+                    if (whole > handleLimit) {
+                        break;
+                    }
+                } catch (Throwable t) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Channel dispatch message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);
+                    }
+                } finally {
+                    ByteBufUtils.release(message);
+                    ByteBufUtils.release(payload);
+                    ByteBufUtils.release(queueBuf);
+                    ByteBufUtils.release(topicBuf);
+                }
+            }
+        } catch (Throwable t) {
+            if (logger.isErrorEnabled()) {
+                logger.error(t.getMessage(), t);
+            }
+        } finally {
+            handler.getTriggered().set(false);
+        }
+
+        handler.setNextOffset(nextOffset);
+        if (cursor.hashNext()) {
+            doHandle(handler);
+        }
+    }
+
+    private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset, ByteBuf payload, ByteBufAllocator alloc) {
+        ByteBuf buf = null;
+        try {
+            MessagePushSignal signal = MessagePushSignal
+                    .newBuilder()
+                    .setQueue(queue)
+                    .setTopic(topic)
+                    .setLedgerId(ledgerId)
+                    .setEpoch(offset.epoch())
+                    .setIndex(offset.index())
+                    .build();
+
+            int signalLength = ProtoBufUtils.protoLength(signal);
+            int payloadLength = payload.readableBytes();
+
+            buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
+
+            buf.writeByte(MessagePacket.MAGIC_NUMBER);
+            buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + payloadLength);
+            buf.writeShort(version);
+            buf.writeByte(HANDLE_MESSAGE);
+            buf.writeByte(Type.PUSH.sequence());
+            buf.writeInt(0);
+
+            ProtoBufUtils.writeProto(buf, signal);
+
+            buf = Unpooled.wrappedUnmodifiableBuffer(buf, payload.retainedSlice(payload.readerIndex(), payloadLength));
+
+            return buf;
+        } catch (Throwable t) {
+            ByteBufUtils.release(buf);
+            throw new RuntimeException(String.format("Failed to build payload: queue=%s", queue), t);
+        }
+    }
+
+    private Offset buildOffset(int epoch, long index) {
+        return new Offset(epoch, index);
     }
 
     @Override
@@ -229,206 +430,6 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         helper.remove(channel);
     }
 
-    @Override
-    public void handleRequest(String topic) {
-        if (handlers.isEmpty()) {
-            return;
-        }
-
-        for (EntryEventExecutorHandler handler : handlers) {
-            Cursor nextCursor = handler.getNextCursor();
-            if (nextCursor != null) {
-                doHandle(handler);
-            }
-        }
-    }
-
-    private void doHandle(EntryEventExecutorHandler handler) {
-        AtomicBoolean triggered = handler.getTriggered();
-        if (triggered.compareAndSet(false, true)) {
-            try {
-                handler.getDispatchExecutor().execute(() -> dispatch(handler));
-            } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Entry push handler submit failure");
-                }
-            }
-        }
-    }
-
-    private void dispatch(EntryEventExecutorHandler handler) {
-        Cursor cursor = handler.getNextCursor();
-        if (cursor == null) {
-            handler.getTriggered().set(false);
-            return;
-        }
-
-        Collection<EntrySubscription> channelShips = handler.getChannelShips().values();
-
-        if (channelShips.isEmpty()) {
-            handler.getTriggered().set(false);
-            return;
-        }
-
-        Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
-        if (subscribeShips.isEmpty()) {
-            handler.getTriggered().set(false);
-            return;
-        }
-
-        ObjectCollection<EntrySubscription> entrySubscriptions = subscribeShips.values();
-
-        Offset nextOffset = handler.getNextOffset();
-        try {
-            ByteBuf payload;
-            int whole = 0;
-            while ((payload = cursor.next()) != null) {
-                ByteBuf message = null;
-
-                ByteBuf queueBuf = null;
-                String queue = null;
-
-                ByteBuf topicBuf = null;
-                String topic = null;
-
-                whole++;
-                try {
-                    short version = payload.readShort();
-
-                    int topicLength = payload.readInt();
-                    topicBuf = payload.retainedSlice(payload.readerIndex(), topicLength);
-                    topic = ByteBufUtils.buf2String(topicBuf, topicLength);
-
-                    payload.skipBytes(topicLength);
-
-                    int queueLength = payload.readInt();
-                    queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
-                    queue = ByteBufUtils.buf2String(queueBuf, queueLength);
-
-                    EntrySubscription entrySubscription = subscribeShips.get(topic + ":" + queue);
-                    if (entrySubscription == null) {
-                        if (whole > handleLimit) {
-                            break;
-                        }
-                        continue;
-                    }
-
-                    payload.skipBytes(queueLength);
-
-                    int epoch = payload.readInt();
-                    long index = payload.readLong();
-
-                    Offset messageOffset = buildOffset(epoch, index);
-                    if (!messageOffset.after(nextOffset)) {
-                        if (whole > handleLimit) {
-                            break;
-                        }
-                        continue;
-                    }
-
-                    nextOffset = messageOffset;
-
-                    Channel channel = entrySubscription.getChannel();
-                    if (!channel.isActive()) {
-                        if (logger.isWarnEnabled()) {
-                            logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
-                        }
-                        continue;
-                    }
-
-                    short subscriptionVersion = entrySubscription.getVersion();
-                    if (subscriptionVersion != -1 && subscriptionVersion != version) {
-                        continue;
-                    }
-
-                    entrySubscription.setOffset(messageOffset);
-                    message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
-
-                    if (!channel.isWritable()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
-                        }
-
-                        EntryAttributes attributes = EntryAttributes
-                                .newBuilder()
-                                .offset(messageOffset)
-                                .assignLimit(assignLimit)
-                                .alignLimit(alignLimit)
-                                .cursor(cursor.clone())
-                                .subscription(entrySubscription)
-                                .build();
-                        EntryDelayTaskAssignor task = new EntryDelayTaskAssignor(attributes, helper, ledgerId);
-                        channel.writeAndFlush(message.retainedSlice(), task.newPromise());
-                        return;
-                    }
-                    channel.writeAndFlush(message.retainedSlice());
-
-                    if (whole > handleLimit) {
-                        break;
-                    }
-                } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Channel push message failed, topic={} queue={} offset={} error:{}", topic, queue, nextOffset, t);
-                    }
-                } finally {
-                    ByteBufUtils.release(message);
-                    ByteBufUtils.release(payload);
-                    ByteBufUtils.release(queueBuf);
-                    ByteBufUtils.release(topicBuf);
-                }
-            }
-        } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
-            }
-        } finally {
-            handler.getTriggered().set(false);
-        }
-
-        handler.setNextOffset(nextOffset);
-        if (cursor.hashNext()) {
-            doHandle(handler);
-        }
-    }
-
-    private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset, ByteBuf payload, ByteBufAllocator alloc) {
-        ByteBuf buf = null;
-        try {
-            MessagePushSignal signal = MessagePushSignal
-                    .newBuilder()
-                    .setQueue(queue)
-                    .setTopic(topic)
-                    .setLedgerId(ledgerId)
-                    .setEpoch(offset.epoch())
-                    .setIndex(offset.index())
-                    .build();
-
-            int signalLength = ProtoBufUtils.protoLength(signal);
-            int payloadLength = payload.readableBytes();
-
-            buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
-
-            buf.writeByte(MessagePacket.MAGIC_NUMBER);
-            buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + payloadLength);
-            buf.writeShort(version);
-            buf.writeByte(HANDLE_MESSAGE);
-            buf.writeByte(Type.PUSH.sequence());
-            buf.writeInt(0);
-
-            ProtoBufUtils.writeProto(buf, signal);
-
-            buf = Unpooled.wrappedUnmodifiableBuffer(buf, payload.retainedSlice(payload.readerIndex(), payloadLength));
-
-            return buf;
-        } catch (Throwable t) {
-            ByteBufUtils.release(buf);
-            throw new RuntimeException(String.format("Failed to build payload: queue=%s", queue), t);
-        }
-    }
-
-    private Offset buildOffset(int epoch, long index) {
-        return new Offset(epoch, index);
-    }
 
     @Override
     public void shutdownGracefully() {
@@ -437,7 +438,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         }
 
         if (logger.isInfoEnabled()) {
-            logger.info("Entry push dispatcher will close");
+            logger.info("Entry dispatch processor will close");
         }
 
         helper.close(new EntryDispatchHelper.CloseFunction<Channel, String, String>() {

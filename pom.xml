@@ -19,7 +19,6 @@
         <module>example</module>
         <module>common</module>
         <module>metrics</module>
-        <module>nameserver</module>
     </modules>
 
     <scm>

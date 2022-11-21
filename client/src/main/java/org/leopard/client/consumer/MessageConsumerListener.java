@@ -6,10 +6,11 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
-import org.leopard.client.internal.ClientListener;
 import org.leopard.client.internal.ClientChannel;
+import org.leopard.client.internal.ClientListener;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.metadata.Subscription;
 import org.leopard.remote.proto.notify.NodeOfflineSignal;
 import org.leopard.remote.proto.notify.PartitionChangedSignal;
 import org.leopard.remote.proto.server.SendMessageExtras;
@@ -40,7 +41,7 @@ final class MessageConsumerListener implements ClientListener {
 
         handlers = new MessageProcessor[tableSizeFor(consumerConfig.getMessageHandleThreadLimit())];
         for (int i = 0; i < consumerConfig.getMessageHandleThreadLimit(); i++) {
-            Semaphore semaphore = new Semaphore(consumerConfig.messageHandleSemaphoreLimit);
+            Semaphore semaphore = new Semaphore(consumerConfig.getMessageHandleSemaphoreLimit());
             handlers[i] = new MessageProcessor(String.valueOf(i), semaphore, group.next());
         }
         this.consumer = consumer;
@@ -67,7 +68,7 @@ final class MessageConsumerListener implements ClientListener {
                         .version(version)
                         .build();
                 AtomicReference<Subscription> reference = subscriptionShips.get(ledger);
-                if (reference == null){
+                if (reference == null) {
                     reference = new AtomicReference<>();
                 }
                 reference.set(subscription);
@@ -107,20 +108,6 @@ final class MessageConsumerListener implements ClientListener {
     @Override
     public void onPushMessage(Channel channel, int ledgerId, short version, String topic, String queue, int epoch, long index, ByteBuf data) {
         try {
-            SendMessageExtras extras = readProto(data, SendMessageExtras.parser());
-
-            byte[] body = ByteBufUtils.buf2Bytes(data);
-            Message message = new Message(topic, queue, version, body, epoch, index, new Extras(extras.getExtrasMap()));
-
-            Subscription theLastShip = Subscription
-                    .newBuilder()
-                    .epoch(epoch)
-                    .index(index)
-                    .queue(queue)
-                    .ledger(ledgerId)
-                    .version(version)
-                    .build();
-
             AtomicReference<Subscription> sequence = subscriptionShips.get(ledgerId);
             if (sequence == null) {
                 logger.error("Channel consume sequence not initialize, channel={} ledgerId={} topic={} queue={} version={} epoch={} index={}",
@@ -129,17 +116,30 @@ final class MessageConsumerListener implements ClientListener {
             }
 
             Subscription preShip = sequence.get();
-            if (preShip == null || ((epoch == preShip.getEpoch() && index > theLastShip.getIndex()) ||
-                            epoch > theLastShip.getEpoch() ||
-                            version > theLastShip.getVersion())) {
+            if (preShip == null || ((epoch == preShip.getEpoch() && index > preShip.getIndex())
+                    || epoch > preShip.getEpoch() || version > preShip.getVersion())) {
+
+                Subscription theLastShip = Subscription
+                        .newBuilder()
+                        .epoch(epoch)
+                        .index(index)
+                        .queue(queue)
+                        .ledger(ledgerId)
+                        .version(version)
+                        .build();
+
                 if (!sequence.compareAndSet(preShip, theLastShip)) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip, preShip);
                     }
                 }
             }
-
             MessageProcessor handler = handlers[hash(Objects.hash(topic, queue) + ledgerId)];
+
+            SendMessageExtras extras = readProto(data, SendMessageExtras.parser());
+            byte[] body = ByteBufUtils.buf2Bytes(data);
+            Message message = new Message(topic, queue, version, body, epoch, index, new Extras(extras.getExtrasMap()));
+
             handler.process(message, listener, interceptor);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {

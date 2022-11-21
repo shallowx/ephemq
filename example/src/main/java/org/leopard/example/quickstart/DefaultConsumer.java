@@ -6,6 +6,7 @@ import org.leopard.client.Message;
 import org.leopard.client.consumer.*;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.metadata.Subscription;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;

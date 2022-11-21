@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 
 @ThreadSafe
 public class Cursor implements Cloneable {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerManager.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerEngine.class);
 
     private final Storage storage;
     private WeakReference<Segment> reference;
@@ -24,7 +24,7 @@ public class Cursor implements Cloneable {
     @Override
     public Cursor clone() throws CloneNotSupportedException {
         try {
-            return (Cursor)super.clone();
+            return (Cursor) super.clone();
         } catch (Throwable t) {
             throw new CloneNotSupportedException(String.format("Cursor clone failure, location=%d segment=%s", location, reference.get()));
         }
@@ -52,7 +52,7 @@ public class Cursor implements Cloneable {
             return skip2Tail();
         }
 
-       for (;;) {
+        for (; ; ) {
             Segment segment = currentSegment();
             if (!offset.after(segment.headOffset())) {
                 return this;
@@ -80,7 +80,7 @@ public class Cursor implements Cloneable {
     }
 
     private Segment efficientSegment() {
-        for (;;) {
+        for (; ; ) {
             Segment segment = currentSegment();
             if (location < segment.tailLocation() && segment.isActive()) {
                 return segment;

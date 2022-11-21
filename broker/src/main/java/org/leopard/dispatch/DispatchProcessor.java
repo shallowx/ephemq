@@ -2,7 +2,7 @@ package org.leopard.dispatch;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.consumer.Subscription;
+import org.leopard.common.metadata.Subscription;
 import org.leopard.ledger.Offset;
 
 public interface DispatchProcessor {

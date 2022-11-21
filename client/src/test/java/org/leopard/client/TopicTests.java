@@ -3,13 +3,13 @@ package org.leopard.client;
 import io.netty.util.concurrent.Promise;
 import org.junit.Assert;
 import org.junit.Test;
+import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.metadata.TopicRecord;
-import org.leopard.client.pool.DefaultFixedChannelPoolFactory;
+import org.leopard.common.metadata.Topic;
+import org.leopard.remote.processor.Ack;
 import org.leopard.remote.proto.server.CreateTopicResponse;
 import org.leopard.remote.proto.server.DelTopicResponse;
-import org.leopard.remote.processor.Ack;
 
 import java.util.List;
 import java.util.Map;
@@ -30,9 +30,9 @@ public class TopicTests {
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(1, response.getLatencies());
+        Assert.assertEquals(1, response.getPartitionLimit());
         Assert.assertEquals("create", response.getTopic());
-        Assert.assertEquals(3, response.getPartitions());
+        Assert.assertEquals(3, response.getPartitionLimit());
         Assert.assertEquals(Ack.SUCCESS, response.getAck());
 
         client.shutdownGracefully();
@@ -62,7 +62,7 @@ public class TopicTests {
         Client client = new Client("query-client", clientConfig);
         client.start();
 
-        Map<String, TopicRecord> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.acquireChannelPool().acquireWithRandomly(), List.of("create"));
+        Map<String, Topic> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(), List.of("create"));
 
         logger.info("result:{}", recordMap);
     }

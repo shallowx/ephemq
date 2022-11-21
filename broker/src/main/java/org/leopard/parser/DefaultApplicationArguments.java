@@ -1,6 +1,6 @@
 package org.leopard.parser;
 
-import org.leopard.internal.config.BrokerConfig;
+import org.leopard.internal.config.ServerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 
@@ -21,16 +21,16 @@ public class DefaultApplicationArguments implements ApplicationArguments {
     }
 
     @Override
-    public BrokerConfig config() {
-        BrokerConfig config = BrokerConfig.exchange(properties);
+    public ServerConfig config() {
+        ServerConfig config = ServerConfig.exchange(properties);
 
         checkAndPrintConfig(config);
         return config;
     }
 
 
-    private void checkAndPrintConfig(BrokerConfig config) {
-        Method[] methods = BrokerConfig.class.getDeclaredMethods();
+    private void checkAndPrintConfig(ServerConfig config) {
+        Method[] methods = ServerConfig.class.getDeclaredMethods();
         StringBuilder sb = new StringBuilder("Print the broker startup options: \n");
         String option;
 
@@ -52,7 +52,7 @@ public class DefaultApplicationArguments implements ApplicationArguments {
         }
     }
 
-    private void checkReturnType(Method method, BrokerConfig config, StringBuilder sb, String name) {
+    private void checkReturnType(Method method, ServerConfig config, StringBuilder sb, String name) {
         String type = method.getReturnType().getSimpleName();
         Object invoke;
         try {

@@ -4,6 +4,7 @@ import org.leopard.client.consumer.*;
 import org.junit.Test;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.metadata.Subscription;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;

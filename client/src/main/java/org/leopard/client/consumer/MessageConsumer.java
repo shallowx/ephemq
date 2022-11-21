@@ -5,14 +5,15 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.leopard.client.Client;
-import org.leopard.client.State;
 import org.leopard.client.internal.ClientChannel;
+import org.leopard.client.internal.metadata.MessageRouter;
+import org.leopard.client.internal.metadata.MessageRoutingHolder;
+import org.leopard.client.internal.metadata.MetadataWriter;
+import org.leopard.client.internal.pool.ShallowChannelPool;
+import org.leopard.common.enums.State;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.client.metadata.MessageRouter;
-import org.leopard.client.metadata.MessageRoutingHolder;
-import org.leopard.client.metadata.MetadataWriter;
-import org.leopard.client.pool.ShallowChannelPool;
+import org.leopard.common.metadata.Subscription;
 import org.leopard.common.util.ObjectUtils;
 import org.leopard.remote.proto.server.CleanSubscribeRequest;
 import org.leopard.remote.proto.server.CleanSubscribeResponse;
@@ -62,11 +63,11 @@ public class MessageConsumer implements Consumer {
     @Override
     public void start() throws Exception {
         if (!state.compareAndSet(State.LATENT, State.STARTED)) {
-            throw new UnsupportedOperationException("The message pull consumer<"+ name +"> was started");
+            throw new UnsupportedOperationException("The message pull consumer<" + name + "> was started");
         }
 
         if (null == messageListener) {
-            throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
+            throw new IllegalArgumentException("Consume<" + name + ">  register message push listener cannot be null");
         }
 
         client.start();
@@ -80,7 +81,7 @@ public class MessageConsumer implements Consumer {
     @Override
     public void registerListener(MessageListener listener) {
         if (null == listener) {
-            throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
+            throw new IllegalArgumentException("Consume<" + name + ">  register message push listener cannot be null");
         }
         this.messageListener = listener;
         pushConsumerListener.registerListener(listener);
@@ -144,7 +145,7 @@ public class MessageConsumer implements Consumer {
 
         topic = topic.intern();
         if (null == callback) {
-            doSubscribe(topic, queue, version,epoch, index, null);
+            doSubscribe(topic, queue, version, epoch, index, null);
             return;
         }
         Promise<SubscribeResponse> promise = newImmediatePromise();
@@ -167,7 +168,7 @@ public class MessageConsumer implements Consumer {
         });
 
         try {
-            doSubscribe(topic, queue,version, epoch, index, promise);
+            doSubscribe(topic, queue, version, epoch, index, promise);
         } catch (Throwable t) {
             throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s name=%s error:%s", topic, queue, name, t));
         }
@@ -175,7 +176,7 @@ public class MessageConsumer implements Consumer {
 
     @Override
     public Subscription subscribe(String topic, String queue, int epoch, long index) {
-        return this.subscribe(topic, queue, (short)-1, epoch, index, null);
+        return this.subscribe(topic, queue, (short) -1, epoch, index, null);
     }
 
     @Override
@@ -205,36 +206,36 @@ public class MessageConsumer implements Consumer {
 
     @Override
     public Subscription subscribe(String topic, String queue, short version, MessageListener listener) {
-        return this.subscribe(topic, queue, version, (short)-1, (short)-1, listener);
+        return this.subscribe(topic, queue, version, (short) -1, (short) -1, listener);
     }
 
     @Override
     public void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback, MessageListener listener) {
-        this.subscribeAsync(topic, queue, version, (short)-1, (short)-1, callback, listener);
+        this.subscribeAsync(topic, queue, version, (short) -1, (short) -1, callback, listener);
     }
 
     @Override
     public Subscription subscribe(String topic, String queue) {
-        return this.subscribe(topic, queue, (short)-1);
+        return this.subscribe(topic, queue, (short) -1);
     }
 
     @Override
     public void subscribeAsync(String topic, String queue, SubscribeCallback callback) {
-        this.subscribeAsync(topic, queue, (short)-1, callback, null);
+        this.subscribeAsync(topic, queue, (short) -1, callback, null);
     }
 
     @Override
     public Subscription subscribe(String topic, String queue, MessageListener listener) {
         if (null == listener) {
-            throw new IllegalArgumentException("Consume<"+ name +">  register message push listener cannot be null");
+            throw new IllegalArgumentException("Consume<" + name + ">  register message push listener cannot be null");
         }
         this.registerListener(listener);
-        return this.subscribe(topic, queue, (short)-1, listener);
+        return this.subscribe(topic, queue, (short) -1, listener);
     }
 
     @Override
     public void subscribeAsync(String topic, String queue, SubscribeCallback callback, MessageListener listener) {
-        this.subscribeAsync(topic, queue,(short) -1, (short)-1, (short)-1, callback, listener);
+        this.subscribeAsync(topic, queue, (short) -1, (short) -1, (short) -1, callback, listener);
     }
 
     private void doSubscribe(String topic, String queue, short version, int epoch, long index, Promise<SubscribeResponse> promise) {
@@ -277,7 +278,7 @@ public class MessageConsumer implements Consumer {
         });
 
         ledgerOfChannels.put(ledger, clientChannel);
-        clientChannel.invoker().invoke(SUBSCRIBE, config.getPushSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
+        clientChannel.invoker().invoke(SUBSCRIBE, config.getSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
     }
 
     @Override
@@ -450,7 +451,7 @@ public class MessageConsumer implements Consumer {
             }
         });
 
-        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getPushCleanSubscribeInvokeTimeMs(), promise, request, CleanSubscribeResponse.class);
+        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getCleanSubscribeInvokeTimeMs(), promise, request, CleanSubscribeResponse.class);
     }
 
     private void checkTopic(String topic) {

@@ -5,7 +5,7 @@ import org.leopard.common.logging.InternalLoggerFactory;
 
 import java.util.concurrent.Callable;
 
-public class ShutdownHook<V> extends Thread{
+public class ShutdownHook<V> extends Thread {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ShutdownHook.class);
 
     private volatile boolean stopped = false;
@@ -34,6 +34,10 @@ public class ShutdownHook<V> extends Thread{
                         logger.error(e.getMessage(), e);
                     }
                 }
+            }
+
+            if (logger.isInfoEnabled()) {
+                logger.info("The simple server was closed", name);
             }
         }
     }

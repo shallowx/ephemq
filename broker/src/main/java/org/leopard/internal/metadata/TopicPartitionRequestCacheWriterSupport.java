@@ -5,191 +5,100 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.Promise;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.leopard.client.Client;
-import org.leopard.client.internal.ClientChannel;
-import org.leopard.client.internal.OperationInvoker;
-import org.leopard.client.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.metadata.PartitionRecord;
+import org.leopard.common.metadata.Partition;
+import org.leopard.common.util.StringUtils;
 import org.leopard.internal.ResourceContext;
-import org.leopard.internal.config.BrokerConfig;
-import org.leopard.remote.processor.ProcessCommand;
-import org.leopard.remote.proto.PartitionMetadata;
-import org.leopard.remote.proto.TopicMetadata;
-import org.leopard.remote.proto.server.*;
-import org.leopard.remote.util.NetworkUtils;
+import org.leopard.internal.config.ServerConfig;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static org.leopard.remote.processor.ProcessCommand.Nameserver.NEW_TOPIC;
-import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 public class TopicPartitionRequestCacheWriterSupport {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
 
-    private final BrokerConfig config;
-    private final Client internalClient;
     private final PartitionLeaderElector leaderElector;
+    private final LoadingCache<String, Set<Partition>> cache;
+    private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
 
-    private final LoadingCache<String, Set<PartitionRecord>> cache;
-
-    public TopicPartitionRequestCacheWriterSupport(BrokerConfig config, ResourceContext manager) {
-        this.config = config;
-        this.internalClient = manager.getInternalClient();
-        this.leaderElector = new PartitionLeaderElector(manager);
-
+    public TopicPartitionRequestCacheWriterSupport(ServerConfig config, ResourceContext context) {
+        this.leaderElector = new PartitionLeaderElector(context, config);
+        this.nodeCacheWriterSupport = context.getNodeCacheWriterSupport();
         this.cache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public @Nullable Set<PartitionRecord> load(String key) throws Exception {
-                        try {
-                            return loadFromNameserver(key);
-                        } catch (Exception e) {
-                            return null;
-                        }
+                    public @Nullable Set<Partition> load(String key) throws Exception {
+                        return null;
                     }
                 });
     }
 
-    public void createTopic(String topic, int partitions, int latencies, Promise<Void> promise) {
-        try {
-            Set<PartitionRecord> partitionRecords = cache.get(topic);
-            if (partitionRecords != null && !partitionRecords.isEmpty()) {
-                promise.tryFailure(new IllegalStateException(String.format("Topic already exists, and topic=%s", topic)));
-                return;
-            }
-
-            OperationInvoker invoker = acquireInvokerByRandomClientChannel();
-
-            Set<PartitionRecord> records = leaderElector.elect(topic, partitions, latencies);
-            List<PartitionMetadata> newPartitions = records.stream()
-                    .map(record ->
-                            PartitionMetadata.newBuilder()
-                                    .setId(record.getId())
-                                    .setLatency(latencies)
-                                    .setLeader(record.getLeader())
-                                    .addAllReplicas(record.getLatencies())
-                                    .build()
-                    ).collect(Collectors.toList());
-
-            RemoteCreateTopicRequest request = RemoteCreateTopicRequest.newBuilder()
-                    .setTopic(topic)
-                    .addAllPartitions(newPartitions)
-                    .setCluster(config.getClusterName())
-                    .build();
-
-            Promise<Void> voidPromise = newImmediatePromise();
-            voidPromise.addListener(future -> {
-                if (future.isSuccess()) {
-                    promise.trySuccess(null);
-                } else {
-                    promise.tryFailure(future.cause());
-                }
-            });
-
-            invoker.invoke(NEW_TOPIC, config.getInvokeTimeMs(), voidPromise, request, CreateTopicResponse.class);
-
-        } catch (Throwable t) {
-            promise.tryFailure(t);
+    public void createTopic(String topic, int partitionLimit, int replicateLimit, Promise<Void> promise) {
+        if (partitionLimit <= 0) {
+            promise.tryFailure(new IllegalArgumentException("Number of partition limit must be larger than 0"));
+            return;
         }
+
+        if (replicateLimit <= 0) {
+            promise.tryFailure(new IllegalArgumentException("Number of replicate limit must be larger than 0"));
+            return;
+        }
+
+        if (replicateLimit > partitionLimit) {
+            promise.tryFailure(new IllegalArgumentException("The cluster does not have enough nodes to allocate replicates, and node_count=" + nodeCacheWriterSupport.size()));
+            return;
+        }
+
+        if (StringUtils.isNullOrEmpty(topic)) {
+            promise.tryFailure(new IllegalArgumentException("Topic cannot be empty"));
+            return;
+        }
+
+        Set<Partition> partitions = cache.get(topic);
+        if (partitions != null && !partitions.isEmpty()) {
+            promise.tryFailure(new IllegalArgumentException("Topic already exists"));
+            return;
+        }
+
+        try {
+            partitions = leaderElector.elect(topic, partitionLimit, replicateLimit);
+            this.cache.put(topic, partitions);
+        } catch (Exception e) {
+            promise.tryFailure(e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Failed to create topic, topic={}", topic, e);
+            }
+            return;
+        }
+        promise.trySuccess(null);
     }
 
     public void delTopic(String topic, Promise<Void> promise) {
-        try {
-            Set<PartitionRecord> partitionRecords = cache.get(topic);
-            if (partitionRecords == null || partitionRecords.isEmpty()) {
-                promise.tryFailure(new IllegalStateException(String.format("Topic not exists, and topic=%s", topic)));
-                return;
-            }
-
-            DelTopicRequest request = DelTopicRequest.newBuilder()
-                    .setTopic(topic)
-                    .build();
-
-            OperationInvoker invoker = acquireInvokerByRandomClientChannel();
-
-            promise.addListener(future -> {
-                if (future.isSuccess()) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Delete topic successfully, topic={}", topic);
-                    }
-                } else {
-                    promise.tryFailure(future.cause());
-                }
-            });
-
-            invoker.invoke(NEW_TOPIC, config.getInvokeTimeMs(), promise, request, DelTopicResponse.class);
-
-        } catch (Throwable t) {
-            promise.tryFailure(t);
+        if (StringUtils.isNullOrEmpty(topic)) {
+            promise.tryFailure(new IllegalArgumentException("Topic cannot be empty"));
         }
     }
 
-    public Set<PartitionRecord> loadAll(List<String> topics) throws Exception {
-        Set<PartitionRecord> records = new HashSet<>();
+    public Set<Partition> loadAll(List<String> topics) throws Exception {
+        Set<Partition> partitions = new HashSet<>();
         if (topics == null || topics.isEmpty()) {
-            Iterator<Set<PartitionRecord>> iterator = cache.asMap().values().stream().iterator();
+            Iterator<Set<Partition>> iterator = cache.asMap().values().stream().iterator();
             while (iterator.hasNext()) {
-                records.addAll(iterator.next());
+                partitions.addAll(iterator.next());
             }
         } else {
             for (String topic : topics) {
-                Set<PartitionRecord> sets = this.cache.get(topic);
+                Set<Partition> sets = this.cache.get(topic);
                 if (sets == null || sets.isEmpty()) {
                     continue;
                 }
-                records.addAll(sets);
+                partitions.addAll(sets);
             }
         }
-        return records;
-    }
-
-    private Set<PartitionRecord> loadFromNameserver(String topic) throws ExecutionException, InterruptedException {
-        QueryTopicInfoRequest request = QueryTopicInfoRequest.newBuilder()
-                .addAllTopic(List.of(topic))
-                .build();
-
-        OperationInvoker invoker = acquireInvokerByRandomClientChannel();
-        Promise<QueryTopicInfoResponse> promise = NetworkUtils.newImmediatePromise();
-
-        invoker.invoke(ProcessCommand.Server.FETCH_TOPIC_RECORD, config.getInvokeTimeMs(), promise, request, QueryTopicInfoResponse.class);
-        Map<String, TopicMetadata> records = promise.get().getTopicsMap();
-
-        if (records.isEmpty()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Query topic record is empty");
-            }
-            return null;
-        }
-
-        return records.values().stream().map(metadata -> {
-            Map<Integer, PartitionMetadata> partitionsMap = metadata.getPartitionsMap();
-
-            Set<PartitionRecord> partitionRecords = new HashSet<>();
-            for (Map.Entry<Integer, PartitionMetadata> entry : partitionsMap.entrySet()) {
-                PartitionMetadata partitionMetadata = entry.getValue();
-
-                PartitionRecord partitionRecord = PartitionRecord
-                        .newBuilder()
-                        .id(partitionMetadata.getId())
-                        .latency(partitionMetadata.getLatency())
-                        .leader(partitionMetadata.getLeader())
-                        .latencies(partitionMetadata.getReplicasList())
-                        .build();
-
-                partitionRecords.add(partitionRecord);
-            }
-            return partitionRecords;
-        }).findFirst().orElse(null);
-    }
-
-    private OperationInvoker acquireInvokerByRandomClientChannel() {
-        ShallowChannelPool chanelPool = internalClient.getChanelPool();
-        ClientChannel clientChannel = chanelPool.acquireWithRandomly();
-        return clientChannel.invoker();
+        return partitions;
     }
 }

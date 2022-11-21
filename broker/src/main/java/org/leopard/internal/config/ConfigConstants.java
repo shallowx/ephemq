@@ -11,6 +11,8 @@ public class ConfigConstants {
     public static final String EXPOSED_HOST = "exposed.host";
     public static final String EXPOSED_PORT = "exposed.port";
 
+    public static final String PARTITION_LEADER_ELECT_RULE = "partition.leader.elect.rule";
+
     public static final String INVOKE_TIMEOUT_MS = "invoke.timeout.ms";
     public static final String IO_THREAD_LIMIT = "io.thread.limit";
     public static final String WORK_THREAD_LIMIT = "network.thread.limit";
