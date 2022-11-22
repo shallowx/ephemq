@@ -111,7 +111,7 @@ public class Client {
         return healthChecker;
     }
 
-    public MetadataWriter getMetadataManager() {
+    public MetadataWriter getMetadataWriter() {
         return manager;
     }
 

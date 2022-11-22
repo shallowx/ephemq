@@ -13,16 +13,16 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-public class PrometheusMeterRegistrySetup implements MeterRegistrySetup {
+public class PrometheusRegistrySetup implements MeterRegistrySetup {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PrometheusMeterRegistrySetup.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PrometheusRegistrySetup.class);
 
     private HttpServer server;
     private MeterRegistry registry;
 
     @Override
     public void setUp(Properties props) {
-        MeterConfig config = MeterConfig.exchange(props);
+        MetricsConfig config = MetricsConfig.exchange(props);
         if (config.getMetricsEnabled()) {
             this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
             Metrics.addRegistry(registry);
@@ -31,7 +31,7 @@ public class PrometheusMeterRegistrySetup implements MeterRegistrySetup {
         }
     }
 
-    private void setHttpServer(MeterConfig config) {
+    private void setHttpServer(MetricsConfig config) {
         try {
             InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
             this.server = HttpServer.create(socketAddress, 0);

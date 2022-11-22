@@ -34,7 +34,6 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
     private final AtomicInteger partitionCounts = new AtomicInteger();
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
 
-
     public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
         this.serviceLoader = ServiceLoader.load(MeterRegistrySetup.class);
@@ -94,5 +93,11 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
     @Override
     public void onDispatchMessage(String topic, int ledger, int count) {
 
+    }
+
+    public void shutdown() {
+        for (MeterRegistrySetup meterRegistrySetup : serviceLoader) {
+            meterRegistrySetup.shutdown();
+        }
     }
 }

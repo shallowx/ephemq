@@ -6,12 +6,12 @@ import org.leopard.internal.config.ServerConfig;
 
 import java.util.Set;
 
-public abstract class LeaderElectorAdapter {
+public abstract class LeaderAssignorAdapter {
 
     private final ServerConfig config;
     private final ClusterNodeCacheWriterSupport nodeWriterSupport;
 
-    public LeaderElectorAdapter(ServerConfig config, ClusterNodeCacheWriterSupport nodeWriterSupport) {
+    public LeaderAssignorAdapter(ServerConfig config, ClusterNodeCacheWriterSupport nodeWriterSupport) {
         this.config = config;
         this.nodeWriterSupport = nodeWriterSupport;
     }
@@ -20,5 +20,5 @@ public abstract class LeaderElectorAdapter {
         return nodeWriterSupport.load(config.getClusterName());
     }
 
-    protected abstract Set<Partition> elect(String topic, int partitionLimit, int replicateLimit) throws Exception;
+    protected abstract Set<Partition> assign(String topic, int partitionLimit, int replicateLimit) throws Exception;
 }

@@ -1,22 +1,22 @@
 # Architecture
 
-Shallow is a distributed messaging and streaming platform on based memory with low latency, high performance and reliability, trillion-level capacity and flexible scalability
+Shallow is a distributed messaging and streaming platform on based memory with low latency, high performance and
+reliability, trillion-level capacity and flexible scalability
 
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/infra.png)
 
-- Broker: Process command...
-- Client: Producer & Consumer...
-- Nameserver: Cluster management、Metadata management...
-- Metrics & Monitoring: CPU、JVM、Thread、Cluster、Metadata、Network...
+- Dotted lines are optional
 
 # Example
+
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/example.gif)
 
 ## Latency
 
-![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/latency.png)
+![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/partition.png)
 
 ## Message
+
 ![image](https://github.com/shallow-rs/shallow/blob/main/doc/image/message.png)
 
 # Environment
@@ -25,7 +25,8 @@ Shallow is a distributed messaging and streaming platform on based memory with l
 
 # Quickstart
 
-## CreateTopic
+## Create Topic
+
 ```
 ClientConfig clientConfig = new ClientConfig();
 clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
@@ -35,7 +36,9 @@ client.start();
 Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic(CREATE_TOPIC, "create", 3, 1);
 CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 ```
-## Subscribe
+
+## Subscribe Message
+
 ```
 ClientConfig clientConfig = new ClientConfig();
 clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
@@ -56,7 +59,9 @@ messagePushConsumer.start();
 
 Subscription subscribe = messagePushConsumer.subscribe("create", "message");
 ```
-## Send
+
+## Send Message
+
 ```
 ProducerConfig producerConfig = new ProducerConfig();
 producerConfig.setClientConfig(clientConfig);
@@ -69,4 +74,3 @@ MessagePreInterceptor interceptor = sendMessage -> sendMessage;
 
 producer.sendAsync(message, filter, (sendResult, cause) -> {});
 ```
-- For more, please check out module: shallow-example

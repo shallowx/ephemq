@@ -26,12 +26,12 @@ public class TopicTests {
         Client client = new Client("create-client", clientConfig);
         client.start();
 
-        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic("create", 3, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic("test", 3, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
         Assert.assertEquals(1, response.getPartitionLimit());
-        Assert.assertEquals("create", response.getTopic());
+        Assert.assertEquals("test", response.getTopic());
         Assert.assertEquals(3, response.getPartitionLimit());
         Assert.assertEquals(Ack.SUCCESS, response.getAck());
 
@@ -45,11 +45,11 @@ public class TopicTests {
         Client client = new Client("del-client", clientConfig);
         client.start();
 
-        Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic("create");
+        Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic("test");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals("create", response.getTopic());
+        Assert.assertEquals("test", response.getTopic());
         Assert.assertEquals(Ack.SUCCESS, response.getAck());
 
         client.shutdownGracefully();

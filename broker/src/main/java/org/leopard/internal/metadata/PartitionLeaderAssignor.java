@@ -9,45 +9,45 @@ import org.leopard.internal.config.ServerConfig;
 
 import java.util.Set;
 
-public class PartitionLeaderElector {
+public class PartitionLeaderAssignor {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PartitionLeaderElector.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PartitionLeaderAssignor.class);
 
     private final ServerConfig config;
     private final ClusterNodeCacheWriterSupport nodeWriterSupport;
-    private final LeaderElectorAdapter adapter;
+    private final LeaderAssignorAdapter adapter;
 
-    public PartitionLeaderElector(ResourceContext context, ServerConfig config) {
+    public PartitionLeaderAssignor(ResourceContext context, ServerConfig config) {
         this.nodeWriterSupport = context.getNodeCacheWriterSupport();
         this.config = config;
         this.adapter = buildAdapter();
     }
 
-    public Set<Partition> elect(String topic, int partitionLimit, int replicateLimit) throws Exception {
+    public Set<Partition> assign(String topic, int partitionLimit, int replicateLimit) throws Exception {
         Set<Node> nodes = adapter.getNodes();
         if (nodes == null || nodes.isEmpty()) {
             throw new IllegalArgumentException("Cluster nodes is empty");
         }
 
-        return adapter.elect(topic, partitionLimit, replicateLimit);
+        return adapter.assign(topic, partitionLimit, replicateLimit);
     }
 
-    private LeaderElectorAdapter buildAdapter() {
+    private LeaderAssignorAdapter buildAdapter() {
         String rule = config.getElectAssignRule();
         switch (rule) {
-            case ElectAssignRule.RANDOM -> {
-                return new RandomAssignElector(config, nodeWriterSupport);
+            case PartitionAssignRule.RANDOM -> {
+                return new RandomAssignor(config, nodeWriterSupport);
             }
 
-            case ElectAssignRule.AVERAGE -> {
-                return new AverageAssignElector(config, nodeWriterSupport);
+            case PartitionAssignRule.AVERAGE -> {
+                return new AverageAssignor(config, nodeWriterSupport);
             }
 
             default -> {
                 if (logger.isErrorEnabled()) {
                     logger.error("Unsupported partition leader elect operation type: " + rule);
                 }
-                
+
                 throw new UnsupportedOperationException("Unsupported partition leader elect operation type: " + rule);
             }
         }

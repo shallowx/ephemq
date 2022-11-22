@@ -7,16 +7,18 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.leopard.remote.proto.notify.MessagePushSignal;
-import org.leopard.remote.Type;
-import org.leopard.remote.codec.MessagePacket;
-import org.leopard.ledger.Cursor;
-import org.leopard.ledger.Offset;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.ledger.Cursor;
+import org.leopard.ledger.Offset;
+import org.leopard.remote.Type;
+import org.leopard.remote.codec.MessagePacket;
+import org.leopard.remote.proto.notify.MessagePushSignal;
 import org.leopard.remote.util.ByteBufUtils;
 import org.leopard.remote.util.ProtoBufUtils;
+
 import javax.annotation.concurrent.ThreadSafe;
+
 import static org.leopard.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 
 @ThreadSafe
@@ -43,9 +45,7 @@ public class EntryDelayTaskAssignor {
 
     public ChannelPromise newPromise() {
         ChannelPromise promise = channel.newPromise();
-        promise.addListener((ChannelFutureListener) f -> {
-            assign();
-        });
+        promise.addListener((ChannelFutureListener) f -> assign());
         return promise;
     }
 
@@ -175,7 +175,7 @@ public class EntryDelayTaskAssignor {
         Offset alignOffset = handler.getNextOffset();
         if (alignOffset != null && !nextOffset.before(alignOffset)) {
             align();
-          return;
+            return;
         }
 
         assign();
@@ -306,7 +306,7 @@ public class EntryDelayTaskAssignor {
         assign();
     }
 
-    private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset , ByteBuf payload, ByteBufAllocator alloc) {
+    private ByteBuf buildByteBuf(String topic, String queue, short version, Offset offset, ByteBuf payload, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             MessagePushSignal signal = MessagePushSignal
