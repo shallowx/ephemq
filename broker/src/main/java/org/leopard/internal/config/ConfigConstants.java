@@ -10,7 +10,7 @@ public class ConfigConstants {
     public static final String EXPOSED_HOST = "exposed.host";
     public static final String EXPOSED_PORT = "exposed.port";
 
-    public static final String PARTITION_LEADER_ELECT_RULE = "partition.leader.elect.rule";
+    public static final String PARTITION_LEADER_ASSIGN_RULE = "partition.leader.assign.rule";
 
     public static final String INVOKE_TIMEOUT_MS = "invoke.timeout.ms";
     public static final String IO_THREAD_LIMIT = "io.thread.limit";
@@ -32,5 +32,5 @@ public class ConfigConstants {
     public static final String MESSAGE_HANDLE_ASSIGN_LIMIT = "message.handle.assign.limit";
     public static final String MESSAGE_HANDLE_ALIGN_LIMIT = "message.handle.align.limit";
 
-    public static final String metadata_caching_schedule_time_ms = "";
+    public static final String METADATA_CACHING_REFRESH_MS = "metadata.caching.refresh.ms";
 }

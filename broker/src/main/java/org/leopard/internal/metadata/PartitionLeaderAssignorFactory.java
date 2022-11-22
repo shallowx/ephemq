@@ -9,15 +9,15 @@ import org.leopard.internal.config.ServerConfig;
 
 import java.util.Set;
 
-public class PartitionLeaderAssignor {
+public class PartitionLeaderAssignorFactory {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PartitionLeaderAssignor.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PartitionLeaderAssignorFactory.class);
 
     private final ServerConfig config;
     private final ClusterNodeCacheWriterSupport nodeWriterSupport;
     private final LeaderAssignorAdapter adapter;
 
-    public PartitionLeaderAssignor(ResourceContext context, ServerConfig config) {
+    public PartitionLeaderAssignorFactory(ResourceContext context, ServerConfig config) {
         this.nodeWriterSupport = context.getNodeCacheWriterSupport();
         this.config = config;
         this.adapter = buildAdapter();

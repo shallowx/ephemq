@@ -29,7 +29,7 @@ public class ClusterNodeCacheWriterSupport {
 
     public ClusterNodeCacheWriterSupport(ServerConfig config) {
         this.config = config;
-        this.cache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
+        this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public @Nullable Set<Node> load(String key) throws Exception {

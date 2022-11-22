@@ -104,6 +104,10 @@ public class ServerConfig {
     }
 
     public String getElectAssignRule() {
-        return object2String(props.getOrDefault(PARTITION_LEADER_ELECT_RULE, PartitionAssignRule.AVERAGE));
+        return object2String(props.getOrDefault(PARTITION_LEADER_ASSIGN_RULE, PartitionAssignRule.AVERAGE));
+    }
+
+    public int getMetadataRefreshMs() {
+        return object2Int(props.getOrDefault(METADATA_CACHING_REFRESH_MS, 60000));
     }
 }

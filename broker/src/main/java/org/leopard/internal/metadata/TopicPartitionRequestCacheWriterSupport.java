@@ -24,20 +24,20 @@ import java.util.concurrent.TimeUnit;
  * Thread safety is guaranteed by aware {@link MessageProcessorAware} variable {@code commandExecutor} of the thread.
  */
 public class TopicPartitionRequestCacheWriterSupport {
-    
+
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
 
-    private final PartitionLeaderAssignor leaderAssignor;
+    private final PartitionLeaderAssignorFactory factory;
     private final LoadingCache<String, Set<Partition>> cache;
     private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
     private final LedgerEngine engine;
 
     public TopicPartitionRequestCacheWriterSupport(ServerConfig config, ResourceContext context) {
-        this.leaderAssignor = new PartitionLeaderAssignor(context, config);
+        this.factory = new PartitionLeaderAssignorFactory(context, config);
         this.nodeCacheWriterSupport = context.getNodeCacheWriterSupport();
         this.engine = context.getLedgerEngine();
 
-        this.cache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
+        this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public @Nullable Set<Partition> load(String key) throws Exception {
@@ -74,7 +74,7 @@ public class TopicPartitionRequestCacheWriterSupport {
         }
 
         try {
-            partitions = leaderAssignor.assign(topic, partitionLimit, replicateLimit);
+            partitions = factory.assign(topic, partitionLimit, replicateLimit);
             this.cache.put(topic, partitions);
 
             for (Partition partition : partitions) {
