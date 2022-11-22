@@ -11,6 +11,8 @@ import org.leopard.common.metadata.Partition;
 import org.leopard.common.util.StringUtils;
 import org.leopard.internal.ResourceContext;
 import org.leopard.internal.config.ServerConfig;
+import org.leopard.ledger.LedgerEngine;
+import org.leopard.network.MessageProcessorAware;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,16 +20,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Thread safety is guaranteed by aware {@link MessageProcessorAware} variable {@code commandExecutor} of the thread.
+ */
 public class TopicPartitionRequestCacheWriterSupport {
+    
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
 
-    private final PartitionLeaderElector leaderElector;
+    private final PartitionLeaderAssignor leaderAssignor;
     private final LoadingCache<String, Set<Partition>> cache;
     private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
+    private final LedgerEngine engine;
 
     public TopicPartitionRequestCacheWriterSupport(ServerConfig config, ResourceContext context) {
-        this.leaderElector = new PartitionLeaderElector(context, config);
+        this.leaderAssignor = new PartitionLeaderAssignor(context, config);
         this.nodeCacheWriterSupport = context.getNodeCacheWriterSupport();
+        this.engine = context.getLedgerEngine();
+
         this.cache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
@@ -65,8 +74,12 @@ public class TopicPartitionRequestCacheWriterSupport {
         }
 
         try {
-            partitions = leaderElector.elect(topic, partitionLimit, replicateLimit);
+            partitions = leaderAssignor.assign(topic, partitionLimit, replicateLimit);
             this.cache.put(topic, partitions);
+
+            for (Partition partition : partitions) {
+                engine.initLog(topic, partition.getId(), partition.getEpoch(), partition.getLedgerId());
+            }
         } catch (Exception e) {
             promise.tryFailure(e);
             if (logger.isErrorEnabled()) {
@@ -81,6 +94,8 @@ public class TopicPartitionRequestCacheWriterSupport {
         if (StringUtils.isNullOrEmpty(topic)) {
             promise.tryFailure(new IllegalArgumentException("Topic cannot be empty"));
         }
+
+        this.cache.invalidate(topic);
     }
 
     public Set<Partition> loadAll(List<String> topics) throws Exception {

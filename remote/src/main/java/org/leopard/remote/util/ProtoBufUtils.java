@@ -35,6 +35,7 @@ public class ProtoBufUtils {
         try {
             buf = alloc.ioBuffer(protoLength(lite));
             writeProto(buf, lite);
+            
             return buf;
         } catch (Throwable t) {
             release(buf);

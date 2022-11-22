@@ -7,7 +7,6 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Subscription;
@@ -31,7 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.leopard.remote.processor.ProcessCommand.Client.HANDLE_MESSAGE;
 import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
-@SuppressWarnings("all")
 @ThreadSafe
 public class DefaultEntryDispatchProcessor implements DispatchProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryDispatchProcessor.class);
@@ -48,7 +46,6 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     public DefaultEntryDispatchProcessor(int ledgerId, ServerConfig config, Storage storage) {
         this.storage = storage;
-        Offset currentOffset = storage.currentOffset();
 
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
@@ -105,8 +102,6 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             handler.getTriggered().set(false);
             return;
         }
-
-        ObjectCollection<EntrySubscription> entrySubscriptions = subscribeShips.values();
 
         Offset nextOffset = handler.getNextOffset();
         try {
@@ -266,7 +261,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             if (logger.isWarnEnabled()) {
                 logger.warn("Channel<{}> is not active for subscribe", channel.toString());
             }
-            subscribePromise.tryFailure(new RuntimeException(String.format("Channel<{}> is not active for subscribe", channel.toString())));
+            subscribePromise.tryFailure(new RuntimeException(String.format("Channel<%s> is not active for subscribe", channel)));
             return;
         }
 
@@ -430,7 +425,6 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         helper.remove(channel);
     }
 
-
     @Override
     public void shutdownGracefully() {
         if (handlers.isEmpty()) {
@@ -441,13 +435,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             logger.info("Entry dispatch processor will close");
         }
 
-        helper.close(new EntryDispatchHelper.CloseFunction<Channel, String, String>() {
-            @Override
-            public void consume(Channel channel, String topic, String queue) {
-                doClean(channel, topic, queue, newImmediatePromise());
-            }
-        });
-
+        helper.close((channel, topic, queue) -> doClean(channel, topic, queue, newImmediatePromise()));
         handlers.clear();
     }
 }

@@ -9,6 +9,7 @@ public class Partition {
     private int ledgerId;
     private String leader;
     private List<String> replicates;
+    private int epoch;
 
     private Partition() {
         // unsupported
@@ -20,6 +21,10 @@ public class Partition {
 
     public int getId() {
         return id;
+    }
+
+    public int getEpoch() {
+        return epoch;
     }
 
     public int getLedgerId() {
@@ -39,8 +44,14 @@ public class Partition {
         private int ledgerId;
         private String leader;
         private List<String> replicates;
+        private int epoch;
 
         private PartitionBuilder() {
+        }
+
+        public PartitionBuilder epoch(int epoch) {
+            this.epoch = epoch;
+            return this;
         }
 
         public PartitionBuilder id(int id) {

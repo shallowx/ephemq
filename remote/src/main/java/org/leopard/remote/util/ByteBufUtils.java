@@ -17,6 +17,7 @@ public final class ByteBufUtils {
         if (null == buf) {
             return null;
         }
+
         int length = buf.readableBytes();
         length = maxLength < 0 ? length : Math.min(maxLength, length);
         try {
@@ -30,13 +31,14 @@ public final class ByteBufUtils {
         if (null == bytes || bytes.length == 0) {
             return null;
         }
-       return Unpooled.copiedBuffer(bytes);
+        return Unpooled.copiedBuffer(bytes);
     }
 
     public static byte[] buf2Bytes(ByteBuf buf) {
         if (null == buf) {
             return null;
         }
+
         int length = buf.readableBytes();
         byte[] bytes = new byte[length];
         buf.readBytes(bytes);
@@ -53,7 +55,7 @@ public final class ByteBufUtils {
     }
 
     public static ByteBuf retainBuf(ByteBuf buf) {
-        return null == buf  ? null : buf.retain();
+        return null == buf ? null : buf.retain();
     }
 
     public static <T> T defaultIfNull(T t, T defaultValue) {
@@ -61,8 +63,8 @@ public final class ByteBufUtils {
     }
 
     public static void release(ByteBuf buf) {
-       if (null != buf) {
-           buf.release();
-       }
+        if (null != buf) {
+            buf.release();
+        }
     }
 }

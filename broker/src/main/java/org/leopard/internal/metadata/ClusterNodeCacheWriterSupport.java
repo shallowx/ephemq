@@ -82,6 +82,10 @@ public class ClusterNodeCacheWriterSupport {
         return cache.get(cluster);
     }
 
+    public Node getThisNode() {
+        return null;
+    }
+
     public int size() {
         return cache.asMap().size();
     }

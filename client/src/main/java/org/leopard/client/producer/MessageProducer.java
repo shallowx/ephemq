@@ -34,7 +34,7 @@ public class MessageProducer implements Producer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProducer.class);
 
-    private MetadataWriter manager;
+    private MetadataWriter metadataWriter;
     private final ProducerConfig config;
     private ShallowChannelPool pool;
     private final String name;
@@ -57,7 +57,7 @@ public class MessageProducer implements Producer {
         client.start();
 
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool();
-        this.manager = client.getMetadataManager();
+        this.metadataWriter = client.getMetadataWriter();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class MessageProducer implements Producer {
         String queue = message.queue();
         short version = message.version();
 
-        MessageRouter messageRouter = manager.queryRouter(topic);
+        MessageRouter messageRouter = metadataWriter.queryRouter(topic);
         if (null == messageRouter) {
             throw new RuntimeException(String.format("Message router is null, and topic=%s name=%s", topic, name));
         }

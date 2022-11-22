@@ -19,7 +19,7 @@
         <logback.version>1.4.4</logback.version>
         <gson.version>2.10</gson.version>
         <slf4j.log4j12.version>2.0.0</slf4j.log4j12.version>
-        <bookkeeper.version>4.15.3</bookkeeper.version>
+        <snakeyml.version>1.33</snakeyml.version>
     </properties>
 
     <dependencies>
@@ -30,11 +30,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.bookkeeper</groupId>
-            <artifactId>bookkeeper-server-shaded</artifactId>
-            <version>${bookkeeper.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>

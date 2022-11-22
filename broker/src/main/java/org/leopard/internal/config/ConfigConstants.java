@@ -5,7 +5,6 @@ public class ConfigConstants {
     public static final String CLUSTER_NAME = "cluster";
     public static final String SERVER_ID = "server.id";
 
-    public static final String NAMESERVER_URL = "nameserver.url";
     public static final String HEARTBEAT_SCHEDULE_FIXED_DELAY_MS = "heartbeat.schedule.fixed.delay.ms";
 
     public static final String EXPOSED_HOST = "exposed.host";
@@ -32,4 +31,6 @@ public class ConfigConstants {
     public static final String MESSAGE_HANDLE_LIMIT = "message.handle.limit";
     public static final String MESSAGE_HANDLE_ASSIGN_LIMIT = "message.handle.assign.limit";
     public static final String MESSAGE_HANDLE_ALIGN_LIMIT = "message.handle.align.limit";
+
+    public static final String metadata_caching_schedule_time_ms = "";
 }

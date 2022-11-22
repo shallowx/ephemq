@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import static org.leopard.common.util.TypeUtils.*;
 
-public class MeterConfig {
+public class MetricsConfig {
 
     private final Properties props;
 
@@ -13,12 +13,12 @@ public class MeterConfig {
     private static final String METRICS_PORT = "metrics.port";
     private static final String METRICS_ADDRESS = "metrics.address";
 
-    private MeterConfig(Properties props) {
+    private MetricsConfig(Properties props) {
         this.props = props;
     }
 
-    public static MeterConfig exchange(Properties props) {
-        return new MeterConfig(props);
+    public static MetricsConfig exchange(Properties props) {
+        return new MetricsConfig(props);
     }
 
     public String getMetricsScrapeUrl() {

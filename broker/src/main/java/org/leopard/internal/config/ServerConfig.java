@@ -1,6 +1,6 @@
 package org.leopard.internal.config;
 
-import org.leopard.internal.metadata.ElectAssignRule;
+import org.leopard.internal.metadata.PartitionAssignRule;
 
 import java.util.Properties;
 
@@ -99,15 +99,11 @@ public class ServerConfig {
         return object2Int(props.getOrDefault(MESSAGE_HANDLE_ALIGN_LIMIT, 1000));
     }
 
-    public String getNameserverUrl() {
-        return object2String(props.getOrDefault(NAMESERVER_URL, "127.0.0.1:9100"));
-    }
-
     public int getHeartbeatScheduleFixedDelayMs() {
         return object2Int(props.getOrDefault(HEARTBEAT_SCHEDULE_FIXED_DELAY_MS, 30000));
     }
 
     public String getElectAssignRule() {
-        return object2String(props.getOrDefault(PARTITION_LEADER_ELECT_RULE, ElectAssignRule.AVERAGE));
+        return object2String(props.getOrDefault(PARTITION_LEADER_ELECT_RULE, PartitionAssignRule.AVERAGE));
     }
 }

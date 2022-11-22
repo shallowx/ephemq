@@ -2,6 +2,7 @@ package org.leopard.ledger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -11,11 +12,15 @@ import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Subscription;
 import org.leopard.internal.config.ServerConfig;
 import org.leopard.internal.metrics.LedgerMetricsListener;
-import org.leopard.remote.RemoteException;
+import org.leopard.remote.util.NetworkUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.leopard.remote.RemoteException.Failure.MESSAGE_APPEND_EXCEPTION;
+import static org.leopard.remote.RemoteException.Failure.SUBSCRIBE_EXCEPTION;
+import static org.leopard.remote.RemoteException.of;
 
 @ThreadSafe
 public class LedgerEngine {
@@ -25,35 +30,54 @@ public class LedgerEngine {
     private final ServerConfig config;
     private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
     private final List<LedgerMetricsListener> listeners = new LinkedList<>();
+    private final EventExecutor retryExecutor;
 
     public LedgerEngine(ServerConfig config) {
         this.config = config;
+        this.retryExecutor = NetworkUtils.newEventExecutorGroup(1, "ledger-init-retry").next();
     }
 
     public void start() throws Exception {
+
     }
 
-    public void initLog(String topic, int partition, int epoch, int ledgerId, Promise<Void> promise) {
-        try {
-            Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> new Ledger(config, topic, partition, ledgerId, epoch));
-            ledger.start();
+    public void addListeners(LedgerMetricsListener listener) {
+        this.listeners.add(listener);
+    }
 
-            ledgers.putIfAbsent(ledgerId, ledger);
+    public void initLog(String topic, int partitionId, int epoch, int ledgerId) {
+        try {
+            Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> {
+                Ledger newLedger = new Ledger(config, topic, partitionId, ledgerId, epoch);
+
+                try {
+                    newLedger.start();
+                    ledgers.putIfAbsent(ledgerId, newLedger);
+
+                } catch (Exception e) {
+                    throw new LedgerException(e.getMessage());
+                }
+
+                for (LedgerMetricsListener listener : listeners) {
+                    // analyze and resolve exceptions by {@link org.leopard.internal.metrics.LedgerMetricsListener#onInitLedger}
+                    listener.onInitLedger(newLedger);
+                }
+                return newLedger;
+            });
 
             if (logger.isInfoEnabled()) {
-                logger.info("Initialize log successfully, topic={} partition={} ledger={}", topic, partition, ledgerId);
+                logger.info("Initialize log successfully, topic={} partitionId={} ledgerId={}", topic, ledger.getPartition(), ledger.getLedgerId());
             }
-
-            for (LedgerMetricsListener listener : listeners) {
-                listener.onInitLedger(ledger);
-            }
-
-            promise.trySuccess(null);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Initialize log failed, topic={} partition={} ledger={}. error:{}", topic, partition, ledgerId, t);
+            String error = t instanceof LedgerException ?
+                    String.format("Ledger init failure and try again, topic=%s partitionId=%d ledgerId=%d", topic, partitionId, ledgerId) : t.getMessage();
+            if (t instanceof LedgerException) {
+                retryExecutor.execute(() -> initLog(topic, partitionId, epoch, ledgerId));
             }
-            promise.tryFailure(t);
+
+            if (logger.isErrorEnabled()) {
+                logger.error(error);
+            }
         }
     }
 
@@ -62,7 +86,7 @@ public class LedgerEngine {
         Ledger ledger = getLedger(ledgerId);
         try {
             if (ledger == null) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
+                promise.tryFailure(of(SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
                 return;
             }
 
@@ -82,7 +106,7 @@ public class LedgerEngine {
         Ledger ledger = getLedger(ledgerId);
         try {
             if (ledger == null) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
+                promise.tryFailure(of(SUBSCRIBE_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
                 return;
             }
             checkLedgerState(ledger);
@@ -101,13 +125,14 @@ public class LedgerEngine {
         Ledger ledger = getLedger(ledgerId);
         try {
             if (ledger == null) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
+                promise.tryFailure(of(MESSAGE_APPEND_EXCEPTION, String.format("Ledger %d not found", ledgerId)));
                 return;
             }
 
             checkLedgerState(ledger);
 
             for (LedgerMetricsListener listener : listeners) {
+                // analyze and resolve exceptions by {@link org.leopard.internal.metrics.LedgerMetricsListener#onReceiveMessage}
                 listener.onReceiveMessage(ledger.getTopic(), queue, ledger.getLedgerId(), 1);
             }
 
