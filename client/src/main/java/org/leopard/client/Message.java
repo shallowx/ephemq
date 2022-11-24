@@ -1,7 +1,6 @@
 package org.leopard.client;
 
 import com.google.common.base.Joiner;
-
 import java.util.Arrays;
 
 public class Message {
@@ -15,7 +14,7 @@ public class Message {
     private final Extras extras;
 
     public Message(String topic, String queue, byte[] message, Extras extras) {
-       this(topic, queue, (short) -1, message, extras);
+        this(topic, queue, (short) -1, message, extras);
     }
 
     public Message(String topic, String queue, byte[] message, int epoch, long index, Extras extras) {
@@ -27,7 +26,7 @@ public class Message {
         this.queue = queue;
         this.version = version;
         this.message = message;
-        this.extras = extras ;
+        this.extras = extras;
     }
 
     public Message(String topic, String queue, short version, byte[] message, int epoch, long index, Extras extras) {
@@ -39,7 +38,6 @@ public class Message {
         this.index = index;
         this.extras = extras;
     }
-
 
     public short version() {
         return version;
@@ -70,6 +68,7 @@ public class Message {
     }
 
     @Override
+    @SuppressWarnings("all")
     public String toString() {
         return "Message{" +
                 "topic='" + topic + '\'' +

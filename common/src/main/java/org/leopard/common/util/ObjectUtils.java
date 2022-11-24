@@ -1,9 +1,10 @@
 package org.leopard.common.util;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.Collection;
 import java.util.Map;
+import javax.naming.OperationNotSupportedException;
 
+@SuppressWarnings("unused")
 public final class ObjectUtils {
 
     private static final float FLOAT_ZERO = 0.0F;
@@ -23,6 +24,7 @@ public final class ObjectUtils {
         return arg;
     }
 
+    @SafeVarargs
     public static <T> T[] deepCheckNotNull(String text, T... varargs) {
         if (varargs == null) {
             throw new NullPointerException(text);
@@ -57,6 +59,7 @@ public final class ObjectUtils {
         }
         return i;
     }
+
     public static int checkNegative(int i, String name) {
         if (i >= INT_ZERO) {
             throw new IllegalArgumentException(name + " : " + i + " (expected: < 0)");
