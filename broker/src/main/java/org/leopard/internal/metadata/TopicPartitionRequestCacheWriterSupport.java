@@ -4,6 +4,11 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.Promise;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
@@ -14,25 +19,22 @@ import org.leopard.internal.config.ServerConfig;
 import org.leopard.ledger.LedgerEngine;
 import org.leopard.network.MessageProcessorAware;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Thread safety is guaranteed by aware {@link MessageProcessorAware} variable {@code commandExecutor} of the thread.
  */
 public class TopicPartitionRequestCacheWriterSupport {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
+    private static final InternalLogger logger =
+            InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
 
     private final PartitionLeaderAssignorFactory factory;
     private final LoadingCache<String, Set<Partition>> cache;
     private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
     private final LedgerEngine engine;
+    private final ServerConfig config;
 
     public TopicPartitionRequestCacheWriterSupport(ServerConfig config, ResourceContext context) {
+        this.config = config;
         this.factory = new PartitionLeaderAssignorFactory(context, config);
         this.nodeCacheWriterSupport = context.getNodeCacheWriterSupport();
         this.engine = context.getLedgerEngine();
@@ -58,7 +60,9 @@ public class TopicPartitionRequestCacheWriterSupport {
         }
 
         if (replicateLimit > partitionLimit) {
-            promise.tryFailure(new IllegalArgumentException("The cluster does not have enough nodes to allocate replicates, and node_count=" + nodeCacheWriterSupport.size()));
+            promise.tryFailure(new IllegalArgumentException(
+                    "The cluster does not have enough nodes to allocate replicates, and node_count="
+                            + nodeCacheWriterSupport.size()));
             return;
         }
 
@@ -75,8 +79,8 @@ public class TopicPartitionRequestCacheWriterSupport {
 
         try {
             partitions = factory.assign(topic, partitionLimit, replicateLimit);
-            this.cache.put(topic, partitions);
 
+            cache.put(topic, partitions);
             for (Partition partition : partitions) {
                 engine.initLog(topic, partition.getId(), partition.getEpoch(), partition.getLedgerId());
             }
@@ -85,9 +89,7 @@ public class TopicPartitionRequestCacheWriterSupport {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to create topic, topic={}", topic, e);
             }
-            return;
         }
-        promise.trySuccess(null);
     }
 
     public void delTopic(String topic, Promise<Void> promise) {
@@ -95,7 +97,7 @@ public class TopicPartitionRequestCacheWriterSupport {
             promise.tryFailure(new IllegalArgumentException("Topic cannot be empty"));
         }
 
-        this.cache.invalidate(topic);
+        promise.addListener(future -> cache.invalidate(topic));
     }
 
     public Set<Partition> loadAll(List<String> topics) throws Exception {
