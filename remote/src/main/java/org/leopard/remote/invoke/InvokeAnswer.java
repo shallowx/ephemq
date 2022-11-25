@@ -1,5 +1,6 @@
 package org.leopard.remote.invoke;
 
+@SuppressWarnings("all")
 public interface InvokeAnswer<V> {
 
     boolean isCompleted();

@@ -1,8 +1,9 @@
 package org.leopard.common.util;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.Arrays;
+import javax.naming.OperationNotSupportedException;
 
+@SuppressWarnings("all")
 public final class StringUtils {
 
     public static final char DOUBLE_QUOTE = '\"';

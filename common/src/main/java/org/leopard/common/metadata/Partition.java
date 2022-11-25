@@ -81,6 +81,7 @@ public class Partition {
             partition.replicates = this.replicates;
             partition.leader = this.leader;
             partition.ledgerId = this.ledgerId;
+            partition.epoch = this.epoch;
 
             return partition;
         }
@@ -88,8 +89,12 @@ public class Partition {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Partition partition)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Partition partition)) {
+            return false;
+        }
         return getId() == partition.getId() &&
                 getLedgerId() == partition.getLedgerId();
     }
@@ -106,6 +111,7 @@ public class Partition {
                 ", ledgerId=" + ledgerId +
                 ", leader='" + leader + '\'' +
                 ", replicates=" + replicates +
+                ", epoch=" + epoch +
                 '}';
     }
 }

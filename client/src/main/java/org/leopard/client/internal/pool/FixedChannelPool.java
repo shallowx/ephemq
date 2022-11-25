@@ -1,5 +1,7 @@
 package org.leopard.client.internal.pool;
 
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -7,6 +9,16 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import java.net.SocketAddress;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.leopard.client.Client;
 import org.leopard.client.ClientConfig;
 import org.leopard.client.internal.ClientChannel;
@@ -14,19 +26,6 @@ import org.leopard.client.internal.ClientChannelInitializer;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.util.ObjectUtils;
-
-import java.net.SocketAddress;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
-import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
 
 public class FixedChannelPool implements ShallowChannelPool {
 
@@ -45,7 +44,8 @@ public class FixedChannelPool implements ShallowChannelPool {
         this.bootstrap = client.getBootstrap();
         this.clientConfig = client.getClientConfig();
         this.channelPools = new ConcurrentHashMap<>(clientConfig.getBootstrapSocketAddress().size());
-        this.assembleChannels = new ConcurrentHashMap<>(clientConfig.getBootstrapSocketAddress().size() * clientConfig.getChannelFixedPoolCapacity());
+        this.assembleChannels = new ConcurrentHashMap<>(
+                clientConfig.getBootstrapSocketAddress().size() * clientConfig.getChannelFixedPoolCapacity());
         this.healthChecker = healthChecker;
         this.bootstrapAddress = constructBootstrap();
     }
@@ -83,7 +83,8 @@ public class FixedChannelPool implements ShallowChannelPool {
     }
 
     private List<SocketAddress> constructBootstrap() {
-        return ObjectUtils.checkNotNull(switchSocketAddress(clientConfig.getBootstrapSocketAddress()), "Client bootstrap address cannot be null");
+        return ObjectUtils.checkNotNull(switchSocketAddress(clientConfig.getBootstrapSocketAddress()),
+                "Client bootstrap address cannot be null");
     }
 
     @Override
@@ -140,11 +141,13 @@ public class FixedChannelPool implements ShallowChannelPool {
         if (futures == null || futures.isEmpty()) {
             return null;
         }
-        return futures.stream().filter(healthChecker::isHealthy).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+        return futures.stream().filter(healthChecker::isHealthy)
+                .collect(Collectors.toCollection(CopyOnWriteArrayList::new));
     }
 
     private Future<ClientChannel> randomAcquire() {
-        SocketAddress socketAddress = bootstrapAddress.get(bootstrapAddress.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(bootstrapAddress.size()));
+        SocketAddress socketAddress = bootstrapAddress.get(
+                bootstrapAddress.size() == 1 ? 0 : ThreadLocalRandom.current().nextInt(bootstrapAddress.size()));
         List<Future<ClientChannel>> futures = channelPools.get(socketAddress);
 
         if (futures != null && !futures.isEmpty()) {
@@ -177,7 +180,8 @@ public class FixedChannelPool implements ShallowChannelPool {
         });
 
         channel.closeFuture().addListener((ChannelFutureListener) f -> {
-            promise.tryFailure(new IllegalStateException(String.format("Channel<%s> was closed", f.channel().toString())));
+            promise.tryFailure(
+                    new IllegalStateException(String.format("Channel<%s> was closed", f.channel().toString())));
             assembleChannels.remove(f.channel().id().asLongText());
         });
         return promise;
@@ -216,6 +220,19 @@ public class FixedChannelPool implements ShallowChannelPool {
 
     @Override
     public void shutdownGracefully() throws Exception {
-        // do nothing
+        Set<Map.Entry<SocketAddress, List<Future<ClientChannel>>>> entries = channelPools.entrySet();
+        for (Map.Entry<SocketAddress, List<Future<ClientChannel>>> entry : entries) {
+            List<Future<ClientChannel>> futures = entry.getValue();
+            if (futures.isEmpty()) {
+                continue;
+            }
+
+            for (Future<ClientChannel> future : futures) {
+                ClientChannel clientChannel = future.getNow();
+                clientChannel.close();
+
+                future.cancel(true);
+            }
+        }
     }
 }

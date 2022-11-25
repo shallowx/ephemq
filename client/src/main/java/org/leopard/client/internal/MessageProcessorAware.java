@@ -1,5 +1,6 @@
 package org.leopard.client.internal;
 
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -17,8 +18,6 @@ import org.leopard.remote.processor.ProcessorAware;
 import org.leopard.remote.proto.notify.MessagePushSignal;
 import org.leopard.remote.util.NetworkUtils;
 
-import static org.leopard.remote.util.ProtoBufUtils.readProto;
-
 public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Client {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProcessorAware.class);
@@ -35,14 +34,16 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Cli
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
-        Promise<ClientChannel> promise = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().assemblePromise(channel);
+        Promise<ClientChannel> promise =
+                DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().assemblePromise(channel);
         if (null != promise) {
             promise.setSuccess(clientChannel);
         }
     }
 
     @Override
-    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
+    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type,
+                        short version) {
         try {
             switch (command) {
                 case HANDLE_MESSAGE -> {
@@ -56,7 +57,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Cli
                 }
 
                 case CLUSTER_CHANGED -> {
-                    MetadataWriter metadataManager = client.getMetadataManager();
+                    MetadataWriter metadataManager = client.getMetadataWriter();
                     metadataManager.refreshMetadata();
                 }
 
@@ -66,13 +67,15 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Cli
                     }
 
                     if (null != answer) {
-                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Unsupported command exception <" + command + ">"));
+                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,
+                                "Unsupported command exception <" + command + ">"));
                     }
                 }
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Client process <{}> code:[{}] process error", NetworkUtils.switchAddress(channel), ProcessCommand.Client.ACTIVE.get(command));
+                logger.error("Client process <{}> code:[{}] process error", NetworkUtils.switchAddress(channel),
+                        ProcessCommand.Client.ACTIVE.get(command));
             }
             tryFailure(answer, t);
         }

@@ -1,9 +1,20 @@
 package org.leopard.client.consumer;
 
+import static org.leopard.remote.processor.ProcessCommand.Server.CLEAN_SUBSCRIBE;
+import static org.leopard.remote.processor.ProcessCommand.Server.SUBSCRIBE;
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.leopard.client.Client;
 import org.leopard.client.internal.ClientChannel;
 import org.leopard.client.internal.metadata.MessageRouter;
@@ -19,19 +30,6 @@ import org.leopard.remote.proto.server.CleanSubscribeRequest;
 import org.leopard.remote.proto.server.CleanSubscribeResponse;
 import org.leopard.remote.proto.server.SubscribeRequest;
 import org.leopard.remote.proto.server.SubscribeResponse;
-
-import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.leopard.remote.processor.ProcessCommand.Server.CLEAN_SUBSCRIBE;
-import static org.leopard.remote.processor.ProcessCommand.Server.SUBSCRIBE;
-import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
-import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 @SuppressWarnings("all")
 public class MessageConsumer implements Consumer {
@@ -72,7 +70,7 @@ public class MessageConsumer implements Consumer {
 
         client.start();
 
-        this.manager = client.getMetadataManager();
+        this.manager = client.getMetadataWriter();
         this.pool = client.getChanelPool();
 
         subscribeTaskExecutor.schedule(() -> resetSuscribe(null), 5000, TimeUnit.MILLISECONDS);
@@ -103,12 +101,14 @@ public class MessageConsumer implements Consumer {
     }
 
     @Override
-    public void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback) {
+    public void subscribeAsync(String topic, String queue, short version, int epoch, long index,
+                               SubscribeCallback callback) {
         this.subscribeAsync(topic, queue, version, epoch, index, callback, null);
     }
 
     @Override
-    public Subscription subscribe(String topic, String queue, short version, int epoch, long index, MessageListener listener) {
+    public Subscription subscribe(String topic, String queue, short version, int epoch, long index,
+                                  MessageListener listener) {
         checkTopic(topic);
         checkQueue(queue);
 
@@ -120,7 +120,8 @@ public class MessageConsumer implements Consumer {
         Promise<SubscribeResponse> promise = newImmediatePromise();
         try {
             doSubscribe(topic, queue, version, epoch, index, promise);
-            SubscribeResponse response = promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+            SubscribeResponse response =
+                    promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
             return Subscription
                     .newBuilder()
                     .queue(response.getQueue())
@@ -130,12 +131,14 @@ public class MessageConsumer implements Consumer {
                     .index(response.getIndex())
                     .build();
         } catch (Throwable t) {
-            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s, error:%s", topic, queue, t));
+            throw new RuntimeException(
+                    String.format("Message subscribe failed - topic=%s queue=%s, error:%s", topic, queue, t));
         }
     }
 
     @Override
-    public void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback, MessageListener listener) {
+    public void subscribeAsync(String topic, String queue, short version, int epoch, long index,
+                               SubscribeCallback callback, MessageListener listener) {
         checkTopic(topic);
         checkQueue(queue);
 
@@ -170,7 +173,9 @@ public class MessageConsumer implements Consumer {
         try {
             doSubscribe(topic, queue, version, epoch, index, promise);
         } catch (Throwable t) {
-            throw new RuntimeException(String.format("Message subscribe failed - topic=%s queue=%s name=%s error:%s", topic, queue, name, t));
+            throw new RuntimeException(
+                    String.format("Message subscribe failed - topic=%s queue=%s name=%s error:%s", topic, queue, name,
+                            t));
         }
     }
 
@@ -190,7 +195,8 @@ public class MessageConsumer implements Consumer {
     }
 
     @Override
-    public void subscribeAsync(String topic, String queue, int epoch, long index, SubscribeCallback callback, MessageListener listener) {
+    public void subscribeAsync(String topic, String queue, int epoch, long index, SubscribeCallback callback,
+                               MessageListener listener) {
         this.subscribeAsync(topic, queue, (short) -1, epoch, index, callback, listener);
     }
 
@@ -210,7 +216,8 @@ public class MessageConsumer implements Consumer {
     }
 
     @Override
-    public void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback, MessageListener listener) {
+    public void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback,
+                               MessageListener listener) {
         this.subscribeAsync(topic, queue, version, (short) -1, (short) -1, callback, listener);
     }
 
@@ -238,7 +245,8 @@ public class MessageConsumer implements Consumer {
         this.subscribeAsync(topic, queue, (short) -1, (short) -1, (short) -1, callback, listener);
     }
 
-    private void doSubscribe(String topic, String queue, short version, int epoch, long index, Promise<SubscribeResponse> promise) {
+    private void doSubscribe(String topic, String queue, short version, int epoch, long index,
+                             Promise<SubscribeResponse> promise) {
         MessageRouter messageRouter = manager.queryRouter(topic);
         if (null == messageRouter) {
             throw new RuntimeException(String.format("Message router is empty, and topic=%s name=%s", topic, name));
@@ -249,7 +257,8 @@ public class MessageConsumer implements Consumer {
         ClientChannel clientChannel = acquireChannel(holder);
 
         if (clientChannel == null) {
-            throw new RuntimeException(String.format("Any active channel not found for topic<%s> of ledger<%d>", topic, holder.ledger()));
+            throw new RuntimeException(
+                    String.format("Any active channel not found for topic<%s> of ledger<%d>", topic, holder.ledger()));
         }
 
         SubscribeRequest request = SubscribeRequest.newBuilder()
@@ -264,7 +273,8 @@ public class MessageConsumer implements Consumer {
         promise.addListener(f -> {
             if (f.isSuccess()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Subscribe successfully, topic={} queue={} ledger={} version={}, epoch={} index={}", topic, queue, ledger, epoch, index);
+                    logger.debug("Subscribe successfully, topic={} queue={} ledger={} version={}, epoch={} index={}",
+                            topic, queue, ledger, epoch, index);
                 }
                 pushConsumerListener.set(epoch, index, queue, ledger, version);
 
@@ -278,7 +288,8 @@ public class MessageConsumer implements Consumer {
         });
 
         ledgerOfChannels.put(ledger, clientChannel);
-        clientChannel.invoker().invoke(SUBSCRIBE, config.getSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
+        clientChannel.invoker()
+                .invoke(SUBSCRIBE, config.getSubscribeInvokeTimeMs(), promise, request, SubscribeResponse.class);
     }
 
     @Override
@@ -343,7 +354,9 @@ public class MessageConsumer implements Consumer {
 
                     MessageRouter messageRouter = manager.queryRouter(topic);
                     if (null == messageRouter) {
-                        throw new RuntimeException(String.format("Message rest subscribe router is empty, and topic=%s name=%s", topic, name));
+                        throw new RuntimeException(
+                                String.format("Message rest subscribe router is empty, and topic=%s name=%s", topic,
+                                        name));
                     }
 
                     MessageRoutingHolder holder = messageRouter.allocRouteHolder(queue);
@@ -392,7 +405,8 @@ public class MessageConsumer implements Consumer {
             }
             SocketAddress leader = holder.leader();
             if (leader == null) {
-                throw new IllegalArgumentException(String.format("No leader found for topic<%s> of ledger<%d>", topic, ledger));
+                throw new IllegalArgumentException(
+                        String.format("No leader found for topic<%s> of ledger<%d>", topic, ledger));
             }
 
             ClientChannel newLeaderChannel = pool.acquireHealthyOrNew(leader);
@@ -451,7 +465,8 @@ public class MessageConsumer implements Consumer {
             }
         });
 
-        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getCleanSubscribeInvokeTimeMs(), promise, request, CleanSubscribeResponse.class);
+        clientChannel.invoker().invoke(CLEAN_SUBSCRIBE, config.getCleanSubscribeInvokeTimeMs(), promise, request,
+                CleanSubscribeResponse.class);
     }
 
     private void checkTopic(String topic) {

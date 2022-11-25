@@ -72,10 +72,6 @@
       <groupId>org.leopard</groupId>
       <artifactId>mertics</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.leopard</groupId>
-      <artifactId>zookeeper-api</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
