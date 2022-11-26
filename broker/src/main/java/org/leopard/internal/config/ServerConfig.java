@@ -1,11 +1,29 @@
 package org.leopard.internal.config;
 
-import org.leopard.internal.metadata.PartitionAssignRule;
-
+import static org.leopard.common.util.TypeUtils.object2Boolean;
+import static org.leopard.common.util.TypeUtils.object2Int;
+import static org.leopard.common.util.TypeUtils.object2String;
+import static org.leopard.internal.config.ConfigConstants.CLUSTER_NAME;
+import static org.leopard.internal.config.ConfigConstants.EXPOSED_HOST;
+import static org.leopard.internal.config.ConfigConstants.EXPOSED_PORT;
+import static org.leopard.internal.config.ConfigConstants.IO_THREAD_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.LOG_SEGMENT_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.LOG_SEGMENT_SIZE;
+import static org.leopard.internal.config.ConfigConstants.MESSAGE_COMMAND_HANDLE_THREAD_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.MESSAGE_HANDLE_ALIGN_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.MESSAGE_HANDLE_ASSIGN_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.MESSAGE_HANDLE_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.MESSAGE_HANDLE_THREAD_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.METADATA_CACHING_REFRESH_MS;
+import static org.leopard.internal.config.ConfigConstants.NETWORK_LOGGING_DEBUG_ENABLED;
+import static org.leopard.internal.config.ConfigConstants.OS_IS_EPOLL_PREFER;
+import static org.leopard.internal.config.ConfigConstants.PARTITION_LEADER_ASSIGN_RULE;
+import static org.leopard.internal.config.ConfigConstants.PROCESS_COMMAND_HANDLE_THREAD_LIMIT;
+import static org.leopard.internal.config.ConfigConstants.SERVER_ID;
+import static org.leopard.internal.config.ConfigConstants.SOCKET_WRITE_HIGH_WATER_MARK;
+import static org.leopard.internal.config.ConfigConstants.WORK_THREAD_LIMIT;
 import java.util.Properties;
-
-import static org.leopard.common.util.TypeUtils.*;
-import static org.leopard.internal.config.ConfigConstants.*;
+import org.leopard.internal.metadata.PartitionAssignRule;
 
 public class ServerConfig {
 
@@ -55,16 +73,8 @@ public class ServerConfig {
         return object2Boolean(props.getOrDefault(NETWORK_LOGGING_DEBUG_ENABLED, false));
     }
 
-    public int getInternalChannelPoolLimit() {
-        return object2Int(props.getOrDefault(INTERNAL_CHANNEL_POOL_LIMIT, 1));
-    }
-
     public String getClusterName() {
         return object2String(props.getOrDefault(CLUSTER_NAME, "shallow"));
-    }
-
-    public int getInvokeTimeMs() {
-        return object2Int(props.getOrDefault(INVOKE_TIMEOUT_MS, 2000));
     }
 
     public int getLogSegmentLimit() {
@@ -97,10 +107,6 @@ public class ServerConfig {
 
     public int getMessageHandleAlignLimit() {
         return object2Int(props.getOrDefault(MESSAGE_HANDLE_ALIGN_LIMIT, 1000));
-    }
-
-    public int getHeartbeatScheduleFixedDelayMs() {
-        return object2Int(props.getOrDefault(HEARTBEAT_SCHEDULE_FIXED_DELAY_MS, 30000));
     }
 
     public String getElectAssignRule() {

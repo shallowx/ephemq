@@ -5,21 +5,17 @@ public class ConfigConstants {
     public static final String CLUSTER_NAME = "cluster";
     public static final String SERVER_ID = "server.id";
 
-    public static final String HEARTBEAT_SCHEDULE_FIXED_DELAY_MS = "heartbeat.schedule.fixed.delay.ms";
-
     public static final String EXPOSED_HOST = "exposed.host";
     public static final String EXPOSED_PORT = "exposed.port";
 
     public static final String PARTITION_LEADER_ASSIGN_RULE = "partition.leader.assign.rule";
 
-    public static final String INVOKE_TIMEOUT_MS = "invoke.timeout.ms";
     public static final String IO_THREAD_LIMIT = "io.thread.limit";
     public static final String WORK_THREAD_LIMIT = "network.thread.limit";
     public static final String OS_IS_EPOLL_PREFER = "os.epoll.prefer";
 
     public static final String SOCKET_WRITE_HIGH_WATER_MARK = "socket.write.high.water.mark";
     public static final String NETWORK_LOGGING_DEBUG_ENABLED = "network.logging.debug.enabled";
-    public static final String INTERNAL_CHANNEL_POOL_LIMIT = "internal.channel.pool.limit";
 
     public static final String LOG_SEGMENT_LIMIT = "ledger.segment.limit";
     public static final String LOG_SEGMENT_SIZE = "ledger.segment.size";
