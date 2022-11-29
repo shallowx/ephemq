@@ -1,5 +1,8 @@
 package org.leopard.ledger;
 
+import static org.leopard.remote.RemoteException.Failure.MESSAGE_APPEND_EXCEPTION;
+import static org.leopard.remote.RemoteException.Failure.SUBSCRIBE_EXCEPTION;
+import static org.leopard.remote.RemoteException.of;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
@@ -7,20 +10,15 @@ import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.concurrent.ThreadSafe;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Subscription;
 import org.leopard.internal.config.ServerConfig;
 import org.leopard.internal.metrics.LedgerMetricsListener;
 import org.leopard.remote.util.NetworkUtils;
-
-import javax.annotation.concurrent.ThreadSafe;
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.leopard.remote.RemoteException.Failure.MESSAGE_APPEND_EXCEPTION;
-import static org.leopard.remote.RemoteException.Failure.SUBSCRIBE_EXCEPTION;
-import static org.leopard.remote.RemoteException.of;
 
 @ThreadSafe
 public class LedgerEngine {
@@ -52,25 +50,27 @@ public class LedgerEngine {
 
                 try {
                     newLedger.start();
-                    ledgers.putIfAbsent(ledgerId, newLedger);
 
                 } catch (Exception e) {
                     throw new LedgerException(e.getMessage());
                 }
 
                 for (LedgerMetricsListener listener : listeners) {
-                    // analyze and resolve exceptions by {@link org.leopard.internal.metrics.LedgerMetricsListener#onInitLedger}
+                    // analyze and resolve exceptions by {@link org.leopard.internal.metrics
+                    // .LedgerMetricsListener#onInitLedger}
                     listener.onInitLedger(newLedger);
                 }
                 return newLedger;
             });
 
             if (logger.isInfoEnabled()) {
-                logger.info("Initialize log successfully, topic={} partitionId={} ledgerId={}", topic, ledger.getPartition(), ledger.getLedgerId());
+                logger.info("Initialize log successfully, topic={} partitionId={} ledgerId={}", topic,
+                        ledger.getPartition(), ledger.getLedgerId());
             }
         } catch (Throwable t) {
             String error = t instanceof LedgerException ?
-                    String.format("Ledger init failure and try again, topic=%s partitionId=%d ledgerId=%d", topic, partitionId, ledgerId) : t.getMessage();
+                    String.format("Ledger init failure and try again, topic=%s partitionId=%d ledgerId=%d", topic,
+                            partitionId, ledgerId) : t.getMessage();
             if (t instanceof LedgerException) {
                 retryExecutor.execute(() -> initLog(topic, partitionId, epoch, ledgerId));
             }
@@ -82,7 +82,8 @@ public class LedgerEngine {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void subscribe(Channel channel, String topic, String queue, short version, int ledgerId, int epoch, long index, Promise<Subscription> promise) {
+    public void subscribe(Channel channel, String topic, String queue, short version, int ledgerId, int epoch,
+                          long index, Promise<Subscription> promise) {
         Ledger ledger = getLedger(ledgerId);
         try {
             if (ledger == null) {
@@ -95,7 +96,8 @@ public class LedgerEngine {
             ledger.subscribe(channel, topic, queue, version, epoch, index, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to subscribe, channel={} topic={} queue={} version={} epoch={} index={}", channel.toString(), ledger.getTopic(), queue, version, epoch, index);
+                logger.error("Failed to subscribe, channel={} topic={} queue={} version={} epoch={} index={}",
+                        channel.toString(), ledger.getTopic(), queue, version, epoch, index);
             }
             promise.tryFailure(t);
         }
@@ -114,7 +116,8 @@ public class LedgerEngine {
             ledger.clean(channel, topic, queue, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to clean subscribe, channel={} topic={} queue={} version={} epoch={} index={}", channel.toString(), ledger.getTopic(), queue);
+                logger.error("Failed to clean subscribe, channel={} topic={} queue={} version={} epoch={} index={}",
+                        channel.toString(), ledger.getTopic(), queue);
             }
             promise.tryFailure(t);
         }
@@ -132,14 +135,16 @@ public class LedgerEngine {
             checkLedgerState(ledger);
 
             for (LedgerMetricsListener listener : listeners) {
-                // analyze and resolve exceptions by {@link org.leopard.internal.metrics.LedgerMetricsListener#onReceiveMessage}
+                // analyze and resolve exceptions by {@link org.leopard.internal.metrics
+                // .LedgerMetricsListener#onReceiveMessage}
                 listener.onReceiveMessage(ledger.getTopic(), queue, ledger.getLedgerId(), 1);
             }
 
             ledger.append(queue, version, payload, promise);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to append message, topic={} queue={} version={}, error:{}", ledger.getTopic(), queue, version, t);
+                logger.error("Failed to append message, topic={} queue={} version={}, error:{}", ledger.getTopic(),
+                        queue, version, t);
             }
             promise.tryFailure(t);
         }

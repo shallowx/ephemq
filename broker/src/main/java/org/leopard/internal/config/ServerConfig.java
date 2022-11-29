@@ -74,7 +74,7 @@ public class ServerConfig {
     }
 
     public String getClusterName() {
-        return object2String(props.getOrDefault(CLUSTER_NAME, "shallow"));
+        return object2String(props.getOrDefault(CLUSTER_NAME, "leopard"));
     }
 
     public int getLogSegmentLimit() {
@@ -110,7 +110,7 @@ public class ServerConfig {
     }
 
     public String getElectAssignRule() {
-        return object2String(props.getOrDefault(PARTITION_LEADER_ASSIGN_RULE, PartitionAssignRule.AVERAGE));
+        return object2String(props.getOrDefault(PARTITION_LEADER_ASSIGN_RULE, PartitionAssignRule.RANDOM));
     }
 
     public int getMetadataRefreshMs() {

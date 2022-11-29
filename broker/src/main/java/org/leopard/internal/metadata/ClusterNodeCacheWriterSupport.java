@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Promise;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -72,10 +73,20 @@ public class ClusterNodeCacheWriterSupport {
 
     public void register(Promise<Void> promise) throws Exception {
         String cluster = config.getClusterName();
+        Set<Node> nodes = this.cache.get(cluster);
+        if (nodes == null) {
+            nodes = new HashSet<>();
+        }
+        nodes.add(buildNode(cluster));
+        this.cache.put(cluster, nodes);
     }
 
     public void unregister() throws Exception {
         String cluster = config.getClusterName();
+        Set<Node> nodes = this.cache.get(cluster);
+        if (nodes != null && !nodes.isEmpty()) {
+            nodes.remove(buildNode(cluster));
+        }
     }
 
     private Node buildNode(String cluster) {
@@ -95,7 +106,7 @@ public class ClusterNodeCacheWriterSupport {
     }
 
     public Node getThisNode() {
-        return null;
+        return buildNode(config.getClusterName());
     }
 
     public int size() {

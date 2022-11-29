@@ -2,7 +2,7 @@ package org.leopard.internal.config;
 
 public class ConfigConstants {
 
-    public static final String CLUSTER_NAME = "cluster";
+    public static final String CLUSTER_NAME = "server.cluster";
     public static final String SERVER_ID = "server.id";
 
     public static final String EXPOSED_HOST = "exposed.host";
