@@ -1,13 +1,12 @@
 package org.leopard.client;
 
+import java.util.List;
+import java.util.Set;
 import org.junit.Test;
 import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Node;
-
-import java.util.List;
-import java.util.Set;
 
 public class ClusterTest {
 
@@ -20,7 +19,8 @@ public class ClusterTest {
         Client client = new Client("cluster-client", clientConfig);
         client.start();
 
-        Set<Node> nodeRecords = client.getMetadataManager().queryNodeRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly());
+        Set<Node> nodeRecords = client.getMetadataWriter()
+                .queryNodeRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly());
 
         logger.info("result:{}", nodeRecords);
     }

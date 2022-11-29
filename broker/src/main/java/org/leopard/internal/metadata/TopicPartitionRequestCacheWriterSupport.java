@@ -84,6 +84,7 @@ public class TopicPartitionRequestCacheWriterSupport {
             for (Partition partition : partitions) {
                 engine.initLog(topic, partition.getId(), partition.getEpoch(), partition.getLedgerId());
             }
+            promise.trySuccess(null);
         } catch (Exception e) {
             promise.tryFailure(e);
             if (logger.isErrorEnabled()) {
