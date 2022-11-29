@@ -30,13 +30,19 @@ public class ClusterNodeCacheWriterSupport {
     private final ScheduledExecutorService registryScheduledExecutor;
     private final CountDownLatch latch = new CountDownLatch(1);
 
+    private final String STARTED = "started";
+    private final String CLOSED = "closed";
+    private final String LATENT = "latent";
+
     public ClusterNodeCacheWriterSupport(ServerConfig config) {
         this.config = config;
-        this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MINUTES)
+        this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {
                     @Override
                     public @Nullable Set<Node> load(String key) throws Exception {
-                        return null;
+                        Set<Node> nodes = new HashSet<>();
+                        nodes.add(buildNode(key, STARTED));
+                        return nodes;
                     }
                 });
         this.heartbeatScheduledExecutor =
@@ -77,23 +83,26 @@ public class ClusterNodeCacheWriterSupport {
         if (nodes == null) {
             nodes = new HashSet<>();
         }
-        nodes.add(buildNode(cluster));
+        nodes.add(buildNode(cluster, STARTED));
         this.cache.put(cluster, nodes);
+
+        promise.trySuccess(null);
     }
 
     public void unregister() throws Exception {
         String cluster = config.getClusterName();
         Set<Node> nodes = this.cache.get(cluster);
         if (nodes != null && !nodes.isEmpty()) {
-            nodes.remove(buildNode(cluster));
+            nodes.remove(buildNode(cluster, CLOSED));
         }
     }
 
-    private Node buildNode(String cluster) {
+    private Node buildNode(String cluster, String state) {
         return Node.newBuilder()
                 .cluster(cluster)
                 .lastKeepLiveTime(System.currentTimeMillis())
                 .name(config.getServerId())
+                .state(state)
                 .socketAddress(NetworkUtils.switchSocketAddress(config.getExposedHost(), config.getExposedPort()))
                 .build();
     }
@@ -102,11 +111,11 @@ public class ClusterNodeCacheWriterSupport {
         if (StringUtils.isNullOrEmpty(cluster)) {
             cluster = config.getClusterName();
         }
-        return cache.get(cluster);
+        return this.cache.get(cluster);
     }
 
     public Node getThisNode() {
-        return buildNode(config.getClusterName());
+        return buildNode(config.getClusterName(), STARTED);
     }
 
     public int size() {

@@ -1,14 +1,14 @@
 package org.leopard.internal.metadata;
 
-import org.leopard.common.metadata.Node;
-import org.leopard.common.metadata.Partition;
-import org.leopard.internal.config.ServerConfig;
-
-import javax.annotation.Nonnull;
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import org.leopard.common.metadata.Node;
+import org.leopard.common.metadata.Partition;
+import org.leopard.internal.config.ServerConfig;
 
 public class RandomAssignor extends LeaderAssignorAdapter {
 
@@ -27,9 +27,10 @@ public class RandomAssignor extends LeaderAssignorAdapter {
             throw new IllegalArgumentException("Cluster nodes is empty");
         }
 
+        Set<Node> newNodes = Sets.newHashSet(nodes);
         Set<Partition> partitions = new HashSet<>(partitionLimit);
         for (int i = 0; i < partitionLimit; i++) {
-            Node leader = randomAccessNode(nodes, null);
+            Node leader = randomAccessNode(newNodes, null);
 
             Partition.PartitionBuilder builder = Partition.newBuilder();
             builder.id(i);
@@ -37,12 +38,12 @@ public class RandomAssignor extends LeaderAssignorAdapter {
             builder.ledgerId(0);
             builder.leader(leader.getName());
 
-            nodes.remove(leader);
+            newNodes.remove(leader);
             List<String> replicates = new ArrayList<>(replicateLimit);
             for (int j = 0; j < replicateLimit; j++) {
-                Node replicateNode = randomAccessNode(nodes, leader.getName());
+                Node replicateNode = randomAccessNode(newNodes, leader.getName());
                 replicates.add(replicateNode.getName());
-                nodes.remove(replicateNode);
+                newNodes.remove(replicateNode);
             }
             builder.replicates(replicates);
 

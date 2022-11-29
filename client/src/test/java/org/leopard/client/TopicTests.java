@@ -25,11 +25,11 @@ public class TopicTests {
         Client client = new Client("create-client", clientConfig);
         client.start();
 
-        Promise<CreateTopicResponse> promise = client.getMetadataWriter().createTopic("test", 3, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataWriter().createTopic("test", 1, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(3, response.getPartitionLimit());
+        Assert.assertEquals(1, response.getPartitionLimit());
         Assert.assertEquals("test", response.getTopic());
         Assert.assertEquals(1, response.getReplicateLimit());
         Assert.assertEquals(Ack.SUCCESS, response.getAck());
