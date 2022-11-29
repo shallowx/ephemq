@@ -1,20 +1,22 @@
 package org.leopard.client;
 
-import org.leopard.client.producer.*;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.leopard.client.producer.MessagePreInterceptor;
+import org.leopard.client.producer.MessageProducer;
+import org.leopard.client.producer.Producer;
+import org.leopard.client.producer.ProducerConfig;
+import org.leopard.client.producer.SendResult;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
 
 @SuppressWarnings("all")
 public class ProducerTests {
@@ -37,7 +39,7 @@ public class ProducerTests {
         Producer producer = new MessageProducer("send-producer", producerConfig);
         producer.start();
 
-        Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
+        Message message = new Message("test", "message", "message".getBytes(UTF_8), null);
         MessagePreInterceptor filter = sendMessage -> sendMessage;
 
         SendResult result = producer.send(message, filter);
@@ -55,7 +57,7 @@ public class ProducerTests {
         Producer producer = new MessageProducer("oneway-producer", producerConfig);
         producer.start();
 
-        Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
+        Message message = new Message("test", "message", "message".getBytes(UTF_8), null);
 
         producer.sendOneway(message, new MessagePreInterceptor() {
             @Override
@@ -75,12 +77,12 @@ public class ProducerTests {
         Producer producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
 
-        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
+        Message message = new Message("test", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
         MessagePreInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if ( null == cause) {
+            if (null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
@@ -101,12 +103,13 @@ public class ProducerTests {
         producer.start();
 
         short messageVersion = 2;
-        Message message = new Message("create", "message", messageVersion, "message-test-send-async".getBytes(UTF_8), new Extras());
+        Message message = new Message("test", "message", messageVersion, "message-test-send-async".getBytes(UTF_8),
+                new Extras());
         MessagePreInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if ( null == cause) {
+            if (null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
@@ -130,12 +133,13 @@ public class ProducerTests {
         extras.put("extras0", "send-message-filter0");
         extras.put("extras1", "send-message-filter1");
 
-        Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras(extras));
+        Message message =
+                new Message("test", "message", "message-test-send-async".getBytes(UTF_8), new Extras(extras));
         MessagePreInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
-            if ( null == cause) {
+            if (null == cause) {
                 logger.warn("send result - {}", sendResult);
             } else {
                 logger.error(cause);
@@ -148,7 +152,7 @@ public class ProducerTests {
     }
 
     @Test
-    public void testContinueSend1() throws Exception {
+    public void testContinueSend() throws Exception {
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
 
@@ -159,9 +163,10 @@ public class ProducerTests {
 
         CountDownLatch latch = new CountDownLatch(1);
         for (int i = 0; i < Long.MAX_VALUE; i++) {
-            Message message = new Message("test", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Extras());
+            Message message =
+                    new Message("test", "message", ("message-test-send-async" + i).getBytes(UTF_8), new Extras());
             producer.sendAsync(message, filter, (sendResult, cause) -> {
-                if ( null == cause) {
+                if (null == cause) {
                     if (logger.isInfoEnabled()) {
                         logger.info("send result - {}", sendResult);
                     }

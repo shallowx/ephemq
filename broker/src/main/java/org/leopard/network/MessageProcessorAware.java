@@ -1,9 +1,25 @@
 package org.leopard.network;
 
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.switchAddress;
+import static org.leopard.remote.util.ProtoBufUtils.proto2Buf;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.*;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.Promise;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Node;
@@ -23,19 +39,18 @@ import org.leopard.remote.processor.ProcessorAware;
 import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
-import org.leopard.remote.proto.server.*;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import static org.leopard.remote.util.NetworkUtils.*;
-import static org.leopard.remote.util.ProtoBufUtils.proto2Buf;
-import static org.leopard.remote.util.ProtoBufUtils.readProto;
+import org.leopard.remote.proto.server.CreateTopicRequest;
+import org.leopard.remote.proto.server.CreateTopicResponse;
+import org.leopard.remote.proto.server.DelTopicRequest;
+import org.leopard.remote.proto.server.DelTopicResponse;
+import org.leopard.remote.proto.server.QueryClusterNodeRequest;
+import org.leopard.remote.proto.server.QueryClusterNodeResponse;
+import org.leopard.remote.proto.server.QueryTopicInfoRequest;
+import org.leopard.remote.proto.server.QueryTopicInfoResponse;
+import org.leopard.remote.proto.server.SendMessageRequest;
+import org.leopard.remote.proto.server.SendMessageResponse;
+import org.leopard.remote.proto.server.SubscribeRequest;
+import org.leopard.remote.proto.server.SubscribeResponse;
 
 @SuppressWarnings("all")
 public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Server {
@@ -50,7 +65,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
         this.config = config;
         this.resourceContext = resourceContext;
 
-        EventExecutorGroup group = newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command").next();
+        EventExecutorGroup group =
+                newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command").next();
         this.commandExecutor = group.next();
     }
 
@@ -69,7 +85,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
     }
 
     @Override
-    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
+    public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type,
+                        short version) {
         try {
             switch (command) {
 
@@ -89,7 +106,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
                     }
-                    answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Not supported command [" + command + "]"));
+                    answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,
+                            "Not supported command [" + command + "]"));
                 }
             }
         } catch (Throwable cause) {
@@ -100,12 +118,14 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
         }
     }
 
-    private void processFetchTopicRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
+    private void processFetchTopicRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer,
+                                                 short version) {
         try {
             QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
             ProtocolStringList topicList = request.getTopicList();
-            TopicPartitionRequestCacheWriterSupport writerSupport = resourceContext.getPartitionRequestCacheWriterSupport();
-            Set<Partition> partitions = writerSupport.loadAll(topicList);
+            TopicPartitionRequestCacheWriterSupport writerSupport =
+                    resourceContext.getPartitionRequestCacheWriterSupport();
+            Map<String, Set<Partition>> partitions = writerSupport.loadAll(topicList);
 
             if (partitions.isEmpty()) {
                 answer.success(proto2Buf(channel.alloc(), QueryTopicInfoResponse.newBuilder().build()));
@@ -115,23 +135,32 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
             Map<Integer, PartitionMetadata> partitionMetadataMap = new ConcurrentHashMap<>();
             Map<String, TopicMetadata> results = new ConcurrentHashMap<>();
 
-            for (Partition partition : partitions) {
-                PartitionMetadata partitionMetadata = PartitionMetadata.newBuilder()
-                        .addAllReplicas(partition.getReplicates())
-                        .setLeader(partition.getLeader())
-                        .setId(partition.getId())
-                        .setLatency(partition.getLedgerId())
+            Set<Map.Entry<String, Set<Partition>>> entries = partitions.entrySet();
+            for (Map.Entry<String, Set<Partition>> entry : entries) {
+                String topic = entry.getKey();
+                Set<Partition> sets = entry.getValue();
+                if (sets == null || sets.isEmpty()) {
+                    continue;
+                }
+
+                for (Partition partition : sets) {
+                    PartitionMetadata partitionMetadata = PartitionMetadata.newBuilder()
+                            .addAllReplicas(partition.getReplicates())
+                            .setLeader(partition.getLeader())
+                            .setId(partition.getId())
+                            .setLatency(partition.getLedgerId())
+                            .build();
+
+                    partitionMetadataMap.put(partitionMetadata.getId(), partitionMetadata);
+                }
+
+                TopicMetadata topicMetadata = TopicMetadata.newBuilder()
+                        .setName(topic)
+                        .putAllPartitions(partitionMetadataMap)
                         .build();
 
-                partitionMetadataMap.put(partitionMetadata.getId(), partitionMetadata);
+                results.put(topic, topicMetadata);
             }
-
-            TopicMetadata topicMetadata = TopicMetadata.newBuilder()
-                    .setName(config.getClusterName())
-                    .putAllPartitions(partitionMetadataMap)
-                    .build();
-
-            results.put(config.getClusterName(), topicMetadata);
 
             QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
                     .putAllTopics(results)
@@ -144,12 +173,12 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
         }
     }
 
-    private void processFetchClusterNodeRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
+    private void processFetchClusterNodeRecordsRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer,
+                                                       short version) {
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
-            String cluster = request.getCluster();
             ClusterNodeCacheWriterSupport writerSupport = resourceContext.getNodeCacheWriterSupport();
-            Set<Node> records = writerSupport.load(cluster);
+            Set<Node> records = writerSupport.load(config.getClusterName());
 
             QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
             if (records == null || records.isEmpty()) {
@@ -270,7 +299,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
         }
     }
 
-    private void processCreateTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
+    private void processCreateTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer,
+                                           byte type, short version) {
         try {
             CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
             commandExecutor.execute(() -> {
@@ -301,11 +331,13 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         }
                     });
 
-                    TopicPartitionRequestCacheWriterSupport writerSupport = resourceContext.getPartitionRequestCacheWriterSupport();
+                    TopicPartitionRequestCacheWriterSupport writerSupport =
+                            resourceContext.getPartitionRequestCacheWriterSupport();
                     writerSupport.createTopic(topic, partitionLimit, replicateLimit, promise);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("Failed to create topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                        logger.error("Failed to create topic with address<{}>, cause:{}",
+                                channel.remoteAddress().toString(), e);
                     }
                     answerFailed(answer, e);
                 }
@@ -315,7 +347,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
         }
     }
 
-    private void processDelTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer, byte type, short version) {
+    private void processDelTopicRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer,
+                                        byte type, short version) {
         try {
             DelTopicRequest request = readProto(data, DelTopicRequest.parser());
             String topic = request.getTopic();
@@ -334,18 +367,21 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         }
                     });
 
-                    TopicPartitionRequestCacheWriterSupport writerSupport = resourceContext.getPartitionRequestCacheWriterSupport();
+                    TopicPartitionRequestCacheWriterSupport writerSupport =
+                            resourceContext.getPartitionRequestCacheWriterSupport();
                     writerSupport.delTopic(topic, promise);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic, channel.remoteAddress().toString(), e);
+                        logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic,
+                                channel.remoteAddress().toString(), e);
                     }
                     answerFailed(answer, e);
                 }
             });
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
+                logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(),
+                        e);
             }
             answerFailed(answer, e);
         }

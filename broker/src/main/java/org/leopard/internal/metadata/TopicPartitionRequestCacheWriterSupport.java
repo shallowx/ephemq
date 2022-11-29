@@ -4,9 +4,9 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.Promise;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -98,23 +98,29 @@ public class TopicPartitionRequestCacheWriterSupport {
             promise.tryFailure(new IllegalArgumentException("Topic cannot be empty"));
         }
 
-        promise.addListener(future -> cache.invalidate(topic));
+        cache.invalidate(topic);
+        promise.trySuccess(null);
     }
 
-    public Set<Partition> loadAll(List<String> topics) throws Exception {
-        Set<Partition> partitions = new HashSet<>();
+    public Map<String, Set<Partition>> loadAll(List<String> topics) throws Exception {
+        Map<String, Set<Partition>> partitions = new HashMap<>();
         if (topics == null || topics.isEmpty()) {
-            Iterator<Set<Partition>> iterator = cache.asMap().values().stream().iterator();
-            while (iterator.hasNext()) {
-                partitions.addAll(iterator.next());
+            for (Map.Entry<String, Set<Partition>> entry : cache.asMap().entrySet()) {
+                String topic = entry.getKey();
+                Set<Partition> values = entry.getValue();
+
+                if (values == null || values.isEmpty()) {
+                    continue;
+                }
+                partitions.put(topic, values);
             }
         } else {
             for (String topic : topics) {
-                Set<Partition> sets = this.cache.get(topic);
-                if (sets == null || sets.isEmpty()) {
+                Set<Partition> values = this.cache.get(topic);
+                if (values == null || values.isEmpty()) {
                     continue;
                 }
-                partitions.addAll(sets);
+                partitions.put(topic, values);
             }
         }
         return partitions;

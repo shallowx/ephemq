@@ -1,9 +1,17 @@
 package org.leopard.client.consumer;
 
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutorGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.net.SocketAddress;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
 import org.leopard.client.internal.ClientChannel;
@@ -16,16 +24,6 @@ import org.leopard.remote.proto.notify.PartitionChangedSignal;
 import org.leopard.remote.proto.server.SendMessageExtras;
 import org.leopard.remote.util.ByteBufUtils;
 
-import java.net.SocketAddress;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
-import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
-import static org.leopard.remote.util.ProtoBufUtils.readProto;
-
 final class MessageConsumerListener implements ClientListener {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageConsumerListener.class);
@@ -33,16 +31,19 @@ final class MessageConsumerListener implements ClientListener {
     private MessageListener listener;
     private MessagePostInterceptor interceptor;
     private final MessageProcessor[] handlers;
-    private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
+    private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips =
+            new Int2ObjectOpenHashMap<>();
     private final MessageConsumer consumer;
 
     public MessageConsumerListener(ConsumerConfig consumerConfig, MessageConsumer consumer) {
-        EventExecutorGroup group = newEventExecutorGroup(consumerConfig.getMessageHandleThreadLimit(), "client-message-handle");
+        EventExecutorGroup group =
+                newEventExecutorGroup(consumerConfig.getMessageHandleThreadLimit(), "client-message-handle");
 
-        handlers = new MessageProcessor[tableSizeFor(consumerConfig.getMessageHandleThreadLimit())];
-        for (int i = 0; i < consumerConfig.getMessageHandleThreadLimit(); i++) {
+        int n = tableSizeFor(consumerConfig.getMessageHandleThreadLimit());
+        this.handlers = new MessageProcessor[n];
+        for (int i = 0; i < n; i++) {
             Semaphore semaphore = new Semaphore(consumerConfig.getMessageHandleSemaphoreLimit());
-            handlers[i] = new MessageProcessor(String.valueOf(i), semaphore, group.next());
+            this.handlers[i] = new MessageProcessor(String.valueOf(i), semaphore, group.next());
         }
         this.consumer = consumer;
     }
@@ -86,7 +87,8 @@ final class MessageConsumerListener implements ClientListener {
     @Override
     public void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Receive partition changed signal, channel={} signal={}", channel.toString(), signal.toString());
+            logger.debug("Receive partition changed signal, channel={} signal={}", channel.toString(),
+                    signal.toString());
         }
         //do nothing
     }
@@ -106,11 +108,14 @@ final class MessageConsumerListener implements ClientListener {
     }
 
     @Override
-    public void onPushMessage(Channel channel, int ledgerId, short version, String topic, String queue, int epoch, long index, ByteBuf data) {
+    public void onPushMessage(Channel channel, int ledgerId, short version, String topic, String queue, int epoch,
+                              long index, ByteBuf data) {
         try {
             AtomicReference<Subscription> sequence = subscriptionShips.get(ledgerId);
             if (sequence == null) {
-                logger.error("Channel consume sequence not initialize, channel={} ledgerId={} topic={} queue={} version={} epoch={} index={}",
+                logger.error(
+                        "Channel consume sequence not initialize, channel={} ledgerId={} topic={} queue={} version={}"
+                                + " epoch={} index={}",
                         channel.toString(), ledgerId, topic, queue, version, epoch, index);
                 return;
             }
@@ -130,11 +135,14 @@ final class MessageConsumerListener implements ClientListener {
 
                 if (!sequence.compareAndSet(preShip, theLastShip)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip, preShip);
+                        logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip,
+                                preShip);
                     }
                 }
             }
-            MessageProcessor handler = handlers[hash(Objects.hash(topic, queue) + ledgerId)];
+
+            int length = handlers.length;
+            MessageProcessor handler = handlers[(length - 1) & hash(Objects.hash(topic, queue) + ledgerId)];
 
             SendMessageExtras extras = readProto(data, SendMessageExtras.parser());
             byte[] body = ByteBufUtils.buf2Bytes(data);
@@ -143,7 +151,9 @@ final class MessageConsumerListener implements ClientListener {
             handler.process(message, listener, interceptor);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Failed to handle subscribe message, channel={} ledgerId={} topic={} queue={} version={} epoch={} index={} , error={}",
+                logger.error(
+                        "Failed to handle subscribe message, channel={} ledgerId={} topic={} queue={} version={} "
+                                + "epoch={} index={} , error={}",
                         channel.toString(), ledgerId, topic, queue, version, epoch, index, t);
             }
         }
