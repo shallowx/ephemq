@@ -1,19 +1,21 @@
 package org.leopard.internal.metadata;
 
+import java.util.Set;
 import org.leopard.common.metadata.Node;
 import org.leopard.common.metadata.Partition;
+import org.leopard.internal.ResourceContext;
 import org.leopard.internal.config.ServerConfig;
-
-import java.util.Set;
 
 public abstract class LeaderAssignorAdapter {
 
-    private final ServerConfig config;
-    private final ClusterNodeCacheWriterSupport nodeWriterSupport;
+    protected final ServerConfig config;
+    protected final ClusterNodeCacheWriterSupport nodeWriterSupport;
+    protected final ResourceContext context;
 
-    public LeaderAssignorAdapter(ServerConfig config, ClusterNodeCacheWriterSupport nodeWriterSupport) {
+    public LeaderAssignorAdapter(ServerConfig config, ResourceContext context) {
         this.config = config;
-        this.nodeWriterSupport = nodeWriterSupport;
+        this.nodeWriterSupport = context.getNodeCacheWriterSupport();
+        this.context = context;
     }
 
     protected Set<Node> getNodes() throws Exception {

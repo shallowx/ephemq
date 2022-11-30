@@ -1,5 +1,6 @@
 package org.leopard.internal;
 
+import org.leopard.internal.atomic.DistributedAtomicInteger;
 import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
 import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
 import org.leopard.ledger.LedgerEngine;
@@ -17,4 +18,6 @@ public interface ResourceContext {
     TopicPartitionRequestCacheWriterSupport getPartitionRequestCacheWriterSupport();
 
     ClusterNodeCacheWriterSupport getNodeCacheWriterSupport();
+
+    DistributedAtomicInteger getAtomicInteger();
 }
