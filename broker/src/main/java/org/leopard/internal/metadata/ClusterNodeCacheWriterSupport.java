@@ -53,11 +53,11 @@ public class ClusterNodeCacheWriterSupport {
                     }
                 });
         this.heartbeatScheduledExecutor =
-                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heartbeat"));
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heartbeat-scheduled-executor"));
         this.registryScheduledExecutor =
-                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("registry"));
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("registry-scheduled-executor"));
         this.cleanClosedNodeScheduledExecutor =
-                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("clean-closed-node"));
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("clean-closed-scheduled-executor"));
     }
 
     public void start() throws Exception {
