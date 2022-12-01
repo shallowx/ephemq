@@ -7,12 +7,17 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Promise;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
@@ -28,6 +33,8 @@ public class ClusterNodeCacheWriterSupport {
     private final LoadingCache<String, Set<Node>> cache;
     private final ScheduledExecutorService heartbeatScheduledExecutor;
     private final ScheduledExecutorService registryScheduledExecutor;
+    private final ScheduledExecutorService cleanClosedNodeScheduledExecutor;
+
     private final CountDownLatch latch = new CountDownLatch(1);
 
     private final String STARTED = "started";
@@ -46,9 +53,11 @@ public class ClusterNodeCacheWriterSupport {
                     }
                 });
         this.heartbeatScheduledExecutor =
-                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heartbeat"));
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heartbeat-scheduled-executor"));
         this.registryScheduledExecutor =
-                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("registry"));
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("registry-scheduled-executor"));
+        this.cleanClosedNodeScheduledExecutor =
+                Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("clean-closed-scheduled-executor"));
     }
 
     public void start() throws Exception {
@@ -75,6 +84,23 @@ public class ClusterNodeCacheWriterSupport {
         registerStartFuture.get();
 
         latch.await();
+
+        cleanClosedNodeScheduledExecutor.scheduleAtFixedRate(() -> {
+            ConcurrentMap<String, Set<Node>> map = this.cache.asMap();
+            if (map != null && !map.isEmpty()) {
+                Set<Map.Entry<String, Set<Node>>> entries = map.entrySet();
+                for (Map.Entry<String, Set<Node>> entry : entries) {
+                    Set<Node> nodes = entry.getValue();
+                    Iterator<Node> iterator = nodes.stream().iterator();
+                    while (iterator.hasNext()) {
+                        Node node = iterator.next();
+                        if (node.getState().equals(CLOSED)) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        }, 0, 30, TimeUnit.SECONDS);
     }
 
     public void register(Promise<Void> promise) throws Exception {
@@ -93,7 +119,15 @@ public class ClusterNodeCacheWriterSupport {
         String cluster = config.getClusterName();
         Set<Node> nodes = this.cache.get(cluster);
         if (nodes != null && !nodes.isEmpty()) {
-            nodes.remove(buildNode(cluster, CLOSED));
+            Optional<Node> optional =
+                    nodes.stream()
+                            .filter(node -> node.getName().equals(config.getServerId()))
+                            .findAny();
+
+            if (optional.isPresent()) {
+                Node node = optional.get();
+                node.updateState(CLOSED);
+            }
         }
     }
 
@@ -111,7 +145,10 @@ public class ClusterNodeCacheWriterSupport {
         if (StringUtils.isNullOrEmpty(cluster)) {
             cluster = config.getClusterName();
         }
-        return this.cache.get(cluster);
+
+        return this.cache.get(cluster).stream()
+                .filter(node -> node.getState().equals(STARTED))
+                .collect(Collectors.toSet());
     }
 
     public Node getThisNode() {

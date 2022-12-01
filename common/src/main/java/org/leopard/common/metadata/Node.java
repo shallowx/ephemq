@@ -38,6 +38,10 @@ public class Node {
         this.lastKeepLiveTime = lastKeepLiveTime;
     }
 
+    public void updateState(String state) {
+        this.state = state;
+    }
+
     public String getState() {
         return state;
     }
@@ -93,8 +97,12 @@ public class Node {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Node that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Node that)) {
+            return false;
+        }
         return getCluster().equals(that.getCluster()) &&
                 getName().equals(that.getName()) &&
                 getSocketAddress().equals(that.getSocketAddress());

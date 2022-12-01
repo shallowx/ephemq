@@ -8,15 +8,19 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import org.leopard.common.metadata.Node;
 import org.leopard.common.metadata.Partition;
+import org.leopard.internal.ResourceContext;
+import org.leopard.internal.atomic.DistributedAtomicInteger;
 import org.leopard.internal.config.ServerConfig;
 
 public class RandomAssignor extends LeaderAssignorAdapter {
 
     private final Node thisNode;
+    private final DistributedAtomicInteger distributedAtomicInteger;
 
-    public RandomAssignor(ServerConfig config, ClusterNodeCacheWriterSupport nodeWriterSupport) {
-        super(config, nodeWriterSupport);
+    public RandomAssignor(ServerConfig config, ResourceContext context) {
+        super(config, context);
         this.thisNode = nodeWriterSupport.getThisNode();
+        this.distributedAtomicInteger = context.getAtomicInteger();
     }
 
     @Override
@@ -34,8 +38,8 @@ public class RandomAssignor extends LeaderAssignorAdapter {
 
             Partition.PartitionBuilder builder = Partition.newBuilder();
             builder.id(i);
-            builder.epoch(0);
-            builder.ledgerId(0);
+            builder.epoch(-1);
+            builder.ledgerId(distributedAtomicInteger.increment().postValue());
             builder.leader(leader.getName());
 
             newNodes.remove(leader);

@@ -1,14 +1,14 @@
 package org.leopard.internal.metadata;
 
-import org.leopard.common.metadata.Partition;
-import org.leopard.internal.config.ServerConfig;
-
 import java.util.Set;
+import org.leopard.common.metadata.Partition;
+import org.leopard.internal.ResourceContext;
+import org.leopard.internal.config.ServerConfig;
 
 public class AverageAssignor extends LeaderAssignorAdapter {
 
-    public AverageAssignor(ServerConfig config, ClusterNodeCacheWriterSupport nodeWriterSupport) {
-        super(config, nodeWriterSupport);
+    public AverageAssignor(ServerConfig config, ResourceContext context) {
+        super(config, context);
     }
 
     @Override

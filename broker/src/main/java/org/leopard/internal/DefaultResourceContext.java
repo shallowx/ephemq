@@ -1,5 +1,6 @@
 package org.leopard.internal;
 
+import org.leopard.internal.atomic.DistributedAtomicInteger;
 import org.leopard.internal.config.ServerConfig;
 import org.leopard.internal.metadata.ClusterNodeCacheWriterSupport;
 import org.leopard.internal.metadata.TopicPartitionRequestCacheWriterSupport;
@@ -12,11 +13,13 @@ public class DefaultResourceContext implements ResourceContext {
     private final ChannelBoundContext boundContext;
     private final TopicPartitionRequestCacheWriterSupport partitionRequestCacheWriterSupport;
     private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
+    private final DistributedAtomicInteger distributedAtomicInteger;
 
     public DefaultResourceContext(ServerConfig config) throws Exception {
         this.ledgerEngine = new LedgerEngine(config);
         this.boundContext = new ChannelBoundContext();
 
+        this.distributedAtomicInteger = new DistributedAtomicInteger();
         this.nodeCacheWriterSupport = new ClusterNodeCacheWriterSupport(config);
         this.partitionRequestCacheWriterSupport = new TopicPartitionRequestCacheWriterSupport(config, this);
     }
@@ -24,7 +27,6 @@ public class DefaultResourceContext implements ResourceContext {
     @Override
     public void start() throws Exception {
         this.nodeCacheWriterSupport.start();
-
         this.ledgerEngine.start();
     }
 
@@ -41,6 +43,11 @@ public class DefaultResourceContext implements ResourceContext {
     @Override
     public TopicPartitionRequestCacheWriterSupport getPartitionRequestCacheWriterSupport() {
         return this.partitionRequestCacheWriterSupport;
+    }
+
+    @Override
+    public DistributedAtomicInteger getAtomicInteger() {
+        return distributedAtomicInteger;
     }
 
     @Override
