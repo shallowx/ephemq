@@ -1,6 +1,6 @@
 package org.leopard.client.producer;
 
-import org.leopard.client.ClientConfig;
+import org.leopard.client.internal.ClientConfig;
 
 public class ProducerConfig {
 

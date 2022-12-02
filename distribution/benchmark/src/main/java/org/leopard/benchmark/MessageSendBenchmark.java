@@ -1,17 +1,25 @@
 package org.leopard.benchmark;
 
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.annotations.State;
-import org.leopard.client.ClientConfig;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.leopard.client.Message;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.client.producer.MessagePreInterceptor;
 import org.leopard.client.producer.MessageProducer;
 import org.leopard.client.producer.ProducerConfig;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Threads;
+import org.openjdk.jmh.annotations.Warmup;
 
 /**
  * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
@@ -57,6 +65,7 @@ public class MessageSendBenchmark {
         Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
         MessagePreInterceptor interceptor = sendMessage -> sendMessage;
 
-        producer.sendAsync(message, interceptor, (sendResult, cause) -> {});
+        producer.sendAsync(message, interceptor, (sendResult, cause) -> {
+        });
     }
 }

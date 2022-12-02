@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.Client;
 import org.leopard.client.internal.metadata.MetadataWriter;
 import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;

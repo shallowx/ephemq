@@ -10,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.client.producer.MessagePreInterceptor;
 import org.leopard.client.producer.MessageProducer;
 import org.leopard.client.producer.Producer;

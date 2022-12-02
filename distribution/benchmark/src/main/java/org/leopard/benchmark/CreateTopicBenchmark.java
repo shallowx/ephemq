@@ -1,17 +1,25 @@
 package org.leopard.benchmark;
 
 import io.netty.util.concurrent.Promise;
-import org.openjdk.jmh.annotations.*;
-import org.leopard.client.Client;
-import org.leopard.client.ClientConfig;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
-import org.openjdk.jmh.annotations.State;
-import org.leopard.remote.proto.server.CreateTopicResponse;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import org.leopard.client.internal.Client;
+import org.leopard.client.internal.ClientConfig;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.remote.proto.server.CreateTopicResponse;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Threads;
 
 /**
  * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
@@ -54,7 +62,8 @@ public class CreateTopicBenchmark {
 
     @Benchmark
     public void createTopic() {
-        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic( "test-benchmark-" + UUID.randomUUID(), 1, 1);
+        Promise<CreateTopicResponse> promise =
+                client.getMetadataManager().createTopic("test-benchmark-" + UUID.randomUUID(), 1, 1);
         try {
             promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

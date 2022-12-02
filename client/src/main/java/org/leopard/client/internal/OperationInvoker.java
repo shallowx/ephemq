@@ -1,5 +1,12 @@
 package org.leopard.client.internal;
 
+import static org.leopard.remote.util.ByteBufUtils.bufLength;
+import static org.leopard.remote.util.ByteBufUtils.release;
+import static org.leopard.remote.util.ByteBufUtils.retainBuf;
+import static org.leopard.remote.util.ProtoBufUtils.proto2Buf;
+import static org.leopard.remote.util.ProtoBufUtils.protoLength;
+import static org.leopard.remote.util.ProtoBufUtils.readProto;
+import static org.leopard.remote.util.ProtoBufUtils.writeProto;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
@@ -8,22 +15,17 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Promise;
-import org.leopard.client.ClientConfig;
-import org.leopard.remote.Type;
-import org.leopard.remote.invoke.Callback;
-import org.leopard.remote.invoke.GenericInvokeAnswer;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.remote.processor.ProcessCommand;
-import org.leopard.remote.processor.AwareInvocation;
-
 import java.lang.reflect.Method;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static org.leopard.remote.util.ByteBufUtils.*;
-import static org.leopard.remote.util.ProtoBufUtils.*;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.remote.Type;
+import org.leopard.remote.invoke.Callback;
+import org.leopard.remote.invoke.GenericInvokeAnswer;
+import org.leopard.remote.processor.AwareInvocation;
+import org.leopard.remote.processor.ProcessCommand;
 
 public class OperationInvoker implements ProcessCommand.Server {
 
@@ -37,7 +39,8 @@ public class OperationInvoker implements ProcessCommand.Server {
         this.semaphore = new Semaphore(config.getChannelInvokerSemaphore());
     }
 
-    public void invokeMessage(short version, int timeoutMs, Promise<?> promise, MessageLite request, MessageLite extras, ByteBuf message, Class<?> clz) {
+    public void invokeMessage(short version, int timeoutMs, Promise<?> promise, MessageLite request, MessageLite extras,
+                              ByteBuf message, Class<?> clz) {
         try {
             @SuppressWarnings("unchecked")
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, assembleParser(clz));
@@ -51,7 +54,8 @@ public class OperationInvoker implements ProcessCommand.Server {
         }
     }
 
-    private ByteBuf assembleInvokeMessageData(ByteBufAllocator alloc, MessageLite request, MessageLite extras, ByteBuf message) {
+    private ByteBuf assembleInvokeMessageData(ByteBufAllocator alloc, MessageLite request, MessageLite extras,
+                                              ByteBuf message) {
         ByteBuf buf;
         try {
             int length = protoLength(request) + protoLength(extras) + bufLength(message);
@@ -86,14 +90,15 @@ public class OperationInvoker implements ProcessCommand.Server {
         }
     }
 
-   @SuppressWarnings("rawtypes")
-   private Parser assembleParser(Class<?> clz) throws Exception {
+    @SuppressWarnings("rawtypes")
+    private Parser assembleParser(Class<?> clz) throws Exception {
         final Method defaultInstance = clz.getDeclaredMethod("getDefaultInstance");
         Message defaultInst = (Message) defaultInstance.invoke(null);
         return defaultInst.getParserForType();
-   }
+    }
 
-    private void invoke0(byte command, short version, ByteBuf content, byte type, long timeoutMs, Callback<ByteBuf> callback) {
+    private void invoke0(byte command, short version, ByteBuf content, byte type, long timeoutMs,
+                         Callback<ByteBuf> callback) {
         try {
             long now = System.currentTimeMillis();
             final Channel channel = clientChannel.channel();
@@ -101,14 +106,17 @@ public class OperationInvoker implements ProcessCommand.Server {
                 try {
                     if (null == callback) {
                         ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                        channel.writeAndFlush(AwareInvocation.newInvocation(command, version, retainBuf(content), type), promise);
+                        channel.writeAndFlush(AwareInvocation.newInvocation(command, version, retainBuf(content), type),
+                                promise);
                     } else {
                         long expired = timeoutMs + now;
                         GenericInvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((buf, cause) -> {
                             semaphore.release();
                             callback.operationCompleted(buf, cause);
                         });
-                        channel.writeAndFlush(AwareInvocation.newInvocation(command, version,  retainBuf(content), type, expired, answer));
+                        channel.writeAndFlush(
+                                AwareInvocation.newInvocation(command, version, retainBuf(content), type, expired,
+                                        answer));
                     }
                 } catch (Throwable t) {
                     semaphore.release();
@@ -118,7 +126,8 @@ public class OperationInvoker implements ProcessCommand.Server {
                 throw new TimeoutException("Semaphore acquire timeout: " + timeoutMs + "ms");
             }
         } catch (Throwable t) {
-            RuntimeException exception = new RuntimeException(String.format("Failed to invoke channel, address=%s command=%s", clientChannel.address(), command));
+            RuntimeException exception = new RuntimeException(
+                    String.format("Failed to invoke channel, address=%s command=%s", clientChannel.address(), command));
             if (null != callback) {
                 callback.operationCompleted(null, exception);
             } else {

@@ -1,16 +1,18 @@
 package org.leopard.example.quickstart;
 
-import org.junit.jupiter.api.Test;
-import org.leopard.client.ClientConfig;
-import org.leopard.client.Message;
-import org.leopard.client.consumer.*;
-import org.leopard.common.logging.InternalLogger;
-import org.leopard.common.logging.InternalLoggerFactory;
-import org.leopard.common.metadata.Subscription;
-
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
+import org.leopard.client.Message;
+import org.leopard.client.consumer.Consumer;
+import org.leopard.client.consumer.ConsumerConfig;
+import org.leopard.client.consumer.MessageConsumer;
+import org.leopard.client.consumer.MessageListener;
+import org.leopard.client.internal.ClientConfig;
+import org.leopard.common.logging.InternalLogger;
+import org.leopard.common.logging.InternalLoggerFactory;
+import org.leopard.common.metadata.Subscription;
 
 @SuppressWarnings("all")
 public class DefaultConsumer {
