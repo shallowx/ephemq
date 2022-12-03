@@ -1,6 +1,6 @@
 package org.leopard.client.internal.pool;
 
-import org.leopard.client.Client;
+import org.leopard.client.internal.Client;
 
 public class DefaultFixedChannelPoolFactory {
 
@@ -11,12 +11,14 @@ public class DefaultFixedChannelPoolFactory {
         return newChannelPool(client, client.getHealthChecker());
     }
 
-    public ShallowChannelPool newChannelPool(Client client, ShallowChannelHealthChecker healthChecker) throws Exception {
+    public ShallowChannelPool newChannelPool(Client client, ShallowChannelHealthChecker healthChecker)
+            throws Exception {
         if (client == null) {
             throw new RuntimeException("Shallow client is null");
         }
 
-        pool = new FixedChannelPool(client, (healthChecker == null ? ShallowChannelHealthChecker.ACTIVE : healthChecker));
+        pool = new FixedChannelPool(client,
+                (healthChecker == null ? ShallowChannelHealthChecker.ACTIVE : healthChecker));
         pool.initChannelPool();
         return pool;
     }

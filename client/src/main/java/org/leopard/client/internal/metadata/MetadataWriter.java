@@ -1,15 +1,29 @@
 package org.leopard.client.internal.metadata;
 
+import static org.leopard.remote.util.NetworkUtils.newEventExecutorGroup;
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
+import static org.leopard.remote.util.NetworkUtils.switchSocketAddress;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.leopard.client.Client;
-import org.leopard.client.ClientConfig;
+import org.leopard.client.internal.Client;
 import org.leopard.client.internal.ClientChannel;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.client.internal.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
@@ -21,17 +35,14 @@ import org.leopard.remote.processor.ProcessCommand;
 import org.leopard.remote.proto.NodeMetadata;
 import org.leopard.remote.proto.PartitionMetadata;
 import org.leopard.remote.proto.TopicMetadata;
-import org.leopard.remote.proto.server.*;
-
-import java.net.SocketAddress;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import static org.leopard.remote.util.NetworkUtils.*;
+import org.leopard.remote.proto.server.CreateTopicRequest;
+import org.leopard.remote.proto.server.CreateTopicResponse;
+import org.leopard.remote.proto.server.DelTopicRequest;
+import org.leopard.remote.proto.server.DelTopicResponse;
+import org.leopard.remote.proto.server.QueryClusterNodeRequest;
+import org.leopard.remote.proto.server.QueryClusterNodeResponse;
+import org.leopard.remote.proto.server.QueryTopicInfoRequest;
+import org.leopard.remote.proto.server.QueryTopicInfoResponse;
 
 public class MetadataWriter implements ProcessCommand.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataWriter.class);
@@ -73,7 +84,8 @@ public class MetadataWriter implements ProcessCommand.Server {
 
         Promise<CreateTopicResponse> promise = newImmediatePromise();
         ClientChannel channel = pool.acquireWithRandomly();
-        channel.invoker().invoke(CREATE_TOPIC, config.getInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
+        channel.invoker()
+                .invoke(CREATE_TOPIC, config.getInvokeExpiredMs(), promise, request, CreateTopicResponse.class);
 
         return promise;
     }
@@ -97,8 +109,10 @@ public class MetadataWriter implements ProcessCommand.Server {
 
         Promise<QueryTopicInfoResponse> promise = newImmediatePromise();
 
-        clientChannel.invoker().invoke(FETCH_TOPIC_RECORD, config.getInvokeExpiredMs(), promise, request, QueryTopicInfoResponse.class);
-        Map<String, TopicMetadata> topicsMap = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getTopicsMap();
+        clientChannel.invoker().invoke(FETCH_TOPIC_RECORD, config.getInvokeExpiredMs(), promise, request,
+                QueryTopicInfoResponse.class);
+        Map<String, TopicMetadata> topicsMap =
+                promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getTopicsMap();
         if (topicsMap.isEmpty()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Query topic record is empty");
@@ -140,7 +154,8 @@ public class MetadataWriter implements ProcessCommand.Server {
                 .build();
 
         Promise<QueryClusterNodeResponse> promise = newImmediatePromise();
-        clientChannel.invoker().invoke(FETCH_CLUSTER_RECORD, config.getInvokeExpiredMs(), promise, request, QueryClusterNodeResponse.class);
+        clientChannel.invoker().invoke(FETCH_CLUSTER_RECORD, config.getInvokeExpiredMs(), promise, request,
+                QueryClusterNodeResponse.class);
         List<NodeMetadata> nodes = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
         if (nodes.isEmpty()) {
             if (logger.isDebugEnabled()) {
@@ -219,7 +234,8 @@ public class MetadataWriter implements ProcessCommand.Server {
                     .map(Node::getSocketAddress)
                     .collect(Collectors.toSet());
 
-            MessageRoutingHolder routeHolder = new MessageRoutingHolder(topic, ledgerId, partitionId, leader, replicatesAddr);
+            MessageRoutingHolder routeHolder =
+                    new MessageRoutingHolder(topic, ledgerId, partitionId, leader, replicatesAddr);
             holders.put(ledgerId, routeHolder);
         }
         return new MessageRouter(topic, holders);
@@ -275,7 +291,8 @@ public class MetadataWriter implements ProcessCommand.Server {
     }
 
     public synchronized void shutdownGracefully(Supplier<Void> supplier) {
-        if (scheduledMetadataTask == null || scheduledMetadataTask.isShutdown() || scheduledMetadataTask.isTerminated()) {
+        if (scheduledMetadataTask == null || scheduledMetadataTask.isShutdown()
+                || scheduledMetadataTask.isTerminated()) {
             return;
         }
 

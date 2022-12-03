@@ -1,5 +1,7 @@
-package org.leopard.client;
+package org.leopard.client.internal;
 
+import static org.leopard.remote.util.NetworkUtils.newEventLoopGroup;
+import static org.leopard.remote.util.NetworkUtils.preferChannelClass;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -9,7 +11,6 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.leopard.client.internal.ClientListener;
 import org.leopard.client.internal.metadata.MetadataWriter;
 import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.client.internal.pool.ShallowChannelHealthChecker;
@@ -17,9 +18,6 @@ import org.leopard.client.internal.pool.ShallowChannelPool;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.util.ObjectUtils;
-
-import static org.leopard.remote.util.NetworkUtils.newEventLoopGroup;
-import static org.leopard.remote.util.NetworkUtils.preferChannelClass;
 
 public class Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
@@ -42,7 +40,8 @@ public class Client {
         this(name, config, listener, null);
     }
 
-    public Client(String name, ClientConfig config, ClientListener listener, ShallowChannelHealthChecker healthChecker) {
+    public Client(String name, ClientConfig config, ClientListener listener,
+                  ShallowChannelHealthChecker healthChecker) {
         this.name = ObjectUtils.checkNonEmpty(name, "Client name cannot be empty");
         this.config = ObjectUtils.checkNotNull(config, "Client config cannot be null");
         this.listener = listener;
@@ -54,13 +53,15 @@ public class Client {
             return;
         }
         state = true;
-        workGroup = newEventLoopGroup(config.isEpollPrefer(), config.getWorkThreadLimit(), "client-worker(" + name + ")");
+        workGroup =
+                newEventLoopGroup(config.isEpollPrefer(), config.getWorkThreadLimit(), "client-worker(" + name + ")");
 
         DnsNameResolverBuilder drb = new DnsNameResolverBuilder();
         drb.ttl(config.getDnsTtlMaxExpiredSeconds(), config.getDnsTtlMaxExpiredSeconds());
         drb.negativeTtl(config.getNegativeTtlSeconds());
 
-        drb.channelType((config.isEpollPrefer() && Epoll.isAvailable()) ? EpollDatagramChannel.class : NioDatagramChannel.class);
+        drb.channelType((config.isEpollPrefer() && Epoll.isAvailable()) ? EpollDatagramChannel.class :
+                NioDatagramChannel.class);
         drb.nameServerProvider(DefaultDnsServerAddressStreamProvider.INSTANCE);
 
         bootstrap = new Bootstrap()

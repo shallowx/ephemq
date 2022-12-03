@@ -1,19 +1,18 @@
 package org.leopard.example.metadata;
 
 import io.netty.util.concurrent.Promise;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import org.leopard.client.Client;
-import org.leopard.client.ClientConfig;
+import org.leopard.client.internal.Client;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Topic;
 import org.leopard.remote.proto.server.CreateTopicResponse;
 import org.leopard.remote.proto.server.DelTopicResponse;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("all")
 public class TopicMetadataWriterExample {
@@ -52,7 +51,9 @@ public class TopicMetadataWriterExample {
         Client client = new Client("query-client", clientConfig);
         client.start();
 
-        Map<String, Topic> recordMap = client.getMetadataManager().queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(), List.of("create"));
+        Map<String, Topic> recordMap = client.getMetadataManager()
+                .queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(),
+                        List.of("create"));
 
         logger.info("result:{}", recordMap);
     }

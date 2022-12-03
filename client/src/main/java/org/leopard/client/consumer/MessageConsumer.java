@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import org.leopard.client.Client;
+import org.leopard.client.internal.Client;
 import org.leopard.client.internal.ClientChannel;
 import org.leopard.client.internal.metadata.MessageRouter;
 import org.leopard.client.internal.metadata.MessageRoutingHolder;

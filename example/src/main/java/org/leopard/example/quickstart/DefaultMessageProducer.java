@@ -1,9 +1,12 @@
 package org.leopard.example.quickstart;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Test;
-import org.leopard.client.ClientConfig;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.client.producer.MessagePreInterceptor;
 import org.leopard.client.producer.MessageProducer;
 import org.leopard.client.producer.Producer;
@@ -11,11 +14,6 @@ import org.leopard.client.producer.ProducerConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.example.metadata.TopicMetadataWriterExample;
-
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("all")
 public class DefaultMessageProducer {

@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
+import org.leopard.client.internal.Client;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;

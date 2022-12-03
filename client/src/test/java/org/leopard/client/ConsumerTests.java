@@ -8,6 +8,7 @@ import org.leopard.client.consumer.ConsumerConfig;
 import org.leopard.client.consumer.MessageConsumer;
 import org.leopard.client.consumer.MessageListener;
 import org.leopard.client.consumer.SubscribeCallback;
+import org.leopard.client.internal.ClientConfig;
 import org.leopard.common.logging.InternalLogger;
 import org.leopard.common.logging.InternalLoggerFactory;
 import org.leopard.common.metadata.Subscription;

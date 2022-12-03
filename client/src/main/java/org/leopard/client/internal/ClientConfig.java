@@ -1,4 +1,4 @@
-package org.leopard.client;
+package org.leopard.client.internal;
 
 import java.util.LinkedList;
 import java.util.List;

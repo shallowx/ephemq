@@ -1,13 +1,18 @@
 package org.leopard.client.producer;
 
+import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.leopard.client.Client;
+import java.net.SocketAddress;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.leopard.client.Extras;
 import org.leopard.client.Message;
+import org.leopard.client.internal.Client;
 import org.leopard.client.internal.ClientChannel;
 import org.leopard.client.internal.metadata.MessageRouter;
 import org.leopard.client.internal.metadata.MessageRoutingHolder;
@@ -22,13 +27,6 @@ import org.leopard.remote.proto.server.SendMessageExtras;
 import org.leopard.remote.proto.server.SendMessageRequest;
 import org.leopard.remote.proto.server.SendMessageResponse;
 import org.leopard.remote.util.ByteBufUtils;
-
-import java.net.SocketAddress;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.leopard.remote.util.NetworkUtils.newImmediatePromise;
 
 public class MessageProducer implements Producer {
 
@@ -96,7 +94,8 @@ public class MessageProducer implements Producer {
 
         doSend(config.getSendTimeoutMs(), message, promise);
 
-        SendMessageResponse response = promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
+        SendMessageResponse response =
+                promise.get(config.getClientConfig().getInvokeExpiredMs(), TimeUnit.MILLISECONDS);
         return new SendResult(response.getEpoch(), response.getIndex(), response.getLedger());
     }
 
@@ -116,7 +115,8 @@ public class MessageProducer implements Producer {
         promise.addListener((GenericFutureListener<Future<SendMessageResponse>>) future -> {
             if (future.isSuccess()) {
                 SendMessageResponse response = future.get();
-                callback.onCompleted(new SendResult(response.getEpoch(), response.getIndex(), response.getLedger()), null);
+                callback.onCompleted(new SendResult(response.getEpoch(), response.getIndex(), response.getLedger()),
+                        null);
             } else {
                 callback.onCompleted(null, future.cause());
             }
@@ -153,9 +153,11 @@ public class MessageProducer implements Producer {
             ByteBuf body = ByteBufUtils.byte2Buf(message.message());
 
             ClientChannel clientChannel = fetchHealthyChannel(ledger, leader);
-            clientChannel.invoker().invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);
+            clientChannel.invoker()
+                    .invokeMessage(version, timeout, promise, request, extras, body, SendMessageResponse.class);
         } catch (Throwable t) {
-            throw new RuntimeException(String.format("Failed to send async message, topic=%s, queue=%s name=%s", topic, queue, name));
+            throw new RuntimeException(
+                    String.format("Failed to send async message, topic=%s, queue=%s name=%s", topic, queue, name));
         }
     }
 

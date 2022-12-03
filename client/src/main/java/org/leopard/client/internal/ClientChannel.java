@@ -3,13 +3,11 @@ package org.leopard.client.internal;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
-import org.leopard.client.ClientConfig;
-import org.leopard.common.util.ObjectUtils;
-
 import java.net.SocketAddress;
 import java.util.Objects;
+import org.leopard.common.util.ObjectUtils;
 
-public class ClientChannel{
+public class ClientChannel {
 
     private final String name;
     private final Channel channel;
@@ -55,8 +53,12 @@ public class ClientChannel{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ClientChannel that = (ClientChannel) o;
         return name.equals(that.name);
     }

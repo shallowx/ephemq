@@ -3,13 +3,11 @@ package org.leopard.client.internal;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import org.leopard.client.Client;
+import java.net.SocketAddress;
 import org.leopard.remote.codec.MessageDecoder;
 import org.leopard.remote.codec.MessageEncoder;
 import org.leopard.remote.handle.ConnectDuplexHandler;
 import org.leopard.remote.handle.ProcessDuplexHandler;
-
-import java.net.SocketAddress;
 
 public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     private final SocketAddress socketAddress;
