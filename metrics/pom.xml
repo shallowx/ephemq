@@ -2,31 +2,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>leopard</artifactId>
-        <groupId>org.leopard</groupId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>ostara</artifactId>
+    <groupId>org.ostara</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mertics</artifactId>
+  <artifactId>mertics</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.leopard</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.ostara</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>1.9.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+      <version>1.9.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 
 </project>
