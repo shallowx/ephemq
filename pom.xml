@@ -6,8 +6,8 @@
   <modelVersion>4.0.0</modelVersion>
   <inceptionYear>2022</inceptionYear>
 
-  <groupId>org.leopard</groupId>
-  <artifactId>leopard</artifactId>
+  <groupId>org.ostara</groupId>
+  <artifactId>ostara</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -23,10 +23,10 @@
   </modules>
 
   <scm>
-    <connection>scm:git@github.com:shallow-rs/LeopardMQ.git</connection>
-    <developerConnection>scm:git@github.com:shallow-rs/LeopardMQ.git</developerConnection>
-    <url>git@github.com:shallow-rs/LeopardMQ.git</url>
-    <tag>leopard-all-${version}</tag>
+    <connection>scm:git@github.com:shallow-rs/Ostara.git</connection>
+    <developerConnection>scm:git@github.com:shallow-rs/Ostara.git</developerConnection>
+    <url>git@github.com:shallow-rs/ostaraMQ.git</url>
+    <tag>ostara-all-${version}</tag>
   </scm>
 
   <licenses>
@@ -38,7 +38,7 @@
   </licenses>
 
   <organization>
-    <name>LeopardMQ</name>
+    <name>Ostara</name>
     <url>https://github.com/shallow-rs</url>
   </organization>
 
@@ -70,27 +70,27 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.leopard</groupId>
+        <groupId>org.ostara</groupId>
         <artifactId>client</artifactId>
         <version>${shallow.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.leopard</groupId>
+        <groupId>org.ostara</groupId>
         <artifactId>broker</artifactId>
         <version>${shallow.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.leopard</groupId>
+        <groupId>org.ostara</groupId>
         <artifactId>common</artifactId>
         <version>${shallow.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.leopard</groupId>
+        <groupId>org.ostara</groupId>
         <artifactId>remote</artifactId>
         <version>${shallow.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.leopard</groupId>
+        <groupId>org.ostara</groupId>
         <artifactId>mertics</artifactId>
         <version>${shallow.version}</version>
       </dependency>

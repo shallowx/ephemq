@@ -1,9 +1,9 @@
-syntax="proto3";
+syntax = "proto3";
 
-package leopard.protobuf;
-import "leopard.proto";
+package ostara.protobuf;
+import "ostara.proto";
 
-option java_package = "org.leopard.remote.proto.notify";
+option java_package = "org.ostara.remote.proto.notify";
 option java_outer_classname = "NotifyProto";
 option java_multiple_files = true;
 
