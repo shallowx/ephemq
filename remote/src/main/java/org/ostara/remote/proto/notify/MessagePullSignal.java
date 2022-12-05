@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.notify;
 
 /**
- * Protobuf type {@code leopard.protobuf.MessagePullSignal}
+ * Protobuf type {@code ostara.protobuf.MessagePullSignal}
  */
 public final class MessagePullSignal extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.MessagePullSignal)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.MessagePullSignal)
     MessagePullSignalOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use MessagePullSignal.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return NotifyProto.internal_static_leopard_protobuf_MessagePullSignal_descriptor;
+    return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_MessagePullSignal_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return NotifyProto.internal_static_leopard_protobuf_MessagePullSignal_fieldAccessorTable
+    return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_MessagePullSignal_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            MessagePullSignal.class, MessagePullSignal.Builder.class);
+            org.ostara.remote.proto.notify.MessagePullSignal.class, org.ostara.remote.proto.notify.MessagePullSignal.Builder.class);
   }
 
   public static final int TOPIC_FIELD_NUMBER = 1;
@@ -238,10 +238,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof MessagePullSignal)) {
+    if (!(obj instanceof org.ostara.remote.proto.notify.MessagePullSignal)) {
       return super.equals(obj);
     }
-    MessagePullSignal other = (MessagePullSignal) obj;
+    org.ostara.remote.proto.notify.MessagePullSignal other = (org.ostara.remote.proto.notify.MessagePullSignal) obj;
 
     if (!getTopic()
         .equals(other.getTopic())) return false;
@@ -284,69 +284,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static MessagePullSignal parseFrom(byte[] data)
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static MessagePullSignal parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static MessagePullSignal parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static MessagePullSignal parseDelimitedFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static MessagePullSignal parseFrom(
+  public static org.ostara.remote.proto.notify.MessagePullSignal parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -359,7 +359,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(MessagePullSignal prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.notify.MessagePullSignal prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -375,26 +375,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.MessagePullSignal}
+   * Protobuf type {@code ostara.protobuf.MessagePullSignal}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.MessagePullSignal)
-          MessagePullSignalOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.MessagePullSignal)
+      org.ostara.remote.proto.notify.MessagePullSignalOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return NotifyProto.internal_static_leopard_protobuf_MessagePullSignal_descriptor;
+      return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_MessagePullSignal_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return NotifyProto.internal_static_leopard_protobuf_MessagePullSignal_fieldAccessorTable
+      return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_MessagePullSignal_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              MessagePullSignal.class, MessagePullSignal.Builder.class);
+              org.ostara.remote.proto.notify.MessagePullSignal.class, org.ostara.remote.proto.notify.MessagePullSignal.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.notify.MessagePullSignal.newBuilder()
+    // Construct using org.ostara.remote.proto.notify.MessagePullSignal.newBuilder()
     private Builder() {
 
     }
@@ -425,17 +425,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return NotifyProto.internal_static_leopard_protobuf_MessagePullSignal_descriptor;
+      return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_MessagePullSignal_descriptor;
     }
 
     @java.lang.Override
-    public MessagePullSignal getDefaultInstanceForType() {
-      return MessagePullSignal.getDefaultInstance();
+    public org.ostara.remote.proto.notify.MessagePullSignal getDefaultInstanceForType() {
+      return org.ostara.remote.proto.notify.MessagePullSignal.getDefaultInstance();
     }
 
     @java.lang.Override
-    public MessagePullSignal build() {
-      MessagePullSignal result = buildPartial();
+    public org.ostara.remote.proto.notify.MessagePullSignal build() {
+      org.ostara.remote.proto.notify.MessagePullSignal result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -443,8 +443,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public MessagePullSignal buildPartial() {
-      MessagePullSignal result = new MessagePullSignal(this);
+    public org.ostara.remote.proto.notify.MessagePullSignal buildPartial() {
+      org.ostara.remote.proto.notify.MessagePullSignal result = new org.ostara.remote.proto.notify.MessagePullSignal(this);
       result.topic_ = topic_;
       result.queue_ = queue_;
       result.ledger_ = ledger_;
@@ -489,16 +489,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof MessagePullSignal) {
-        return mergeFrom((MessagePullSignal)other);
+      if (other instanceof org.ostara.remote.proto.notify.MessagePullSignal) {
+        return mergeFrom((org.ostara.remote.proto.notify.MessagePullSignal)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(MessagePullSignal other) {
-      if (other == MessagePullSignal.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.notify.MessagePullSignal other) {
+      if (other == org.ostara.remote.proto.notify.MessagePullSignal.getDefaultInstance()) return this;
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
         onChanged();
@@ -879,16 +879,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.MessagePullSignal)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.MessagePullSignal)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.MessagePullSignal)
-  private static final MessagePullSignal DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.MessagePullSignal)
+  private static final org.ostara.remote.proto.notify.MessagePullSignal DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new MessagePullSignal();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.notify.MessagePullSignal();
   }
 
-  public static MessagePullSignal getDefaultInstance() {
+  public static org.ostara.remote.proto.notify.MessagePullSignal getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -924,7 +924,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public MessagePullSignal getDefaultInstanceForType() {
+  public org.ostara.remote.proto.notify.MessagePullSignal getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

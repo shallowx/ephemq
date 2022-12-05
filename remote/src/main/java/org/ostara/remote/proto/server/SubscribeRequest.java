@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code leopard.protobuf.SubscribeRequest}
+ * Protobuf type {@code ostara.protobuf.SubscribeRequest}
  */
 public final class SubscribeRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.SubscribeRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.SubscribeRequest)
     SubscribeRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use SubscribeRequest.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_SubscribeRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SubscribeRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_SubscribeRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SubscribeRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            SubscribeRequest.class, SubscribeRequest.Builder.class);
+            org.ostara.remote.proto.server.SubscribeRequest.class, org.ostara.remote.proto.server.SubscribeRequest.Builder.class);
   }
 
   public static final int QUEUE_FIELD_NUMBER = 1;
@@ -238,10 +238,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof SubscribeRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.SubscribeRequest)) {
       return super.equals(obj);
     }
-    SubscribeRequest other = (SubscribeRequest) obj;
+    org.ostara.remote.proto.server.SubscribeRequest other = (org.ostara.remote.proto.server.SubscribeRequest) obj;
 
     if (!getQueue()
         .equals(other.getQueue())) return false;
@@ -284,69 +284,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static SubscribeRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static SubscribeRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static SubscribeRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.SubscribeRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static SubscribeRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static SubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.SubscribeRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -359,7 +359,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(SubscribeRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.SubscribeRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -375,26 +375,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.SubscribeRequest}
+   * Protobuf type {@code ostara.protobuf.SubscribeRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.SubscribeRequest)
-          SubscribeRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.SubscribeRequest)
+      org.ostara.remote.proto.server.SubscribeRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_SubscribeRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SubscribeRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_SubscribeRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SubscribeRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              SubscribeRequest.class, SubscribeRequest.Builder.class);
+              org.ostara.remote.proto.server.SubscribeRequest.class, org.ostara.remote.proto.server.SubscribeRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.SubscribeRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.SubscribeRequest.newBuilder()
     private Builder() {
 
     }
@@ -425,17 +425,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_SubscribeRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SubscribeRequest_descriptor;
     }
 
     @java.lang.Override
-    public SubscribeRequest getDefaultInstanceForType() {
-      return SubscribeRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.SubscribeRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.SubscribeRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public SubscribeRequest build() {
-      SubscribeRequest result = buildPartial();
+    public org.ostara.remote.proto.server.SubscribeRequest build() {
+      org.ostara.remote.proto.server.SubscribeRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -443,8 +443,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public SubscribeRequest buildPartial() {
-      SubscribeRequest result = new SubscribeRequest(this);
+    public org.ostara.remote.proto.server.SubscribeRequest buildPartial() {
+      org.ostara.remote.proto.server.SubscribeRequest result = new org.ostara.remote.proto.server.SubscribeRequest(this);
       result.queue_ = queue_;
       result.ledger_ = ledger_;
       result.epoch_ = epoch_;
@@ -489,16 +489,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof SubscribeRequest) {
-        return mergeFrom((SubscribeRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.SubscribeRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.SubscribeRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(SubscribeRequest other) {
-      if (other == SubscribeRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.SubscribeRequest other) {
+      if (other == org.ostara.remote.proto.server.SubscribeRequest.getDefaultInstance()) return this;
       if (!other.getQueue().isEmpty()) {
         queue_ = other.queue_;
         onChanged();
@@ -879,16 +879,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.SubscribeRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.SubscribeRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.SubscribeRequest)
-  private static final SubscribeRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.SubscribeRequest)
+  private static final org.ostara.remote.proto.server.SubscribeRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new SubscribeRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.SubscribeRequest();
   }
 
-  public static SubscribeRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.SubscribeRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -924,7 +924,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public SubscribeRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.SubscribeRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

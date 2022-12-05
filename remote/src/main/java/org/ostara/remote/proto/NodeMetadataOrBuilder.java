@@ -4,80 +4,66 @@
 package org.ostara.remote.proto;
 
 public interface NodeMetadataOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:leopard.protobuf.NodeMetadata)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeMetadata)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>string cluster = 1;</code>
-     *
-     * @return The cluster.
-     */
-    java.lang.String getCluster();
+  /**
+   * <code>string cluster = 1;</code>
+   * @return The cluster.
+   */
+  java.lang.String getCluster();
+  /**
+   * <code>string cluster = 1;</code>
+   * @return The bytes for cluster.
+   */
+  com.google.protobuf.ByteString
+      getClusterBytes();
 
-    /**
-     * <code>string cluster = 1;</code>
-     *
-     * @return The bytes for cluster.
-     */
-    com.google.protobuf.ByteString
-    getClusterBytes();
+  /**
+   * <code>string name = 2;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 2;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 
-    /**
-     * <code>string name = 2;</code>
-     *
-     * @return The name.
-     */
-    java.lang.String getName();
+  /**
+   * <code>string host = 3;</code>
+   * @return The host.
+   */
+  java.lang.String getHost();
+  /**
+   * <code>string host = 3;</code>
+   * @return The bytes for host.
+   */
+  com.google.protobuf.ByteString
+      getHostBytes();
 
-    /**
-     * <code>string name = 2;</code>
-     *
-     * @return The bytes for name.
-     */
-    com.google.protobuf.ByteString
-    getNameBytes();
+  /**
+   * <code>int32 port = 4;</code>
+   * @return The port.
+   */
+  int getPort();
 
-    /**
-     * <code>string host = 3;</code>
-     *
-     * @return The host.
-     */
-    java.lang.String getHost();
+  /**
+   * <code>string state = 5;</code>
+   * @return The state.
+   */
+  java.lang.String getState();
+  /**
+   * <code>string state = 5;</code>
+   * @return The bytes for state.
+   */
+  com.google.protobuf.ByteString
+      getStateBytes();
 
-    /**
-     * <code>string host = 3;</code>
-     *
-     * @return The bytes for host.
-     */
-    com.google.protobuf.ByteString
-    getHostBytes();
-
-    /**
-     * <code>int32 port = 4;</code>
-     *
-     * @return The port.
-     */
-    int getPort();
-
-    /**
-     * <code>string state = 5;</code>
-     *
-     * @return The state.
-     */
-    java.lang.String getState();
-
-    /**
-     * <code>string state = 5;</code>
-     *
-     * @return The bytes for state.
-     */
-    com.google.protobuf.ByteString
-    getStateBytes();
-
-    /**
-     * <code>int64 lastKeepLiveTime = 6;</code>
-     *
-     * @return The lastKeepLiveTime.
-     */
-    long getLastKeepLiveTime();
+  /**
+   * <code>int64 lastKeepLiveTime = 6;</code>
+   * @return The lastKeepLiveTime.
+   */
+  long getLastKeepLiveTime();
 }

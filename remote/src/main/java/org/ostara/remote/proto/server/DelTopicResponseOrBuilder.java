@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface DelTopicResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.DelTopicResponse)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.DelTopicResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**

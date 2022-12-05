@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code leopard.protobuf.DelTopicRequest}
+ * Protobuf type {@code ostara.protobuf.DelTopicRequest}
  */
 public final class DelTopicRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.DelTopicRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.DelTopicRequest)
     DelTopicRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use DelTopicRequest.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_DelTopicRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_DelTopicRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_DelTopicRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_DelTopicRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            DelTopicRequest.class, DelTopicRequest.Builder.class);
+            org.ostara.remote.proto.server.DelTopicRequest.class, org.ostara.remote.proto.server.DelTopicRequest.Builder.class);
   }
 
   public static final int TOPIC_FIELD_NUMBER = 1;
@@ -166,10 +166,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof DelTopicRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.DelTopicRequest)) {
       return super.equals(obj);
     }
-    DelTopicRequest other = (DelTopicRequest) obj;
+    org.ostara.remote.proto.server.DelTopicRequest other = (org.ostara.remote.proto.server.DelTopicRequest) obj;
 
     if (!getTopic()
         .equals(other.getTopic())) return false;
@@ -195,69 +195,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static DelTopicRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static DelTopicRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static DelTopicRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.DelTopicRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static DelTopicRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static DelTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.DelTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -270,7 +270,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(DelTopicRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.DelTopicRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -286,26 +286,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.DelTopicRequest}
+   * Protobuf type {@code ostara.protobuf.DelTopicRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.DelTopicRequest)
-          DelTopicRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.DelTopicRequest)
+      org.ostara.remote.proto.server.DelTopicRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_DelTopicRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_DelTopicRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_DelTopicRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_DelTopicRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              DelTopicRequest.class, DelTopicRequest.Builder.class);
+              org.ostara.remote.proto.server.DelTopicRequest.class, org.ostara.remote.proto.server.DelTopicRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.DelTopicRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.DelTopicRequest.newBuilder()
     private Builder() {
 
     }
@@ -328,17 +328,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_DelTopicRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_DelTopicRequest_descriptor;
     }
 
     @java.lang.Override
-    public DelTopicRequest getDefaultInstanceForType() {
-      return DelTopicRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.DelTopicRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.DelTopicRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public DelTopicRequest build() {
-      DelTopicRequest result = buildPartial();
+    public org.ostara.remote.proto.server.DelTopicRequest build() {
+      org.ostara.remote.proto.server.DelTopicRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -346,8 +346,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public DelTopicRequest buildPartial() {
-      DelTopicRequest result = new DelTopicRequest(this);
+    public org.ostara.remote.proto.server.DelTopicRequest buildPartial() {
+      org.ostara.remote.proto.server.DelTopicRequest result = new org.ostara.remote.proto.server.DelTopicRequest(this);
       result.topic_ = topic_;
       result.cluster_ = cluster_;
       onBuilt();
@@ -388,16 +388,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof DelTopicRequest) {
-        return mergeFrom((DelTopicRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.DelTopicRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.DelTopicRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(DelTopicRequest other) {
-      if (other == DelTopicRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.DelTopicRequest other) {
+      if (other == org.ostara.remote.proto.server.DelTopicRequest.getDefaultInstance()) return this;
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
         onChanged();
@@ -622,16 +622,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.DelTopicRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.DelTopicRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.DelTopicRequest)
-  private static final DelTopicRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.DelTopicRequest)
+  private static final org.ostara.remote.proto.server.DelTopicRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new DelTopicRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.DelTopicRequest();
   }
 
-  public static DelTopicRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.DelTopicRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -667,7 +667,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public DelTopicRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.DelTopicRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

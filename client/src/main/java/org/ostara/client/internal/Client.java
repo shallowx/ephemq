@@ -32,6 +32,10 @@ public class Client {
     private ClientListener listener;
     private ShallowChannelPool pool;
 
+    public Client(String name) {
+        this(name, new ClientConfig());
+    }
+
     public Client(String name, ClientConfig config) {
         this(name, config, null);
     }

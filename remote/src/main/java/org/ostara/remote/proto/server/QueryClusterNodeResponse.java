@@ -3,15 +3,12 @@
 
 package org.ostara.remote.proto.server;
 
-import org.ostara.remote.proto.NodeMetadata;
-import org.ostara.remote.proto.NodeMetadataOrBuilder;
-
 /**
- * Protobuf type {@code leopard.protobuf.QueryClusterNodeResponse}
+ * Protobuf type {@code ostara.protobuf.QueryClusterNodeResponse}
  */
 public final class QueryClusterNodeResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.QueryClusterNodeResponse)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.QueryClusterNodeResponse)
     QueryClusterNodeResponseOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use QueryClusterNodeResponse.newBuilder() to construct.
@@ -36,53 +33,53 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_QueryClusterNodeResponse_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryClusterNodeResponse_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_QueryClusterNodeResponse_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryClusterNodeResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            QueryClusterNodeResponse.class, QueryClusterNodeResponse.Builder.class);
+            org.ostara.remote.proto.server.QueryClusterNodeResponse.class, org.ostara.remote.proto.server.QueryClusterNodeResponse.Builder.class);
   }
 
   public static final int NODES_FIELD_NUMBER = 1;
-  private java.util.List<NodeMetadata> nodes_;
+  private java.util.List<org.ostara.remote.proto.NodeMetadata> nodes_;
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<NodeMetadata> getNodesList() {
+  public java.util.List<org.ostara.remote.proto.NodeMetadata> getNodesList() {
     return nodes_;
   }
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends NodeMetadataOrBuilder>
+  public java.util.List<? extends org.ostara.remote.proto.NodeMetadataOrBuilder> 
       getNodesOrBuilderList() {
     return nodes_;
   }
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
   @java.lang.Override
   public int getNodesCount() {
     return nodes_.size();
   }
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
   @java.lang.Override
-  public NodeMetadata getNodes(int index) {
+  public org.ostara.remote.proto.NodeMetadata getNodes(int index) {
     return nodes_.get(index);
   }
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
   @java.lang.Override
-  public NodeMetadataOrBuilder getNodesOrBuilder(
+  public org.ostara.remote.proto.NodeMetadataOrBuilder getNodesOrBuilder(
       int index) {
     return nodes_.get(index);
   }
@@ -127,10 +124,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof QueryClusterNodeResponse)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.QueryClusterNodeResponse)) {
       return super.equals(obj);
     }
-    QueryClusterNodeResponse other = (QueryClusterNodeResponse) obj;
+    org.ostara.remote.proto.server.QueryClusterNodeResponse other = (org.ostara.remote.proto.server.QueryClusterNodeResponse) obj;
 
     if (!getNodesList()
         .equals(other.getNodesList())) return false;
@@ -154,69 +151,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static QueryClusterNodeResponse parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static QueryClusterNodeResponse parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static QueryClusterNodeResponse parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static QueryClusterNodeResponse parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static QueryClusterNodeResponse parseFrom(
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -229,7 +226,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(QueryClusterNodeResponse prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.QueryClusterNodeResponse prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -245,26 +242,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.QueryClusterNodeResponse}
+   * Protobuf type {@code ostara.protobuf.QueryClusterNodeResponse}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.QueryClusterNodeResponse)
-          QueryClusterNodeResponseOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.QueryClusterNodeResponse)
+      org.ostara.remote.proto.server.QueryClusterNodeResponseOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_QueryClusterNodeResponse_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryClusterNodeResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_QueryClusterNodeResponse_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryClusterNodeResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              QueryClusterNodeResponse.class, QueryClusterNodeResponse.Builder.class);
+              org.ostara.remote.proto.server.QueryClusterNodeResponse.class, org.ostara.remote.proto.server.QueryClusterNodeResponse.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.QueryClusterNodeResponse.newBuilder()
+    // Construct using org.ostara.remote.proto.server.QueryClusterNodeResponse.newBuilder()
     private Builder() {
 
     }
@@ -290,17 +287,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_QueryClusterNodeResponse_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryClusterNodeResponse_descriptor;
     }
 
     @java.lang.Override
-    public QueryClusterNodeResponse getDefaultInstanceForType() {
-      return QueryClusterNodeResponse.getDefaultInstance();
+    public org.ostara.remote.proto.server.QueryClusterNodeResponse getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.QueryClusterNodeResponse.getDefaultInstance();
     }
 
     @java.lang.Override
-    public QueryClusterNodeResponse build() {
-      QueryClusterNodeResponse result = buildPartial();
+    public org.ostara.remote.proto.server.QueryClusterNodeResponse build() {
+      org.ostara.remote.proto.server.QueryClusterNodeResponse result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -308,8 +305,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public QueryClusterNodeResponse buildPartial() {
-      QueryClusterNodeResponse result = new QueryClusterNodeResponse(this);
+    public org.ostara.remote.proto.server.QueryClusterNodeResponse buildPartial() {
+      org.ostara.remote.proto.server.QueryClusterNodeResponse result = new org.ostara.remote.proto.server.QueryClusterNodeResponse(this);
       int from_bitField0_ = bitField0_;
       if (nodesBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
@@ -358,16 +355,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof QueryClusterNodeResponse) {
-        return mergeFrom((QueryClusterNodeResponse)other);
+      if (other instanceof org.ostara.remote.proto.server.QueryClusterNodeResponse) {
+        return mergeFrom((org.ostara.remote.proto.server.QueryClusterNodeResponse)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(QueryClusterNodeResponse other) {
-      if (other == QueryClusterNodeResponse.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.QueryClusterNodeResponse other) {
+      if (other == org.ostara.remote.proto.server.QueryClusterNodeResponse.getDefaultInstance()) return this;
       if (nodesBuilder_ == null) {
         if (!other.nodes_.isEmpty()) {
           if (nodes_.isEmpty()) {
@@ -421,9 +418,9 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              NodeMetadata m =
+              org.ostara.remote.proto.NodeMetadata m =
                   input.readMessage(
-                      NodeMetadata.parser(),
+                      org.ostara.remote.proto.NodeMetadata.parser(),
                       extensionRegistry);
               if (nodesBuilder_ == null) {
                 ensureNodesIsMutable();
@@ -450,22 +447,22 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<NodeMetadata> nodes_ =
+    private java.util.List<org.ostara.remote.proto.NodeMetadata> nodes_ =
       java.util.Collections.emptyList();
     private void ensureNodesIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        nodes_ = new java.util.ArrayList<NodeMetadata>(nodes_);
+        nodes_ = new java.util.ArrayList<org.ostara.remote.proto.NodeMetadata>(nodes_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-            NodeMetadata, NodeMetadata.Builder, NodeMetadataOrBuilder> nodesBuilder_;
+        org.ostara.remote.proto.NodeMetadata, org.ostara.remote.proto.NodeMetadata.Builder, org.ostara.remote.proto.NodeMetadataOrBuilder> nodesBuilder_;
 
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public java.util.List<NodeMetadata> getNodesList() {
+    public java.util.List<org.ostara.remote.proto.NodeMetadata> getNodesList() {
       if (nodesBuilder_ == null) {
         return java.util.Collections.unmodifiableList(nodes_);
       } else {
@@ -473,7 +470,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public int getNodesCount() {
       if (nodesBuilder_ == null) {
@@ -483,9 +480,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public NodeMetadata getNodes(int index) {
+    public org.ostara.remote.proto.NodeMetadata getNodes(int index) {
       if (nodesBuilder_ == null) {
         return nodes_.get(index);
       } else {
@@ -493,10 +490,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder setNodes(
-        int index, NodeMetadata value) {
+        int index, org.ostara.remote.proto.NodeMetadata value) {
       if (nodesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -510,10 +507,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder setNodes(
-        int index, NodeMetadata.Builder builderForValue) {
+        int index, org.ostara.remote.proto.NodeMetadata.Builder builderForValue) {
       if (nodesBuilder_ == null) {
         ensureNodesIsMutable();
         nodes_.set(index, builderForValue.build());
@@ -524,9 +521,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public Builder addNodes(NodeMetadata value) {
+    public Builder addNodes(org.ostara.remote.proto.NodeMetadata value) {
       if (nodesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -540,10 +537,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder addNodes(
-        int index, NodeMetadata value) {
+        int index, org.ostara.remote.proto.NodeMetadata value) {
       if (nodesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -557,10 +554,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder addNodes(
-        NodeMetadata.Builder builderForValue) {
+        org.ostara.remote.proto.NodeMetadata.Builder builderForValue) {
       if (nodesBuilder_ == null) {
         ensureNodesIsMutable();
         nodes_.add(builderForValue.build());
@@ -571,10 +568,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder addNodes(
-        int index, NodeMetadata.Builder builderForValue) {
+        int index, org.ostara.remote.proto.NodeMetadata.Builder builderForValue) {
       if (nodesBuilder_ == null) {
         ensureNodesIsMutable();
         nodes_.add(index, builderForValue.build());
@@ -585,10 +582,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder addAllNodes(
-        java.lang.Iterable<? extends NodeMetadata> values) {
+        java.lang.Iterable<? extends org.ostara.remote.proto.NodeMetadata> values) {
       if (nodesBuilder_ == null) {
         ensureNodesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -600,7 +597,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder clearNodes() {
       if (nodesBuilder_ == null) {
@@ -613,7 +610,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
     public Builder removeNodes(int index) {
       if (nodesBuilder_ == null) {
@@ -626,16 +623,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public NodeMetadata.Builder getNodesBuilder(
+    public org.ostara.remote.proto.NodeMetadata.Builder getNodesBuilder(
         int index) {
       return getNodesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public NodeMetadataOrBuilder getNodesOrBuilder(
+    public org.ostara.remote.proto.NodeMetadataOrBuilder getNodesOrBuilder(
         int index) {
       if (nodesBuilder_ == null) {
         return nodes_.get(index);  } else {
@@ -643,9 +640,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public java.util.List<? extends NodeMetadataOrBuilder>
+    public java.util.List<? extends org.ostara.remote.proto.NodeMetadataOrBuilder> 
          getNodesOrBuilderList() {
       if (nodesBuilder_ != null) {
         return nodesBuilder_.getMessageOrBuilderList();
@@ -654,33 +651,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public NodeMetadata.Builder addNodesBuilder() {
+    public org.ostara.remote.proto.NodeMetadata.Builder addNodesBuilder() {
       return getNodesFieldBuilder().addBuilder(
-          NodeMetadata.getDefaultInstance());
+          org.ostara.remote.proto.NodeMetadata.getDefaultInstance());
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public NodeMetadata.Builder addNodesBuilder(
+    public org.ostara.remote.proto.NodeMetadata.Builder addNodesBuilder(
         int index) {
       return getNodesFieldBuilder().addBuilder(
-          index, NodeMetadata.getDefaultInstance());
+          index, org.ostara.remote.proto.NodeMetadata.getDefaultInstance());
     }
     /**
-     * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+     * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
      */
-    public java.util.List<NodeMetadata.Builder>
+    public java.util.List<org.ostara.remote.proto.NodeMetadata.Builder> 
          getNodesBuilderList() {
       return getNodesFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-            NodeMetadata, NodeMetadata.Builder, NodeMetadataOrBuilder>
+        org.ostara.remote.proto.NodeMetadata, org.ostara.remote.proto.NodeMetadata.Builder, org.ostara.remote.proto.NodeMetadataOrBuilder> 
         getNodesFieldBuilder() {
       if (nodesBuilder_ == null) {
         nodesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                NodeMetadata, NodeMetadata.Builder, NodeMetadataOrBuilder>(
+            org.ostara.remote.proto.NodeMetadata, org.ostara.remote.proto.NodeMetadata.Builder, org.ostara.remote.proto.NodeMetadataOrBuilder>(
                 nodes_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
@@ -702,16 +699,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.QueryClusterNodeResponse)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.QueryClusterNodeResponse)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.QueryClusterNodeResponse)
-  private static final QueryClusterNodeResponse DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.QueryClusterNodeResponse)
+  private static final org.ostara.remote.proto.server.QueryClusterNodeResponse DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new QueryClusterNodeResponse();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.QueryClusterNodeResponse();
   }
 
-  public static QueryClusterNodeResponse getDefaultInstance() {
+  public static org.ostara.remote.proto.server.QueryClusterNodeResponse getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -747,7 +744,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public QueryClusterNodeResponse getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.QueryClusterNodeResponse getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

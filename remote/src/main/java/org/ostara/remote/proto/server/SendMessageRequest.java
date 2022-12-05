@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code leopard.protobuf.SendMessageRequest}
+ * Protobuf type {@code ostara.protobuf.SendMessageRequest}
  */
 public final class SendMessageRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.SendMessageRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.SendMessageRequest)
     SendMessageRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use SendMessageRequest.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_SendMessageRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SendMessageRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_SendMessageRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SendMessageRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            SendMessageRequest.class, SendMessageRequest.Builder.class);
+            org.ostara.remote.proto.server.SendMessageRequest.class, org.ostara.remote.proto.server.SendMessageRequest.Builder.class);
   }
 
   public static final int LEDGER_FIELD_NUMBER = 1;
@@ -184,10 +184,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof SendMessageRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.SendMessageRequest)) {
       return super.equals(obj);
     }
-    SendMessageRequest other = (SendMessageRequest) obj;
+    org.ostara.remote.proto.server.SendMessageRequest other = (org.ostara.remote.proto.server.SendMessageRequest) obj;
 
     if (getLedger()
         != other.getLedger()) return false;
@@ -217,69 +217,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static SendMessageRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static SendMessageRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static SendMessageRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.SendMessageRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static SendMessageRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static SendMessageRequest parseFrom(
+  public static org.ostara.remote.proto.server.SendMessageRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -292,7 +292,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(SendMessageRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.SendMessageRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -308,26 +308,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.SendMessageRequest}
+   * Protobuf type {@code ostara.protobuf.SendMessageRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.SendMessageRequest)
-          SendMessageRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.SendMessageRequest)
+      org.ostara.remote.proto.server.SendMessageRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_SendMessageRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SendMessageRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_SendMessageRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SendMessageRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              SendMessageRequest.class, SendMessageRequest.Builder.class);
+              org.ostara.remote.proto.server.SendMessageRequest.class, org.ostara.remote.proto.server.SendMessageRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.SendMessageRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.SendMessageRequest.newBuilder()
     private Builder() {
 
     }
@@ -352,17 +352,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_SendMessageRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_SendMessageRequest_descriptor;
     }
 
     @java.lang.Override
-    public SendMessageRequest getDefaultInstanceForType() {
-      return SendMessageRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.SendMessageRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.SendMessageRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public SendMessageRequest build() {
-      SendMessageRequest result = buildPartial();
+    public org.ostara.remote.proto.server.SendMessageRequest build() {
+      org.ostara.remote.proto.server.SendMessageRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -370,8 +370,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public SendMessageRequest buildPartial() {
-      SendMessageRequest result = new SendMessageRequest(this);
+    public org.ostara.remote.proto.server.SendMessageRequest buildPartial() {
+      org.ostara.remote.proto.server.SendMessageRequest result = new org.ostara.remote.proto.server.SendMessageRequest(this);
       result.ledger_ = ledger_;
       result.queue_ = queue_;
       result.topic_ = topic_;
@@ -413,16 +413,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof SendMessageRequest) {
-        return mergeFrom((SendMessageRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.SendMessageRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.SendMessageRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(SendMessageRequest other) {
-      if (other == SendMessageRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.SendMessageRequest other) {
+      if (other == org.ostara.remote.proto.server.SendMessageRequest.getDefaultInstance()) return this;
       if (other.getLedger() != 0) {
         setLedger(other.getLedger());
       }
@@ -686,16 +686,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.SendMessageRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.SendMessageRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.SendMessageRequest)
-  private static final SendMessageRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.SendMessageRequest)
+  private static final org.ostara.remote.proto.server.SendMessageRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new SendMessageRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.SendMessageRequest();
   }
 
-  public static SendMessageRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.SendMessageRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -731,7 +731,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public SendMessageRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.SendMessageRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

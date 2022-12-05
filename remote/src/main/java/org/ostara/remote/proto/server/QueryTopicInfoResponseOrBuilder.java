@@ -3,18 +3,16 @@
 
 package org.ostara.remote.proto.server;
 
-import org.ostara.remote.proto.TopicMetadata;
-
 public interface QueryTopicInfoResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.QueryTopicInfoResponse)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryTopicInfoResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;string, .leopard.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
    */
   int getTopicsCount();
   /**
-   * <code>map&lt;string, .leopard.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
    */
   boolean containsTopics(
       java.lang.String key);
@@ -22,26 +20,26 @@ public interface QueryTopicInfoResponseOrBuilder extends
    * Use {@link #getTopicsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, TopicMetadata>
+  java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata>
   getTopics();
   /**
-   * <code>map&lt;string, .leopard.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
    */
-  java.util.Map<java.lang.String, TopicMetadata>
+  java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata>
   getTopicsMap();
   /**
-   * <code>map&lt;string, .leopard.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
    */
 
   /* nullable */
-TopicMetadata getTopicsOrDefault(
+org.ostara.remote.proto.TopicMetadata getTopicsOrDefault(
       java.lang.String key,
       /* nullable */
-TopicMetadata defaultValue);
+org.ostara.remote.proto.TopicMetadata defaultValue);
   /**
-   * <code>map&lt;string, .leopard.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
    */
 
-  TopicMetadata getTopicsOrThrow(
+  org.ostara.remote.proto.TopicMetadata getTopicsOrThrow(
       java.lang.String key);
 }

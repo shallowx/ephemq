@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code leopard.protobuf.CreateTopicRequest}
+ * Protobuf type {@code ostara.protobuf.CreateTopicRequest}
  */
 public final class CreateTopicRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.CreateTopicRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.CreateTopicRequest)
     CreateTopicRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use CreateTopicRequest.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_CreateTopicRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_CreateTopicRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            CreateTopicRequest.class, CreateTopicRequest.Builder.class);
+            org.ostara.remote.proto.server.CreateTopicRequest.class, org.ostara.remote.proto.server.CreateTopicRequest.Builder.class);
   }
 
   public static final int TOPIC_FIELD_NUMBER = 1;
@@ -202,10 +202,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof CreateTopicRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.CreateTopicRequest)) {
       return super.equals(obj);
     }
-    CreateTopicRequest other = (CreateTopicRequest) obj;
+    org.ostara.remote.proto.server.CreateTopicRequest other = (org.ostara.remote.proto.server.CreateTopicRequest) obj;
 
     if (!getTopic()
         .equals(other.getTopic())) return false;
@@ -239,69 +239,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static CreateTopicRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static CreateTopicRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static CreateTopicRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static CreateTopicRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static CreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.CreateTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -314,7 +314,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(CreateTopicRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.CreateTopicRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -330,26 +330,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.CreateTopicRequest}
+   * Protobuf type {@code ostara.protobuf.CreateTopicRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.CreateTopicRequest)
-          CreateTopicRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.CreateTopicRequest)
+      org.ostara.remote.proto.server.CreateTopicRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_CreateTopicRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_CreateTopicRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              CreateTopicRequest.class, CreateTopicRequest.Builder.class);
+              org.ostara.remote.proto.server.CreateTopicRequest.class, org.ostara.remote.proto.server.CreateTopicRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.CreateTopicRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.CreateTopicRequest.newBuilder()
     private Builder() {
 
     }
@@ -376,17 +376,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_CreateTopicRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
-    public CreateTopicRequest getDefaultInstanceForType() {
-      return CreateTopicRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.CreateTopicRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public CreateTopicRequest build() {
-      CreateTopicRequest result = buildPartial();
+    public org.ostara.remote.proto.server.CreateTopicRequest build() {
+      org.ostara.remote.proto.server.CreateTopicRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -394,8 +394,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public CreateTopicRequest buildPartial() {
-      CreateTopicRequest result = new CreateTopicRequest(this);
+    public org.ostara.remote.proto.server.CreateTopicRequest buildPartial() {
+      org.ostara.remote.proto.server.CreateTopicRequest result = new org.ostara.remote.proto.server.CreateTopicRequest(this);
       result.topic_ = topic_;
       result.partitionLimit_ = partitionLimit_;
       result.replicateLimit_ = replicateLimit_;
@@ -438,16 +438,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof CreateTopicRequest) {
-        return mergeFrom((CreateTopicRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.CreateTopicRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.CreateTopicRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(CreateTopicRequest other) {
-      if (other == CreateTopicRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.CreateTopicRequest other) {
+      if (other == org.ostara.remote.proto.server.CreateTopicRequest.getDefaultInstance()) return this;
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
         onChanged();
@@ -750,16 +750,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.CreateTopicRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.CreateTopicRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.CreateTopicRequest)
-  private static final CreateTopicRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.CreateTopicRequest)
+  private static final org.ostara.remote.proto.server.CreateTopicRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new CreateTopicRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.CreateTopicRequest();
   }
 
-  public static CreateTopicRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.CreateTopicRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -795,7 +795,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public CreateTopicRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

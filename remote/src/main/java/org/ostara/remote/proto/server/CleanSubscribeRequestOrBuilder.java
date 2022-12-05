@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface CleanSubscribeRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.CleanSubscribeRequest)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CleanSubscribeRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

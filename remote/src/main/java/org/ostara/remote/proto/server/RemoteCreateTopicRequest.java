@@ -3,15 +3,12 @@
 
 package org.ostara.remote.proto.server;
 
-import org.ostara.remote.proto.PartitionMetadata;
-import org.ostara.remote.proto.PartitionMetadataOrBuilder;
-
 /**
- * Protobuf type {@code leopard.protobuf.RemoteCreateTopicRequest}
+ * Protobuf type {@code ostara.protobuf.RemoteCreateTopicRequest}
  */
 public final class RemoteCreateTopicRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.RemoteCreateTopicRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.RemoteCreateTopicRequest)
     RemoteCreateTopicRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use RemoteCreateTopicRequest.newBuilder() to construct.
@@ -38,15 +35,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_RemoteCreateTopicRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RemoteCreateTopicRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_RemoteCreateTopicRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RemoteCreateTopicRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            RemoteCreateTopicRequest.class, RemoteCreateTopicRequest.Builder.class);
+            org.ostara.remote.proto.server.RemoteCreateTopicRequest.class, org.ostara.remote.proto.server.RemoteCreateTopicRequest.Builder.class);
   }
 
   public static final int TOPIC_FIELD_NUMBER = 1;
@@ -126,41 +123,41 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PARTITIONS_FIELD_NUMBER = 3;
-  private java.util.List<PartitionMetadata> partitions_;
+  private java.util.List<org.ostara.remote.proto.PartitionMetadata> partitions_;
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<PartitionMetadata> getPartitionsList() {
+  public java.util.List<org.ostara.remote.proto.PartitionMetadata> getPartitionsList() {
     return partitions_;
   }
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends PartitionMetadataOrBuilder>
+  public java.util.List<? extends org.ostara.remote.proto.PartitionMetadataOrBuilder> 
       getPartitionsOrBuilderList() {
     return partitions_;
   }
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
   @java.lang.Override
   public int getPartitionsCount() {
     return partitions_.size();
   }
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
   @java.lang.Override
-  public PartitionMetadata getPartitions(int index) {
+  public org.ostara.remote.proto.PartitionMetadata getPartitions(int index) {
     return partitions_.get(index);
   }
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
   @java.lang.Override
-  public PartitionMetadataOrBuilder getPartitionsOrBuilder(
+  public org.ostara.remote.proto.PartitionMetadataOrBuilder getPartitionsOrBuilder(
       int index) {
     return partitions_.get(index);
   }
@@ -217,10 +214,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof RemoteCreateTopicRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.RemoteCreateTopicRequest)) {
       return super.equals(obj);
     }
-    RemoteCreateTopicRequest other = (RemoteCreateTopicRequest) obj;
+    org.ostara.remote.proto.server.RemoteCreateTopicRequest other = (org.ostara.remote.proto.server.RemoteCreateTopicRequest) obj;
 
     if (!getTopic()
         .equals(other.getTopic())) return false;
@@ -252,69 +249,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static RemoteCreateTopicRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static RemoteCreateTopicRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static RemoteCreateTopicRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static RemoteCreateTopicRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static RemoteCreateTopicRequest parseFrom(
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -327,7 +324,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(RemoteCreateTopicRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.RemoteCreateTopicRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -343,26 +340,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.RemoteCreateTopicRequest}
+   * Protobuf type {@code ostara.protobuf.RemoteCreateTopicRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.RemoteCreateTopicRequest)
-          RemoteCreateTopicRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.RemoteCreateTopicRequest)
+      org.ostara.remote.proto.server.RemoteCreateTopicRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_RemoteCreateTopicRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RemoteCreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_RemoteCreateTopicRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RemoteCreateTopicRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              RemoteCreateTopicRequest.class, RemoteCreateTopicRequest.Builder.class);
+              org.ostara.remote.proto.server.RemoteCreateTopicRequest.class, org.ostara.remote.proto.server.RemoteCreateTopicRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.RemoteCreateTopicRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.RemoteCreateTopicRequest.newBuilder()
     private Builder() {
 
     }
@@ -392,17 +389,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_RemoteCreateTopicRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RemoteCreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
-    public RemoteCreateTopicRequest getDefaultInstanceForType() {
-      return RemoteCreateTopicRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.RemoteCreateTopicRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.RemoteCreateTopicRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public RemoteCreateTopicRequest build() {
-      RemoteCreateTopicRequest result = buildPartial();
+    public org.ostara.remote.proto.server.RemoteCreateTopicRequest build() {
+      org.ostara.remote.proto.server.RemoteCreateTopicRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -410,8 +407,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public RemoteCreateTopicRequest buildPartial() {
-      RemoteCreateTopicRequest result = new RemoteCreateTopicRequest(this);
+    public org.ostara.remote.proto.server.RemoteCreateTopicRequest buildPartial() {
+      org.ostara.remote.proto.server.RemoteCreateTopicRequest result = new org.ostara.remote.proto.server.RemoteCreateTopicRequest(this);
       int from_bitField0_ = bitField0_;
       result.topic_ = topic_;
       result.cluster_ = cluster_;
@@ -462,16 +459,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof RemoteCreateTopicRequest) {
-        return mergeFrom((RemoteCreateTopicRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.RemoteCreateTopicRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.RemoteCreateTopicRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(RemoteCreateTopicRequest other) {
-      if (other == RemoteCreateTopicRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.RemoteCreateTopicRequest other) {
+      if (other == org.ostara.remote.proto.server.RemoteCreateTopicRequest.getDefaultInstance()) return this;
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
         onChanged();
@@ -543,9 +540,9 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              PartitionMetadata m =
+              org.ostara.remote.proto.PartitionMetadata m =
                   input.readMessage(
-                      PartitionMetadata.parser(),
+                      org.ostara.remote.proto.PartitionMetadata.parser(),
                       extensionRegistry);
               if (partitionsBuilder_ == null) {
                 ensurePartitionsIsMutable();
@@ -724,22 +721,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<PartitionMetadata> partitions_ =
+    private java.util.List<org.ostara.remote.proto.PartitionMetadata> partitions_ =
       java.util.Collections.emptyList();
     private void ensurePartitionsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        partitions_ = new java.util.ArrayList<PartitionMetadata>(partitions_);
+        partitions_ = new java.util.ArrayList<org.ostara.remote.proto.PartitionMetadata>(partitions_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-            PartitionMetadata, PartitionMetadata.Builder, PartitionMetadataOrBuilder> partitionsBuilder_;
+        org.ostara.remote.proto.PartitionMetadata, org.ostara.remote.proto.PartitionMetadata.Builder, org.ostara.remote.proto.PartitionMetadataOrBuilder> partitionsBuilder_;
 
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public java.util.List<PartitionMetadata> getPartitionsList() {
+    public java.util.List<org.ostara.remote.proto.PartitionMetadata> getPartitionsList() {
       if (partitionsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(partitions_);
       } else {
@@ -747,7 +744,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public int getPartitionsCount() {
       if (partitionsBuilder_ == null) {
@@ -757,9 +754,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public PartitionMetadata getPartitions(int index) {
+    public org.ostara.remote.proto.PartitionMetadata getPartitions(int index) {
       if (partitionsBuilder_ == null) {
         return partitions_.get(index);
       } else {
@@ -767,10 +764,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder setPartitions(
-        int index, PartitionMetadata value) {
+        int index, org.ostara.remote.proto.PartitionMetadata value) {
       if (partitionsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -784,10 +781,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder setPartitions(
-        int index, PartitionMetadata.Builder builderForValue) {
+        int index, org.ostara.remote.proto.PartitionMetadata.Builder builderForValue) {
       if (partitionsBuilder_ == null) {
         ensurePartitionsIsMutable();
         partitions_.set(index, builderForValue.build());
@@ -798,9 +795,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public Builder addPartitions(PartitionMetadata value) {
+    public Builder addPartitions(org.ostara.remote.proto.PartitionMetadata value) {
       if (partitionsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -814,10 +811,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder addPartitions(
-        int index, PartitionMetadata value) {
+        int index, org.ostara.remote.proto.PartitionMetadata value) {
       if (partitionsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -831,10 +828,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder addPartitions(
-        PartitionMetadata.Builder builderForValue) {
+        org.ostara.remote.proto.PartitionMetadata.Builder builderForValue) {
       if (partitionsBuilder_ == null) {
         ensurePartitionsIsMutable();
         partitions_.add(builderForValue.build());
@@ -845,10 +842,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder addPartitions(
-        int index, PartitionMetadata.Builder builderForValue) {
+        int index, org.ostara.remote.proto.PartitionMetadata.Builder builderForValue) {
       if (partitionsBuilder_ == null) {
         ensurePartitionsIsMutable();
         partitions_.add(index, builderForValue.build());
@@ -859,10 +856,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder addAllPartitions(
-        java.lang.Iterable<? extends PartitionMetadata> values) {
+        java.lang.Iterable<? extends org.ostara.remote.proto.PartitionMetadata> values) {
       if (partitionsBuilder_ == null) {
         ensurePartitionsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -874,7 +871,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder clearPartitions() {
       if (partitionsBuilder_ == null) {
@@ -887,7 +884,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
     public Builder removePartitions(int index) {
       if (partitionsBuilder_ == null) {
@@ -900,16 +897,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public PartitionMetadata.Builder getPartitionsBuilder(
+    public org.ostara.remote.proto.PartitionMetadata.Builder getPartitionsBuilder(
         int index) {
       return getPartitionsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public PartitionMetadataOrBuilder getPartitionsOrBuilder(
+    public org.ostara.remote.proto.PartitionMetadataOrBuilder getPartitionsOrBuilder(
         int index) {
       if (partitionsBuilder_ == null) {
         return partitions_.get(index);  } else {
@@ -917,9 +914,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public java.util.List<? extends PartitionMetadataOrBuilder>
+    public java.util.List<? extends org.ostara.remote.proto.PartitionMetadataOrBuilder> 
          getPartitionsOrBuilderList() {
       if (partitionsBuilder_ != null) {
         return partitionsBuilder_.getMessageOrBuilderList();
@@ -928,33 +925,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public PartitionMetadata.Builder addPartitionsBuilder() {
+    public org.ostara.remote.proto.PartitionMetadata.Builder addPartitionsBuilder() {
       return getPartitionsFieldBuilder().addBuilder(
-          PartitionMetadata.getDefaultInstance());
+          org.ostara.remote.proto.PartitionMetadata.getDefaultInstance());
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public PartitionMetadata.Builder addPartitionsBuilder(
+    public org.ostara.remote.proto.PartitionMetadata.Builder addPartitionsBuilder(
         int index) {
       return getPartitionsFieldBuilder().addBuilder(
-          index, PartitionMetadata.getDefaultInstance());
+          index, org.ostara.remote.proto.PartitionMetadata.getDefaultInstance());
     }
     /**
-     * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+     * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
      */
-    public java.util.List<PartitionMetadata.Builder>
+    public java.util.List<org.ostara.remote.proto.PartitionMetadata.Builder> 
          getPartitionsBuilderList() {
       return getPartitionsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-            PartitionMetadata, PartitionMetadata.Builder, PartitionMetadataOrBuilder>
+        org.ostara.remote.proto.PartitionMetadata, org.ostara.remote.proto.PartitionMetadata.Builder, org.ostara.remote.proto.PartitionMetadataOrBuilder> 
         getPartitionsFieldBuilder() {
       if (partitionsBuilder_ == null) {
         partitionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                PartitionMetadata, PartitionMetadata.Builder, PartitionMetadataOrBuilder>(
+            org.ostara.remote.proto.PartitionMetadata, org.ostara.remote.proto.PartitionMetadata.Builder, org.ostara.remote.proto.PartitionMetadataOrBuilder>(
                 partitions_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
@@ -976,16 +973,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.RemoteCreateTopicRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.RemoteCreateTopicRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.RemoteCreateTopicRequest)
-  private static final RemoteCreateTopicRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.RemoteCreateTopicRequest)
+  private static final org.ostara.remote.proto.server.RemoteCreateTopicRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new RemoteCreateTopicRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.RemoteCreateTopicRequest();
   }
 
-  public static RemoteCreateTopicRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.RemoteCreateTopicRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -1021,7 +1018,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public RemoteCreateTopicRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.RemoteCreateTopicRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

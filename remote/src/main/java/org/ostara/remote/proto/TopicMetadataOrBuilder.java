@@ -4,62 +4,54 @@
 package org.ostara.remote.proto;
 
 public interface TopicMetadataOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:leopard.protobuf.TopicMetadata)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.TopicMetadata)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The name.
-     */
-    java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The bytes for name.
-     */
-    com.google.protobuf.ByteString
-    getNameBytes();
+  /**
+   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
+  int getPartitionsCount();
+  /**
+   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
+  boolean containsPartitions(
+      int key);
+  /**
+   * Use {@link #getPartitionsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
+  getPartitions();
+  /**
+   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
+  java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
+  getPartitionsMap();
+  /**
+   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
 
-    /**
-     * <code>map&lt;int32, .leopard.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    int getPartitionsCount();
+  /* nullable */
+org.ostara.remote.proto.PartitionMetadata getPartitionsOrDefault(
+      int key,
+      /* nullable */
+org.ostara.remote.proto.PartitionMetadata defaultValue);
+  /**
+   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
 
-    /**
-     * <code>map&lt;int32, .leopard.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    boolean containsPartitions(
-            int key);
-
-    /**
-     * Use {@link #getPartitionsMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.Integer, PartitionMetadata>
-    getPartitions();
-
-    /**
-     * <code>map&lt;int32, .leopard.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    java.util.Map<java.lang.Integer, PartitionMetadata>
-    getPartitionsMap();
-
-    /**
-     * <code>map&lt;int32, .leopard.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-
-    /* nullable */
-    PartitionMetadata getPartitionsOrDefault(
-            int key,
-            /* nullable */
-            PartitionMetadata defaultValue);
-
-    /**
-     * <code>map&lt;int32, .leopard.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-
-    PartitionMetadata getPartitionsOrThrow(
-            int key);
+  org.ostara.remote.proto.PartitionMetadata getPartitionsOrThrow(
+      int key);
 }

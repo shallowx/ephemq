@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface QueryTopicInfoRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.QueryTopicInfoRequest)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryTopicInfoRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

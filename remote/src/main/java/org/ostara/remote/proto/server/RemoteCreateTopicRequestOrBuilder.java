@@ -3,11 +3,8 @@
 
 package org.ostara.remote.proto.server;
 
-import org.ostara.remote.proto.PartitionMetadata;
-import org.ostara.remote.proto.PartitionMetadataOrBuilder;
-
 public interface RemoteCreateTopicRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.RemoteCreateTopicRequest)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.RemoteCreateTopicRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -35,26 +32,26 @@ public interface RemoteCreateTopicRequestOrBuilder extends
       getClusterBytes();
 
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
-  java.util.List<PartitionMetadata>
+  java.util.List<org.ostara.remote.proto.PartitionMetadata> 
       getPartitionsList();
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
-  PartitionMetadata getPartitions(int index);
+  org.ostara.remote.proto.PartitionMetadata getPartitions(int index);
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
   int getPartitionsCount();
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
-  java.util.List<? extends PartitionMetadataOrBuilder>
+  java.util.List<? extends org.ostara.remote.proto.PartitionMetadataOrBuilder> 
       getPartitionsOrBuilderList();
   /**
-   * <code>repeated .leopard.protobuf.PartitionMetadata partitions = 3;</code>
+   * <code>repeated .ostara.protobuf.PartitionMetadata partitions = 3;</code>
    */
-  PartitionMetadataOrBuilder getPartitionsOrBuilder(
+  org.ostara.remote.proto.PartitionMetadataOrBuilder getPartitionsOrBuilder(
       int index);
 }

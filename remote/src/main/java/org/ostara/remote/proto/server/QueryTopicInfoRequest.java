@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code leopard.protobuf.QueryTopicInfoRequest}
+ * Protobuf type {@code ostara.protobuf.QueryTopicInfoRequest}
  */
 public final class QueryTopicInfoRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.QueryTopicInfoRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.QueryTopicInfoRequest)
     QueryTopicInfoRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use QueryTopicInfoRequest.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_QueryTopicInfoRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_QueryTopicInfoRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            QueryTopicInfoRequest.class, QueryTopicInfoRequest.Builder.class);
+            org.ostara.remote.proto.server.QueryTopicInfoRequest.class, org.ostara.remote.proto.server.QueryTopicInfoRequest.Builder.class);
   }
 
   public static final int CLUSTER_FIELD_NUMBER = 1;
@@ -168,10 +168,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof QueryTopicInfoRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.QueryTopicInfoRequest)) {
       return super.equals(obj);
     }
-    QueryTopicInfoRequest other = (QueryTopicInfoRequest) obj;
+    org.ostara.remote.proto.server.QueryTopicInfoRequest other = (org.ostara.remote.proto.server.QueryTopicInfoRequest) obj;
 
     if (!getCluster()
         .equals(other.getCluster())) return false;
@@ -199,69 +199,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static QueryTopicInfoRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static QueryTopicInfoRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static QueryTopicInfoRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static QueryTopicInfoRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static QueryTopicInfoRequest parseFrom(
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -274,7 +274,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(QueryTopicInfoRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.QueryTopicInfoRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -290,26 +290,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.QueryTopicInfoRequest}
+   * Protobuf type {@code ostara.protobuf.QueryTopicInfoRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.QueryTopicInfoRequest)
-          QueryTopicInfoRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.QueryTopicInfoRequest)
+      org.ostara.remote.proto.server.QueryTopicInfoRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_QueryTopicInfoRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_QueryTopicInfoRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              QueryTopicInfoRequest.class, QueryTopicInfoRequest.Builder.class);
+              org.ostara.remote.proto.server.QueryTopicInfoRequest.class, org.ostara.remote.proto.server.QueryTopicInfoRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.QueryTopicInfoRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.QueryTopicInfoRequest.newBuilder()
     private Builder() {
 
     }
@@ -332,17 +332,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_QueryTopicInfoRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor;
     }
 
     @java.lang.Override
-    public QueryTopicInfoRequest getDefaultInstanceForType() {
-      return QueryTopicInfoRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.QueryTopicInfoRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.QueryTopicInfoRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public QueryTopicInfoRequest build() {
-      QueryTopicInfoRequest result = buildPartial();
+    public org.ostara.remote.proto.server.QueryTopicInfoRequest build() {
+      org.ostara.remote.proto.server.QueryTopicInfoRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -350,8 +350,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public QueryTopicInfoRequest buildPartial() {
-      QueryTopicInfoRequest result = new QueryTopicInfoRequest(this);
+    public org.ostara.remote.proto.server.QueryTopicInfoRequest buildPartial() {
+      org.ostara.remote.proto.server.QueryTopicInfoRequest result = new org.ostara.remote.proto.server.QueryTopicInfoRequest(this);
       int from_bitField0_ = bitField0_;
       result.cluster_ = cluster_;
       if (((bitField0_ & 0x00000001) != 0)) {
@@ -397,16 +397,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof QueryTopicInfoRequest) {
-        return mergeFrom((QueryTopicInfoRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.QueryTopicInfoRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.QueryTopicInfoRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(QueryTopicInfoRequest other) {
-      if (other == QueryTopicInfoRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.QueryTopicInfoRequest other) {
+      if (other == org.ostara.remote.proto.server.QueryTopicInfoRequest.getDefaultInstance()) return this;
       if (!other.getCluster().isEmpty()) {
         cluster_ = other.cluster_;
         onChanged();
@@ -673,16 +673,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.QueryTopicInfoRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.QueryTopicInfoRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.QueryTopicInfoRequest)
-  private static final QueryTopicInfoRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.QueryTopicInfoRequest)
+  private static final org.ostara.remote.proto.server.QueryTopicInfoRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new QueryTopicInfoRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.QueryTopicInfoRequest();
   }
 
-  public static QueryTopicInfoRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.QueryTopicInfoRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -718,7 +718,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public QueryTopicInfoRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.QueryTopicInfoRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
