@@ -5,6 +5,7 @@ import org.ostara.cli.ClientChannelFactory
 import org.ostara.cli.ClientFactory
 import org.ostara.client.internal.Client
 import org.ostara.client.internal.ClientChannel
+import org.ostara.common.metadata.Node
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import java.util.function.Predicate
@@ -38,23 +39,29 @@ class ClusterCommand : Runnable, Alias {
             throw IllegalArgumentException("host cannot be blank")
         }
 
-        var client: Client? = null
-        var clientChannel: ClientChannel? = null
-        try {
-            client = ClientFactory.buildOstaraClient(host)
-            val metadataWriter = client.metadataWriter
-
-            clientChannel = ClientChannelFactory.buildClientChannel(client, host)
-            var records = metadataWriter.queryNodeRecord(clientChannel)
-
-            if (name.isNotBlank()) {
-                records = records.stream().filter(Predicate.isEqual(name)).collect(Collectors.toSet())
-            }
-            println(records)
-        } catch (t: Throwable) {
-            println("failed to query node info, client-channel=$clientChannel, ${t.localizedMessage}")
-        }
-
-        client?.shutdownGracefully()
+        val records = query(host, name)
+        println(records)
     }
+}
+
+fun query(host: String, name: String): Set<Node>? {
+    var client: Client? = null
+    var clientChannel: ClientChannel? = null
+    try {
+        client = ClientFactory.buildOstaraClient(host)
+        val metadataWriter = client.metadataWriter
+
+        clientChannel = ClientChannelFactory.buildClientChannel(client, host)
+        var records = metadataWriter.queryNodeRecord(clientChannel)
+
+        if (name.isNotBlank()) {
+            records = records.stream().filter(Predicate.isEqual(name)).collect(Collectors.toSet())
+        }
+        return records
+    } catch (t: Throwable) {
+        println("failed to query node info, client-channel=$clientChannel, ${t.localizedMessage}")
+    }
+    client?.shutdownGracefully()
+
+    return null
 }

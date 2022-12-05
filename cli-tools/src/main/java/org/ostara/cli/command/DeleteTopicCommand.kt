@@ -40,18 +40,25 @@ class DeleteTopicCommand : Runnable, Alias {
             throw IllegalArgumentException("topic cannot be blank")
         }
 
-        var client: Client? = null
-        try {
-            client = ClientFactory.buildOstaraClient(host)
-            val metadataWriter = client.metadataWriter
-            val promise: Promise<DelTopicResponse> = metadataWriter.delTopic(topic)
+        val response = delete(host, topic)
+        println(if (response?.ack == 1) "delete topic successfully, topic=$topic" else "failed to delete topic, topic=$topic, host=$host")
 
-            val response: DelTopicResponse = promise.get()
-            println(if (response.ack == 1) "delete topic successfully, topic=$topic" else "failed to delete topic, topic=$topic, host=$host")
-        } catch (t: Throwable) {
-            println("failed to delete topic, topic=$topic host=$host error=${t.localizedMessage}")
-        }
-
-        client?.shutdownGracefully()
     }
+}
+
+fun delete(host: String, topic: String): DelTopicResponse? {
+    var client: Client? = null
+    try {
+        client = ClientFactory.buildOstaraClient(host)
+        val metadataWriter = client.metadataWriter
+        val promise: Promise<DelTopicResponse> = metadataWriter.delTopic(topic)
+
+        val response: DelTopicResponse = promise.get()
+        return response
+    } catch (t: Throwable) {
+        println("failed to delete topic, topic=$topic host=$host error=${t.localizedMessage}")
+    }
+    client?.shutdownGracefully()
+    
+    return null
 }
