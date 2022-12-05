@@ -13,6 +13,7 @@
 
   <properties>
     <picocli.version>4.7.0</picocli.version>
+    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
   </properties>
 
   <dependencies>
@@ -22,4 +23,27 @@
       <version>${picocli.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <!-- annotationProcessorPaths requires maven-compiler-plugin version 3.5 or higher -->
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>info.picocli</groupId>
+              <artifactId>picocli-codegen</artifactId>
+              <version>${picocli.version}</version>
+            </path>
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
