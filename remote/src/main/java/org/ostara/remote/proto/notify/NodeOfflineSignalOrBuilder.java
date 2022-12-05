@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.notify;
 
 public interface NodeOfflineSignalOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.NodeOfflineSignal)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeOfflineSignal)
     com.google.protobuf.MessageOrBuilder {
 
   /**

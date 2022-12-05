@@ -4,11 +4,6 @@ import io.netty.util.concurrent.Promise;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import org.ostara.client.internal.Client;
-import org.ostara.client.internal.ClientConfig;
-import org.ostara.common.logging.InternalLogger;
-import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.remote.proto.server.CreateTopicResponse;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -20,6 +15,11 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Threads;
+import org.ostara.client.internal.Client;
+import org.ostara.client.internal.ClientConfig;
+import org.ostara.common.logging.InternalLogger;
+import org.ostara.common.logging.InternalLoggerFactory;
+import org.ostara.remote.proto.server.CreateTopicResponse;
 
 /**
  * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
@@ -63,7 +63,7 @@ public class CreateTopicBenchmark {
     @Benchmark
     public void createTopic() {
         Promise<CreateTopicResponse> promise =
-                client.getMetadataManager().createTopic("test-benchmark-" + UUID.randomUUID(), 1, 1);
+                client.getMetadataWriter().createTopic("test-benchmark-" + UUID.randomUUID(), 1, 1);
         try {
             promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

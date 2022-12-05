@@ -4,916 +4,818 @@
 package org.ostara.remote.proto;
 
 /**
- * Protobuf type {@code leopard.protobuf.ClusterMetadata}
+ * Protobuf type {@code ostara.protobuf.ClusterMetadata}
  */
 public final class ClusterMetadata extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:leopard.protobuf.ClusterMetadata)
-        ClusterMetadataOrBuilder {
-    private static final long serialVersionUID = 0L;
+    com.google.protobuf.GeneratedMessageV3 implements
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.ClusterMetadata)
+    ClusterMetadataOrBuilder {
+private static final long serialVersionUID = 0L;
+  // Use ClusterMetadata.newBuilder() to construct.
+  private ClusterMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    super(builder);
+  }
+  private ClusterMetadata() {
+    name_ = "";
+  }
 
-    // Use ClusterMetadata.newBuilder() to construct.
-    private ClusterMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
+  @java.lang.Override
+  @SuppressWarnings({"unused"})
+  protected java.lang.Object newInstance(
+      UnusedPrivateParameter unused) {
+    return new ClusterMetadata();
+  }
+
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
+  public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+    return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_descriptor;
+  }
+
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 2:
+        return internalGetMetadata();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
     }
+  }
+  @java.lang.Override
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+    return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_fieldAccessorTable
+        .ensureFieldAccessorsInitialized(
+            org.ostara.remote.proto.ClusterMetadata.class, org.ostara.remote.proto.ClusterMetadata.Builder.class);
+  }
 
-    private ClusterMetadata() {
-        name_ = "";
+  public static final int NAME_FIELD_NUMBER = 1;
+  private volatile java.lang.Object name_;
+  /**
+   * <code>string name = 1;</code>
+   * @return The name.
+   */
+  @java.lang.Override
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      name_ = s;
+      return s;
     }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new ClusterMetadata();
+  }
+  /**
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      name_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
+  }
 
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
+  public static final int METADATA_FIELD_NUMBER = 2;
+  private static final class MetadataDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, org.ostara.remote.proto.NodeMetadata> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, org.ostara.remote.proto.NodeMetadata>newDefaultInstance(
+                org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                org.ostara.remote.proto.NodeMetadata.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.String, org.ostara.remote.proto.NodeMetadata> metadata_;
+  private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+  internalGetMetadata() {
+    if (metadata_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          MetadataDefaultEntryHolder.defaultEntry);
     }
+    return metadata_;
+  }
 
+  public int getMetadataCount() {
+    return internalGetMetadata().getMap().size();
+  }
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+
+  @java.lang.Override
+  public boolean containsMetadata(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetMetadata().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getMetadataMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadata() {
+    return getMetadataMap();
+  }
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadataMap() {
+    return internalGetMetadata().getMap();
+  }
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  @java.lang.Override
+
+  public org.ostara.remote.proto.NodeMetadata getMetadataOrDefault(
+      java.lang.String key,
+      org.ostara.remote.proto.NodeMetadata defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
+        internalGetMetadata().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  @java.lang.Override
+
+  public org.ostara.remote.proto.NodeMetadata getMetadataOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
+        internalGetMetadata().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
+  private byte memoizedIsInitialized = -1;
+  @java.lang.Override
+  public final boolean isInitialized() {
+    byte isInitialized = memoizedIsInitialized;
+    if (isInitialized == 1) return true;
+    if (isInitialized == 0) return false;
+
+    memoizedIsInitialized = 1;
+    return true;
+  }
+
+  @java.lang.Override
+  public void writeTo(com.google.protobuf.CodedOutputStream output)
+                      throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetMetadata(),
+        MetadataDefaultEntryHolder.defaultEntry,
+        2);
+    getUnknownFields().writeTo(output);
+  }
+
+  @java.lang.Override
+  public int getSerializedSize() {
+    int size = memoizedSize;
+    if (size != -1) return size;
+
+    size = 0;
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+    }
+    for (java.util.Map.Entry<java.lang.String, org.ostara.remote.proto.NodeMetadata> entry
+         : internalGetMetadata().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+      metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, metadata__);
+    }
+    size += getUnknownFields().getSerializedSize();
+    memoizedSize = size;
+    return size;
+  }
+
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
+    }
+    if (!(obj instanceof org.ostara.remote.proto.ClusterMetadata)) {
+      return super.equals(obj);
+    }
+    org.ostara.remote.proto.ClusterMetadata other = (org.ostara.remote.proto.ClusterMetadata) obj;
+
+    if (!getName()
+        .equals(other.getName())) return false;
+    if (!internalGetMetadata().equals(
+        other.internalGetMetadata())) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    return true;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
+    }
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
+    if (!internalGetMetadata().getMap().isEmpty()) {
+      hash = (37 * hash) + METADATA_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetMetadata().hashCode();
+    }
+    hash = (29 * hash) + getUnknownFields().hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
+
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      com.google.protobuf.ByteString data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      com.google.protobuf.ByteString data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(byte[] data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      byte[] data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(java.io.InputStream input)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseDelimitedFrom(java.io.InputStream input)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseDelimitedFrom(
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      com.google.protobuf.CodedInputStream input)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
+  }
+  public static org.ostara.remote.proto.ClusterMetadata parseFrom(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
+  }
+
+  @java.lang.Override
+  public Builder newBuilderForType() { return newBuilder(); }
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(org.ostara.remote.proto.ClusterMetadata prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  @java.lang.Override
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  @java.lang.Override
+  protected Builder newBuilderForType(
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    Builder builder = new Builder(parent);
+    return builder;
+  }
+  /**
+   * Protobuf type {@code ostara.protobuf.ClusterMetadata}
+   */
+  public static final class Builder extends
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.ClusterMetadata)
+      org.ostara.remote.proto.ClusterMetadataOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return MessageMetadataProto.internal_static_leopard_protobuf_ClusterMetadata_descriptor;
+        getDescriptor() {
+      return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
-    @java.lang.Override
     protected com.google.protobuf.MapField internalGetMapField(
-            int number) {
-        switch (number) {
-            case 2:
-                return internalGetMetadata();
-            default:
-                throw new RuntimeException(
-                        "Invalid map field number: " + number);
-        }
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
     }
-
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMutableMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return MessageMetadataProto.internal_static_leopard_protobuf_ClusterMetadata_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        ClusterMetadata.class, ClusterMetadata.Builder.class);
+        internalGetFieldAccessorTable() {
+      return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.ostara.remote.proto.ClusterMetadata.class, org.ostara.remote.proto.ClusterMetadata.Builder.class);
     }
 
-    public static final int NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object name_;
+    // Construct using org.ostara.remote.proto.ClusterMetadata.newBuilder()
+    private Builder() {
 
+    }
+
+    private Builder(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      super(parent);
+
+    }
+    @java.lang.Override
+    public Builder clear() {
+      super.clear();
+      name_ = "";
+
+      internalGetMutableMetadata().clear();
+      return this;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+      return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_descriptor;
+    }
+
+    @java.lang.Override
+    public org.ostara.remote.proto.ClusterMetadata getDefaultInstanceForType() {
+      return org.ostara.remote.proto.ClusterMetadata.getDefaultInstance();
+    }
+
+    @java.lang.Override
+    public org.ostara.remote.proto.ClusterMetadata build() {
+      org.ostara.remote.proto.ClusterMetadata result = buildPartial();
+      if (!result.isInitialized()) {
+        throw newUninitializedMessageException(result);
+      }
+      return result;
+    }
+
+    @java.lang.Override
+    public org.ostara.remote.proto.ClusterMetadata buildPartial() {
+      org.ostara.remote.proto.ClusterMetadata result = new org.ostara.remote.proto.ClusterMetadata(this);
+      int from_bitField0_ = bitField0_;
+      result.name_ = name_;
+      result.metadata_ = internalGetMetadata();
+      result.metadata_.makeImmutable();
+      onBuilt();
+      return result;
+    }
+
+    @java.lang.Override
+    public Builder clone() {
+      return super.clone();
+    }
+    @java.lang.Override
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return super.setField(field, value);
+    }
+    @java.lang.Override
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return super.clearField(field);
+    }
+    @java.lang.Override
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return super.clearOneof(oneof);
+    }
+    @java.lang.Override
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return super.setRepeatedField(field, index, value);
+    }
+    @java.lang.Override
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return super.addRepeatedField(field, value);
+    }
+    @java.lang.Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
+      if (other instanceof org.ostara.remote.proto.ClusterMetadata) {
+        return mergeFrom((org.ostara.remote.proto.ClusterMetadata)other);
+      } else {
+        super.mergeFrom(other);
+        return this;
+      }
+    }
+
+    public Builder mergeFrom(org.ostara.remote.proto.ClusterMetadata other) {
+      if (other == org.ostara.remote.proto.ClusterMetadata.getDefaultInstance()) return this;
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
+        onChanged();
+      }
+      internalGetMutableMetadata().mergeFrom(
+          other.internalGetMetadata());
+      this.mergeUnknownFields(other.getUnknownFields());
+      onChanged();
+      return this;
+    }
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+      return true;
+    }
+
+    @java.lang.Override
+    public Builder mergeFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              name_ = input.readStringRequireUtf8();
+
+              break;
+            } // case 10
+            case 18: {
+              com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+              metadata__ = input.readMessage(
+                  MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableMetadata().getMutableMap().put(
+                  metadata__.getKey(), metadata__.getValue());
+              break;
+            } // case 18
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.unwrapIOException();
+      } finally {
+        onChanged();
+      } // finally
+      return this;
+    }
+    private int bitField0_;
+
+    private java.lang.Object name_ = "";
     /**
      * <code>string name = 1;</code>
-     *
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            name_ = s;
-            return s;
-        }
+      java.lang.Object ref = name_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
-
     /**
      * <code>string name = 1;</code>
-     *
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
-    getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            name_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
-
-    public static final int METADATA_FIELD_NUMBER = 2;
-
-    private static final class MetadataDefaultEntryHolder {
-        static final com.google.protobuf.MapEntry<
-                java.lang.String, NodeMetadata> defaultEntry =
-                com.google.protobuf.MapEntry
-                        .<java.lang.String, NodeMetadata>newDefaultInstance(
-                                MessageMetadataProto.internal_static_leopard_protobuf_ClusterMetadata_MetadataEntry_descriptor,
-                                com.google.protobuf.WireFormat.FieldType.STRING,
-                                "",
-                                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                                NodeMetadata.getDefaultInstance());
+    /**
+     * <code>string name = 1;</code>
+     * @param value The name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      name_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearName() {
+      
+      name_ = getDefaultInstance().getName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      name_ = value;
+      onChanged();
+      return this;
     }
 
     private com.google.protobuf.MapField<
-            java.lang.String, NodeMetadata> metadata_;
-
-    private com.google.protobuf.MapField<java.lang.String, NodeMetadata>
+        java.lang.String, org.ostara.remote.proto.NodeMetadata> metadata_;
+    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.NodeMetadata>
     internalGetMetadata() {
-        if (metadata_ == null) {
-            return com.google.protobuf.MapField.emptyMapField(
-                    MetadataDefaultEntryHolder.defaultEntry);
-        }
-        return metadata_;
+      if (metadata_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
+      return metadata_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+    internalGetMutableMetadata() {
+      onChanged();;
+      if (metadata_ == null) {
+        metadata_ = com.google.protobuf.MapField.newMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
+      if (!metadata_.isMutable()) {
+        metadata_ = metadata_.copy();
+      }
+      return metadata_;
     }
 
     public int getMetadataCount() {
-        return internalGetMetadata().getMap().size();
+      return internalGetMetadata().getMap().size();
     }
-
     /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
 
     @java.lang.Override
     public boolean containsMetadata(
-            java.lang.String key) {
-        if (key == null) {
-            throw new NullPointerException("map key");
-        }
-        return internalGetMetadata().getMap().containsKey(key);
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMetadata().getMap().containsKey(key);
     }
-
     /**
      * Use {@link #getMetadataMap()} instead.
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, NodeMetadata> getMetadata() {
-        return getMetadataMap();
+    public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadata() {
+      return getMetadataMap();
     }
-
     /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
     @java.lang.Override
 
-    public java.util.Map<java.lang.String, NodeMetadata> getMetadataMap() {
-        return internalGetMetadata().getMap();
+    public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadataMap() {
+      return internalGetMetadata().getMap();
     }
-
     /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
     @java.lang.Override
 
-    public NodeMetadata getMetadataOrDefault(
-            java.lang.String key,
-            NodeMetadata defaultValue) {
-        if (key == null) {
-            throw new NullPointerException("map key");
-        }
-        java.util.Map<java.lang.String, NodeMetadata> map =
-                internalGetMetadata().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
+    public org.ostara.remote.proto.NodeMetadata getMetadataOrDefault(
+        java.lang.String key,
+        org.ostara.remote.proto.NodeMetadata defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
+          internalGetMetadata().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
     }
-
     /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
     @java.lang.Override
 
-    public NodeMetadata getMetadataOrThrow(
-            java.lang.String key) {
-        if (key == null) {
-            throw new NullPointerException("map key");
-        }
-        java.util.Map<java.lang.String, NodeMetadata> map =
-                internalGetMetadata().getMap();
-        if (!map.containsKey(key)) {
-            throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
+    public org.ostara.remote.proto.NodeMetadata getMetadataOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
+          internalGetMetadata().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
     }
 
-    private byte memoizedIsInitialized = -1;
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) {
-            return true;
-        }
-        if (isInitialized == 0) {
-            return false;
-        }
-
-        memoizedIsInitialized = 1;
-        return true;
+    public Builder clearMetadata() {
+      internalGetMutableMetadata().getMutableMap()
+          .clear();
+      return this;
     }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-        }
-        com.google.protobuf.GeneratedMessageV3
-                .serializeStringMapTo(
-                        output,
-                        internalGetMetadata(),
-                        MetadataDefaultEntryHolder.defaultEntry,
-                        2);
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) {
-            return size;
-        }
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-        }
-        for (java.util.Map.Entry<java.lang.String, NodeMetadata> entry
-                : internalGetMetadata().getMap().entrySet()) {
-            com.google.protobuf.MapEntry<java.lang.String, NodeMetadata>
-                    metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
-                    .setKey(entry.getKey())
-                    .setValue(entry.getValue())
-                    .build();
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(2, metadata__);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof ClusterMetadata)) {
-            return super.equals(obj);
-        }
-        ClusterMetadata other = (ClusterMetadata) obj;
-
-        if (!getName()
-                .equals(other.getName())) {
-            return false;
-        }
-        if (!internalGetMetadata().equals(
-                other.internalGetMetadata())) {
-            return false;
-        }
-        if (!getUnknownFields().equals(other.getUnknownFields())) {
-            return false;
-        }
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getName().hashCode();
-        if (!internalGetMetadata().getMap().isEmpty()) {
-            hash = (37 * hash) + METADATA_FIELD_NUMBER;
-            hash = (53 * hash) + internalGetMetadata().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    public static ClusterMetadata parseFrom(
-            java.nio.ByteBuffer data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static ClusterMetadata parseFrom(
-            java.nio.ByteBuffer data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static ClusterMetadata parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static ClusterMetadata parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static ClusterMetadata parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-    }
-
-    public static ClusterMetadata parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-    }
-
-    public static ClusterMetadata parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input);
-    }
-
-    public static ClusterMetadata parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static ClusterMetadata parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static ClusterMetadata parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static ClusterMetadata parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input);
-    }
-
-    public static ClusterMetadata parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
-    }
-
-    public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-    }
-
-    public static Builder newBuilder(ClusterMetadata prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    @java.lang.Override
-    public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-                ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-    }
-
     /**
-     * Protobuf type {@code leopard.protobuf.ClusterMetadata}
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
      */
-    public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:leopard.protobuf.ClusterMetadata)
-            ClusterMetadataOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return MessageMetadataProto.internal_static_leopard_protobuf_ClusterMetadata_descriptor;
-        }
 
-        @SuppressWarnings({"rawtypes"})
-        protected com.google.protobuf.MapField internalGetMapField(
-                int number) {
-            switch (number) {
-                case 2:
-                    return internalGetMetadata();
-                default:
-                    throw new RuntimeException(
-                            "Invalid map field number: " + number);
-            }
-        }
-
-        @SuppressWarnings({"rawtypes"})
-        protected com.google.protobuf.MapField internalGetMutableMapField(
-                int number) {
-            switch (number) {
-                case 2:
-                    return internalGetMutableMetadata();
-                default:
-                    throw new RuntimeException(
-                            "Invalid map field number: " + number);
-            }
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return MessageMetadataProto.internal_static_leopard_protobuf_ClusterMetadata_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            ClusterMetadata.class, ClusterMetadata.Builder.class);
-        }
-
-        // Construct using org.leopard.remote.proto.ClusterMetadata.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
-        @java.lang.Override
-        public Builder clear() {
-            super.clear();
-            name_ = "";
-
-            internalGetMutableMetadata().clear();
-            return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return MessageMetadataProto.internal_static_leopard_protobuf_ClusterMetadata_descriptor;
-        }
-
-        @java.lang.Override
-        public ClusterMetadata getDefaultInstanceForType() {
-            return ClusterMetadata.getDefaultInstance();
-        }
-
-        @java.lang.Override
-        public ClusterMetadata build() {
-            ClusterMetadata result = buildPartial();
-            if (!result.isInitialized()) {
-                throw newUninitializedMessageException(result);
-            }
-            return result;
-        }
-
-        @java.lang.Override
-        public ClusterMetadata buildPartial() {
-            ClusterMetadata result = new ClusterMetadata(this);
-            int from_bitField0_ = bitField0_;
-            result.name_ = name_;
-            result.metadata_ = internalGetMetadata();
-            result.metadata_.makeImmutable();
-            onBuilt();
-            return result;
-        }
-
-        @java.lang.Override
-        public Builder clone() {
-            return super.clone();
-        }
-
-        @java.lang.Override
-        public Builder setField(
-                com.google.protobuf.Descriptors.FieldDescriptor field,
-                java.lang.Object value) {
-            return super.setField(field, value);
-        }
-
-        @java.lang.Override
-        public Builder clearField(
-                com.google.protobuf.Descriptors.FieldDescriptor field) {
-            return super.clearField(field);
-        }
-
-        @java.lang.Override
-        public Builder clearOneof(
-                com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-            return super.clearOneof(oneof);
-        }
-
-        @java.lang.Override
-        public Builder setRepeatedField(
-                com.google.protobuf.Descriptors.FieldDescriptor field,
-                int index, java.lang.Object value) {
-            return super.setRepeatedField(field, index, value);
-        }
-
-        @java.lang.Override
-        public Builder addRepeatedField(
-                com.google.protobuf.Descriptors.FieldDescriptor field,
-                java.lang.Object value) {
-            return super.addRepeatedField(field, value);
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-            if (other instanceof ClusterMetadata) {
-                return mergeFrom((ClusterMetadata) other);
-            } else {
-                super.mergeFrom(other);
-                return this;
-            }
-        }
-
-        public Builder mergeFrom(ClusterMetadata other) {
-            if (other == ClusterMetadata.getDefaultInstance()) {
-                return this;
-            }
-            if (!other.getName().isEmpty()) {
-                name_ = other.name_;
-                onChanged();
-            }
-            internalGetMutableMetadata().mergeFrom(
-                    other.internalGetMetadata());
-            this.mergeUnknownFields(other.getUnknownFields());
-            onChanged();
-            return this;
-        }
-
-        @java.lang.Override
-        public final boolean isInitialized() {
-            return true;
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            if (extensionRegistry == null) {
-                throw new java.lang.NullPointerException();
-            }
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        case 10: {
-                            name_ = input.readStringRequireUtf8();
-
-                            break;
-                        } // case 10
-                        case 18: {
-                            com.google.protobuf.MapEntry<java.lang.String, NodeMetadata>
-                                    metadata__ = input.readMessage(
-                                    MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-                            internalGetMutableMetadata().getMutableMap().put(
-                                    metadata__.getKey(), metadata__.getValue());
-                            break;
-                        } // case 18
-                        default: {
-                            if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                                done = true; // was an endgroup tag
-                            }
-                            break;
-                        } // default:
-                    } // switch (tag)
-                } // while (!done)
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.unwrapIOException();
-            } finally {
-                onChanged();
-            } // finally
-            return this;
-        }
-
-        private int bitField0_;
-
-        private java.lang.Object name_ = "";
-
-        /**
-         * <code>string name = 1;</code>
-         *
-         * @return The name.
-         */
-        public java.lang.String getName() {
-            java.lang.Object ref = name_;
-            if (!(ref instanceof java.lang.String)) {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                name_ = s;
-                return s;
-            } else {
-                return (java.lang.String) ref;
-            }
-        }
-
-        /**
-         * <code>string name = 1;</code>
-         *
-         * @return The bytes for name.
-         */
-        public com.google.protobuf.ByteString
-        getNameBytes() {
-            java.lang.Object ref = name_;
-            if (ref instanceof String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                name_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        /**
-         * <code>string name = 1;</code>
-         *
-         * @param value The name to set.
-         * @return This builder for chaining.
-         */
-        public Builder setName(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            name_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string name = 1;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearName() {
-
-            name_ = getDefaultInstance().getName();
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string name = 1;</code>
-         *
-         * @param value The bytes for name to set.
-         * @return This builder for chaining.
-         */
-        public Builder setNameBytes(
-                com.google.protobuf.ByteString value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-
-            name_ = value;
-            onChanged();
-            return this;
-        }
-
-        private com.google.protobuf.MapField<
-                java.lang.String, NodeMetadata> metadata_;
-
-        private com.google.protobuf.MapField<java.lang.String, NodeMetadata>
-        internalGetMetadata() {
-            if (metadata_ == null) {
-                return com.google.protobuf.MapField.emptyMapField(
-                        MetadataDefaultEntryHolder.defaultEntry);
-            }
-            return metadata_;
-        }
-
-        private com.google.protobuf.MapField<java.lang.String, NodeMetadata>
-        internalGetMutableMetadata() {
-            onChanged();
-            ;
-            if (metadata_ == null) {
-                metadata_ = com.google.protobuf.MapField.newMapField(
-                        MetadataDefaultEntryHolder.defaultEntry);
-            }
-            if (!metadata_.isMutable()) {
-                metadata_ = metadata_.copy();
-            }
-            return metadata_;
-        }
-
-        public int getMetadataCount() {
-            return internalGetMetadata().getMap().size();
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-
-        @java.lang.Override
-        public boolean containsMetadata(
-                java.lang.String key) {
-            if (key == null) {
-                throw new NullPointerException("map key");
-            }
-            return internalGetMetadata().getMap().containsKey(key);
-        }
-
-        /**
-         * Use {@link #getMetadataMap()} instead.
-         */
-        @java.lang.Override
-        @java.lang.Deprecated
-        public java.util.Map<java.lang.String, NodeMetadata> getMetadata() {
-            return getMetadataMap();
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-        @java.lang.Override
-
-        public java.util.Map<java.lang.String, NodeMetadata> getMetadataMap() {
-            return internalGetMetadata().getMap();
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-        @java.lang.Override
-
-        public NodeMetadata getMetadataOrDefault(
-                java.lang.String key,
-                NodeMetadata defaultValue) {
-            if (key == null) {
-                throw new NullPointerException("map key");
-            }
-            java.util.Map<java.lang.String, NodeMetadata> map =
-                    internalGetMetadata().getMap();
-            return map.containsKey(key) ? map.get(key) : defaultValue;
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-        @java.lang.Override
-
-        public NodeMetadata getMetadataOrThrow(
-                java.lang.String key) {
-            if (key == null) {
-                throw new NullPointerException("map key");
-            }
-            java.util.Map<java.lang.String, NodeMetadata> map =
-                    internalGetMetadata().getMap();
-            if (!map.containsKey(key)) {
-                throw new java.lang.IllegalArgumentException();
-            }
-            return map.get(key);
-        }
-
-        public Builder clearMetadata() {
-            internalGetMutableMetadata().getMutableMap()
-                    .clear();
-            return this;
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-
-        public Builder removeMetadata(
-                java.lang.String key) {
-            if (key == null) {
-                throw new NullPointerException("map key");
-            }
-            internalGetMutableMetadata().getMutableMap()
-                    .remove(key);
-            return this;
-        }
-
-        /**
-         * Use alternate mutation accessors instead.
-         */
-        @java.lang.Deprecated
-        public java.util.Map<java.lang.String, NodeMetadata>
-        getMutableMetadata() {
-            return internalGetMutableMetadata().getMutableMap();
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-        public Builder putMetadata(
-                java.lang.String key,
-                NodeMetadata value) {
-            if (key == null) {
-                throw new NullPointerException("map key");
-            }
-            if (value == null) {
-                throw new NullPointerException("map value");
-            }
-
-            internalGetMutableMetadata().getMutableMap()
-                    .put(key, value);
-            return this;
-        }
-
-        /**
-         * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-         */
-
-        public Builder putAllMetadata(
-                java.util.Map<java.lang.String, NodeMetadata> values) {
-            internalGetMutableMetadata().getMutableMap()
-                    .putAll(values);
-            return this;
-        }
-
-        @java.lang.Override
-        public final Builder setUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:leopard.protobuf.ClusterMetadata)
+    public Builder removeMetadata(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableMetadata().getMutableMap()
+          .remove(key);
+      return this;
     }
-
-    // @@protoc_insertion_point(class_scope:leopard.protobuf.ClusterMetadata)
-    private static final ClusterMetadata DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new ClusterMetadata();
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+    getMutableMetadata() {
+      return internalGetMutableMetadata().getMutableMap();
     }
+    /**
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
+    public Builder putMetadata(
+        java.lang.String key,
+        org.ostara.remote.proto.NodeMetadata value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) {
+  throw new NullPointerException("map value");
+}
 
-    public static ClusterMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
+      internalGetMutableMetadata().getMutableMap()
+          .put(key, value);
+      return this;
     }
+    /**
+     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+     */
 
-    private static final com.google.protobuf.Parser<ClusterMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<ClusterMetadata>() {
-        @java.lang.Override
-        public ClusterMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<ClusterMetadata> parser() {
-        return PARSER;
+    public Builder putAllMetadata(
+        java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> values) {
+      internalGetMutableMetadata().getMutableMap()
+          .putAll(values);
+      return this;
+    }
+    @java.lang.Override
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.setUnknownFields(unknownFields);
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ClusterMetadata> getParserForType() {
-        return PARSER;
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.mergeUnknownFields(unknownFields);
     }
 
+
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.ClusterMetadata)
+  }
+
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.ClusterMetadata)
+  private static final org.ostara.remote.proto.ClusterMetadata DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.ClusterMetadata();
+  }
+
+  public static org.ostara.remote.proto.ClusterMetadata getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  private static final com.google.protobuf.Parser<ClusterMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<ClusterMetadata>() {
     @java.lang.Override
-    public ClusterMetadata getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
+    public ClusterMetadata parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
+  };
+
+  public static com.google.protobuf.Parser<ClusterMetadata> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<ClusterMetadata> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.ostara.remote.proto.ClusterMetadata getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

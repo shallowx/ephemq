@@ -23,7 +23,7 @@ public class ServerConfig {
     }
 
     public String getServerId() {
-        return object2String(props.getOrDefault(ConfigConstants.SERVER_ID, "leopard"));
+        return object2String(props.getOrDefault(ConfigConstants.SERVER_ID, "ostara"));
     }
 
     public int getIoThreadLimit() {
@@ -55,7 +55,7 @@ public class ServerConfig {
     }
 
     public String getClusterName() {
-        return object2String(props.getOrDefault(ConfigConstants.CLUSTER_NAME, "leopard"));
+        return object2String(props.getOrDefault(ConfigConstants.CLUSTER_NAME, "ostara"));
     }
 
     public int getLogSegmentLimit() {

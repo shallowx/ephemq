@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface SendMessageResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.SendMessageResponse)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.SendMessageResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**

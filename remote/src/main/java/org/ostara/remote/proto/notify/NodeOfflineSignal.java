@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.notify;
 
 /**
- * Protobuf type {@code leopard.protobuf.NodeOfflineSignal}
+ * Protobuf type {@code ostara.protobuf.NodeOfflineSignal}
  */
 public final class NodeOfflineSignal extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.NodeOfflineSignal)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.NodeOfflineSignal)
     NodeOfflineSignalOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use NodeOfflineSignal.newBuilder() to construct.
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return NotifyProto.internal_static_leopard_protobuf_NodeOfflineSignal_descriptor;
+    return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_NodeOfflineSignal_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return NotifyProto.internal_static_leopard_protobuf_NodeOfflineSignal_fieldAccessorTable
+    return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            NodeOfflineSignal.class, NodeOfflineSignal.Builder.class);
+            org.ostara.remote.proto.notify.NodeOfflineSignal.class, org.ostara.remote.proto.notify.NodeOfflineSignal.Builder.class);
   }
 
   public static final int NODEID_FIELD_NUMBER = 1;
@@ -184,10 +184,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof NodeOfflineSignal)) {
+    if (!(obj instanceof org.ostara.remote.proto.notify.NodeOfflineSignal)) {
       return super.equals(obj);
     }
-    NodeOfflineSignal other = (NodeOfflineSignal) obj;
+    org.ostara.remote.proto.notify.NodeOfflineSignal other = (org.ostara.remote.proto.notify.NodeOfflineSignal) obj;
 
     if (!getNodeId()
         .equals(other.getNodeId())) return false;
@@ -217,69 +217,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static NodeOfflineSignal parseFrom(byte[] data)
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static NodeOfflineSignal parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static NodeOfflineSignal parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static NodeOfflineSignal parseDelimitedFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static NodeOfflineSignal parseFrom(
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -292,7 +292,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(NodeOfflineSignal prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.notify.NodeOfflineSignal prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -308,26 +308,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.NodeOfflineSignal}
+   * Protobuf type {@code ostara.protobuf.NodeOfflineSignal}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.NodeOfflineSignal)
-          NodeOfflineSignalOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.NodeOfflineSignal)
+      org.ostara.remote.proto.notify.NodeOfflineSignalOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return NotifyProto.internal_static_leopard_protobuf_NodeOfflineSignal_descriptor;
+      return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_NodeOfflineSignal_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return NotifyProto.internal_static_leopard_protobuf_NodeOfflineSignal_fieldAccessorTable
+      return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              NodeOfflineSignal.class, NodeOfflineSignal.Builder.class);
+              org.ostara.remote.proto.notify.NodeOfflineSignal.class, org.ostara.remote.proto.notify.NodeOfflineSignal.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.notify.NodeOfflineSignal.newBuilder()
+    // Construct using org.ostara.remote.proto.notify.NodeOfflineSignal.newBuilder()
     private Builder() {
 
     }
@@ -352,17 +352,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return NotifyProto.internal_static_leopard_protobuf_NodeOfflineSignal_descriptor;
+      return org.ostara.remote.proto.notify.NotifyProto.internal_static_ostara_protobuf_NodeOfflineSignal_descriptor;
     }
 
     @java.lang.Override
-    public NodeOfflineSignal getDefaultInstanceForType() {
-      return NodeOfflineSignal.getDefaultInstance();
+    public org.ostara.remote.proto.notify.NodeOfflineSignal getDefaultInstanceForType() {
+      return org.ostara.remote.proto.notify.NodeOfflineSignal.getDefaultInstance();
     }
 
     @java.lang.Override
-    public NodeOfflineSignal build() {
-      NodeOfflineSignal result = buildPartial();
+    public org.ostara.remote.proto.notify.NodeOfflineSignal build() {
+      org.ostara.remote.proto.notify.NodeOfflineSignal result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -370,8 +370,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public NodeOfflineSignal buildPartial() {
-      NodeOfflineSignal result = new NodeOfflineSignal(this);
+    public org.ostara.remote.proto.notify.NodeOfflineSignal buildPartial() {
+      org.ostara.remote.proto.notify.NodeOfflineSignal result = new org.ostara.remote.proto.notify.NodeOfflineSignal(this);
       result.nodeId_ = nodeId_;
       result.host_ = host_;
       result.port_ = port_;
@@ -413,16 +413,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof NodeOfflineSignal) {
-        return mergeFrom((NodeOfflineSignal)other);
+      if (other instanceof org.ostara.remote.proto.notify.NodeOfflineSignal) {
+        return mergeFrom((org.ostara.remote.proto.notify.NodeOfflineSignal)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(NodeOfflineSignal other) {
-      if (other == NodeOfflineSignal.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.notify.NodeOfflineSignal other) {
+      if (other == org.ostara.remote.proto.notify.NodeOfflineSignal.getDefaultInstance()) return this;
       if (!other.getNodeId().isEmpty()) {
         nodeId_ = other.nodeId_;
         onChanged();
@@ -686,16 +686,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.NodeOfflineSignal)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.NodeOfflineSignal)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.NodeOfflineSignal)
-  private static final NodeOfflineSignal DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.NodeOfflineSignal)
+  private static final org.ostara.remote.proto.notify.NodeOfflineSignal DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new NodeOfflineSignal();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.notify.NodeOfflineSignal();
   }
 
-  public static NodeOfflineSignal getDefaultInstance() {
+  public static org.ostara.remote.proto.notify.NodeOfflineSignal getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -731,7 +731,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public NodeOfflineSignal getDefaultInstanceForType() {
+  public org.ostara.remote.proto.notify.NodeOfflineSignal getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

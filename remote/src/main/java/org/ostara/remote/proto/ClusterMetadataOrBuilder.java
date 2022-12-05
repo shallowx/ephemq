@@ -4,62 +4,54 @@
 package org.ostara.remote.proto;
 
 public interface ClusterMetadataOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:leopard.protobuf.ClusterMetadata)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.ClusterMetadata)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The name.
-     */
-    java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The bytes for name.
-     */
-    com.google.protobuf.ByteString
-    getNameBytes();
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  int getMetadataCount();
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  boolean containsMetadata(
+      java.lang.String key);
+  /**
+   * Use {@link #getMetadataMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+  getMetadata();
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
+  java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata>
+  getMetadataMap();
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
 
-    /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    int getMetadataCount();
+  /* nullable */
+org.ostara.remote.proto.NodeMetadata getMetadataOrDefault(
+      java.lang.String key,
+      /* nullable */
+org.ostara.remote.proto.NodeMetadata defaultValue);
+  /**
+   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
+   */
 
-    /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    boolean containsMetadata(
-            java.lang.String key);
-
-    /**
-     * Use {@link #getMetadataMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.String, NodeMetadata>
-    getMetadata();
-
-    /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    java.util.Map<java.lang.String, NodeMetadata>
-    getMetadataMap();
-
-    /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-
-    /* nullable */
-    NodeMetadata getMetadataOrDefault(
-            java.lang.String key,
-            /* nullable */
-            NodeMetadata defaultValue);
-
-    /**
-     * <code>map&lt;string, .leopard.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-
-    NodeMetadata getMetadataOrThrow(
-            java.lang.String key);
+  org.ostara.remote.proto.NodeMetadata getMetadataOrThrow(
+      java.lang.String key);
 }

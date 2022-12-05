@@ -3,34 +3,31 @@
 
 package org.ostara.remote.proto.server;
 
-import org.ostara.remote.proto.NodeMetadata;
-import org.ostara.remote.proto.NodeMetadataOrBuilder;
-
 public interface QueryClusterNodeResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.QueryClusterNodeResponse)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryClusterNodeResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
-  java.util.List<NodeMetadata>
+  java.util.List<org.ostara.remote.proto.NodeMetadata> 
       getNodesList();
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
-  NodeMetadata getNodes(int index);
+  org.ostara.remote.proto.NodeMetadata getNodes(int index);
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
   int getNodesCount();
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
-  java.util.List<? extends NodeMetadataOrBuilder>
+  java.util.List<? extends org.ostara.remote.proto.NodeMetadataOrBuilder> 
       getNodesOrBuilderList();
   /**
-   * <code>repeated .leopard.protobuf.NodeMetadata nodes = 1;</code>
+   * <code>repeated .ostara.protobuf.NodeMetadata nodes = 1;</code>
    */
-  NodeMetadataOrBuilder getNodesOrBuilder(
+  org.ostara.remote.proto.NodeMetadataOrBuilder getNodesOrBuilder(
       int index);
 }

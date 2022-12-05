@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface NodeUnregistrationRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.NodeUnregistrationRequest)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeUnregistrationRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

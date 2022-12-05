@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.notify;
 
 public interface MessagePullSignalOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.MessagePullSignal)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.MessagePullSignal)
     com.google.protobuf.MessageOrBuilder {
 
   /**

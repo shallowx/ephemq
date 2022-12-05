@@ -25,7 +25,7 @@ public class TopicMetadataWriterExample {
         Client client = new Client("create-client", clientConfig);
         client.start();
 
-        Promise<CreateTopicResponse> promise = client.getMetadataManager().createTopic("create", 3, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataWriter().createTopic("create", 3, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         client.shutdownGracefully();
@@ -38,7 +38,7 @@ public class TopicMetadataWriterExample {
         Client client = new Client("del-client", clientConfig);
         client.start();
 
-        Promise<DelTopicResponse> promise = client.getMetadataManager().delTopic("create");
+        Promise<DelTopicResponse> promise = client.getMetadataWriter().delTopic("create");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         client.shutdownGracefully();
@@ -51,7 +51,7 @@ public class TopicMetadataWriterExample {
         Client client = new Client("query-client", clientConfig);
         client.start();
 
-        Map<String, Topic> recordMap = client.getMetadataManager()
+        Map<String, Topic> recordMap = client.getMetadataWriter()
                 .queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(),
                         List.of("create"));
 

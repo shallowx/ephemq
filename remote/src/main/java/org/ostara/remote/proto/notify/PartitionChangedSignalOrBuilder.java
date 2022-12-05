@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.notify;
 
 public interface PartitionChangedSignalOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.PartitionChangedSignal)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.PartitionChangedSignal)
     com.google.protobuf.MessageOrBuilder {
 
   /**

@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface NodeRegistrationRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.NodeRegistrationRequest)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeRegistrationRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

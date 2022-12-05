@@ -4,11 +4,11 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code leopard.protobuf.NodeRegistrationRequest}
+ * Protobuf type {@code ostara.protobuf.NodeRegistrationRequest}
  */
 public final class NodeRegistrationRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:leopard.protobuf.NodeRegistrationRequest)
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.NodeRegistrationRequest)
     NodeRegistrationRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use NodeRegistrationRequest.newBuilder() to construct.
@@ -35,15 +35,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ServerProto.internal_static_leopard_protobuf_NodeRegistrationRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_NodeRegistrationRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ServerProto.internal_static_leopard_protobuf_NodeRegistrationRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_NodeRegistrationRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            NodeRegistrationRequest.class, NodeRegistrationRequest.Builder.class);
+            org.ostara.remote.proto.server.NodeRegistrationRequest.class, org.ostara.remote.proto.server.NodeRegistrationRequest.Builder.class);
   }
 
   public static final int CLUSTER_FIELD_NUMBER = 1;
@@ -229,10 +229,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof NodeRegistrationRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.NodeRegistrationRequest)) {
       return super.equals(obj);
     }
-    NodeRegistrationRequest other = (NodeRegistrationRequest) obj;
+    org.ostara.remote.proto.server.NodeRegistrationRequest other = (org.ostara.remote.proto.server.NodeRegistrationRequest) obj;
 
     if (!getCluster()
         .equals(other.getCluster())) return false;
@@ -266,69 +266,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static NodeRegistrationRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static NodeRegistrationRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static NodeRegistrationRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static NodeRegistrationRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static NodeRegistrationRequest parseFrom(
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -341,7 +341,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(NodeRegistrationRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.NodeRegistrationRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -357,26 +357,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code leopard.protobuf.NodeRegistrationRequest}
+   * Protobuf type {@code ostara.protobuf.NodeRegistrationRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:leopard.protobuf.NodeRegistrationRequest)
-          NodeRegistrationRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.NodeRegistrationRequest)
+      org.ostara.remote.proto.server.NodeRegistrationRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ServerProto.internal_static_leopard_protobuf_NodeRegistrationRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_NodeRegistrationRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ServerProto.internal_static_leopard_protobuf_NodeRegistrationRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_NodeRegistrationRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              NodeRegistrationRequest.class, NodeRegistrationRequest.Builder.class);
+              org.ostara.remote.proto.server.NodeRegistrationRequest.class, org.ostara.remote.proto.server.NodeRegistrationRequest.Builder.class);
     }
 
-    // Construct using org.leopard.remote.proto.server.NodeRegistrationRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.NodeRegistrationRequest.newBuilder()
     private Builder() {
 
     }
@@ -403,17 +403,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ServerProto.internal_static_leopard_protobuf_NodeRegistrationRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_NodeRegistrationRequest_descriptor;
     }
 
     @java.lang.Override
-    public NodeRegistrationRequest getDefaultInstanceForType() {
-      return NodeRegistrationRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.NodeRegistrationRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.NodeRegistrationRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public NodeRegistrationRequest build() {
-      NodeRegistrationRequest result = buildPartial();
+    public org.ostara.remote.proto.server.NodeRegistrationRequest build() {
+      org.ostara.remote.proto.server.NodeRegistrationRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -421,8 +421,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public NodeRegistrationRequest buildPartial() {
-      NodeRegistrationRequest result = new NodeRegistrationRequest(this);
+    public org.ostara.remote.proto.server.NodeRegistrationRequest buildPartial() {
+      org.ostara.remote.proto.server.NodeRegistrationRequest result = new org.ostara.remote.proto.server.NodeRegistrationRequest(this);
       result.cluster_ = cluster_;
       result.server_ = server_;
       result.host_ = host_;
@@ -465,16 +465,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof NodeRegistrationRequest) {
-        return mergeFrom((NodeRegistrationRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.NodeRegistrationRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.NodeRegistrationRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(NodeRegistrationRequest other) {
-      if (other == NodeRegistrationRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.NodeRegistrationRequest other) {
+      if (other == org.ostara.remote.proto.server.NodeRegistrationRequest.getDefaultInstance()) return this;
       if (!other.getCluster().isEmpty()) {
         cluster_ = other.cluster_;
         onChanged();
@@ -823,16 +823,16 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:leopard.protobuf.NodeRegistrationRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.NodeRegistrationRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:leopard.protobuf.NodeRegistrationRequest)
-  private static final NodeRegistrationRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.NodeRegistrationRequest)
+  private static final org.ostara.remote.proto.server.NodeRegistrationRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new NodeRegistrationRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.NodeRegistrationRequest();
   }
 
-  public static NodeRegistrationRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.NodeRegistrationRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -868,7 +868,7 @@ private static final long serialVersionUID = 0L;
   }
 
   @java.lang.Override
-  public NodeRegistrationRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.NodeRegistrationRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface CreateTopicResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.CreateTopicResponse)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**

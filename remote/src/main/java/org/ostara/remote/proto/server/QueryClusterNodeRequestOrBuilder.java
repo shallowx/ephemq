@@ -4,7 +4,7 @@
 package org.ostara.remote.proto.server;
 
 public interface QueryClusterNodeRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:leopard.protobuf.QueryClusterNodeRequest)
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryClusterNodeRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**
