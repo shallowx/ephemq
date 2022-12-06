@@ -49,18 +49,24 @@ class CreateTopicCommand : Runnable, Alias {
             throw IllegalArgumentException("replicate limit must be > 0")
         }
 
-        var client: Client? = null
-        try {
-            client = ClientFactory.buildOstaraClient(host)
-            val metadataWriter = client.metadataWriter
-            val promise: Promise<CreateTopicResponse> = metadataWriter.createTopic(topic, partitions, replicates)
-
-            val response: CreateTopicResponse = promise.get()
-            println(if (response.ack == 1) "create topic successfully, topic=$topic" else "failed to create topic, topic=$topic, host=$host")
-        } catch (t: Throwable) {
-            println("failed to create topic, topic=$topic host=$host error=${t.localizedMessage}")
-        }
-
-        client?.shutdownGracefully()
+        val response = create(host, topic, partitions, replicates)
+        println(if (response?.ack == 1) "create topic successfully, topic=$topic" else "failed to create topic, topic=$topic, host=$host")
     }
+}
+
+fun create(host: String, topic: String, partitions: Int, replicates: Int): CreateTopicResponse? {
+    var client: Client? = null
+    try {
+        client = ClientFactory.buildOstaraClient(host)
+        val metadataWriter = client.metadataWriter
+        val promise: Promise<CreateTopicResponse> = metadataWriter.createTopic(topic, partitions, replicates)
+
+        val response: CreateTopicResponse = promise.get()
+        return response
+    } catch (t: Throwable) {
+        println("failed to create topic, topic=$topic host=$host error=${t.localizedMessage}")
+    }
+    client?.shutdownGracefully()
+
+    return null
 }
