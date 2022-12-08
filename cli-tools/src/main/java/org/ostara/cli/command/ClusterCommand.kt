@@ -48,7 +48,7 @@ fun query(host: String, name: String): Set<Node>? {
     var client: Client? = null
     var clientChannel: ClientChannel? = null
     try {
-        client = ClientFactory.buildOstaraClient(host)
+        client = ClientFactory.buildClient(host)
         val metadataWriter = client.metadataSupport
 
         clientChannel = ClientChannelFactory.buildClientChannel(client, host)

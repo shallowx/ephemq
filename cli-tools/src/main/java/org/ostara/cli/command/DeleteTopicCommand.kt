@@ -49,7 +49,7 @@ class DeleteTopicCommand : Runnable, Alias {
 fun delete(host: String, topic: String): DelTopicResponse? {
     var client: Client? = null
     try {
-        client = ClientFactory.buildOstaraClient(host)
+        client = ClientFactory.buildClient(host)
         val metadataWriter = client.metadataSupport
         val promise: Promise<DelTopicResponse> = metadataWriter.delTopic(topic)
 

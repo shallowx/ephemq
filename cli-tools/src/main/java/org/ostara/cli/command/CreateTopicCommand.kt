@@ -57,7 +57,7 @@ class CreateTopicCommand : Runnable, Alias {
 fun create(host: String, topic: String, partitions: Int, replicates: Int): CreateTopicResponse? {
     var client: Client? = null
     try {
-        client = ClientFactory.buildOstaraClient(host)
+        client = ClientFactory.buildClient(host)
         val metadataWriter = client.metadataSupport
         val promise: Promise<CreateTopicResponse> = metadataWriter.createTopic(topic, partitions, replicates)
 

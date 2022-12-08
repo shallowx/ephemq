@@ -5,7 +5,7 @@ import org.ostara.client.internal.ClientConfig
 
 object ClientFactory {
 
-    fun buildOstaraClient(host: String): Client {
+    fun buildClient(host: String): Client {
         val clientConfig = ClientConfig()
         clientConfig.bootstrapSocketAddress = listOf(host)
 
