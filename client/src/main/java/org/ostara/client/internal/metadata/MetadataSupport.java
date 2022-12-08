@@ -44,15 +44,15 @@ import org.ostara.remote.proto.server.QueryClusterNodeResponse;
 import org.ostara.remote.proto.server.QueryTopicInfoRequest;
 import org.ostara.remote.proto.server.QueryTopicInfoResponse;
 
-public class MetadataWriter implements ProcessCommand.Server {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataWriter.class);
+public class MetadataSupport implements ProcessCommand.Server {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetadataSupport.class);
 
     private final ShallowChannelPool pool;
     private final ClientConfig config;
     private final LoadingCache<String, MessageRouter> routers;
     private final EventExecutor scheduledMetadataTask;
 
-    public MetadataWriter(Client client) {
+    public MetadataSupport(Client client) {
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool();
         this.config = client.getClientConfig();
 

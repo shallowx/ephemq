@@ -26,8 +26,8 @@ import org.ostara.common.util.StringUtils;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.remote.util.NetworkUtils;
 
-public class ClusterNodeCacheWriterSupport {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterNodeCacheWriterSupport.class);
+public class ClusterNodeCacheSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClusterNodeCacheSupport.class);
 
     private final ServerConfig config;
     private final LoadingCache<String, Set<Node>> cache;
@@ -41,7 +41,7 @@ public class ClusterNodeCacheWriterSupport {
     private final String CLOSED = "closed";
     private final String LATENT = "latent";
 
-    public ClusterNodeCacheWriterSupport(ServerConfig config) {
+    public ClusterNodeCacheSupport(ServerConfig config) {
         this.config = config;
         this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {

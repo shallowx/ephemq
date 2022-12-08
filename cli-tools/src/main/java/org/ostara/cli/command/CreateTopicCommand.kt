@@ -58,7 +58,7 @@ fun create(host: String, topic: String, partitions: Int, replicates: Int): Creat
     var client: Client? = null
     try {
         client = ClientFactory.buildOstaraClient(host)
-        val metadataWriter = client.metadataWriter
+        val metadataWriter = client.metadataSupport
         val promise: Promise<CreateTopicResponse> = metadataWriter.createTopic(topic, partitions, replicates)
 
         val response: CreateTopicResponse = promise.get()

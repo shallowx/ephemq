@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.ostara.client.internal.metadata.MetadataWriter;
+import org.ostara.client.internal.metadata.MetadataSupport;
 import org.ostara.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -56,7 +56,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Cli
                 }
 
                 case CLUSTER_CHANGED -> {
-                    MetadataWriter metadataManager = client.getMetadataWriter();
+                    MetadataSupport metadataManager = client.getMetadataSupport();
                     metadataManager.refreshMetadata();
                 }
 

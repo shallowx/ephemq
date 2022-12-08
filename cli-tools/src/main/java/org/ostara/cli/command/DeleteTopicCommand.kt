@@ -50,7 +50,7 @@ fun delete(host: String, topic: String): DelTopicResponse? {
     var client: Client? = null
     try {
         client = ClientFactory.buildOstaraClient(host)
-        val metadataWriter = client.metadataWriter
+        val metadataWriter = client.metadataSupport
         val promise: Promise<DelTopicResponse> = metadataWriter.delTopic(topic)
 
         val response: DelTopicResponse = promise.get()
@@ -59,6 +59,6 @@ fun delete(host: String, topic: String): DelTopicResponse? {
         println("failed to delete topic, topic=$topic host=$host error=${t.localizedMessage}")
     }
     client?.shutdownGracefully()
-    
+
     return null
 }

@@ -63,7 +63,7 @@ public class CreateTopicBenchmark {
     @Benchmark
     public void createTopic() {
         Promise<CreateTopicResponse> promise =
-                client.getMetadataWriter().createTopic("test-benchmark-" + UUID.randomUUID(), 1, 1);
+                client.getMetadataSupport().createTopic("test-benchmark-" + UUID.randomUUID(), 1, 1);
         try {
             promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

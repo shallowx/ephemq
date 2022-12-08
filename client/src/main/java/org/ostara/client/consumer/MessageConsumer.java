@@ -19,7 +19,7 @@ import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.metadata.MessageRouter;
 import org.ostara.client.internal.metadata.MessageRoutingHolder;
-import org.ostara.client.internal.metadata.MetadataWriter;
+import org.ostara.client.internal.metadata.MetadataSupport;
 import org.ostara.client.internal.pool.ShallowChannelPool;
 import org.ostara.common.enums.State;
 import org.ostara.common.logging.InternalLogger;
@@ -36,7 +36,7 @@ public class MessageConsumer implements Consumer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageConsumer.class);
 
-    private MetadataWriter manager;
+    private MetadataSupport manager;
     private final ConsumerConfig config;
     private MessageListener messageListener;
     private ShallowChannelPool pool;
@@ -70,7 +70,7 @@ public class MessageConsumer implements Consumer {
 
         client.start();
 
-        this.manager = client.getMetadataWriter();
+        this.manager = client.getMetadataSupport();
         this.pool = client.getChanelPool();
 
         subscribeTaskExecutor.schedule(() -> resetSuscribe(null), 5000, TimeUnit.MILLISECONDS);

@@ -9,12 +9,12 @@ import org.ostara.internal.config.ServerConfig;
 public abstract class LeaderAssignorAdapter {
 
     protected final ServerConfig config;
-    protected final ClusterNodeCacheWriterSupport nodeWriterSupport;
+    protected final ClusterNodeCacheSupport nodeWriterSupport;
     protected final ResourceContext context;
 
     public LeaderAssignorAdapter(ServerConfig config, ResourceContext context) {
         this.config = config;
-        this.nodeWriterSupport = context.getNodeCacheWriterSupport();
+        this.nodeWriterSupport = context.getNodeCacheSupport();
         this.context = context;
     }
 

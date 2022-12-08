@@ -16,7 +16,7 @@ import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.metadata.MessageRouter;
 import org.ostara.client.internal.metadata.MessageRoutingHolder;
-import org.ostara.client.internal.metadata.MetadataWriter;
+import org.ostara.client.internal.metadata.MetadataSupport;
 import org.ostara.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.ostara.client.internal.pool.ShallowChannelPool;
 import org.ostara.common.enums.State;
@@ -32,7 +32,7 @@ public class MessageProducer implements Producer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProducer.class);
 
-    private MetadataWriter metadataWriter;
+    private MetadataSupport metadataWriter;
     private final ProducerConfig config;
     private ShallowChannelPool pool;
     private final String name;
@@ -55,7 +55,7 @@ public class MessageProducer implements Producer {
         client.start();
 
         this.pool = DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool();
-        this.metadataWriter = client.getMetadataWriter();
+        this.metadataWriter = client.getMetadataSupport();
     }
 
     @Override

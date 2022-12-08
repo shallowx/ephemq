@@ -49,7 +49,7 @@ fun query(host: String, name: String): Set<Node>? {
     var clientChannel: ClientChannel? = null
     try {
         client = ClientFactory.buildOstaraClient(host)
-        val metadataWriter = client.metadataWriter
+        val metadataWriter = client.metadataSupport
 
         clientChannel = ClientChannelFactory.buildClientChannel(client, host)
         var records = metadataWriter.queryNodeRecord(clientChannel)
