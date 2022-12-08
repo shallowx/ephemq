@@ -19,7 +19,12 @@ fun main(args: Array<String>) {
 
         2 -> {
             if (args[0] == "help") {
-                val subCommand = application.getSubCommand(args[1], commands) ?: exitProcess(0)
+                val subCommand = application.getSubCommand(args[1], commands)
+                if (subCommand == null) {
+                    println("Not supported command, and command=" + args[1])
+                    exitProcess(0)
+                }
+                
                 CommandLine.usage(subCommand, System.out, Help.Ansi.AUTO)
                 exitProcess(0)
             }
