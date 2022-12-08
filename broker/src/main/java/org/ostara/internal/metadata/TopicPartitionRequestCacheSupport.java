@@ -22,21 +22,21 @@ import org.ostara.network.MessageProcessorAware;
 /**
  * Thread safety is guaranteed by aware {@link MessageProcessorAware} variable {@code commandExecutor} of the thread.
  */
-public class TopicPartitionRequestCacheWriterSupport {
+public class TopicPartitionRequestCacheSupport {
 
     private static final InternalLogger logger =
-            InternalLoggerFactory.getLogger(TopicPartitionRequestCacheWriterSupport.class);
+            InternalLoggerFactory.getLogger(TopicPartitionRequestCacheSupport.class);
 
     private final PartitionLeaderAssignorFactory factory;
     private final LoadingCache<String, Set<Partition>> cache;
-    private final ClusterNodeCacheWriterSupport nodeCacheWriterSupport;
+    private final ClusterNodeCacheSupport nodeCacheWriterSupport;
     private final LedgerEngine engine;
     private final ServerConfig config;
 
-    public TopicPartitionRequestCacheWriterSupport(ServerConfig config, ResourceContext context) {
+    public TopicPartitionRequestCacheSupport(ServerConfig config, ResourceContext context) {
         this.config = config;
         this.factory = new PartitionLeaderAssignorFactory(context, config);
-        this.nodeCacheWriterSupport = context.getNodeCacheWriterSupport();
+        this.nodeCacheWriterSupport = context.getNodeCacheSupport();
         this.engine = context.getLedgerEngine();
 
         this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MINUTES)

@@ -1,8 +1,8 @@
 package org.ostara.internal;
 
 import org.ostara.internal.atomic.DistributedAtomicInteger;
-import org.ostara.internal.metadata.ClusterNodeCacheWriterSupport;
-import org.ostara.internal.metadata.TopicPartitionRequestCacheWriterSupport;
+import org.ostara.internal.metadata.ClusterNodeCacheSupport;
+import org.ostara.internal.metadata.TopicPartitionRequestCacheSupport;
 import org.ostara.ledger.LedgerEngine;
 import org.ostara.network.ChannelBoundContext;
 
@@ -15,9 +15,9 @@ public interface ResourceContext {
 
     ChannelBoundContext getChannelBoundContext();
 
-    TopicPartitionRequestCacheWriterSupport getPartitionRequestCacheWriterSupport();
+    TopicPartitionRequestCacheSupport getPartitionRequestCacheSupport();
 
-    ClusterNodeCacheWriterSupport getNodeCacheWriterSupport();
+    ClusterNodeCacheSupport getNodeCacheSupport();
 
     DistributedAtomicInteger getAtomicInteger();
 }

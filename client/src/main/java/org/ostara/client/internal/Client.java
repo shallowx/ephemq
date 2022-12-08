@@ -11,7 +11,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import org.ostara.client.internal.metadata.MetadataWriter;
+import org.ostara.client.internal.metadata.MetadataSupport;
 import org.ostara.client.internal.pool.DefaultFixedChannelPoolFactory;
 import org.ostara.client.internal.pool.ShallowChannelHealthChecker;
 import org.ostara.client.internal.pool.ShallowChannelPool;
@@ -24,7 +24,7 @@ public class Client {
 
     private final String name;
     private final ClientConfig config;
-    private MetadataWriter manager;
+    private MetadataSupport manager;
     private volatile boolean state = false;
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
@@ -80,7 +80,7 @@ public class Client {
 
         pool = DefaultFixedChannelPoolFactory.INSTANCE.newChannelPool(this);
 
-        this.manager = new MetadataWriter(this);
+        this.manager = new MetadataSupport(this);
         manager.start();
 
         if (logger.isInfoEnabled()) {
@@ -116,7 +116,7 @@ public class Client {
         return healthChecker;
     }
 
-    public MetadataWriter getMetadataWriter() {
+    public MetadataSupport getMetadataSupport() {
         return manager;
     }
 

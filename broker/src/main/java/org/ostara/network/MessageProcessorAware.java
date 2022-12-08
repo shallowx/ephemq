@@ -27,8 +27,8 @@ import org.ostara.common.metadata.Partition;
 import org.ostara.common.metadata.Subscription;
 import org.ostara.internal.ResourceContext;
 import org.ostara.internal.config.ServerConfig;
-import org.ostara.internal.metadata.ClusterNodeCacheWriterSupport;
-import org.ostara.internal.metadata.TopicPartitionRequestCacheWriterSupport;
+import org.ostara.internal.metadata.ClusterNodeCacheSupport;
+import org.ostara.internal.metadata.TopicPartitionRequestCacheSupport;
 import org.ostara.ledger.LedgerEngine;
 import org.ostara.ledger.Offset;
 import org.ostara.remote.RemoteException;
@@ -123,8 +123,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
         try {
             QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
             ProtocolStringList topicList = request.getTopicList();
-            TopicPartitionRequestCacheWriterSupport writerSupport =
-                    resourceContext.getPartitionRequestCacheWriterSupport();
+            TopicPartitionRequestCacheSupport writerSupport =
+                    resourceContext.getPartitionRequestCacheSupport();
             Map<String, Set<Partition>> partitions = writerSupport.loadAll(topicList);
 
             if (partitions.isEmpty()) {
@@ -177,7 +177,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                                                        short version) {
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
-            ClusterNodeCacheWriterSupport writerSupport = resourceContext.getNodeCacheWriterSupport();
+            ClusterNodeCacheSupport writerSupport = resourceContext.getNodeCacheSupport();
             Set<Node> records = writerSupport.load(config.getClusterName());
 
             QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
@@ -331,8 +331,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         }
                     });
 
-                    TopicPartitionRequestCacheWriterSupport writerSupport =
-                            resourceContext.getPartitionRequestCacheWriterSupport();
+                    TopicPartitionRequestCacheSupport writerSupport =
+                            resourceContext.getPartitionRequestCacheSupport();
                     writerSupport.createTopic(topic, partitionLimit, replicateLimit, promise);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
@@ -367,8 +367,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         }
                     });
 
-                    TopicPartitionRequestCacheWriterSupport writerSupport =
-                            resourceContext.getPartitionRequestCacheWriterSupport();
+                    TopicPartitionRequestCacheSupport writerSupport =
+                            resourceContext.getPartitionRequestCacheSupport();
                     writerSupport.delTopic(topic, promise);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {

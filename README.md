@@ -33,7 +33,7 @@ clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 Client client = new Client("create-client", clientConfig);
 client.start();
 
-Promise<CreateTopicResponse> promise = client.getMetadataWriter().createTopic(CREATE_TOPIC, "create", 3, 1);
+Promise<CreateTopicResponse> promise = client.getMetadataSupport().createTopic(CREATE_TOPIC, "create", 3, 1);
 CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 ```
 
