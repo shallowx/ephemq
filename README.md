@@ -33,7 +33,7 @@ clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
 Client client = new Client("create-client", clientConfig);
 client.start();
 
-Promise<CreateTopicResponse> promise = client.getMetadataSupport().createTopic(CREATE_TOPIC, "create", 3, 1);
+Promise<CreateTopicResponse> promise = client.getMetadataSupport().createTopic(CREATE_TOPIC, "test", 3, 1);
 CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 ```
 
@@ -57,7 +57,7 @@ messagePushConsumer.registerListener(new MessagePushListener() {
     });
 messagePushConsumer.start();
 
-Subscription subscribe = messagePushConsumer.subscribe("create", "message");
+Subscription subscribe = messagePushConsumer.subscribe("test", "message");
 ```
 
 ## Send Message
@@ -69,7 +69,7 @@ producerConfig.setClientConfig(clientConfig);
 Producer producer = new MessageProducer("async-producer", producerConfig);
 producer.start();
 
-Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
+Message message = new Message("test", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
 MessagePreInterceptor interceptor = sendMessage -> sendMessage;
 
 producer.sendAsync(message, filter, (sendResult, cause) -> {});
