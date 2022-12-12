@@ -3,7 +3,11 @@ package org.ostara.atomic
 
 import org.ostara.internal.atomic.DistributedAtomicValue
 import spock.lang.Specification
+import spock.lang.Stepwise
+import spock.lang.Subject
 
+@Subject(DistributedAtomicValue)
+@Stepwise
 class DistributedAtomicValueTests extends Specification {
 
     def "can create AtomicValue of pre."() {
@@ -12,8 +16,7 @@ class DistributedAtomicValueTests extends Specification {
         def value = distributedAtomicValue.get()
 
         expect:
-
-        value.preValue() == [0, 0, 0, 0, 0, 0, 0, 0]
+        value.preValue() == (byte[]) [0, 0, 0, 0, 0, 0, 0, 0]
     }
 
     def "can create AtomicValue of post."() {
@@ -22,8 +25,7 @@ class DistributedAtomicValueTests extends Specification {
         def value = distributedAtomicValue.get()
 
         expect:
-
-        value.postValue() == [0, 0, 0, 0, 0, 0, 0, 0]
+        value.postValue() == (byte[]) [0, 0, 0, 0, 0, 0, 0, 0]
     }
 
     def "can create AtomicValue worker."() {
@@ -54,7 +56,7 @@ class DistributedAtomicValueTests extends Specification {
         def value = distributedAtomicValue.worker(number)
 
         expect:
-        value.preValue() == [0, 0, 0, 0, 0, 0, 0, 0]
+        value.preValue() == (byte[]) [0, 0, 0, 0, 0, 0, 0, 0]
     }
 
 }

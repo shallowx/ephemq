@@ -3,9 +3,13 @@ package org.ostara.ledger
 import io.netty.buffer.PooledByteBufAllocator
 import org.ostara.remote.util.ByteBufUtils
 import spock.lang.Specification
+import spock.lang.Stepwise
+import spock.lang.Subject
 
 import java.nio.charset.StandardCharsets
 
+@Subject(Segment)
+@Stepwise
 class SegmentTests extends Specification {
 
     def topic = "test-topic";
@@ -39,7 +43,7 @@ class SegmentTests extends Specification {
 
         expect:
         readTopic.equals(topic)
-        theVersion == 0
+        theVersion == (short) 0
 
         cleanup:
         ByteBufUtils.release(topicBuf)
@@ -66,7 +70,7 @@ class SegmentTests extends Specification {
 
         expect:
         readTopic.equals(this.topic)
-        theVersion == 0
+        theVersion == (short) 0
 
         cleanup:
         ByteBufUtils.release(topicBuf)
@@ -93,5 +97,15 @@ class SegmentTests extends Specification {
         cleanup:
         ByteBufUtils.release(payload);
         segment.release();
+    }
+
+    def "free bytes."() {
+        given:
+        def bytes = topic.length() + queue.length() + 26 + payload.readableBytes() + 1
+        def segment = new Segment(0, PooledByteBufAllocator.DEFAULT.directBuffer(bytes, bytes), new Offset(-1, 0))
+        segment.write(topic, queue, (short) 0, payload, new Offset(-1, 1));
+
+        expect:
+        segment.freeBytes() == 1
     }
 }

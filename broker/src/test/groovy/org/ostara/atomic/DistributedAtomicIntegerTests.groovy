@@ -2,7 +2,11 @@ package org.ostara.atomic
 
 import org.ostara.internal.atomic.DistributedAtomicInteger
 import spock.lang.Specification
+import spock.lang.Stepwise
+import spock.lang.Subject
 
+@Subject(DistributedAtomicInteger)
+@Stepwise
 class DistributedAtomicIntegerTests extends Specification {
 
     def "should be return 0 by get()."() {

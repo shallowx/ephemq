@@ -27,7 +27,7 @@ public class TopicTests {
         Client client = new Client("create-client", clientConfig);
         client.start();
 
-        Promise<CreateTopicResponse> promise = client.getMetadataWriter().createTopic("test", 1, 1);
+        Promise<CreateTopicResponse> promise = client.getMetadataSupport().createTopic("test", 1, 1);
         CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
@@ -46,7 +46,7 @@ public class TopicTests {
         Client client = new Client("del-client", clientConfig);
         client.start();
 
-        Promise<DelTopicResponse> promise = client.getMetadataWriter().delTopic("test");
+        Promise<DelTopicResponse> promise = client.getMetadataSupport().delTopic("test");
         DelTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 
         Assert.assertNotNull(response);
@@ -63,7 +63,7 @@ public class TopicTests {
         Client client = new Client("query-client", clientConfig);
         client.start();
 
-        Map<String, Topic> recordMap = client.getMetadataWriter()
+        Map<String, Topic> recordMap = client.getMetadataSupport()
                 .queryTopicRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly(),
                         List.of("create"));
 

@@ -21,7 +21,7 @@ public class ClusterTest {
         Client client = new Client("cluster-client", clientConfig);
         client.start();
 
-        Set<Node> nodeRecords = client.getMetadataWriter()
+        Set<Node> nodeRecords = client.getMetadataSupport()
                 .queryNodeRecord(DefaultFixedChannelPoolFactory.INSTANCE.accessChannelPool().acquireWithRandomly());
 
         logger.info("result:{}", nodeRecords);
