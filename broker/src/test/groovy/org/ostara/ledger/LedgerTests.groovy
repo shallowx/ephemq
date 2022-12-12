@@ -22,12 +22,12 @@ class LedgerTests extends Specification {
         ledger = new Ledger(ServerConfig.exchange(new Properties()), topic, partitionId, ledgerId, epoch)
     }
 
-    def "can create ledger"() {
+    def "can create ledger."() {
         expect:
         ledger != null
     }
 
-    def "subscribe topic"() {
+    def "subscribe topic."() {
         given:
         def channel = Mock(Channel.class)
         ledger.subscribe(channel, topic, queue, -1 as short, epoch, -1, NetworkUtils.newImmediatePromise())

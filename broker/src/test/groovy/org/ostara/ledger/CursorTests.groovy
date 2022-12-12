@@ -32,7 +32,7 @@ class CursorTests extends Specification {
         })
     }
 
-    def "skip 2 tail"() {
+    def "skip 2 tail."() {
         given:
         def cursor = new Cursor(storage, segment, -1)
         def tail = cursor.skip2Tail()
@@ -41,7 +41,7 @@ class CursorTests extends Specification {
         !tail.hashNext()
     }
 
-    def "has next"() {
+    def "has next."() {
         given:
         def cursor = new Cursor(storage, segment, -1)
         def tail = cursor.hashNext()
@@ -50,7 +50,7 @@ class CursorTests extends Specification {
         tail
     }
 
-    def "clone cursor"() {
+    def "clone cursor."() {
         given:
         def cursor = new Cursor(storage, segment, -1)
         def clone = cursor.clone()

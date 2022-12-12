@@ -32,7 +32,7 @@ class StorageTests extends Specification {
         })
     }
 
-    def "append message"() {
+    def "append message."() {
         given:
         storage.append(topic, queue, version as short, payload, promise)
 
@@ -40,7 +40,7 @@ class StorageTests extends Specification {
         ByteBufUtils.release(payload);
     }
 
-    def "locate cursor"() {
+    def "locate cursor."() {
         given:
         storage.append(topic, queue, version as short, payload, promise)
 

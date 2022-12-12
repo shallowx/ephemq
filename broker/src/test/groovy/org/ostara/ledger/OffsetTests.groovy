@@ -8,7 +8,7 @@ import spock.lang.Subject
 @Stepwise
 class OffsetTests extends Specification {
 
-    def "return epoch"() {
+    def "return epoch."() {
         given:
         def offset = new Offset(-1, -1)
 
@@ -16,7 +16,7 @@ class OffsetTests extends Specification {
         offset.epoch() == -1
     }
 
-    def "return index"() {
+    def "return index."() {
         given:
         def offset = new Offset(-1, -1)
 
@@ -24,7 +24,7 @@ class OffsetTests extends Specification {
         offset.index() == -1
     }
 
-    def "before offset"() {
+    def "before offset."() {
         given:
         def offset = new Offset(-1, -1)
         def before = new Offset(-1, 0)
@@ -34,7 +34,7 @@ class OffsetTests extends Specification {
         result
     }
 
-    def "after offset"() {
+    def "after offset."() {
         given:
         def offset = new Offset(-1, -1)
         def before = new Offset(-1, 0)
@@ -44,7 +44,7 @@ class OffsetTests extends Specification {
         !result
     }
 
-    def "offset of"() {
+    def "offset of."() {
         given:
         def offset = Offset.of(-1, -1)
 
