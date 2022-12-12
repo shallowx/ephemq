@@ -21,7 +21,9 @@ reliability, trillion-level capacity and flexible scalability
 
 # Environment
 
-- Java version: Jdk17+
+- Java 17
+- kotlin
+- groovy
 
 # Quickstart
 
