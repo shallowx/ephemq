@@ -7,23 +7,22 @@ import org.junit.Test
 class HelpCommandTest {
 
     lateinit var commands: List<Alias>
-    var cliToolsApplication: CliToolsApplication = CliToolsApplication()
 
     @Before
     fun setUp() {
-        commands = cliToolsApplication.init()
+        commands = init()
 
     }
 
     @Test
     fun testPrintHelp() {
-        cliToolsApplication.printHelp(commands)
+        printHelp(commands)
     }
 
     @Test
     fun testGetSubCommand() {
         val cmd = "createTopic"
-        val subCommand = cliToolsApplication.getSubCommand(cmd, commands)
+        val subCommand = getSubCommand(cmd, commands)
         AssertNonNullIfNonNull(subCommand.toString())
     }
 }
