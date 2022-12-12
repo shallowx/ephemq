@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 class DistributedAtomicValueTests extends Specification {
 
-    def "can create AtomicValue pre"() {
+    def "can create AtomicValue of pre."() {
         given:
         def distributedAtomicValue = new DistributedAtomicValue();
         def value = distributedAtomicValue.get()
@@ -16,7 +16,7 @@ class DistributedAtomicValueTests extends Specification {
         value.preValue() == [0, 0, 0, 0, 0, 0, 0, 0]
     }
 
-    def "can create AtomicValue post"() {
+    def "can create AtomicValue of post."() {
         given:
         def distributedAtomicValue = new DistributedAtomicValue()
         def value = distributedAtomicValue.get()
@@ -26,7 +26,7 @@ class DistributedAtomicValueTests extends Specification {
         value.postValue() == [0, 0, 0, 0, 0, 0, 0, 0]
     }
 
-    def "can create AtomicValue worker"() {
+    def "can create AtomicValue worker."() {
         given:
         def distributedAtomicValue = new DistributedAtomicValue()
         def number = new Number() {
