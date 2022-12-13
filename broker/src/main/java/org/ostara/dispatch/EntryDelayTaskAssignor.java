@@ -25,13 +25,13 @@ public class EntryDelayTaskAssignor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDelayTaskAssignor.class);
 
     private final EntryAttributes attributes;
-    private final EntryDispatchHelper helper;
+    private final EntryDispatchSupport helper;
     private final Channel channel;
     private final int ledgerId;
     private final int traceLimit;
     private final int alignLimit;
 
-    public EntryDelayTaskAssignor(EntryAttributes trace, EntryDispatchHelper helper, int ledgerId) {
+    public EntryDelayTaskAssignor(EntryAttributes trace, EntryDispatchSupport helper, int ledgerId) {
         this.attributes = trace;
         this.helper = helper;
         this.traceLimit = attributes.getAssignLimit();

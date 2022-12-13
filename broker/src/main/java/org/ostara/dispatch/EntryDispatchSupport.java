@@ -18,15 +18,15 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.internal.config.ServerConfig;
 
-public class EntryDispatchHelper {
+public class EntryDispatchSupport {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDispatchHelper.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDispatchSupport.class);
 
     private final EventExecutor[] executors;
     private final ConcurrentMap<Channel, EntryEventExecutorHandler> channelOfHandlers = new ConcurrentHashMap<>();
     private final WeakHashMap<EntryEventExecutorHandler, Integer> eventExecutorHandlers = new WeakHashMap<>();
 
-    public EntryDispatchHelper(ServerConfig config) {
+    public EntryDispatchSupport(ServerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
         EventExecutorGroup group = newEventExecutorGroup(config.getMessageHandleThreadLimit(), "push-handler-group");

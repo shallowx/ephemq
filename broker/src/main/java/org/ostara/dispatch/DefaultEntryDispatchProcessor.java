@@ -38,7 +38,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
     private final int assignLimit;
     private final int alignLimit;
 
-    private final EntryDispatchHelper helper;
+    private final EntryDispatchSupport helper;
     private final Storage storage;
     private final List<EntryEventExecutorHandler> handlers = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         this.assignLimit = config.getMessageHandleAssignLimit();
         this.alignLimit = config.getMessageHandleAlignLimit();
 
-        this.helper = new EntryDispatchHelper(config);
+        this.helper = new EntryDispatchSupport(config);
     }
 
     @Override
