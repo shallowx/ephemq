@@ -47,9 +47,7 @@ public class OperationInvoker implements ProcessCommand.Server {
             ByteBuf buf = assembleInvokeMessageData(clientChannel.allocator(), request, extras, message);
             invoke0(SEND_MESSAGE, version, buf, (byte) Type.PUSH.sequence(), timeoutMs, callback);
         } catch (Exception e) {
-            if (logger.isDebugEnabled()) {
-                logger.error(e.getMessage(), e);
-            }
+            logger.error(e.getMessage(), e);
             tryFailure(promise, e);
         }
     }

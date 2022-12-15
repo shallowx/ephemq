@@ -78,9 +78,7 @@ public class Storage {
             try {
                 trigger.onAppend(limit, offset);
             } catch (Throwable t) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("trigger append error: ledger={} limit={} offset={}", ledger, limit, offset);
-                }
+                logger.warn("trigger append error: ledger={} limit={} offset={}", ledger, limit, offset);
             }
         }
     }
@@ -126,9 +124,7 @@ public class Storage {
 
             return isActive ? theSegment : null;
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to locate segment, error:{}", t);
-            }
+            logger.error("Failed to locate segment, error:{}", t);
             return null;
         }
     }

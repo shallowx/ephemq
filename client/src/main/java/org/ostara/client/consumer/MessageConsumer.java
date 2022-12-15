@@ -272,10 +272,8 @@ public class MessageConsumer implements Consumer {
 
         promise.addListener(f -> {
             if (f.isSuccess()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Subscribe successfully, topic={} queue={} ledger={} version={}, epoch={} index={}",
-                            topic, queue, ledger, epoch, index);
-                }
+                logger.debug("Subscribe successfully, topic={} queue={} ledger={} version={}, epoch={} index={}",
+                        topic, queue, ledger, epoch, index);
                 pushConsumerListener.set(epoch, index, queue, ledger, version);
 
                 Map<String, String> subscribeShips = subscribes.get(clientChannel);
@@ -424,9 +422,7 @@ public class MessageConsumer implements Consumer {
                 }
             }
 
-            if (logger.isWarnEnabled()) {
-                logger.warn("Channel not found, topic={} ledger={}", topic, ledger);
-            }
+            logger.warn("Channel not found, topic={} ledger={}", topic, ledger);
             return null;
         }
     }

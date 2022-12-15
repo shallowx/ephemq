@@ -88,9 +88,7 @@ public class Cursor implements Cloneable {
 
             Segment next = segment.next();
             if (next == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("The next segment does not exist");
-                }
+                logger.debug("The next segment does not exist");
                 return null;
             }
 

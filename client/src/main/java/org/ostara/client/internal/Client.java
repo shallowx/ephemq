@@ -83,9 +83,7 @@ public class Client {
         this.manager = new MetadataSupport(this);
         manager.start();
 
-        if (logger.isInfoEnabled()) {
-            logger.info("The client<{}> started successfully", name);
-        }
+        logger.info("The client<{}> started successfully", name);
     }
 
     public String getName() {

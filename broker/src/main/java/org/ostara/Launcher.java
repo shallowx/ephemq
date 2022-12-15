@@ -16,9 +16,7 @@ public class Launcher {
         try {
             run(args);
         } catch (Exception e) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Start server failed", e);
-            }
+            logger.error("Start server failed", e);
             System.exit(1);
         }
     }

@@ -61,12 +61,10 @@ public class Ledger {
             try {
                 storageExecutor.execute(() -> doSubscribe(channel, topic, queue, version, offset, promise));
             } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error(
-                            "Failed to subscribe, topic={} partition={} queue={} ledgerId={} epoch={} index={}. error"
-                                    + " cause:{}",
-                            topic, partition, queue, ledgerId, epoch, index, t);
-                }
+                logger.error(
+                        "Failed to subscribe, topic={} partition={} queue={} ledgerId={} epoch={} index={}. error"
+                                + " cause:{}",
+                        topic, partition, queue, ledgerId, epoch, index, t);
                 promise.tryFailure(t);
             }
         }
@@ -96,10 +94,8 @@ public class Ledger {
             });
             processor.subscribe(channel, topic, queue, theOffset, version, subscribePromise);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to subscribe, channel<{}> ledgerId={} topic={} queue={} offset={}",
-                        channel.toString(), ledgerId, topic, queue, offset);
-            }
+            logger.error("Failed to subscribe, channel<{}> ledgerId={} topic={} queue={} offset={}",
+                    channel.toString(), ledgerId, topic, queue, offset);
             promise.tryFailure(t);
         }
     }
@@ -120,10 +116,8 @@ public class Ledger {
         try {
             processor.clean(channel, topic, queue, promise);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to clear subscribe, channel<{}> ledgerId={} topic={} queue={}", channel.toString(),
-                        ledgerId, topic, queue);
-            }
+            logger.error("Failed to clear subscribe, channel<{}> ledgerId={} topic={} queue={}", channel.toString(),
+                    ledgerId, topic, queue);
             promise.tryFailure(t);
         }
     }
@@ -202,9 +196,7 @@ public class Ledger {
             storage.close();
             processor.shutdownGracefully();
 
-            if (logger.isWarnEnabled()) {
-                logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
-            }
+            logger.warn("Close ledger<{}> successfully, topic={} partition={}", ledgerId, topic, partition);
         }
     }
 }

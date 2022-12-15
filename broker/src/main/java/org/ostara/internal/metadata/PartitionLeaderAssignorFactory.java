@@ -43,10 +43,7 @@ public class PartitionLeaderAssignorFactory {
             }
 
             default -> {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Unsupported partition leader elect operation type: " + rule);
-                }
-
+                logger.error("Unsupported partition leader elect operation type: " + rule);
                 throw new UnsupportedOperationException("Unsupported partition leader elect operation type: " + rule);
             }
         }

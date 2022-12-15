@@ -5,13 +5,12 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
-import org.ostara.common.logging.InternalLogger;
-import org.ostara.common.logging.InternalLoggerFactory;
-
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import org.ostara.common.logging.InternalLogger;
+import org.ostara.common.logging.InternalLoggerFactory;
 
 public class PrometheusRegistrySetup implements MeterRegistrySetup {
 
@@ -33,7 +32,8 @@ public class PrometheusRegistrySetup implements MeterRegistrySetup {
 
     private void setHttpServer(MetricsConfig config) {
         try {
-            InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
+            InetSocketAddress socketAddress =
+                    new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
             this.server = HttpServer.create(socketAddress, 0);
 
             String url = config.getMetricsScrapeUrl();
@@ -48,13 +48,9 @@ public class PrometheusRegistrySetup implements MeterRegistrySetup {
             });
             new Thread(this.server::start);
 
-            if (logger.isInfoEnabled()) {
-                logger.info("Metrics http server is listening at {}, and scrape url={}", socketAddress, url);
-            }
+            logger.info("Metrics http server is listening at {}, and scrape url={}", socketAddress, url);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Start metrics http server failed");
-            }
+            logger.error("Start metrics http server failed");
             throw new RuntimeException(t);
         }
     }

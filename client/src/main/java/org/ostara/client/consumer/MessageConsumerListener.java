@@ -86,18 +86,14 @@ final class MessageConsumerListener implements ClientListener {
 
     @Override
     public void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Receive partition changed signal, channel={} signal={}", channel.toString(),
-                    signal.toString());
-        }
+        logger.debug("Receive partition changed signal, channel={} signal={}", channel.toString(),
+                signal.toString());
         //do nothing
     }
 
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Receive node offline signal, channel={} signal={}", channel.toString(), signal.toString());
-        }
+        logger.debug("Receive node offline signal, channel={} signal={}", channel.toString(), signal.toString());
 
         String nodeId = signal.getNodeId();
         String host = signal.getHost();
@@ -134,10 +130,8 @@ final class MessageConsumerListener implements ClientListener {
                         .build();
 
                 if (!sequence.compareAndSet(preShip, theLastShip)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip,
-                                preShip);
-                    }
+                    logger.debug("Chanel<{}> repeated message, last={} pre={}", channel.toString(), theLastShip,
+                            preShip);
                 }
             }
 
@@ -150,12 +144,10 @@ final class MessageConsumerListener implements ClientListener {
 
             handler.process(message, listener, interceptor);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error(
-                        "Failed to handle subscribe message, channel={} ledgerId={} topic={} queue={} version={} "
-                                + "epoch={} index={} , error={}",
-                        channel.toString(), ledgerId, topic, queue, version, epoch, index, t);
-            }
+            logger.error(
+                    "Failed to handle subscribe message, channel={} ledgerId={} topic={} queue={} version={} "
+                            + "epoch={} index={} , error={}",
+                    channel.toString(), ledgerId, topic, queue, version, epoch, index, t);
         }
     }
 

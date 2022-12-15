@@ -72,9 +72,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Get remote active address<{}> successfully", channel.remoteAddress().toString());
-        }
+        logger.debug("Get remote active address<{}> successfully", channel.remoteAddress().toString());
 
         resourceContext.getChannelBoundContext().add(channel);
 
@@ -103,17 +101,13 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 case FETCH_CLUSTER_RECORD -> processFetchClusterNodeRecordsRequest(channel, data, answer, version);
 
                 default -> {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
-                    }
+                    logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,
                             "Not supported command [" + command + "]"));
                 }
             }
         } catch (Throwable cause) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Channel<{}> - command [{}]", switchAddress(channel), command);
-            }
+            logger.error("Channel<{}> - command [{}]", switchAddress(channel), command);
             answerFailed(answer, cause);
         }
     }
@@ -236,15 +230,11 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 LedgerEngine engine = resourceContext.getLedgerEngine();
                 engine.append(ledger, queue, retain, version, promise);
             } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to append message record", t);
-                }
+                logger.error("Failed to append message record", t);
                 answerFailed(answer, t);
             }
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to append message record", t);
-            }
+            logger.error("Failed to append message record", t);
             answerFailed(answer, t);
         }
     }
@@ -292,9 +282,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 }
             });
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to subscribe");
-            }
+            logger.error("Failed to subscribe");
             answerFailed(answer, t);
         }
     }
@@ -335,10 +323,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                             resourceContext.getPartitionRequestCacheSupport();
                     writerSupport.createTopic(topic, partitionLimit, replicateLimit, promise);
                 } catch (Exception e) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to create topic with address<{}>, cause:{}",
-                                channel.remoteAddress().toString(), e);
-                    }
+                    logger.error("Failed to create topic with address<{}>, cause:{}",
+                            channel.remoteAddress().toString(), e);
                     answerFailed(answer, e);
                 }
             });
@@ -371,18 +357,13 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                             resourceContext.getPartitionRequestCacheSupport();
                     writerSupport.delTopic(topic, promise);
                 } catch (Exception e) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic,
-                                channel.remoteAddress().toString(), e);
-                    }
+                    logger.error("Failed to delete topic<{}> with address<{}>, cause:{}", topic,
+                            channel.remoteAddress().toString(), e);
                     answerFailed(answer, e);
                 }
             });
         } catch (Exception e) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(),
-                        e);
-            }
+            logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
             answerFailed(answer, e);
         }
     }

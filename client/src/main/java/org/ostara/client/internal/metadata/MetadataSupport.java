@@ -114,9 +114,7 @@ public class MetadataSupport implements ProcessCommand.Server {
         Map<String, TopicMetadata> topicsMap =
                 promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getTopicsMap();
         if (topicsMap.isEmpty()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Query topic record is empty");
-            }
+            logger.debug("Query topic record is empty");
             return null;
         }
 
@@ -158,9 +156,7 @@ public class MetadataSupport implements ProcessCommand.Server {
                 QueryClusterNodeResponse.class);
         List<NodeMetadata> nodes = promise.get(config.getInvokeExpiredMs(), TimeUnit.MILLISECONDS).getNodesList();
         if (nodes.isEmpty()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Query node record is empty");
-            }
+            logger.debug("Query node record is empty");
             return null;
         }
 
@@ -199,9 +195,7 @@ public class MetadataSupport implements ProcessCommand.Server {
                 routers.put(topic, router);
                 return router;
             } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to query topic<{}> router, error:{}", topic, t);
-                }
+                logger.error("Failed to query topic<{}> router, error:{}", topic, t);
             }
         }
         return messageRouter;
@@ -245,25 +239,19 @@ public class MetadataSupport implements ProcessCommand.Server {
         try {
             List<String> topics = new ArrayList<>(routers.asMap().keySet());
             if (topics.isEmpty()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Router record is empty");
-                }
+                logger.debug("Router record is empty");
                 return;
             }
 
             Map<String, Topic> topicRecords = queryTopicRecord(pool.acquireWithRandomly(), topics);
             if (topicRecords.isEmpty()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Topic record is empty");
-                }
+                logger.debug("Topic record is empty");
                 return;
             }
 
             Set<Node> nodeRecords = queryNodeRecord(pool.acquireWithRandomly());
             if (null == nodeRecords) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Node record is empty");
-                }
+                logger.debug("Node record is empty");
                 return;
             }
 
@@ -271,22 +259,16 @@ public class MetadataSupport implements ProcessCommand.Server {
                 Topic topicRecord = topicRecords.get(topic);
                 MessageRouter messageRouter = assembleRouter(topic, topicRecord, nodeRecords);
                 if (null == messageRouter) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Topic<{}> message router is  null", topic);
-                    }
+                    logger.debug("Topic<{}> message router is  null", topic);
                     continue;
                 }
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Message router:{}", messageRouter);
-                }
+                logger.debug("Message router:{}", messageRouter);
 
                 routers.put(topic, messageRouter);
             }
         } catch (Exception e) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to refresh metadata, cause:{}", e);
-            }
+            logger.error("Failed to refresh metadata, cause:{}", e);
         }
     }
 

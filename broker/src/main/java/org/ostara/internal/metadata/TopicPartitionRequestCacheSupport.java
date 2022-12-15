@@ -87,9 +87,7 @@ public class TopicPartitionRequestCacheSupport {
             promise.trySuccess(null);
         } catch (Exception e) {
             promise.tryFailure(e);
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to create topic, topic={}", topic, e);
-            }
+            logger.error("Failed to create topic, topic={}", topic, e);
         }
     }
 

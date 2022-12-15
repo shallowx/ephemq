@@ -1,5 +1,12 @@
 package org.ostara.remote.handle;
 
+import static org.ostara.common.util.ObjectUtils.checkNotNull;
+import static org.ostara.remote.RemoteException.of;
+import static org.ostara.remote.util.ByteBufUtils.buf2String;
+import static org.ostara.remote.util.ByteBufUtils.release;
+import static org.ostara.remote.util.NetworkUtils.newFailurePacket;
+import static org.ostara.remote.util.NetworkUtils.newSuccessPacket;
+import static org.ostara.remote.util.NetworkUtils.switchAddress;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
@@ -7,28 +14,21 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.concurrent.Immutable;
+import org.ostara.common.logging.InternalLogger;
+import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.codec.MessagePacket;
 import org.ostara.remote.invoke.GenericInvokeAnswer;
 import org.ostara.remote.invoke.GenericInvokeHolder;
 import org.ostara.remote.invoke.InvokeAnswer;
 import org.ostara.remote.invoke.InvokeHolder;
-import org.ostara.common.logging.InternalLogger;
-import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.remote.processor.ProcessorAware;
 import org.ostara.remote.processor.AwareInvocation;
-
-import javax.annotation.concurrent.Immutable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import static org.ostara.common.util.ObjectUtils.checkNotNull;
-import static org.ostara.remote.RemoteException.of;
-import static org.ostara.remote.util.ByteBufUtils.buf2String;
-import static org.ostara.remote.util.ByteBufUtils.release;
-import static org.ostara.remote.util.NetworkUtils.*;
+import org.ostara.remote.processor.ProcessorAware;
 
 @Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
@@ -53,9 +53,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             try {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Read message packet - [{}] form remote address - [{}]", packet, switchAddress(ctx.channel()));
-                }
+                logger.debug("Read message packet - [{}] form remote address - [{}]", packet,
+                        switchAddress(ctx.channel()));
 
                 final byte command = packet.command();
                 if (command > INT_ZERO) {
@@ -93,10 +92,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         try {
             processor.process(ctx.channel(), command, buf, rejoin, type, version);
         } catch (Throwable cause) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
-                        ctx.channel().remoteAddress(), command, rejoin, length, cause);
-            }
+            logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
+                    ctx.channel().remoteAddress(), command, rejoin, length, cause);
             if (null != rejoin) {
                 rejoin.failure(cause);
             }
@@ -109,9 +106,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final byte command = packet.command();
         final int answer = packet.answer();
         if (answer == INT_ZERO) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()), command, answer);
-            }
+            logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),
+                    command, answer);
             return;
         }
 
@@ -126,18 +122,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 freed = holder.free(answer, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Chanel<{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(), command, answer);
-            }
+            logger.error("Chanel<{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(),
+                    command, answer);
             return;
         } finally {
             release(buf);
         }
 
         if (!freed) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Channel<{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(), command, answer);
-            }
+            logger.error("Channel<{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(),
+                    command, answer);
         }
     }
 
@@ -148,7 +142,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             final short version = invocation.version();
             final MessagePacket packet;
             try {
-                packet = MessagePacket.newPacket(version, answer, invocation.command(),  invocation.data().retain());
+                packet = MessagePacket.newPacket(version, answer, invocation.command(), invocation.data().retain());
             } catch (Throwable cause) {
                 holder.free(answer, r -> r.failure(cause));
                 throw cause;
@@ -161,15 +155,15 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
             if (answer != INT_ZERO && !promise.isVoid()) {
                 promise.addListener(f -> {
-                   Throwable cause = f.cause();
-                   if (null == cause) {
-                       return;
-                   }
-                   if (executor.inEventLoop()) {
-                       holder.free(answer, r -> r.failure(cause));
-                   } else {
-                       executor.execute(() -> holder.free(answer, r -> r.failure(cause)));
-                   }
+                    Throwable cause = f.cause();
+                    if (null == cause) {
+                        return;
+                    }
+                    if (executor.inEventLoop()) {
+                        holder.free(answer, r -> r.failure(cause));
+                    } else {
+                        executor.execute(() -> holder.free(answer, r -> r.failure(cause)));
+                    }
                 });
             }
             ctx.write(packet, promise);
@@ -201,7 +195,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 while (iterator.hasNext()) {
                     final var holder = iterator.next();
                     processHolder++;
-                    processInvoker += holder.freeExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke handle timeout")));
+                    processInvoker += holder.freeExpired(r -> r.failure(
+                            of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke handle timeout")));
                     if (holder.isEmpty()) {
                         iterator.remove();
                         continue;
@@ -211,9 +206,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                     remnantInvoker += holder.size();
                 }
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker, remnantHolder, remnantInvoker);
-                }
+                logger.debug("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker,
+                        remnantHolder, remnantInvoker);
 
                 if (!wholeHolders.isEmpty()) {
                     executor.schedule(this, 1, TimeUnit.SECONDS);
@@ -224,17 +218,14 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        final int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, String.format("Channel<%s> invoke timeout", ctx.channel().toString()))));
-        if (logger.isDebugEnabled()) {
-            logger.debug("Free entire invoke, whole={}", whole);
-        }
+        final int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
+                String.format("Channel<%s> invoke timeout", ctx.channel().toString()))));
+        logger.debug("Free entire invoke, whole={}", whole);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (logger.isErrorEnabled()) {
-            logger.error("Channel<{}> caught {}", ctx.channel().toString(), cause);
-        }
+        logger.error("Channel<{}> caught {}", ctx.channel().toString(), cause);
         ctx.close();
     }
 

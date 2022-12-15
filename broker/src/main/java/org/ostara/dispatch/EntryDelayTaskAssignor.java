@@ -52,9 +52,7 @@ public class EntryDelayTaskAssignor {
             EventExecutor executor = helper.channelExecutor(channel);
             executor.execute(this::doAssign);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Submit entry trace failure, task={}. error:{}", attributes, t);
-            }
+            logger.error("Submit entry trace failure, task={}. error:{}", attributes, t);
         }
     }
 
@@ -136,10 +134,8 @@ public class EntryDelayTaskAssignor {
                     message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
 
                     if (!channel.isActive()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel,
-                                    attributes);
-                        }
+                        logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel,
+                                attributes);
                         return;
                     }
 
@@ -154,10 +150,8 @@ public class EntryDelayTaskAssignor {
                     }
 
                 } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Channel trace message failed, topic={} queue={} offset={} error:{}", topic, queue,
-                                nextOffset, t);
-                    }
+                    logger.error("Channel trace message failed, topic={} queue={} offset={} error:{}", topic, queue,
+                            nextOffset, t);
                 } finally {
                     ByteBufUtils.release(message);
                     ByteBufUtils.release(payload);
@@ -269,10 +263,8 @@ public class EntryDelayTaskAssignor {
 
                     message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
                     if (!channel.isActive()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel,
-                                    attributes);
-                        }
+                        logger.debug("Entry trace subscribe channel<{}> is not active of task={}", channel,
+                                attributes);
                         return;
                     }
 
@@ -287,10 +279,8 @@ public class EntryDelayTaskAssignor {
                     }
 
                 } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Channel trace message failed, topic={} queue={} offset={} error:{}", topic, queue,
-                                nextOffset, t);
-                    }
+                    logger.error("Channel trace message failed, topic={} queue={} offset={} error:{}", topic, queue,
+                            nextOffset, t);
                 } finally {
                     ByteBufUtils.release(message);
                     ByteBufUtils.release(payload);
@@ -299,9 +289,7 @@ public class EntryDelayTaskAssignor {
                 }
             }
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
-            }
+            logger.error(t.getMessage(), t);
         }
 
         attributes.setOffset(nextOffset);

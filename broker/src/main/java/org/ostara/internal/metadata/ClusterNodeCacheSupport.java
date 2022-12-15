@@ -1,7 +1,6 @@
 package org.ostara.internal.metadata;
 
 import static org.ostara.remote.util.NetworkUtils.newEventExecutorGroup;
-import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -18,7 +17,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Node;
@@ -44,13 +42,10 @@ public class ClusterNodeCacheSupport {
     public ClusterNodeCacheSupport(ServerConfig config) {
         this.config = config;
         this.cache = Caffeine.newBuilder().refreshAfterWrite(config.getMetadataRefreshMs(), TimeUnit.MILLISECONDS)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @Nullable Set<Node> load(String key) throws Exception {
-                        Set<Node> nodes = new HashSet<>();
-                        nodes.add(buildNode(key, STARTED));
-                        return nodes;
-                    }
+                .build(key -> {
+                    Set<Node> nodes = new HashSet<>();
+                    nodes.add(buildNode(key, STARTED));
+                    return nodes;
                 });
         this.heartbeatScheduledExecutor =
                 Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("heartbeat-scheduled-executor"));
@@ -74,9 +69,7 @@ public class ClusterNodeCacheSupport {
 
                         register(promise);
                     } catch (Exception e) {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Failed to register cluster node", e);
-                        }
+                        logger.error("Failed to register cluster node", e);
                         latch.countDown();
                         throw new RuntimeException(e);
                     }

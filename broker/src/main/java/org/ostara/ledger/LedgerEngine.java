@@ -63,10 +63,8 @@ public class LedgerEngine {
                 return newLedger;
             });
 
-            if (logger.isInfoEnabled()) {
-                logger.info("Initialize log successfully, topic={} partitionId={} ledgerId={}", topic,
-                        ledger.getPartition(), ledger.getLedgerId());
-            }
+            logger.info("Initialize log successfully, topic={} partitionId={} ledgerId={}", topic,
+                    ledger.getPartition(), ledger.getLedgerId());
         } catch (Throwable t) {
             String error = t instanceof LedgerException ?
                     String.format("Ledger init failure and try again, topic=%s partitionId=%d ledgerId=%d", topic,
@@ -75,9 +73,7 @@ public class LedgerEngine {
                 retryExecutor.execute(() -> initLog(topic, partitionId, epoch, ledgerId));
             }
 
-            if (logger.isErrorEnabled()) {
-                logger.error(error);
-            }
+            logger.error(error);
         }
     }
 
@@ -95,10 +91,8 @@ public class LedgerEngine {
 
             ledger.subscribe(channel, topic, queue, version, epoch, index, promise);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to subscribe, channel={} topic={} queue={} version={} epoch={} index={}",
-                        channel.toString(), ledger.getTopic(), queue, version, epoch, index);
-            }
+            logger.error("Failed to subscribe, channel={} topic={} queue={} version={} epoch={} index={}",
+                    channel.toString(), ledger.getTopic(), queue, version, epoch, index);
             promise.tryFailure(t);
         }
     }
@@ -115,10 +109,8 @@ public class LedgerEngine {
 
             ledger.clean(channel, topic, queue, promise);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to clean subscribe, channel={} topic={} queue={} version={} epoch={} index={}",
-                        channel.toString(), ledger.getTopic(), queue);
-            }
+            logger.error("Failed to clean subscribe, channel={} topic={} queue={} version={} epoch={} index={}",
+                    channel.toString(), ledger.getTopic(), queue);
             promise.tryFailure(t);
         }
     }
@@ -142,10 +134,8 @@ public class LedgerEngine {
 
             ledger.append(queue, version, payload, promise);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to append message, topic={} queue={} version={}, error:{}", ledger.getTopic(),
-                        queue, version, t);
-            }
+            logger.error("Failed to append message, topic={} queue={} version={}, error:{}", ledger.getTopic(),
+                    queue, version, t);
             promise.tryFailure(t);
         }
     }
@@ -177,8 +167,6 @@ public class LedgerEngine {
             ledgers.values().forEach(Ledger::close);
         }
 
-        if (logger.isWarnEnabled()) {
-            logger.warn("Ledger manager close is starting...");
-        }
+        logger.warn("Ledger manager close is starting...");
     }
 }

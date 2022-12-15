@@ -74,9 +74,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             try {
                 handler.getDispatchExecutor().execute(() -> dispatch(handler));
             } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Entry dispatch processor submit failure");
-                }
+                logger.error("Entry dispatch processor submit failure");
             }
         }
     }
@@ -153,9 +151,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
                     Channel channel = entrySubscription.getChannel();
                     if (!channel.isActive()) {
-                        if (logger.isWarnEnabled()) {
-                            logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
-                        }
+                        logger.warn("Channel<{}> is not active, and will remove it", channel.toString());
                         continue;
                     }
 
@@ -168,9 +164,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                     message = buildByteBuf(topic, queue, version, new Offset(epoch, index), payload, channel.alloc());
 
                     if (!channel.isWritable()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
-                        }
+                        logger.debug("Channel<{}> is not allowed writable, transfer to pursue", channel.toString());
 
                         EntryAttributes attributes = EntryAttributes
                                 .newBuilder()
@@ -190,10 +184,8 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                         break;
                     }
                 } catch (Throwable t) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Channel dispatch message failed, topic={} queue={} offset={} error:{}", topic,
-                                queue, nextOffset, t);
-                    }
+                    logger.error("Channel dispatch message failed, topic={} queue={} offset={} error:{}", topic,
+                            queue, nextOffset, t);
                 } finally {
                     ByteBufUtils.release(message);
                     ByteBufUtils.release(payload);
@@ -202,9 +194,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 }
             }
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
-            }
+            logger.error(t.getMessage(), t);
         } finally {
             handler.getTriggered().set(false);
         }
@@ -259,9 +249,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
     public void subscribe(Channel channel, String topic, String queue, Offset offset, short version,
                           Promise<Subscription> subscribePromise) {
         if (!channel.isActive()) {
-            if (logger.isWarnEnabled()) {
-                logger.warn("Channel<{}> is not active for subscribe", channel.toString());
-            }
+            logger.warn("Channel<{}> is not active for subscribe", channel.toString());
             subscribePromise.tryFailure(
                     new RuntimeException(String.format("Channel<%s> is not active for subscribe", channel)));
             return;
@@ -275,9 +263,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 executor.execute(() -> doSubscribe(channel, topic, queue, offset, version, subscribePromise));
             }
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
-            }
+            logger.error(t.getMessage(), t);
             subscribePromise.tryFailure(t);
         }
     }
@@ -322,12 +308,10 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                     Offset earlyOffset = storage.headSegment().headOffset();
                     if (earlyOffset.after(offset)) {
                         dispatchOffset = earlyOffset;
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(
-                                    "Subscribe offset is expired, and will purse from commit log file, offset={} "
-                                            + "earlyOffset={}",
-                                    offset, earlyOffset);
-                        }
+                        logger.debug(
+                                "Subscribe offset is expired, and will purse from commit log file, offset={} "
+                                        + "earlyOffset={}",
+                                offset, earlyOffset);
 
                         EntryAttributes attributes = EntryAttributes
                                 .newBuilder()
@@ -361,10 +345,8 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                         .build());
             });
         } catch (Throwable t) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Channel<{}> subscribe failure, topic={} queue={} version={} offset={}", channel, topic,
-                        queue, version, offset);
-            }
+            logger.debug("Channel<{}> subscribe failure, topic={} queue={} version={} offset={}", channel, topic,
+                    queue, version, offset);
             subscribePromise.tryFailure(t);
         }
     }
@@ -379,9 +361,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 executor.execute(() -> doClean(channel, topic, queue, promise));
             }
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
-            }
+            logger.error(t.getMessage(), t);
         }
     }
 
@@ -420,10 +400,8 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 promise.trySuccess(null);
             });
         } catch (Throwable t) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Channel<{}> clean subscribe failure, topic={} queue={} version={} offset={}", channel,
-                        topic, queue);
-            }
+            logger.debug("Channel<{}> clean subscribe failure, topic={} queue={} version={} offset={}", channel,
+                    topic, queue);
             promise.tryFailure(t);
         }
     }
@@ -439,9 +417,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             return;
         }
 
-        if (logger.isInfoEnabled()) {
-            logger.info("Entry dispatch processor will close");
-        }
+        logger.info("Entry dispatch processor will close");
 
         helper.close((channel, topic, queue) -> doClean(channel, topic, queue, newImmediatePromise()));
         handlers.clear();

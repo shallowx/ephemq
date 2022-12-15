@@ -1,11 +1,10 @@
 package org.ostara.client.consumer;
 
 import io.netty.util.concurrent.EventExecutor;
+import java.util.concurrent.Semaphore;
 import org.ostara.client.Message;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-
-import java.util.concurrent.Semaphore;
 
 public class MessageProcessor {
 
@@ -23,9 +22,7 @@ public class MessageProcessor {
 
     public void process(Message message, MessageListener listener, MessagePostInterceptor filter) {
         if (executor.isShutdown()) {
-            if (logger.isWarnEnabled()) {
-                logger.warn("Event executor is shutdown");
-            }
+            logger.warn("Event executor is shutdown");
             return;
         }
 
@@ -33,9 +30,7 @@ public class MessageProcessor {
         try {
             executor.execute(() -> doProcess(message, listener, filter));
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Handle message execute failed, message={}", message);
-            }
+            logger.error("Handle message execute failed, message={}", message);
             semaphore.release();
         }
     }
@@ -48,9 +43,7 @@ public class MessageProcessor {
 
             listener.onMessage(message);
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Failed to handle message, message={}", message);
-            }
+            logger.error("Failed to handle message, message={}", message);
             semaphore.release();
         }
     }

@@ -61,9 +61,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Cli
                 }
 
                 default -> {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Unsupported command exception <{}>", command);
-                    }
+                    logger.error("Unsupported command exception <{}>", command);
 
                     if (null != answer) {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,
@@ -72,10 +70,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Cli
                 }
             }
         } catch (Throwable t) {
-            if (logger.isErrorEnabled()) {
-                logger.error("Client process <{}> code:[{}] process error", NetworkUtils.switchAddress(channel),
-                        ProcessCommand.Client.ACTIVE.get(command));
-            }
+            logger.error("Client process <{}> code:[{}] process error", NetworkUtils.switchAddress(channel),
+                    ProcessCommand.Client.ACTIVE.get(command));
             tryFailure(answer, t);
         }
     }

@@ -80,10 +80,7 @@ public class Segment {
             return payload.retainedSlice(location + 4, length);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Segment has no readable message, location={}", location);
-        }
-
+        logger.debug("Segment has no readable message, location={}", location);
         return null;
     }
 
@@ -95,9 +92,7 @@ public class Segment {
             return payload.retainedSlice(location, length + 4);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Segment has no readable completed message, location={}", location);
-        }
+        logger.debug("Segment has no readable completed message, location={}", location);
         return null;
     }
 
@@ -187,9 +182,7 @@ public class Segment {
     }
 
     public void release() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Release segment of ledger={} headOffset={} tailOffset={}", ledgerId, head, tail);
-        }
+        logger.debug("Release segment of ledger={} headOffset={} tailOffset={}", ledgerId, head, tail);
         this.holder = null;
     }
 

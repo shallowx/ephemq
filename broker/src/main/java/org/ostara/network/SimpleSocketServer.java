@@ -58,9 +58,7 @@ public final class SimpleSocketServer {
                     if (f.isSuccess() && logger.isInfoEnabled()) {
                         logger.info("Socket server is listening at {}", f.channel().localAddress());
                     } else {
-                        if (logger.isErrorEnabled()) {
-                            logger.error("Socket server start failed", f.cause());
-                        }
+                        logger.error("Socket server start failed", f.cause());
                     }
                 }).sync();
 

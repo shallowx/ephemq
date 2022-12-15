@@ -71,9 +71,7 @@ public class FixedChannelPool implements ShallowChannelPool {
                 return;
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Remove {} from chanel pool<{}>", address, client.getName());
-            }
+            logger.debug("Remove {} from chanel pool<{}>", address, client.getName());
 
             futures.remove(future);
             if (futures.isEmpty()) {
@@ -171,9 +169,7 @@ public class FixedChannelPool implements ShallowChannelPool {
         Promise<ClientChannel> promise = assemblePromise(channel);
         connectFuture.addListener(f -> {
             if (!f.isSuccess()) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to new channel with cause:{}", f.cause());
-                }
+                logger.error("Failed to new channel with cause:{}", f.cause());
                 promise.tryFailure(f.cause());
                 assembleChannels.remove(channel.id().asLongText());
             }
@@ -206,9 +202,7 @@ public class FixedChannelPool implements ShallowChannelPool {
                     }
                 });
             } catch (Throwable t) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("Failed to new healthy chanel<{}>, address={}", client.getName(), address.toString());
-                }
+                logger.error("Failed to new healthy chanel<{}>, address={}", client.getName(), address.toString());
             }
         }
     }

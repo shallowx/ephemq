@@ -49,10 +49,7 @@ public class DefaultApplicationArguments implements ApplicationArguments {
                 checkReturnType(method, config, sb, option);
             }
         }
-
-        if (logger.isInfoEnabled()) {
-            logger.info(sb.toString());
-        }
+        logger.info(sb.toString());
     }
 
     private void checkReturnType(Method method, ServerConfig config, StringBuilder sb, String name) {
