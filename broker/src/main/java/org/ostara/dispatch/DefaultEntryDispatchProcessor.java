@@ -44,7 +44,6 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     public DefaultEntryDispatchProcessor(int ledgerId, ServerConfig config, Storage storage) {
         this.storage = storage;
-
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
         this.handleLimit = config.getMessageHandleLimit();
