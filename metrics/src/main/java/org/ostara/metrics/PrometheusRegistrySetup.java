@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +41,8 @@ public class PrometheusRegistrySetup implements MeterRegistrySetup {
 
             this.server.createContext(url, exchange -> {
                 String scrape = ((PrometheusMeterRegistry) registry).scrape();
-                exchange.sendResponseHeaders(200, scrape.getBytes(StandardCharsets.UTF_8).length);
+                exchange.sendResponseHeaders(HttpResponseStatus.OK.code(),
+                        scrape.getBytes(StandardCharsets.UTF_8).length);
 
                 try (OutputStream out = exchange.getResponseBody()) {
                     out.write(scrape.getBytes());
