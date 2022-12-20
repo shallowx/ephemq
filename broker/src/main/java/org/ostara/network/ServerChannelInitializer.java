@@ -31,6 +31,6 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
-        pipeline.addLast("service-handler", new ServiceDuplexHandler(new MessageProcessorAware(config, manager)));
+        pipeline.addLast("processor-handler", new ServiceDuplexHandler(new MessageProcessorAware(config, manager)));
     }
 }

@@ -24,7 +24,7 @@ public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast("encoder", MessageEncoder.instance())
                 .addLast("decoder", new MessageDecoder())
                 .addLast("connect-handler", new ConnectDuplexHandler(30000, 40000))
-                .addLast("service-handler", new ProcessDuplexHandler(
+                .addLast("processor-handler", new ProcessDuplexHandler(
                         new MessageProcessorAware(
                                 new ClientChannel(socketChannel, client.getClientConfig(), socketAddress), client)));
     }
