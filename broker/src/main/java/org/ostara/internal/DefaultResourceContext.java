@@ -1,9 +1,12 @@
 package org.ostara.internal;
 
+import java.util.Properties;
 import org.ostara.internal.atomic.DistributedAtomicInteger;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.internal.metadata.ClusterNodeCacheSupport;
 import org.ostara.internal.metadata.TopicPartitionRequestCacheSupport;
+import org.ostara.internal.metrics.LedgerMetricsListener;
+import org.ostara.internal.metrics.ServerMetrics;
 import org.ostara.ledger.LedgerEngine;
 import org.ostara.network.ChannelBoundContext;
 
@@ -17,6 +20,10 @@ public class DefaultResourceContext implements ResourceContext {
 
     public DefaultResourceContext(ServerConfig config) throws Exception {
         this.ledgerEngine = new LedgerEngine(config);
+            
+        LedgerMetricsListener metrics = new ServerMetrics(new Properties(), config);
+        ledgerEngine.addListeners(metrics);
+
         this.boundContext = new ChannelBoundContext();
 
         this.distributedAtomicInteger = new DistributedAtomicInteger();
