@@ -4,8 +4,8 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import io.micrometer.core.lang.NonNull;
 import io.netty.util.internal.PlatformDependent;
+import org.jetbrains.annotations.NotNull;
 
 public class NettyMetrics implements MeterBinder {
 
@@ -19,7 +19,7 @@ public class NettyMetrics implements MeterBinder {
     }
 
     @Override
-    public void bindTo(@NonNull MeterRegistry meterRegistry) {
+    public void bindTo(@NotNull MeterRegistry meterRegistry) {
         Gauge.builder(DIRECT_MEMORY_NAME, PlatformDependent::usedDirectMemory)
                 .baseUnit("bytes")
                 .tags(tags)
