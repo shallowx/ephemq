@@ -1,15 +1,21 @@
 package org.ostara.remote;
 
 public enum Type {
-     HEARTBEAT("heartbeat", 0), PULL("pull message", 1), PUSH("push message",  2);
+    HEARTBEAT("heartbeat", 0), PUSH("push message", 1);
 
     private final int sequence;
+    private final String desc;
 
     public int sequence() {
         return sequence;
     }
 
-    Type(String doc, int sequence) {
+    public String desc() {
+        return desc;
+    }
+
+    Type(String desc, int sequence) {
         this.sequence = sequence;
+        this.desc = desc;
     }
 }
