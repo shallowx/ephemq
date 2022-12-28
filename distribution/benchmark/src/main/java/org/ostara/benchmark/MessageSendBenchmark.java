@@ -3,11 +3,6 @@ package org.ostara.benchmark;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.ostara.client.Message;
-import org.ostara.client.internal.ClientConfig;
-import org.ostara.client.producer.MessagePreInterceptor;
-import org.ostara.client.producer.MessageProducer;
-import org.ostara.client.producer.ProducerConfig;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -20,6 +15,11 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
+import org.ostara.client.Message;
+import org.ostara.client.internal.ClientConfig;
+import org.ostara.client.producer.MessagePreInterceptor;
+import org.ostara.client.producer.MessageProducer;
+import org.ostara.client.producer.ProducerConfig;
 
 /**
  * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
@@ -27,7 +27,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 3, time = 10)
 @Measurement(iterations = 3, time = 10)
 @BenchmarkMode(Mode.All)
-@Threads(3)
+@Threads(5)
 @Fork(value = 1, jvmArgsAppend = {
         "-XX:+UseLargePages",
         "-XX:+UseZGC",
@@ -55,17 +55,17 @@ public class MessageSendBenchmark {
         producer.start();
     }
 
-    @TearDown
-    public void shutdown() throws Exception {
-        producer.shutdownGracefully();
-    }
-
     @Benchmark
-    public void sendAsync() {
-        Message message = new Message("create", "message", "message".getBytes(UTF_8), null);
+    public void send() {
+        Message message = new Message("benchmark", "benchmark", "benchmark".getBytes(UTF_8), null);
         MessagePreInterceptor interceptor = sendMessage -> sendMessage;
 
         producer.sendAsync(message, interceptor, (sendResult, cause) -> {
         });
+    }
+
+    @TearDown
+    public void shutdown() throws Exception {
+        producer.shutdownGracefully();
     }
 }
