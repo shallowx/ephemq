@@ -61,9 +61,9 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
     private final ResourceContext resourceContext;
     private final EventExecutor commandExecutor;
 
-    public MessageProcessorAware(ServerConfig config, ResourceContext resourceContext) {
+    public MessageProcessorAware(ServerConfig config, ResourceContext context) {
         this.config = config;
-        this.resourceContext = resourceContext;
+        this.resourceContext = context;
 
         EventExecutorGroup group =
                 newEventExecutorGroup(config.getProcessCommandHandleThreadLimit(), "processor-command-executor").next();
