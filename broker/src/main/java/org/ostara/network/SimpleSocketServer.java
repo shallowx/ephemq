@@ -25,9 +25,9 @@ public final class SimpleSocketServer {
     private EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
 
-    public SimpleSocketServer(ServerConfig config, ResourceContext manager) {
+    public SimpleSocketServer(ServerConfig config, ResourceContext context) {
         this.config = config;
-        this.serverChannelInitializer = new ServerChannelInitializer(config, manager);
+        this.serverChannelInitializer = new ServerChannelInitializer(config, context);
     }
 
     public void start() throws Exception {

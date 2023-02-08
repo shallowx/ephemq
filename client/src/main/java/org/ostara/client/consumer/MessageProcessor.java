@@ -1,5 +1,6 @@
 package org.ostara.client.consumer;
 
+import io.netty.util.concurrent.AbstractEventExecutor;
 import io.netty.util.concurrent.EventExecutor;
 import java.util.concurrent.Semaphore;
 import org.ostara.client.Message;
@@ -28,7 +29,7 @@ public class MessageProcessor {
 
         semaphore.acquireUninterruptibly();
         try {
-            executor.execute(() -> doProcess(message, listener, filter));
+            executor.execute((AbstractEventExecutor.LazyRunnable) () -> doProcess(message, listener, filter));
         } catch (Throwable t) {
             logger.error("Handle message execute failed, message={}", message);
             semaphore.release();

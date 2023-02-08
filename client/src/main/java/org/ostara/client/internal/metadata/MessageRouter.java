@@ -20,7 +20,7 @@ public class MessageRouter {
         if (length == 0) {
             return null;
         } else if (length == 1) {
-            return holders.get(0);
+            return holders.get(ledgerIds[0]);
         }
 
         int index = ((31 * topic.hashCode() + queue.hashCode()) & 0x7fffffff) % length;

@@ -9,7 +9,6 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.net.SocketAddress;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 import org.ostara.client.Extras;
@@ -135,8 +134,7 @@ final class MessageConsumerListener implements ClientListener {
                 }
             }
 
-            int length = handlers.length;
-            MessageProcessor handler = handlers[(length - 1) & hash(Objects.hash(topic, queue) + ledgerId)];
+            MessageProcessor handler = handlers[hash(ledgerId, handlers.length)];
 
             SendMessageExtras extras = readProto(data, SendMessageExtras.parser());
             byte[] body = ByteBufUtils.buf2Bytes(data);
@@ -153,11 +151,24 @@ final class MessageConsumerListener implements ClientListener {
 
     private int tableSizeFor(int cap) {
         int n = -1 >>> Integer.numberOfLeadingZeros(cap - 1);
-        int MAXIMUM_CAPACITY = 1 << 30;
-        return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
+        int maximum_capacity = 1 << 30;
+        return (n < 0) ? 1 : (n >= maximum_capacity) ? maximum_capacity : n + 1;
     }
 
-    private int hash(int h) {
-        return h ^ (h >>> 16);
+    private int hash(int input, int buckets) {
+        long state = input & 0xffffffffL;
+
+        int candidate = 0;
+        int next;
+
+        while (true) {
+            next = (int) ((candidate + 1) / ((double) ((int) ((state = (2862933555777951757L * state)) >>> 33))
+                    / 0x1.0p31));
+            if (next >= 0 && next < buckets) {
+                candidate = next;
+            } else {
+                return candidate;
+            }
+        }
     }
 }

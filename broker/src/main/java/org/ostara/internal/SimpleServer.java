@@ -13,11 +13,11 @@ public final class SimpleServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SimpleServer.class);
 
     private final SimpleSocketServer socketServer;
-    private final ResourceContext manager;
+    private final ResourceContext context;
 
     public SimpleServer(ServerConfig config) throws Exception {
-        this.manager = new DefaultResourceContext(config);
-        this.socketServer = new SimpleSocketServer(config, manager);
+        this.context = new DefaultResourceContext(config);
+        this.socketServer = new SimpleSocketServer(config, context);
 
     }
 
@@ -38,7 +38,7 @@ public final class SimpleServer {
                 }, 0, TimeUnit.MILLISECONDS);
         socketStartFuture.get();
 
-        manager.start();
+        context.start();
 
         latch.await();
         if (logger.isInfoEnabled()) {
@@ -47,7 +47,7 @@ public final class SimpleServer {
     }
 
     public void shutdownGracefully() throws Exception {
-        manager.shutdownGracefully();
+        context.shutdownGracefully();
         socketServer.shutdownGracefully();
     }
 }

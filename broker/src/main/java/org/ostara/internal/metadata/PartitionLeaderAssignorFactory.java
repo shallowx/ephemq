@@ -18,8 +18,8 @@ public class PartitionLeaderAssignorFactory {
 
     public PartitionLeaderAssignorFactory(ResourceContext context, ServerConfig config) {
         this.config = config;
-        this.adapter = buildAdapter();
         this.context = context;
+        this.adapter = buildAdapter();
     }
 
     public Set<Partition> assign(String topic, int partitionLimit, int replicateLimit) throws Exception {

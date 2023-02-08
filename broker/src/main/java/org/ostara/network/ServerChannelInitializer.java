@@ -14,11 +14,11 @@ import org.ostara.remote.handle.ConnectDuplexHandler;
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final ServerConfig config;
-    private final ResourceContext manager;
+    private final ResourceContext context;
 
-    public ServerChannelInitializer(ServerConfig config, ResourceContext manager) {
+    public ServerChannelInitializer(ServerConfig config, ResourceContext context) {
         this.config = config;
-        this.manager = manager;
+        this.context = context;
     }
 
     @Override
@@ -31,6 +31,6 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
-        pipeline.addLast("processor-handler", new ServiceDuplexHandler(new MessageProcessorAware(config, manager)));
+        pipeline.addLast("processor-handler", new ServiceDuplexHandler(new MessageProcessorAware(config, context)));
     }
 }

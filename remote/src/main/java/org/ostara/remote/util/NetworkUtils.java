@@ -1,5 +1,6 @@
 package org.ostara.remote.util;
 
+import static org.ostara.remote.RemoteException.Failure.UNKNOWN_EXCEPTION;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -11,20 +12,21 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.*;
-import org.ostara.common.util.ObjectUtils;
-import org.ostara.remote.RemoteException;
-import org.ostara.remote.codec.MessagePacket;
-
-import javax.naming.OperationNotSupportedException;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.ImmediateEventExecutor;
+import io.netty.util.concurrent.Promise;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-
-import static org.ostara.remote.RemoteException.Failure.UNKNOWN_EXCEPTION;
+import javax.naming.OperationNotSupportedException;
+import org.ostara.common.util.ObjectUtils;
+import org.ostara.remote.RemoteException;
+import org.ostara.remote.codec.MessagePacket;
+import org.ostara.remote.util.current.FastEventExecutorGroup;
 
 public final class NetworkUtils {
 
@@ -44,7 +46,8 @@ public final class NetworkUtils {
             return MessagePacket.newPacket(answer, e.getCommand(), ByteBufUtils.string2Buf(e.getMessage()));
         }
 
-        return MessagePacket.newPacket(answer, UNKNOWN_EXCEPTION, ByteBufUtils.string2Buf(cause == null ? null : cause.getMessage()));
+        return MessagePacket.newPacket(answer, UNKNOWN_EXCEPTION,
+                ByteBufUtils.string2Buf(cause == null ? null : cause.getMessage()));
     }
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
@@ -102,7 +105,7 @@ public final class NetworkUtils {
         }
 
         ThreadFactory f = new DefaultThreadFactory(groupName);
-        return new DefaultEventExecutorGroup(threads, f);
+        return new FastEventExecutorGroup(threads, f);
     }
 
     public static Class<? extends Channel> preferChannelClass(boolean epoll) {
