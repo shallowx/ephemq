@@ -4,7 +4,7 @@ import org.ostara.ledger.Cursor;
 import org.ostara.ledger.Offset;
 
 public class EntryAttributes {
-    private EntrySubscription subscription;
+    private Subscription subscription;
     private Cursor cursor;
     private Offset offset;
     private int assignLimit;
@@ -14,7 +14,7 @@ public class EntryAttributes {
         //unsupported
     }
 
-    public EntrySubscription getSubscription() {
+    public Subscription getSubscription() {
         return subscription;
     }
 
@@ -43,7 +43,7 @@ public class EntryAttributes {
     }
 
     public static class AttributeBuilder {
-        EntrySubscription subscription;
+        Subscription subscription;
         Cursor cursor;
         Offset offset;
         int assignLimit;
@@ -52,7 +52,7 @@ public class EntryAttributes {
         private AttributeBuilder() {
         }
 
-        public AttributeBuilder subscription(EntrySubscription subscription) {
+        public AttributeBuilder subscription(Subscription subscription) {
             this.subscription = subscription;
             return this;
         }

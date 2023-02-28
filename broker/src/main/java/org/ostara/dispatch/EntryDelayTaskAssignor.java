@@ -25,13 +25,13 @@ public class EntryDelayTaskAssignor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDelayTaskAssignor.class);
 
     private final EntryAttributes attributes;
-    private final EntryDispatchSupport helper;
+    private final DispatchProcessorSupport helper;
     private final Channel channel;
     private final int ledgerId;
     private final int traceLimit;
     private final int alignLimit;
 
-    public EntryDelayTaskAssignor(EntryAttributes trace, EntryDispatchSupport helper, int ledgerId) {
+    public EntryDelayTaskAssignor(EntryAttributes trace, DispatchProcessorSupport helper, int ledgerId) {
         this.attributes = trace;
         this.helper = helper;
         this.traceLimit = attributes.getAssignLimit();
@@ -57,13 +57,13 @@ public class EntryDelayTaskAssignor {
     }
 
     private Channel channel() {
-        EntrySubscription subscription = attributes.getSubscription();
+        Subscription subscription = attributes.getSubscription();
         return subscription.getChannel();
     }
 
 
     private void doAssign() {
-        EntrySubscription subscription = attributes.getSubscription();
+        Subscription subscription = attributes.getSubscription();
         EntryEventExecutorHandler handler = subscription.getHandler();
 
         if (subscription != handler.getChannelShips().get(channel)) {
@@ -177,7 +177,7 @@ public class EntryDelayTaskAssignor {
 
     private void align() {
         try {
-            EntrySubscription subscription = attributes.getSubscription();
+            Subscription subscription = attributes.getSubscription();
             EntryEventExecutorHandler handler = subscription.getHandler();
             EventExecutor dispatchExecutor = handler.getDispatchExecutor();
             dispatchExecutor.execute(this::doAlign);
@@ -189,7 +189,7 @@ public class EntryDelayTaskAssignor {
     }
 
     private void doAlign() {
-        EntrySubscription subscription = attributes.getSubscription();
+        Subscription subscription = attributes.getSubscription();
         EntryEventExecutorHandler handler = subscription.getHandler();
 
         if (subscription != handler.getChannelShips().get(channel)) {

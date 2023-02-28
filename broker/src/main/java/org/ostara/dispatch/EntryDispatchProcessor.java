@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.concurrent.ThreadSafe;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.common.metadata.Subscription;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.Cursor;
 import org.ostara.ledger.Offset;
@@ -29,8 +28,8 @@ import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.ProtoBufUtils;
 
 @ThreadSafe
-public class DefaultEntryDispatchProcessor implements DispatchProcessor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultEntryDispatchProcessor.class);
+public class EntryDispatchProcessor implements DispatchProcessor {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDispatchProcessor.class);
 
     private final int ledgerId;
     private final int subscribeLimit;
@@ -38,11 +37,11 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
     private final int assignLimit;
     private final int alignLimit;
 
-    private final EntryDispatchSupport helper;
+    private final DispatchProcessorSupport helper;
     private final Storage storage;
     private final List<EntryEventExecutorHandler> handlers = new ArrayList<>();
 
-    public DefaultEntryDispatchProcessor(int ledgerId, ServerConfig config, Storage storage) {
+    public EntryDispatchProcessor(int ledgerId, ServerConfig config, Storage storage) {
         this.storage = storage;
         this.ledgerId = ledgerId;
         this.subscribeLimit = config.getIoThreadLimit();
@@ -50,7 +49,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
         this.assignLimit = config.getMessageHandleAssignLimit();
         this.alignLimit = config.getMessageHandleAlignLimit();
 
-        this.helper = new EntryDispatchSupport(config);
+        this.helper = new DispatchProcessorSupport(config);
     }
 
     @Override
@@ -85,14 +84,14 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             return;
         }
 
-        Collection<EntrySubscription> channelShips = handler.getChannelShips().values();
+        Collection<Subscription> channelShips = handler.getChannelShips().values();
 
         if (channelShips.isEmpty()) {
             handler.getTriggered().set(false);
             return;
         }
 
-        Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+        Object2ObjectMap<String, Subscription> subscribeShips = handler.getSubscribeShips();
         if (subscribeShips.isEmpty()) {
             handler.getTriggered().set(false);
             return;
@@ -125,7 +124,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                     queueBuf = payload.retainedSlice(payload.readerIndex(), queueLength);
                     queue = ByteBufUtils.buf2String(queueBuf, queueLength);
 
-                    EntrySubscription entrySubscription = subscribeShips.get(topic + ":" + queue);
+                    Subscription entrySubscription = subscribeShips.get(topic + ":" + queue);
                     if (entrySubscription == null) {
                         if (whole > handleLimit) {
                             break;
@@ -246,7 +245,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
 
     @Override
     public void subscribe(Channel channel, String topic, String queue, Offset offset, short version,
-                          Promise<Subscription> subscribePromise) {
+                          Promise<org.ostara.common.metadata.Subscription> subscribePromise) {
         if (!channel.isActive()) {
             logger.warn("Channel<{}> is not active for subscribe", channel.toString());
             subscribePromise.tryFailure(
@@ -268,11 +267,11 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
     }
 
     private void doSubscribe(Channel channel, String topic, String queue, Offset offset, short version,
-                             Promise<Subscription> subscribePromise) {
+                             Promise<org.ostara.common.metadata.Subscription> subscribePromise) {
         try {
             EntryEventExecutorHandler handler = helper.accessCheckedHandler(channel, subscribeLimit);
-            ConcurrentMap<Channel, EntrySubscription> channelShips = handler.getChannelShips();
-            EntrySubscription oldSubscription = channelShips.get(channel);
+            ConcurrentMap<Channel, Subscription> channelShips = handler.getChannelShips();
+            Subscription oldSubscription = channelShips.get(channel);
 
             List<String> queues = new ArrayList<>();
             if (oldSubscription != null) {
@@ -281,7 +280,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
             }
             queues.add(queue);
 
-            EntrySubscription newSubscription = EntrySubscription
+            Subscription newSubscription = Subscription
                     .newBuilder()
                     .channel(channel)
                     .handler(handler)
@@ -332,10 +331,10 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 }
 
                 channelShips.put(channel, newSubscription);
-                Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+                Object2ObjectMap<String, Subscription> subscribeShips = handler.getSubscribeShips();
                 subscribeShips.put(topic + ":" + queue, newSubscription);
                 helper.putHandler(channel, handler);
-                subscribePromise.trySuccess(Subscription
+                subscribePromise.trySuccess(org.ostara.common.metadata.Subscription
                         .newBuilder()
                         .epoch(dispatchOffset.epoch())
                         .index(dispatchOffset.index())
@@ -372,8 +371,8 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                 return;
             }
 
-            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getChannelShips();
-            EntrySubscription subscription = subscriptionShips.get(channel);
+            ConcurrentMap<Channel, Subscription> subscriptionShips = handler.getChannelShips();
+            Subscription subscription = subscriptionShips.get(channel);
             if (subscription == null) {
                 promise.trySuccess(null);
                 return;
@@ -393,7 +392,7 @@ public class DefaultEntryDispatchProcessor implements DispatchProcessor {
                     subscriptionShips.remove(channel);
                 }
 
-                Object2ObjectMap<String, EntrySubscription> subscribeShips = handler.getSubscribeShips();
+                Object2ObjectMap<String, Subscription> subscribeShips = handler.getSubscribeShips();
                 subscribeShips.remove(topic + ":" + queue);
 
                 promise.trySuccess(null);

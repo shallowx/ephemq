@@ -13,8 +13,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Subscription;
-import org.ostara.dispatch.DefaultEntryDispatchProcessor;
 import org.ostara.dispatch.DispatchProcessor;
+import org.ostara.dispatch.EntryDispatchProcessor;
 import org.ostara.internal.config.ServerConfig;
 
 @ThreadSafe
@@ -43,7 +43,7 @@ public class Ledger {
         this.storageExecutor =
                 newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
-        this.processor = new DefaultEntryDispatchProcessor(ledgerId, config, storage);
+        this.processor = new EntryDispatchProcessor(ledgerId, config, storage);
     }
 
     public void start() throws Exception {

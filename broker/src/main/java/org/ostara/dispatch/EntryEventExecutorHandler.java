@@ -15,8 +15,8 @@ import org.ostara.ledger.Offset;
 public class EntryEventExecutorHandler {
 
     private final String id = UUID.randomUUID().toString();
-    private final ConcurrentMap<Channel, EntrySubscription> channelShips = new ConcurrentHashMap<>();
-    private final Object2ObjectMap<String, EntrySubscription> subscribeShips = new Object2ObjectOpenHashMap<>();
+    private final ConcurrentMap<Channel, Subscription> channelShips = new ConcurrentHashMap<>();
+    private final Object2ObjectMap<String, Subscription> subscribeShips = new Object2ObjectOpenHashMap<>();
     private final EventExecutor dispatchExecutor;
     private volatile Offset nextOffset;
     private volatile Cursor nextCursor;
@@ -31,11 +31,11 @@ public class EntryEventExecutorHandler {
         return id;
     }
 
-    public ConcurrentMap<Channel, EntrySubscription> getChannelShips() {
+    public ConcurrentMap<Channel, Subscription> getChannelShips() {
         return channelShips;
     }
 
-    public Object2ObjectMap<String, EntrySubscription> getSubscribeShips() {
+    public Object2ObjectMap<String, Subscription> getSubscribeShips() {
         return subscribeShips;
     }
 

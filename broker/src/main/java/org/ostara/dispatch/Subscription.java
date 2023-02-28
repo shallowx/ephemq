@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import java.util.List;
 import org.ostara.ledger.Offset;
 
-public class EntrySubscription {
+public class Subscription {
     private Channel channel;
     private List<String> queue;
     private Offset offset;
@@ -12,7 +12,7 @@ public class EntrySubscription {
     private String topic;
     private EntryEventExecutorHandler handler;
 
-    private EntrySubscription() {
+    private Subscription() {
         //unsupported
     }
 
@@ -89,8 +89,8 @@ public class EntrySubscription {
             return this;
         }
 
-        public EntrySubscription build() {
-            EntrySubscription subscription = new EntrySubscription();
+        public Subscription build() {
+            Subscription subscription = new Subscription();
 
             subscription.channel = this.channel;
             subscription.queue = this.queue;

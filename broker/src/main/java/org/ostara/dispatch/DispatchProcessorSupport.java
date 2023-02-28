@@ -18,15 +18,15 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.internal.config.ServerConfig;
 
-public class EntryDispatchSupport {
+public class DispatchProcessorSupport {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(EntryDispatchSupport.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DispatchProcessorSupport.class);
 
     private final EventExecutor[] executors;
     private final ConcurrentMap<Channel, EntryEventExecutorHandler> channelOfHandlers = new ConcurrentHashMap<>();
     private final WeakHashMap<EntryEventExecutorHandler, Integer> eventExecutorHandlers = new WeakHashMap<>();
 
-    public EntryDispatchSupport(ServerConfig config) {
+    public DispatchProcessorSupport(ServerConfig config) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
         EventExecutorGroup group = newEventExecutorGroup(config.getMessageHandleThreadLimit(), "push-handler-group");
@@ -135,12 +135,12 @@ public class EntryDispatchSupport {
         for (Map.Entry<Channel, EntryEventExecutorHandler> entry : entries) {
             Channel channel = entry.getKey();
             EntryEventExecutorHandler handler = getHandler(channel);
-            ConcurrentMap<Channel, EntrySubscription> subscriptionShips = handler.getChannelShips();
+            ConcurrentMap<Channel, Subscription> subscriptionShips = handler.getChannelShips();
             if (subscriptionShips == null || subscriptionShips.isEmpty()) {
                 continue;
             }
 
-            EntrySubscription entrySubscription = subscriptionShips.get(channel);
+            Subscription entrySubscription = subscriptionShips.get(channel);
             String topic = entrySubscription.getTopic();
             List<String> queues = entrySubscription.getQueue();
             if (queues == null || queues.isEmpty()) {
