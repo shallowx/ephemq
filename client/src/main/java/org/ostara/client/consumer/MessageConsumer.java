@@ -86,7 +86,7 @@ public class MessageConsumer implements Consumer {
     }
 
     @Override
-    public void registerInterceptor(MessagePostInterceptor interceptor) {
+    public void registerInterceptor(ConsumerInterceptor interceptor) {
         pushConsumerListener.registerInterceptor(interceptor);
     }
 

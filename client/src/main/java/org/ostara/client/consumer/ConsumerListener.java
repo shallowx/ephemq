@@ -1,5 +1,5 @@
 package org.ostara.client.consumer;
 
-public interface ConsumeListener {
+public interface ConsumerListener {
     // just type alias
 }

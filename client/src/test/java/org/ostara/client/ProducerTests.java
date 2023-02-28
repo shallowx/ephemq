@@ -11,10 +11,10 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ostara.client.internal.ClientConfig;
-import org.ostara.client.producer.MessagePreInterceptor;
 import org.ostara.client.producer.MessageProducer;
 import org.ostara.client.producer.Producer;
 import org.ostara.client.producer.ProducerConfig;
+import org.ostara.client.producer.ProducerInterceptor;
 import org.ostara.client.producer.SendResult;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -41,7 +41,7 @@ public class ProducerTests {
         producer.start();
 
         Message message = new Message("test", "message", "message".getBytes(UTF_8), null);
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        ProducerInterceptor filter = sendMessage -> sendMessage;
 
         SendResult result = producer.send(message, filter);
         Assert.assertNotNull(result);
@@ -60,7 +60,7 @@ public class ProducerTests {
 
         Message message = new Message("test", "message", "message".getBytes(UTF_8), null);
 
-        producer.sendOneway(message, new MessagePreInterceptor() {
+        producer.sendOneway(message, new ProducerInterceptor() {
             @Override
             public Message interceptor(Message message) {
                 return message;
@@ -79,7 +79,7 @@ public class ProducerTests {
         producer.start();
 
         Message message = new Message("test", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        ProducerInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
@@ -106,7 +106,7 @@ public class ProducerTests {
         short messageVersion = 2;
         Message message = new Message("test", "message", messageVersion, "message-test-send-async".getBytes(UTF_8),
                 new Extras());
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        ProducerInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
@@ -136,7 +136,7 @@ public class ProducerTests {
 
         Message message =
                 new Message("test", "message", "message-test-send-async".getBytes(UTF_8), new Extras(extras));
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        ProducerInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
@@ -160,7 +160,7 @@ public class ProducerTests {
         Producer producer = new MessageProducer("async-producer", producerConfig);
         producer.start();
 
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        ProducerInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         for (int i = 0; i < Long.MAX_VALUE; i++) {

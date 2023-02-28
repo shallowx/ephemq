@@ -21,9 +21,9 @@ public class MessageProcessor {
         this.executor = executor;
     }
 
-    public void process(Message message, MessageListener listener, MessagePostInterceptor filter) {
+    public void process(Message message, MessageListener listener, ConsumerInterceptor filter) {
         if (executor.isShutdown()) {
-            logger.warn("Event executor is shutdown");
+            logger.warn("Event executor is shutdown, processor-id={}", id);
             return;
         }
 
@@ -36,7 +36,7 @@ public class MessageProcessor {
         }
     }
 
-    public void doProcess(Message message, MessageListener listener, MessagePostInterceptor mpInterceptor) {
+    public void doProcess(Message message, MessageListener listener, ConsumerInterceptor mpInterceptor) {
         try {
             if (mpInterceptor != null) {
                 message = mpInterceptor.interceptor(message);

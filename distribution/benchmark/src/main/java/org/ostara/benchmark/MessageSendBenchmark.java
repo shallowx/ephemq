@@ -17,9 +17,9 @@ import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 import org.ostara.client.Message;
 import org.ostara.client.internal.ClientConfig;
-import org.ostara.client.producer.MessagePreInterceptor;
 import org.ostara.client.producer.MessageProducer;
 import org.ostara.client.producer.ProducerConfig;
+import org.ostara.client.producer.ProducerInterceptor;
 
 /**
  * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results
@@ -58,7 +58,7 @@ public class MessageSendBenchmark {
     @Benchmark
     public void send() {
         Message message = new Message("benchmark", "benchmark", "benchmark".getBytes(UTF_8), null);
-        MessagePreInterceptor interceptor = sendMessage -> sendMessage;
+        ProducerInterceptor interceptor = sendMessage -> sendMessage;
 
         producer.sendAsync(message, interceptor, (sendResult, cause) -> {
         });

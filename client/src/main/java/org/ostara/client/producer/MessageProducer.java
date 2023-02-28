@@ -74,23 +74,23 @@ public class MessageProducer implements Producer {
     }
 
     @Override
-    public void sendOneway(Message message, MessagePreInterceptor messageFilter) {
+    public void sendOneway(Message message, ProducerInterceptor interceptor) {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
-        message = exchange(message, messageFilter);
+        message = exchange(message, interceptor);
 
         doSend(config.getSendOnewayTimeoutMs(), message, null);
     }
 
     @Override
-    public SendResult send(Message message, MessagePreInterceptor messageFilter) throws Exception {
+    public SendResult send(Message message, ProducerInterceptor interceptor) throws Exception {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
         Promise<SendMessageResponse> promise = newImmediatePromise();
 
-        message = exchange(message, messageFilter);
+        message = exchange(message, interceptor);
 
         doSend(config.getSendTimeoutMs(), message, promise);
 
@@ -100,11 +100,11 @@ public class MessageProducer implements Producer {
     }
 
     @Override
-    public void sendAsync(Message message, MessagePreInterceptor messageFilter, SendCallback callback) {
+    public void sendAsync(Message message, ProducerInterceptor interceptor, SendCallback callback) {
         checkTopic(message.topic());
         checkQueue(message.queue());
 
-        message = exchange(message, messageFilter);
+        message = exchange(message, interceptor);
 
         if (null == callback) {
             doSend(config.getSendAsyncTimeoutMs(), message, null);
@@ -196,7 +196,7 @@ public class MessageProducer implements Producer {
         return metadata.build();
     }
 
-    private Message exchange(Message message, MessagePreInterceptor mPreInterceptor) {
+    private Message exchange(Message message, ProducerInterceptor mPreInterceptor) {
         if (null != mPreInterceptor) {
             message = mPreInterceptor.interceptor(message);
         }

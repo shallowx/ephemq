@@ -14,7 +14,8 @@ public interface Consumer {
 
     Subscription subscribe(String topic, String queue, short version, MessageListener listener);
 
-    void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback, MessageListener listener);
+    void subscribeAsync(String topic, String queue, short version, SubscribeCallback callback,
+                        MessageListener listener);
 
     Subscription subscribe(String topic, String queue);
 
@@ -30,7 +31,8 @@ public interface Consumer {
 
     Subscription subscribe(String topic, String queue, short version, int epoch, long index, MessageListener listener);
 
-    void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback, MessageListener listener);
+    void subscribeAsync(String topic, String queue, short version, int epoch, long index, SubscribeCallback callback,
+                        MessageListener listener);
 
     Subscription subscribe(String topic, String queue, int epoch, long index);
 
@@ -38,7 +40,8 @@ public interface Consumer {
 
     Subscription subscribe(String topic, String queue, int epoch, long index, MessageListener listener);
 
-    void subscribeAsync(String topic, String queue, int epoch, long index, SubscribeCallback callback, MessageListener listener);
+    void subscribeAsync(String topic, String queue, int epoch, long index, SubscribeCallback callback,
+                        MessageListener listener);
 
     boolean clean(String topic, String queue);
 
@@ -46,7 +49,7 @@ public interface Consumer {
 
     void registerListener(MessageListener listener);
 
-    void registerInterceptor(MessagePostInterceptor interceptor);
+    void registerInterceptor(ConsumerInterceptor interceptor);
 
     MessageListener getListener();
 }

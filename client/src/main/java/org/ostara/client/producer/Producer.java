@@ -7,15 +7,16 @@ public interface Producer {
     void start() throws Exception;
 
     void shutdownGracefully() throws Exception;
+
     void sendOneway(Message message);
 
     SendResult send(Message message) throws Exception;
 
     void sendAsync(Message message, SendCallback callback);
 
-    void sendOneway(Message message, MessagePreInterceptor messageFilter);
+    void sendOneway(Message message, ProducerInterceptor interceptor);
 
-    SendResult send(Message message, MessagePreInterceptor messageFilter) throws Exception;
+    SendResult send(Message message, ProducerInterceptor interceptor) throws Exception;
 
-    void sendAsync(Message message, MessagePreInterceptor messageFilter, SendCallback callback);
+    void sendAsync(Message message, ProducerInterceptor interceptor, SendCallback callback);
 }

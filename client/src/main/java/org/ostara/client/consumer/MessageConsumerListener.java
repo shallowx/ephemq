@@ -28,7 +28,7 @@ final class MessageConsumerListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageConsumerListener.class);
 
     private MessageListener listener;
-    private MessagePostInterceptor interceptor;
+    private ConsumerInterceptor interceptor;
     private final MessageProcessor[] handlers;
     private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips =
             new Int2ObjectOpenHashMap<>();
@@ -48,11 +48,11 @@ final class MessageConsumerListener implements ClientListener {
     }
 
     @Override
-    public void registerListener(ConsumeListener listener) {
+    public void registerListener(ConsumerListener listener) {
         this.listener = (MessageListener) listener;
     }
 
-    public void registerInterceptor(MessagePostInterceptor interceptor) {
+    public void registerInterceptor(ConsumerInterceptor interceptor) {
         this.interceptor = interceptor;
     }
 

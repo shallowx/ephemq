@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.ostara.client.Extras;
 import org.ostara.client.Message;
 import org.ostara.client.internal.ClientConfig;
-import org.ostara.client.producer.MessagePreInterceptor;
 import org.ostara.client.producer.MessageProducer;
 import org.ostara.client.producer.Producer;
 import org.ostara.client.producer.ProducerConfig;
+import org.ostara.client.producer.ProducerInterceptor;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.example.metadata.TopicMetadataWriterExample;
@@ -31,7 +31,7 @@ public class DefaultMessageProducer {
         producer.start();
 
         Message message = new Message("create", "message", "message-test-send-async".getBytes(UTF_8), new Extras());
-        MessagePreInterceptor filter = sendMessage -> sendMessage;
+        ProducerInterceptor filter = sendMessage -> sendMessage;
 
         CountDownLatch latch = new CountDownLatch(1);
         producer.sendAsync(message, filter, (sendResult, cause) -> {
