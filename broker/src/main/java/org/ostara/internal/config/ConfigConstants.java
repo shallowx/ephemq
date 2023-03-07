@@ -29,4 +29,13 @@ public class ConfigConstants {
     public static final String MESSAGE_HANDLE_ALIGN_LIMIT = "message.handle.align.limit";
 
     public static final String METADATA_CACHING_REFRESH_MS = "metadata.caching.refresh.ms";
+
+
+    public static final String MESSAGE_CHUNK_FOLLOW_LIMIT = "message.chunk.follow.limit";
+    public static final String MESSAGE_CHUNK_PURSUE_LIMIT = "message.chunk.pursue.limit";
+    public static final String MESSAGE_CHUNK_ALIGN_LIMIT = "message.chunk.align.limit";
+    public static final String MESSAGE_CHUNK_PURSUE_TIMEOUT_MS = "message.chunk.pursue.timeout.ms";
+    public static final String MESSAGE_CHUNK_LOAD_LIMIT = "message.chunk.load.limit";
+    public static final String MESSAGE_CHUNK_BYTES_LIMIT = "message.chunk.bytes.limit";
+
 }

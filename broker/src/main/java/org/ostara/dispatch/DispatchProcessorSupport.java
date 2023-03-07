@@ -26,10 +26,10 @@ public class DispatchProcessorSupport {
     private final ConcurrentMap<Channel, EntryEventExecutorHandler> channelOfHandlers = new ConcurrentHashMap<>();
     private final WeakHashMap<EntryEventExecutorHandler, Integer> eventExecutorHandlers = new WeakHashMap<>();
 
-    public DispatchProcessorSupport(ServerConfig config) {
+    public DispatchProcessorSupport(ServerConfig config, String name) {
         List<EventExecutor> eventExecutorList = new ArrayList<>();
 
-        EventExecutorGroup group = newEventExecutorGroup(config.getMessageHandleThreadLimit(), "push-handler-group");
+        EventExecutorGroup group = newEventExecutorGroup(config.getMessageHandleThreadLimit(), name);
         group.forEach(eventExecutorList::add);
         Collections.shuffle(eventExecutorList);
 

@@ -49,7 +49,7 @@ public class EntryDispatchProcessor implements DispatchProcessor {
         this.assignLimit = config.getMessageHandleAssignLimit();
         this.alignLimit = config.getMessageHandleAlignLimit();
 
-        this.helper = new DispatchProcessorSupport(config);
+        this.helper = new DispatchProcessorSupport(config, "dispatch-processor");
     }
 
     @Override

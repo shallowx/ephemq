@@ -100,4 +100,29 @@ public class ServerConfig {
     public int getMetadataRefreshMs() {
         return object2Int(props.getOrDefault(ConfigConstants.METADATA_CACHING_REFRESH_MS, 60000));
     }
+
+    public int getChunkFollowLimit() {
+        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_FOLLOW_LIMIT, 100));
+    }
+
+    public int getChunkPursueLimit() {
+        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_PURSUE_LIMIT, 500));
+    }
+
+    public int getChunkAlignLimit() {
+        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_ALIGN_LIMIT, 2000));
+    }
+
+    public int getChunkPursueTimeoutMs() {
+        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_PURSUE_TIMEOUT_MS, 100));
+    }
+
+    public int getChunkLoadLimit() {
+        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_LOAD_LIMIT, 50));
+    }
+
+    public int getChunkBytesLimit() {
+        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_BYTES_LIMIT, 65536));
+    }
+
 }

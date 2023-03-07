@@ -169,6 +169,10 @@ public class Storage {
         return headSegment;
     }
 
+    public Offset headOffset() {
+        return headSegment.headOffset();
+    }
+
     public Segment tailSegment() {
         return tailSegment;
     }
