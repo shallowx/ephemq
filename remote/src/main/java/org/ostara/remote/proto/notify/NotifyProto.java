@@ -25,15 +25,15 @@ public final class NotifyProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_MessagePullSignal_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_MessagePullSignal_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ostara_protobuf_MessagePushSignal_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_MessagePushSignal_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_MessageSyncSignal_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_MessageSyncSignal_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -46,14 +46,12 @@ public final class NotifyProto {
       "\n\014notify.proto\022\017ostara.protobuf\032\014ostara." +
       "proto\"\'\n\026PartitionChangedSignal\022\r\n\005topic" +
       "\030\001 \001(\t\"?\n\021NodeOfflineSignal\022\016\n\006nodeId\030\001 " +
-      "\001(\t\022\014\n\004host\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\"n\n\021Messa" +
-      "gePullSignal\022\r\n\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001" +
-      "(\t\022\016\n\006ledger\030\003 \001(\005\022\r\n\005limit\030\004 \001(\005\022\r\n\005epo" +
-      "ch\030\005 \001(\005\022\r\n\005index\030\006 \001(\003\"a\n\021MessagePushSi" +
-      "gnal\022\r\n\005queue\030\001 \001(\t\022\r\n\005epoch\030\002 \001(\005\022\r\n\005in" +
-      "dex\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t\022\020\n\010ledgerId\030\005 \001" +
-      "(\005B/\n\036org.ostara.remote.proto.notifyB\013No" +
-      "tifyProtoP\001b\006proto3"
+      "\001(\t\022\014\n\004host\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\"a\n\021Messa" +
+      "gePushSignal\022\r\n\005queue\030\001 \001(\t\022\r\n\005epoch\030\002 \001" +
+      "(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t\022\020\n\010ledg" +
+      "erId\030\005 \001(\005\"2\n\021MessageSyncSignal\022\016\n\006ledge" +
+      "r\030\001 \001(\005\022\r\n\005count\030\002 \001(\005B/\n\036org.ostara.rem" +
+      "ote.proto.notifyB\013NotifyProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -72,18 +70,18 @@ public final class NotifyProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_NodeOfflineSignal_descriptor,
         new java.lang.String[] { "NodeId", "Host", "Port", });
-    internal_static_ostara_protobuf_MessagePullSignal_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_ostara_protobuf_MessagePullSignal_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_MessagePullSignal_descriptor,
-        new java.lang.String[] { "Topic", "Queue", "Ledger", "Limit", "Epoch", "Index", });
     internal_static_ostara_protobuf_MessagePushSignal_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_ostara_protobuf_MessagePushSignal_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_MessagePushSignal_descriptor,
         new java.lang.String[] { "Queue", "Epoch", "Index", "Topic", "LedgerId", });
+    internal_static_ostara_protobuf_MessageSyncSignal_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_ostara_protobuf_MessageSyncSignal_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MessageSyncSignal_descriptor,
+        new java.lang.String[] { "Ledger", "Count", });
     org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
   }
 

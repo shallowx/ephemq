@@ -17,19 +17,15 @@ message NodeOfflineSignal {
   int32 port = 3;
 }
 
-message MessagePullSignal {
-  string topic = 1;
-  string queue = 2;
-  int32 ledger = 3;
-  int32 limit = 4;
-  int32 epoch = 5;
-  int64 index = 6;
-}
-
 message MessagePushSignal {
   string queue = 1;
   int32 epoch = 2;
   int64 index = 3;
   string topic = 4;
   int32 ledgerId = 5;
+}
+
+message MessageSyncSignal {
+  int32 ledger = 1;
+  int32 count = 2;
 }

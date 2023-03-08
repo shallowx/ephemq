@@ -1,4 +1,0 @@
-org/ostara/metrics/MetricsConfig.class
-org/ostara/metrics/NettyMetrics.class
-org/ostara/metrics/MeterRegistrySetup.class
-org/ostara/metrics/PrometheusRegistrySetup.class
