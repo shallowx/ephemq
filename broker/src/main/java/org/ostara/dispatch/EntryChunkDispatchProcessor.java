@@ -203,7 +203,7 @@ public class EntryChunkDispatchProcessor {
                         PursueTask pursueTask = new PursueTask(newSynchronization, storage.locateCursor(dispatchOffset),
                                 dispatchOffset);
 
-                        submitPursueTask(pursueTask);
+                        submitPursue(pursueTask);
                     } else {
                         newSynchronization.followed = true;
                     }
@@ -232,15 +232,6 @@ public class EntryChunkDispatchProcessor {
             } catch (Throwable t) {
                 LOGGER.error("Chunk dispatch submit failed, {}", handler, t);
             }
-        }
-    }
-
-    private void submitPursueTask(PursueTask task) {
-        try {
-            channelEventExecutor(task.synchronization.channel).execute(() -> doPursueTask(task));
-        } catch (Throwable t) {
-            LOGGER.error(t.getMessage(), t);
-            submitFollow(task);
         }
     }
 
@@ -315,7 +306,7 @@ public class EntryChunkDispatchProcessor {
                 } catch (Throwable ignored) {
 
                 } finally {
-                    record.data().release();
+                    ByteBufUtils.release(record.data());
                     ByteBufUtils.release(payload);
                 }
 
@@ -387,7 +378,159 @@ public class EntryChunkDispatchProcessor {
     }
 
     private void doPursueTask(PursueTask task) {
+        Synchronization synchronization = task.synchronization;
+        Channel channel = synchronization.channel;
+        Handler handler = synchronization.handler;
+        if (!channel.isActive() || synchronization != handler.channelSynchronizationMap.get(channel)) {
+            return;
+        }
 
+        if (System.currentTimeMillis() - task.pursueTime > pursueTimeOutMs) {
+            submitFollow(task);
+            return;
+        }
+
+        Cursor cursor = task.cursor;
+        boolean finished = true;
+        Offset lastOffset = task.pursueOffset;
+        try {
+            int runTimes = 0;
+            ChunkRecord record;
+            while ((record = cursor.nextChunk(pursueLimit)) != null) {
+                runTimes++;
+                ByteBuf payload = null;
+                try {
+                    Offset endOffset = record.getEndOffset();
+                    if (!endOffset.after(lastOffset)) {
+                        if (runTimes > pursueTimeOutMs) {
+                            finished = false;
+                            break;
+                        }
+                        continue;
+                    }
+
+                    Offset startOffset = record.getStartOffset();
+                    lastOffset = endOffset;
+                    synchronization.dispatchOffset = endOffset;
+                    payload = buildPayload(startOffset, endOffset, record, channel.alloc());
+
+                    if (channel.isWritable()) {
+                        channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
+                    } else {
+                        task.pursueOffset = lastOffset;
+                        channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
+                        return;
+                    }
+                } catch (Throwable ignored) {
+
+                } finally {
+                    ByteBufUtils.release(payload);
+                    ByteBufUtils.release(record.data());
+
+                }
+
+                if (runTimes > pursueLimit || record.count() <= 1) {
+                    finished = false;
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {
+
+        }
+
+        task.pursueOffset = lastOffset;
+        Offset followOffset = handler.followOffset;
+        if (finished || (followOffset != null && !lastOffset.before(followOffset))) {
+            submitAlign(task);
+        } else {
+            submitPursue(task);
+        }
+    }
+
+    private void submitAlign(PursueTask task) {
+        try {
+            task.synchronization.handler.executor.execute(() -> doSubmitAlign(task));
+        } catch (Throwable t) {
+            task.synchronization.followed = false;
+        }
+    }
+
+    private void doSubmitAlign(PursueTask task) {
+        Synchronization synchronization = task.synchronization;
+        Channel channel = synchronization.channel;
+        Handler handler = synchronization.handler;
+
+        if (handler.cursor == null || !channel.isActive() || synchronization != handler.channelSynchronizationMap.get(
+                channel)) {
+            return;
+        }
+
+        Offset alignOffset = handler.followOffset;
+        Offset lastOffset = task.pursueOffset;
+        if (!lastOffset.before(alignOffset)) {
+            synchronization.followed = true;
+            return;
+        }
+
+        Cursor cursor = task.cursor;
+        boolean finished = true;
+
+        try {
+            int runTimes = 0;
+            ChunkRecord record;
+            while ((record = cursor.nextChunk(bytesLimit)) != null) {
+                runTimes++;
+                ByteBuf payload = null;
+                try {
+                    Offset endOffset = record.getEndOffset();
+                    if (!endOffset.after(lastOffset)) {
+                        if (runTimes > alignLimit) {
+                            finished = false;
+                            break;
+                        }
+
+                        continue;
+                    }
+
+                    Offset startOffset = record.getStartOffset();
+                    if (startOffset.after(alignOffset)) {
+                        synchronization.followed = true;
+                        return;
+                    }
+
+                    lastOffset = endOffset;
+                    synchronization.dispatchOffset = endOffset;
+                    payload = buildPayload(startOffset, endOffset, record, channel.alloc());
+                    if (channel.isWritable()) {
+                        channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
+                    } else {
+                        task.pursueOffset = lastOffset;
+                        channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
+                        return;
+                    }
+                } catch (Throwable ignored) {
+
+                } finally {
+                    ByteBufUtils.release(record.data());
+                    ByteBufUtils.release(payload);
+                }
+
+                if (runTimes > alignLimit) {
+                    finished = false;
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {
+
+        }
+
+        if (finished) {
+            synchronization.followed = true;
+            return;
+        }
+
+        task.pursueOffset = lastOffset;
+        submitPursue(task);
     }
 
     private void submitFollow(PursueTask task) {
@@ -533,7 +676,7 @@ public class EntryChunkDispatchProcessor {
         private final Synchronization synchronization;
         private final Cursor cursor;
         private final long pursueTime = System.currentTimeMillis();
-        private final Offset pursueOffset;
+        private Offset pursueOffset;
 
         public PursueTask(Synchronization synchronization, Cursor cursor, Offset pursueOffset) {
             this.synchronization = synchronization;
