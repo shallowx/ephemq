@@ -9,9 +9,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +62,7 @@ public class EntryChunkDispatchProcessor {
     private final AtomicBoolean state = new AtomicBoolean(true);
 
     public EntryChunkDispatchProcessor(ServerConfig config, int ledger, String topic, Storage storage,
-                                       EventExecutor[] executors) {
+                                       EventExecutorGroup group) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;
@@ -70,7 +72,11 @@ public class EntryChunkDispatchProcessor {
         this.loadLimit = config.getChunkLoadLimit();
         this.bytesLimit = config.getChunkBytesLimit();
         this.alignLimit = config.getChunkAlignLimit();
-        this.executors = executors;
+
+        List<EventExecutor> eventExecutorList = new ArrayList<>();
+        group.forEach(eventExecutorList::add);
+        Collections.shuffle(eventExecutorList);
+        this.executors = eventExecutorList.toArray(new EventExecutor[0]);
     }
 
     public int channelSize() {

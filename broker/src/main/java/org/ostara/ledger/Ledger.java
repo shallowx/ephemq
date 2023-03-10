@@ -14,6 +14,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Subscription;
 import org.ostara.dispatch.DispatchProcessor;
+import org.ostara.dispatch.EntryChunkDispatchProcessor;
 import org.ostara.dispatch.EntryDispatchProcessor;
 import org.ostara.internal.config.ServerConfig;
 
@@ -29,6 +30,7 @@ public class Ledger {
     private final Storage storage;
     private final EventExecutor storageExecutor;
     private final DispatchProcessor processor;
+    private final EntryChunkDispatchProcessor chunkProcessor;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
 
     enum State {
@@ -44,6 +46,8 @@ public class Ledger {
                 newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "ledger-storage").next();
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
         this.processor = new EntryDispatchProcessor(ledgerId, config, storage);
+        this.chunkProcessor = new EntryChunkDispatchProcessor(config, ledgerId, topic, storage,
+                newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "chunk-processor"));
     }
 
     public void start() throws Exception {
@@ -100,6 +104,22 @@ public class Ledger {
         }
     }
 
+    public void attachSynchronize(Channel channel, Offset offset, Promise<Void> promise) {
+        if (storageExecutor.inEventLoop()) {
+            doAttachSynchronize(channel, offset, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doAttachSynchronize(channel, offset, promise));
+            } catch (Throwable t) {
+                promise.tryFailure(t);
+            }
+        }
+    }
+
+    private void doAttachSynchronize(Channel channel, Offset offset, Promise<Void> promise) {
+        chunkProcessor.attach(channel, offset, promise);
+    }
+
     public void clean(Channel channel, String topic, String queue, Promise<Void> promise) {
         if (storageExecutor.inEventLoop()) {
             doClean(channel, topic, queue, promise);
@@ -152,6 +172,7 @@ public class Ledger {
     @SuppressWarnings("unused")
     public void onTriggerAppend(int limit, Offset offset) {
         processor.handleRequest(topic);
+        chunkProcessor.dispatch();
     }
 
     private class MessageTrigger implements LedgerTrigger {
