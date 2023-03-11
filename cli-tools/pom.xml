@@ -14,7 +14,7 @@
 
   <properties>
     <picocli.version>4.7.0</picocli.version>
-    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+    <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
     <reflections.version>0.10.2</reflections.version>
     <kotlin.version>1.8.20-RC</kotlin.version>
     <serialization.version>1.4.1</serialization.version>
@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-test</artifactId>
+      <artifactId>kotlin-test-junit</artifactId>
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>

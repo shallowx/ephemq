@@ -231,7 +231,6 @@
           <execution>
             <goals>
               <goal>compile</goal>
-              <goal>compileTests</goal>
             </goals>
           </execution>
         </executions>
