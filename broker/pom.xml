@@ -70,7 +70,8 @@
     </dependency>
     <dependency>
       <groupId>org.ostara</groupId>
-      <artifactId>mertics</artifactId>
+      <artifactId>metrics</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>

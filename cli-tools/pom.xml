@@ -16,7 +16,7 @@
     <picocli.version>4.7.0</picocli.version>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
     <reflections.version>0.10.2</reflections.version>
-    <kotlin.version>1.7.20</kotlin.version>
+    <kotlin.version>1.8.20-RC</kotlin.version>
     <serialization.version>1.4.1</serialization.version>
   </properties>
 
@@ -44,6 +44,42 @@
       <artifactId>kotlinx-serialization-json</artifactId>
       <version>${serialization.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test</artifactId>
+      <version>${kotlin.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+      <dependency>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-stdlib-jdk8</artifactId>
+          <version>${kotlin.version}</version>
+      </dependency>
 
   </dependencies>
 
@@ -78,12 +114,26 @@
             <goals>
               <goal>compile</goal>
             </goals>
+            <configuration>
+                <sourceDirs>
+                    <source>src/main/java</source>
+                    <source>target/generated-sources/annotations</source>
+                </sourceDirs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
           </execution>
         </executions>
         <configuration>
           <compilerPlugins>
             <plugin>kotlinx-serialization</plugin>
           </compilerPlugins>
+          <jvmTarget>1.8</jvmTarget>
         </configuration>
         <dependencies>
           <dependency>

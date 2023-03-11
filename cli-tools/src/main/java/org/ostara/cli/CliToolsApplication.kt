@@ -5,7 +5,6 @@ import picocli.CommandLine
 import picocli.CommandLine.Help
 import kotlin.system.exitProcess
 
-
 fun main(args: Array<String>) {
     val commands = init()
     when (args.size) {
