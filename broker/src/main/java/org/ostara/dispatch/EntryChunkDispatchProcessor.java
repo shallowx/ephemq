@@ -309,8 +309,8 @@ public class EntryChunkDispatchProcessor {
                             channel.writeAndFlush(payload.retainedDuplicate(), delayPursue(pursueTask));
                         }
                     }
-                } catch (Throwable ignored) {
-
+                } catch (Throwable t) {
+                    LOGGER.error(t.getMessage(), t);
                 } finally {
                     ByteBufUtils.release(record.data());
                     ByteBufUtils.release(payload);
@@ -320,8 +320,8 @@ public class EntryChunkDispatchProcessor {
                     break;
                 }
             }
-        } catch (Throwable ignored) {
-
+        } catch (Throwable t) {
+            LOGGER.error(t.getMessage(), t);
         } finally {
             handler.triggered.set(false);
         }
@@ -359,6 +359,7 @@ public class EntryChunkDispatchProcessor {
 
             return buf;
         } catch (Throwable t) {
+            LOGGER.error("Topic={}, Start offset={} End offset={}", topic, startOffset, endOffset, t);
             ByteBufUtils.release(buf);
             throw new RuntimeException(t);
         }
@@ -427,8 +428,8 @@ public class EntryChunkDispatchProcessor {
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
                     }
-                } catch (Throwable ignored) {
-
+                } catch (Throwable t) {
+                    LOGGER.error(t.getMessage(), t);
                 } finally {
                     ByteBufUtils.release(payload);
                     ByteBufUtils.release(record.data());
@@ -440,8 +441,8 @@ public class EntryChunkDispatchProcessor {
                     break;
                 }
             }
-        } catch (Throwable ignored) {
-
+        } catch (Throwable t) {
+            LOGGER.error(t.getMessage(), t);
         }
 
         task.pursueOffset = lastOffset;
@@ -514,8 +515,8 @@ public class EntryChunkDispatchProcessor {
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
                     }
-                } catch (Throwable ignored) {
-
+                } catch (Throwable t) {
+                    LOGGER.error(t.getMessage(), t);
                 } finally {
                     ByteBufUtils.release(record.data());
                     ByteBufUtils.release(payload);
@@ -526,8 +527,8 @@ public class EntryChunkDispatchProcessor {
                     break;
                 }
             }
-        } catch (Throwable ignored) {
-
+        } catch (Throwable t) {
+            LOGGER.error(t.getMessage(), t);
         }
 
         if (finished) {
