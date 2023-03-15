@@ -10,6 +10,7 @@ public interface ProcessCommand {
         byte SEND_MESSAGE = 5;
         byte SUBSCRIBE = 6;
         byte CLEAN_SUBSCRIBE = 7;
+        byte CLUSTER_SYNC = 8;
 
     }
 
@@ -29,7 +30,6 @@ public interface ProcessCommand {
         byte HANDLE_MESSAGE = 1;
         byte TOPIC_CHANGED = 2;
         byte CLUSTER_CHANGED = 3;
-
         default String get(byte command) {
             return null;
         }

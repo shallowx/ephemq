@@ -100,6 +100,8 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
 
                 case FETCH_CLUSTER_RECORD -> processFetchClusterNodeRecordsRequest(channel, data, answer, version);
 
+                case CLUSTER_SYNC -> processClusterSyncRequest(channel, command, data, answer, type, version);
+
                 default -> {
                     logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,
@@ -366,6 +368,11 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
             logger.error("Failed to delete topic with address<{}>, cause:{}", channel.remoteAddress().toString(), e);
             answerFailed(answer, e);
         }
+    }
+
+    private void processClusterSyncRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer,
+                                           byte type, short version) {
+
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {
