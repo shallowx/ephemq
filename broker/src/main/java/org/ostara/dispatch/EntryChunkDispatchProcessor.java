@@ -40,6 +40,7 @@ import org.ostara.remote.util.ProtoBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("all")
 @ThreadSafe
 public class EntryChunkDispatchProcessor {
 

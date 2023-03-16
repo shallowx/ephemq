@@ -3,22 +3,7 @@ package org.ostara.dispatch;
 import io.netty.buffer.ByteBuf;
 import org.ostara.ledger.Offset;
 
-public class ChunkRecord {
-    private final int count;
-    private final ByteBuf data;
-
-    public ChunkRecord(int count, ByteBuf data) {
-        this.count = count;
-        this.data = data;
-    }
-
-    public int count() {
-        return count;
-    }
-
-    public ByteBuf data() {
-        return data;
-    }
+public record ChunkRecord(int count, ByteBuf data) {
 
     public Offset getEndOffset() {
         int location = data.writerIndex();
