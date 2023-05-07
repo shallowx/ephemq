@@ -10,6 +10,11 @@ public class ServerConfig {
 
     private final Properties props;
 
+    // only use to metrics config
+    public Properties getProps() {
+        return props;
+    }
+
     public static ServerConfig exchange(Properties props) {
         return new ServerConfig(props);
     }
@@ -125,4 +130,7 @@ public class ServerConfig {
         return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_BYTES_LIMIT, 65536));
     }
 
+    public int getMetricsSampleCount(){
+        return object2Int(props.getOrDefault(ConfigConstants.METRICS_SAMPLE_COUNT, 100));
+    }
 }

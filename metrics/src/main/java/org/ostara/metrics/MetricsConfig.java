@@ -9,10 +9,10 @@ public class MetricsConfig {
 
     private final Properties props;
 
-    private static final String METRICS_ENABLED = "metrics.enabled";
-    private static final String METRICS_SCRAPE_URL = "metrics.scrape.url";
-    private static final String METRICS_PORT = "metrics.port";
-    private static final String METRICS_ADDRESS = "metrics.address";
+    private static final String METRICS_ENABLED = "metrics.prometheus.enable";
+    private static final String METRICS_SCRAPE_URL = "metrics.prometheus.url";
+    private static final String METRICS_PORT = "metrics.prometheus.exposed.port";
+    private static final String METRICS_ADDRESS = "metrics.prometheus.exposed.host";
 
     private MetricsConfig(Properties props) {
         this.props = props;
@@ -35,6 +35,6 @@ public class MetricsConfig {
     }
 
     public int getMetricsPort() {
-        return object2Int(props.getOrDefault(METRICS_PORT, 9128));
+        return object2Int(props.getOrDefault(METRICS_PORT, 9090));
     }
 }

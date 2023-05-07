@@ -30,12 +30,19 @@ public class ConfigConstants {
 
     public static final String METADATA_CACHING_REFRESH_MS = "metadata.caching.refresh.ms";
 
-
     public static final String MESSAGE_CHUNK_FOLLOW_LIMIT = "message.chunk.follow.limit";
     public static final String MESSAGE_CHUNK_PURSUE_LIMIT = "message.chunk.pursue.limit";
     public static final String MESSAGE_CHUNK_ALIGN_LIMIT = "message.chunk.align.limit";
     public static final String MESSAGE_CHUNK_PURSUE_TIMEOUT_MS = "message.chunk.pursue.timeout.ms";
     public static final String MESSAGE_CHUNK_LOAD_LIMIT = "message.chunk.load.limit";
     public static final String MESSAGE_CHUNK_BYTES_LIMIT = "message.chunk.bytes.limit";
+
+    public static final String METRICS_SAMPLE_COUNT = "metrics.sample.count";
+    public static final String METRICS_JMX_ENABLE = "metrics.jmx.enable";
+    public static final String METRICS_PROMETHEUS_ENABLE = "metrics.prometheus.enable";
+    public static final String METRICS_PROMETHEUS_URL = "metrics.prometheus.url";
+    public static final String METRICS_PROMETHEUS_EXPOSED_PORT ="metrics.prometheus.exposed.port";
+    public static final String METRICS_PROMETHEUS_EXPOSED_HOST ="metrics.prometheus.exposed.host";
+
 
 }

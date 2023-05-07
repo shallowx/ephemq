@@ -8,7 +8,12 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntConsumer;
 import javax.annotation.concurrent.ThreadSafe;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -17,6 +22,7 @@ import org.ostara.dispatch.DispatchProcessor;
 import org.ostara.dispatch.EntryChunkDispatchProcessor;
 import org.ostara.dispatch.EntryDispatchProcessor;
 import org.ostara.internal.config.ServerConfig;
+import org.ostara.internal.metrics.LedgerMetricsListener;
 
 @ThreadSafe
 public class Ledger {
@@ -32,12 +38,13 @@ public class Ledger {
     private final DispatchProcessor processor;
     private final EntryChunkDispatchProcessor chunkProcessor;
     private final AtomicReference<State> state = new AtomicReference<>(State.LATENT);
+    private final List<LedgerMetricsListener> listeners;
 
     enum State {
         LATENT, STARTED, CLOSED
     }
 
-    public Ledger(ServerConfig config, String topic, int partition, int ledgerId, int epoch) {
+    public Ledger(ServerConfig config, String topic, int partition, int ledgerId, int epoch, List<LedgerMetricsListener> listeners) {
         this.topic = topic;
         this.partition = partition;
         this.ledgerId = ledgerId;
@@ -47,7 +54,8 @@ public class Ledger {
         this.storage = new Storage(storageExecutor, ledgerId, config, epoch, new MessageTrigger());
         this.processor = new EntryDispatchProcessor(ledgerId, config, storage);
         this.chunkProcessor = new EntryChunkDispatchProcessor(config, ledgerId, topic, storage,
-                newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "chunk-processor"));
+                newEventExecutorGroup(config.getMessageStorageHandleThreadLimit(), "chunk-processor"), new EntryDispatchProcessorCount());
+        this.listeners = listeners;
     }
 
     public void start() throws Exception {
@@ -181,6 +189,15 @@ public class Ledger {
             onTriggerAppend(limit, tail);
         }
 
+    }
+
+    private class EntryDispatchProcessorCount implements IntConsumer{
+        @Override
+        public void accept(int value) {
+            for (LedgerMetricsListener listener : listeners) {
+                listener.onDispatchMessage(topic, ledgerId, value);
+            }
+        }
     }
 
     public String getTopic() {

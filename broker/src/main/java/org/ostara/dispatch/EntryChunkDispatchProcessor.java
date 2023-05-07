@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 import javax.annotation.concurrent.ThreadSafe;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.Cursor;
@@ -61,9 +62,10 @@ public class EntryChunkDispatchProcessor {
     private final ConcurrentHashMap<Channel, Handler> channelHandlerMap = new ConcurrentHashMap<>();
     private final WeakHashMap<Handler, Integer> allocateHandlers = new WeakHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
+    private final IntConsumer consumer;
 
     public EntryChunkDispatchProcessor(ServerConfig config, int ledger, String topic, Storage storage,
-                                       EventExecutorGroup group) {
+                                       EventExecutorGroup group, IntConsumer consumer) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;
@@ -78,6 +80,7 @@ public class EntryChunkDispatchProcessor {
         group.forEach(eventExecutorList::add);
         Collections.shuffle(eventExecutorList);
         this.executors = eventExecutorList.toArray(new EventExecutor[0]);
+        this.consumer = consumer;
     }
 
     public int channelSize() {
@@ -264,9 +267,9 @@ public class EntryChunkDispatchProcessor {
         List<Synchronization> synchronizationList = handler.synchronizationList;
         Offset lastOffset = handler.followOffset;
 
+        int count = 0;
         try {
             int runTimes = 0;
-
             ChunkRecord record;
             while ((record = cursor.nextChunk(bytesLimit)) != null) {
                 runTimes++;
@@ -300,6 +303,7 @@ public class EntryChunkDispatchProcessor {
 
                         if (payload == null) {
                             payload = buildPayload(startOffset, endOffset, record, channel.alloc());
+                            count++;
                         }
 
                         if (channel.isWritable()) {
@@ -328,8 +332,19 @@ public class EntryChunkDispatchProcessor {
         }
 
         handler.followOffset = lastOffset;
+        countMessage(count);
         if (cursor.hashNext()) {
             touchDispatch(handler);
+        }
+    }
+
+    private void countMessage(int count) {
+        if (count > 0) {
+            try {
+                consumer.accept(count);
+            } catch (Throwable t) {
+                LOGGER.error("count failed: ledger={} topic={}", ledger, topic);
+            }
         }
     }
 

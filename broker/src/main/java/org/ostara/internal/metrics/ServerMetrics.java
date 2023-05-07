@@ -31,9 +31,10 @@ import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.Ledger;
 import org.ostara.metrics.MeterRegistrySetup;
 import org.ostara.metrics.NettyMetrics;
+import org.ostara.metrics.PrometheusRegistrySetup;
 
 @SuppressWarnings("all")
-public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
+public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCloseable {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServerMetrics.class);
 
@@ -45,13 +46,14 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
 
     private final AtomicInteger partitionCounts = new AtomicInteger();
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
+    private final int metricsSampleCount;
 
     public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
+        this.metricsSampleCount = config.getMetricsSampleCount();
         this.serviceLoader = ServiceLoader.load(MeterRegistrySetup.class);
-        for (MeterRegistrySetup meterRegistrySetup : serviceLoader) {
-            meterRegistrySetup.setUp(properties);
-        }
+        MeterRegistrySetup meterRegistrySetup = new PrometheusRegistrySetup();
+        meterRegistrySetup.setUp(properties);
 
         Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
 
@@ -86,6 +88,11 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
     }
 
     @Override
+    public void onCommand(int code, int bytes, long cost, boolean ret) {
+
+    }
+
+    @Override
     public void onReceiveMessage(String topic, String queue, int ledger, int count) {
         Counter counter = topicReceiveCounters.get(ledger);
         if (counter == null) {
@@ -96,6 +103,7 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
                             .tag(QUEUE_TAG, queue)
                             .tag(CLUSTER_TAG, config.getClusterName())
                             .tag(BROKER_TAG, config.getServerId())
+                            .tag("type", "send")
                             .register(Metrics.globalRegistry)
             );
         }
@@ -104,7 +112,19 @@ public class ServerMetrics implements LedgerMetricsListener, AutoCloseable {
 
     @Override
     public void onDispatchMessage(String topic, int ledger, int count) {
-
+        Counter counter = topicReceiveCounters.get(ledger);
+        if (counter == null) {
+            counter = topicReceiveCounters.computeIfAbsent(ledger, metrics ->
+                    Counter.builder(MetricsConstants.TOPIC_MESSAGE_RECEIVE_COUNTER)
+                            .tag(TOPIC_TAG, topic)
+                            .tag(LEDGER_TAG, String.valueOf(ledger))
+                            .tag(CLUSTER_TAG, config.getClusterName())
+                            .tag(BROKER_TAG, config.getServerId())
+                            .tag("type", "single")
+                            .register(Metrics.globalRegistry)
+            );
+        }
+        counter.increment(count);
     }
 
     public void shutdown() {

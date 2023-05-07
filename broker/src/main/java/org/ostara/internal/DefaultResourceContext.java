@@ -21,7 +21,7 @@ public class DefaultResourceContext implements ResourceContext {
     public DefaultResourceContext(ServerConfig config) throws Exception {
         this.ledgerEngine = new LedgerEngine(config);
             
-        LedgerMetricsListener metrics = new ServerMetrics(new Properties(), config);
+        LedgerMetricsListener metrics = new ServerMetrics(config.getProps(), config);
         ledgerEngine.addListeners(metrics);
 
         this.boundContext = new ChannelBoundContext();

@@ -46,9 +46,10 @@ public class LedgerEngine {
     public void initLog(String topic, int partitionId, int epoch, int ledgerId) {
         try {
             Ledger ledger = ledgers.computeIfAbsent(ledgerId, k -> {
-                Ledger newLedger = new Ledger(config, topic, partitionId, ledgerId, epoch);
+                Ledger newLedger = new Ledger(config, topic, partitionId, ledgerId, epoch, listeners);
 
                 try {
+
                     newLedger.start();
 
                 } catch (Exception e) {
