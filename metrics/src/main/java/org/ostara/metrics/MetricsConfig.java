@@ -35,6 +35,6 @@ public class MetricsConfig {
     }
 
     public int getMetricsPort() {
-        return object2Int(props.getOrDefault(METRICS_PORT, 9090));
+        return object2Int(props.getOrDefault(METRICS_PORT, 9128));
     }
 }

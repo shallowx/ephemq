@@ -38,6 +38,10 @@ public class DefaultApplicationArguments implements ApplicationArguments {
         String option;
 
         for (Method method : methods) {
+            if (method.getName().equals("getProps")) {
+                continue;
+            }
+
             final String name = method.getName();
             if (name.startsWith("get")) {
                 option = name.substring(3);

@@ -25,7 +25,7 @@ public class PrometheusRegistrySetup implements MeterRegistrySetup {
         MetricsConfig config = MetricsConfig.exchange(props);
         if (config.getMetricsEnabled()) {
             this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-            Metrics.addRegistry(registry);
+            Metrics.addRegistry(this.registry);
 
             setHttpServer(config);
         }
@@ -40,7 +40,7 @@ public class PrometheusRegistrySetup implements MeterRegistrySetup {
             String url = config.getMetricsScrapeUrl();
 
             this.server.createContext(url, exchange -> {
-                String scrape = ((PrometheusMeterRegistry) registry).scrape();
+                String scrape = ((PrometheusMeterRegistry) this.registry).scrape();
                 exchange.sendResponseHeaders(HttpResponseStatus.OK.code(),
                         scrape.getBytes(StandardCharsets.UTF_8).length);
 
@@ -48,7 +48,7 @@ public class PrometheusRegistrySetup implements MeterRegistrySetup {
                     out.write(scrape.getBytes());
                 }
             });
-            new Thread(this.server::start);
+            new Thread(this.server::start).start();
 
             logger.info("Metrics http server is listening at {}, and scrape url={}", socketAddress, url);
         } catch (Throwable t) {

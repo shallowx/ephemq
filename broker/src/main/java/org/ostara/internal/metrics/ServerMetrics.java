@@ -12,11 +12,7 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
-import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
+import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
@@ -29,6 +25,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.Ledger;
+import org.ostara.metrics.JmxMeterRegistrySetup;
 import org.ostara.metrics.MeterRegistrySetup;
 import org.ostara.metrics.NettyMetrics;
 import org.ostara.metrics.PrometheusRegistrySetup;
@@ -39,7 +36,6 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServerMetrics.class);
 
     private final MeterRegistry registry = Metrics.globalRegistry;
-    protected final ServiceLoader<MeterRegistrySetup> serviceLoader;
     private final ServerConfig config;
 
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
@@ -48,13 +44,16 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
     private final int metricsSampleCount;
     private final MeterRegistrySetup meterRegistrySetup;
+    private final JvmGcMetrics jvmGcMetrics;
 
     public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
         this.metricsSampleCount = config.getMetricsSampleCount();
-        this.serviceLoader = ServiceLoader.load(MeterRegistrySetup.class);
         this.meterRegistrySetup = new PrometheusRegistrySetup();
-        meterRegistrySetup.setUp(properties);
+        this.meterRegistrySetup.setUp(properties);
+
+        JmxMeterRegistrySetup jmxMeterRegistrySetup = new JmxMeterRegistrySetup();
+        jmxMeterRegistrySetup.setUp(properties);
 
         Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
 
@@ -62,7 +61,11 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
         new FileDescriptorMetrics(tags).bindTo(registry);
         new ClassLoaderMetrics(tags).bindTo(registry);
         new JvmMemoryMetrics(tags).bindTo(registry);
-        new JvmGcMetrics(tags).bindTo(registry);
+
+        this.jvmGcMetrics = new JvmGcMetrics(tags);
+        this.jvmGcMetrics.bindTo(registry);
+
+        new JvmCompilationMetrics(tags).bindTo(registry);
         new JvmInfoMetrics().bindTo(registry);
         new JvmThreadMetrics(tags).bindTo(registry);
         new ProcessorMetrics(tags).bindTo(registry);
@@ -116,7 +119,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
         Counter counter = topicReceiveCounters.get(ledger);
         if (counter == null) {
             counter = topicReceiveCounters.computeIfAbsent(ledger, metrics ->
-                    Counter.builder(MetricsConstants.TOPIC_MESSAGE_RECEIVE_COUNTER)
+                    Counter.builder(MetricsConstants.TOPIC_MESSAGE_PUSH_COUNTER)
                             .tag(TOPIC_TAG, topic)
                             .tag(LEDGER_TAG, String.valueOf(ledger))
                             .tag(CLUSTER_TAG, config.getClusterName())
