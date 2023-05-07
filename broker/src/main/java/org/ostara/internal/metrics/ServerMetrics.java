@@ -47,12 +47,13 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     private final AtomicInteger partitionCounts = new AtomicInteger();
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
     private final int metricsSampleCount;
+    private final MeterRegistrySetup meterRegistrySetup;
 
     public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
         this.metricsSampleCount = config.getMetricsSampleCount();
         this.serviceLoader = ServiceLoader.load(MeterRegistrySetup.class);
-        MeterRegistrySetup meterRegistrySetup = new PrometheusRegistrySetup();
+        this.meterRegistrySetup = new PrometheusRegistrySetup();
         meterRegistrySetup.setUp(properties);
 
         Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
@@ -128,8 +129,6 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     }
 
     public void shutdown() {
-        for (MeterRegistrySetup meterRegistrySetup : serviceLoader) {
-            meterRegistrySetup.shutdown();
-        }
+        this.meterRegistrySetup.shutdown();
     }
 }
