@@ -7,20 +7,22 @@ import static org.ostara.internal.metrics.MetricsConstants.QUEUE_TAG;
 import static org.ostara.internal.metrics.MetricsConstants.TOPIC_PARTITION_COUNTER_GAUGE_NAME;
 import static org.ostara.internal.metrics.MetricsConstants.TOPIC_PARTITION_LEADER_COUNTER_GAUGE_NAME;
 import static org.ostara.internal.metrics.MetricsConstants.TOPIC_TAG;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Tags;
+
+import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
+
+import java.time.Duration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import io.netty.util.concurrent.FastThreadLocal;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.internal.config.ServerConfig;
@@ -39,16 +41,26 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     private final ServerConfig config;
 
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
-
+    private final Map<Integer, Counter> requestSuccessed = new ConcurrentHashMap<>();
+    private final Map<Integer, Counter> requestFailured = new ConcurrentHashMap<>();
+    private final Map<Integer, DistributionSummary> requestSizeSummary= new ConcurrentHashMap<>();
+    private final Map<Integer, DistributionSummary> requestTimesSummary= new ConcurrentHashMap<>();
     private final AtomicInteger partitionCounts = new AtomicInteger();
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
-    private final int metricsSampleCount;
+    private final int metricsSample;
     private final MeterRegistrySetup meterRegistrySetup;
     private final JvmGcMetrics jvmGcMetrics;
 
+    private final FastThreadLocal<Integer> metricsSampleCount = new FastThreadLocal<>(){
+        @Override
+        protected Integer initialValue() throws Exception {
+            return 0;
+        }
+    };
+
     public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
-        this.metricsSampleCount = config.getMetricsSampleCount();
+        this.metricsSample = config.getMetricsSampleCount();
         this.meterRegistrySetup = new PrometheusRegistrySetup();
         this.meterRegistrySetup.setUp(properties);
 
@@ -93,7 +105,46 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
 
     @Override
     public void onCommand(int code, int bytes, long cost, boolean ret) {
+        Map<Integer, Counter> counters = ret ? requestSuccessed : requestFailured;
+        int type = code;
+        Counter counter = counters.get(type);
+        if (counter == null) {
+            counter = counters.computeIfAbsent(type,
+                    s -> Counter.builder("request_state_count")
+                    .tags(Tags.of("request_type", String.valueOf(type))
+                            .and(BROKER_TAG, config.getServerId())
+                            .and(CLUSTER_TAG, config.getClusterName())
+                            .and("ret", ret ? "success" : "failure"))
+                            .register(registry));
+        }
 
+        counter.increment();
+        Integer sample = metricsSampleCount.get();
+        metricsSampleCount.set(sample + 1);
+        if (sample > metricsSample) {
+            metricsSampleCount.set(0);
+            DistributionSummary drs = requestSizeSummary.computeIfAbsent(type,
+                    s -> DistributionSummary.builder("request_size")
+                            .tags(Tags.of("request_type", String.valueOf(type))
+                                    .and(BROKER_TAG, config.getServerId())
+                                    .and(CLUSTER_TAG, config.getClusterName()))
+                            .baseUnit("bytes")
+                            .distributionStatisticExpiry(Duration.ofSeconds(30))
+                            .publishPercentiles(0.99, 0.999, 0.9)
+                            .register(registry));
+            drs.record(bytes);
+
+            DistributionSummary drt = requestTimesSummary.computeIfAbsent(type,
+                    s -> DistributionSummary.builder("api_response_time")
+                            .tags(Tags.of("request_type", String.valueOf(type))
+                                    .and(BROKER_TAG, config.getServerId())
+                                    .and(CLUSTER_TAG, config.getClusterName()))
+                            .baseUnit("ns")
+                            .distributionStatisticExpiry(Duration.ofSeconds(30))
+                            .publishPercentiles(0.99, 0.999, 0.9)
+                            .register(registry));
+            drt.record(bytes);
+        }
     }
 
     @Override
