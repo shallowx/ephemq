@@ -38,11 +38,5 @@ public class ConfigConstants {
     public static final String MESSAGE_CHUNK_BYTES_LIMIT = "message.chunk.bytes.limit";
 
     public static final String METRICS_SAMPLE_COUNT = "metrics.sample.count";
-    public static final String METRICS_JMX_ENABLE = "metrics.jmx.enable";
-    public static final String METRICS_PROMETHEUS_ENABLE = "metrics.prometheus.enable";
-    public static final String METRICS_PROMETHEUS_URL = "metrics.prometheus.url";
-    public static final String METRICS_PROMETHEUS_EXPOSED_PORT ="metrics.prometheus.exposed.port";
-    public static final String METRICS_PROMETHEUS_EXPOSED_HOST ="metrics.prometheus.exposed.host";
-
 
 }
