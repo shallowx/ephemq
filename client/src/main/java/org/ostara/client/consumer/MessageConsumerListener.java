@@ -30,8 +30,7 @@ final class MessageConsumerListener implements ClientListener {
     private MessageListener listener;
     private ConsumerInterceptor interceptor;
     private final MessageProcessor[] handlers;
-    private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips =
-            new Int2ObjectOpenHashMap<>();
+    private final Map<Integer/*ledgerId*/, AtomicReference<Subscription>> subscriptionShips = new Int2ObjectOpenHashMap<>();
     private final MessageConsumer consumer;
 
     public MessageConsumerListener(ConsumerConfig consumerConfig, MessageConsumer consumer) {

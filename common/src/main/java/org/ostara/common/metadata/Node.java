@@ -9,6 +9,7 @@ public class Node {
     private SocketAddress socketAddress;
     private long lastKeepLiveTime;
     private String state;
+    private int hash;
 
     private Node() {
         // unsupported
@@ -53,6 +54,8 @@ public class Node {
         private long lastKeepLiveTime;
         private String state;
 
+        private int hash;
+
         private NodeBuilder() {
         }
 
@@ -89,7 +92,7 @@ public class Node {
             record.socketAddress = this.socketAddress;
             record.lastKeepLiveTime = lastKeepLiveTime;
             record.state = this.state;
-
+            record.hash = Objects.hash(cluster, name, socketAddress);
             return record;
         }
 
@@ -110,7 +113,7 @@ public class Node {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCluster(), getName(), getSocketAddress());
+        return hash;
     }
 
     @Override

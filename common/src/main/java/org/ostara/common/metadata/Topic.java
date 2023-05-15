@@ -8,6 +8,7 @@ public class Topic {
     private int partitionLimit;
     private int replicateLimit;
     private Set<Partition> partitions;
+    private int hash;
 
     public Topic() {
         // unsupported
@@ -54,7 +55,7 @@ public class Topic {
         private int partitionLimit;
         private int replicateLimit;
         private Set<Partition> partitions;
-
+        private int hash;
         private TopicBuilder() {
         }
 
@@ -85,7 +86,7 @@ public class Topic {
             record.partitions = this.partitions;
             record.replicateLimit = this.replicateLimit;
             record.partitionLimit = this.partitionLimit;
-
+            record.hash = Objects.hash(name, replicateLimit, partitions);
             return record;
         }
     }
@@ -101,7 +102,7 @@ public class Topic {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getPartitionLimit(), getPartitions());
+        return hash;
     }
 
     @Override

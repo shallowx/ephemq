@@ -13,12 +13,14 @@ public class ClientChannel {
     private final Channel channel;
     private final SocketAddress address;
     private final OperationInvoker invoker;
+    private final int hash;
 
     public ClientChannel(Channel channel, ClientConfig config, SocketAddress address) {
         this.channel = ObjectUtils.checkNotNull(channel, "Channel cannot be null");
         this.name = ObjectUtils.checkNotNull(channel.id().asLongText(), "Name cannot be null");
         this.address = ObjectUtils.checkNotNull(address, "Socket address cannot be null");
         this.invoker = new OperationInvoker(this, config);
+        this.hash = Objects.hash(name);
     }
 
     public OperationInvoker invoker() {
@@ -65,6 +67,6 @@ public class ClientChannel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return hash;
     }
 }

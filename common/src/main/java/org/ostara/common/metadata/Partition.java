@@ -10,6 +10,7 @@ public class Partition {
     private String leader;
     private List<String> replicates;
     private int epoch;
+    private int hash;
 
     private Partition() {
         // unsupported
@@ -45,6 +46,7 @@ public class Partition {
         private String leader;
         private List<String> replicates;
         private int epoch;
+        private int hash;
 
         private PartitionBuilder() {
         }
@@ -82,6 +84,7 @@ public class Partition {
             partition.leader = this.leader;
             partition.ledgerId = this.ledgerId;
             partition.epoch = this.epoch;
+            partition.hash = Objects.hash(id, ledgerId);
 
             return partition;
         }
@@ -101,7 +104,7 @@ public class Partition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLedgerId());
+        return hash;
     }
 
     @Override
