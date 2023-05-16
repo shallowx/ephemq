@@ -24,6 +24,7 @@ reliability, trillion-level capacity and flexible scalability
 - Java 17
 - kotlin
 - groovy
+- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true // prometheus directory memory
 
 # Quickstart
 
