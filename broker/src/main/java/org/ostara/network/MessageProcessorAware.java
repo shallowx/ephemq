@@ -118,51 +118,58 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                                                  short version) {
         try {
             QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
-            ProtocolStringList topicList = request.getTopicList();
-            TopicPartitionRequestCacheSupport writerSupport =
-                    resourceContext.getPartitionRequestCacheSupport();
-            Map<String, Set<Partition>> partitions = writerSupport.loadAll(topicList);
+            commandExecutor.execute(() -> {
+                try {
+                    ProtocolStringList topicList = request.getTopicList();
+                    TopicPartitionRequestCacheSupport writerSupport =
+                            resourceContext.getPartitionRequestCacheSupport();
+                    Map<String, Set<Partition>> partitions = writerSupport.loadAll(topicList);
 
-            if (partitions.isEmpty()) {
-                answer.success(proto2Buf(channel.alloc(), QueryTopicInfoResponse.newBuilder().build()));
-                return;
-            }
+                    if (partitions.isEmpty()) {
+                        answer.success(proto2Buf(channel.alloc(), QueryTopicInfoResponse.newBuilder().build()));
+                        return;
+                    }
 
-            Map<Integer, PartitionMetadata> partitionMetadataMap = new ConcurrentHashMap<>();
-            Map<String, TopicMetadata> results = new ConcurrentHashMap<>();
+                    Map<Integer, PartitionMetadata> partitionMetadataMap = new ConcurrentHashMap<>();
+                    Map<String, TopicMetadata> results = new ConcurrentHashMap<>();
 
-            Set<Map.Entry<String, Set<Partition>>> entries = partitions.entrySet();
-            for (Map.Entry<String, Set<Partition>> entry : entries) {
-                String topic = entry.getKey();
-                Set<Partition> sets = entry.getValue();
-                if (sets == null || sets.isEmpty()) {
-                    continue;
-                }
+                    Set<Map.Entry<String, Set<Partition>>> entries = partitions.entrySet();
+                    for (Map.Entry<String, Set<Partition>> entry : entries) {
+                        String topic = entry.getKey();
+                        Set<Partition> sets = entry.getValue();
+                        if (sets == null || sets.isEmpty()) {
+                            continue;
+                        }
 
-                for (Partition partition : sets) {
-                    PartitionMetadata partitionMetadata = PartitionMetadata.newBuilder()
-                            .addAllReplicas(partition.getReplicates())
-                            .setLeader(partition.getLeader())
-                            .setId(partition.getId())
-                            .setLatency(partition.getLedgerId())
+                        for (Partition partition : sets) {
+                            PartitionMetadata partitionMetadata = PartitionMetadata.newBuilder()
+                                    .addAllReplicas(partition.getReplicates())
+                                    .setLeader(partition.getLeader())
+                                    .setId(partition.getId())
+                                    .setLatency(partition.getLedgerId())
+                                    .build();
+
+                            partitionMetadataMap.put(partitionMetadata.getId(), partitionMetadata);
+                        }
+
+                        TopicMetadata topicMetadata = TopicMetadata.newBuilder()
+                                .setName(topic)
+                                .putAllPartitions(partitionMetadataMap)
+                                .build();
+
+                        results.put(topic, topicMetadata);
+                    }
+
+                    QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
+                            .putAllTopics(results)
                             .build();
 
-                    partitionMetadataMap.put(partitionMetadata.getId(), partitionMetadata);
+                    answer.success(proto2Buf(channel.alloc(), response));
+
+                } catch (Throwable t) {
+                    answerFailed(answer, t);
                 }
-
-                TopicMetadata topicMetadata = TopicMetadata.newBuilder()
-                        .setName(topic)
-                        .putAllPartitions(partitionMetadataMap)
-                        .build();
-
-                results.put(topic, topicMetadata);
-            }
-
-            QueryTopicInfoResponse response = QueryTopicInfoResponse.newBuilder()
-                    .putAllTopics(results)
-                    .build();
-
-            answer.success(proto2Buf(channel.alloc(), response));
+            });
 
         } catch (Throwable t) {
             answerFailed(answer, t);
@@ -173,30 +180,37 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                                                        short version) {
         try {
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
-            ClusterNodeCacheSupport writerSupport = resourceContext.getNodeCacheSupport();
-            Set<Node> records = writerSupport.load(config.getClusterName());
+            commandExecutor.execute(() -> {
+                try {
+                    ClusterNodeCacheSupport writerSupport = resourceContext.getNodeCacheSupport();
+                    Set<Node> records = writerSupport.load(config.getClusterName());
 
-            QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
-            if (records == null || records.isEmpty()) {
-                answer.success(proto2Buf(channel.alloc(), builder.build()));
-            } else {
-                List<NodeMetadata> metadatas = records.stream().map(record -> {
-                    SocketAddress socketAddress = record.getSocketAddress();
-                    return NodeMetadata.newBuilder()
-                            .setName(record.getName())
-                            .setCluster(record.getCluster())
-                            .setState(record.getState())
-                            .setHost(((InetSocketAddress) socketAddress).getHostName())
-                            .setPort(((InetSocketAddress) socketAddress).getPort())
-                            .build();
-                }).collect(Collectors.toList());
+                    QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
+                    if (records == null || records.isEmpty()) {
+                        answer.success(proto2Buf(channel.alloc(), builder.build()));
+                    } else {
+                        List<NodeMetadata> metadatas = records.stream().map(record -> {
+                            SocketAddress socketAddress = record.getSocketAddress();
+                            return NodeMetadata.newBuilder()
+                                    .setName(record.getName())
+                                    .setCluster(record.getCluster())
+                                    .setState(record.getState())
+                                    .setHost(((InetSocketAddress) socketAddress).getHostName())
+                                    .setPort(((InetSocketAddress) socketAddress).getPort())
+                                    .build();
+                        }).collect(Collectors.toList());
 
-                builder.addAllNodes(metadatas);
+                        builder.addAllNodes(metadatas);
 
-                if (answer != null) {
-                    answer.success(proto2Buf(channel.alloc(), builder.build()));
+                        if (answer != null) {
+                            answer.success(proto2Buf(channel.alloc(), builder.build()));
+                        }
+                    }
+                }catch (Throwable t) {
+                    answerFailed(answer, t);
                 }
-            }
+            });
+
         } catch (Throwable t) {
             answerFailed(answer, t);
         }
@@ -205,7 +219,6 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
     private void processSendRequest(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer, short version) {
         try {
             SendMessageRequest request = readProto(data, SendMessageRequest.parser());
-
             ByteBuf retain = data.retain();
             try {
                 int ledger = request.getLedger();

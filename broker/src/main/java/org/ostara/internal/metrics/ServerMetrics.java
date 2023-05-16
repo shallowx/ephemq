@@ -105,7 +105,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
             Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
                     .tag(CLUSTER_TAG, config.getClusterName())
                     .tag(BROKER_TAG, config.getServerId())
-                    .tag(TOPIC_TAG, "storage")
+                    .tag("type", "storage")
                     .tag("name", StringUtil.EMPTY_STRING)
                     .tag("id", se.threadProperties().name()).register(registry);
         }
@@ -117,7 +117,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
             Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
                     .tag(CLUSTER_TAG, config.getClusterName())
                     .tag(BROKER_TAG, config.getServerId())
-                    .tag(TOPIC_TAG, "dispathc")
+                    .tag("type", "dispathc")
                     .tag("name", StringUtil.EMPTY_STRING)
                     .tag("id", se.threadProperties().name()).register(registry);
         }
@@ -129,7 +129,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
             Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
                     .tag(CLUSTER_TAG, config.getClusterName())
                     .tag(BROKER_TAG, config.getServerId())
-                    .tag(TOPIC_TAG, "command")
+                    .tag("type", "command")
                     .tag("name", StringUtil.EMPTY_STRING)
                     .tag("id", se.threadProperties().name()).register(registry);
         }
