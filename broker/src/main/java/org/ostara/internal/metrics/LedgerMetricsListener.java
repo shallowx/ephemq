@@ -1,5 +1,6 @@
 package org.ostara.internal.metrics;
 
+import org.ostara.common.metadata.Node;
 import org.ostara.ledger.Ledger;
 
 public interface LedgerMetricsListener {
@@ -8,4 +9,8 @@ public interface LedgerMetricsListener {
     void onReceiveMessage(String topic, String queue, int ledger, int count);
 
     void onDispatchMessage(String topic, int ledger, int count);
+
+    void onPartitionInit();
+    void onPartitionDestroy();
+    void startUp(Node node);
 }

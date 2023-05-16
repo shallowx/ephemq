@@ -22,15 +22,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.FastThreadLocal;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
+import io.netty.util.internal.StringUtil;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
+import org.ostara.common.metadata.Node;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.Ledger;
 import org.ostara.metrics.JmxMeterRegistrySetup;
 import org.ostara.metrics.MeterRegistrySetup;
 import org.ostara.metrics.NettyMetrics;
 import org.ostara.metrics.PrometheusRegistrySetup;
+import org.ostara.remote.util.NetworkUtils;
 
 @SuppressWarnings("all")
 public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCloseable {
@@ -90,12 +96,50 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
         Gauge.builder(TOPIC_PARTITION_LEADER_COUNTER_GAUGE_NAME, partitionLeaderCounts, AtomicInteger::doubleValue)
                 .tags(Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getServerId()))
                 .register(registry);
+    }
 
+    @Override
+    public void startUp(Node node) {
+        // storage metrics
+        EventExecutorGroup storageSventExecutors = NetworkUtils.newEventExecutorGroup(Runtime.getRuntime().availableProcessors(), "storage-metrics");
+        for (EventExecutor executor : storageSventExecutors) {
+            SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
+            Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
+                    .tag(CLUSTER_TAG, config.getClusterName())
+                    .tag(BROKER_TAG, config.getServerId())
+                    .tag(TOPIC_TAG, "storage")
+                    .tag("name", StringUtil.EMPTY_STRING)
+                    .tag("id", se.threadProperties().name()).register(registry);
+        }
+
+        // dispatch metrics
+        EventExecutorGroup dispatchEventExecutors = NetworkUtils.newEventExecutorGroup(Runtime.getRuntime().availableProcessors(), "dispatch-metrics");
+        for (EventExecutor executor : dispatchEventExecutors) {
+            SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
+            Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
+                    .tag(CLUSTER_TAG, config.getClusterName())
+                    .tag(BROKER_TAG, config.getServerId())
+                    .tag(TOPIC_TAG, "dispathc")
+                    .tag("name", StringUtil.EMPTY_STRING)
+                    .tag("id", se.threadProperties().name()).register(registry);
+        }
+
+        // command metrics
+        EventExecutorGroup commandEventExecutors = NetworkUtils.newEventExecutorGroup(Runtime.getRuntime().availableProcessors(), "dispatch-metrics");
+        for (EventExecutor executor : commandEventExecutors) {
+            SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
+            Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
+                    .tag(CLUSTER_TAG, config.getClusterName())
+                    .tag(BROKER_TAG, config.getServerId())
+                    .tag(TOPIC_TAG, "command")
+                    .tag("name", StringUtil.EMPTY_STRING)
+                    .tag("id", se.threadProperties().name()).register(registry);
+        }
     }
 
     @Override
     public void close() throws Exception {
-
+        this.meterRegistrySetup.shutdown();
     }
 
     @Override
@@ -182,7 +226,17 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
         counter.increment(count);
     }
 
-    public void shutdown() {
-        this.meterRegistrySetup.shutdown();
+    @Override
+    public void onPartitionInit() {
+        try {
+            partitionCounts.incrementAndGet();
+        }catch (Throwable ignord){}
+    }
+
+    @Override
+    public void onPartitionDestroy() {
+        try {
+            partitionCounts.decrementAndGet();
+        }catch (Throwable ignord){}
     }
 }

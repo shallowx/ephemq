@@ -19,15 +19,14 @@ public class DefaultResourceContext implements ResourceContext {
     private final DistributedAtomicInteger distributedAtomicInteger;
 
     public DefaultResourceContext(ServerConfig config) throws Exception {
-        this.ledgerEngine = new LedgerEngine(config);
+        this.nodeCacheWriterSupport = new ClusterNodeCacheSupport(config);
+        this.ledgerEngine = new LedgerEngine(config, nodeCacheWriterSupport);
             
         LedgerMetricsListener metrics = new ServerMetrics(config.getProps(), config);
         ledgerEngine.addListeners(metrics);
 
         this.boundContext = new ChannelBoundContext();
-
         this.distributedAtomicInteger = new DistributedAtomicInteger();
-        this.nodeCacheWriterSupport = new ClusterNodeCacheSupport(config);
         this.partitionRequestCacheWriterSupport = new TopicPartitionRequestCacheSupport(config, this);
     }
 
