@@ -8,28 +8,28 @@ public interface NodeMetadataOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string cluster = 1;</code>
-   * @return The cluster.
+   * <code>string cluster_name = 1;</code>
+   * @return The clusterName.
    */
-  java.lang.String getCluster();
+  java.lang.String getClusterName();
   /**
-   * <code>string cluster = 1;</code>
-   * @return The bytes for cluster.
+   * <code>string cluster_name = 1;</code>
+   * @return The bytes for clusterName.
    */
   com.google.protobuf.ByteString
-      getClusterBytes();
+      getClusterNameBytes();
 
   /**
-   * <code>string name = 2;</code>
-   * @return The name.
+   * <code>string id = 2;</code>
+   * @return The id.
    */
-  java.lang.String getName();
+  java.lang.String getId();
   /**
-   * <code>string name = 2;</code>
-   * @return The bytes for name.
+   * <code>string id = 2;</code>
+   * @return The bytes for id.
    */
   com.google.protobuf.ByteString
-      getNameBytes();
+      getIdBytes();
 
   /**
    * <code>string host = 3;</code>
@@ -48,22 +48,4 @@ public interface NodeMetadataOrBuilder extends
    * @return The port.
    */
   int getPort();
-
-  /**
-   * <code>string state = 5;</code>
-   * @return The state.
-   */
-  java.lang.String getState();
-  /**
-   * <code>string state = 5;</code>
-   * @return The bytes for state.
-   */
-  com.google.protobuf.ByteString
-      getStateBytes();
-
-  /**
-   * <code>int64 lastKeepLiveTime = 6;</code>
-   * @return The lastKeepLiveTime.
-   */
-  long getLastKeepLiveTime();
 }

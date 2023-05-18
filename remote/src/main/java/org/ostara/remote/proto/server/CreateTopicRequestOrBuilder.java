@@ -20,26 +20,29 @@ public interface CreateTopicRequestOrBuilder extends
       getTopicBytes();
 
   /**
-   * <code>int32 partitionLimit = 2;</code>
-   * @return The partitionLimit.
+   * <code>int32 partition = 2;</code>
+   * @return The partition.
    */
-  int getPartitionLimit();
+  int getPartition();
 
   /**
-   * <code>int32 replicateLimit = 3;</code>
-   * @return The replicateLimit.
+   * <code>int32 replicas = 3;</code>
+   * @return The replicas.
    */
-  int getReplicateLimit();
+  int getReplicas();
 
   /**
-   * <code>string cluster = 4;</code>
-   * @return The cluster.
+   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+   * @return Whether the configs field is set.
    */
-  java.lang.String getCluster();
+  boolean hasConfigs();
   /**
-   * <code>string cluster = 4;</code>
-   * @return The bytes for cluster.
+   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+   * @return The configs.
    */
-  com.google.protobuf.ByteString
-      getClusterBytes();
+  org.ostara.remote.proto.server.CreateTopicConfigRequest getConfigs();
+  /**
+   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+   */
+  org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder();
 }

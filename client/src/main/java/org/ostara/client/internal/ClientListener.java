@@ -1,27 +1,13 @@
 package org.ostara.client.internal;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import org.ostara.client.consumer.ConsumerInterceptor;
-import org.ostara.client.consumer.ConsumerListener;
-import org.ostara.remote.proto.notify.NodeOfflineSignal;
-import org.ostara.remote.proto.notify.PartitionChangedSignal;
-
+import org.ostara.remote.proto.client.MessagePushSignal;
+import org.ostara.remote.proto.client.NodeOfflineSignal;
+import org.ostara.remote.proto.client.TopicChangedSignal;
 public interface ClientListener {
+    default void onChannelActive(ClientChannel channel){}
+    default void onChannelClosed(ClientChannel channel){}
 
-    default void onPartitionChanged(ClientChannel channel, PartitionChangedSignal signal) {
-    }
-
-    @SuppressWarnings("unused")
-    default void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-    }
-
-    default void onPushMessage(Channel channel, int ledgerId, short version, String topic, String queue, int epoch,
-                               long index, ByteBuf data) {
-    }
-    default void registerListener(ConsumerListener listener) {
-    }
-
-    default void registerInterceptor(ConsumerInterceptor filter) {
-    }
+    default void onPushMessage(ClientChannel channel, MessagePushSignal signal){}
+    default void onTopicChanged(ClientChannel channel, TopicChangedSignal signal){}
+    default void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal){}
 }

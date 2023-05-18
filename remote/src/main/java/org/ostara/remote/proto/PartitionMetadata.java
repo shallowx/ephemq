@@ -16,8 +16,9 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PartitionMetadata() {
-    leader_ = "";
-    replicas_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    topicName_ = "";
+    leaderNodeId_ = "";
+    replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
@@ -45,10 +46,48 @@ private static final long serialVersionUID = 0L;
             org.ostara.remote.proto.PartitionMetadata.class, org.ostara.remote.proto.PartitionMetadata.Builder.class);
   }
 
-  public static final int ID_FIELD_NUMBER = 1;
+  public static final int TOPIC_NAME_FIELD_NUMBER = 1;
+  private volatile java.lang.Object topicName_;
+  /**
+   * <code>string topic_name = 1;</code>
+   * @return The topicName.
+   */
+  @java.lang.Override
+  public java.lang.String getTopicName() {
+    java.lang.Object ref = topicName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      topicName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string topic_name = 1;</code>
+   * @return The bytes for topicName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTopicNameBytes() {
+    java.lang.Object ref = topicName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      topicName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int ID_FIELD_NUMBER = 2;
   private int id_;
   /**
-   * <code>int32 id = 1;</code>
+   * <code>int32 id = 2;</code>
    * @return The id.
    */
   @java.lang.Override
@@ -56,88 +95,110 @@ private static final long serialVersionUID = 0L;
     return id_;
   }
 
-  public static final int LATENCY_FIELD_NUMBER = 2;
-  private int latency_;
+  public static final int LEDGER_FIELD_NUMBER = 3;
+  private int ledger_;
   /**
-   * <code>int32 latency = 2;</code>
-   * @return The latency.
+   * <code>int32 ledger = 3;</code>
+   * @return The ledger.
    */
   @java.lang.Override
-  public int getLatency() {
-    return latency_;
+  public int getLedger() {
+    return ledger_;
   }
 
-  public static final int LEADER_FIELD_NUMBER = 3;
-  private volatile java.lang.Object leader_;
+  public static final int EPOCH_FIELD_NUMBER = 4;
+  private int epoch_;
   /**
-   * <code>string leader = 3;</code>
-   * @return The leader.
+   * <code>int32 epoch = 4;</code>
+   * @return The epoch.
    */
   @java.lang.Override
-  public java.lang.String getLeader() {
-    java.lang.Object ref = leader_;
+  public int getEpoch() {
+    return epoch_;
+  }
+
+  public static final int LEADER_NODE_ID_FIELD_NUMBER = 5;
+  private volatile java.lang.Object leaderNodeId_;
+  /**
+   * <code>string leader_node_id = 5;</code>
+   * @return The leaderNodeId.
+   */
+  @java.lang.Override
+  public java.lang.String getLeaderNodeId() {
+    java.lang.Object ref = leaderNodeId_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      leader_ = s;
+      leaderNodeId_ = s;
       return s;
     }
   }
   /**
-   * <code>string leader = 3;</code>
-   * @return The bytes for leader.
+   * <code>string leader_node_id = 5;</code>
+   * @return The bytes for leaderNodeId.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getLeaderBytes() {
-    java.lang.Object ref = leader_;
+      getLeaderNodeIdBytes() {
+    java.lang.Object ref = leaderNodeId_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      leader_ = b;
+      leaderNodeId_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int REPLICAS_FIELD_NUMBER = 4;
-  private com.google.protobuf.LazyStringList replicas_;
+  public static final int REPLICA_NODE_IDS_FIELD_NUMBER = 6;
+  private com.google.protobuf.LazyStringList replicaNodeIds_;
   /**
-   * <code>repeated string replicas = 4;</code>
-   * @return A list containing the replicas.
+   * <code>repeated string replica_node_ids = 6;</code>
+   * @return A list containing the replicaNodeIds.
    */
   public com.google.protobuf.ProtocolStringList
-      getReplicasList() {
-    return replicas_;
+      getReplicaNodeIdsList() {
+    return replicaNodeIds_;
   }
   /**
-   * <code>repeated string replicas = 4;</code>
-   * @return The count of replicas.
+   * <code>repeated string replica_node_ids = 6;</code>
+   * @return The count of replicaNodeIds.
    */
-  public int getReplicasCount() {
-    return replicas_.size();
+  public int getReplicaNodeIdsCount() {
+    return replicaNodeIds_.size();
   }
   /**
-   * <code>repeated string replicas = 4;</code>
+   * <code>repeated string replica_node_ids = 6;</code>
    * @param index The index of the element to return.
-   * @return The replicas at the given index.
+   * @return The replicaNodeIds at the given index.
    */
-  public java.lang.String getReplicas(int index) {
-    return replicas_.get(index);
+  public java.lang.String getReplicaNodeIds(int index) {
+    return replicaNodeIds_.get(index);
   }
   /**
-   * <code>repeated string replicas = 4;</code>
+   * <code>repeated string replica_node_ids = 6;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the replicas at the given index.
+   * @return The bytes of the replicaNodeIds at the given index.
    */
   public com.google.protobuf.ByteString
-      getReplicasBytes(int index) {
-    return replicas_.getByteString(index);
+      getReplicaNodeIdsBytes(int index) {
+    return replicaNodeIds_.getByteString(index);
+  }
+
+  public static final int VERSION_FIELD_NUMBER = 7;
+  private int version_;
+  /**
+   * <code>int32 version = 7;</code>
+   * @return The version.
+   */
+  @java.lang.Override
+  public int getVersion() {
+    return version_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -154,17 +215,26 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topicName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topicName_);
+    }
     if (id_ != 0) {
-      output.writeInt32(1, id_);
+      output.writeInt32(2, id_);
     }
-    if (latency_ != 0) {
-      output.writeInt32(2, latency_);
+    if (ledger_ != 0) {
+      output.writeInt32(3, ledger_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leader_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, leader_);
+    if (epoch_ != 0) {
+      output.writeInt32(4, epoch_);
     }
-    for (int i = 0; i < replicas_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, replicas_.getRaw(i));
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leaderNodeId_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, leaderNodeId_);
+    }
+    for (int i = 0; i < replicaNodeIds_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, replicaNodeIds_.getRaw(i));
+    }
+    if (version_ != 0) {
+      output.writeInt32(7, version_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -175,24 +245,35 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topicName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topicName_);
+    }
     if (id_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, id_);
+        .computeInt32Size(2, id_);
     }
-    if (latency_ != 0) {
+    if (ledger_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, latency_);
+        .computeInt32Size(3, ledger_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leader_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, leader_);
+    if (epoch_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(4, epoch_);
+    }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leaderNodeId_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, leaderNodeId_);
     }
     {
       int dataSize = 0;
-      for (int i = 0; i < replicas_.size(); i++) {
-        dataSize += computeStringSizeNoTag(replicas_.getRaw(i));
+      for (int i = 0; i < replicaNodeIds_.size(); i++) {
+        dataSize += computeStringSizeNoTag(replicaNodeIds_.getRaw(i));
       }
       size += dataSize;
-      size += 1 * getReplicasList().size();
+      size += 1 * getReplicaNodeIdsList().size();
+    }
+    if (version_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(7, version_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -209,14 +290,20 @@ private static final long serialVersionUID = 0L;
     }
     org.ostara.remote.proto.PartitionMetadata other = (org.ostara.remote.proto.PartitionMetadata) obj;
 
+    if (!getTopicName()
+        .equals(other.getTopicName())) return false;
     if (getId()
         != other.getId()) return false;
-    if (getLatency()
-        != other.getLatency()) return false;
-    if (!getLeader()
-        .equals(other.getLeader())) return false;
-    if (!getReplicasList()
-        .equals(other.getReplicasList())) return false;
+    if (getLedger()
+        != other.getLedger()) return false;
+    if (getEpoch()
+        != other.getEpoch()) return false;
+    if (!getLeaderNodeId()
+        .equals(other.getLeaderNodeId())) return false;
+    if (!getReplicaNodeIdsList()
+        .equals(other.getReplicaNodeIdsList())) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -228,16 +315,22 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + TOPIC_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getTopicName().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
     hash = (53 * hash) + getId();
-    hash = (37 * hash) + LATENCY_FIELD_NUMBER;
-    hash = (53 * hash) + getLatency();
-    hash = (37 * hash) + LEADER_FIELD_NUMBER;
-    hash = (53 * hash) + getLeader().hashCode();
-    if (getReplicasCount() > 0) {
-      hash = (37 * hash) + REPLICAS_FIELD_NUMBER;
-      hash = (53 * hash) + getReplicasList().hashCode();
+    hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+    hash = (53 * hash) + getLedger();
+    hash = (37 * hash) + EPOCH_FIELD_NUMBER;
+    hash = (53 * hash) + getEpoch();
+    hash = (37 * hash) + LEADER_NODE_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getLeaderNodeId().hashCode();
+    if (getReplicaNodeIdsCount() > 0) {
+      hash = (37 * hash) + REPLICA_NODE_IDS_FIELD_NUMBER;
+      hash = (53 * hash) + getReplicaNodeIdsList().hashCode();
     }
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -366,14 +459,20 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      topicName_ = "";
+
       id_ = 0;
 
-      latency_ = 0;
+      ledger_ = 0;
 
-      leader_ = "";
+      epoch_ = 0;
 
-      replicas_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      leaderNodeId_ = "";
+
+      replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
+      version_ = 0;
+
       return this;
     }
 
@@ -401,14 +500,17 @@ private static final long serialVersionUID = 0L;
     public org.ostara.remote.proto.PartitionMetadata buildPartial() {
       org.ostara.remote.proto.PartitionMetadata result = new org.ostara.remote.proto.PartitionMetadata(this);
       int from_bitField0_ = bitField0_;
+      result.topicName_ = topicName_;
       result.id_ = id_;
-      result.latency_ = latency_;
-      result.leader_ = leader_;
+      result.ledger_ = ledger_;
+      result.epoch_ = epoch_;
+      result.leaderNodeId_ = leaderNodeId_;
       if (((bitField0_ & 0x00000001) != 0)) {
-        replicas_ = replicas_.getUnmodifiableView();
+        replicaNodeIds_ = replicaNodeIds_.getUnmodifiableView();
         bitField0_ = (bitField0_ & ~0x00000001);
       }
-      result.replicas_ = replicas_;
+      result.replicaNodeIds_ = replicaNodeIds_;
+      result.version_ = version_;
       onBuilt();
       return result;
     }
@@ -457,25 +559,35 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.ostara.remote.proto.PartitionMetadata other) {
       if (other == org.ostara.remote.proto.PartitionMetadata.getDefaultInstance()) return this;
+      if (!other.getTopicName().isEmpty()) {
+        topicName_ = other.topicName_;
+        onChanged();
+      }
       if (other.getId() != 0) {
         setId(other.getId());
       }
-      if (other.getLatency() != 0) {
-        setLatency(other.getLatency());
+      if (other.getLedger() != 0) {
+        setLedger(other.getLedger());
       }
-      if (!other.getLeader().isEmpty()) {
-        leader_ = other.leader_;
+      if (other.getEpoch() != 0) {
+        setEpoch(other.getEpoch());
+      }
+      if (!other.getLeaderNodeId().isEmpty()) {
+        leaderNodeId_ = other.leaderNodeId_;
         onChanged();
       }
-      if (!other.replicas_.isEmpty()) {
-        if (replicas_.isEmpty()) {
-          replicas_ = other.replicas_;
+      if (!other.replicaNodeIds_.isEmpty()) {
+        if (replicaNodeIds_.isEmpty()) {
+          replicaNodeIds_ = other.replicaNodeIds_;
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          ensureReplicasIsMutable();
-          replicas_.addAll(other.replicas_);
+          ensureReplicaNodeIdsIsMutable();
+          replicaNodeIds_.addAll(other.replicaNodeIds_);
         }
         onChanged();
+      }
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -503,27 +615,42 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              topicName_ = input.readStringRequireUtf8();
+
+              break;
+            } // case 10
+            case 16: {
               id_ = input.readInt32();
 
               break;
-            } // case 8
-            case 16: {
-              latency_ = input.readInt32();
-
-              break;
             } // case 16
-            case 26: {
-              leader_ = input.readStringRequireUtf8();
+            case 24: {
+              ledger_ = input.readInt32();
 
               break;
-            } // case 26
-            case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
-              ensureReplicasIsMutable();
-              replicas_.add(s);
+            } // case 24
+            case 32: {
+              epoch_ = input.readInt32();
+
               break;
-            } // case 34
+            } // case 32
+            case 42: {
+              leaderNodeId_ = input.readStringRequireUtf8();
+
+              break;
+            } // case 42
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureReplicaNodeIdsIsMutable();
+              replicaNodeIds_.add(s);
+              break;
+            } // case 50
+            case 56: {
+              version_ = input.readInt32();
+
+              break;
+            } // case 56
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -541,9 +668,85 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
+    private java.lang.Object topicName_ = "";
+    /**
+     * <code>string topic_name = 1;</code>
+     * @return The topicName.
+     */
+    public java.lang.String getTopicName() {
+      java.lang.Object ref = topicName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topicName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string topic_name = 1;</code>
+     * @return The bytes for topicName.
+     */
+    public com.google.protobuf.ByteString
+        getTopicNameBytes() {
+      java.lang.Object ref = topicName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topicName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string topic_name = 1;</code>
+     * @param value The topicName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopicName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      topicName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic_name = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTopicName() {
+      
+      topicName_ = getDefaultInstance().getTopicName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic_name = 1;</code>
+     * @param value The bytes for topicName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopicNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      topicName_ = value;
+      onChanged();
+      return this;
+    }
+
     private int id_ ;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>int32 id = 2;</code>
      * @return The id.
      */
     @java.lang.Override
@@ -551,7 +754,7 @@ private static final long serialVersionUID = 0L;
       return id_;
     }
     /**
-     * <code>int32 id = 1;</code>
+     * <code>int32 id = 2;</code>
      * @param value The id to set.
      * @return This builder for chaining.
      */
@@ -562,7 +765,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 id = 1;</code>
+     * <code>int32 id = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearId() {
@@ -572,219 +775,281 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int latency_ ;
+    private int ledger_ ;
     /**
-     * <code>int32 latency = 2;</code>
-     * @return The latency.
+     * <code>int32 ledger = 3;</code>
+     * @return The ledger.
      */
     @java.lang.Override
-    public int getLatency() {
-      return latency_;
+    public int getLedger() {
+      return ledger_;
     }
     /**
-     * <code>int32 latency = 2;</code>
-     * @param value The latency to set.
+     * <code>int32 ledger = 3;</code>
+     * @param value The ledger to set.
      * @return This builder for chaining.
      */
-    public Builder setLatency(int value) {
+    public Builder setLedger(int value) {
       
-      latency_ = value;
+      ledger_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 latency = 2;</code>
+     * <code>int32 ledger = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLatency() {
+    public Builder clearLedger() {
       
-      latency_ = 0;
+      ledger_ = 0;
       onChanged();
       return this;
     }
 
-    private java.lang.Object leader_ = "";
+    private int epoch_ ;
     /**
-     * <code>string leader = 3;</code>
-     * @return The leader.
+     * <code>int32 epoch = 4;</code>
+     * @return The epoch.
      */
-    public java.lang.String getLeader() {
-      java.lang.Object ref = leader_;
+    @java.lang.Override
+    public int getEpoch() {
+      return epoch_;
+    }
+    /**
+     * <code>int32 epoch = 4;</code>
+     * @param value The epoch to set.
+     * @return This builder for chaining.
+     */
+    public Builder setEpoch(int value) {
+      
+      epoch_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 epoch = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearEpoch() {
+      
+      epoch_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object leaderNodeId_ = "";
+    /**
+     * <code>string leader_node_id = 5;</code>
+     * @return The leaderNodeId.
+     */
+    public java.lang.String getLeaderNodeId() {
+      java.lang.Object ref = leaderNodeId_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        leader_ = s;
+        leaderNodeId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string leader = 3;</code>
-     * @return The bytes for leader.
+     * <code>string leader_node_id = 5;</code>
+     * @return The bytes for leaderNodeId.
      */
     public com.google.protobuf.ByteString
-        getLeaderBytes() {
-      java.lang.Object ref = leader_;
+        getLeaderNodeIdBytes() {
+      java.lang.Object ref = leaderNodeId_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        leader_ = b;
+        leaderNodeId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string leader = 3;</code>
-     * @param value The leader to set.
+     * <code>string leader_node_id = 5;</code>
+     * @param value The leaderNodeId to set.
      * @return This builder for chaining.
      */
-    public Builder setLeader(
+    public Builder setLeaderNodeId(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      leader_ = value;
+      leaderNodeId_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string leader = 3;</code>
+     * <code>string leader_node_id = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLeader() {
+    public Builder clearLeaderNodeId() {
       
-      leader_ = getDefaultInstance().getLeader();
+      leaderNodeId_ = getDefaultInstance().getLeaderNodeId();
       onChanged();
       return this;
     }
     /**
-     * <code>string leader = 3;</code>
-     * @param value The bytes for leader to set.
+     * <code>string leader_node_id = 5;</code>
+     * @param value The bytes for leaderNodeId to set.
      * @return This builder for chaining.
      */
-    public Builder setLeaderBytes(
+    public Builder setLeaderNodeIdBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      leader_ = value;
+      leaderNodeId_ = value;
       onChanged();
       return this;
     }
 
-    private com.google.protobuf.LazyStringList replicas_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureReplicasIsMutable() {
+    private com.google.protobuf.LazyStringList replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    private void ensureReplicaNodeIdsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        replicas_ = new com.google.protobuf.LazyStringArrayList(replicas_);
+        replicaNodeIds_ = new com.google.protobuf.LazyStringArrayList(replicaNodeIds_);
         bitField0_ |= 0x00000001;
        }
     }
     /**
-     * <code>repeated string replicas = 4;</code>
-     * @return A list containing the replicas.
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @return A list containing the replicaNodeIds.
      */
     public com.google.protobuf.ProtocolStringList
-        getReplicasList() {
-      return replicas_.getUnmodifiableView();
+        getReplicaNodeIdsList() {
+      return replicaNodeIds_.getUnmodifiableView();
     }
     /**
-     * <code>repeated string replicas = 4;</code>
-     * @return The count of replicas.
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @return The count of replicaNodeIds.
      */
-    public int getReplicasCount() {
-      return replicas_.size();
+    public int getReplicaNodeIdsCount() {
+      return replicaNodeIds_.size();
     }
     /**
-     * <code>repeated string replicas = 4;</code>
+     * <code>repeated string replica_node_ids = 6;</code>
      * @param index The index of the element to return.
-     * @return The replicas at the given index.
+     * @return The replicaNodeIds at the given index.
      */
-    public java.lang.String getReplicas(int index) {
-      return replicas_.get(index);
+    public java.lang.String getReplicaNodeIds(int index) {
+      return replicaNodeIds_.get(index);
     }
     /**
-     * <code>repeated string replicas = 4;</code>
+     * <code>repeated string replica_node_ids = 6;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the replicas at the given index.
+     * @return The bytes of the replicaNodeIds at the given index.
      */
     public com.google.protobuf.ByteString
-        getReplicasBytes(int index) {
-      return replicas_.getByteString(index);
+        getReplicaNodeIdsBytes(int index) {
+      return replicaNodeIds_.getByteString(index);
     }
     /**
-     * <code>repeated string replicas = 4;</code>
+     * <code>repeated string replica_node_ids = 6;</code>
      * @param index The index to set the value at.
-     * @param value The replicas to set.
+     * @param value The replicaNodeIds to set.
      * @return This builder for chaining.
      */
-    public Builder setReplicas(
+    public Builder setReplicaNodeIds(
         int index, java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureReplicasIsMutable();
-      replicas_.set(index, value);
+  ensureReplicaNodeIdsIsMutable();
+      replicaNodeIds_.set(index, value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string replicas = 4;</code>
-     * @param value The replicas to add.
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param value The replicaNodeIds to add.
      * @return This builder for chaining.
      */
-    public Builder addReplicas(
+    public Builder addReplicaNodeIds(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureReplicasIsMutable();
-      replicas_.add(value);
+  ensureReplicaNodeIdsIsMutable();
+      replicaNodeIds_.add(value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string replicas = 4;</code>
-     * @param values The replicas to add.
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param values The replicaNodeIds to add.
      * @return This builder for chaining.
      */
-    public Builder addAllReplicas(
+    public Builder addAllReplicaNodeIds(
         java.lang.Iterable<java.lang.String> values) {
-      ensureReplicasIsMutable();
+      ensureReplicaNodeIdsIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, replicas_);
+          values, replicaNodeIds_);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string replicas = 4;</code>
+     * <code>repeated string replica_node_ids = 6;</code>
      * @return This builder for chaining.
      */
-    public Builder clearReplicas() {
-      replicas_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    public Builder clearReplicaNodeIds() {
+      replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string replicas = 4;</code>
-     * @param value The bytes of the replicas to add.
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param value The bytes of the replicaNodeIds to add.
      * @return This builder for chaining.
      */
-    public Builder addReplicasBytes(
+    public Builder addReplicaNodeIdsBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      ensureReplicasIsMutable();
-      replicas_.add(value);
+      ensureReplicaNodeIdsIsMutable();
+      replicaNodeIds_.add(value);
+      onChanged();
+      return this;
+    }
+
+    private int version_ ;
+    /**
+     * <code>int32 version = 7;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <code>int32 version = 7;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+      
+      version_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 version = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      
+      version_ = 0;
       onChanged();
       return this;
     }

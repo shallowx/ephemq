@@ -8,32 +8,50 @@ public interface CreateTopicResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 ack = 1;</code>
-   * @return The ack.
-   */
-  int getAck();
-
-  /**
-   * <code>string topic = 2;</code>
+   * <code>string topic = 1;</code>
    * @return The topic.
    */
   java.lang.String getTopic();
   /**
-   * <code>string topic = 2;</code>
+   * <code>string topic = 1;</code>
    * @return The bytes for topic.
    */
   com.google.protobuf.ByteString
       getTopicBytes();
 
   /**
-   * <code>int32 partitionLimit = 3;</code>
-   * @return The partitionLimit.
+   * <code>int32 partitions = 2;</code>
+   * @return The partitions.
    */
-  int getPartitionLimit();
+  int getPartitions();
 
   /**
-   * <code>int32 replicateLimit = 4;</code>
-   * @return The replicateLimit.
+   * <code>int32 topicId = 3;</code>
+   * @return The topicId.
    */
-  int getReplicateLimit();
+  int getTopicId();
+
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> 
+      getPartitionsReplicasList();
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index);
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  int getPartitionsReplicasCount();
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+      getPartitionsReplicasOrBuilderList();
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
+      int index);
 }

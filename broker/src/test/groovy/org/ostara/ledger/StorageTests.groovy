@@ -45,7 +45,7 @@ class StorageTests extends Specification {
         storage.append(topic, queue, version as short, payload, promise)
 
         def offset = new Offset(-1, 1)
-        def cursor = storage.locateCursor(offset)
+        def cursor = storage.cursor(offset)
 
         expect:
         !cursor.hashNext()

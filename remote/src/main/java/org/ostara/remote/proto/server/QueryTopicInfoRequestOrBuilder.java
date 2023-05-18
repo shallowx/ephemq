@@ -8,39 +8,27 @@ public interface QueryTopicInfoRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string cluster = 1;</code>
-   * @return The cluster.
-   */
-  java.lang.String getCluster();
-  /**
-   * <code>string cluster = 1;</code>
-   * @return The bytes for cluster.
-   */
-  com.google.protobuf.ByteString
-      getClusterBytes();
-
-  /**
-   * <code>repeated string topic = 2;</code>
-   * @return A list containing the topic.
+   * <code>repeated string topic_names = 1;</code>
+   * @return A list containing the topicNames.
    */
   java.util.List<java.lang.String>
-      getTopicList();
+      getTopicNamesList();
   /**
-   * <code>repeated string topic = 2;</code>
-   * @return The count of topic.
+   * <code>repeated string topic_names = 1;</code>
+   * @return The count of topicNames.
    */
-  int getTopicCount();
+  int getTopicNamesCount();
   /**
-   * <code>repeated string topic = 2;</code>
+   * <code>repeated string topic_names = 1;</code>
    * @param index The index of the element to return.
-   * @return The topic at the given index.
+   * @return The topicNames at the given index.
    */
-  java.lang.String getTopic(int index);
+  java.lang.String getTopicNames(int index);
   /**
-   * <code>repeated string topic = 2;</code>
+   * <code>repeated string topic_names = 1;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the topic at the given index.
+   * @return The bytes of the topicNames at the given index.
    */
   com.google.protobuf.ByteString
-      getTopicBytes(int index);
+      getTopicNamesBytes(int index);
 }

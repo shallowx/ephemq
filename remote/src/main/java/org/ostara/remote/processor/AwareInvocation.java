@@ -25,8 +25,6 @@ public final class AwareInvocation extends AbstractReferenceCounted {
     private byte command;
     private ByteBuf data;
     private long expired;
-    private byte type;
-    private short version;
     private InvokeAnswer<ByteBuf> answer;
 
     private final Recycler.Handle<AwareInvocation> handle;
@@ -35,33 +33,22 @@ public final class AwareInvocation extends AbstractReferenceCounted {
         this.handle = handle;
     }
 
-    public static  AwareInvocation newInvocation(byte command, short version, ByteBuf data, byte type) {
-       return newInvocation(command, version, data, type, 0, null);
+    public static  AwareInvocation newInvocation(byte command, ByteBuf data) {
+       return newInvocation(command, data, 0, null);
     }
 
-    public static  AwareInvocation newInvocation(byte command, short version, ByteBuf data, byte type, long expires, InvokeAnswer<ByteBuf> answer) {
+    public static  AwareInvocation newInvocation(byte command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
         checkPositive(command, "Command");
 
         final AwareInvocation invocation = RECYCLER.get();
         invocation.setRefCnt(1);
         invocation.command = command;
         invocation.answer = answer;
-        invocation.version = version;
-        invocation.type = type;
         invocation.expired = expires;
         invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
         return invocation;
     }
-
-    public byte type() {
-        return type;
-    }
-
-    public short version() {
-        return version;
-    }
-
     public byte command() {
         return command;
     }

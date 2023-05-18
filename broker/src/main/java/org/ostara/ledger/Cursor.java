@@ -3,13 +3,14 @@ package org.ostara.ledger;
 import io.netty.buffer.ByteBuf;
 import java.lang.ref.WeakReference;
 import javax.annotation.concurrent.ThreadSafe;
+
+import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.dispatch.ChunkRecord;
 
 @ThreadSafe
 public class Cursor implements Cloneable {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerEngine.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Cursor.class);
 
     private final Storage storage;
     private WeakReference<Segment> reference;
@@ -78,19 +79,6 @@ public class Cursor implements Cloneable {
         location = segment.tailLocation();
 
         return this;
-    }
-
-    public ChunkRecord nextChunk(int bytesLimit) {
-        Segment segment;
-        while ((segment = efficientSegment()) != null) {
-            ChunkRecord record = segment.readChunkRecord(location, bytesLimit);
-            if (record != null) {
-                location += record.data().readableBytes();
-                return record;
-            }
-        }
-
-        return null;
     }
 
     private Segment efficientSegment() {

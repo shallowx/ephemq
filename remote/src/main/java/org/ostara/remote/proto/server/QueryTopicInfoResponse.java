@@ -41,7 +41,7 @@ private static final long serialVersionUID = 0L;
       int number) {
     switch (number) {
       case 1:
-        return internalGetTopics();
+        return internalGetTopicInfos();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -55,81 +55,81 @@ private static final long serialVersionUID = 0L;
             org.ostara.remote.proto.server.QueryTopicInfoResponse.class, org.ostara.remote.proto.server.QueryTopicInfoResponse.Builder.class);
   }
 
-  public static final int TOPICS_FIELD_NUMBER = 1;
-  private static final class TopicsDefaultEntryHolder {
+  public static final int TOPIC_INFOS_FIELD_NUMBER = 1;
+  private static final class TopicInfosDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, org.ostara.remote.proto.TopicMetadata> defaultEntry =
+        java.lang.String, org.ostara.remote.proto.TopicInfo> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, org.ostara.remote.proto.TopicMetadata>newDefaultInstance(
-                org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicsEntry_descriptor, 
+            .<java.lang.String, org.ostara.remote.proto.TopicInfo>newDefaultInstance(
+                org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                org.ostara.remote.proto.TopicMetadata.getDefaultInstance());
+                org.ostara.remote.proto.TopicInfo.getDefaultInstance());
   }
   private com.google.protobuf.MapField<
-      java.lang.String, org.ostara.remote.proto.TopicMetadata> topics_;
-  private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-  internalGetTopics() {
-    if (topics_ == null) {
+      java.lang.String, org.ostara.remote.proto.TopicInfo> topicInfos_;
+  private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.TopicInfo>
+  internalGetTopicInfos() {
+    if (topicInfos_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
-          TopicsDefaultEntryHolder.defaultEntry);
+          TopicInfosDefaultEntryHolder.defaultEntry);
     }
-    return topics_;
+    return topicInfos_;
   }
 
-  public int getTopicsCount() {
-    return internalGetTopics().getMap().size();
+  public int getTopicInfosCount() {
+    return internalGetTopicInfos().getMap().size();
   }
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
 
   @java.lang.Override
-  public boolean containsTopics(
+  public boolean containsTopicInfos(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    return internalGetTopics().getMap().containsKey(key);
+    return internalGetTopicInfos().getMap().containsKey(key);
   }
   /**
-   * Use {@link #getTopicsMap()} instead.
+   * Use {@link #getTopicInfosMap()} instead.
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> getTopics() {
-    return getTopicsMap();
+  public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> getTopicInfos() {
+    return getTopicInfosMap();
   }
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
   @java.lang.Override
 
-  public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> getTopicsMap() {
-    return internalGetTopics().getMap();
+  public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> getTopicInfosMap() {
+    return internalGetTopicInfos().getMap();
   }
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
   @java.lang.Override
 
-  public org.ostara.remote.proto.TopicMetadata getTopicsOrDefault(
+  public org.ostara.remote.proto.TopicInfo getTopicInfosOrDefault(
       java.lang.String key,
-      org.ostara.remote.proto.TopicMetadata defaultValue) {
+      org.ostara.remote.proto.TopicInfo defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> map =
-        internalGetTopics().getMap();
+    java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> map =
+        internalGetTopicInfos().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
   @java.lang.Override
 
-  public org.ostara.remote.proto.TopicMetadata getTopicsOrThrow(
+  public org.ostara.remote.proto.TopicInfo getTopicInfosOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> map =
-        internalGetTopics().getMap();
+    java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> map =
+        internalGetTopicInfos().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
     }
@@ -153,8 +153,8 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
-        internalGetTopics(),
-        TopicsDefaultEntryHolder.defaultEntry,
+        internalGetTopicInfos(),
+        TopicInfosDefaultEntryHolder.defaultEntry,
         1);
     getUnknownFields().writeTo(output);
   }
@@ -165,15 +165,15 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (java.util.Map.Entry<java.lang.String, org.ostara.remote.proto.TopicMetadata> entry
-         : internalGetTopics().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-      topics__ = TopicsDefaultEntryHolder.defaultEntry.newBuilderForType()
+    for (java.util.Map.Entry<java.lang.String, org.ostara.remote.proto.TopicInfo> entry
+         : internalGetTopicInfos().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.TopicInfo>
+      topicInfos__ = TopicInfosDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, topics__);
+          .computeMessageSize(1, topicInfos__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -190,8 +190,8 @@ private static final long serialVersionUID = 0L;
     }
     org.ostara.remote.proto.server.QueryTopicInfoResponse other = (org.ostara.remote.proto.server.QueryTopicInfoResponse) obj;
 
-    if (!internalGetTopics().equals(
-        other.internalGetTopics())) return false;
+    if (!internalGetTopicInfos().equals(
+        other.internalGetTopicInfos())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -203,9 +203,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (!internalGetTopics().getMap().isEmpty()) {
-      hash = (37 * hash) + TOPICS_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetTopics().hashCode();
+    if (!internalGetTopicInfos().getMap().isEmpty()) {
+      hash = (37 * hash) + TOPIC_INFOS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetTopicInfos().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -319,7 +319,7 @@ private static final long serialVersionUID = 0L;
         int number) {
       switch (number) {
         case 1:
-          return internalGetTopics();
+          return internalGetTopicInfos();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -330,7 +330,7 @@ private static final long serialVersionUID = 0L;
         int number) {
       switch (number) {
         case 1:
-          return internalGetMutableTopics();
+          return internalGetMutableTopicInfos();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -357,7 +357,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      internalGetMutableTopics().clear();
+      internalGetMutableTopicInfos().clear();
       return this;
     }
 
@@ -385,8 +385,8 @@ private static final long serialVersionUID = 0L;
     public org.ostara.remote.proto.server.QueryTopicInfoResponse buildPartial() {
       org.ostara.remote.proto.server.QueryTopicInfoResponse result = new org.ostara.remote.proto.server.QueryTopicInfoResponse(this);
       int from_bitField0_ = bitField0_;
-      result.topics_ = internalGetTopics();
-      result.topics_.makeImmutable();
+      result.topicInfos_ = internalGetTopicInfos();
+      result.topicInfos_.makeImmutable();
       onBuilt();
       return result;
     }
@@ -435,8 +435,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.ostara.remote.proto.server.QueryTopicInfoResponse other) {
       if (other == org.ostara.remote.proto.server.QueryTopicInfoResponse.getDefaultInstance()) return this;
-      internalGetMutableTopics().mergeFrom(
-          other.internalGetTopics());
+      internalGetMutableTopicInfos().mergeFrom(
+          other.internalGetTopicInfos());
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -464,11 +464,11 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-              topics__ = input.readMessage(
-                  TopicsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableTopics().getMutableMap().put(
-                  topics__.getKey(), topics__.getValue());
+              com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.TopicInfo>
+              topicInfos__ = input.readMessage(
+                  TopicInfosDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableTopicInfos().getMutableMap().put(
+                  topicInfos__.getKey(), topicInfos__.getValue());
               break;
             } // case 10
             default: {
@@ -489,99 +489,99 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private com.google.protobuf.MapField<
-        java.lang.String, org.ostara.remote.proto.TopicMetadata> topics_;
-    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-    internalGetTopics() {
-      if (topics_ == null) {
+        java.lang.String, org.ostara.remote.proto.TopicInfo> topicInfos_;
+    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.TopicInfo>
+    internalGetTopicInfos() {
+      if (topicInfos_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
-            TopicsDefaultEntryHolder.defaultEntry);
+            TopicInfosDefaultEntryHolder.defaultEntry);
       }
-      return topics_;
+      return topicInfos_;
     }
-    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-    internalGetMutableTopics() {
+    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.TopicInfo>
+    internalGetMutableTopicInfos() {
       onChanged();;
-      if (topics_ == null) {
-        topics_ = com.google.protobuf.MapField.newMapField(
-            TopicsDefaultEntryHolder.defaultEntry);
+      if (topicInfos_ == null) {
+        topicInfos_ = com.google.protobuf.MapField.newMapField(
+            TopicInfosDefaultEntryHolder.defaultEntry);
       }
-      if (!topics_.isMutable()) {
-        topics_ = topics_.copy();
+      if (!topicInfos_.isMutable()) {
+        topicInfos_ = topicInfos_.copy();
       }
-      return topics_;
+      return topicInfos_;
     }
 
-    public int getTopicsCount() {
-      return internalGetTopics().getMap().size();
+    public int getTopicInfosCount() {
+      return internalGetTopicInfos().getMap().size();
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
 
     @java.lang.Override
-    public boolean containsTopics(
+    public boolean containsTopicInfos(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetTopics().getMap().containsKey(key);
+      return internalGetTopicInfos().getMap().containsKey(key);
     }
     /**
-     * Use {@link #getTopicsMap()} instead.
+     * Use {@link #getTopicInfosMap()} instead.
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> getTopics() {
-      return getTopicsMap();
+    public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> getTopicInfos() {
+      return getTopicInfosMap();
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
     @java.lang.Override
 
-    public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> getTopicsMap() {
-      return internalGetTopics().getMap();
+    public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> getTopicInfosMap() {
+      return internalGetTopicInfos().getMap();
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
     @java.lang.Override
 
-    public org.ostara.remote.proto.TopicMetadata getTopicsOrDefault(
+    public org.ostara.remote.proto.TopicInfo getTopicInfosOrDefault(
         java.lang.String key,
-        org.ostara.remote.proto.TopicMetadata defaultValue) {
+        org.ostara.remote.proto.TopicInfo defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> map =
-          internalGetTopics().getMap();
+      java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> map =
+          internalGetTopicInfos().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
     @java.lang.Override
 
-    public org.ostara.remote.proto.TopicMetadata getTopicsOrThrow(
+    public org.ostara.remote.proto.TopicInfo getTopicInfosOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> map =
-          internalGetTopics().getMap();
+      java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> map =
+          internalGetTopicInfos().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
     }
 
-    public Builder clearTopics() {
-      internalGetMutableTopics().getMutableMap()
+    public Builder clearTopicInfos() {
+      internalGetMutableTopicInfos().getMutableMap()
           .clear();
       return this;
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
 
-    public Builder removeTopics(
+    public Builder removeTopicInfos(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      internalGetMutableTopics().getMutableMap()
+      internalGetMutableTopicInfos().getMutableMap()
           .remove(key);
       return this;
     }
@@ -589,32 +589,32 @@ private static final long serialVersionUID = 0L;
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-    getMutableTopics() {
-      return internalGetMutableTopics().getMutableMap();
+    public java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo>
+    getMutableTopicInfos() {
+      return internalGetMutableTopicInfos().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
-    public Builder putTopics(
+    public Builder putTopicInfos(
         java.lang.String key,
-        org.ostara.remote.proto.TopicMetadata value) {
+        org.ostara.remote.proto.TopicInfo value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) {
   throw new NullPointerException("map value");
 }
 
-      internalGetMutableTopics().getMutableMap()
+      internalGetMutableTopicInfos().getMutableMap()
           .put(key, value);
       return this;
     }
     /**
-     * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+     * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
      */
 
-    public Builder putAllTopics(
-        java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata> values) {
-      internalGetMutableTopics().getMutableMap()
+    public Builder putAllTopicInfos(
+        java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo> values) {
+      internalGetMutableTopicInfos().getMutableMap()
           .putAll(values);
       return this;
     }

@@ -18,40 +18,4 @@ public interface ClusterMetadataOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
-
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-  int getMetadataCount();
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-  boolean containsMetadata(
-      java.lang.String key);
-  /**
-   * Use {@link #getMetadataMap()} instead.
-   */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-  getMetadata();
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-  java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-  getMetadataMap();
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-
-  /* nullable */
-org.ostara.remote.proto.NodeMetadata getMetadataOrDefault(
-      java.lang.String key,
-      /* nullable */
-org.ostara.remote.proto.NodeMetadata defaultValue);
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-
-  org.ostara.remote.proto.NodeMetadata getMetadataOrThrow(
-      java.lang.String key);
 }

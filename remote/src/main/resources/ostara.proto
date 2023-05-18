@@ -5,28 +5,62 @@ option java_package = "org.ostara.remote.proto";
 option java_outer_classname = "MessageMetadataProto";
 option java_multiple_files = true;
 
-message TopicMetadata {
-  string name = 1;
-  map<int32, PartitionMetadata> partitions = 2;
+message MessageId {
+  int32 ledger = 1;
+  int32 epoch = 2;
+  int32 index = 3;
 }
 
-message PartitionMetadata {
-  int32 id = 1;
-  int32 latency = 2;
-  string leader = 3;
-  repeated string replicas = 4;
+message MessageOffset {
+  int32 epoch = 1;
+  int32 index = 2;
+}
+
+message MessageMetadata {
+  string topic = 1;
+  string queue = 2;
+  map<string, string> extras = 3;
 }
 
 message ClusterMetadata {
   string name = 1;
-  map<string, NodeMetadata> metadata = 2;
 }
 
-message NodeMetadata{
-  string cluster = 1;
-  string name = 2;
+message NodeMetadata {
+  string cluster_name = 1;
+  string id = 2;
   string host = 3;
   int32 port = 4;
-  string state = 5;
-  int64 lastKeepLiveTime = 6;
+}
+
+message ClusterInfo {
+  ClusterMetadata cluster = 1;
+  map<string, NodeMetadata> nodes = 2;
+}
+
+message TopicMetadata {
+  string name = 1;
+  int32 id = 2;
+  int32 version = 3;
+}
+
+message PartitionMetadata {
+  string topic_name = 1;
+  int32 id = 2;
+  int32 ledger = 3;
+  int32 epoch = 4;
+  string leader_node_id = 5;
+  repeated string replica_node_ids = 6;
+  int32 version = 7;
+}
+
+message TopicInfo {
+  TopicMetadata topic = 1;
+  map<int32, PartitionMetadata> partitions = 2;
+}
+
+message TopicSegmentInfo {
+  int32 segmentRollingSize = 1;
+  int32 segmentRetainCount = 2;
+  int32 segmentRetainMs = 3;
 }

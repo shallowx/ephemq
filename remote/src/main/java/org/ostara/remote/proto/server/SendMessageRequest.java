@@ -16,8 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private SendMessageRequest() {
-    queue_ = "";
-    topic_ = "";
   }
 
   @java.lang.Override
@@ -56,80 +54,15 @@ private static final long serialVersionUID = 0L;
     return ledger_;
   }
 
-  public static final int QUEUE_FIELD_NUMBER = 2;
-  private volatile java.lang.Object queue_;
+  public static final int MARKER_FIELD_NUMBER = 2;
+  private int marker_;
   /**
-   * <code>string queue = 2;</code>
-   * @return The queue.
+   * <code>int32 marker = 2;</code>
+   * @return The marker.
    */
   @java.lang.Override
-  public java.lang.String getQueue() {
-    java.lang.Object ref = queue_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      queue_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string queue = 2;</code>
-   * @return The bytes for queue.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getQueueBytes() {
-    java.lang.Object ref = queue_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      queue_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int TOPIC_FIELD_NUMBER = 3;
-  private volatile java.lang.Object topic_;
-  /**
-   * <code>string topic = 3;</code>
-   * @return The topic.
-   */
-  @java.lang.Override
-  public java.lang.String getTopic() {
-    java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      topic_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string topic = 3;</code>
-   * @return The bytes for topic.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTopicBytes() {
-    java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      topic_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public int getMarker() {
+    return marker_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -149,11 +82,8 @@ private static final long serialVersionUID = 0L;
     if (ledger_ != 0) {
       output.writeInt32(1, ledger_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, queue_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
+    if (marker_ != 0) {
+      output.writeInt32(2, marker_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -168,11 +98,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, ledger_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, queue_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
+    if (marker_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, marker_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -191,10 +119,8 @@ private static final long serialVersionUID = 0L;
 
     if (getLedger()
         != other.getLedger()) return false;
-    if (!getQueue()
-        .equals(other.getQueue())) return false;
-    if (!getTopic()
-        .equals(other.getTopic())) return false;
+    if (getMarker()
+        != other.getMarker()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -208,10 +134,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + LEDGER_FIELD_NUMBER;
     hash = (53 * hash) + getLedger();
-    hash = (37 * hash) + QUEUE_FIELD_NUMBER;
-    hash = (53 * hash) + getQueue().hashCode();
-    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-    hash = (53 * hash) + getTopic().hashCode();
+    hash = (37 * hash) + MARKER_FIELD_NUMBER;
+    hash = (53 * hash) + getMarker();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -342,9 +266,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       ledger_ = 0;
 
-      queue_ = "";
-
-      topic_ = "";
+      marker_ = 0;
 
       return this;
     }
@@ -373,8 +295,7 @@ private static final long serialVersionUID = 0L;
     public org.ostara.remote.proto.server.SendMessageRequest buildPartial() {
       org.ostara.remote.proto.server.SendMessageRequest result = new org.ostara.remote.proto.server.SendMessageRequest(this);
       result.ledger_ = ledger_;
-      result.queue_ = queue_;
-      result.topic_ = topic_;
+      result.marker_ = marker_;
       onBuilt();
       return result;
     }
@@ -426,13 +347,8 @@ private static final long serialVersionUID = 0L;
       if (other.getLedger() != 0) {
         setLedger(other.getLedger());
       }
-      if (!other.getQueue().isEmpty()) {
-        queue_ = other.queue_;
-        onChanged();
-      }
-      if (!other.getTopic().isEmpty()) {
-        topic_ = other.topic_;
-        onChanged();
+      if (other.getMarker() != 0) {
+        setMarker(other.getMarker());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -465,16 +381,11 @@ private static final long serialVersionUID = 0L;
 
               break;
             } // case 8
-            case 18: {
-              queue_ = input.readStringRequireUtf8();
+            case 16: {
+              marker_ = input.readInt32();
 
               break;
-            } // case 18
-            case 26: {
-              topic_ = input.readStringRequireUtf8();
-
-              break;
-            } // case 26
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -522,154 +433,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object queue_ = "";
+    private int marker_ ;
     /**
-     * <code>string queue = 2;</code>
-     * @return The queue.
+     * <code>int32 marker = 2;</code>
+     * @return The marker.
      */
-    public java.lang.String getQueue() {
-      java.lang.Object ref = queue_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        queue_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override
+    public int getMarker() {
+      return marker_;
     }
     /**
-     * <code>string queue = 2;</code>
-     * @return The bytes for queue.
-     */
-    public com.google.protobuf.ByteString
-        getQueueBytes() {
-      java.lang.Object ref = queue_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        queue_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string queue = 2;</code>
-     * @param value The queue to set.
+     * <code>int32 marker = 2;</code>
+     * @param value The marker to set.
      * @return This builder for chaining.
      */
-    public Builder setQueue(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      queue_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string queue = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearQueue() {
+    public Builder setMarker(int value) {
       
-      queue_ = getDefaultInstance().getQueue();
+      marker_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string queue = 2;</code>
-     * @param value The bytes for queue to set.
+     * <code>int32 marker = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder setQueueBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+    public Builder clearMarker() {
       
-      queue_ = value;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object topic_ = "";
-    /**
-     * <code>string topic = 3;</code>
-     * @return The topic.
-     */
-    public java.lang.String getTopic() {
-      java.lang.Object ref = topic_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        topic_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string topic = 3;</code>
-     * @return The bytes for topic.
-     */
-    public com.google.protobuf.ByteString
-        getTopicBytes() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        topic_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string topic = 3;</code>
-     * @param value The topic to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTopic(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      topic_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string topic = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTopic() {
-      
-      topic_ = getDefaultInstance().getTopic();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string topic = 3;</code>
-     * @param value The bytes for topic to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTopicBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      topic_ = value;
+      marker_ = 0;
       onChanged();
       return this;
     }

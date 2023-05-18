@@ -16,8 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private QueryTopicInfoRequest() {
-    cluster_ = "";
-    topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
@@ -45,77 +44,39 @@ private static final long serialVersionUID = 0L;
             org.ostara.remote.proto.server.QueryTopicInfoRequest.class, org.ostara.remote.proto.server.QueryTopicInfoRequest.Builder.class);
   }
 
-  public static final int CLUSTER_FIELD_NUMBER = 1;
-  private volatile java.lang.Object cluster_;
+  public static final int TOPIC_NAMES_FIELD_NUMBER = 1;
+  private com.google.protobuf.LazyStringList topicNames_;
   /**
-   * <code>string cluster = 1;</code>
-   * @return The cluster.
-   */
-  @java.lang.Override
-  public java.lang.String getCluster() {
-    java.lang.Object ref = cluster_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      cluster_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string cluster = 1;</code>
-   * @return The bytes for cluster.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getClusterBytes() {
-    java.lang.Object ref = cluster_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      cluster_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int TOPIC_FIELD_NUMBER = 2;
-  private com.google.protobuf.LazyStringList topic_;
-  /**
-   * <code>repeated string topic = 2;</code>
-   * @return A list containing the topic.
+   * <code>repeated string topic_names = 1;</code>
+   * @return A list containing the topicNames.
    */
   public com.google.protobuf.ProtocolStringList
-      getTopicList() {
-    return topic_;
+      getTopicNamesList() {
+    return topicNames_;
   }
   /**
-   * <code>repeated string topic = 2;</code>
-   * @return The count of topic.
+   * <code>repeated string topic_names = 1;</code>
+   * @return The count of topicNames.
    */
-  public int getTopicCount() {
-    return topic_.size();
+  public int getTopicNamesCount() {
+    return topicNames_.size();
   }
   /**
-   * <code>repeated string topic = 2;</code>
+   * <code>repeated string topic_names = 1;</code>
    * @param index The index of the element to return.
-   * @return The topic at the given index.
+   * @return The topicNames at the given index.
    */
-  public java.lang.String getTopic(int index) {
-    return topic_.get(index);
+  public java.lang.String getTopicNames(int index) {
+    return topicNames_.get(index);
   }
   /**
-   * <code>repeated string topic = 2;</code>
+   * <code>repeated string topic_names = 1;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the topic at the given index.
+   * @return The bytes of the topicNames at the given index.
    */
   public com.google.protobuf.ByteString
-      getTopicBytes(int index) {
-    return topic_.getByteString(index);
+      getTopicNamesBytes(int index) {
+    return topicNames_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -132,11 +93,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, cluster_);
-    }
-    for (int i = 0; i < topic_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_.getRaw(i));
+    for (int i = 0; i < topicNames_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topicNames_.getRaw(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -147,16 +105,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, cluster_);
-    }
     {
       int dataSize = 0;
-      for (int i = 0; i < topic_.size(); i++) {
-        dataSize += computeStringSizeNoTag(topic_.getRaw(i));
+      for (int i = 0; i < topicNames_.size(); i++) {
+        dataSize += computeStringSizeNoTag(topicNames_.getRaw(i));
       }
       size += dataSize;
-      size += 1 * getTopicList().size();
+      size += 1 * getTopicNamesList().size();
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -173,10 +128,8 @@ private static final long serialVersionUID = 0L;
     }
     org.ostara.remote.proto.server.QueryTopicInfoRequest other = (org.ostara.remote.proto.server.QueryTopicInfoRequest) obj;
 
-    if (!getCluster()
-        .equals(other.getCluster())) return false;
-    if (!getTopicList()
-        .equals(other.getTopicList())) return false;
+    if (!getTopicNamesList()
+        .equals(other.getTopicNamesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -188,11 +141,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
-    hash = (53 * hash) + getCluster().hashCode();
-    if (getTopicCount() > 0) {
-      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-      hash = (53 * hash) + getTopicList().hashCode();
+    if (getTopicNamesCount() > 0) {
+      hash = (37 * hash) + TOPIC_NAMES_FIELD_NUMBER;
+      hash = (53 * hash) + getTopicNamesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -322,9 +273,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      cluster_ = "";
-
-      topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
@@ -353,12 +302,11 @@ private static final long serialVersionUID = 0L;
     public org.ostara.remote.proto.server.QueryTopicInfoRequest buildPartial() {
       org.ostara.remote.proto.server.QueryTopicInfoRequest result = new org.ostara.remote.proto.server.QueryTopicInfoRequest(this);
       int from_bitField0_ = bitField0_;
-      result.cluster_ = cluster_;
       if (((bitField0_ & 0x00000001) != 0)) {
-        topic_ = topic_.getUnmodifiableView();
+        topicNames_ = topicNames_.getUnmodifiableView();
         bitField0_ = (bitField0_ & ~0x00000001);
       }
-      result.topic_ = topic_;
+      result.topicNames_ = topicNames_;
       onBuilt();
       return result;
     }
@@ -407,17 +355,13 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.ostara.remote.proto.server.QueryTopicInfoRequest other) {
       if (other == org.ostara.remote.proto.server.QueryTopicInfoRequest.getDefaultInstance()) return this;
-      if (!other.getCluster().isEmpty()) {
-        cluster_ = other.cluster_;
-        onChanged();
-      }
-      if (!other.topic_.isEmpty()) {
-        if (topic_.isEmpty()) {
-          topic_ = other.topic_;
+      if (!other.topicNames_.isEmpty()) {
+        if (topicNames_.isEmpty()) {
+          topicNames_ = other.topicNames_;
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          ensureTopicIsMutable();
-          topic_.addAll(other.topic_);
+          ensureTopicNamesIsMutable();
+          topicNames_.addAll(other.topicNames_);
         }
         onChanged();
       }
@@ -448,16 +392,11 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              cluster_ = input.readStringRequireUtf8();
-
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureTopicNamesIsMutable();
+              topicNames_.add(s);
               break;
             } // case 10
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-              ensureTopicIsMutable();
-              topic_.add(s);
-              break;
-            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -475,188 +414,112 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object cluster_ = "";
-    /**
-     * <code>string cluster = 1;</code>
-     * @return The cluster.
-     */
-    public java.lang.String getCluster() {
-      java.lang.Object ref = cluster_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        cluster_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string cluster = 1;</code>
-     * @return The bytes for cluster.
-     */
-    public com.google.protobuf.ByteString
-        getClusterBytes() {
-      java.lang.Object ref = cluster_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        cluster_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string cluster = 1;</code>
-     * @param value The cluster to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCluster(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      cluster_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string cluster = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCluster() {
-      
-      cluster_ = getDefaultInstance().getCluster();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string cluster = 1;</code>
-     * @param value The bytes for cluster to set.
-     * @return This builder for chaining.
-     */
-    public Builder setClusterBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      cluster_ = value;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.LazyStringList topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureTopicIsMutable() {
+    private com.google.protobuf.LazyStringList topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    private void ensureTopicNamesIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        topic_ = new com.google.protobuf.LazyStringArrayList(topic_);
+        topicNames_ = new com.google.protobuf.LazyStringArrayList(topicNames_);
         bitField0_ |= 0x00000001;
        }
     }
     /**
-     * <code>repeated string topic = 2;</code>
-     * @return A list containing the topic.
+     * <code>repeated string topic_names = 1;</code>
+     * @return A list containing the topicNames.
      */
     public com.google.protobuf.ProtocolStringList
-        getTopicList() {
-      return topic_.getUnmodifiableView();
+        getTopicNamesList() {
+      return topicNames_.getUnmodifiableView();
     }
     /**
-     * <code>repeated string topic = 2;</code>
-     * @return The count of topic.
+     * <code>repeated string topic_names = 1;</code>
+     * @return The count of topicNames.
      */
-    public int getTopicCount() {
-      return topic_.size();
+    public int getTopicNamesCount() {
+      return topicNames_.size();
     }
     /**
-     * <code>repeated string topic = 2;</code>
+     * <code>repeated string topic_names = 1;</code>
      * @param index The index of the element to return.
-     * @return The topic at the given index.
+     * @return The topicNames at the given index.
      */
-    public java.lang.String getTopic(int index) {
-      return topic_.get(index);
+    public java.lang.String getTopicNames(int index) {
+      return topicNames_.get(index);
     }
     /**
-     * <code>repeated string topic = 2;</code>
+     * <code>repeated string topic_names = 1;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the topic at the given index.
+     * @return The bytes of the topicNames at the given index.
      */
     public com.google.protobuf.ByteString
-        getTopicBytes(int index) {
-      return topic_.getByteString(index);
+        getTopicNamesBytes(int index) {
+      return topicNames_.getByteString(index);
     }
     /**
-     * <code>repeated string topic = 2;</code>
+     * <code>repeated string topic_names = 1;</code>
      * @param index The index to set the value at.
-     * @param value The topic to set.
+     * @param value The topicNames to set.
      * @return This builder for chaining.
      */
-    public Builder setTopic(
+    public Builder setTopicNames(
         int index, java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureTopicIsMutable();
-      topic_.set(index, value);
+  ensureTopicNamesIsMutable();
+      topicNames_.set(index, value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string topic = 2;</code>
-     * @param value The topic to add.
+     * <code>repeated string topic_names = 1;</code>
+     * @param value The topicNames to add.
      * @return This builder for chaining.
      */
-    public Builder addTopic(
+    public Builder addTopicNames(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureTopicIsMutable();
-      topic_.add(value);
+  ensureTopicNamesIsMutable();
+      topicNames_.add(value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string topic = 2;</code>
-     * @param values The topic to add.
+     * <code>repeated string topic_names = 1;</code>
+     * @param values The topicNames to add.
      * @return This builder for chaining.
      */
-    public Builder addAllTopic(
+    public Builder addAllTopicNames(
         java.lang.Iterable<java.lang.String> values) {
-      ensureTopicIsMutable();
+      ensureTopicNamesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, topic_);
+          values, topicNames_);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string topic = 2;</code>
+     * <code>repeated string topic_names = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTopic() {
-      topic_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    public Builder clearTopicNames() {
+      topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string topic = 2;</code>
-     * @param value The bytes of the topic to add.
+     * <code>repeated string topic_names = 1;</code>
+     * @param value The bytes of the topicNames to add.
      * @return This builder for chaining.
      */
-    public Builder addTopicBytes(
+    public Builder addTopicNamesBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      ensureTopicIsMutable();
-      topic_.add(value);
+      ensureTopicNamesIsMutable();
+      topicNames_.add(value);
       onChanged();
       return this;
     }

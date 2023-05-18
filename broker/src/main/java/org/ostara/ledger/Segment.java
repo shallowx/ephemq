@@ -8,9 +8,10 @@ import java.lang.ref.ReferenceQueue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.concurrent.ThreadSafe;
+
+import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.dispatch.ChunkRecord;
 
 @ThreadSafe
 public class Segment {
@@ -56,8 +57,8 @@ public class Segment {
                 finalBuf.writeInt(queueLength);
                 finalBuf.writeBytes(queue.getBytes(UTF_8));
 
-                finalBuf.writeInt(offset.epoch());
-                finalBuf.writeLong(offset.index());
+                finalBuf.writeInt(offset.getEpoch());
+                finalBuf.writeLong(offset.getIndex());
                 finalBuf.writeBytes(payload);
 
             } catch (Throwable t) {
@@ -96,35 +97,6 @@ public class Segment {
         logger.debug("Segment has no readable completed message, location={}", location);
         return null;
     }
-
-    public ChunkRecord readChunkRecord(int position, int bytesLimit) {
-        ByteBufHolder theHolder = holder;
-        if (theHolder != null) {
-            ByteBuf payload = theHolder.payload;
-            int limit = tailLocation;
-
-            int count = 0;
-            int bytes = 0;
-            int location = position;
-            while (location < limit) {
-                int length = payload.getInt(location);
-                int theBytes = length + 8;
-                if (theBytes + bytes > limit && count != 0) {
-                    break;
-                }
-
-                count++;
-                bytes += theBytes;
-                location += theBytes;
-            }
-
-            ByteBuf buf = payload.retainedSlice(position, bytes);
-            return new ChunkRecord(count, buf);
-        }
-        
-        return null;
-    }
-
     public int freeBytes() {
         ByteBufHolder theHolder = holder;
         return theHolder == null ? 0 : theHolder.payload.writableBytes();
@@ -183,8 +155,8 @@ public class Segment {
         }
 
         ByteBuf theBuf = holder.payload;
-        int theEpoch = offset.epoch();
-        long theIndex = offset.index();
+        int theEpoch = offset.getEpoch();
+        long theIndex = offset.getIndex();
 
         int limit = tailLocation;
         int position = headLocation;

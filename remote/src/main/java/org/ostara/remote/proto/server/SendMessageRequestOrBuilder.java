@@ -14,26 +14,8 @@ public interface SendMessageRequestOrBuilder extends
   int getLedger();
 
   /**
-   * <code>string queue = 2;</code>
-   * @return The queue.
+   * <code>int32 marker = 2;</code>
+   * @return The marker.
    */
-  java.lang.String getQueue();
-  /**
-   * <code>string queue = 2;</code>
-   * @return The bytes for queue.
-   */
-  com.google.protobuf.ByteString
-      getQueueBytes();
-
-  /**
-   * <code>string topic = 3;</code>
-   * @return The topic.
-   */
-  java.lang.String getTopic();
-  /**
-   * <code>string topic = 3;</code>
-   * @return The bytes for topic.
-   */
-  com.google.protobuf.ByteString
-      getTopicBytes();
+  int getMarker();
 }

@@ -36,18 +36,6 @@ private static final long serialVersionUID = 0L;
     return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_TopicMetadata_descriptor;
   }
 
-  @SuppressWarnings({"rawtypes"})
-  @java.lang.Override
-  protected com.google.protobuf.MapField internalGetMapField(
-      int number) {
-    switch (number) {
-      case 2:
-        return internalGetPartitions();
-      default:
-        throw new RuntimeException(
-            "Invalid map field number: " + number);
-    }
-  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -94,85 +82,26 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PARTITIONS_FIELD_NUMBER = 2;
-  private static final class PartitionsDefaultEntryHolder {
-    static final com.google.protobuf.MapEntry<
-        java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> defaultEntry =
-            com.google.protobuf.MapEntry
-            .<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>newDefaultInstance(
-                org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_TopicMetadata_PartitionsEntry_descriptor, 
-                com.google.protobuf.WireFormat.FieldType.INT32,
-                0,
-                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                org.ostara.remote.proto.PartitionMetadata.getDefaultInstance());
-  }
-  private com.google.protobuf.MapField<
-      java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> partitions_;
-  private com.google.protobuf.MapField<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-  internalGetPartitions() {
-    if (partitions_ == null) {
-      return com.google.protobuf.MapField.emptyMapField(
-          PartitionsDefaultEntryHolder.defaultEntry);
-    }
-    return partitions_;
-  }
-
-  public int getPartitionsCount() {
-    return internalGetPartitions().getMap().size();
-  }
+  public static final int ID_FIELD_NUMBER = 2;
+  private int id_;
   /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-   */
-
-  @java.lang.Override
-  public boolean containsPartitions(
-      int key) {
-    
-    return internalGetPartitions().getMap().containsKey(key);
-  }
-  /**
-   * Use {@link #getPartitionsMap()} instead.
+   * <code>int32 id = 2;</code>
+   * @return The id.
    */
   @java.lang.Override
-  @java.lang.Deprecated
-  public java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> getPartitions() {
-    return getPartitionsMap();
+  public int getId() {
+    return id_;
   }
+
+  public static final int VERSION_FIELD_NUMBER = 3;
+  private int version_;
   /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   * <code>int32 version = 3;</code>
+   * @return The version.
    */
   @java.lang.Override
-
-  public java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> getPartitionsMap() {
-    return internalGetPartitions().getMap();
-  }
-  /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-   */
-  @java.lang.Override
-
-  public org.ostara.remote.proto.PartitionMetadata getPartitionsOrDefault(
-      int key,
-      org.ostara.remote.proto.PartitionMetadata defaultValue) {
-    
-    java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> map =
-        internalGetPartitions().getMap();
-    return map.containsKey(key) ? map.get(key) : defaultValue;
-  }
-  /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-   */
-  @java.lang.Override
-
-  public org.ostara.remote.proto.PartitionMetadata getPartitionsOrThrow(
-      int key) {
-    
-    java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> map =
-        internalGetPartitions().getMap();
-    if (!map.containsKey(key)) {
-      throw new java.lang.IllegalArgumentException();
-    }
-    return map.get(key);
+  public int getVersion() {
+    return version_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -192,12 +121,12 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    com.google.protobuf.GeneratedMessageV3
-      .serializeIntegerMapTo(
-        output,
-        internalGetPartitions(),
-        PartitionsDefaultEntryHolder.defaultEntry,
-        2);
+    if (id_ != 0) {
+      output.writeInt32(2, id_);
+    }
+    if (version_ != 0) {
+      output.writeInt32(3, version_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -210,15 +139,13 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    for (java.util.Map.Entry<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> entry
-         : internalGetPartitions().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-      partitions__ = PartitionsDefaultEntryHolder.defaultEntry.newBuilderForType()
-          .setKey(entry.getKey())
-          .setValue(entry.getValue())
-          .build();
+    if (id_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, partitions__);
+        .computeInt32Size(2, id_);
+    }
+    if (version_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, version_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -237,8 +164,10 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (!internalGetPartitions().equals(
-        other.internalGetPartitions())) return false;
+    if (getId()
+        != other.getId()) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -252,10 +181,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (!internalGetPartitions().getMap().isEmpty()) {
-      hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetPartitions().hashCode();
-    }
+    hash = (37 * hash) + ID_FIELD_NUMBER;
+    hash = (53 * hash) + getId();
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -363,28 +292,6 @@ private static final long serialVersionUID = 0L;
       return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_TopicMetadata_descriptor;
     }
 
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetPartitions();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMutableMapField(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetMutablePartitions();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -408,7 +315,10 @@ private static final long serialVersionUID = 0L;
       super.clear();
       name_ = "";
 
-      internalGetMutablePartitions().clear();
+      id_ = 0;
+
+      version_ = 0;
+
       return this;
     }
 
@@ -435,10 +345,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.ostara.remote.proto.TopicMetadata buildPartial() {
       org.ostara.remote.proto.TopicMetadata result = new org.ostara.remote.proto.TopicMetadata(this);
-      int from_bitField0_ = bitField0_;
       result.name_ = name_;
-      result.partitions_ = internalGetPartitions();
-      result.partitions_.makeImmutable();
+      result.id_ = id_;
+      result.version_ = version_;
       onBuilt();
       return result;
     }
@@ -491,8 +400,12 @@ private static final long serialVersionUID = 0L;
         name_ = other.name_;
         onChanged();
       }
-      internalGetMutablePartitions().mergeFrom(
-          other.internalGetPartitions());
+      if (other.getId() != 0) {
+        setId(other.getId());
+      }
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -524,14 +437,16 @@ private static final long serialVersionUID = 0L;
 
               break;
             } // case 10
-            case 18: {
-              com.google.protobuf.MapEntry<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-              partitions__ = input.readMessage(
-                  PartitionsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutablePartitions().getMutableMap().put(
-                  partitions__.getKey(), partitions__.getValue());
+            case 16: {
+              id_ = input.readInt32();
+
               break;
-            } // case 18
+            } // case 16
+            case 24: {
+              version_ = input.readInt32();
+
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -547,7 +462,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object name_ = "";
     /**
@@ -625,134 +539,65 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.MapField<
-        java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> partitions_;
-    private com.google.protobuf.MapField<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-    internalGetPartitions() {
-      if (partitions_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            PartitionsDefaultEntryHolder.defaultEntry);
-      }
-      return partitions_;
-    }
-    private com.google.protobuf.MapField<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-    internalGetMutablePartitions() {
-      onChanged();;
-      if (partitions_ == null) {
-        partitions_ = com.google.protobuf.MapField.newMapField(
-            PartitionsDefaultEntryHolder.defaultEntry);
-      }
-      if (!partitions_.isMutable()) {
-        partitions_ = partitions_.copy();
-      }
-      return partitions_;
-    }
-
-    public int getPartitionsCount() {
-      return internalGetPartitions().getMap().size();
+    private int id_ ;
+    /**
+     * <code>int32 id = 2;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
     }
     /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+     * <code>int32 id = 2;</code>
+     * @param value The id to set.
+     * @return This builder for chaining.
      */
-
-    @java.lang.Override
-    public boolean containsPartitions(
-        int key) {
+    public Builder setId(int value) {
       
-      return internalGetPartitions().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getPartitionsMap()} instead.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> getPartitions() {
-      return getPartitionsMap();
-    }
-    /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    @java.lang.Override
-
-    public java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> getPartitionsMap() {
-      return internalGetPartitions().getMap();
-    }
-    /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    @java.lang.Override
-
-    public org.ostara.remote.proto.PartitionMetadata getPartitionsOrDefault(
-        int key,
-        org.ostara.remote.proto.PartitionMetadata defaultValue) {
-      
-      java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> map =
-          internalGetPartitions().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    @java.lang.Override
-
-    public org.ostara.remote.proto.PartitionMetadata getPartitionsOrThrow(
-        int key) {
-      
-      java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> map =
-          internalGetPartitions().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
-    public Builder clearPartitions() {
-      internalGetMutablePartitions().getMutableMap()
-          .clear();
+      id_ = value;
+      onChanged();
       return this;
     }
     /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+     * <code>int32 id = 2;</code>
+     * @return This builder for chaining.
      */
-
-    public Builder removePartitions(
-        int key) {
+    public Builder clearId() {
       
-      internalGetMutablePartitions().getMutableMap()
-          .remove(key);
+      id_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int version_ ;
+    /**
+     * <code>int32 version = 3;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <code>int32 version = 3;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+      
+      version_ = value;
+      onChanged();
       return this;
     }
     /**
-     * Use alternate mutation accessors instead.
+     * <code>int32 version = 3;</code>
+     * @return This builder for chaining.
      */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-    getMutablePartitions() {
-      return internalGetMutablePartitions().getMutableMap();
-    }
-    /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    public Builder putPartitions(
-        int key,
-        org.ostara.remote.proto.PartitionMetadata value) {
+    public Builder clearVersion() {
       
-      if (value == null) {
-  throw new NullPointerException("map value");
-}
-
-      internalGetMutablePartitions().getMutableMap()
-          .put(key, value);
-      return this;
-    }
-    /**
-     * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-
-    public Builder putAllPartitions(
-        java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> values) {
-      internalGetMutablePartitions().getMutableMap()
-          .putAll(values);
+      version_ = 0;
+      onChanged();
       return this;
     }
     @java.lang.Override

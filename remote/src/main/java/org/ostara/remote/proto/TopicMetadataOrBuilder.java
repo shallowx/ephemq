@@ -20,38 +20,14 @@ public interface TopicMetadataOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   * <code>int32 id = 2;</code>
+   * @return The id.
    */
-  int getPartitionsCount();
-  /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-   */
-  boolean containsPartitions(
-      int key);
-  /**
-   * Use {@link #getPartitionsMap()} instead.
-   */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-  getPartitions();
-  /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-   */
-  java.util.Map<java.lang.Integer, org.ostara.remote.proto.PartitionMetadata>
-  getPartitionsMap();
-  /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-   */
+  int getId();
 
-  /* nullable */
-org.ostara.remote.proto.PartitionMetadata getPartitionsOrDefault(
-      int key,
-      /* nullable */
-org.ostara.remote.proto.PartitionMetadata defaultValue);
   /**
-   * <code>map&lt;int32, .ostara.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   * <code>int32 version = 3;</code>
+   * @return The version.
    */
-
-  org.ostara.remote.proto.PartitionMetadata getPartitionsOrThrow(
-      int key);
+  int getVersion();
 }

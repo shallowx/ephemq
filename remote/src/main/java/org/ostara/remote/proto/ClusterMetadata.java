@@ -36,18 +36,6 @@ private static final long serialVersionUID = 0L;
     return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_descriptor;
   }
 
-  @SuppressWarnings({"rawtypes"})
-  @java.lang.Override
-  protected com.google.protobuf.MapField internalGetMapField(
-      int number) {
-    switch (number) {
-      case 2:
-        return internalGetMetadata();
-      default:
-        throw new RuntimeException(
-            "Invalid map field number: " + number);
-    }
-  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -94,87 +82,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int METADATA_FIELD_NUMBER = 2;
-  private static final class MetadataDefaultEntryHolder {
-    static final com.google.protobuf.MapEntry<
-        java.lang.String, org.ostara.remote.proto.NodeMetadata> defaultEntry =
-            com.google.protobuf.MapEntry
-            .<java.lang.String, org.ostara.remote.proto.NodeMetadata>newDefaultInstance(
-                org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_descriptor, 
-                com.google.protobuf.WireFormat.FieldType.STRING,
-                "",
-                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                org.ostara.remote.proto.NodeMetadata.getDefaultInstance());
-  }
-  private com.google.protobuf.MapField<
-      java.lang.String, org.ostara.remote.proto.NodeMetadata> metadata_;
-  private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-  internalGetMetadata() {
-    if (metadata_ == null) {
-      return com.google.protobuf.MapField.emptyMapField(
-          MetadataDefaultEntryHolder.defaultEntry);
-    }
-    return metadata_;
-  }
-
-  public int getMetadataCount() {
-    return internalGetMetadata().getMap().size();
-  }
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-
-  @java.lang.Override
-  public boolean containsMetadata(
-      java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    return internalGetMetadata().getMap().containsKey(key);
-  }
-  /**
-   * Use {@link #getMetadataMap()} instead.
-   */
-  @java.lang.Override
-  @java.lang.Deprecated
-  public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadata() {
-    return getMetadataMap();
-  }
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-  @java.lang.Override
-
-  public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadataMap() {
-    return internalGetMetadata().getMap();
-  }
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-  @java.lang.Override
-
-  public org.ostara.remote.proto.NodeMetadata getMetadataOrDefault(
-      java.lang.String key,
-      org.ostara.remote.proto.NodeMetadata defaultValue) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
-        internalGetMetadata().getMap();
-    return map.containsKey(key) ? map.get(key) : defaultValue;
-  }
-  /**
-   * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-   */
-  @java.lang.Override
-
-  public org.ostara.remote.proto.NodeMetadata getMetadataOrThrow(
-      java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
-        internalGetMetadata().getMap();
-    if (!map.containsKey(key)) {
-      throw new java.lang.IllegalArgumentException();
-    }
-    return map.get(key);
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -192,12 +99,6 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    com.google.protobuf.GeneratedMessageV3
-      .serializeStringMapTo(
-        output,
-        internalGetMetadata(),
-        MetadataDefaultEntryHolder.defaultEntry,
-        2);
     getUnknownFields().writeTo(output);
   }
 
@@ -209,16 +110,6 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-    }
-    for (java.util.Map.Entry<java.lang.String, org.ostara.remote.proto.NodeMetadata> entry
-         : internalGetMetadata().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-      metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
-          .setKey(entry.getKey())
-          .setValue(entry.getValue())
-          .build();
-      size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, metadata__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -237,8 +128,6 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (!internalGetMetadata().equals(
-        other.internalGetMetadata())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -252,10 +141,6 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (!internalGetMetadata().getMap().isEmpty()) {
-      hash = (37 * hash) + METADATA_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetMetadata().hashCode();
-    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -363,28 +248,6 @@ private static final long serialVersionUID = 0L;
       return org.ostara.remote.proto.MessageMetadataProto.internal_static_ostara_protobuf_ClusterMetadata_descriptor;
     }
 
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetMetadata();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMutableMapField(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetMutableMetadata();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -408,7 +271,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       name_ = "";
 
-      internalGetMutableMetadata().clear();
       return this;
     }
 
@@ -435,10 +297,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.ostara.remote.proto.ClusterMetadata buildPartial() {
       org.ostara.remote.proto.ClusterMetadata result = new org.ostara.remote.proto.ClusterMetadata(this);
-      int from_bitField0_ = bitField0_;
       result.name_ = name_;
-      result.metadata_ = internalGetMetadata();
-      result.metadata_.makeImmutable();
       onBuilt();
       return result;
     }
@@ -491,8 +350,6 @@ private static final long serialVersionUID = 0L;
         name_ = other.name_;
         onChanged();
       }
-      internalGetMutableMetadata().mergeFrom(
-          other.internalGetMetadata());
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -524,14 +381,6 @@ private static final long serialVersionUID = 0L;
 
               break;
             } // case 10
-            case 18: {
-              com.google.protobuf.MapEntry<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-              metadata__ = input.readMessage(
-                  MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableMetadata().getMutableMap().put(
-                  metadata__.getKey(), metadata__.getValue());
-              break;
-            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -547,7 +396,6 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object name_ = "";
     /**
@@ -622,137 +470,6 @@ private static final long serialVersionUID = 0L;
       
       name_ = value;
       onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.MapField<
-        java.lang.String, org.ostara.remote.proto.NodeMetadata> metadata_;
-    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-    internalGetMetadata() {
-      if (metadata_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            MetadataDefaultEntryHolder.defaultEntry);
-      }
-      return metadata_;
-    }
-    private com.google.protobuf.MapField<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-    internalGetMutableMetadata() {
-      onChanged();;
-      if (metadata_ == null) {
-        metadata_ = com.google.protobuf.MapField.newMapField(
-            MetadataDefaultEntryHolder.defaultEntry);
-      }
-      if (!metadata_.isMutable()) {
-        metadata_ = metadata_.copy();
-      }
-      return metadata_;
-    }
-
-    public int getMetadataCount() {
-      return internalGetMetadata().getMap().size();
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-
-    @java.lang.Override
-    public boolean containsMetadata(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetMetadata().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getMetadataMap()} instead.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadata() {
-      return getMetadataMap();
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    @java.lang.Override
-
-    public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> getMetadataMap() {
-      return internalGetMetadata().getMap();
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    @java.lang.Override
-
-    public org.ostara.remote.proto.NodeMetadata getMetadataOrDefault(
-        java.lang.String key,
-        org.ostara.remote.proto.NodeMetadata defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
-          internalGetMetadata().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    @java.lang.Override
-
-    public org.ostara.remote.proto.NodeMetadata getMetadataOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> map =
-          internalGetMetadata().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
-    public Builder clearMetadata() {
-      internalGetMutableMetadata().getMutableMap()
-          .clear();
-      return this;
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-
-    public Builder removeMetadata(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      internalGetMutableMetadata().getMutableMap()
-          .remove(key);
-      return this;
-    }
-    /**
-     * Use alternate mutation accessors instead.
-     */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata>
-    getMutableMetadata() {
-      return internalGetMutableMetadata().getMutableMap();
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-    public Builder putMetadata(
-        java.lang.String key,
-        org.ostara.remote.proto.NodeMetadata value) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      if (value == null) {
-  throw new NullPointerException("map value");
-}
-
-      internalGetMutableMetadata().getMutableMap()
-          .put(key, value);
-      return this;
-    }
-    /**
-     * <code>map&lt;string, .ostara.protobuf.NodeMetadata&gt; metadata = 2;</code>
-     */
-
-    public Builder putAllMetadata(
-        java.util.Map<java.lang.String, org.ostara.remote.proto.NodeMetadata> values) {
-      internalGetMutableMetadata().getMutableMap()
-          .putAll(values);
       return this;
     }
     @java.lang.Override

@@ -15,35 +15,70 @@ public final class MessageMetadataProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_TopicMetadata_descriptor;
+    internal_static_ostara_protobuf_MessageId_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_TopicMetadata_fieldAccessorTable;
+      internal_static_ostara_protobuf_MessageId_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_TopicMetadata_PartitionsEntry_descriptor;
+    internal_static_ostara_protobuf_MessageOffset_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_TopicMetadata_PartitionsEntry_fieldAccessorTable;
+      internal_static_ostara_protobuf_MessageOffset_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_PartitionMetadata_descriptor;
+    internal_static_ostara_protobuf_MessageMetadata_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_PartitionMetadata_fieldAccessorTable;
+      internal_static_ostara_protobuf_MessageMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_MessageMetadata_ExtrasEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_MessageMetadata_ExtrasEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ostara_protobuf_ClusterMetadata_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_ClusterMetadata_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ostara_protobuf_NodeMetadata_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_NodeMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_ClusterInfo_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_ClusterInfo_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_ClusterInfo_NodesEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_TopicMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_TopicMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_PartitionMetadata_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_PartitionMetadata_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_TopicInfo_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_TopicInfo_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_TopicInfo_PartitionsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_TopicInfo_PartitionsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_TopicSegmentInfo_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_TopicSegmentInfo_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -53,64 +88,119 @@ public final class MessageMetadataProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014ostara.proto\022\017ostara.protobuf\"\270\001\n\rTopi" +
-      "cMetadata\022\014\n\004name\030\001 \001(\t\022B\n\npartitions\030\002 " +
-      "\003(\0132..ostara.protobuf.TopicMetadata.Part" +
-      "itionsEntry\032U\n\017PartitionsEntry\022\013\n\003key\030\001 " +
-      "\001(\005\0221\n\005value\030\002 \001(\0132\".ostara.protobuf.Par" +
-      "titionMetadata:\0028\001\"R\n\021PartitionMetadata\022" +
-      "\n\n\002id\030\001 \001(\005\022\017\n\007latency\030\002 \001(\005\022\016\n\006leader\030\003" +
-      " \001(\t\022\020\n\010replicas\030\004 \003(\t\"\261\001\n\017ClusterMetada" +
-      "ta\022\014\n\004name\030\001 \001(\t\022@\n\010metadata\030\002 \003(\0132..ost" +
-      "ara.protobuf.ClusterMetadata.MetadataEnt" +
-      "ry\032N\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022,\n\005valu" +
-      "e\030\002 \001(\0132\035.ostara.protobuf.NodeMetadata:\002" +
-      "8\001\"r\n\014NodeMetadata\022\017\n\007cluster\030\001 \001(\t\022\014\n\004n" +
-      "ame\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\r\n" +
-      "\005state\030\005 \001(\t\022\030\n\020lastKeepLiveTime\030\006 \001(\003B1" +
-      "\n\027org.ostara.remote.protoB\024MessageMetada" +
-      "taProtoP\001b\006proto3"
+      "\n\014ostara.proto\022\017ostara.protobuf\"9\n\tMessa" +
+      "geId\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005i" +
+      "ndex\030\003 \001(\005\"-\n\rMessageOffset\022\r\n\005epoch\030\001 \001" +
+      "(\005\022\r\n\005index\030\002 \001(\005\"\234\001\n\017MessageMetadata\022\r\n" +
+      "\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022<\n\006extras\030\003 " +
+      "\003(\0132,.ostara.protobuf.MessageMetadata.Ex" +
+      "trasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n" +
+      "\005value\030\002 \001(\t:\0028\001\"\037\n\017ClusterMetadata\022\014\n\004n" +
+      "ame\030\001 \001(\t\"L\n\014NodeMetadata\022\024\n\014cluster_nam" +
+      "e\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004por" +
+      "t\030\004 \001(\005\"\305\001\n\013ClusterInfo\0221\n\007cluster\030\001 \001(\013" +
+      "2 .ostara.protobuf.ClusterMetadata\0226\n\005no" +
+      "des\030\002 \003(\0132\'.ostara.protobuf.ClusterInfo." +
+      "NodesEntry\032K\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022,\n" +
+      "\005value\030\002 \001(\0132\035.ostara.protobuf.NodeMetad" +
+      "ata:\0028\001\":\n\rTopicMetadata\022\014\n\004name\030\001 \001(\t\022\n" +
+      "\n\002id\030\002 \001(\005\022\017\n\007version\030\003 \001(\005\"\225\001\n\021Partitio" +
+      "nMetadata\022\022\n\ntopic_name\030\001 \001(\t\022\n\n\002id\030\002 \001(" +
+      "\005\022\016\n\006ledger\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\026\n\016lead" +
+      "er_node_id\030\005 \001(\t\022\030\n\020replica_node_ids\030\006 \003" +
+      "(\t\022\017\n\007version\030\007 \001(\005\"\321\001\n\tTopicInfo\022-\n\005top" +
+      "ic\030\001 \001(\0132\036.ostara.protobuf.TopicMetadata" +
+      "\022>\n\npartitions\030\002 \003(\0132*.ostara.protobuf.T" +
+      "opicInfo.PartitionsEntry\032U\n\017PartitionsEn" +
+      "try\022\013\n\003key\030\001 \001(\005\0221\n\005value\030\002 \001(\0132\".ostara" +
+      ".protobuf.PartitionMetadata:\0028\001\"c\n\020Topic" +
+      "SegmentInfo\022\032\n\022segmentRollingSize\030\001 \001(\005\022" +
+      "\032\n\022segmentRetainCount\030\002 \001(\005\022\027\n\017segmentRe" +
+      "tainMs\030\003 \001(\005B1\n\027org.ostara.remote.protoB" +
+      "\024MessageMetadataProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_ostara_protobuf_TopicMetadata_descriptor =
+    internal_static_ostara_protobuf_MessageId_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_ostara_protobuf_TopicMetadata_fieldAccessorTable = new
+    internal_static_ostara_protobuf_MessageId_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_TopicMetadata_descriptor,
-        new java.lang.String[] { "Name", "Partitions", });
-    internal_static_ostara_protobuf_TopicMetadata_PartitionsEntry_descriptor =
-      internal_static_ostara_protobuf_TopicMetadata_descriptor.getNestedTypes().get(0);
-    internal_static_ostara_protobuf_TopicMetadata_PartitionsEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_TopicMetadata_PartitionsEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
-    internal_static_ostara_protobuf_PartitionMetadata_descriptor =
+        internal_static_ostara_protobuf_MessageId_descriptor,
+        new java.lang.String[] { "Ledger", "Epoch", "Index", });
+    internal_static_ostara_protobuf_MessageOffset_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_ostara_protobuf_PartitionMetadata_fieldAccessorTable = new
+    internal_static_ostara_protobuf_MessageOffset_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_PartitionMetadata_descriptor,
-        new java.lang.String[] { "Id", "Latency", "Leader", "Replicas", });
-    internal_static_ostara_protobuf_ClusterMetadata_descriptor =
+        internal_static_ostara_protobuf_MessageOffset_descriptor,
+        new java.lang.String[] { "Epoch", "Index", });
+    internal_static_ostara_protobuf_MessageMetadata_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_ostara_protobuf_MessageMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MessageMetadata_descriptor,
+        new java.lang.String[] { "Topic", "Queue", "Extras", });
+    internal_static_ostara_protobuf_MessageMetadata_ExtrasEntry_descriptor =
+      internal_static_ostara_protobuf_MessageMetadata_descriptor.getNestedTypes().get(0);
+    internal_static_ostara_protobuf_MessageMetadata_ExtrasEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MessageMetadata_ExtrasEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_ostara_protobuf_ClusterMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_ostara_protobuf_ClusterMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_ClusterMetadata_descriptor,
-        new java.lang.String[] { "Name", "Metadata", });
-    internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_descriptor =
-      internal_static_ostara_protobuf_ClusterMetadata_descriptor.getNestedTypes().get(0);
-    internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_ClusterMetadata_MetadataEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
+        new java.lang.String[] { "Name", });
     internal_static_ostara_protobuf_NodeMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_ostara_protobuf_NodeMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_NodeMetadata_descriptor,
-        new java.lang.String[] { "Cluster", "Name", "Host", "Port", "State", "LastKeepLiveTime", });
+        new java.lang.String[] { "ClusterName", "Id", "Host", "Port", });
+    internal_static_ostara_protobuf_ClusterInfo_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_ostara_protobuf_ClusterInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_ClusterInfo_descriptor,
+        new java.lang.String[] { "Cluster", "Nodes", });
+    internal_static_ostara_protobuf_ClusterInfo_NodesEntry_descriptor =
+      internal_static_ostara_protobuf_ClusterInfo_descriptor.getNestedTypes().get(0);
+    internal_static_ostara_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_ClusterInfo_NodesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_ostara_protobuf_TopicMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_ostara_protobuf_TopicMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_TopicMetadata_descriptor,
+        new java.lang.String[] { "Name", "Id", "Version", });
+    internal_static_ostara_protobuf_PartitionMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_ostara_protobuf_PartitionMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_PartitionMetadata_descriptor,
+        new java.lang.String[] { "TopicName", "Id", "Ledger", "Epoch", "LeaderNodeId", "ReplicaNodeIds", "Version", });
+    internal_static_ostara_protobuf_TopicInfo_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_ostara_protobuf_TopicInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_TopicInfo_descriptor,
+        new java.lang.String[] { "Topic", "Partitions", });
+    internal_static_ostara_protobuf_TopicInfo_PartitionsEntry_descriptor =
+      internal_static_ostara_protobuf_TopicInfo_descriptor.getNestedTypes().get(0);
+    internal_static_ostara_protobuf_TopicInfo_PartitionsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_TopicInfo_PartitionsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_ostara_protobuf_TopicSegmentInfo_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_ostara_protobuf_TopicSegmentInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_TopicSegmentInfo_descriptor,
+        new java.lang.String[] { "SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

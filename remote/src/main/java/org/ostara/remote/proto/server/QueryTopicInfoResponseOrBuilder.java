@@ -8,38 +8,38 @@ public interface QueryTopicInfoResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
-  int getTopicsCount();
+  int getTopicInfosCount();
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
-  boolean containsTopics(
+  boolean containsTopicInfos(
       java.lang.String key);
   /**
-   * Use {@link #getTopicsMap()} instead.
+   * Use {@link #getTopicInfosMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-  getTopics();
+  java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo>
+  getTopicInfos();
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
-  java.util.Map<java.lang.String, org.ostara.remote.proto.TopicMetadata>
-  getTopicsMap();
+  java.util.Map<java.lang.String, org.ostara.remote.proto.TopicInfo>
+  getTopicInfosMap();
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
 
   /* nullable */
-org.ostara.remote.proto.TopicMetadata getTopicsOrDefault(
+org.ostara.remote.proto.TopicInfo getTopicInfosOrDefault(
       java.lang.String key,
       /* nullable */
-org.ostara.remote.proto.TopicMetadata defaultValue);
+org.ostara.remote.proto.TopicInfo defaultValue);
   /**
-   * <code>map&lt;string, .ostara.protobuf.TopicMetadata&gt; topics = 1;</code>
+   * <code>map&lt;string, .ostara.protobuf.TopicInfo&gt; topic_infos = 1;</code>
    */
 
-  org.ostara.remote.proto.TopicMetadata getTopicsOrThrow(
+  org.ostara.remote.proto.TopicInfo getTopicInfosOrThrow(
       java.lang.String key);
 }

@@ -8,30 +8,18 @@ public interface CleanSubscribeRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 ledgerId = 1;</code>
-   * @return The ledgerId.
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
    */
-  int getLedgerId();
+  int getLedger();
 
   /**
-   * <code>string queue = 2;</code>
-   * @return The queue.
-   */
-  java.lang.String getQueue();
-  /**
-   * <code>string queue = 2;</code>
-   * @return The bytes for queue.
-   */
-  com.google.protobuf.ByteString
-      getQueueBytes();
-
-  /**
-   * <code>string topic = 3;</code>
+   * <code>string topic = 2;</code>
    * @return The topic.
    */
   java.lang.String getTopic();
   /**
-   * <code>string topic = 3;</code>
+   * <code>string topic = 2;</code>
    * @return The bytes for topic.
    */
   com.google.protobuf.ByteString

@@ -13,11 +13,9 @@ public final class SimpleServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SimpleServer.class);
 
     private final SimpleSocketServer socketServer;
-    private final ResourceContext context;
 
     public SimpleServer(ServerConfig config) throws Exception {
-        this.context = new DefaultResourceContext(config);
-        this.socketServer = new SimpleSocketServer(config, context);
+        this.socketServer = new SimpleSocketServer(config);
 
     }
 

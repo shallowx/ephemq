@@ -12,7 +12,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.context.ResourceContext;
 import org.ostara.config.ServerConfig;
 
 public final class SimpleSocketServer {
@@ -24,9 +23,9 @@ public final class SimpleSocketServer {
     private EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
 
-    public SimpleSocketServer(ServerConfig config, ResourceContext context) {
+    public SimpleSocketServer(ServerConfig config) {
         this.config = config;
-        this.serverChannelInitializer = new ServerChannelInitializer(config, context);
+        this.serverChannelInitializer = new ServerChannelInitializer(config);
     }
 
     public void start() throws Exception {

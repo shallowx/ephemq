@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private CreateTopicResponse() {
     topic_ = "";
+    partitionsReplicas_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -44,21 +45,10 @@ private static final long serialVersionUID = 0L;
             org.ostara.remote.proto.server.CreateTopicResponse.class, org.ostara.remote.proto.server.CreateTopicResponse.Builder.class);
   }
 
-  public static final int ACK_FIELD_NUMBER = 1;
-  private int ack_;
-  /**
-   * <code>int32 ack = 1;</code>
-   * @return The ack.
-   */
-  @java.lang.Override
-  public int getAck() {
-    return ack_;
-  }
-
-  public static final int TOPIC_FIELD_NUMBER = 2;
+  public static final int TOPIC_FIELD_NUMBER = 1;
   private volatile java.lang.Object topic_;
   /**
-   * <code>string topic = 2;</code>
+   * <code>string topic = 1;</code>
    * @return The topic.
    */
   @java.lang.Override
@@ -75,7 +65,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string topic = 2;</code>
+   * <code>string topic = 1;</code>
    * @return The bytes for topic.
    */
   @java.lang.Override
@@ -93,26 +83,66 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PARTITIONLIMIT_FIELD_NUMBER = 3;
-  private int partitionLimit_;
+  public static final int PARTITIONS_FIELD_NUMBER = 2;
+  private int partitions_;
   /**
-   * <code>int32 partitionLimit = 3;</code>
-   * @return The partitionLimit.
+   * <code>int32 partitions = 2;</code>
+   * @return The partitions.
    */
   @java.lang.Override
-  public int getPartitionLimit() {
-    return partitionLimit_;
+  public int getPartitions() {
+    return partitions_;
   }
 
-  public static final int REPLICATELIMIT_FIELD_NUMBER = 4;
-  private int replicateLimit_;
+  public static final int TOPICID_FIELD_NUMBER = 3;
+  private int topicId_;
   /**
-   * <code>int32 replicateLimit = 4;</code>
-   * @return The replicateLimit.
+   * <code>int32 topicId = 3;</code>
+   * @return The topicId.
    */
   @java.lang.Override
-  public int getReplicateLimit() {
-    return replicateLimit_;
+  public int getTopicId() {
+    return topicId_;
+  }
+
+  public static final int PARTITIONSREPLICAS_FIELD_NUMBER = 4;
+  private java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> partitionsReplicas_;
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> getPartitionsReplicasList() {
+    return partitionsReplicas_;
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+      getPartitionsReplicasOrBuilderList() {
+    return partitionsReplicas_;
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public int getPartitionsReplicasCount() {
+    return partitionsReplicas_.size();
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index) {
+    return partitionsReplicas_.get(index);
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
+      int index) {
+    return partitionsReplicas_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -129,17 +159,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (ack_ != 0) {
-      output.writeInt32(1, ack_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
     }
-    if (partitionLimit_ != 0) {
-      output.writeInt32(3, partitionLimit_);
+    if (partitions_ != 0) {
+      output.writeInt32(2, partitions_);
     }
-    if (replicateLimit_ != 0) {
-      output.writeInt32(4, replicateLimit_);
+    if (topicId_ != 0) {
+      output.writeInt32(3, topicId_);
+    }
+    for (int i = 0; i < partitionsReplicas_.size(); i++) {
+      output.writeMessage(4, partitionsReplicas_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -150,20 +180,20 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (ack_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, ack_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
     }
-    if (partitionLimit_ != 0) {
+    if (partitions_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, partitionLimit_);
+        .computeInt32Size(2, partitions_);
     }
-    if (replicateLimit_ != 0) {
+    if (topicId_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, replicateLimit_);
+        .computeInt32Size(3, topicId_);
+    }
+    for (int i = 0; i < partitionsReplicas_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, partitionsReplicas_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -180,14 +210,14 @@ private static final long serialVersionUID = 0L;
     }
     org.ostara.remote.proto.server.CreateTopicResponse other = (org.ostara.remote.proto.server.CreateTopicResponse) obj;
 
-    if (getAck()
-        != other.getAck()) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
-    if (getPartitionLimit()
-        != other.getPartitionLimit()) return false;
-    if (getReplicateLimit()
-        != other.getReplicateLimit()) return false;
+    if (getPartitions()
+        != other.getPartitions()) return false;
+    if (getTopicId()
+        != other.getTopicId()) return false;
+    if (!getPartitionsReplicasList()
+        .equals(other.getPartitionsReplicasList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -199,14 +229,16 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ACK_FIELD_NUMBER;
-    hash = (53 * hash) + getAck();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
-    hash = (37 * hash) + PARTITIONLIMIT_FIELD_NUMBER;
-    hash = (53 * hash) + getPartitionLimit();
-    hash = (37 * hash) + REPLICATELIMIT_FIELD_NUMBER;
-    hash = (53 * hash) + getReplicateLimit();
+    hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitions();
+    hash = (37 * hash) + TOPICID_FIELD_NUMBER;
+    hash = (53 * hash) + getTopicId();
+    if (getPartitionsReplicasCount() > 0) {
+      hash = (37 * hash) + PARTITIONSREPLICAS_FIELD_NUMBER;
+      hash = (53 * hash) + getPartitionsReplicasList().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -335,14 +367,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      ack_ = 0;
-
       topic_ = "";
 
-      partitionLimit_ = 0;
+      partitions_ = 0;
 
-      replicateLimit_ = 0;
+      topicId_ = 0;
 
+      if (partitionsReplicasBuilder_ == null) {
+        partitionsReplicas_ = java.util.Collections.emptyList();
+      } else {
+        partitionsReplicas_ = null;
+        partitionsReplicasBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -369,10 +406,19 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.ostara.remote.proto.server.CreateTopicResponse buildPartial() {
       org.ostara.remote.proto.server.CreateTopicResponse result = new org.ostara.remote.proto.server.CreateTopicResponse(this);
-      result.ack_ = ack_;
+      int from_bitField0_ = bitField0_;
       result.topic_ = topic_;
-      result.partitionLimit_ = partitionLimit_;
-      result.replicateLimit_ = replicateLimit_;
+      result.partitions_ = partitions_;
+      result.topicId_ = topicId_;
+      if (partitionsReplicasBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          partitionsReplicas_ = java.util.Collections.unmodifiableList(partitionsReplicas_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.partitionsReplicas_ = partitionsReplicas_;
+      } else {
+        result.partitionsReplicas_ = partitionsReplicasBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -421,18 +467,41 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.ostara.remote.proto.server.CreateTopicResponse other) {
       if (other == org.ostara.remote.proto.server.CreateTopicResponse.getDefaultInstance()) return this;
-      if (other.getAck() != 0) {
-        setAck(other.getAck());
-      }
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
         onChanged();
       }
-      if (other.getPartitionLimit() != 0) {
-        setPartitionLimit(other.getPartitionLimit());
+      if (other.getPartitions() != 0) {
+        setPartitions(other.getPartitions());
       }
-      if (other.getReplicateLimit() != 0) {
-        setReplicateLimit(other.getReplicateLimit());
+      if (other.getTopicId() != 0) {
+        setTopicId(other.getTopicId());
+      }
+      if (partitionsReplicasBuilder_ == null) {
+        if (!other.partitionsReplicas_.isEmpty()) {
+          if (partitionsReplicas_.isEmpty()) {
+            partitionsReplicas_ = other.partitionsReplicas_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensurePartitionsReplicasIsMutable();
+            partitionsReplicas_.addAll(other.partitionsReplicas_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.partitionsReplicas_.isEmpty()) {
+          if (partitionsReplicasBuilder_.isEmpty()) {
+            partitionsReplicasBuilder_.dispose();
+            partitionsReplicasBuilder_ = null;
+            partitionsReplicas_ = other.partitionsReplicas_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            partitionsReplicasBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getPartitionsReplicasFieldBuilder() : null;
+          } else {
+            partitionsReplicasBuilder_.addAllMessages(other.partitionsReplicas_);
+          }
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -460,26 +529,34 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              ack_ = input.readInt32();
-
-              break;
-            } // case 8
-            case 18: {
+            case 10: {
               topic_ = input.readStringRequireUtf8();
 
               break;
-            } // case 18
+            } // case 10
+            case 16: {
+              partitions_ = input.readInt32();
+
+              break;
+            } // case 16
             case 24: {
-              partitionLimit_ = input.readInt32();
+              topicId_ = input.readInt32();
 
               break;
             } // case 24
-            case 32: {
-              replicateLimit_ = input.readInt32();
-
+            case 34: {
+              org.ostara.remote.proto.server.PartitionsReplicas m =
+                  input.readMessage(
+                      org.ostara.remote.proto.server.PartitionsReplicas.parser(),
+                      extensionRegistry);
+              if (partitionsReplicasBuilder_ == null) {
+                ensurePartitionsReplicasIsMutable();
+                partitionsReplicas_.add(m);
+              } else {
+                partitionsReplicasBuilder_.addMessage(m);
+              }
               break;
-            } // case 32
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -495,41 +572,11 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
-
-    private int ack_ ;
-    /**
-     * <code>int32 ack = 1;</code>
-     * @return The ack.
-     */
-    @java.lang.Override
-    public int getAck() {
-      return ack_;
-    }
-    /**
-     * <code>int32 ack = 1;</code>
-     * @param value The ack to set.
-     * @return This builder for chaining.
-     */
-    public Builder setAck(int value) {
-      
-      ack_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 ack = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearAck() {
-      
-      ack_ = 0;
-      onChanged();
-      return this;
-    }
+    private int bitField0_;
 
     private java.lang.Object topic_ = "";
     /**
-     * <code>string topic = 2;</code>
+     * <code>string topic = 1;</code>
      * @return The topic.
      */
     public java.lang.String getTopic() {
@@ -545,7 +592,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string topic = 2;</code>
+     * <code>string topic = 1;</code>
      * @return The bytes for topic.
      */
     public com.google.protobuf.ByteString
@@ -562,7 +609,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string topic = 2;</code>
+     * <code>string topic = 1;</code>
      * @param value The topic to set.
      * @return This builder for chaining.
      */
@@ -577,7 +624,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string topic = 2;</code>
+     * <code>string topic = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearTopic() {
@@ -587,7 +634,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string topic = 2;</code>
+     * <code>string topic = 1;</code>
      * @param value The bytes for topic to set.
      * @return This builder for chaining.
      */
@@ -603,66 +650,306 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int partitionLimit_ ;
+    private int partitions_ ;
     /**
-     * <code>int32 partitionLimit = 3;</code>
-     * @return The partitionLimit.
+     * <code>int32 partitions = 2;</code>
+     * @return The partitions.
      */
     @java.lang.Override
-    public int getPartitionLimit() {
-      return partitionLimit_;
+    public int getPartitions() {
+      return partitions_;
     }
     /**
-     * <code>int32 partitionLimit = 3;</code>
-     * @param value The partitionLimit to set.
+     * <code>int32 partitions = 2;</code>
+     * @param value The partitions to set.
      * @return This builder for chaining.
      */
-    public Builder setPartitionLimit(int value) {
+    public Builder setPartitions(int value) {
       
-      partitionLimit_ = value;
+      partitions_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 partitionLimit = 3;</code>
+     * <code>int32 partitions = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPartitionLimit() {
+    public Builder clearPartitions() {
       
-      partitionLimit_ = 0;
+      partitions_ = 0;
       onChanged();
       return this;
     }
 
-    private int replicateLimit_ ;
+    private int topicId_ ;
     /**
-     * <code>int32 replicateLimit = 4;</code>
-     * @return The replicateLimit.
+     * <code>int32 topicId = 3;</code>
+     * @return The topicId.
      */
     @java.lang.Override
-    public int getReplicateLimit() {
-      return replicateLimit_;
+    public int getTopicId() {
+      return topicId_;
     }
     /**
-     * <code>int32 replicateLimit = 4;</code>
-     * @param value The replicateLimit to set.
+     * <code>int32 topicId = 3;</code>
+     * @param value The topicId to set.
      * @return This builder for chaining.
      */
-    public Builder setReplicateLimit(int value) {
+    public Builder setTopicId(int value) {
       
-      replicateLimit_ = value;
+      topicId_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 replicateLimit = 4;</code>
+     * <code>int32 topicId = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearReplicateLimit() {
+    public Builder clearTopicId() {
       
-      replicateLimit_ = 0;
+      topicId_ = 0;
       onChanged();
       return this;
+    }
+
+    private java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> partitionsReplicas_ =
+      java.util.Collections.emptyList();
+    private void ensurePartitionsReplicasIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        partitionsReplicas_ = new java.util.ArrayList<org.ostara.remote.proto.server.PartitionsReplicas>(partitionsReplicas_);
+        bitField0_ |= 0x00000001;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> partitionsReplicasBuilder_;
+
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> getPartitionsReplicasList() {
+      if (partitionsReplicasBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(partitionsReplicas_);
+      } else {
+        return partitionsReplicasBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public int getPartitionsReplicasCount() {
+      if (partitionsReplicasBuilder_ == null) {
+        return partitionsReplicas_.size();
+      } else {
+        return partitionsReplicasBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index) {
+      if (partitionsReplicasBuilder_ == null) {
+        return partitionsReplicas_.get(index);
+      } else {
+        return partitionsReplicasBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder setPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas value) {
+      if (partitionsReplicasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.set(index, value);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder setPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(org.ostara.remote.proto.server.PartitionsReplicas value) {
+      if (partitionsReplicasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(value);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas value) {
+      if (partitionsReplicasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(index, value);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(
+        org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(builderForValue.build());
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addAllPartitionsReplicas(
+        java.lang.Iterable<? extends org.ostara.remote.proto.server.PartitionsReplicas> values) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, partitionsReplicas_);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder clearPartitionsReplicas() {
+      if (partitionsReplicasBuilder_ == null) {
+        partitionsReplicas_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder removePartitionsReplicas(int index) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.remove(index);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas.Builder getPartitionsReplicasBuilder(
+        int index) {
+      return getPartitionsReplicasFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
+        int index) {
+      if (partitionsReplicasBuilder_ == null) {
+        return partitionsReplicas_.get(index);  } else {
+        return partitionsReplicasBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+         getPartitionsReplicasOrBuilderList() {
+      if (partitionsReplicasBuilder_ != null) {
+        return partitionsReplicasBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(partitionsReplicas_);
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas.Builder addPartitionsReplicasBuilder() {
+      return getPartitionsReplicasFieldBuilder().addBuilder(
+          org.ostara.remote.proto.server.PartitionsReplicas.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas.Builder addPartitionsReplicasBuilder(
+        int index) {
+      return getPartitionsReplicasFieldBuilder().addBuilder(
+          index, org.ostara.remote.proto.server.PartitionsReplicas.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas.Builder> 
+         getPartitionsReplicasBuilderList() {
+      return getPartitionsReplicasFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+        getPartitionsReplicasFieldBuilder() {
+      if (partitionsReplicasBuilder_ == null) {
+        partitionsReplicasBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>(
+                partitionsReplicas_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        partitionsReplicas_ = null;
+      }
+      return partitionsReplicasBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

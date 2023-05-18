@@ -7,6 +7,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import javax.annotation.concurrent.ThreadSafe;
+
+import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.config.ServerConfig;
@@ -51,7 +53,7 @@ public class Storage {
     private void doAppend(String topic, String queue, short version, ByteBuf payload, Promise<Offset> promise) {
         try {
             Offset theCurrent = current;
-            Offset offset = new Offset(theCurrent.epoch(), theCurrent.index() + 1);
+            Offset offset = new Offset(theCurrent.getEpoch(), theCurrent.getEpoch() + 1);
 
             int bytes = topic.length() + queue.length() + 26 + payload.readableBytes();
             Segment segment = applySegment(bytes);
@@ -83,13 +85,18 @@ public class Storage {
         }
     }
 
-    public Cursor locateCursor(Offset offset) {
-        if (offset == null) {
-            Segment theTailSegment = tailSegment;
-            return new Cursor(this, theTailSegment, theTailSegment.tailLocation());
-        }
-        Segment theHeadSegment = headSegment;
-        return new Cursor(this, theHeadSegment, theHeadSegment.headLocation());
+    public Cursor cursor(Offset offset) {
+        return offset == null ? tailCursor() : headCursor().skip2Location(offset);
+    }
+
+    public Cursor headCursor() {
+        Segment segment = headSegment;
+        return new Cursor(this, segment, segment.headLocation());
+    }
+
+    public Cursor tailCursor() {
+        Segment segment = tailSegment;
+        return new Cursor(this, segment, segment.tailLocation());
     }
 
     private Segment applySegment(int bytes) {

@@ -25,15 +25,13 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final MessagePacket packet) {
-            final short version = packet.version();
-            final byte type = packet.type();
             final int answer = packet.answer();
             final byte command = packet.command();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;
             try {
-                 header = encodeHeader(ctx.alloc(), version, type, command, answer, body.readableBytes());
+                 header = encodeHeader(ctx.alloc(), command, answer, body.readableBytes());
             } catch (Throwable cause) {
                 release(body);
                 throw cause;
@@ -47,7 +45,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         }
     }
 
-    private ByteBuf encodeHeader(ByteBufAllocator alloc, short version, byte type, byte command, int answer, int body) {
+    private ByteBuf encodeHeader(ByteBufAllocator alloc, byte command, int answer, int body) {
         if (body > MessagePacket.MAX_BODY_LENGTH) {
             throw new EncoderException("Too large body:" + body + "bytes, limit:" + MessagePacket.MAX_BODY_LENGTH + "bytes");
         }
@@ -55,9 +53,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         final ByteBuf header = alloc.ioBuffer(MessagePacket.HEADER_LENGTH);
         header.writeByte(MessagePacket.MAGIC_NUMBER);
         header.writeMedium(body + MessagePacket.HEADER_LENGTH);
-        header.writeShort(version);
         header.writeByte(command);
-        header.writeByte(type);
         header.writeInt(answer);
 
         return header;

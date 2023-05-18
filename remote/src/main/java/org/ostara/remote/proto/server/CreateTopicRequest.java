@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private CreateTopicRequest() {
     topic_ = "";
-    cluster_ = "";
   }
 
   @java.lang.Override
@@ -83,64 +82,52 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PARTITIONLIMIT_FIELD_NUMBER = 2;
-  private int partitionLimit_;
+  public static final int PARTITION_FIELD_NUMBER = 2;
+  private int partition_;
   /**
-   * <code>int32 partitionLimit = 2;</code>
-   * @return The partitionLimit.
+   * <code>int32 partition = 2;</code>
+   * @return The partition.
    */
   @java.lang.Override
-  public int getPartitionLimit() {
-    return partitionLimit_;
+  public int getPartition() {
+    return partition_;
   }
 
-  public static final int REPLICATELIMIT_FIELD_NUMBER = 3;
-  private int replicateLimit_;
+  public static final int REPLICAS_FIELD_NUMBER = 3;
+  private int replicas_;
   /**
-   * <code>int32 replicateLimit = 3;</code>
-   * @return The replicateLimit.
+   * <code>int32 replicas = 3;</code>
+   * @return The replicas.
    */
   @java.lang.Override
-  public int getReplicateLimit() {
-    return replicateLimit_;
+  public int getReplicas() {
+    return replicas_;
   }
 
-  public static final int CLUSTER_FIELD_NUMBER = 4;
-  private volatile java.lang.Object cluster_;
+  public static final int CONFIGS_FIELD_NUMBER = 4;
+  private org.ostara.remote.proto.server.CreateTopicConfigRequest configs_;
   /**
-   * <code>string cluster = 4;</code>
-   * @return The cluster.
+   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+   * @return Whether the configs field is set.
    */
   @java.lang.Override
-  public java.lang.String getCluster() {
-    java.lang.Object ref = cluster_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      cluster_ = s;
-      return s;
-    }
+  public boolean hasConfigs() {
+    return configs_ != null;
   }
   /**
-   * <code>string cluster = 4;</code>
-   * @return The bytes for cluster.
+   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+   * @return The configs.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getClusterBytes() {
-    java.lang.Object ref = cluster_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      cluster_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public org.ostara.remote.proto.server.CreateTopicConfigRequest getConfigs() {
+    return configs_ == null ? org.ostara.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
+  }
+  /**
+   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+   */
+  @java.lang.Override
+  public org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder() {
+    return getConfigs();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -160,14 +147,14 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
     }
-    if (partitionLimit_ != 0) {
-      output.writeInt32(2, partitionLimit_);
+    if (partition_ != 0) {
+      output.writeInt32(2, partition_);
     }
-    if (replicateLimit_ != 0) {
-      output.writeInt32(3, replicateLimit_);
+    if (replicas_ != 0) {
+      output.writeInt32(3, replicas_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, cluster_);
+    if (configs_ != null) {
+      output.writeMessage(4, getConfigs());
     }
     getUnknownFields().writeTo(output);
   }
@@ -181,16 +168,17 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
     }
-    if (partitionLimit_ != 0) {
+    if (partition_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, partitionLimit_);
+        .computeInt32Size(2, partition_);
     }
-    if (replicateLimit_ != 0) {
+    if (replicas_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, replicateLimit_);
+        .computeInt32Size(3, replicas_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(cluster_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, cluster_);
+    if (configs_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getConfigs());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -209,12 +197,15 @@ private static final long serialVersionUID = 0L;
 
     if (!getTopic()
         .equals(other.getTopic())) return false;
-    if (getPartitionLimit()
-        != other.getPartitionLimit()) return false;
-    if (getReplicateLimit()
-        != other.getReplicateLimit()) return false;
-    if (!getCluster()
-        .equals(other.getCluster())) return false;
+    if (getPartition()
+        != other.getPartition()) return false;
+    if (getReplicas()
+        != other.getReplicas()) return false;
+    if (hasConfigs() != other.hasConfigs()) return false;
+    if (hasConfigs()) {
+      if (!getConfigs()
+          .equals(other.getConfigs())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -228,12 +219,14 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
-    hash = (37 * hash) + PARTITIONLIMIT_FIELD_NUMBER;
-    hash = (53 * hash) + getPartitionLimit();
-    hash = (37 * hash) + REPLICATELIMIT_FIELD_NUMBER;
-    hash = (53 * hash) + getReplicateLimit();
-    hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
-    hash = (53 * hash) + getCluster().hashCode();
+    hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+    hash = (53 * hash) + getPartition();
+    hash = (37 * hash) + REPLICAS_FIELD_NUMBER;
+    hash = (53 * hash) + getReplicas();
+    if (hasConfigs()) {
+      hash = (37 * hash) + CONFIGS_FIELD_NUMBER;
+      hash = (53 * hash) + getConfigs().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -364,12 +357,16 @@ private static final long serialVersionUID = 0L;
       super.clear();
       topic_ = "";
 
-      partitionLimit_ = 0;
+      partition_ = 0;
 
-      replicateLimit_ = 0;
+      replicas_ = 0;
 
-      cluster_ = "";
-
+      if (configsBuilder_ == null) {
+        configs_ = null;
+      } else {
+        configs_ = null;
+        configsBuilder_ = null;
+      }
       return this;
     }
 
@@ -397,9 +394,13 @@ private static final long serialVersionUID = 0L;
     public org.ostara.remote.proto.server.CreateTopicRequest buildPartial() {
       org.ostara.remote.proto.server.CreateTopicRequest result = new org.ostara.remote.proto.server.CreateTopicRequest(this);
       result.topic_ = topic_;
-      result.partitionLimit_ = partitionLimit_;
-      result.replicateLimit_ = replicateLimit_;
-      result.cluster_ = cluster_;
+      result.partition_ = partition_;
+      result.replicas_ = replicas_;
+      if (configsBuilder_ == null) {
+        result.configs_ = configs_;
+      } else {
+        result.configs_ = configsBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -452,15 +453,14 @@ private static final long serialVersionUID = 0L;
         topic_ = other.topic_;
         onChanged();
       }
-      if (other.getPartitionLimit() != 0) {
-        setPartitionLimit(other.getPartitionLimit());
+      if (other.getPartition() != 0) {
+        setPartition(other.getPartition());
       }
-      if (other.getReplicateLimit() != 0) {
-        setReplicateLimit(other.getReplicateLimit());
+      if (other.getReplicas() != 0) {
+        setReplicas(other.getReplicas());
       }
-      if (!other.getCluster().isEmpty()) {
-        cluster_ = other.cluster_;
-        onChanged();
+      if (other.hasConfigs()) {
+        mergeConfigs(other.getConfigs());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -494,17 +494,19 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 16: {
-              partitionLimit_ = input.readInt32();
+              partition_ = input.readInt32();
 
               break;
             } // case 16
             case 24: {
-              replicateLimit_ = input.readInt32();
+              replicas_ = input.readInt32();
 
               break;
             } // case 24
             case 34: {
-              cluster_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getConfigsFieldBuilder().getBuilder(),
+                  extensionRegistry);
 
               break;
             } // case 34
@@ -600,142 +602,185 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int partitionLimit_ ;
+    private int partition_ ;
     /**
-     * <code>int32 partitionLimit = 2;</code>
-     * @return The partitionLimit.
+     * <code>int32 partition = 2;</code>
+     * @return The partition.
      */
     @java.lang.Override
-    public int getPartitionLimit() {
-      return partitionLimit_;
+    public int getPartition() {
+      return partition_;
     }
     /**
-     * <code>int32 partitionLimit = 2;</code>
-     * @param value The partitionLimit to set.
+     * <code>int32 partition = 2;</code>
+     * @param value The partition to set.
      * @return This builder for chaining.
      */
-    public Builder setPartitionLimit(int value) {
+    public Builder setPartition(int value) {
       
-      partitionLimit_ = value;
+      partition_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 partitionLimit = 2;</code>
+     * <code>int32 partition = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPartitionLimit() {
+    public Builder clearPartition() {
       
-      partitionLimit_ = 0;
+      partition_ = 0;
       onChanged();
       return this;
     }
 
-    private int replicateLimit_ ;
+    private int replicas_ ;
     /**
-     * <code>int32 replicateLimit = 3;</code>
-     * @return The replicateLimit.
+     * <code>int32 replicas = 3;</code>
+     * @return The replicas.
      */
     @java.lang.Override
-    public int getReplicateLimit() {
-      return replicateLimit_;
+    public int getReplicas() {
+      return replicas_;
     }
     /**
-     * <code>int32 replicateLimit = 3;</code>
-     * @param value The replicateLimit to set.
+     * <code>int32 replicas = 3;</code>
+     * @param value The replicas to set.
      * @return This builder for chaining.
      */
-    public Builder setReplicateLimit(int value) {
+    public Builder setReplicas(int value) {
       
-      replicateLimit_ = value;
+      replicas_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 replicateLimit = 3;</code>
+     * <code>int32 replicas = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearReplicateLimit() {
+    public Builder clearReplicas() {
       
-      replicateLimit_ = 0;
+      replicas_ = 0;
       onChanged();
       return this;
     }
 
-    private java.lang.Object cluster_ = "";
+    private org.ostara.remote.proto.server.CreateTopicConfigRequest configs_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        org.ostara.remote.proto.server.CreateTopicConfigRequest, org.ostara.remote.proto.server.CreateTopicConfigRequest.Builder, org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder> configsBuilder_;
     /**
-     * <code>string cluster = 4;</code>
-     * @return The cluster.
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     * @return Whether the configs field is set.
      */
-    public java.lang.String getCluster() {
-      java.lang.Object ref = cluster_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        cluster_ = s;
-        return s;
+    public boolean hasConfigs() {
+      return configsBuilder_ != null || configs_ != null;
+    }
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     * @return The configs.
+     */
+    public org.ostara.remote.proto.server.CreateTopicConfigRequest getConfigs() {
+      if (configsBuilder_ == null) {
+        return configs_ == null ? org.ostara.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
       } else {
-        return (java.lang.String) ref;
+        return configsBuilder_.getMessage();
       }
     }
     /**
-     * <code>string cluster = 4;</code>
-     * @return The bytes for cluster.
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
      */
-    public com.google.protobuf.ByteString
-        getClusterBytes() {
-      java.lang.Object ref = cluster_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        cluster_ = b;
-        return b;
+    public Builder setConfigs(org.ostara.remote.proto.server.CreateTopicConfigRequest value) {
+      if (configsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        configs_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        configsBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    public Builder setConfigs(
+        org.ostara.remote.proto.server.CreateTopicConfigRequest.Builder builderForValue) {
+      if (configsBuilder_ == null) {
+        configs_ = builderForValue.build();
+        onChanged();
+      } else {
+        configsBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    public Builder mergeConfigs(org.ostara.remote.proto.server.CreateTopicConfigRequest value) {
+      if (configsBuilder_ == null) {
+        if (configs_ != null) {
+          configs_ =
+            org.ostara.remote.proto.server.CreateTopicConfigRequest.newBuilder(configs_).mergeFrom(value).buildPartial();
+        } else {
+          configs_ = value;
+        }
+        onChanged();
+      } else {
+        configsBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    public Builder clearConfigs() {
+      if (configsBuilder_ == null) {
+        configs_ = null;
+        onChanged();
+      } else {
+        configs_ = null;
+        configsBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    public org.ostara.remote.proto.server.CreateTopicConfigRequest.Builder getConfigsBuilder() {
+      
+      onChanged();
+      return getConfigsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    public org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder() {
+      if (configsBuilder_ != null) {
+        return configsBuilder_.getMessageOrBuilder();
+      } else {
+        return configs_ == null ?
+            org.ostara.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
       }
     }
     /**
-     * <code>string cluster = 4;</code>
-     * @param value The cluster to set.
-     * @return This builder for chaining.
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
      */
-    public Builder setCluster(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      cluster_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string cluster = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCluster() {
-      
-      cluster_ = getDefaultInstance().getCluster();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string cluster = 4;</code>
-     * @param value The bytes for cluster to set.
-     * @return This builder for chaining.
-     */
-    public Builder setClusterBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      cluster_ = value;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        org.ostara.remote.proto.server.CreateTopicConfigRequest, org.ostara.remote.proto.server.CreateTopicConfigRequest.Builder, org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder> 
+        getConfigsFieldBuilder() {
+      if (configsBuilder_ == null) {
+        configsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            org.ostara.remote.proto.server.CreateTopicConfigRequest, org.ostara.remote.proto.server.CreateTopicConfigRequest.Builder, org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder>(
+                getConfigs(),
+                getParentForChildren(),
+                isClean());
+        configs_ = null;
+      }
+      return configsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private CleanSubscribeRequest() {
-    queue_ = "";
     topic_ = "";
   }
 
@@ -45,59 +44,21 @@ private static final long serialVersionUID = 0L;
             org.ostara.remote.proto.server.CleanSubscribeRequest.class, org.ostara.remote.proto.server.CleanSubscribeRequest.Builder.class);
   }
 
-  public static final int LEDGERID_FIELD_NUMBER = 1;
-  private int ledgerId_;
+  public static final int LEDGER_FIELD_NUMBER = 1;
+  private int ledger_;
   /**
-   * <code>int32 ledgerId = 1;</code>
-   * @return The ledgerId.
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
    */
   @java.lang.Override
-  public int getLedgerId() {
-    return ledgerId_;
+  public int getLedger() {
+    return ledger_;
   }
 
-  public static final int QUEUE_FIELD_NUMBER = 2;
-  private volatile java.lang.Object queue_;
-  /**
-   * <code>string queue = 2;</code>
-   * @return The queue.
-   */
-  @java.lang.Override
-  public java.lang.String getQueue() {
-    java.lang.Object ref = queue_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      queue_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string queue = 2;</code>
-   * @return The bytes for queue.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getQueueBytes() {
-    java.lang.Object ref = queue_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      queue_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int TOPIC_FIELD_NUMBER = 3;
+  public static final int TOPIC_FIELD_NUMBER = 2;
   private volatile java.lang.Object topic_;
   /**
-   * <code>string topic = 3;</code>
+   * <code>string topic = 2;</code>
    * @return The topic.
    */
   @java.lang.Override
@@ -114,7 +75,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string topic = 3;</code>
+   * <code>string topic = 2;</code>
    * @return The bytes for topic.
    */
   @java.lang.Override
@@ -146,14 +107,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (ledgerId_ != 0) {
-      output.writeInt32(1, ledgerId_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, queue_);
+    if (ledger_ != 0) {
+      output.writeInt32(1, ledger_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -164,15 +122,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (ledgerId_ != 0) {
+    if (ledger_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, ledgerId_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, queue_);
+        .computeInt32Size(1, ledger_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -189,10 +144,8 @@ private static final long serialVersionUID = 0L;
     }
     org.ostara.remote.proto.server.CleanSubscribeRequest other = (org.ostara.remote.proto.server.CleanSubscribeRequest) obj;
 
-    if (getLedgerId()
-        != other.getLedgerId()) return false;
-    if (!getQueue()
-        .equals(other.getQueue())) return false;
+    if (getLedger()
+        != other.getLedger()) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -206,10 +159,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + LEDGERID_FIELD_NUMBER;
-    hash = (53 * hash) + getLedgerId();
-    hash = (37 * hash) + QUEUE_FIELD_NUMBER;
-    hash = (53 * hash) + getQueue().hashCode();
+    hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+    hash = (53 * hash) + getLedger();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
@@ -340,9 +291,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      ledgerId_ = 0;
-
-      queue_ = "";
+      ledger_ = 0;
 
       topic_ = "";
 
@@ -372,8 +321,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public org.ostara.remote.proto.server.CleanSubscribeRequest buildPartial() {
       org.ostara.remote.proto.server.CleanSubscribeRequest result = new org.ostara.remote.proto.server.CleanSubscribeRequest(this);
-      result.ledgerId_ = ledgerId_;
-      result.queue_ = queue_;
+      result.ledger_ = ledger_;
       result.topic_ = topic_;
       onBuilt();
       return result;
@@ -423,12 +371,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(org.ostara.remote.proto.server.CleanSubscribeRequest other) {
       if (other == org.ostara.remote.proto.server.CleanSubscribeRequest.getDefaultInstance()) return this;
-      if (other.getLedgerId() != 0) {
-        setLedgerId(other.getLedgerId());
-      }
-      if (!other.getQueue().isEmpty()) {
-        queue_ = other.queue_;
-        onChanged();
+      if (other.getLedger() != 0) {
+        setLedger(other.getLedger());
       }
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
@@ -461,20 +405,15 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 8: {
-              ledgerId_ = input.readInt32();
+              ledger_ = input.readInt32();
 
               break;
             } // case 8
             case 18: {
-              queue_ = input.readStringRequireUtf8();
-
-              break;
-            } // case 18
-            case 26: {
               topic_ = input.readStringRequireUtf8();
 
               break;
-            } // case 26
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -491,116 +430,40 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int ledgerId_ ;
+    private int ledger_ ;
     /**
-     * <code>int32 ledgerId = 1;</code>
-     * @return The ledgerId.
+     * <code>int32 ledger = 1;</code>
+     * @return The ledger.
      */
     @java.lang.Override
-    public int getLedgerId() {
-      return ledgerId_;
+    public int getLedger() {
+      return ledger_;
     }
     /**
-     * <code>int32 ledgerId = 1;</code>
-     * @param value The ledgerId to set.
+     * <code>int32 ledger = 1;</code>
+     * @param value The ledger to set.
      * @return This builder for chaining.
      */
-    public Builder setLedgerId(int value) {
+    public Builder setLedger(int value) {
       
-      ledgerId_ = value;
+      ledger_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 ledgerId = 1;</code>
+     * <code>int32 ledger = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLedgerId() {
+    public Builder clearLedger() {
       
-      ledgerId_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object queue_ = "";
-    /**
-     * <code>string queue = 2;</code>
-     * @return The queue.
-     */
-    public java.lang.String getQueue() {
-      java.lang.Object ref = queue_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        queue_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string queue = 2;</code>
-     * @return The bytes for queue.
-     */
-    public com.google.protobuf.ByteString
-        getQueueBytes() {
-      java.lang.Object ref = queue_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        queue_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string queue = 2;</code>
-     * @param value The queue to set.
-     * @return This builder for chaining.
-     */
-    public Builder setQueue(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      queue_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string queue = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearQueue() {
-      
-      queue_ = getDefaultInstance().getQueue();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string queue = 2;</code>
-     * @param value The bytes for queue to set.
-     * @return This builder for chaining.
-     */
-    public Builder setQueueBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      queue_ = value;
+      ledger_ = 0;
       onChanged();
       return this;
     }
 
     private java.lang.Object topic_ = "";
     /**
-     * <code>string topic = 3;</code>
+     * <code>string topic = 2;</code>
      * @return The topic.
      */
     public java.lang.String getTopic() {
@@ -616,7 +479,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>string topic = 2;</code>
      * @return The bytes for topic.
      */
     public com.google.protobuf.ByteString
@@ -633,7 +496,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>string topic = 2;</code>
      * @param value The topic to set.
      * @return This builder for chaining.
      */
@@ -648,7 +511,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>string topic = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearTopic() {
@@ -658,7 +521,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string topic = 3;</code>
+     * <code>string topic = 2;</code>
      * @param value The bytes for topic to set.
      * @return This builder for chaining.
      */

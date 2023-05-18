@@ -4,7 +4,6 @@ import static org.ostara.common.util.TypeTransformUtils.object2Boolean;
 import static org.ostara.common.util.TypeTransformUtils.object2Int;
 import static org.ostara.common.util.TypeTransformUtils.object2String;
 import java.util.Properties;
-import org.ostara.context.PartitionAssignRule;
 
 public class ServerConfig {
 
@@ -81,22 +80,6 @@ public class ServerConfig {
                 props.getOrDefault(ConfigConstants.MESSAGE_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
     }
 
-    public int getMessageHandleThreadLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_HANDLE_THREAD_LIMIT, availableProcessor()));
-    }
-
-    public int getMessageHandleLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_HANDLE_LIMIT, 1000));
-    }
-
-    public int getMessageHandleAssignLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_HANDLE_ASSIGN_LIMIT, 1000));
-    }
-
-    public int getMessageHandleAlignLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_HANDLE_ALIGN_LIMIT, 1000));
-    }
-
     public String getElectAssignRule() {
         return object2String(
                 props.getOrDefault(ConfigConstants.PARTITION_LEADER_ASSIGN_RULE, PartitionAssignRule.RANDOM));
@@ -104,30 +87,6 @@ public class ServerConfig {
 
     public int getMetadataRefreshMs() {
         return object2Int(props.getOrDefault(ConfigConstants.METADATA_CACHING_REFRESH_MS, 60000));
-    }
-
-    public int getChunkFollowLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_FOLLOW_LIMIT, 100));
-    }
-
-    public int getChunkPursueLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_PURSUE_LIMIT, 500));
-    }
-
-    public int getChunkAlignLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_ALIGN_LIMIT, 2000));
-    }
-
-    public int getChunkPursueTimeoutMs() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_PURSUE_TIMEOUT_MS, 100));
-    }
-
-    public int getChunkLoadLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_LOAD_LIMIT, 50));
-    }
-
-    public int getChunkBytesLimit() {
-        return object2Int(props.getOrDefault(ConfigConstants.MESSAGE_CHUNK_BYTES_LIMIT, 65536));
     }
 
     public int getMetricsSampleCount(){

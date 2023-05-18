@@ -8,51 +8,75 @@ public interface PartitionMetadataOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 id = 1;</code>
+   * <code>string topic_name = 1;</code>
+   * @return The topicName.
+   */
+  java.lang.String getTopicName();
+  /**
+   * <code>string topic_name = 1;</code>
+   * @return The bytes for topicName.
+   */
+  com.google.protobuf.ByteString
+      getTopicNameBytes();
+
+  /**
+   * <code>int32 id = 2;</code>
    * @return The id.
    */
   int getId();
 
   /**
-   * <code>int32 latency = 2;</code>
-   * @return The latency.
+   * <code>int32 ledger = 3;</code>
+   * @return The ledger.
    */
-  int getLatency();
+  int getLedger();
 
   /**
-   * <code>string leader = 3;</code>
-   * @return The leader.
+   * <code>int32 epoch = 4;</code>
+   * @return The epoch.
    */
-  java.lang.String getLeader();
+  int getEpoch();
+
   /**
-   * <code>string leader = 3;</code>
-   * @return The bytes for leader.
+   * <code>string leader_node_id = 5;</code>
+   * @return The leaderNodeId.
+   */
+  java.lang.String getLeaderNodeId();
+  /**
+   * <code>string leader_node_id = 5;</code>
+   * @return The bytes for leaderNodeId.
    */
   com.google.protobuf.ByteString
-      getLeaderBytes();
+      getLeaderNodeIdBytes();
 
   /**
-   * <code>repeated string replicas = 4;</code>
-   * @return A list containing the replicas.
+   * <code>repeated string replica_node_ids = 6;</code>
+   * @return A list containing the replicaNodeIds.
    */
   java.util.List<java.lang.String>
-      getReplicasList();
+      getReplicaNodeIdsList();
   /**
-   * <code>repeated string replicas = 4;</code>
-   * @return The count of replicas.
+   * <code>repeated string replica_node_ids = 6;</code>
+   * @return The count of replicaNodeIds.
    */
-  int getReplicasCount();
+  int getReplicaNodeIdsCount();
   /**
-   * <code>repeated string replicas = 4;</code>
+   * <code>repeated string replica_node_ids = 6;</code>
    * @param index The index of the element to return.
-   * @return The replicas at the given index.
+   * @return The replicaNodeIds at the given index.
    */
-  java.lang.String getReplicas(int index);
+  java.lang.String getReplicaNodeIds(int index);
   /**
-   * <code>repeated string replicas = 4;</code>
+   * <code>repeated string replica_node_ids = 6;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the replicas at the given index.
+   * @return The bytes of the replicaNodeIds at the given index.
    */
   com.google.protobuf.ByteString
-      getReplicasBytes(int index);
+      getReplicaNodeIdsBytes(int index);
+
+  /**
+   * <code>int32 version = 7;</code>
+   * @return The version.
+   */
+  int getVersion();
 }

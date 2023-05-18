@@ -12,10 +12,8 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
@@ -26,7 +24,6 @@ import javax.naming.OperationNotSupportedException;
 import org.ostara.common.util.ObjectUtils;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.codec.MessagePacket;
-import org.ostara.remote.util.current.FastEventExecutorGroup;
 
 public final class NetworkUtils {
 
@@ -105,7 +102,7 @@ public final class NetworkUtils {
         }
 
         ThreadFactory f = new DefaultThreadFactory(groupName);
-        return new FastEventExecutorGroup(threads, f);
+        return new DefaultEventExecutorGroup(threads, f);
     }
 
     public static Class<? extends Channel> preferChannelClass(boolean epoll) {
