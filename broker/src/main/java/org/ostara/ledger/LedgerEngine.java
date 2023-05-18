@@ -17,7 +17,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Subscription;
 import org.ostara.internal.config.ServerConfig;
-import org.ostara.internal.metadata.ClusterNodeCacheSupport;
+import org.ostara.internal.metadata.CachingClusterNode;
 import org.ostara.internal.metrics.LedgerMetricsListener;
 import org.ostara.remote.util.NetworkUtils;
 
@@ -30,9 +30,9 @@ public class LedgerEngine {
     private final Int2ObjectMap<Ledger> ledgers = new Int2ObjectOpenHashMap<>();
     private final List<LedgerMetricsListener> listeners = new LinkedList<>();
     private final EventExecutor retryExecutor;
-    private final ClusterNodeCacheSupport nodeCacheWriterSupport;
+    private final CachingClusterNode nodeCacheWriterSupport;
 
-    public LedgerEngine(ServerConfig config, ClusterNodeCacheSupport clusterNodeCacheSupport) {
+    public LedgerEngine(ServerConfig config, CachingClusterNode clusterNodeCacheSupport) {
         this.config = config;
         this.nodeCacheWriterSupport = clusterNodeCacheSupport;
         this.retryExecutor = NetworkUtils.newEventExecutorGroup(1, "ledger-init-retry").next();

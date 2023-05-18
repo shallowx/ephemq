@@ -1,10 +1,9 @@
 package org.ostara.internal;
 
-import java.util.Properties;
 import org.ostara.internal.atomic.DistributedAtomicInteger;
 import org.ostara.internal.config.ServerConfig;
-import org.ostara.internal.metadata.ClusterNodeCacheSupport;
-import org.ostara.internal.metadata.TopicPartitionRequestCacheSupport;
+import org.ostara.internal.metadata.CachingClusterNode;
+import org.ostara.internal.metadata.CachingTopicPartition;
 import org.ostara.internal.metrics.LedgerMetricsListener;
 import org.ostara.internal.metrics.ServerMetrics;
 import org.ostara.ledger.LedgerEngine;
@@ -14,12 +13,12 @@ public class DefaultResourceContext implements ResourceContext {
 
     private final LedgerEngine ledgerEngine;
     private final ChannelBoundContext boundContext;
-    private final TopicPartitionRequestCacheSupport partitionRequestCacheWriterSupport;
-    private final ClusterNodeCacheSupport nodeCacheWriterSupport;
+    private final CachingTopicPartition partitionRequestCacheWriterSupport;
+    private final CachingClusterNode nodeCacheWriterSupport;
     private final DistributedAtomicInteger distributedAtomicInteger;
 
     public DefaultResourceContext(ServerConfig config) throws Exception {
-        this.nodeCacheWriterSupport = new ClusterNodeCacheSupport(config);
+        this.nodeCacheWriterSupport = new CachingClusterNode(config);
         this.ledgerEngine = new LedgerEngine(config, nodeCacheWriterSupport);
             
         LedgerMetricsListener metrics = new ServerMetrics(config.getProps(), config);
@@ -27,7 +26,7 @@ public class DefaultResourceContext implements ResourceContext {
 
         this.boundContext = new ChannelBoundContext();
         this.distributedAtomicInteger = new DistributedAtomicInteger();
-        this.partitionRequestCacheWriterSupport = new TopicPartitionRequestCacheSupport(config, this);
+        this.partitionRequestCacheWriterSupport = new CachingTopicPartition(config, this);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class DefaultResourceContext implements ResourceContext {
     }
 
     @Override
-    public TopicPartitionRequestCacheSupport getPartitionRequestCacheSupport() {
+    public CachingTopicPartition getPartitionRequestCacheSupport() {
         return this.partitionRequestCacheWriterSupport;
     }
 
@@ -57,7 +56,7 @@ public class DefaultResourceContext implements ResourceContext {
     }
 
     @Override
-    public ClusterNodeCacheSupport getNodeCacheSupport() {
+    public CachingClusterNode getNodeCacheSupport() {
         return this.nodeCacheWriterSupport;
     }
 

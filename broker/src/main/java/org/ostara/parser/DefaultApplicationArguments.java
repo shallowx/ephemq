@@ -1,11 +1,11 @@
 package org.ostara.parser;
 
-import static org.ostara.common.util.TypeUtils.object2Boolean;
-import static org.ostara.common.util.TypeUtils.object2Double;
-import static org.ostara.common.util.TypeUtils.object2Float;
-import static org.ostara.common.util.TypeUtils.object2Int;
-import static org.ostara.common.util.TypeUtils.object2Long;
-import static org.ostara.common.util.TypeUtils.object2String;
+import static org.ostara.common.util.TypeTransformUtils.object2Boolean;
+import static org.ostara.common.util.TypeTransformUtils.object2Double;
+import static org.ostara.common.util.TypeTransformUtils.object2Float;
+import static org.ostara.common.util.TypeTransformUtils.object2Int;
+import static org.ostara.common.util.TypeTransformUtils.object2Long;
+import static org.ostara.common.util.TypeTransformUtils.object2String;
 import java.lang.reflect.Method;
 import java.util.Properties;
 import javax.naming.OperationNotSupportedException;

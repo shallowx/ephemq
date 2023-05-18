@@ -17,24 +17,20 @@ import org.ostara.common.util.StringUtils;
 import org.ostara.internal.ResourceContext;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.LedgerEngine;
-import org.ostara.network.MessageProcessorAware;
+import org.ostara.network.MessageProcessorHandler;
 
 /**
- * Thread safety is guaranteed by aware {@link MessageProcessorAware} variable {@code commandExecutor} of the thread.
+ * Thread safety is guaranteed by aware {@link MessageProcessorHandler} variable {@code commandExecutor} of the thread.
  */
-public class TopicPartitionRequestCacheSupport {
+public class CachingTopicPartition {
 
-    private static final InternalLogger logger =
-            InternalLoggerFactory.getLogger(TopicPartitionRequestCacheSupport.class);
-
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(CachingTopicPartition.class);
     private final PartitionLeaderAssignorFactory factory;
     private final LoadingCache<String, Set<Partition>> cache;
-    private final ClusterNodeCacheSupport nodeCacheWriterSupport;
+    private final CachingClusterNode nodeCacheWriterSupport;
     private final LedgerEngine engine;
-    private final ServerConfig config;
 
-    public TopicPartitionRequestCacheSupport(ServerConfig config, ResourceContext context) {
-        this.config = config;
+    public CachingTopicPartition(ServerConfig config, ResourceContext context) {
         this.factory = new PartitionLeaderAssignorFactory(context, config);
         this.nodeCacheWriterSupport = context.getNodeCacheSupport();
         this.engine = context.getLedgerEngine();

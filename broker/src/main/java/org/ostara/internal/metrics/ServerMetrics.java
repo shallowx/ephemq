@@ -1,13 +1,5 @@
 package org.ostara.internal.metrics;
 
-import static org.ostara.internal.metrics.MetricsConstants.BROKER_TAG;
-import static org.ostara.internal.metrics.MetricsConstants.CLUSTER_TAG;
-import static org.ostara.internal.metrics.MetricsConstants.LEDGER_TAG;
-import static org.ostara.internal.metrics.MetricsConstants.QUEUE_TAG;
-import static org.ostara.internal.metrics.MetricsConstants.TOPIC_PARTITION_COUNTER_GAUGE_NAME;
-import static org.ostara.internal.metrics.MetricsConstants.TOPIC_PARTITION_LEADER_COUNTER_GAUGE_NAME;
-import static org.ostara.internal.metrics.MetricsConstants.TOPIC_TAG;
-
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
@@ -30,20 +22,20 @@ import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Node;
 import org.ostara.internal.config.ServerConfig;
 import org.ostara.ledger.Ledger;
-import org.ostara.metrics.JmxMeterRegistrySetup;
-import org.ostara.metrics.MeterRegistrySetup;
+import org.ostara.metrics.JmxMeterRegistry;
+import org.ostara.metrics.MeterRegistry;
 import org.ostara.metrics.NettyMetrics;
-import org.ostara.metrics.PrometheusRegistrySetup;
+import org.ostara.metrics.PrometheusRegistry;
 import org.ostara.remote.util.NetworkUtils;
 
+import static org.ostara.internal.metrics.ServerMetrics.MetricsConstants.*;
+
 @SuppressWarnings("all")
-public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCloseable {
+public class ServerMetrics implements LedgerMetricsListener, ApiMetricsListener, AutoCloseable {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServerMetrics.class);
-
-    private final MeterRegistry registry = Metrics.globalRegistry;
+    private final io.micrometer.core.instrument.MeterRegistry registry = Metrics.globalRegistry;
     private final ServerConfig config;
-
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestSuccessed = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestFailured = new ConcurrentHashMap<>();
@@ -52,7 +44,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     private final AtomicInteger partitionCounts = new AtomicInteger();
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
     private final int metricsSample;
-    private final MeterRegistrySetup meterRegistrySetup;
+    private final MeterRegistry meterRegistrySetup;
     private final JvmGcMetrics jvmGcMetrics;
 
     private final FastThreadLocal<Integer> metricsSampleCount = new FastThreadLocal<>(){
@@ -65,10 +57,10 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     public ServerMetrics(Properties properties, ServerConfig config) {
         this.config = config;
         this.metricsSample = config.getMetricsSampleCount();
-        this.meterRegistrySetup = new PrometheusRegistrySetup();
+        this.meterRegistrySetup = new PrometheusRegistry();
         this.meterRegistrySetup.setUp(properties);
 
-        JmxMeterRegistrySetup jmxMeterRegistrySetup = new JmxMeterRegistrySetup();
+        JmxMeterRegistry jmxMeterRegistrySetup = new JmxMeterRegistry();
         jmxMeterRegistrySetup.setUp(properties);
 
         Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
@@ -148,12 +140,11 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     @Override
     public void onCommand(int code, int bytes, long cost, boolean ret) {
         Map<Integer, Counter> counters = ret ? requestSuccessed : requestFailured;
-        int type = code;
-        Counter counter = counters.get(type);
+        Counter counter = counters.get(code);
         if (counter == null) {
-            counter = counters.computeIfAbsent(type,
+            counter = counters.computeIfAbsent(code,
                     s -> Counter.builder("request_state_count")
-                    .tags(Tags.of("request_type", String.valueOf(type))
+                    .tags(Tags.of("request_type", String.valueOf(code))
                             .and(BROKER_TAG, config.getServerId())
                             .and(CLUSTER_TAG, config.getClusterName())
                             .and("ret", ret ? "success" : "failure"))
@@ -165,9 +156,9 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
         metricsSampleCount.set(sample + 1);
         if (sample > metricsSample) {
             metricsSampleCount.set(0);
-            DistributionSummary drs = requestSizeSummary.computeIfAbsent(type,
+            DistributionSummary drs = requestSizeSummary.computeIfAbsent(code,
                     s -> DistributionSummary.builder("request_size")
-                            .tags(Tags.of("request_type", String.valueOf(type))
+                            .tags(Tags.of("request_type", String.valueOf(code))
                                     .and(BROKER_TAG, config.getServerId())
                                     .and(CLUSTER_TAG, config.getClusterName()))
                             .baseUnit("bytes")
@@ -176,9 +167,9 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
                             .register(registry));
             drs.record(bytes);
 
-            DistributionSummary drt = requestTimesSummary.computeIfAbsent(type,
+            DistributionSummary drt = requestTimesSummary.computeIfAbsent(code,
                     s -> DistributionSummary.builder("api_response_time")
-                            .tags(Tags.of("request_type", String.valueOf(type))
+                            .tags(Tags.of("request_type", String.valueOf(code))
                                     .and(BROKER_TAG, config.getServerId())
                                     .and(CLUSTER_TAG, config.getClusterName()))
                             .baseUnit("ns")
@@ -200,7 +191,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
                             .tag(QUEUE_TAG, queue)
                             .tag(CLUSTER_TAG, config.getClusterName())
                             .tag(BROKER_TAG, config.getServerId())
-                            .tag("type", "send")
+                            .tag(TYPE_TAG, "send")
                             .register(Metrics.globalRegistry)
             );
         }
@@ -217,7 +208,7 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
                             .tag(LEDGER_TAG, String.valueOf(ledger))
                             .tag(CLUSTER_TAG, config.getClusterName())
                             .tag(BROKER_TAG, config.getServerId())
-                            .tag("type", "single")
+                            .tag(TYPE_TAG, "single")
                             .register(Metrics.globalRegistry)
             );
         }
@@ -228,13 +219,27 @@ public class ServerMetrics implements LedgerMetricsListener, ApiListener, AutoCl
     public void onPartitionInit() {
         try {
             partitionCounts.incrementAndGet();
-        }catch (Throwable ignord){}
+        }catch (Throwable ignored){}
     }
 
     @Override
     public void onPartitionDestroy() {
         try {
             partitionCounts.decrementAndGet();
-        }catch (Throwable ignord){}
+        }catch (Throwable ignored){}
+    }
+
+    static class MetricsConstants {
+        public static final String TOPIC_MESSAGE_RECEIVE_COUNTER = "topic_message_receive_count";
+        public static final String TOPIC_MESSAGE_PUSH_COUNTER = "topic_message_dispatch_count";
+        public static final String TOPIC_PARTITION_COUNTER_GAUGE_NAME = "topic_partition_count";
+        public static final String TOPIC_PARTITION_LEADER_COUNTER_GAUGE_NAME = "topic_partition_leader_count";
+
+        public static final String TOPIC_TAG = "topic";
+        public static final String QUEUE_TAG = "queue";
+        public static final String CLUSTER_TAG = "cluster";
+        public static final String BROKER_TAG = "cluster";
+        public static final String LEDGER_TAG = "ledger";
+        public static final String TYPE_TAG = "type";
     }
 }

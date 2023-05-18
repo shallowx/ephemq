@@ -27,8 +27,8 @@ import org.ostara.common.metadata.Partition;
 import org.ostara.common.metadata.Subscription;
 import org.ostara.internal.ResourceContext;
 import org.ostara.internal.config.ServerConfig;
-import org.ostara.internal.metadata.ClusterNodeCacheSupport;
-import org.ostara.internal.metadata.TopicPartitionRequestCacheSupport;
+import org.ostara.internal.metadata.CachingClusterNode;
+import org.ostara.internal.metadata.CachingTopicPartition;
 import org.ostara.ledger.LedgerEngine;
 import org.ostara.ledger.Offset;
 import org.ostara.remote.RemoteException;
@@ -53,15 +53,15 @@ import org.ostara.remote.proto.server.SubscribeRequest;
 import org.ostara.remote.proto.server.SubscribeResponse;
 
 @SuppressWarnings("all")
-public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Server {
+public class MessageProcessorHandler implements ProcessorAware, ProcessCommand.Server {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProcessorAware.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageProcessorHandler.class);
 
     private final ServerConfig config;
     private final ResourceContext resourceContext;
     private final EventExecutor commandExecutor;
 
-    public MessageProcessorAware(ServerConfig config, ResourceContext context) {
+    public MessageProcessorHandler(ServerConfig config, ResourceContext context) {
         this.config = config;
         this.resourceContext = context;
 
@@ -121,7 +121,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
             commandExecutor.execute(() -> {
                 try {
                     ProtocolStringList topicList = request.getTopicList();
-                    TopicPartitionRequestCacheSupport writerSupport =
+                    CachingTopicPartition writerSupport =
                             resourceContext.getPartitionRequestCacheSupport();
                     Map<String, Set<Partition>> partitions = writerSupport.loadAll(topicList);
 
@@ -182,7 +182,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
             QueryClusterNodeRequest request = readProto(data, QueryClusterNodeRequest.parser());
             commandExecutor.execute(() -> {
                 try {
-                    ClusterNodeCacheSupport writerSupport = resourceContext.getNodeCacheSupport();
+                    CachingClusterNode writerSupport = resourceContext.getNodeCacheSupport();
                     Set<Node> records = writerSupport.load(config.getClusterName());
 
                     QueryClusterNodeResponse.Builder builder = QueryClusterNodeResponse.newBuilder();
@@ -334,7 +334,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         }
                     });
 
-                    TopicPartitionRequestCacheSupport writerSupport =
+                    CachingTopicPartition writerSupport =
                             resourceContext.getPartitionRequestCacheSupport();
                     writerSupport.createTopic(topic, partitionLimit, replicateLimit, promise);
                 } catch (Exception e) {
@@ -368,7 +368,7 @@ public class MessageProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         }
                     });
 
-                    TopicPartitionRequestCacheSupport writerSupport =
+                    CachingTopicPartition writerSupport =
                             resourceContext.getPartitionRequestCacheSupport();
                     writerSupport.delTopic(topic, promise);
                 } catch (Exception e) {

@@ -23,7 +23,7 @@ public class Launcher {
 
     private static void run(String[] args) throws Exception {
         ApplicationRunListener listener = new ConfigurableArgumentsRunListener(args);
-        ApplicationArguments arguments = listener.starting();
+        ApplicationArguments arguments = listener.startUp();
 
         if (arguments == null) {
             throw new RuntimeException("Server config file cannot be empty");

@@ -30,7 +30,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
     }
 
     @Override
-    public ApplicationArguments starting() throws Exception {
+    public ApplicationArguments startUp() throws Exception {
         return argumentsPrepared(args);
     }
 
@@ -44,20 +44,20 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
             String file = cmdLine.getOptionValue('c');
             if (!StringUtil.isNullOrEmpty(file)) {
                 String extension = getExtension(file);
-                PropertySourceLoader propertySourceLoader = propertySourceLoaderBeanFactory(extension);
+                ResourceLoader propertySourceLoader = propertySourceLoaderBeanFactory(extension);
                 properties = propertySourceLoader.load(file);
             }
         }
         return new DefaultApplicationArguments(properties);
     }
 
-    private PropertySourceLoader propertySourceLoaderBeanFactory(String extension) {
+    private ResourceLoader propertySourceLoaderBeanFactory(String extension) {
         switch (extension) {
             case "properties" -> {
-                return new PropertiesPropertySourceLoader();
+                return new PropertiesResourceLoader();
             }
             case "yaml", "yml" -> {
-                return new YamlPropertySourceLoader();
+                return new YamlResourceLoader();
             }
             default -> {
                 throw new RuntimeException(String.format("Not supported file extension<%s>", extension));

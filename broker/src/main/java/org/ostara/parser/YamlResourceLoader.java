@@ -3,8 +3,7 @@ package org.ostara.parser;
 import java.util.Properties;
 import org.yaml.snakeyaml.Yaml;
 
-public class YamlPropertySourceLoader implements PropertySourceLoader {
-
+public class YamlResourceLoader implements ResourceLoader {
     private static final Yaml YAML = new Yaml();
 
     @Override

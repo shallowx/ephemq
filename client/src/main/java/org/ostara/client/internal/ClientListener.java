@@ -19,11 +19,6 @@ public interface ClientListener {
     default void onPushMessage(Channel channel, int ledgerId, short version, String topic, String queue, int epoch,
                                long index, ByteBuf data) {
     }
-
-    default void onPullMessage(Channel channel, int ledgerId, String topic, String queue, int ledger, int limit,
-                               int epoch, long index, ByteBuf data) {
-    }
-
     default void registerListener(ConsumerListener listener) {
     }
 

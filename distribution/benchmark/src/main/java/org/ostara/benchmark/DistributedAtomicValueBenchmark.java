@@ -43,7 +43,7 @@ public class DistributedAtomicValueBenchmark {
     }
 
     @Benchmark
-    public void testAtomicIntegerValue() {
-        Integer incrementPreValue = atomicValue.increment().preValue();
+    public void testAtomicPreValue() {
+        atomicValue.increment().preValue();
     }
 }

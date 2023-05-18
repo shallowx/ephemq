@@ -2,9 +2,9 @@ package org.ostara.common.util;
 
 import javax.naming.OperationNotSupportedException;
 
-public class TypeUtils {
+public class TypeTransformUtils {
 
-    private TypeUtils() throws OperationNotSupportedException {
+    private TypeTransformUtils() throws OperationNotSupportedException {
         //unused
         throw new OperationNotSupportedException();
     }
