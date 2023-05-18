@@ -75,7 +75,6 @@ public class MessageProcessorHandler implements ProcessorAware, ProcessCommand.S
         logger.debug("Get remote active address<{}> successfully", channel.remoteAddress().toString());
 
         resourceContext.getChannelBoundContext().add(channel);
-
         channel.closeFuture().addListener(f -> {
             LedgerEngine engine = resourceContext.getLedgerEngine();
             engine.clearChannel(channel);
@@ -87,21 +86,13 @@ public class MessageProcessorHandler implements ProcessorAware, ProcessCommand.S
                         short version) {
         try {
             switch (command) {
-
                 case SEND_MESSAGE -> processSendRequest(channel, data, answer, version);
-
                 case SUBSCRIBE -> processSubscribeRequest(channel, data, answer);
-
                 case CREATE_TOPIC -> processCreateTopicRequest(channel, command, data, answer, type, version);
-
                 case DELETE_TOPIC -> processDelTopicRequest(channel, command, data, answer, type, version);
-
                 case FETCH_TOPIC_RECORD -> processFetchTopicRecordsRequest(channel, data, answer, version);
-
                 case FETCH_CLUSTER_RECORD -> processFetchClusterNodeRecordsRequest(channel, data, answer, version);
-
                 case CLUSTER_SYNC -> processClusterSyncRequest(channel, command, data, answer, type, version);
-
                 default -> {
                     logger.debug("Channel<{}> - not supported command [{}]", switchAddress(channel), command);
                     answerFailed(answer, RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION,
@@ -385,7 +376,6 @@ public class MessageProcessorHandler implements ProcessorAware, ProcessCommand.S
 
     private void processClusterSyncRequest(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer,
                                            byte type, short version) {
-
     }
 
     private void answerFailed(InvokeAnswer<ByteBuf> answer, Throwable cause) {

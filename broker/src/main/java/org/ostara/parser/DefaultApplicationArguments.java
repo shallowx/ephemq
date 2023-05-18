@@ -31,10 +31,9 @@ public class DefaultApplicationArguments implements ApplicationArguments {
         return config;
     }
 
-
     private void checkAndPrintConfig(ServerConfig config) {
         Method[] methods = ServerConfig.class.getDeclaredMethods();
-        StringBuilder sb = new StringBuilder("Print the broker startup options: \n");
+        StringBuilder sb = new StringBuilder("Print the server startup options: \n");
         String option;
 
         for (Method method : methods) {
@@ -72,7 +71,7 @@ public class DefaultApplicationArguments implements ApplicationArguments {
             sb.append(String.format("\t%s=%s", name, invoke)).append("\n");
         } catch (Exception e) {
             throw new IllegalArgumentException(
-                    String.format("Failed to check config type, type:%s name:%s error:%s", type, name, e));
+                    String.format("Check config type is failure, type:%s name:%s error:%s", type, name, e));
         }
     }
 }

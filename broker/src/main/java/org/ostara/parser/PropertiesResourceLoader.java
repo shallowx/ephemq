@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesResourceLoader implements ResourceLoader {
-
     @Override
     public Properties load(String file) throws Exception {
         Properties properties = new Properties();

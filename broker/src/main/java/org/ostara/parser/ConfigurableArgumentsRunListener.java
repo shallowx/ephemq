@@ -9,20 +9,12 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.ostara.common.logging.InternalLogger;
-import org.ostara.common.logging.InternalLoggerFactory;
 
 public class ConfigurableArgumentsRunListener implements ApplicationRunListener {
-
-    private static final InternalLogger logger =
-            InternalLoggerFactory.getLogger(ConfigurableArgumentsRunListener.class);
-
     private static final int NOT_FOUND = -1;
-    private static final String EMPTY_STRING = "";
     public static final char EXTENSION_SEPARATOR = '.';
     private static final char UNIX_NAME_SEPARATOR = '/';
     private static final char WINDOWS_NAME_SEPARATOR = '\\';
-
     private final String[] args;
 
     public ConfigurableArgumentsRunListener(String[] args) {
@@ -51,8 +43,8 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
         return new DefaultApplicationArguments(properties);
     }
 
-    private ResourceLoader propertySourceLoaderBeanFactory(String extension) {
-        switch (extension) {
+    private ResourceLoader propertySourceLoaderBeanFactory(String type) {
+        switch (type) {
             case "properties" -> {
                 return new PropertiesResourceLoader();
             }
@@ -60,7 +52,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
                 return new YamlResourceLoader();
             }
             default -> {
-                throw new RuntimeException(String.format("Not supported file extension<%s>", extension));
+                throw new RuntimeException(String.format("Not supported file type<%s>", type));
             }
         }
     }
@@ -71,7 +63,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
         }
         final int index = indexOfExtension(fileName);
         if (index == NOT_FOUND) {
-            return EMPTY_STRING;
+            return StringUtil.EMPTY_STRING;
         }
         return fileName.substring(index + 1);
     }
@@ -98,18 +90,18 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
     }
 
     private int getAdsCriticalOffset(final String fileName) {
-        final int offset1 = fileName.lastIndexOf(File.separatorChar);
-        final int offset2 = fileName.lastIndexOf(flipSeparator());
-        if (offset1 == -1) {
-            if (offset2 == -1) {
+        final int suffix = fileName.lastIndexOf(File.separatorChar);
+        final int osSuffix = fileName.lastIndexOf(flipSeparator());
+        if (suffix == NOT_FOUND) {
+            if (osSuffix == NOT_FOUND) {
                 return 0;
             }
-            return offset2 + 1;
+            return osSuffix + 1;
         }
-        if (offset2 == -1) {
-            return offset1 + 1;
+        if (osSuffix == -1) {
+            return suffix + 1;
         }
-        return StrictMath.max(offset1, offset2) + 1;
+        return StrictMath.max(suffix, osSuffix) + 1;
     }
 
     private char flipSeparator() {
@@ -137,7 +129,7 @@ public class ConfigurableArgumentsRunListener implements ApplicationRunListener 
 
     private Options buildCommandOptions() {
         Options options = new Options();
-        Option opt = new Option("c", "configFile", true, "Broker config properties file");
+        Option opt = new Option("c", "configFile", true, "config file(properties / yaml)");
         opt.setRequired(false);
         options.addOption(opt);
 

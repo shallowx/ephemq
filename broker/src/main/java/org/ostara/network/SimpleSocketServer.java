@@ -18,7 +18,6 @@ import org.ostara.internal.config.ServerConfig;
 public final class SimpleSocketServer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(SimpleSocketServer.class);
-
     private final ServerConfig config;
     private final ServerChannelInitializer serverChannelInitializer;
     private EventLoopGroup bossGroup;

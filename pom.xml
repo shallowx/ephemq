@@ -4,22 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <inceptionYear>2022</inceptionYear>
+  <inceptionYear>2023</inceptionYear>
 
   <groupId>org.ostara</groupId>
   <artifactId>ostara</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-
-  <modules>
-    <module>broker</module>
-    <module>client</module>
-    <module>remote</module>
-    <module>distribution</module>
-    <module>common</module>
-    <module>metrics</module>
-    <module>cli-tools</module>
-  </modules>
 
   <scm>
     <connection>scm:git@github.com:shallow-rs/Ostara.git</connection>
@@ -68,6 +58,8 @@
     <groovy.version>3.0.15</groovy.version>
     <byte.buddy.version>1.14.2</byte.buddy.version>
     <objenesis.version>3.2</objenesis.version>
+    <gmavenplus.plugin.version>2.1.0</gmavenplus.plugin.version>
+    <maven.surefire-plugin.version>3.0.0-M5</maven.surefire-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -227,7 +219,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>2.1.0</version>
+        <version>${gmavenplus.plugin.version}</version>
         <executions>
           <execution>
             <goals>
@@ -239,7 +231,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>${maven.surefire-plugin.version}</version>
         <configuration>
           <useFile>false</useFile>
           <includes>
@@ -250,5 +242,15 @@
       </plugin>
     </plugins>
   </build>
+
+  <modules>
+    <module>broker</module>
+    <module>client</module>
+    <module>remote</module>
+    <module>distribution</module>
+    <module>common</module>
+    <module>metrics</module>
+    <module>cli-tools</module>
+  </modules>
 
 </project>

@@ -9,7 +9,6 @@ import org.ostara.remote.processor.ProcessorAware;
 public class ServiceDuplexHandler extends ProcessDuplexHandler {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceDuplexHandler.class);
-
     public ServiceDuplexHandler(ProcessorAware processor) {
         super(processor);
     }
