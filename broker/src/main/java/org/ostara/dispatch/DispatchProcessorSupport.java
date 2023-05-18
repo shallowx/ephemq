@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 
 public class DispatchProcessorSupport {
 

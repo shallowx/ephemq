@@ -12,7 +12,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
-import org.ostara.internal.atomic.DistributedAtomicInteger;
+import org.ostara.atomic.DistributedAtomicInteger;
 
 /**
  * If no log is printed, the log level can be set to debug mode, but it may affect the performance test results

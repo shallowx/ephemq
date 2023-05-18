@@ -1,7 +1,7 @@
 package org.ostara.ledger
 
 import io.netty.channel.Channel
-import org.ostara.internal.config.ServerConfig
+import org.ostara.config.ServerConfig
 import org.ostara.remote.util.NetworkUtils
 import spock.lang.Specification
 import spock.lang.Stepwise

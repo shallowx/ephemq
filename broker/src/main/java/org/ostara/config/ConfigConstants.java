@@ -1,4 +1,4 @@
-package org.ostara.internal.config;
+package org.ostara.config;
 
 public class ConfigConstants {
 

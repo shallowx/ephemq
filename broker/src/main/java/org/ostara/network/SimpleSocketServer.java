@@ -12,8 +12,8 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.internal.ResourceContext;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.context.ResourceContext;
+import org.ostara.config.ServerConfig;
 
 public final class SimpleSocketServer {
 

@@ -1,4 +1,4 @@
-package org.ostara.internal.atomic;
+package org.ostara.atomic;
 
 import javax.annotation.concurrent.ThreadSafe;
 

@@ -1,12 +1,11 @@
-package org.ostara.internal.metadata;
+package org.ostara.context;
 
 import java.util.Set;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Node;
 import org.ostara.common.metadata.Partition;
-import org.ostara.internal.ResourceContext;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 
 public class PartitionLeaderAssignorFactory {
 

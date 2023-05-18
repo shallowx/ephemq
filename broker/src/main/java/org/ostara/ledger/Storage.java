@@ -9,7 +9,7 @@ import io.netty.util.concurrent.Promise;
 import javax.annotation.concurrent.ThreadSafe;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 
 @ThreadSafe
 public class Storage {

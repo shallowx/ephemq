@@ -1,4 +1,4 @@
-package org.ostara.internal.atomic;
+package org.ostara.atomic;
 
 public interface DistributedAtomicNumber<T> {
 

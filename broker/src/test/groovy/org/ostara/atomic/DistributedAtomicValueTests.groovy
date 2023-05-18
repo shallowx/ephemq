@@ -1,7 +1,6 @@
 package org.ostara.atomic
 
 
-import org.ostara.internal.atomic.DistributedAtomicValue
 import spock.lang.Specification
 import spock.lang.Stepwise
 import spock.lang.Subject

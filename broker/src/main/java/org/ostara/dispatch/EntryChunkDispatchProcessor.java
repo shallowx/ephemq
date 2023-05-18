@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 import javax.annotation.concurrent.ThreadSafe;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 import org.ostara.ledger.Cursor;
 import org.ostara.ledger.Offset;
 import org.ostara.ledger.Storage;

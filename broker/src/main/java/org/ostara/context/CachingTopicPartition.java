@@ -1,4 +1,4 @@
-package org.ostara.internal.metadata;
+package org.ostara.context;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -14,8 +14,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Partition;
 import org.ostara.common.util.StringUtils;
-import org.ostara.internal.ResourceContext;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 import org.ostara.ledger.LedgerEngine;
 import org.ostara.network.MessageProcessorHandler;
 

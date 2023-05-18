@@ -1,4 +1,4 @@
-package org.ostara.internal.metadata;
+package org.ostara.context;
 
 import static org.ostara.remote.util.NetworkUtils.newEventExecutorGroup;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -21,7 +21,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Node;
 import org.ostara.common.util.StringUtils;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 import org.ostara.remote.util.NetworkUtils;
 
 public class CachingClusterNode {

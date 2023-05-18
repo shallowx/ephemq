@@ -1,4 +1,4 @@
-package org.ostara.internal.metadata;
+package org.ostara.context;
 
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
@@ -8,9 +8,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import org.ostara.common.metadata.Node;
 import org.ostara.common.metadata.Partition;
-import org.ostara.internal.ResourceContext;
-import org.ostara.internal.atomic.DistributedAtomicInteger;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.atomic.DistributedAtomicInteger;
+import org.ostara.config.ServerConfig;
 
 public class RandomAssignor extends LeaderAssignorAdapter {
 

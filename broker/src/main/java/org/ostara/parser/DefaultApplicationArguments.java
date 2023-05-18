@@ -11,7 +11,7 @@ import java.util.Properties;
 import javax.naming.OperationNotSupportedException;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 
 public class DefaultApplicationArguments implements ApplicationArguments {
 

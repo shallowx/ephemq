@@ -1,7 +1,7 @@
 package org.ostara.ledger
 
 import io.netty.util.concurrent.Promise
-import org.ostara.internal.config.ServerConfig
+import org.ostara.config.ServerConfig
 import org.ostara.remote.util.ByteBufUtils
 import org.ostara.remote.util.NetworkUtils
 import spock.lang.Specification

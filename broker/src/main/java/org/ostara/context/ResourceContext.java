@@ -1,8 +1,6 @@
-package org.ostara.internal;
+package org.ostara.context;
 
-import org.ostara.internal.atomic.DistributedAtomicInteger;
-import org.ostara.internal.metadata.CachingClusterNode;
-import org.ostara.internal.metadata.CachingTopicPartition;
+import org.ostara.atomic.DistributedAtomicInteger;
 import org.ostara.ledger.LedgerEngine;
 import org.ostara.network.ChannelBoundContext;
 

@@ -1,4 +1,4 @@
-package org.ostara.internal.metadata;
+package org.ostara.context;
 
 public class PartitionAssignRule {
 

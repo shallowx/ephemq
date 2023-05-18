@@ -1,4 +1,4 @@
-package org.ostara.internal.metrics;
+package org.ostara.metrics;
 
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.jvm.*;
@@ -20,15 +20,11 @@ import io.netty.util.internal.StringUtil;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.metadata.Node;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 import org.ostara.ledger.Ledger;
-import org.ostara.metrics.JmxMeterRegistry;
-import org.ostara.metrics.MeterRegistry;
-import org.ostara.metrics.NettyMetrics;
-import org.ostara.metrics.PrometheusRegistry;
 import org.ostara.remote.util.NetworkUtils;
 
-import static org.ostara.internal.metrics.ServerMetrics.MetricsConstants.*;
+import static org.ostara.metrics.ServerMetrics.MetricsConstants.*;
 
 @SuppressWarnings("all")
 public class ServerMetrics implements LedgerMetricsListener, ApiMetricsListener, AutoCloseable {

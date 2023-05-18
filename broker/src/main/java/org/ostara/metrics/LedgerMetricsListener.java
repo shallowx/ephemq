@@ -1,4 +1,4 @@
-package org.ostara.internal.metrics;
+package org.ostara.metrics;
 
 import org.ostara.common.metadata.Node;
 import org.ostara.ledger.Ledger;

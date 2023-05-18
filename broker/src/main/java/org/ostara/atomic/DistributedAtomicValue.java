@@ -1,4 +1,4 @@
-package org.ostara.internal.atomic;
+package org.ostara.atomic;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;

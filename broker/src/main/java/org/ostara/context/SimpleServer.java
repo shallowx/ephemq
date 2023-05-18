@@ -1,4 +1,4 @@
-package org.ostara.internal;
+package org.ostara.context;
 
 import static org.ostara.remote.util.NetworkUtils.newEventExecutorGroup;
 import io.netty.util.concurrent.ScheduledFuture;
@@ -6,7 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 import org.ostara.network.SimpleSocketServer;
 
 public final class SimpleServer {

@@ -1,6 +1,6 @@
 package org.ostara.parser;
 
-import org.ostara.internal.config.ServerConfig;
+import org.ostara.config.ServerConfig;
 
 public interface ApplicationArguments {
     ServerConfig config();
