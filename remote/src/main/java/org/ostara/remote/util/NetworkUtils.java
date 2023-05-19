@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import javax.naming.OperationNotSupportedException;
+
+import org.ostara.common.thread.FastEventExecutorGroup;
 import org.ostara.common.util.ObjectUtils;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.codec.MessagePacket;
@@ -102,7 +104,16 @@ public final class NetworkUtils {
         }
 
         ThreadFactory f = new DefaultThreadFactory(groupName);
-        return new DefaultEventExecutorGroup(threads, f);
+        return new FastEventExecutorGroup(threads, f);
+    }
+
+    public static EventExecutorGroup newEventExecutorGroup(int threads, int maxPendingTasks, String poolName) {
+        if (threads == 0) {
+            threads = Runtime.getRuntime().availableProcessors();
+        }
+
+        ThreadFactory f = new DefaultThreadFactory(poolName);
+        return new FastEventExecutorGroup(threads, f, true, maxPendingTasks, RejectedExecutionHandlers.reject());
     }
 
     public static Class<? extends Channel> preferChannelClass(boolean epoll) {

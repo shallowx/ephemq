@@ -241,7 +241,7 @@ public class Client {
         taskExecutor.schedule(new RefreshMetadataTask(), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
     }
 
-    private synchronized void close() {
+    public synchronized void close() {
         if (state != Boolean.TRUE) {
             return;
         }

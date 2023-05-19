@@ -4,18 +4,18 @@
 package org.ostara.remote.proto.server;
 
 /**
- * Protobuf type {@code ostara.protobuf.RestSubscribeRequest}
+ * Protobuf type {@code ostara.protobuf.ResetSubscribeRequest}
  */
-public final class RestSubscribeRequest extends
+public final class ResetSubscribeRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:ostara.protobuf.RestSubscribeRequest)
-    RestSubscribeRequestOrBuilder {
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.ResetSubscribeRequest)
+    ResetSubscribeRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use RestSubscribeRequest.newBuilder() to construct.
-  private RestSubscribeRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ResetSubscribeRequest.newBuilder() to construct.
+  private ResetSubscribeRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private RestSubscribeRequest() {
+  private ResetSubscribeRequest() {
     markers_ = com.google.protobuf.ByteString.EMPTY;
     topic_ = "";
   }
@@ -24,7 +24,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new RestSubscribeRequest();
+    return new ResetSubscribeRequest();
   }
 
   @java.lang.Override
@@ -34,15 +34,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RestSubscribeRequest_descriptor;
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RestSubscribeRequest_fieldAccessorTable
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            org.ostara.remote.proto.server.RestSubscribeRequest.class, org.ostara.remote.proto.server.RestSubscribeRequest.Builder.class);
+            org.ostara.remote.proto.server.ResetSubscribeRequest.class, org.ostara.remote.proto.server.ResetSubscribeRequest.Builder.class);
   }
 
   public static final int LEDGER_FIELD_NUMBER = 1;
@@ -194,10 +194,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof org.ostara.remote.proto.server.RestSubscribeRequest)) {
+    if (!(obj instanceof org.ostara.remote.proto.server.ResetSubscribeRequest)) {
       return super.equals(obj);
     }
-    org.ostara.remote.proto.server.RestSubscribeRequest other = (org.ostara.remote.proto.server.RestSubscribeRequest) obj;
+    org.ostara.remote.proto.server.ResetSubscribeRequest other = (org.ostara.remote.proto.server.ResetSubscribeRequest) obj;
 
     if (getLedger()
         != other.getLedger()) return false;
@@ -236,69 +236,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(byte[] data)
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseDelimitedFrom(java.io.InputStream input)
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseDelimitedFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static org.ostara.remote.proto.server.RestSubscribeRequest parseFrom(
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -311,7 +311,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(org.ostara.remote.proto.server.RestSubscribeRequest prototype) {
+  public static Builder newBuilder(org.ostara.remote.proto.server.ResetSubscribeRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -327,26 +327,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code ostara.protobuf.RestSubscribeRequest}
+   * Protobuf type {@code ostara.protobuf.ResetSubscribeRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:ostara.protobuf.RestSubscribeRequest)
-      org.ostara.remote.proto.server.RestSubscribeRequestOrBuilder {
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.ResetSubscribeRequest)
+      org.ostara.remote.proto.server.ResetSubscribeRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RestSubscribeRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RestSubscribeRequest_fieldAccessorTable
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.ostara.remote.proto.server.RestSubscribeRequest.class, org.ostara.remote.proto.server.RestSubscribeRequest.Builder.class);
+              org.ostara.remote.proto.server.ResetSubscribeRequest.class, org.ostara.remote.proto.server.ResetSubscribeRequest.Builder.class);
     }
 
-    // Construct using org.ostara.remote.proto.server.RestSubscribeRequest.newBuilder()
+    // Construct using org.ostara.remote.proto.server.ResetSubscribeRequest.newBuilder()
     private Builder() {
 
     }
@@ -375,17 +375,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_RestSubscribeRequest_descriptor;
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor;
     }
 
     @java.lang.Override
-    public org.ostara.remote.proto.server.RestSubscribeRequest getDefaultInstanceForType() {
-      return org.ostara.remote.proto.server.RestSubscribeRequest.getDefaultInstance();
+    public org.ostara.remote.proto.server.ResetSubscribeRequest getDefaultInstanceForType() {
+      return org.ostara.remote.proto.server.ResetSubscribeRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public org.ostara.remote.proto.server.RestSubscribeRequest build() {
-      org.ostara.remote.proto.server.RestSubscribeRequest result = buildPartial();
+    public org.ostara.remote.proto.server.ResetSubscribeRequest build() {
+      org.ostara.remote.proto.server.ResetSubscribeRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -393,8 +393,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public org.ostara.remote.proto.server.RestSubscribeRequest buildPartial() {
-      org.ostara.remote.proto.server.RestSubscribeRequest result = new org.ostara.remote.proto.server.RestSubscribeRequest(this);
+    public org.ostara.remote.proto.server.ResetSubscribeRequest buildPartial() {
+      org.ostara.remote.proto.server.ResetSubscribeRequest result = new org.ostara.remote.proto.server.ResetSubscribeRequest(this);
       result.ledger_ = ledger_;
       result.epoch_ = epoch_;
       result.index_ = index_;
@@ -438,16 +438,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.ostara.remote.proto.server.RestSubscribeRequest) {
-        return mergeFrom((org.ostara.remote.proto.server.RestSubscribeRequest)other);
+      if (other instanceof org.ostara.remote.proto.server.ResetSubscribeRequest) {
+        return mergeFrom((org.ostara.remote.proto.server.ResetSubscribeRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(org.ostara.remote.proto.server.RestSubscribeRequest other) {
-      if (other == org.ostara.remote.proto.server.RestSubscribeRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(org.ostara.remote.proto.server.ResetSubscribeRequest other) {
+      if (other == org.ostara.remote.proto.server.ResetSubscribeRequest.getDefaultInstance()) return this;
       if (other.getLedger() != 0) {
         setLedger(other.getLedger());
       }
@@ -746,23 +746,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:ostara.protobuf.RestSubscribeRequest)
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.ResetSubscribeRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:ostara.protobuf.RestSubscribeRequest)
-  private static final org.ostara.remote.proto.server.RestSubscribeRequest DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.ResetSubscribeRequest)
+  private static final org.ostara.remote.proto.server.ResetSubscribeRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.RestSubscribeRequest();
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.ResetSubscribeRequest();
   }
 
-  public static org.ostara.remote.proto.server.RestSubscribeRequest getDefaultInstance() {
+  public static org.ostara.remote.proto.server.ResetSubscribeRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<RestSubscribeRequest>
-      PARSER = new com.google.protobuf.AbstractParser<RestSubscribeRequest>() {
+  private static final com.google.protobuf.Parser<ResetSubscribeRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ResetSubscribeRequest>() {
     @java.lang.Override
-    public RestSubscribeRequest parsePartialFrom(
+    public ResetSubscribeRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -781,17 +781,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<RestSubscribeRequest> parser() {
+  public static com.google.protobuf.Parser<ResetSubscribeRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<RestSubscribeRequest> getParserForType() {
+  public com.google.protobuf.Parser<ResetSubscribeRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public org.ostara.remote.proto.server.RestSubscribeRequest getDefaultInstanceForType() {
+  public org.ostara.remote.proto.server.ResetSubscribeRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

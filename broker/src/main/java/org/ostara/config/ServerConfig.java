@@ -10,10 +10,6 @@ public class ServerConfig {
     private final Properties props;
 
     // only use to metrics config
-    public Properties getProps() {
-        return props;
-    }
-
     public static ServerConfig exchange(Properties props) {
         return new ServerConfig(props);
     }
@@ -73,20 +69,6 @@ public class ServerConfig {
     public int getProcessCommandHandleThreadLimit() {
         return object2Int(
                 props.getOrDefault(ConfigConstants.PROCESS_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
-    }
-
-    public int getMessageStorageHandleThreadLimit() {
-        return object2Int(
-                props.getOrDefault(ConfigConstants.MESSAGE_COMMAND_HANDLE_THREAD_LIMIT, availableProcessor()));
-    }
-
-    public String getElectAssignRule() {
-        return object2String(
-                props.getOrDefault(ConfigConstants.PARTITION_LEADER_ASSIGN_RULE, PartitionAssignRule.RANDOM));
-    }
-
-    public int getMetadataRefreshMs() {
-        return object2Int(props.getOrDefault(ConfigConstants.METADATA_CACHING_REFRESH_MS, 60000));
     }
 
     public int getMetricsSampleCount(){

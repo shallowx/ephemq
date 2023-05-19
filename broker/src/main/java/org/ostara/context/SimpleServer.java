@@ -36,7 +36,6 @@ public final class SimpleServer {
                 }, 0, TimeUnit.MILLISECONDS);
         socketStartFuture.get();
 
-        context.start();
 
         latch.await();
         if (logger.isInfoEnabled()) {
@@ -45,7 +44,6 @@ public final class SimpleServer {
     }
 
     public void shutdownGracefully() throws Exception {
-        context.shutdownGracefully();
         socketServer.shutdownGracefully();
     }
 }

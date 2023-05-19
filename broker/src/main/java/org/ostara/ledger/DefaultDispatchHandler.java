@@ -18,7 +18,7 @@ import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.MessageUtils;
 import org.ostara.config.ServerConfig;
 import org.ostara.remote.codec.MessagePacket;
-import org.ostara.remote.proto.notify.MessagePushSignal;
+import org.ostara.remote.proto.client.MessagePushSignal;
 import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.ProtoBufUtils;
 

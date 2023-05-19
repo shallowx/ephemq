@@ -27,7 +27,7 @@ message MessagePushSignal {
   int32 ledger = 1;
   int32 marker = 2;
   int32 epoch = 3;
-  int32 index = 4;
+  int64 index = 4;
 }
 
 message LedgerRetiredSignal {

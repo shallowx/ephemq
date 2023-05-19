@@ -52,7 +52,7 @@ public final class ClientProto {
       "gnal\022+\n\004node\030\001 \001(\0132\035.ostara.protobuf.Nod" +
       "eMetadata\"Q\n\021MessagePushSignal\022\016\n\006ledger" +
       "\030\001 \001(\005\022\016\n\006marker\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n" +
-      "\005index\030\004 \001(\005\"\243\001\n\023LedgerRetiredSignal\022-\n\006" +
+      "\005index\030\004 \001(\003\"\243\001\n\023LedgerRetiredSignal\022-\n\006" +
       "broker\030\001 \001(\0132\035.ostara.protobuf.NodeMetad" +
       "ata\022\016\n\006ledger\030\002 \001(\005\022\r\n\005topic\030\003 \001(\t\022\021\n\tpa" +
       "rtition\030\004 \001(\005\022+\n\004heir\030\005 \001(\0132\035.ostara.pro" +

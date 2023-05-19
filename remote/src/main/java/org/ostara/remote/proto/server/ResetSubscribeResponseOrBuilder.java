@@ -3,7 +3,7 @@
 
 package org.ostara.remote.proto.server;
 
-public interface RestSubscribeResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.RestSubscribeResponse)
+public interface ResetSubscribeResponseOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.ResetSubscribeResponse)
     com.google.protobuf.MessageOrBuilder {
 }

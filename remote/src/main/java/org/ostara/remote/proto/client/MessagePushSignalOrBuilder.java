@@ -26,8 +26,8 @@ public interface MessagePushSignalOrBuilder extends
   int getEpoch();
 
   /**
-   * <code>int32 index = 4;</code>
+   * <code>int64 index = 4;</code>
    * @return The index.
    */
-  int getIndex();
+  long getIndex();
 }

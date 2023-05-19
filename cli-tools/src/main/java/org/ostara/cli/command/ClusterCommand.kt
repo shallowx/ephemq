@@ -5,6 +5,7 @@ import org.ostara.cli.ClientChannelFactory
 import org.ostara.cli.ClientFactory
 import org.ostara.client.internal.Client
 import org.ostara.client.internal.ClientChannel
+import org.ostara.common.Node
 import org.ostara.common.metadata.Node
 import picocli.CommandLine
 import picocli.CommandLine.Command
