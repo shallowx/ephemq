@@ -13,22 +13,28 @@ import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
 import io.netty.util.concurrent.*;
 import io.netty.util.concurrent.Future;
 import org.ostara.client.ClientConfig;
+import org.ostara.common.TopicConfig;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
+import org.ostara.remote.RemoteException;
 import org.ostara.remote.codec.MessageDecoder;
 import org.ostara.remote.codec.MessageEncoder;
 import org.ostara.remote.handle.ConnectDuplexHandler;
 import org.ostara.remote.handle.ProcessDuplexHandler;
 import org.ostara.remote.invoke.InvokeAnswer;
+import org.ostara.remote.processor.ProcessCommand;
 import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.proto.*;
+import org.ostara.remote.proto.client.MessagePushSignal;
+import org.ostara.remote.proto.client.NodeOfflineSignal;
+import org.ostara.remote.proto.client.TopicChangedSignal;
+import org.ostara.remote.proto.server.*;
 import org.ostara.remote.util.NetworkUtils;
+import org.ostara.remote.util.ProtoBufUtils;
 
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -251,10 +257,24 @@ public class Client {
         }
     }
 
-    private static class RefreshMetadataTask implements Runnable {
+    private class RefreshMetadataTask implements Runnable {
         @Override
         public void run() {
+            if (taskExecutor.isShuttingDown()) {
+                return;
+            }
 
+            try {
+                refreshMetadata();
+            } catch (Throwable t){
+                String message = t.getMessage();
+                if (message == null || message.isEmpty()) {
+                    message = t.getClass().getName();
+                }
+            }
+            if (!taskExecutor.isShuttingDown()) {
+                taskExecutor.schedule(this, config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
+            }
         }
     }
 
@@ -278,7 +298,7 @@ public class Client {
                     .addLast("service-handler", new ProcessDuplexHandler(new InnerServiceProcessor(clientChannel)));
         }
 
-        private class InnerServiceProcessor implements ProcessorAware {
+        private class InnerServiceProcessor implements ProcessorAware, ProcessCommand.Client {
 
             private final ClientChannel clientChannel;
 
@@ -299,8 +319,321 @@ public class Client {
 
             @Override
             public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
+                int length = data.readableBytes();
+                try {
+                    switch (command) {
+                        case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
+                        case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
+                        case ProcessCommand.Client.TOPIC_INFO_CHANGED -> onTopicChanged(clientChannel, data, answer);
+                        default -> {
+                            if (answer != null) {
+                                answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code unsupported: " + command));
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    logger.error("<{}>Client<{}> processor is error, code={} length={}", NetworkUtils.switchAddress(clientChannel.channel()), name, command, length);
+                    if (answer != null) {
+                        answer.failure(t);
+                    }
+                }
             }
         }
+    }
+
+    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+        TopicChangedSignal signal = ProtoBufUtils.readProto(data, TopicChangedSignal.parser());
+        listener.onTopicChanged(channel, signal);
+        if (answer != null) {
+            answer.success(null);
+        }
+    }
+
+    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+        NodeOfflineSignal signal = ProtoBufUtils.readProto(data, NodeOfflineSignal.parser());
+        listener.onNodeOffline(channel, signal);
+        if (answer != null) {
+            answer.success(null);
+        }
+    }
+
+    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+        MessagePushSignal signal = ProtoBufUtils.readProto(data, MessagePushSignal.parser());
+        listener.onPushMessage(channel, signal, data);
+        if (answer != null) {
+            answer.success(null);
+        }
+    }
+
+    private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
+    public MessageRouter fetchMessageRouter(String topic) {
+        ClientChannel channel = null;
+        try {
+            channel = fetchChannel(null);
+            return applyMessageRouter(topic, channel, true).get();
+        }catch (Throwable t){
+            throw new RuntimeException(
+                    String.format(
+                            "Fetch message router from given client channel %s failed, topic=%s",
+                            channel == null ? null : channel.channel().remoteAddress(), topic
+                    ), t
+            );
+        }
+    }
+
+    public MessageRouter refreshMessageRouter(String topic, ClientChannel channel) {
+        try {
+            if (channel == null) {
+                channel = fetchChannel(null);
+            }
+            return applyMessageRouter(topic, channel, false).get();
+        } catch (Throwable t){
+            throw new RuntimeException(
+                    String.format(
+                            "Refresh message router from given client channel %s failed, topic=%s",
+                            channel == null ? null : channel.channel().remoteAddress(), topic
+                    ), t
+            );
+        }
+    }
+
+    public boolean containsMessageRouter(String topic) {
+        return routers.containsKey(topic);
+    }
+
+    private Future<MessageRouter> applyMessageRouter(String topic, ClientChannel channel, boolean useCached) {
+        if (useCached) {
+            Future<MessageRouter> result = routers.get(topic);
+            if (result != null && (!result.isDone() || result.isSuccess())) {
+                return result;
+            }
+        }
+
+        Promise<MessageRouter> promise;
+        synchronized (routers) {
+            Future<MessageRouter> result = routers.get(topic);
+            if (useCached && result != null && (!result.isDone() || result.isSuccess())) {
+                return result;
+            }
+
+            promise = ImmediateEventExecutor.INSTANCE.newPromise();
+            promise.addListener((GenericFutureListener<Future<MessageRouter>>) f -> {
+                if (!f.isSuccess()) {
+                    routers.remove(topic, f);
+                }
+            });
+            if (result == null || (result.isDone() &&(!result.isSuccess() || result.getNow() == null))) {
+                routers.put(topic, promise);
+            }
+        }
+
+        try {
+            promise.trySuccess(cachingMessageRouter(topic, queryMessageRouter(channel, topic)));
+        } catch (Throwable t){
+            promise.tryFailure(t);
+        }
+        return promise;
+    }
+
+    private MessageRouter queryMessageRouter(ClientChannel channel, String topic) throws Exception {
+        if (!channel.isActive()) {
+            throw new IllegalStateException("Client channel is inactive");
+        }
+
+        ClusterInfo clusterInfo = queryClusterInfo(channel);
+        if (clusterInfo == null) {
+            throw new IllegalStateException("Cluster info not found");
+        }
+
+        TopicInfo topicInfo = queryTopicInfos(channel, topic).get(topic);
+        if (topicInfo == null) {
+           return null;
+        }
+        return assembleMessageRouter(topic, clusterInfo, topicInfo);
+    }
+
+    private MessageRouter assembleMessageRouter(String topic, ClusterInfo clusterInfo, TopicInfo topicInfo) {
+        TopicMetadata topicMetadata = topicInfo.hasTopic() ? topicInfo.getTopic() : null;
+        if (topicMetadata == null) {
+            return null;
+        }
+
+        Map<String, NodeMetadata> nodes = clusterInfo.getNodesMap();
+        Map<Integer, MessageLedger> ledgers = new HashMap<>();
+        for (PartitionMetadata partition : topicInfo.getPartitionsMap().values()) {
+            int ledgerId = partition.getLedger();
+            SocketAddress leaderAddress = null;
+            NodeMetadata leaderNode = nodes.get(partition.getLeaderNodeId());
+            if (leaderNode != null) {
+                leaderAddress = NetworkUtils.switchSocketAddress(leaderNode.getHost(), leaderNode.getPort());
+            }
+
+            List<SocketAddress> replicaAddress = new ArrayList<>();
+            for (String nodeId : partition.getReplicaNodeIdsList()) {
+                NodeMetadata replicaNode = nodes.get(nodeId);
+                if (replicaNode != null) {
+                  SocketAddress address = NetworkUtils.switchSocketAddress(replicaNode.getHost(), replicaNode.getPort());
+                  if (address != null) {
+                      replicaAddress.add(address);
+                  }
+                }
+            }
+
+            Collections.shuffle(replicaAddress);
+            MessageLedger ledger = new MessageLedger(ledgerId, partition.getVersion(), leaderAddress, replicaAddress, partition.getTopicName(), partition.getId());
+            ledgers.put(ledgerId, ledger);
+        }
+        long token = (((long) topicMetadata.getId() << 32 | topicMetadata.getVersion()));
+        return new MessageRouter(token, topic, ledgers);
+    }
+
+    private MessageRouter mergeMessageRouter(MessageRouter cacheRouter, MessageRouter queryRouter) {
+        if (cacheRouter == null) {
+            return queryRouter;
+        }
+
+        if (queryRouter == null) {
+            return null;
+        }
+
+        if (cacheRouter.token() != queryRouter.token()) {
+            return cacheRouter.token() > queryRouter.token() ? cacheRouter : queryRouter;
+        }
+        Map<Integer, MessageLedger> ledgers = new HashMap<>();
+        for (MessageLedger queryLedger : queryRouter.ledgers().values()) {
+            int ledgerId = queryLedger.id();
+            MessageLedger cachedLedger = cacheRouter.ledger(ledgerId);
+            if (cachedLedger != null && cachedLedger.version() > queryLedger.version()) {
+                ledgers.put(ledgerId, cachedLedger);
+            } else {
+                ledgers.put(ledgerId, queryLedger);
+            }
+        }
+        return new MessageRouter(queryRouter.token(), queryRouter.topic(), ledgers);
+    }
+
+    private MessageRouter cachingMessageRouter(String topic, MessageRouter router) {
+        synchronized (routers) {
+            Future<MessageRouter> future = routers.get(topic);
+            if (future != null && future.isDone() && future.isSuccess()) {
+                router = mergeMessageRouter(future.getNow(), router);
+            }
+
+            future = new SucceededFuture<>(ImmediateEventExecutor.INSTANCE, router);
+            routers.put(topic, future);
+            return router;
+        }
+    }
+    public ClusterInfo queryClusterInfo(ClientChannel channel) throws Exception {
+       try {
+           QueryClusterInfoRequest request = QueryClusterInfoRequest.newBuilder().build();
+           Promise<QueryClusterResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+           channel.invoker().queryClusterInfo(config.getMetadataTimeoutMs(), promise, request);
+
+           QueryClusterResponse response = promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS);
+           return response.hasClusterInfo() ? response.getClusterInfo() : null;
+       } catch (Exception e){
+           throw e;
+       }
+    }
+
+    public Map<String, TopicInfo> queryTopicInfos(ClientChannel channel, String... topics) throws Exception {
+        try {
+            QueryTopicInfoRequest request = QueryTopicInfoRequest.newBuilder()
+                    .addAllTopicNames(Arrays.asList(topics))
+                    .build();
+
+            Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+            channel.invoker().queryTopicInfo(config.getMetadataTimeoutMs(), promise, request);
+
+            return promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS).getTopicInfosMap();
+        } catch (Exception e){
+            throw e;
+        }
+    }
+
+    private void refreshMetadata() {
+        Set<String> topics = new HashSet<>();
+        for (Map.Entry<String, Future<MessageRouter>> entry : routers.entrySet()) {
+            String topic = entry.getKey();
+            Future<MessageRouter> future = entry.getValue();
+            if (future.isDone() && future.isSuccess() && future.getNow() == null) {
+                routers.remove(topic, future);
+                continue;
+            }
+
+            topics.add(topic);
+        }
+
+        if (topics.isEmpty()) {
+            return;
+        }
+
+        Map<String, MessageRouter> queryRouters = new HashMap<>();
+        try {
+            ClientChannel channel = fetchChannel(null);
+            ClusterInfo clusterInfo = queryClusterInfo(channel);
+            if (clusterInfo == null) {
+                throw new IllegalStateException("Cluster node not found");
+            }
+
+            Map<String, TopicInfo> topicInfos = queryTopicInfos(channel, topics.toArray(new String[0]));
+            for (String topic : topics) {
+                TopicInfo topicInfo = topicInfos.get(topic);
+                if (topicInfo == null) {
+                    continue;
+                }
+                MessageRouter router = assembleMessageRouter(topic, clusterInfo, topicInfo);
+                if (router == null) {
+                    continue;
+                }
+                queryRouters.put(topic, router);
+            }
+        } catch (Throwable ignored){}
+
+        if (queryRouters.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<String, MessageRouter> entry : queryRouters.entrySet()) {
+            cachingMessageRouter(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public CreateTopicResponse createTopic(String topic, int partitions, int replicas) throws Exception {
+        return createTopic(topic, partitions, replicas, null);
+    }
+
+    public CreateTopicResponse createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
+        CreateTopicRequest.Builder request = CreateTopicRequest.newBuilder()
+                .setTopic(topic)
+                .setPartition(partitions)
+                .setReplicas(replicas);
+
+        if (topicConfig != null) {
+            CreateTopicConfigRequest.Builder cr = CreateTopicConfigRequest.newBuilder();
+            cr.setSegmentRetainCount(topicConfig.getSegmentRetainCount());
+            cr.setSegmentRollingSize(topicConfig.getSegmentRollingSize());
+            cr.setSegmentRetainMs(topicConfig.getSegmentRetainMs());
+
+            cr.build();
+
+            request.setConfigs(cr);
+        }
+
+        Promise<CreateTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        ClientChannel channel = fetchChannel(null);
+        channel.invoker().createTopic(config.getCreateTopicTimeoutMs(), promise, request.build());
+
+        return promise.get(config.getCreateTopicTimeoutMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public DeleteTopicResponse deleteTopic(String topic) throws Exception {
+        DeleteTopicRequest request = DeleteTopicRequest.newBuilder().setTopic(topic).build();
+        Promise<DeleteTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        ClientChannel channel = fetchChannel(null);
+        channel.invoker().deleteTopic(config.getDeleteTopicTimeoutMs(), promise, request);
+
+        return promise.get(config.getDeleteTopicTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 }

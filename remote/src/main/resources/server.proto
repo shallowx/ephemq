@@ -31,7 +31,7 @@ message QueryTopicInfoResponse{
   map<string, TopicInfo> topic_infos = 1;
 }
 
-message RestSubscribeRequest {
+message ResetSubscribeRequest {
   int32 ledger = 1;
   int32 epoch = 2;
   int64 index = 3;
@@ -39,7 +39,7 @@ message RestSubscribeRequest {
   string topic = 5;
 }
 
-message RestSubscribeResponse {
+message ResetSubscribeResponse {
 }
 
 message AlterSubscribeRequest{

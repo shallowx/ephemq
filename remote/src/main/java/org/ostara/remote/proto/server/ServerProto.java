@@ -50,15 +50,15 @@ public final class ServerProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_RestSubscribeRequest_descriptor;
+    internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_RestSubscribeRequest_fieldAccessorTable;
+      internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_RestSubscribeResponse_descriptor;
+    internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_RestSubscribeResponse_fieldAccessorTable;
+      internal_static_ostara_protobuf_ResetSubscribeResponse_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor;
   static final 
@@ -130,30 +130,30 @@ public final class ServerProto {
       "\001 \003(\01327.ostara.protobuf.QueryTopicInfoRe" +
       "sponse.TopicInfosEntry\032M\n\017TopicInfosEntr" +
       "y\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.ostara.p" +
-      "rotobuf.TopicInfo:\0028\001\"d\n\024RestSubscribeRe" +
-      "quest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005" +
-      "index\030\003 \001(\003\022\017\n\007markers\030\004 \001(\014\022\r\n\005topic\030\005 " +
-      "\001(\t\"\027\n\025RestSubscribeResponse\"f\n\025AlterSub" +
-      "scribeRequest\022\016\n\006ledger\030\001 \001(\005\022\026\n\016append_" +
-      "markers\030\002 \001(\014\022\026\n\016delete_markers\030\003 \001(\014\022\r\n" +
-      "\005topic\030\004 \001(\t\"\030\n\026AlterSubscribeResponse\"6" +
-      "\n\025CleanSubscribeRequest\022\016\n\006ledger\030\001 \001(\005\022" +
-      "\r\n\005topic\030\002 \001(\t\"\030\n\026CleanSubscribeResponse" +
-      "\"\204\001\n\022CreateTopicRequest\022\r\n\005topic\030\001 \001(\t\022\021" +
-      "\n\tpartition\030\002 \001(\005\022\020\n\010replicas\030\003 \001(\005\022:\n\007c" +
-      "onfigs\030\004 \001(\0132).ostara.protobuf.CreateTop" +
-      "icConfigRequest\"k\n\030CreateTopicConfigRequ" +
-      "est\022\032\n\022segmentRollingSize\030\001 \001(\005\022\032\n\022segme" +
-      "ntRetainCount\030\002 \001(\005\022\027\n\017segmentRetainMs\030\003" +
-      " \001(\005\"\212\001\n\023CreateTopicResponse\022\r\n\005topic\030\001 " +
-      "\001(\t\022\022\n\npartitions\030\002 \001(\005\022\017\n\007topicId\030\003 \001(\005" +
-      "\022?\n\022partitionsReplicas\030\004 \003(\0132#.ostara.pr" +
-      "otobuf.PartitionsReplicas\"9\n\022PartitionsR" +
-      "eplicas\022\021\n\tpartition\030\001 \001(\005\022\020\n\010replicas\030\002" +
-      " \003(\t\"#\n\022DeleteTopicRequest\022\r\n\005topic\030\001 \001(" +
-      "\t\"\025\n\023DeleteTopicResponseB/\n\036org.ostara.r" +
-      "emote.proto.serverB\013ServerProtoP\001b\006proto" +
-      "3"
+      "rotobuf.TopicInfo:\0028\001\"e\n\025ResetSubscribeR" +
+      "equest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n" +
+      "\005index\030\003 \001(\003\022\017\n\007markers\030\004 \001(\014\022\r\n\005topic\030\005" +
+      " \001(\t\"\030\n\026ResetSubscribeResponse\"f\n\025AlterS" +
+      "ubscribeRequest\022\016\n\006ledger\030\001 \001(\005\022\026\n\016appen" +
+      "d_markers\030\002 \001(\014\022\026\n\016delete_markers\030\003 \001(\014\022" +
+      "\r\n\005topic\030\004 \001(\t\"\030\n\026AlterSubscribeResponse" +
+      "\"6\n\025CleanSubscribeRequest\022\016\n\006ledger\030\001 \001(" +
+      "\005\022\r\n\005topic\030\002 \001(\t\"\030\n\026CleanSubscribeRespon" +
+      "se\"\204\001\n\022CreateTopicRequest\022\r\n\005topic\030\001 \001(\t" +
+      "\022\021\n\tpartition\030\002 \001(\005\022\020\n\010replicas\030\003 \001(\005\022:\n" +
+      "\007configs\030\004 \001(\0132).ostara.protobuf.CreateT" +
+      "opicConfigRequest\"k\n\030CreateTopicConfigRe" +
+      "quest\022\032\n\022segmentRollingSize\030\001 \001(\005\022\032\n\022seg" +
+      "mentRetainCount\030\002 \001(\005\022\027\n\017segmentRetainMs" +
+      "\030\003 \001(\005\"\212\001\n\023CreateTopicResponse\022\r\n\005topic\030" +
+      "\001 \001(\t\022\022\n\npartitions\030\002 \001(\005\022\017\n\007topicId\030\003 \001" +
+      "(\005\022?\n\022partitionsReplicas\030\004 \003(\0132#.ostara." +
+      "protobuf.PartitionsReplicas\"9\n\022Partition" +
+      "sReplicas\022\021\n\tpartition\030\001 \001(\005\022\020\n\010replicas" +
+      "\030\002 \003(\t\"#\n\022DeleteTopicRequest\022\r\n\005topic\030\001 " +
+      "\001(\t\"\025\n\023DeleteTopicResponseB/\n\036org.ostara" +
+      ".remote.proto.serverB\013ServerProtoP\001b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -202,17 +202,17 @@ public final class ServerProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_ostara_protobuf_RestSubscribeRequest_descriptor =
+    internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_ostara_protobuf_RestSubscribeRequest_fieldAccessorTable = new
+    internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_RestSubscribeRequest_descriptor,
+        internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor,
         new java.lang.String[] { "Ledger", "Epoch", "Index", "Markers", "Topic", });
-    internal_static_ostara_protobuf_RestSubscribeResponse_descriptor =
+    internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_ostara_protobuf_RestSubscribeResponse_fieldAccessorTable = new
+    internal_static_ostara_protobuf_ResetSubscribeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_RestSubscribeResponse_descriptor,
+        internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor,
         new java.lang.String[] { });
     internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor =
       getDescriptor().getMessageTypes().get(8);
