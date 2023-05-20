@@ -88,7 +88,7 @@ public final class ConnectDuplexHandler extends ChannelDuplexHandler {
         }
 
         if (msg instanceof final MessagePacket packet) {
-            final byte command = packet.command();
+            final int command = packet.command();
             final int answer = packet.answer();
             if (command <= INT_ZERO && answer == INT_ZERO) {
                 if (command == INT_ZERO && heartPeriodMs == INT_ZERO) {

@@ -26,7 +26,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             final int answer = packet.answer();
-            final byte command = packet.command();
+            final int command = packet.command();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;

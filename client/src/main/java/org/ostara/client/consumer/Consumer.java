@@ -1,7 +1,6 @@
 package org.ostara.client.consumer;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.UnsafeByteOperations;
 import io.netty.buffer.ByteBuf;

@@ -318,7 +318,7 @@ public class Client {
             }
 
             @Override
-            public void process(Channel channel, byte command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+            public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
                 int length = data.readableBytes();
                 try {
                     switch (command) {

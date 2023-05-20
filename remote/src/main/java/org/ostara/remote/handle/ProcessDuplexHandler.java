@@ -56,7 +56,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 logger.debug("Read message packet - [{}] form remote address - [{}]", packet,
                         switchAddress(ctx.channel()));
 
-                final byte command = packet.command();
+                final int command = packet.command();
                 if (command > INT_ZERO) {
                     processRequest(ctx, packet);
                 } else {
@@ -71,7 +71,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     }
 
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
-        final byte command = packet.command();
+        final int command = packet.command();
         final int answer = packet.answer();
         final int length = packet.body().readableBytes();
         final InvokeAnswer<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
@@ -101,7 +101,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     }
 
     private void processResponse(ChannelHandlerContext ctx, MessagePacket packet) {
-        final byte command = packet.command();
+        final int command = packet.command();
         final int answer = packet.answer();
         if (answer == INT_ZERO) {
             logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),

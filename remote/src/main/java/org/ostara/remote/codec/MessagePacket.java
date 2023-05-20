@@ -25,11 +25,11 @@ public final class MessagePacket extends AbstractReferenceCounted {
     };
 
     private int answer;
-    private byte command;
+    private int command;
     private ByteBuf body;
     private final Recycler.Handle<MessagePacket> handle;
 
-    public static MessagePacket newPacket(int answer, byte command, ByteBuf body) {
+    public static MessagePacket newPacket(int answer, int command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
         packet.answer = answer;
@@ -51,7 +51,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
         return body;
     }
 
-    public byte command() {
+    public int command() {
         return command;
     }
 
