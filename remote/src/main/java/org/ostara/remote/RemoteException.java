@@ -2,29 +2,29 @@ package org.ostara.remote;
 
 public final class RemoteException extends RuntimeException {
 
-    private final byte command;
+    private final int command;
 
-    public static RemoteException of(byte command, String error) {
+    public static RemoteException of(int command, String error) {
         command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;
         return new RemoteException(command, error);
     }
 
-    public static RemoteException of(byte command, String error, Throwable cause) {
+    public static RemoteException of(int command, String error, Throwable cause) {
         command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;
         return new RemoteException(command, error, cause);
     }
 
-    public RemoteException(byte command, String error) {
+    public RemoteException(int command, String error) {
         super(error);
         this.command = command;
     }
 
-    public RemoteException(byte command, String error, Throwable cause) {
+    public RemoteException(int command, String error, Throwable cause) {
         super(error, cause);
         this.command = command;
     }
 
-    public byte getCommand() {
+    public int getCommand() {
         return command;
     }
 

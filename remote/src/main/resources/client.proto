@@ -37,3 +37,8 @@ message LedgerRetiredSignal {
   int32 partition = 4;
   NodeMetadata heir = 5;
 }
+
+message SyncMessageSignal {
+  int32 ledger = 1;
+  int32 count = 2;
+}

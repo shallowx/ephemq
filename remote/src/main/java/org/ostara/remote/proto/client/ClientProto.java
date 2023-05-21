@@ -34,6 +34,11 @@ public final class ClientProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_LedgerRetiredSignal_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SyncMessageSignal_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SyncMessageSignal_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -56,8 +61,10 @@ public final class ClientProto {
       "broker\030\001 \001(\0132\035.ostara.protobuf.NodeMetad" +
       "ata\022\016\n\006ledger\030\002 \001(\005\022\r\n\005topic\030\003 \001(\t\022\021\n\tpa" +
       "rtition\030\004 \001(\005\022+\n\004heir\030\005 \001(\0132\035.ostara.pro" +
-      "tobuf.NodeMetadataB/\n\036org.ostara.remote." +
-      "proto.clientB\013ClientProtoP\001b\006proto3"
+      "tobuf.NodeMetadata\"2\n\021SyncMessageSignal\022" +
+      "\016\n\006ledger\030\001 \001(\005\022\r\n\005count\030\002 \001(\005B/\n\036org.os" +
+      "tara.remote.proto.clientB\013ClientProtoP\001b" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -88,6 +95,12 @@ public final class ClientProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor,
         new java.lang.String[] { "Broker", "Ledger", "Topic", "Partition", "Heir", });
+    internal_static_ostara_protobuf_SyncMessageSignal_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_ostara_protobuf_SyncMessageSignal_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SyncMessageSignal_descriptor,
+        new java.lang.String[] { "Ledger", "Count", });
     org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
   }
 
