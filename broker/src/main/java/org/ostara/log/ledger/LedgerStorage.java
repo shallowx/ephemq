@@ -76,6 +76,10 @@ public class LedgerStorage {
         }
     }
 
+    public Offset headOffset() {
+        return headSegment.baseOffset();
+    }
+
     public LedgerCursor cursor(Offset offset) {
         return offset == null ? tailCursor() : headCursor().seekTo(offset);
     }
@@ -205,6 +209,10 @@ public class LedgerStorage {
 
     public LedgerSegment tailSegment() {
         return tailSegment;
+    }
+
+    public Offset tailOffset() {
+        return tailSegment.lastOffset();
     }
 
     public long segmentBytes() {
