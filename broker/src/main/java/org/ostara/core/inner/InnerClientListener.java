@@ -1,4 +1,4 @@
-package org.ostara.core;
+package org.ostara.core.inner;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -8,6 +8,7 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
+import org.ostara.core.Config;
 import org.ostara.management.Manager;
 import org.ostara.remote.proto.client.SyncMessageSignal;
 
@@ -40,7 +41,6 @@ public class InnerClientListener implements ClientListener {
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> semaphore.release());
 
-            manager.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t){
             semaphore.release();
             logger.error(t.getMessage(), t);

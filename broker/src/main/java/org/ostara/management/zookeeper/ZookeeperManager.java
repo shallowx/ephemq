@@ -8,7 +8,7 @@ import org.ostara.client.internal.Client;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.Config;
-import org.ostara.core.InnerClientListener;
+import org.ostara.core.inner.InnerClientListener;
 import org.ostara.core.inner.InnerClient;
 import org.ostara.listener.*;
 import org.ostara.log.LogManager;
