@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 
-public class PrometheusRegistry implements MetricsRegistry {
+public class PrometheusRegistry implements MetricsRegistrySetUp {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PrometheusRegistry.class);
 

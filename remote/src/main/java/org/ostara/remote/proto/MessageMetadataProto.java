@@ -91,7 +91,7 @@ public final class MessageMetadataProto {
       "\n\014ostara.proto\022\017ostara.protobuf\"9\n\tMessa" +
       "geId\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005i" +
       "ndex\030\003 \001(\005\"-\n\rMessageOffset\022\r\n\005epoch\030\001 \001" +
-      "(\005\022\r\n\005index\030\002 \001(\005\"\234\001\n\017MessageMetadata\022\r\n" +
+      "(\005\022\r\n\005index\030\002 \001(\003\"\234\001\n\017MessageMetadata\022\r\n" +
       "\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022<\n\006extras\030\003 " +
       "\003(\0132,.ostara.protobuf.MessageMetadata.Ex" +
       "trasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n" +

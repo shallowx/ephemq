@@ -57,7 +57,7 @@ public class ReplicaManager {
         attachPromise.addListener(future -> {
             if (future.isSuccess()) {
                 Offset headOffset = log.getHeadOffset();
-                Offset tailOffset = log.getTilOffset();
+                Offset tailOffset = log.getTailOffset();
                 Offset currentOffset = log.getCurrentOffset();
 
                 SyncResponse response = SyncResponse.newBuilder()
@@ -80,8 +80,6 @@ public class ReplicaManager {
                 promise.tryFailure(future.cause());
             }
         });
-
-        log.attachSynchronize(channel, Offset.of(epoch, index), attachPromise);
     }
 
     public Promise<SyncResponse> syncLeader(TopicPartition topicPartition, int ledger, ClientChannel channel,
@@ -134,7 +132,7 @@ public class ReplicaManager {
 
     public Promise<Void> stopChunkDispatch(int ledger, Promise<Void> promise) {
         if (promise == null) {
-            promise = ImmediateEventExecutor.INSTANCE.newPromise()''
+            promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
         try {
             Log log = manager.getLogManager().getLog(ledger);
@@ -142,8 +140,6 @@ public class ReplicaManager {
                 promise.trySuccess(null);
                 return promise;
             }
-
-            log.detachAllSynchronize(promise);
         } catch (Exception e){
             promise.tryFailure(e);
         }

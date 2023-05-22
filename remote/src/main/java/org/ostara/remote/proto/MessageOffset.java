@@ -55,13 +55,13 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int INDEX_FIELD_NUMBER = 2;
-  private int index_;
+  private long index_;
   /**
-   * <code>int32 index = 2;</code>
+   * <code>int64 index = 2;</code>
    * @return The index.
    */
   @java.lang.Override
-  public int getIndex() {
+  public long getIndex() {
     return index_;
   }
 
@@ -82,8 +82,8 @@ private static final long serialVersionUID = 0L;
     if (epoch_ != 0) {
       output.writeInt32(1, epoch_);
     }
-    if (index_ != 0) {
-      output.writeInt32(2, index_);
+    if (index_ != 0L) {
+      output.writeInt64(2, index_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -98,9 +98,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, epoch_);
     }
-    if (index_ != 0) {
+    if (index_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, index_);
+        .computeInt64Size(2, index_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -135,7 +135,8 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + EPOCH_FIELD_NUMBER;
     hash = (53 * hash) + getEpoch();
     hash = (37 * hash) + INDEX_FIELD_NUMBER;
-    hash = (53 * hash) + getIndex();
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getIndex());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -266,7 +267,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       epoch_ = 0;
 
-      index_ = 0;
+      index_ = 0L;
 
       return this;
     }
@@ -347,7 +348,7 @@ private static final long serialVersionUID = 0L;
       if (other.getEpoch() != 0) {
         setEpoch(other.getEpoch());
       }
-      if (other.getIndex() != 0) {
+      if (other.getIndex() != 0L) {
         setIndex(other.getIndex());
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -382,7 +383,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 8
             case 16: {
-              index_ = input.readInt32();
+              index_ = input.readInt64();
 
               break;
             } // case 16
@@ -433,33 +434,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int index_ ;
+    private long index_ ;
     /**
-     * <code>int32 index = 2;</code>
+     * <code>int64 index = 2;</code>
      * @return The index.
      */
     @java.lang.Override
-    public int getIndex() {
+    public long getIndex() {
       return index_;
     }
     /**
-     * <code>int32 index = 2;</code>
+     * <code>int64 index = 2;</code>
      * @param value The index to set.
      * @return This builder for chaining.
      */
-    public Builder setIndex(int value) {
+    public Builder setIndex(long value) {
       
       index_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 index = 2;</code>
+     * <code>int64 index = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearIndex() {
       
-      index_ = 0;
+      index_ = 0L;
       onChanged();
       return this;
     }

@@ -2,7 +2,7 @@ package org.ostara.metrics;
 
 import java.util.Properties;
 
-public interface MetricsRegistry {
+public interface MetricsRegistrySetUp {
     void setUp(Properties properties);
 
     void shutdown();

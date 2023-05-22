@@ -87,20 +87,6 @@ public class LogManager {
         log.resetSubscribe(channel, Offset.of(epoch, index), markers, promise);
     }
 
-    public void saveSyncData(Channel channel, int ledger, int count, ByteBuf data, Promise<Integer> promise) {
-        Log log = getLog(ledger);
-        if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d ot found", ledger)));
-            return;
-        }
-
-        for (LogListener listener : listeners) {
-            TopicPartition topicPartition = log.getTopicPartition();
-            listener.onSyncMessage(topicPartition.getTopic(), ledger, 1);
-        }
-        log.appendChunk(marker, payload, promise);
-    }
-
     public void addLogListener(List<LogListener> logListeners) {
         listeners.addAll(logListeners);
     }

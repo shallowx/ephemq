@@ -4,12 +4,11 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntConsumer;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.Offset;
 import org.ostara.common.TopicConfig;
@@ -26,8 +25,13 @@ import org.ostara.management.Manager;
 import org.ostara.management.TopicManager;
 import org.ostara.metrics.MetricsConstants;
 import org.ostara.remote.RemoteException;
+import org.ostara.remote.invoke.Callback;
+import org.ostara.remote.processor.ProcessCommand;
 import org.ostara.remote.proto.server.CancelSyncResponse;
+import org.ostara.remote.proto.server.SendMessageRequest;
+import org.ostara.remote.proto.server.SendMessageResponse;
 import org.ostara.remote.proto.server.SyncResponse;
+import org.ostara.remote.util.ProtoBufUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +49,6 @@ public class Log {
     private EventExecutor storageExecutor;
     private EventExecutor commandExecutor;
     private RecordEntryDispatcher entryDispatcher;
-    private RecordChunkDispatcher chunkDispatcher;
     private List<LogListener> listeners;
     private Manager manager;
     private Meter segmentCountMeter;
@@ -156,7 +159,7 @@ public class Log {
         syncFuture = promise;
         promise.addListener(future -> syncFuture = null);
         LogState logState = state.get();
-        if (!isAppendAble(logState) && !isMigrating(logState)) {
+        if (!isAppendable(logState) && !isMigrating(logState)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION,
                     String.format("The log can't begin to sync data,the current state is %s", logState)));
             return;
@@ -260,7 +263,7 @@ public class Log {
 
     private void doMigrate(String dest, ClientChannel destChannel, Promise<Void> promise) {
         LogState logState = state.get();
-        if (!isAppedable(logState)) {
+        if (!isAppendable(logState)) {
             return;
         }
 
@@ -285,7 +288,7 @@ public class Log {
 
                         }
                     }, 60 , TimeUnit.SECONDS);
-                    promise.trySuccess(null)
+                    promise.trySuccess(null);
                 } else {
                     promise.tryFailure(future.cause());
                 }
@@ -354,49 +357,6 @@ public class Log {
         entryDispatcher.clean(channel, promise);
     }
 
-    public void attachSynchronize(Channel channel, Offset offset, Promise<Void> promise) {
-        if (storageExecutor.inEventLoop()) {
-            doAttachSynchronize(channel, offset, promise);
-        } else {
-            try {
-                storageExecutor.execute(() -> doAttachSynchronize(channel, offset, promise));
-            } catch (Throwable t) {
-                promise.tryFailure(t);
-            }
-        }
-    }
-    public void doAttachSynchronize(Channel channel, Offset offset,  Promise<Void> promise) {
-        LogState logState = state.get();
-        if (!isActive(logState)) {
-            return;
-        }
-        entryDispatcher.attach(channel, offset, promise);
-    }
-
-    public void detachSynchronize(Channel channel, Promise<Void> promise) {
-        if (storageExecutor.inEventLoop()) {
-            doDetachSynchronize(channel, promise);
-        } else {
-            try {
-                storageExecutor.execute(() -> doDetachSynchronize(channel, promise));
-            } catch (Throwable t) {
-                promise.tryFailure(t);
-            }
-        }
-    }
-    public void doDetachSynchronize(Channel channel, Offset offset,  Promise<Void> promise) {
-        chunkDispatcher.attach(channel, offset, promise);
-    }
-
-    public void detachAllSynchronize(Promise<Void> promise) {
-        try {
-            chunkDispatcher.detachAll(null);
-        } catch (Throwable t) {
-            promise.tryFailure(t);
-        }
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -418,7 +378,7 @@ public class Log {
         return storage.headOffset();
     }
 
-    public Offset tailOffset() {
+    public Offset getTailOffset() {
         return storage.tailOffset();
     }
 
@@ -446,15 +406,188 @@ public class Log {
         return storage;
     }
 
+    public void append(int marker, ByteBuf payload, Promise<Offset> promise) {
+        payload.retain();
+        if (storageExecutor.inEventLoop()) {
+            doAppend(marker, payload, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doAppend(marker, payload, promise));
+            } catch (Throwable t) {
+                payload.release();
+                promise.tryFailure(t);
+            }
+        }
+    }
+
+    private void doAppend(int marker, ByteBuf payload, Promise<Offset> promise) {
+        try {
+            LogState logState = state.get();
+            if (!isMigrating(logState)) {
+                forwardAppendingTraffic(marker, payload, promise);
+            } else if (isSynchronizing(logState)) {
+                promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION,
+                        String.format("The log %d can't accept appending record, current state is %s", ledger, logState)));
+            } else {
+                storage.appendRecord(marker, payload, promise);
+            }
+        } catch (Exception e) {
+            promise.tryFailure(e);
+        } finally {
+            payload.release();
+        }
+    }
+
+    private void forwardAppendingTraffic(int marker, ByteBuf payload, Promise<Offset> promise) {
+        if (migration == null) {
+            storage.appendRecord(marker, payload, promise);
+            return;
+        }
+
+        try {
+            ClientChannel channel = migration.getChannel();
+            SendMessageRequest request = SendMessageRequest.newBuilder()
+                    .setLedger(ledger)
+                    .setMarker(marker)
+                    .build();
+            ByteBuf data = ProtoBufUtils.protoPayloadBuf(channel.allocator(), request, payload);
+            Callback<ByteBuf> callback = (v, c) -> {
+                if (c == null) {
+                    try {
+                        SendMessageResponse response = ProtoBufUtils.readProto(v, SendMessageResponse.parser());
+                        promise.trySuccess(new Offset(response.getEpoch(), response.getIndex()));
+                    } catch (Throwable t) {
+                        promise.tryFailure(t);
+                    }
+                } else {
+                    promise.tryFailure(c);
+                }
+            };
+            channel.invoke(ProcessCommand.Server.SEND_MESSAGE, data, forwardTimeout, callback);
+        } catch (Exception e) {
+            promise.tryFailure(e);
+        }
+    }
+
+    private void execute(Promise<?> promise, Runnable runner) {
+        try {
+            commandExecutor.execute(runner);
+        }catch (Throwable t){
+            if (promise != null) {
+                promise.tryFailure(t);
+            }
+        }
+    }
+
+    public boolean isActive(LogState logState) {
+        return isAppendable(logState) || isMigrating(logState) || isSynchronizing(logState);
+    }
+
+    public boolean isAppendable(LogState state) {
+        return state == LogState.APPENDABLE;
+    }
+
+    public boolean isMigrating(LogState state) {
+        return state == LogState.MIGRATING;
+    }
+
+    public boolean isSynchronizing(LogState state) {
+        return state == LogState.SYNCHRONIZING;
+    }
+
+    public boolean isClosed(LogState state) {
+        return state == LogState.CLOSED;
+    }
+
+    public Promise<Boolean> start(Promise<Boolean> promise) {
+        Promise<Boolean> result = promise != null ? promise : ImmediateEventExecutor.INSTANCE.newPromise();
+        if (storageExecutor.inEventLoop()) {
+            doStart(result);
+        } else {
+            try {
+                storageExecutor.execute(() -> doStart(result));
+            } catch (Exception e){
+                result.tryFailure(e);
+            }
+        }
+        return result;
+    }
+
+    private void doStart(Promise<Boolean> promise) {
+        if (state.compareAndSet(null, LogState.APPENDABLE)) {
+            promise.trySuccess(true);
+        } else {
+            promise.trySuccess(false);
+        }
+    }
+
+    public Promise<Boolean> close(Promise<Boolean> promise) {
+        Promise<Boolean> result = promise != null ? promise : ImmediateEventExecutor.INSTANCE.newPromise();
+        if (storageExecutor.inEventLoop()) {
+            doClose(result);
+        } else {
+            try {
+                storageExecutor.execute(() -> doClose(result));
+            } catch (Exception e) {
+                result.tryFailure(e);
+            }
+        }
+        return result;
+    }
+
+    private void doClose(Promise<Boolean> promise) {
+        LogState logState = state.get();
+        if (logState == LogState.CLOSED) {
+            promise.trySuccess(false);
+            return;
+        }
+
+        state.set(LogState.CLOSED);
+        storage.close(null);
+        entryDispatcher.close(null);
+        Metrics.globalRegistry.remove(this.segmentBytesMeter);
+        Metrics.globalRegistry.remove(this.segmentCountMeter);
+        promise.trySuccess(true);
+    }
+
+    private void onAppendTrigger(int ledgerId, int recordCount, Offset lastOffset) {
+        entryDispatcher.dispatch();
+    }
+
+
+    private void onPushMessage(int count) {
+        for (LogListener listener : listeners) {
+            listener.onPushMessage(topic, ledger, count);
+        }
+    }
+
+    private void onSyncMessage(int count) {
+        for (LogListener listener : listeners) {
+            listener.onChunkPushMessage(topic, ledger, count);
+        }
+    }
+
     public class InnerTrigger implements LedgerTrigger{
         @Override
         public void onAppend(int ledgerId, int recordCount, Offset lasetOffset) {
-
+            onAppendTrigger(ledgerId, recordCount, lasetOffset);
         }
 
         @Override
         public void onRelease(int ledgerId, Offset oldHeadOffset, Offset newHeadOffset) {
 
         }
+    }
+
+    private class InnerEntryDispatchCounter implements IntConsumer {
+
+        @Override
+        public void accept(int value) {
+            onPushMessage(value);
+        }
+    }
+
+    public enum LogState {
+        APPENDABLE, SYNCHRONIZING, MIGRATING, CLOSED
     }
 }

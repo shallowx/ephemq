@@ -14,8 +14,8 @@ public interface MessageOffsetOrBuilder extends
   int getEpoch();
 
   /**
-   * <code>int32 index = 2;</code>
+   * <code>int64 index = 2;</code>
    * @return The index.
    */
-  int getIndex();
+  long getIndex();
 }

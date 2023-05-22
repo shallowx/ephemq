@@ -7,7 +7,7 @@ import io.micrometer.jmx.JmxMeterRegistry;
 
 import java.util.Properties;
 
-public class JmxMetricsRegistry implements MetricsRegistry {
+public class JmxMetricsRegistry implements MetricsRegistrySetUp {
     @Override
     public void setUp(Properties properties) {
         JmxMeterRegistry jmxMeterRegistry = new JmxMeterRegistry(JmxConfig.DEFAULT, Clock.SYSTEM);

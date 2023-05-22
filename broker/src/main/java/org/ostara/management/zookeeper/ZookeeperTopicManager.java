@@ -201,7 +201,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     }
 
                     Set<String> oldReplicas = oldAssignment.getReplicas();
-                    for (replicas.equals(oldReplicas)) {
+                    if (replicas.equals(oldReplicas)) {
                         return;
                     }
 
@@ -343,7 +343,7 @@ public class ZookeeperTopicManager implements TopicManager {
             createResult.put(CorrelationIdConstants.TOPIC_ID, topicId);
             createResult.put(CorrelationIdConstants.PARTITION_REPLICAS, partitionReplicas);
             return createResult;
-        } catch (KeeperException.NodeExistsException) {
+        } catch (KeeperException.NodeExistsException e) {
             throw new IllegalStateException(String.format("Topic %s already exists", topic));
         }
     }
@@ -395,7 +395,7 @@ public class ZookeeperTopicManager implements TopicManager {
             topicListener.onPartitionInit(topicPartition, ledgerId);
         }
 
-        log.start();
+        log.start(null);
     }
 
     @Override

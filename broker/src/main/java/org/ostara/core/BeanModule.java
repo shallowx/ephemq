@@ -9,7 +9,7 @@ import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
 import org.ostara.management.zookeeper.ZookeeperManager;
 import org.ostara.network.DefaultSocketServer;
-import org.ostara.network.ServiceChannelInitizalizer;
+import org.ostara.network.ServiceChannelInitializer;
 import org.ostara.network.ServiceDuplexHandler;
 import org.ostara.network.ServiceProcessorAware;
 import org.ostara.remote.processor.ProcessorAware;
@@ -28,7 +28,7 @@ public class BeanModule extends AbstractModule {
     protected void configure() {
         bind(Manager.class).to(ZookeeperManager.class).in(Singleton.class);
         bind(DefaultServer.class).in(Singleton.class);
-        bind(ServiceChannelInitizalizer.class).in(Singleton.class);
+        bind(ServiceChannelInitializer.class).in(Singleton.class);
         bind(DefaultSocketServer.class).in(Singleton.class);
         bind(ProcessorAware.class).annotatedWith(Names.named("ServiceProcessorAware")).to(ServiceProcessorAware.class);
     }

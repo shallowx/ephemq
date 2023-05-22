@@ -18,11 +18,13 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        manager.getConnectionManager().remove(ctx.channel());
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        manager.getConnectionManager().remove(ctx.channel());
         super.exceptionCaught(ctx, cause);
     }
 }

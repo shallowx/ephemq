@@ -149,7 +149,7 @@ public class ZookeeperManager implements Manager {
     @Override
     public void addMetricsListener(MetricsListener listener) {
         if (logManager != null) {
-            logManager.addlogListener(Collections.singletonList(listener));
+            logManager.addLogListener(Collections.singletonList(listener));
         }
 
         if (topicManager != null) {

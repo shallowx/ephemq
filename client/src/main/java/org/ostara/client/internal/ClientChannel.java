@@ -82,7 +82,7 @@ public class ClientChannel {
         return id.hashCode();
     }
 
-    public void invoke(byte code, ByteBuf data, int timeoutMs, Callback<ByteBuf> callback) {
+    public void invoke(int code, ByteBuf data, int timeoutMs, Callback<ByteBuf> callback) {
         int length = ByteBufUtils.bufLength(data);
         try{
            long time = System.currentTimeMillis();

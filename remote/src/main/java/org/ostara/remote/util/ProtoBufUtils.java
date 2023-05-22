@@ -3,10 +3,7 @@ package org.ostara.remote.util;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.*;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
@@ -37,6 +34,26 @@ public class ProtoBufUtils {
             return buf;
         } catch (Throwable t) {
             ByteBufUtils.release(buf);
+            throw t;
+        }
+    }
+
+    public static ByteBuf protoPayloadBuf(ByteBufAllocator allocator, MessageLite proto, ByteBuf payload) throws Exception {
+        ByteBuf buf = null;
+        try {
+            boolean isDirect = payload != null && payload.isDirect();
+            buf = allocator.ioBuffer(protoLength(proto) + (isDirect ? 0 : ByteBufUtils.bufLength(payload)));
+            writeProto(buf, proto);
+            if (isDirect) {
+                buf = Unpooled.wrappedUnmodifiableBuffer(buf, payload.retainedSlice());
+            } else if (payload != null) {
+                buf.writeBytes(payload, payload.readerIndex(), payload.readableBytes());
+            }
+            return buf;
+        } catch (Throwable t) {
+            if (buf != null) {
+                buf.release();
+            }
             throw t;
         }
     }
