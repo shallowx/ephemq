@@ -8,7 +8,7 @@ import java.util.Properties;
 public class Beans {
     private static Injector injector;
 
-    private static void init(Properties properties) {
+    public static void init(Properties properties) {
         injector = Guice.createInjector(new BeanModule(properties));
     }
 

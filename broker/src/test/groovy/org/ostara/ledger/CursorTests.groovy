@@ -2,6 +2,7 @@ package org.ostara.ledger
 
 import io.netty.buffer.PooledByteBufAllocator
 import org.ostara.config.ServerConfig
+import org.ostara.log.ledger.LedgerTrigger
 import org.ostara.remote.util.ByteBufUtils
 import org.ostara.remote.util.NetworkUtils
 import spock.lang.Specification

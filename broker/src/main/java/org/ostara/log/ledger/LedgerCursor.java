@@ -1,4 +1,4 @@
-package org.ostara.ledger;
+package org.ostara.log.ledger;
 
 import io.netty.buffer.ByteBuf;
 import org.ostara.common.Offset;

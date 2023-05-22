@@ -14,18 +14,16 @@ import org.ostara.remote.proto.client.SyncMessageSignal;
 import java.util.concurrent.Semaphore;
 
 public class InnerClientListener implements ClientListener {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClientListener.class);
 
-    private final Config config;
-    private final Manager manager;
-
-    private FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<Semaphore>(){
+    private Config config;
+    private Manager manager;
+    private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>(){
         @Override
         protected Semaphore initialValue() throws Exception {
-            return new Semaphore(config.getProxyLedgerSyncSemaphore());
+            return new Semaphore(100);
         }
-    }
+    };
 
     public InnerClientListener(Config config, Manager manager) {
         this.config = config;
@@ -36,12 +34,10 @@ public class InnerClientListener implements ClientListener {
     public void onSyncMessage(ClientChannel channel, SyncMessageSignal signal, ByteBuf data) {
         Semaphore semaphore = threadSemaphore.get();
         semaphore.acquireUninterruptibly();
-
         try {
             int ledger = signal.getLedger();
             int count = signal.getCount();
-
-            Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+            Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> semaphore.release());
 
             manager.getLogManager().saveSyncData(channel.channel(), ledger, channel, data, promise);

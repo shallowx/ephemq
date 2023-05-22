@@ -9,6 +9,8 @@ import org.ostara.core.Config;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static org.ostara.metrics.MetricsConstants.*;
+
 public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(StatisticsDuplexHandler.class);
@@ -20,7 +22,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
     public StatisticsDuplexHandler(Config config) {
         Tags tags = Tags.of(
                 Tag.of(BROKER_TAG, config.getServerId()),
-                Tag.of(CLUSTER_TAG, config.getCluster())
+                Tag.of(CLUSTER_TAG, config.getClusterName())
         );
 
         Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, AtomicLong::doubleValue)

@@ -34,10 +34,11 @@ public final class RemoteException extends RuntimeException {
     }
 
     public interface Failure {
-        byte UNKNOWN_EXCEPTION = -1;
-        byte INVOKE_TIMEOUT_EXCEPTION = -2;
-        byte UNSUPPORTED_EXCEPTION = -3;
-        byte MESSAGE_APPEND_EXCEPTION = -4;
-        byte SUBSCRIBE_EXCEPTION = -5;
+        int UNKNOWN_EXCEPTION = -1;
+        int INVOKE_TIMEOUT_EXCEPTION = -2;
+        int UNSUPPORTED_EXCEPTION = -3;
+        int MESSAGE_APPEND_EXCEPTION = -4;
+        int SUBSCRIBE_EXCEPTION = -5;
+        int PROCESS_EXCEPTION = -6;
     }
 }

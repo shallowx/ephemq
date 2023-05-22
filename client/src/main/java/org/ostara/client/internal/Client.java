@@ -278,6 +278,10 @@ public class Client {
         }
     }
 
+    protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
+        return new ClientChannel(clientConfig, channel, address);
+    }
+
     private class InnerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         private final SocketAddress address;
@@ -288,7 +292,7 @@ public class Client {
 
         @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
-            ClientChannel clientChannel = new ClientChannel(config, socketChannel, address);
+            ClientChannel clientChannel = createClientChannel(config, socketChannel, address);
             socketChannel.pipeline()
                     .addLast("packet-encoder", MessageEncoder.instance())
                     .addLast("packet-decoder", new MessageDecoder())

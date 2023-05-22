@@ -109,6 +109,26 @@ public final class ServerProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_DeleteTopicResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SyncRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SyncRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SyncResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SyncResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CancelSyncRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CancelSyncRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CancelSyncResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -151,9 +171,17 @@ public final class ServerProto {
       "protobuf.PartitionsReplicas\"9\n\022Partition" +
       "sReplicas\022\021\n\tpartition\030\001 \001(\005\022\020\n\010replicas" +
       "\030\002 \003(\t\"#\n\022DeleteTopicRequest\022\r\n\005topic\030\001 " +
-      "\001(\t\"\025\n\023DeleteTopicResponseB/\n\036org.ostara" +
-      ".remote.proto.serverB\013ServerProtoP\001b\006pro" +
-      "to3"
+      "\001(\t\"\025\n\023DeleteTopicResponse\"J\n\013SyncReques" +
+      "t\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005inde" +
+      "x\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t\"\255\001\n\014SyncResponse\022" +
+      "5\n\rcurrentOffset\030\001 \001(\0132\036.ostara.protobuf" +
+      ".MessageOffset\0222\n\nheadOffset\030\002 \001(\0132\036.ost" +
+      "ara.protobuf.MessageOffset\0222\n\ntailOffset" +
+      "\030\003 \001(\0132\036.ostara.protobuf.MessageOffset\"2" +
+      "\n\021CancelSyncRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005t" +
+      "opic\030\002 \001(\t\"\024\n\022CancelSyncResponseB/\n\036org." +
+      "ostara.remote.proto.serverB\013ServerProtoP" +
+      "\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -273,6 +301,30 @@ public final class ServerProto {
     internal_static_ostara_protobuf_DeleteTopicResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_DeleteTopicResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_SyncRequest_descriptor =
+      getDescriptor().getMessageTypes().get(18);
+    internal_static_ostara_protobuf_SyncRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SyncRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Epoch", "Index", "Topic", });
+    internal_static_ostara_protobuf_SyncResponse_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_ostara_protobuf_SyncResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SyncResponse_descriptor,
+        new java.lang.String[] { "CurrentOffset", "HeadOffset", "TailOffset", });
+    internal_static_ostara_protobuf_CancelSyncRequest_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_ostara_protobuf_CancelSyncRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CancelSyncRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Topic", });
+    internal_static_ostara_protobuf_CancelSyncResponse_descriptor =
+      getDescriptor().getMessageTypes().get(21);
+    internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CancelSyncResponse_descriptor,
         new java.lang.String[] { });
     org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
   }

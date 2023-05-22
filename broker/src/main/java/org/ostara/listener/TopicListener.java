@@ -1,5 +1,6 @@
 package org.ostara.listener;
 
+import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
 
 public interface TopicListener {
@@ -10,5 +11,5 @@ public interface TopicListener {
     void onTopicCreated(String topic);
     void onTopicDeleted(String topic);
 
-    void onPartitionChanged(TopicPartition topicPartition, TopicAssigment oldAssigment, TopicAssigment newAssigment);
+    void onPartitionChanged(TopicPartition topicPartition, TopicAssignment oldAssigment, TopicAssignment newAssigment);
 }

@@ -90,3 +90,22 @@ message DeleteTopicRequest{
 
 message DeleteTopicResponse{
 }
+
+message SyncRequest {
+  int32  ledger = 1;
+  int32 epoch = 2;
+  int64 index = 3;
+  string topic = 4;
+}
+
+message SyncResponse{
+  MessageOffset currentOffset = 1;
+  MessageOffset headOffset = 2;
+  MessageOffset tailOffset = 3;
+}
+
+message CancelSyncRequest{
+  int32 ledger = 1;
+  string topic = 2;
+}
+message CancelSyncResponse{}

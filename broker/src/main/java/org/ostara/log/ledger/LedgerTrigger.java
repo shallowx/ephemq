@@ -1,4 +1,4 @@
-package org.ostara.ledger;
+package org.ostara.log.ledger;
 
 import org.ostara.common.Offset;
 

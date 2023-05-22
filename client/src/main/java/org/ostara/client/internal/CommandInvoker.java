@@ -99,6 +99,26 @@ public class CommandInvoker {
         }
     }
 
+    public void syncMessage(int timeoutMs, Promise<SyncResponse> promise, SyncRequest request) {
+        try {
+            Callback<ByteBuf> callback = assembleInvokeCallback(promise, SyncResponse.parser());
+            ByteBuf buf = assembleInvokeData(channel.allocator(), request);
+            channel.invoke(ProcessCommand.Server.SYNC_LEDGER, buf, timeoutMs, callback);
+        } catch (Exception e) {
+            tryFailure(promise, e);
+        }
+    }
+
+    public void cancelSyncMessage(int timeoutMs, Promise<CancelSyncResponse> promise, CancelSyncRequest request) {
+        try {
+            Callback<ByteBuf> callback = assembleInvokeCallback(promise, CancelSyncResponse.parser());
+            ByteBuf buf = assembleInvokeData(channel.allocator(), request);
+            channel.invoke(ProcessCommand.Server.UNSYNC_LEDGER, buf, timeoutMs, callback);
+        } catch (Exception e) {
+            tryFailure(promise, e);
+        }
+    }
+
     private ByteBuf assembleSendMessageData(ByteBufAllocator allocator, SendMessageRequest request, MessageMetadata metadata, ByteBuf message) {
         ByteBuf data = null;
         try {

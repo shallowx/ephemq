@@ -11,6 +11,8 @@ public interface ProcessCommand {
         byte CLEAN_SUBSCRIBE = 6;
         byte CREATE_TOPIC = 7;
         byte DELETE_TOPIC = 8;
+        byte SYNC_LEDGER = 9;
+        byte UNSYNC_LEDGER = 10;
     }
 
     interface Client {
