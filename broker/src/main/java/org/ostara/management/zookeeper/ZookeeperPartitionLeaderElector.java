@@ -76,7 +76,7 @@ public class ZookeeperPartitionLeaderElector {
 
             @Override
             public void notLeader() {
-                logger.info("Lost leadership of {}, ledger={}", topicPartition, e);
+                logger.info("Lost leadership of {}, ledger={}", topicPartition);
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
                     try {
@@ -153,7 +153,7 @@ public class ZookeeperPartitionLeaderElector {
                     if (topicAssignment.getReplicas().contains(config.getServerId())) {
                         logger.info("As the follower replica of {}, ledger={}", topicPartition, ledger);
                     }
-                    syncLeader(leader);
+                    syncLeader(ledger);
                 }
             }catch (Exception e) {
                 logger.error("Try to sync ledger failed", e);

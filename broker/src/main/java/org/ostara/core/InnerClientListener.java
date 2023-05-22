@@ -37,10 +37,10 @@ public class InnerClientListener implements ClientListener {
         try {
             int ledger = signal.getLedger();
             int count = signal.getCount();
-            Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+            Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> semaphore.release());
 
-            manager.getLogManager().saveSyncData(channel.channel(), ledger, channel, data, promise);
+            manager.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t){
             semaphore.release();
             logger.error(t.getMessage(), t);
