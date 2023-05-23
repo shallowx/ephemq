@@ -57,4 +57,16 @@ public class MessageLedger {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "MessageLedger{" +
+                "id=" + id +
+                ", version=" + version +
+                ", leader=" + leader +
+                ", replicas=" + replicas +
+                ", topic='" + topic + '\'' +
+                ", partition=" + partition +
+                '}';
+    }
 }

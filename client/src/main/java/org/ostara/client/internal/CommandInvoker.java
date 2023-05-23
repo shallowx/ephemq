@@ -53,7 +53,7 @@ public class CommandInvoker {
         try {
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, ResetSubscribeResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
+            channel.invoke(ProcessCommand.Server.REST_SUBSCRIBE, buf, timeoutMs, callback);
         } catch (Throwable t){
             tryFailure(promise, t);
         }
@@ -63,7 +63,7 @@ public class CommandInvoker {
         try {
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, AlterSubscribeResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
+            channel.invoke(ProcessCommand.Server.ALTER_SUBSCRIBE, buf, timeoutMs, callback);
         } catch (Throwable t){
             tryFailure(promise, t);
         }
@@ -73,7 +73,7 @@ public class CommandInvoker {
         try {
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, CleanSubscribeResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
+            channel.invoke(ProcessCommand.Server.CLEAN_SUBSCRIBE, buf, timeoutMs, callback);
         } catch (Throwable t){
             tryFailure(promise, t);
         }
@@ -83,7 +83,7 @@ public class CommandInvoker {
         try {
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, CreateTopicResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
+            channel.invoke(ProcessCommand.Server.CREATE_TOPIC, buf, timeoutMs, callback);
         } catch (Throwable t){
             tryFailure(promise, t);
         }
@@ -93,7 +93,7 @@ public class CommandInvoker {
         try {
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, DeleteTopicResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
+            channel.invoke(ProcessCommand.Server.DELETE_TOPIC, buf, timeoutMs, callback);
         } catch (Throwable t){
             tryFailure(promise, t);
         }

@@ -18,22 +18,22 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
     }
 
-    private ByteBuf whole;
-    private boolean invalid;
+    private ByteBuf accumulation;
+    private boolean invalidChannel;
     private State state = READ_MAGIC_NUMBER;
     private int writeFrameBytes;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof final ByteBuf read) {
-            if (invalid) {
-                read.release();
+        if (msg instanceof final ByteBuf in) {
+            if (invalidChannel) {
+                in.release();
                 return;
             }
 
             ByteBuf buf = null;
             try {
-                buf = whole(ctx.alloc(), read).retain();
+                buf = accumulation(ctx.alloc(), in).retain();
                 while (!ctx.isRemoved() && buf.isReadable()) {
                     final MessagePacket packet = decode(buf);
                     if (null == packet) {
@@ -42,14 +42,14 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     ctx.fireChannelRead(packet);
                 }
             } catch (Throwable cause) {
-                invalid = true;
+                invalidChannel = true;
                 throw cause;
             } finally {
               release(buf);
 
-              buf = whole;
-              if (null != buf && (!buf.isReadable() || invalid)) {
-                  whole = null;
+              buf = accumulation;
+              if (null != buf && (!buf.isReadable() || invalidChannel)) {
+                  accumulation = null;
                   release(buf);
               }
             }
@@ -77,12 +77,12 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     return null;
                 }
 
-                final int frame = buf.getUnsignedMedium(buf.readerIndex() + 1);
-                if (frame < MessagePacket.HEADER_LENGTH) {
-                    throw new DecoderException("Invalid frame length:" + frame);
+                final int frameLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
+                if (frameLength < MessagePacket.HEADER_LENGTH) {
+                    throw new DecoderException("Invalid frame length:" + frameLength);
                 }
 
-                writeFrameBytes = frame;
+                writeFrameBytes = frameLength;
                 state = READ_MESSAGE_COMPLETED;
             }
             case READ_MESSAGE_COMPLETED:{
@@ -91,7 +91,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 }
                 buf.skipBytes(4);
 
-                final byte command = buf.readByte();
+                final int command = buf.readInt();
                 final int answer = buf.readInt();
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
 
@@ -105,10 +105,10 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private ByteBuf whole(ByteBufAllocator alloc, ByteBuf read) {
-        final ByteBuf buf = whole;
+    private ByteBuf accumulation(ByteBufAllocator alloc, ByteBuf in) {
+        final ByteBuf buf = accumulation;
         if (null == buf) {
-            return whole = read;
+            return accumulation = in;
         }
 
         final CompositeByteBuf composite;
@@ -121,15 +121,15 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
             composite = newComposite(alloc, buf);
         }
 
-        composite.addFlattenedComponents(true, read);
-        return whole = composite;
+        composite.addFlattenedComponents(true, in);
+        return accumulation = composite;
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        if (whole instanceof final CompositeByteBuf buf) {
+        if (accumulation instanceof final CompositeByteBuf buf) {
             if (buf.toComponentIndex(buf.readerIndex()) > DISCARD_READ_BODY_THRESHOLD) {
-                whole = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
+                accumulation = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
             }
         }
 
@@ -138,9 +138,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (null != whole) {
-            release(whole);
-            whole = null;
+        if (null != accumulation) {
+            release(accumulation);
+            accumulation = null;
         }
 
         ctx.fireChannelInactive();
@@ -148,9 +148,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        final ByteBuf buf = whole;
+        final ByteBuf buf = accumulation;
         if (null != buf) {
-            whole = null;
+            accumulation = null;
             if (buf.isReadable()) {
                 ctx.fireChannelRead(buf);
                 ctx.fireChannelReadComplete();

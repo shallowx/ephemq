@@ -79,4 +79,19 @@ public class PartitionInfo {
     public int hashCode() {
         return Objects.hash(topic, partition, ledger);
     }
+
+    @Override
+    public String toString() {
+        return "PartitionInfo{" +
+                "topic='" + topic + '\'' +
+                ", topicId=" + topicId +
+                ", partition=" + partition +
+                ", ledger=" + ledger +
+                ", epoch=" + epoch +
+                ", leader='" + leader + '\'' +
+                ", replicas=" + replicas +
+                ", topicConfig=" + topicConfig +
+                ", version=" + version +
+                '}';
+    }
 }

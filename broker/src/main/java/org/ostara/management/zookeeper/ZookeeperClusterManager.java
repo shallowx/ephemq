@@ -40,6 +40,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     public ZookeeperClusterManager(Config config) {
         this.config = config;
+        this.client = ZookeeperClient.getClient(config, config.getClusterName());
     }
 
     @Override

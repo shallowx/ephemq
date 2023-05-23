@@ -29,7 +29,7 @@ public class LedgerCursor {
         while ((segment = rollValidSegment()) != null) {
             ByteBuf record = segment.readRecord(position);
             if (record != null) {
-                position = 8 + record.readableBytes();
+                position += 8 + record.readableBytes();
                 return record;
             }
         }

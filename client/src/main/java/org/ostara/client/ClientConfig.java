@@ -14,7 +14,7 @@ public class ClientConfig {
     private int channelIdleTimeoutMs = 30000;
     private int channelInvokePermits = 100;
     private int workerThreadCount = Runtime.getRuntime().availableProcessors();
-    private int metadataTimeoutMs = 2000;
+    private int metadataTimeoutMs = 5000;
     private int metadataRefreshPeriodMs = 5000;
     private int connectionPoolCapacity = 1;
     private int createTopicTimeoutMs = 2000;

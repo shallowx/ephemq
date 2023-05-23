@@ -40,7 +40,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private final ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
-        this.processor = checkNotNull(processor, "Process cannot be null");
+        this.processor = checkNotNull(processor, "Process not found");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             if (null == cause) {
                 ctx.writeAndFlush(newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
             } else {
-                ChannelFuture future = ctx.writeAndFlush(newFailurePacket(answer, cause));
+                ctx.writeAndFlush(newFailurePacket(answer, cause));
             }
         });
 

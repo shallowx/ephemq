@@ -1,11 +1,11 @@
 package org.ostara.metrics;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.util.internal.PlatformDependent;
-import org.jetbrains.annotations.NotNull;
 
 public class NettyMetrics implements MeterBinder {
 

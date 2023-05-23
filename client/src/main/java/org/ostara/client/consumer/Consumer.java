@@ -754,7 +754,7 @@ public class Consumer {
         return !failedRecords.isEmpty();
     }
 
-    private synchronized void close() {
+    public synchronized void close() {
         if (state != Boolean.TRUE) {
             return;
         }

@@ -25,6 +25,6 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         manager.getConnectionManager().remove(ctx.channel());
-        super.exceptionCaught(ctx, cause);
+        ctx.close();
     }
 }

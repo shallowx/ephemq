@@ -96,7 +96,7 @@ public class LedgerStorage {
 
     private LedgerSegment applySegment(int bytes) {
         LedgerSegment segment = tailSegment;
-        if (segment.freeBytes() > bytes) {
+        if (segment.freeBytes() < bytes) {
             if (segmentCount >= config.segmentRetainCounts()) {
                 decreaseSegment();
             }
@@ -274,7 +274,10 @@ public class LedgerStorage {
         for (int i = 0; i < segmentCount; i++) {
             decreaseSegment();
         }
-        promise.trySuccess(true);
+
+        if (promise != null) {
+            promise.trySuccess(true);
+        }
     }
 
     private <T>void tryFailure(Promise<T> promise, Throwable t){

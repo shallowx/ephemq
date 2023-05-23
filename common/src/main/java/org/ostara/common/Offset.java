@@ -1,8 +1,9 @@
 package org.ostara.common;
 
-import groovy.transform.Immutable;
-import org.jetbrains.annotations.NotNull;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
 @Immutable

@@ -45,7 +45,7 @@ public class Producer {
        executor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
     }
 
-    private synchronized void close() {
+    public synchronized void close() {
         if (state != Boolean.TRUE) {
             return;
         }
@@ -167,18 +167,15 @@ public class Producer {
 
     private MessageMetadata assembleMetadata(String topic, String queue, Extras extras) {
         MessageMetadata.Builder builder = MessageMetadata.newBuilder().setTopic(topic).setQueue(queue);
-        if (extras == null) {
-            return builder.build();
-        }
-
-        for (Map.Entry<String, String> entry : extras) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (key != null && value != null) {
-                builder.putExtras(key, value);
+        if (extras != null) {
+            for (Map.Entry<String, String> entry : extras) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != null && value != null) {
+                    builder.putExtras(key, value);
+                }
             }
         }
-
         return builder.build();
     }
 

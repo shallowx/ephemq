@@ -134,8 +134,8 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 try {
                     String clusterName = config.getClusterName();
                     List<Node> clusterUpNodes = manager.getClusterManager().getClusterUpNodes();
-                    clusterUpNodes.stream().collect(
-                            Collectors.toMap(Node::getId,  node ->
+                    Map<String, NodeMetadata> nodeMetadataMap = clusterUpNodes.stream().collect(
+                            Collectors.toMap(Node::getId, node ->
                                     NodeMetadata.newBuilder()
                                             .setClusterName(clusterName)
                                             .setId(node.getId())
@@ -148,6 +148,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                             .setCluster(
                                     ClusterMetadata.newBuilder().setName(clusterName).build()
                             )
+                            .putAllNodes(nodeMetadataMap)
                             .build();
                     QueryClusterResponse response = QueryClusterResponse.newBuilder()
                             .setClusterInfo(info)

@@ -21,9 +21,8 @@ reliability, trillion-level capacity and flexible scalability
 
 # Environment
 
+- Zookeeper 3.5.x or higher
 - Java 17
-- kotlin
-- groovy
 - -Dio.prometheus.client.export-protobuf.use-direct-buffers=true // prometheus directory memory
 
 # Quickstart
@@ -31,49 +30,14 @@ reliability, trillion-level capacity and flexible scalability
 ## Create Topic
 
 ```
-ClientConfig clientConfig = new ClientConfig();
-clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
-Client client = new Client("create-client", clientConfig);
-client.start();
-
-Promise<CreateTopicResponse> promise = client.getMetadataSupport().createTopic(CREATE_TOPIC, "test", 3, 1);
-CreateTopicResponse response = promise.get(clientConfig.getConnectTimeOutMs(), TimeUnit.MILLISECONDS);
 ```
 
 ## Subscribe Message
 
 ```
-ClientConfig clientConfig = new ClientConfig();
-clientConfig.setBootstrapSocketAddress(List.of("127.0.0.1:9127"));
-
-ConsumerConfig consumerConfig = new ConsumerConfig();
-consumerConfig.setClientConfig(clientConfig);
-
-org.leopard.consumer.push.PushConsumer messagePushConsumer = new MessagePushConsumer("example-consumer", consumerConfig);
-messagePushConsumer.registerListener(new MessagePushListener() {
-        @Override
-        public void onMessage(Message message) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Recive message:{}", message);
-            }
-        }
-    });
-messagePushConsumer.start();
-
-Subscription subscribe = messagePushConsumer.subscribe("test", "message");
 ```
 
 ## Send Message
 
 ```
-ProducerConfig producerConfig = new ProducerConfig();
-producerConfig.setClientConfig(clientConfig);
-
-Producer producer = new MessageProducer("async-producer", producerConfig);
-producer.start();
-
-Message message = new Message("test", "message", "message-test-send-async".getBytes(UTF_8), new Message.Extras());
-MessagePreInterceptor interceptor = sendMessage -> sendMessage;
-
-producer.sendAsync(message, filter, (sendResult, cause) -> {});
 ```

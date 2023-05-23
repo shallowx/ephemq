@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import org.ostara.remote.invoke.InvokeAnswer;
 
-public interface ProcessorAware extends Aware{
+public interface ProcessorAware {
 
     default void onActive(Channel channel, EventExecutor executor){}
 

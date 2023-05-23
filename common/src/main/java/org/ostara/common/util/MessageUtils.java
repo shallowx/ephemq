@@ -6,9 +6,9 @@ import org.ostara.common.Offset;
 
 public class MessageUtils {
     public static Offset getOffset(ByteBuf buf) {
-        int location = buf.readableBytes();
+        int location = buf.readerIndex();
         int epoch = buf.getInt(location + 4);
-        int index = buf.getInt(location + 8);
+        long index = buf.getLong(location + 8);
 
         return new Offset(epoch, index);
     }

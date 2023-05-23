@@ -27,6 +27,7 @@ public class DefaultSocketServer {
     private EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
 
+    @Inject
     public DefaultSocketServer(Config config, Manager manager) {
         this.config = config;
     }

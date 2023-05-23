@@ -20,6 +20,7 @@ import org.ostara.core.Config;
 import org.ostara.log.ledger.LedgerCursor;
 import org.ostara.log.ledger.LedgerStorage;
 import org.ostara.remote.codec.MessagePacket;
+import org.ostara.remote.processor.ProcessCommand;
 import org.ostara.remote.proto.client.MessagePushSignal;
 import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.ProtoBufUtils;
@@ -71,7 +72,7 @@ public class RecordEntryDispatcher {
     }
 
     private EventExecutor channelExecutor(Channel channel) {
-        return executors[(channel.hashCode() & 0x7ffffff) %  executors.length];
+        return executors[(channel.hashCode() & 0x7fffffff) %  executors.length];
     }
 
     private Handler allocateHandler(Channel channel) {
@@ -193,12 +194,15 @@ public class RecordEntryDispatcher {
                 Offset dispatchOffset;
                 if (resetOffset != null) {
                     Offset earlyOffset = storage.headOffset();
-                    dispatchOffset = earlyOffset.after(resetOffset)? earlyOffset : resetOffset;
-                    newSubscription.dispatchOffset = dispatchOffset;
-                    if (dispatchOffset.before(handler.followOffset)) {
-                        PursueTask task = new PursueTask(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
-                        submitPursue(task);
-                    }
+                    dispatchOffset = earlyOffset.after(resetOffset) ? earlyOffset : resetOffset;
+                } else {
+                    dispatchOffset = storage.currentOffset();
+                }
+
+                newSubscription.dispatchOffset = dispatchOffset;
+                if (dispatchOffset.before(handler.followOffset)) {
+                    PursueTask task = new PursueTask(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
+                    submitPursue(task);
                 } else {
                     newSubscription.followed = true;
                 }
@@ -331,7 +335,7 @@ public class RecordEntryDispatcher {
                 ByteBuf payload = null;
                 try {
                     Offset offset = MessageUtils.getOffset(entry);
-                    if (offset.after(lastOffset)) {
+                    if (!offset.after(lastOffset)) {
                         if (runTimes > followLimit) {
                             break;
                         }
@@ -639,6 +643,8 @@ public class RecordEntryDispatcher {
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + contentLength);
+            buf.writeInt(ProcessCommand.Client.PUSH_MESSAGE);
+            buf.writeInt(0);
 
             ProtoBufUtils.writeProto(buf, signal);
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, entry.retainedSlice(entry.readerIndex() + 16, contentLength));
