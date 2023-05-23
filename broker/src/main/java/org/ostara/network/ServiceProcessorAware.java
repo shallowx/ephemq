@@ -1,19 +1,41 @@
 package org.ostara.network;
 
 import com.google.inject.Inject;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.ImmediateEventExecutor;
+import io.netty.util.concurrent.*;
+import io.netty.util.internal.StringUtil;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import org.ostara.common.Node;
+import org.ostara.common.Offset;
+import org.ostara.common.PartitionInfo;
+import org.ostara.common.TopicConfig;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.Config;
+import org.ostara.listener.APIListener;
 import org.ostara.log.Log;
 import org.ostara.management.Manager;
+import org.ostara.management.TopicManager;
+import org.ostara.management.zookeeper.CorrelationIdConstants;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.invoke.InvokeAnswer;
 import org.ostara.remote.processor.ProcessCommand;
 import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.proto.*;
+import org.ostara.remote.proto.server.*;
+import org.ostara.remote.util.NetworkUtils;
+import org.ostara.remote.util.ProtoBufUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.ostara.remote.util.ProtoBufUtils.proto2Buf;
+import static org.ostara.remote.util.ProtoBufUtils.readProto;
 
 public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Server {
 
@@ -69,32 +91,321 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
     }
 
     private void processSendMessage(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            SendMessageRequest request = readProto(data, SendMessageRequest.parser());
+            int ledger = request.getLedger();
+            int marker = request.getMarker();
+            Promise<Offset> promise = serviceExecutor.newPromise();
+            promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
+                if (f.isSuccess()) {
+                    try {
+                        if (answer != null) {
+                            Offset offset = f.getNow();
+                            SendMessageResponse response = SendMessageResponse.newBuilder()
+                                    .setLedger(ledger)
+                                    .setEpoch(offset.getEpoch())
+                                    .setIndex(offset.getIndex())
+                                    .build();
 
+                            answer.success(proto2Buf(channel.alloc(), response));
+                        }
+                    } catch (Throwable t){
+                        processFailed("Process send message failed", code, channel, answer, t);
+                    }
+                } else {
+                    processFailed("Process send message failed", code, channel, answer, f.cause());
+                }
+                recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
+            });
+            manager.getLogManager().appendRecord(ledger, marker, data, promise);
+        }catch (Throwable t){
+            processFailed("Process send message failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
 
     private void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            commandExecutor.execute(() -> {
+                try {
+                    String clusterName = config.getClusterName();
+                    List<Node> clusterUpNodes = manager.getClusterManager().getClusterUpNodes();
+                    clusterUpNodes.stream().collect(
+                            Collectors.toMap(Node::getId,  node ->
+                                    NodeMetadata.newBuilder()
+                                            .setClusterName(clusterName)
+                                            .setId(node.getId())
+                                            .setHost(node.getHost())
+                                            .setPort(node.getPort())
+                                            .build()
+                            )
+                    );
+                    ClusterInfo info = ClusterInfo.newBuilder()
+                            .setCluster(
+                                    ClusterMetadata.newBuilder().setName(clusterName).build()
+                            )
+                            .build();
+                    QueryClusterResponse response = QueryClusterResponse.newBuilder()
+                            .setClusterInfo(info)
+                            .build();
+                    if (answer != null) {
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                    recordCommand(code, bytes, System.nanoTime() - time, true);
+                } catch (Throwable t) {
+                    processFailed("Process query cluster info failed", code, channel, answer, t);
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                }
+            });
+        } catch (Throwable t) {
+            processFailed("Process query cluster info failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
     private void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            QueryTopicInfoRequest request = readProto(data, QueryTopicInfoRequest.parser());
+            ProtocolStringList topicNamesList = request.getTopicNamesList();
+            commandExecutor.execute(() -> {
+                try {
+                    TopicManager topicManager = manager.getTopicManager();
+                    Set<String> topicNames = new HashSet<>();
+                    if (topicNamesList.isEmpty()) {
+                        topicNames.addAll(topicManager.getAllTopics());
+                    } else {
+                        topicNames.addAll(topicNamesList);
+                    }
 
+                    QueryTopicInfoResponse.Builder builder = QueryTopicInfoResponse.newBuilder();
+                    for (String topicName : topicNames) {
+                        Set<PartitionInfo> partitionInfos = topicManager.getTopicInfo(topicName);
+                        if (partitionInfos == null || partitionInfos.isEmpty()) {
+                            continue;
+                        }
+
+                        int topicId = partitionInfos.stream().findAny().get().getTopicId();
+                        TopicMetadata topicMetadata = TopicMetadata.newBuilder()
+                                .setName(topicName)
+                                .setId(topicId)
+                                .build();
+
+                        TopicInfo.Builder topicInfoBuilder = TopicInfo.newBuilder().setTopic(topicMetadata);
+                        for (PartitionInfo info : partitionInfos) {
+                            PartitionMetadata.Builder partitionMetadataBuilder = PartitionMetadata.newBuilder()
+                                    .setTopicName(topicName)
+                                    .setId(info.getPartition())
+                                    .setLedger(info.getLedger())
+                                    .setEpoch(info.getEpoch())
+                                    .setVersion(info.getVersion())
+                                    .addAllReplicaNodeIds(info.getReplicas());
+                            String leader = info.getLeader();
+                            if (!StringUtil.isNullOrEmpty(leader)) {
+                                partitionMetadataBuilder.setLeaderNodeId(leader);
+                            }
+
+                            topicInfoBuilder.putPartitions(info.getPartition(), partitionMetadataBuilder.build());
+                        }
+
+                        builder.putTopicInfos(topicName, topicInfoBuilder.build());
+                    }
+
+                    QueryTopicInfoResponse response = builder.build();
+                    if (answer != null) {
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                } catch (Throwable t){
+                    processFailed("Process query topic info failed", code, channel, answer, t);
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                }
+            });
+        } catch (Throwable t){
+            processFailed("Process query topic info failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
     private void processRestSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            ResetSubscribeRequest request = readProto(data, ResetSubscribeRequest.parser());
+            IntList markers = convertMarkers(request.getMarkers());
+            int ledger = request.getLedger();
+            int epoch = request.getEpoch();
+            long index = request.getIndex();
+            Promise<Integer> promise = serviceExecutor.newPromise();
+            promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
+             if (f.isSuccess()) {
+                 if (answer != null) {
+                     ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
+                     answer.success(proto2Buf(channel.alloc(), response));
+                 }
+             } else {
+                 processFailed("Process reset subscription failed", code, channel, answer, f.cause());
+             }
+                recordCommand(code, bytes, System.nanoTime() - time, false);
+            });
+            manager.getLogManager().resetSubscribe(ledger, epoch, index, channel, markers, promise);
+        } catch (Throwable t) {
+            processFailed("Process reset subscription failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
 
     private void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            AlterSubscribeRequest request = readProto(data, AlterSubscribeRequest.parser());
+            IntList appendMarkers = convertMarkers(request.getAppendMarkers());
+            IntList deleteMarkers = convertMarkers(request.getDeleteMarkers());
+            int ledger = request.getLedger();
+            Promise<Integer> promise = serviceExecutor.newPromise();
+            promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
+                if (f.isSuccess()) {
+                    if (answer != null) {
+                        AlterSubscribeResponse response = AlterSubscribeResponse.newBuilder().build();
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                } else {
+                    processFailed("Process alter subscription failed", code, channel, answer, f.cause());
+                }
+                recordCommand(code, bytes, System.nanoTime() - time, false);
+            });
+            manager.getLogManager().alterSubscribe(channel, ledger, appendMarkers, deleteMarkers, promise);
+        } catch (Throwable t) {
+            processFailed("Process alter subscription failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
 
     private void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            CleanSubscribeRequest request = readProto(data, CleanSubscribeRequest.parser());
+            int ledger = request.getLedger();
+            Promise<Boolean> promise = serviceExecutor.newPromise();
+            promise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
+                if (f.isSuccess()) {
+                    if (answer != null) {
+                        CleanSubscribeResponse response = CleanSubscribeResponse.newBuilder().build();
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                } else {
+                    processFailed("Process clean subscription failed", code, channel, answer, f.cause());
+                }
+                recordCommand(code, bytes, System.nanoTime() - time, false);
+            });
+            manager.getLogManager().cleanSubscribe(channel, ledger, promise);
+        } catch (Throwable t) {
+            processFailed("Process clean subscription failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
 
     private void processCreateTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            CreateTopicRequest request = readProto(data, CreateTopicRequest.parser());
+            String topic = request.getTopic();
+            int partition = request.getPartition();
+            int replicas = request.getReplicas();
+            CreateTopicConfigRequest configs = request.getConfigs();
+            TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
+                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(),configs.getSegmentRetainMs());
 
+            commandExecutor.execute(() -> {
+               try {
+                   TopicManager topicManager = manager.getTopicManager();
+                   Map<String, Object> createResult = topicManager.createTopic(topic, partition, replicas, topicConfig);
+                   if (answer != null) {
+                       int topicId = (int)createResult.get(CorrelationIdConstants.TOPIC_ID);
+                       @SuppressWarnings("unchecked")
+                       Map<Integer, Set<String>> partitionReplicasMap =(Map<Integer, Set<String>>) createResult.get(CorrelationIdConstants.PARTITION_REPLICAS);
+                       List<PartitionsReplicas> partitionsReplicas = partitionReplicasMap.entrySet().stream()
+                               .map(
+                                       entry ->
+                                               PartitionsReplicas.newBuilder()
+                                                       .setPartition(entry.getKey())
+                                                       .addAllReplicas(entry.getValue())
+                                                       .build()
+                               ).toList();
+                       CreateTopicResponse response = CreateTopicResponse.newBuilder()
+                               .setTopic(topic)
+                               .setPartitions(partition)
+                               .setTopicId(topicId)
+                               .addAllPartitionsReplicas(partitionsReplicas)
+                               .build();
+                       answer.success(proto2Buf(channel.alloc(), response));
+                   }
+                   recordCommand(code, bytes, System.nanoTime() - time, true);
+               } catch (Throwable t){
+                   processFailed("Process create topic failed", code, channel, answer, t);
+                   recordCommand(code, bytes, System.nanoTime() - time, false);
+               }
+            });
+        } catch (Throwable t){
+            processFailed("Process create topic failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
 
     private void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            DeleteTopicRequest request = readProto(data, DeleteTopicRequest.parser());
+            String topic = request.getTopic();
+            commandExecutor.execute(() -> {
+                try {
+                    manager.getTopicManager().deleteTopic(topic);
+                    if (answer != null) {
+                        DeleteTopicResponse response = DeleteTopicResponse.newBuilder().build();
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                    recordCommand(code, bytes, System.nanoTime() - time, true);
+                } catch (Throwable t){
+                    processFailed("Process delete topic failed", code, channel, answer, t);
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                }
+            });
+        }catch (Throwable t){
+            processFailed("Process delete topic failed", code, channel, answer, t);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
     }
-}
+
+    private void recordCommand(int code, int bytes, long cost, boolean ret) {
+        for (APIListener listener : manager.getAPIListeners()) {
+            try {
+                listener.onCommand(code, bytes, cost, ret);
+            } catch (Throwable t){
+                logger.warn("Record process failed, listener={} code={}", listener == null ? null : listener.getClass().getSimpleName(), code, t);
+            }
+        }
+    }
+
+    private void processFailed(String err, int code, Channel channel, InvokeAnswer<ByteBuf> answer, Throwable throwable) {
+        logger.error("{}: command={} address={}", err, code, NetworkUtils.switchAddress(channel), throwable);
+        if (answer != null) {
+            answer.failure(throwable);
+        }
+    }
+
+    private IntList convertMarkers(ByteString markers) throws Exception {
+        CodedInputStream stream = markers.newCodedInput();
+        IntList markerList = new IntArrayList(markers.size() / 4);
+        while (!stream.isAtEnd()) {
+            markerList.add(stream.readFixed32());
+        }
+        return markerList;
+    }
+ }

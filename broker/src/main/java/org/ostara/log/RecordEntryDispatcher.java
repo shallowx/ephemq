@@ -53,11 +53,11 @@ public class RecordEntryDispatcher {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;
-        this.followLimit = 100;
-        this.pursueLimit = 100;
-        this.alignLimit = 100;
-        this.pursueTimeoutMs = 100;
-        this.loadLimit = 100;
+        this.followLimit = config.getDispatchEntryFollowLimit();
+        this.pursueLimit = config.getDispatchEntryPursueLimit();
+        this.alignLimit = config.getDispatchEntryAlignLimit();
+        this.pursueTimeoutMs = config.getDispatchEntryPursueTimeoutMs();
+        this.loadLimit = config.getDispatchEntryLoadLimit();
         this.counter = dispatchCounter;
 
         List<EventExecutor> eventExecutors = new ArrayList<>();

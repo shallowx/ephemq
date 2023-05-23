@@ -38,10 +38,6 @@ public class Config {
     private static final String DISPATCH_ENTRY_PURSUE_LIMIT = "dispatch.entry.pursue.limit";
     private static final String DISPATCH_ENTRY_ALIGN_LIMIT = "dispatch.entry.align.limit";
     private static final String DISPATCH_ENTRY_PURSUE_TIMEOUT_MS= "dispatch.entry.pursue.timeout.ms";
-
-    private static final String FLUSH_BATCH = "flush.batch";
-    private static final String FLUSH_BATCH_COUNT = "flush.batch.count";
-    private static final String FLUSH_TIME_NANOSECONDS = "flush.time.nanoseconds";
     private static final String SHUTDOWN_MAX_WAIT_TIME_MS = "shutdown.max.wait.time.ms";
     private static final String METRICS_SAMPLE_COUNT = "metrics.sample.count";
     private static final String AUX_THREAD_COUNTS = "aux.thread.counts";
@@ -166,18 +162,6 @@ public class Config {
 
     public int getMessageDispatchThreadCounts() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(MESSAGE_DISPATCH_THREAD_COUNTS, Runtime.getRuntime().availableProcessors()));
-    }
-
-    public boolean isBatch() {
-        return TypeTransformUtils.object2Boolean(prop.getOrDefault(FLUSH_BATCH, false));
-    }
-
-    public int getFlushBatchCount() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(FLUSH_BATCH_COUNT, 200));
-    }
-
-    public long getFlushTimeNanoseconds() {
-        return TypeTransformUtils.object2Long(prop.getOrDefault(FLUSH_TIME_NANOSECONDS, 0L));
     }
 
     public int getShutdownMaxWaitTimeMs() {

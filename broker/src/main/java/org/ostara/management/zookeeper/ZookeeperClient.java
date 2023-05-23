@@ -28,7 +28,7 @@ public class ZookeeperClient {
                     .connectString(url)
                     .namespace(namespace)
                     .sessionTimeoutMs(config.getZookeeperSessionTimeoutMs())
-                    .connectionTimeoutMs(config.getConnectionTimeoutMs())
+                    .connectionTimeoutMs(config.getZookeeperConnectionTimeoutMs())
                     .connectionStateErrorPolicy(new SessionConnectionStateErrorPolicy())
                     .retryPolicy(new ExponentialBackoffRetry(config.getZookeeperConnectionRetrySleepMs(), config.getZookeeperConnectionRetries()))
                     .build();

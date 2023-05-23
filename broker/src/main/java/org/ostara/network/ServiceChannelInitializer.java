@@ -23,6 +23,7 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
     public ServiceChannelInitializer(Config config, Manager manager) {
         this.config = config;
         this.manager = manager;
+        this.statisticsDuplexHandler = new StatisticsDuplexHandler(config);
     }
 
     @Override

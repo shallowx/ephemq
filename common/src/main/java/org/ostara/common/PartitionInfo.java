@@ -59,6 +59,14 @@ public class PartitionInfo {
         return version;
     }
 
+    public int getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(int topicId) {
+        this.topicId = topicId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
