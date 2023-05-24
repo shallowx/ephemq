@@ -4,15 +4,15 @@ import java.util.Objects;
 import java.util.Set;
 
 public class PartitionInfo {
-    private String topic;
+    private final String topic;
     private int topicId;
-    private int partition;
-    private int ledger;
-    private int epoch;
-    private String leader;
-    private Set<String> replicas;
-    private TopicConfig topicConfig;
-    private int version;
+    private final int partition;
+    private final int ledger;
+    private final int epoch;
+    private final String leader;
+    private final Set<String> replicas;
+    private final TopicConfig topicConfig;
+    private final int version;
 
     public PartitionInfo(String topic, int topicId, int partition, int ledger, int epoch, String leader,
                          Set<String> replicas, TopicConfig topicConfig, int version) {

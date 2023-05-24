@@ -20,8 +20,8 @@ import java.util.Set;
 public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
 
-    private Manager manager;
-    private Config config;
+    private final Manager manager;
+    private final Config config;
 
     public DefaultClusterListener(Manager manager, Config config) {
         this.manager = manager;

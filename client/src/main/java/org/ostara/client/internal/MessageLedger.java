@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class MessageLedger {
-    private int id;
-    private int version;
-    private SocketAddress leader;
-    private List<SocketAddress> replicas;
-    private String topic;
-    private int partition;
+    private final int id;
+    private final int version;
+    private final SocketAddress leader;
+    private final List<SocketAddress> replicas;
+    private final String topic;
+    private final int partition;
 
     public MessageLedger(int id, int version, SocketAddress leader, List<SocketAddress> replicas, String topic, int partition) {
         this.id = id;

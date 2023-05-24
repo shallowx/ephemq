@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Extras implements Iterable<Map.Entry<String, String>> {
 
-    private Map<String, String> map;
+    private final Map<String, String> map;
 
     public Extras() {
         this.map = new HashMap<>();

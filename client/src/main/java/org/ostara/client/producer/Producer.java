@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 
 public class Producer implements MeterBinder{
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Producer.class);
-    private String name;
-    private ProducerConfig config;
-    private Client client;
+    private final String name;
+    private final ProducerConfig config;
+    private final Client client;
     private EventExecutor executor;
     private volatile Boolean state;
 

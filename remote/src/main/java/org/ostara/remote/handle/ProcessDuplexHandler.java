@@ -33,9 +33,7 @@ import org.ostara.remote.processor.ProcessorAware;
 @Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
-
-    private static final int FAILURE_CONTENT_LIMIT = 1024 * 1024 * 4;
-    private static final int INT_ZERO = 0;
+    private static final int FAILURE_CONTENT_LIMIT = 4 * 1024 * 1024;
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
     private final ProcessorAware processor;
 
@@ -57,7 +55,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                         switchAddress(ctx.channel()));
 
                 final int command = packet.command();
-                if (command > INT_ZERO) {
+                if (command > 0) {
                     processRequest(ctx, packet);
                 } else {
                     processResponse(ctx, packet);
@@ -74,7 +72,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final int command = packet.command();
         final int answer = packet.answer();
         final int length = packet.body().readableBytes();
-        final InvokeAnswer<ByteBuf> rejoin = answer == INT_ZERO ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
+        final InvokeAnswer<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
                 return;
             }
@@ -103,7 +101,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private void processResponse(ChannelHandlerContext ctx, MessagePacket packet) {
         final int command = packet.command();
         final int answer = packet.answer();
-        if (answer == INT_ZERO) {
+        if (answer == 0) {
             logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),
                     command, answer);
             return;
@@ -112,7 +110,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         final ByteBuf buf = packet.body().retain();
         final boolean freed;
         try {
-            if (command == INT_ZERO) {
+            if (command == 0) {
                 freed = holder.free(answer, r -> r.success(buf.retain()));
             } else {
                 final String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
@@ -150,7 +148,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             final EventExecutor executor = ctx.executor();
             scheduleExpiredTask(executor);
 
-            if (answer != INT_ZERO && !promise.isVoid()) {
+            if (answer != 0 && !promise.isVoid()) {
                 promise.addListener(f -> {
                     Throwable cause = f.cause();
                     if (null == cause) {
@@ -184,10 +182,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         executor.schedule(new Runnable() {
             @Override
             public void run() {
-                var processHolder = INT_ZERO;
-                var processInvoker = INT_ZERO;
-                var remnantHolder = INT_ZERO;
-                var remnantInvoker = INT_ZERO;
+                var processHolder = 0;
+                var processInvoker = 0;
+                var remnantHolder = 0;
+                var remnantInvoker = 0;
                 final Iterator<InvokeHolder<ByteBuf>> iterator = wholeHolders.iterator();
                 while (iterator.hasNext()) {
                     final var holder = iterator.next();

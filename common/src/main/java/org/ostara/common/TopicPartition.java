@@ -3,8 +3,8 @@ package org.ostara.common;
 import java.util.Objects;
 
 public class TopicPartition {
-    private String topic;
-    private int partition;
+    private final String topic;
+    private final int partition;
 
     public TopicPartition(String topic, int partition) {
         this.topic = topic;

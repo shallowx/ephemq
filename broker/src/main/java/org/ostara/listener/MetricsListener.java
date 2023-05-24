@@ -5,7 +5,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
 import org.ostara.management.Manager;
-import org.ostara.metrics.JmxMetricsRegistry;
+import org.ostara.metrics.*;
 import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
@@ -18,9 +18,6 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.Config;
 import org.ostara.log.Log;
-import org.ostara.metrics.MetricsRegistrySetUp;
-import org.ostara.metrics.NettyMetrics;
-import org.ostara.metrics.PrometheusRegistry;
 
 import java.time.Duration;
 import java.util.Map;
@@ -65,8 +62,10 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         MetricsRegistrySetUp jmxMeterRegistrySetup = new JmxMetricsRegistry();
         jmxMeterRegistrySetup.setUp(properties);
 
-        Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
 
+
+        Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
+        new DefaultJVMInfoMetrics(tags).bindTo(registry);
         new UptimeMetrics(tags).bindTo(registry);
         new FileDescriptorMetrics(tags).bindTo(registry);
         new ClassLoaderMetrics(tags).bindTo(registry);

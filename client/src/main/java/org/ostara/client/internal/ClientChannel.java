@@ -23,9 +23,9 @@ import java.util.concurrent.TimeoutException;
 public class ClientChannel implements MeterBinder {
     protected String id;
     protected Channel channel;
-    private SocketAddress address;
+    private final SocketAddress address;
     protected Semaphore semaphore;
-    private CommandInvoker invoker;
+    private final CommandInvoker invoker;
 
     public ClientChannel(ClientConfig config, Channel channel, SocketAddress address) {
         this.id = channel.id().asLongText();

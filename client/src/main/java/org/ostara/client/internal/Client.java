@@ -48,9 +48,9 @@ public class Client implements MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
 
     protected String name;
-    private ClientConfig config;
-    private ClientListener listener;
-    private List<SocketAddress> bootstrapAddress;
+    private final ClientConfig config;
+    private final ClientListener listener;
+    private final List<SocketAddress> bootstrapAddress;
     protected EventLoopGroup workerGroup;
     private Bootstrap bootstrap;
     protected EventExecutor taskExecutor;

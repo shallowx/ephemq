@@ -13,9 +13,6 @@ import java.util.concurrent.ThreadFactory;
 
 public class FastEventExecutor extends SingleThreadEventExecutor {
 
-    private static final int MAX_ARRAY_QUERY_CAPACITY = 1 << 30;
-
-
     public FastEventExecutor(ThreadFactory factory) {
         this(null, factory, true, Integer.MAX_VALUE, RejectedExecutionHandlers.reject());
     }
@@ -31,7 +28,7 @@ public class FastEventExecutor extends SingleThreadEventExecutor {
 
     @Override
     protected Queue<Runnable> newTaskQueue(int maxPendingTasks) {
-        if (maxPendingTasks <= 0 || maxPendingTasks > MAX_ARRAY_QUERY_CAPACITY) {
+        if (maxPendingTasks <= 0 || maxPendingTasks > (1 << 30)) {
             return new LinkedBlockingQueue<>();
         }
 

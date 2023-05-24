@@ -1,9 +1,9 @@
 package org.ostara.common;
 
 public class MessageId {
-    private int ledger;
-    private int epoch;
-    private long index;
+    private final int ledger;
+    private final int epoch;
+    private final long index;
 
     public MessageId(int ledger, int epoch, long index) {
         this.ledger = ledger;

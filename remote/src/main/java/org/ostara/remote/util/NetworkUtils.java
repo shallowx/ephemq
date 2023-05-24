@@ -29,15 +29,13 @@ import org.ostara.remote.codec.MessagePacket;
 
 public final class NetworkUtils {
 
-    private static final int INT_ZERO = 0;
-
     private NetworkUtils() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }
 
     public static MessagePacket newSuccessPacket(int answer, ByteBuf body) {
-        return MessagePacket.newPacket(answer, (byte) INT_ZERO, body);
+        return MessagePacket.newPacket(answer, 0, body);
     }
 
     public static MessagePacket newFailurePacket(int answer, Throwable cause) {
@@ -50,8 +48,8 @@ public final class NetworkUtils {
     }
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
-        final int size = addresses == null ? INT_ZERO : addresses.size();
-        if (ObjectUtils.checkPositive(size, "bootstrap address") > INT_ZERO) {
+        final int size = addresses == null ? 0 : addresses.size();
+        if (ObjectUtils.checkPositive(size, "bootstrap address") > 0) {
             List<SocketAddress> answers = new LinkedList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);
@@ -66,7 +64,7 @@ public final class NetworkUtils {
 
     public static SocketAddress switchSocketAddress(String address) {
         int index = address.lastIndexOf(":");
-        if (index < INT_ZERO) {
+        if (index < 0) {
             return null;
         }
 
@@ -84,7 +82,7 @@ public final class NetworkUtils {
     public static SocketAddress switchSocketAddress(String host, int port) {
         host = host == null ? null : host.trim();
         if (host == null || host.isEmpty()
-                || port < INT_ZERO || port > 0xFFFF) {
+                || port < 0 || port > 0xFFFF) {
             return null;
         }
 

@@ -13,7 +13,7 @@ import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.ProtoBufUtils;
 
 public class CommandInvoker {
-    private ClientChannel channel;
+    private final ClientChannel channel;
 
     public CommandInvoker(ClientChannel channel) {
         this.channel = channel;

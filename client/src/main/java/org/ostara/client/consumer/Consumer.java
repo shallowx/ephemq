@@ -39,10 +39,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Consumer implements MeterBinder {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Consumer.class);
-    private String name;
-    private ConsumerConfig consumerConfig;
-    private MessageListener listener;
-    private Client client;
+    private final String name;
+    private final ConsumerConfig consumerConfig;
+    private final MessageListener listener;
+    private final Client client;
     private EventExecutor executor;
     private EventExecutorGroup group;
     private MessageHandler[] handlers;

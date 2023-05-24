@@ -9,8 +9,8 @@ import java.util.Objects;
 @Immutable
 public class Offset implements Comparable<Offset> {
 
-    private int epoch;
-    private long index;
+    private final int epoch;
+    private final long index;
 
     public Offset(int epoch, long index) {
         this.epoch = epoch;

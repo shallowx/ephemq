@@ -3,10 +3,10 @@ package org.ostara.client.internal;
 import java.util.Map;
 
 public class MessageRouter {
-    private long token;
-    private String topic;
-    private Map<Integer, MessageLedger> ledgers;
-    private int[] ledgerIds;
+    private final long token;
+    private final String topic;
+    private final Map<Integer, MessageLedger> ledgers;
+    private final int[] ledgerIds;
 
     public MessageRouter(long token, String topic, Map<Integer, MessageLedger> ledgers) {
         this.token = token;

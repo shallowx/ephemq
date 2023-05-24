@@ -14,12 +14,11 @@ import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
 
 public class InnerClientChannel extends ClientChannel {
-    private Config config;
-    private Manager manager;
+    private final Config config;
+
     public InnerClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, Config config, Manager manager) {
         super(clientConfig, channel, address);
         this.config = config;
-        this.manager = manager;
     }
 
     @Override
