@@ -23,12 +23,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LogManager {
-    private Config config;
-    private Manager manager;
+    private final Config config;
+    private final Manager manager;
 
-    private Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
-    private List<LogListener> listeners = new LinkedList<>();
-    private ScheduledExecutorService scheduledExecutorService;
+    private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
+    private final List<LogListener> listeners = new LinkedList<>();
+    private final ScheduledExecutorService scheduledExecutorService;
     public LogManager(Config config, Manager manager) {
         this.config = config;
         this.manager = manager;

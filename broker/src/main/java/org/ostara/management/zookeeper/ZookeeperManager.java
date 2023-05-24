@@ -29,7 +29,7 @@ public class ZookeeperManager implements Manager {
     private ClusterManager clusterManager;
     private Config config;
     private ConnectionManager connectionManager;
-    private List<APIListener> apiListeners = new LinkedList<>();
+    private final List<APIListener> apiListeners = new LinkedList<>();
     private EventExecutorGroup handleGroup;
     private EventExecutorGroup storageGroup;
     private EventExecutorGroup dispatchGroup;

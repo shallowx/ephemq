@@ -42,13 +42,13 @@ public class ZookeeperTopicManager implements TopicManager {
     private CuratorFramework client;
     private CuratorCache cache;
     private ReplicaManager replicaManager;
-    private Map<Integer, ZookeeperPartitionLeaderElector> leaderElectorMap = new ConcurrentHashMap<>();
+    private final Map<Integer, ZookeeperPartitionLeaderElector> leaderElectorMap = new ConcurrentHashMap<>();
     private DistributedAtomicInteger topicIdGenerator;
     private DistributedAtomicInteger ledgerIdGenerator;
     private Manager manager;
     private LoadingCache<String, Set<PartitionInfo>> topicCache;
     private LoadingCache<String, Set<String>> topicNamesCache;
-    private List<TopicListener> listeners = new LinkedList<>();
+    private final List<TopicListener> listeners = new LinkedList<>();
     private static final String ALL_TOPIC_KEY = "ALL-TOPIC";
 
     public ZookeeperTopicManager() {

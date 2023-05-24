@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>cli-tools</artifactId>
+  <artifactId>cli</artifactId>
   <packaging>jar</packaging>
 
   <properties>

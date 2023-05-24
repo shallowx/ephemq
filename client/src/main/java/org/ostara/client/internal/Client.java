@@ -1,5 +1,8 @@
 package org.ostara.client.internal;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -13,6 +16,7 @@ import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
 import io.netty.util.concurrent.*;
 import io.netty.util.concurrent.Future;
 import org.ostara.client.ClientConfig;
+import org.ostara.client.TopicPatterns;
 import org.ostara.common.TopicConfig;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -27,27 +31,29 @@ import org.ostara.remote.processor.ProcessorAware;
 import org.ostara.remote.proto.*;
 import org.ostara.remote.proto.client.MessagePushSignal;
 import org.ostara.remote.proto.client.NodeOfflineSignal;
+import org.ostara.remote.proto.client.SyncMessageSignal;
 import org.ostara.remote.proto.client.TopicChangedSignal;
 import org.ostara.remote.proto.server.*;
 import org.ostara.remote.util.NetworkUtils;
 import org.ostara.remote.util.ProtoBufUtils;
 
 import javax.annotation.Nonnull;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class Client {
+public class Client implements MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
 
-    private String name;
+    protected String name;
     private ClientConfig config;
     private ClientListener listener;
     private List<SocketAddress> bootstrapAddress;
-    private EventLoopGroup workerGroup;
+    protected EventLoopGroup workerGroup;
     private Bootstrap bootstrap;
-    private EventExecutor taskExecutor;
+    protected EventExecutor taskExecutor;
     private volatile Boolean state;
 
     public Client(String name, ClientConfig config, ClientListener listener) {
@@ -257,6 +263,28 @@ public class Client {
         }
     }
 
+    protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
+    @Override
+    public void bindTo(MeterRegistry meterRegistry) {
+        {
+            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) taskExecutor;
+            Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
+                    .tag("type", "client-task")
+                    .tag("name", name)
+                    .tag("id", executor.threadProperties().name())
+                    .register(meterRegistry);
+        }
+
+        for (EventExecutor eventExecutor : workerGroup) {
+            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
+            Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
+                    .tag("type", "client-worker")
+                    .tag("name", name)
+                    .tag("id", executor.threadProperties().name())
+                    .register(meterRegistry);
+        }
+    }
+
     private class RefreshMetadataTask implements Runnable {
         @Override
         public void run() {
@@ -329,6 +357,7 @@ public class Client {
                         case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
                         case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
                         case ProcessCommand.Client.TOPIC_INFO_CHANGED -> onTopicChanged(clientChannel, data, answer);
+                        case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
                         default -> {
                             if (answer != null) {
                                 answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code unsupported: " + command));
@@ -342,6 +371,14 @@ public class Client {
                     }
                 }
             }
+        }
+    }
+
+    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+        SyncMessageSignal signal = ProtoBufUtils.readProto(data, SyncMessageSignal.parser());
+        listener.onSyncMessage(channel, signal, data);
+        if (answer != null) {
+            answer.success(null);
         }
     }
 
@@ -609,6 +646,10 @@ public class Client {
     }
 
     public CreateTopicResponse createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
+        TopicPatterns.validatePartition(partitions);
+        TopicPatterns.validateTopic(topic);
+        TopicPatterns.validateLedgerReplica(replicas);
+
         CreateTopicRequest.Builder request = CreateTopicRequest.newBuilder()
                 .setTopic(topic)
                 .setPartition(partitions)
@@ -633,11 +674,58 @@ public class Client {
     }
 
     public DeleteTopicResponse deleteTopic(String topic) throws Exception {
+        TopicPatterns.validateTopic(topic);
+
         DeleteTopicRequest request = DeleteTopicRequest.newBuilder().setTopic(topic).build();
         Promise<DeleteTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         ClientChannel channel = fetchChannel(null);
         channel.invoker().deleteTopic(config.getDeleteTopicTimeoutMs(), promise, request);
 
         return promise.get(config.getDeleteTopicTimeoutMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public CalculatePartitionsResponse calculatePartitions() throws Exception {
+        ClientChannel clientChannel = fetchChannel(null);
+        Promise<CalculatePartitionsResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        CalculatePartitionsRequest request = CalculatePartitionsRequest.newBuilder().build();
+        clientChannel.invoker().calculatePartitions(config.getCalculatePartitionsTimeoutMs(), promise, request);
+        return promise.get(config.getCalculatePartitionsTimeoutMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public MigrateLedgerResponse migrateLedger(String topic, int partitions, String original, String destination) throws Exception {
+        MigrateLedgerResponse.Builder response = MigrateLedgerResponse.newBuilder();
+        ClientChannel clientChannel = fetchChannel(null);
+        ClusterInfo clusterInfo = queryClusterInfo(clientChannel);
+        Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
+        NodeMetadata originalBroker = nodesMap.get(original);
+        if (originalBroker == null) {
+            return response.setSuccess(false).setMessage(String.format("The original broker %s is not in cluster", original)).build();
+        }
+
+        if (!nodesMap.containsKey(destination)) {
+            return response.setSuccess(false).setMessage(String.format("The destination broker %s is not in cluster", original)).build();
+        }
+
+        Map<String, TopicInfo> topicInfos = queryTopicInfos(clientChannel, topic);
+        if (topicInfos == null || topicInfos.isEmpty()) {
+            return response.setSuccess(false).setMessage(String.format("The topic %s does not exist", original)).build();
+        }
+        TopicInfo topicInfo = topicInfos.get(topic);
+        PartitionMetadata partitionMetadata = topicInfo.getPartitionsMap().get(partitions);
+        if (partitionMetadata == null) {
+            return response.setSuccess(false).setMessage(String.format("The topic %s partition %d does not exist", original)).build();
+        }
+
+        clientChannel = fetchChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));
+        Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        MigrateLedgerRequest request = MigrateLedgerRequest.newBuilder()
+                .setTopic(topic)
+                .setPartition(partitions)
+                .setOriginal(original)
+                .setDestination(destination)
+                .build();
+
+        clientChannel.invoker().migrateLedger(config.getMigrateLedgerTimeoutMs(), promise, request);
+       return promise.get(config.getMigrateLedgerTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 }

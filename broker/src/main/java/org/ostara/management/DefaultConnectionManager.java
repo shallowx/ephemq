@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class DefaultConnectionManager implements ConnectionManager {
 
-    private Set<Channel> channels = new CopyOnWriteArraySet<>();
+    private final Set<Channel> channels = new CopyOnWriteArraySet<>();
 
     @Override
     public void add(Channel channel) {

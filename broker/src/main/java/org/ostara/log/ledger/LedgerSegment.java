@@ -15,12 +15,12 @@ public class LedgerSegment {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSegment.class);
 
     private volatile BufferHolder holder;
-    private int ledger;
-    private Offset baseOffset;
-    private int basePosition;
+    private final int ledger;
+    private final Offset baseOffset;
+    private final int basePosition;
     private volatile Offset lastOffset;
     private volatile int lastPosition;
-    private long creationTime;
+    private final long creationTime;
 
     private volatile LedgerSegment next;
 

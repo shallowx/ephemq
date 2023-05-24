@@ -22,8 +22,8 @@ import java.util.Set;
 public class DefaultTopicListener implements TopicListener{
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
-    private Manager manager;
-    private Config config;
+    private final Manager manager;
+    private final Config config;
 
     public DefaultTopicListener(Manager manager, Config config) {
         this.manager = manager;

@@ -29,11 +29,10 @@ import java.util.stream.Collectors;
 public class ZookeeperClusterManager implements ClusterManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     private volatile boolean registered = false;
-    private Config config;
-    private List<ClusterListener> listeners = new LinkedList<>();
-    private Map<String ,Node> allNodes = new ConcurrentHashMap<>();
-    private ConnectionStateListener stateListener;
-    private CuratorFramework client;
+    private final Config config;
+    private final List<ClusterListener> listeners = new LinkedList<>();
+    private final Map<String ,Node> allNodes = new ConcurrentHashMap<>();
+    private final CuratorFramework client;
     private CuratorCache cache;
     private LeaderLatch latch;
     private Node thisNode;
@@ -45,7 +44,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     @Override
     public void start() throws Exception {
-        stateListener = (client, state) -> {
+        ConnectionStateListener stateListener = (client, state) -> {
             if (state == ConnectionState.RECONNECTED) {
                 try {
                     Stat stat = client.checkExists().forPath(String.format(PathConstants.BROKERS_ID, config.getServerId()));
@@ -206,7 +205,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     @Override
     public void shutdown() throws Exception {
-
+        cache.close();
     }
 
     @Override

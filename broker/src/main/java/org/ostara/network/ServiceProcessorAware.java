@@ -10,10 +10,9 @@ import io.netty.util.concurrent.*;
 import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import org.ostara.common.Node;
-import org.ostara.common.Offset;
-import org.ostara.common.PartitionInfo;
-import org.ostara.common.TopicConfig;
+import org.ostara.client.internal.Client;
+import org.ostara.client.internal.ClientChannel;
+import org.ostara.common.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.Config;
@@ -31,6 +30,7 @@ import org.ostara.remote.proto.server.*;
 import org.ostara.remote.util.NetworkUtils;
 import org.ostara.remote.util.ProtoBufUtils;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,9 +40,9 @@ import static org.ostara.remote.util.ProtoBufUtils.readProto;
 public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Server {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessorAware.class);
-    private Config config;
-    private Manager manager;
-    private EventExecutor commandExecutor;
+    private final Config config;
+    private final Manager manager;
+    private final EventExecutor commandExecutor;
     private EventExecutor serviceExecutor;
 
     @Inject
@@ -76,6 +76,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 case CLEAN_SUBSCRIBE -> processCleanSubscription(channel, code, data, answer);
                 case CREATE_TOPIC -> processCreateTopic(channel, code, data, answer);
                 case DELETE_TOPIC -> processDeleteTopic(channel, code, data, answer);
+                case MIGRATE_LEDGER -> processMigrateLedger(channel, code, data, answer);
                 default -> {
                     if (answer != null) {
                         String error = "Command[" + code + "] unsupported";
@@ -87,6 +88,98 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
             if (answer != null) {
                 answer.failure(t);
             }
+        }
+    }
+
+    private void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            MigrateLedgerRequest request = readProto(data, MigrateLedgerRequest.parser());
+            int partition = request.getPartition();
+            String topic = request.getTopic();
+            String original = request.getOriginal();
+            String destination = request.getDestination();
+
+            if (original.equals(destination)) {
+                processFailed("Process migrate ledger failed", code, channel, answer,
+                        RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, "The original and destination are same broker"));
+                return;
+            }
+
+            commandExecutor.execute(() -> {
+                try {
+                    TopicManager topicManager = manager.getTopicManager();
+                    TopicPartition topicPartition = new TopicPartition(topic, partition);
+                    PartitionInfo partitionInfo = topicManager.getPartitionInfo(topicPartition);
+                    int ledger = partitionInfo.getLedger();
+                    if (config.getServerId().equals(original)) {
+                        if (!topicManager.hasLeadership(ledger)) {
+                            processFailed("Process migrate ledger failed", code, channel, answer,
+                                    RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The original broker does not have leader role of %s", topicPartition)));
+                            return;
+                        }
+
+                        Node destNode = manager.getClusterManager().getClusterNode(destination);
+                        if (destNode == null) {
+                            processFailed("Process migrate ledger failed", code, channel, answer,
+                                    RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The destination broker %s is not in cluster", destination)));
+                            return;
+                        }
+
+                        InetSocketAddress destinationAddr = new InetSocketAddress(destNode.getHost(), destNode.getPort());
+                        Client innerClient = manager.getInnerClient();
+                        ClientChannel clientChannel = innerClient.fetchChannel(destinationAddr);
+                        Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+                        promise.addListener(future -> {
+                           if (future.isSuccess()) {
+                               MigrateLedgerResponse response = (MigrateLedgerResponse) future.get();
+                               Log log = manager.getLogManager().getLog(ledger);
+                               Promise<Void> migratePromise = ImmediateEventExecutor.INSTANCE.newPromise();
+                               if (answer != null) {
+                                   migratePromise.addListener(f -> {
+                                       if (f.isSuccess()) {
+                                           answer.success(proto2Buf(channel.alloc(), response));
+                                       } else {
+                                           processFailed("Process migrate ledger failed", code, channel, answer, f.cause());
+                                       }
+                                   });
+                                   log.migrate(destination, clientChannel, migratePromise);
+                               } else {
+                                   processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
+                                           RemoteException.Failure.PROCESS_EXCEPTION, response.getMessage()
+                                   ));
+                               }
+                           } else {
+                               processFailed("Process migrate ledger failed", code, channel, answer, future.cause());
+                           }
+                        });
+                        clientChannel.invoker().migrateLedger(config.getNotifyClientTimeoutMs(), promise, request);
+                        recordCommand(code, bytes, System.nanoTime() - time, promise.isSuccess());
+                        return;
+                    }
+
+                    if (config.getServerId().equals(destination)) {
+                        topicManager.takeoverPartition(topicPartition);
+                        MigrateLedgerResponse response = MigrateLedgerResponse.newBuilder().setSuccess(true).build();
+                        if (answer != null) {
+                            answer.success(proto2Buf(channel.alloc(), response));
+                        }
+                        recordCommand(code, bytes,System.nanoTime() - time, true);
+                        return;
+                    }
+                    processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
+                            RemoteException.Failure.PROCESS_EXCEPTION, "The broker is neither original broker nor destination broker"
+                    ));
+                    recordCommand(code, bytes,System.nanoTime() - time, false);
+                } catch (Throwable t){
+                    processFailed("Process migrate ledger failed", code, channel, answer, t);
+                    recordCommand(code, bytes,System.nanoTime() - time, false);
+                }
+            });
+        } catch (Throwable t) {
+            processFailed("Process migrate ledger failed", code, channel, answer, t);
+            recordCommand(code, bytes,System.nanoTime() - time, false);
         }
     }
 

@@ -3,8 +3,8 @@ package org.ostara.log;
 import org.ostara.client.internal.ClientChannel;
 
 public class Migration {
-    private int ledger;
-    private ClientChannel channel;
+    private final int ledger;
+    private final ClientChannel channel;
 
     public Migration(int ledger, ClientChannel channel) {
         this.ledger = ledger;

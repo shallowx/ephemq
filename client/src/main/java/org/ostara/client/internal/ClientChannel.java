@@ -1,5 +1,7 @@
 package org.ostara.client.internal;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
@@ -18,11 +20,11 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ClientChannel {
-    private String id;
-    private Channel channel;
+public class ClientChannel implements MeterBinder {
+    protected String id;
+    protected Channel channel;
     private SocketAddress address;
-    private Semaphore semaphore;
+    protected Semaphore semaphore;
     private CommandInvoker invoker;
 
     public ClientChannel(ClientConfig config, Channel channel, SocketAddress address) {
@@ -118,5 +120,11 @@ public class ClientChannel {
         } finally {
             ByteBufUtils.release(data);
         }
+    }
+
+    protected static final String CHANNEL_SEMAPHORE = "channel_semaphore";
+    @Override
+    public void bindTo(MeterRegistry meterRegistry) {
+
     }
 }

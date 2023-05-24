@@ -14,7 +14,6 @@ public class MetricsConstants {
     public static final String TOPIC_PARTITION_COUNT_GAUGE_NAME = "topic_partition_count";
     public static final String TOPIC_PARTITION_LEADER_COUNT_GAUGE_NAME = "topic+partition_leader_count";
 
-    public static final String REQUEST_TYPE = "type";
     public static final String RESULT_TAG = "result";
     public static final String TOPIC_TAG = "topic";
     public static final String PARTITION_TAG = "partition";

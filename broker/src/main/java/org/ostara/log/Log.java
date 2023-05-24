@@ -41,20 +41,20 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Log {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Log.class);
-    private Config config;
-    private TopicPartition topicPartition;
-    private int ledger;
-    private String topic;
-    private LedgerStorage storage;
-    private EventExecutor storageExecutor;
-    private EventExecutor commandExecutor;
-    private RecordEntryDispatcher entryDispatcher;
-    private List<LogListener> listeners;
-    private Manager manager;
-    private Meter segmentCountMeter;
-    private Meter segmentBytesMeter;
-    private int forwardTimeout = 100;
-    private AtomicReference<LogState> state = new AtomicReference<>(null);
+    private final Config config;
+    private final TopicPartition topicPartition;
+    private final int ledger;
+    private final String topic;
+    private final LedgerStorage storage;
+    private final EventExecutor storageExecutor;
+    private final EventExecutor commandExecutor;
+    private final RecordEntryDispatcher entryDispatcher;
+    private final List<LogListener> listeners;
+    private final Manager manager;
+    private final Meter segmentCountMeter;
+    private final Meter segmentBytesMeter;
+    private final int forwardTimeout;
+    private final AtomicReference<LogState> state = new AtomicReference<>(null);
     private Migration migration;
     private ClientChannel syncChannel;
     private Promise<SyncResponse> syncFuture;
@@ -65,6 +65,7 @@ public class Log {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.getTopic();
+        this.forwardTimeout = config.getDispatchEntryFollowLimit();
         this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();
         LedgerConfig ledgerConfig;
         if (topicConfig != null) {

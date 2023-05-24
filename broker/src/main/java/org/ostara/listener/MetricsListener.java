@@ -35,11 +35,11 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final io.micrometer.core.instrument.MeterRegistry registry = Metrics.globalRegistry;
     private final Config config;
-    private Manager manager;
+    private final Manager manager;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
-    private final Map<Integer, Counter> requestSuccessed = new ConcurrentHashMap<>();
-    private final Map<Integer, Counter> requestFailured = new ConcurrentHashMap<>();
+    private final Map<Integer, Counter> requestSuccesses = new ConcurrentHashMap<>();
+    private final Map<Integer, Counter> requestFailures = new ConcurrentHashMap<>();
     private final Map<Integer, DistributionSummary> requestSizeSummary= new ConcurrentHashMap<>();
     private final Map<Integer, DistributionSummary> requestTimesSummary= new ConcurrentHashMap<>();
     private final AtomicInteger partitionCounts = new AtomicInteger();
@@ -91,49 +91,60 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     }
     @Override
     public void close() throws Exception {
-        this.meterRegistrySetup.shutdown();
+        try {
+            this.jvmGcMetrics.close();
+            this.meterRegistrySetup.shutdown();
+        } catch (Throwable t){
+            logger.error(t.getMessage(), t);
+        }
     }
 
     @Override
     public void onCommand(int code, int bytes, long cost, boolean ret) {
-        Map<Integer, Counter> counters = ret ? requestSuccessed : requestFailured;
-        Counter counter = counters.get(code);
-        if (counter == null) {
-            counter = counters.computeIfAbsent(code,
-                    s -> Counter.builder("request_state_count")
-                            .tags(Tags.of("request_type", String.valueOf(code))
-                                    .and(BROKER_TAG, config.getServerId())
-                                    .and(CLUSTER_TAG, config.getClusterName())
-                                    .and("ret", ret ? "success" : "failure"))
-                            .register(registry));
-        }
+        try {
+            Map<Integer, Counter> counters = ret ? requestSuccesses : requestFailures;
+            Counter counter = counters.get(code);
+            if (counter == null) {
+                counter = counters.computeIfAbsent(code,
+                        s -> Counter.builder(REQUEST_STATE_COUNTER_NAME)
+                                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
+                                        .and(BROKER_TAG, config.getServerId())
+                                        .and(CLUSTER_TAG, config.getClusterName())
+                                        .and(RESULT_TAG, ret ? "success" : "failure"))
+                                .register(registry));
+            }
 
-        counter.increment();
-        Integer sample = metricsSampleCount.get();
-        metricsSampleCount.set(sample + 1);
-        if (sample > metricsSample) {
-            metricsSampleCount.set(0);
-            DistributionSummary drs = requestSizeSummary.computeIfAbsent(code,
-                    s -> DistributionSummary.builder("request_size")
-                            .tags(Tags.of("request_type", String.valueOf(code))
-                                    .and(BROKER_TAG, config.getServerId())
-                                    .and(CLUSTER_TAG, config.getClusterName()))
-                            .baseUnit("bytes")
-                            .distributionStatisticExpiry(Duration.ofSeconds(30))
-                            .publishPercentiles(0.99, 0.999, 0.9)
-                            .register(registry));
-            drs.record(bytes);
+            counter.increment();
+            Integer sample = metricsSampleCount.get();
+            metricsSampleCount.set(sample + 1);
+            if (sample > metricsSample) {
+                metricsSampleCount.set(0);
+                DistributionSummary drs = requestSizeSummary.computeIfAbsent(code,
+                        s -> DistributionSummary.builder(REQUEST_SIZE_SUMMARY_NAME)
+                                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
+                                        .and(BROKER_TAG, config.getServerId())
+                                        .and(CLUSTER_TAG, config.getClusterName()))
+                                .baseUnit("bytes")
+                                .distributionStatisticExpiry(Duration.ofSeconds(30))
+                                .publishPercentiles(0.99, 0.999, 0.9)
+                                .register(registry)
+                );
+                drs.record(bytes);
 
-            DistributionSummary drt = requestTimesSummary.computeIfAbsent(code,
-                    s -> DistributionSummary.builder("api_response_time")
-                            .tags(Tags.of("request_type", String.valueOf(code))
-                                    .and(BROKER_TAG, config.getServerId())
-                                    .and(CLUSTER_TAG, config.getClusterName()))
-                            .baseUnit("ns")
-                            .distributionStatisticExpiry(Duration.ofSeconds(30))
-                            .publishPercentiles(0.99, 0.999, 0.9)
-                            .register(registry));
-            drt.record(bytes);
+                DistributionSummary drt = requestTimesSummary.computeIfAbsent(code,
+                        s -> DistributionSummary.builder(API_RESPONSE_TIME_NAME)
+                                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
+                                        .and(BROKER_TAG, config.getServerId())
+                                        .and(CLUSTER_TAG, config.getClusterName()))
+                                .baseUnit("ns")
+                                .distributionStatisticExpiry(Duration.ofSeconds(30))
+                                .publishPercentiles(0.99, 0.999, 0.9)
+                                .register(registry)
+                );
+                drt.record(bytes);
+            }
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
         }
     }
 
@@ -144,52 +155,64 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     @Override
     public void onReceiveMessage(String topic, int ledger, int count) {
-        Counter counter = topicReceiveCounters.get(ledger);
-        if (counter == null) {
-            counter = topicReceiveCounters.computeIfAbsent(ledger, metrics ->
-                    Counter.builder(TOPIC_MSG_RECEIVE_COUNTER_NAME)
-                            .tag(TOPIC_TAG, topic)
-                            .tag(LEDGER_TAG, String.valueOf(ledger))
-                            .tag(CLUSTER_TAG, config.getClusterName())
-                            .tag(BROKER_TAG, config.getServerId())
-                            .tag(TYPE_TAG, "send")
-                            .register(Metrics.globalRegistry)
-            );
+        try {
+            Counter counter = topicReceiveCounters.get(ledger);
+            if (counter == null) {
+                counter = topicReceiveCounters.computeIfAbsent(ledger, metrics ->
+                        Counter.builder(TOPIC_MSG_RECEIVE_COUNTER_NAME)
+                                .tag(TOPIC_TAG, topic)
+                                .tag(LEDGER_TAG, String.valueOf(ledger))
+                                .tag(CLUSTER_TAG, config.getClusterName())
+                                .tag(BROKER_TAG, config.getServerId())
+                                .tag(TYPE_TAG, "send")
+                                .register(Metrics.globalRegistry)
+                );
+            }
+            counter.increment(count);
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
         }
-        counter.increment(count);
     }
 
     @Override
     public void onSyncMessage(String topic, int ledger, int count) {
-        Counter counter = topicReceiveCounters.get(ledger);
-        if (counter == null) {
-            counter = topicReceiveCounters.computeIfAbsent(ledger, metrics ->
-                    Counter.builder(TOPIC_MSG_RECEIVE_COUNTER_NAME)
-                            .tag(TOPIC_TAG, topic)
-                            .tag(LEDGER_TAG, String.valueOf(ledger))
-                            .tag(CLUSTER_TAG, config.getClusterName())
-                            .tag(BROKER_TAG, config.getServerId())
-                            .tag(TYPE_TAG, "sync")
-                            .register(Metrics.globalRegistry)
-            );
+        try {
+            Counter counter = topicReceiveCounters.get(ledger);
+            if (counter == null) {
+                counter = topicReceiveCounters.computeIfAbsent(ledger, metrics ->
+                        Counter.builder(TOPIC_MSG_RECEIVE_COUNTER_NAME)
+                                .tag(TOPIC_TAG, topic)
+                                .tag(LEDGER_TAG, String.valueOf(ledger))
+                                .tag(CLUSTER_TAG, config.getClusterName())
+                                .tag(BROKER_TAG, config.getServerId())
+                                .tag(TYPE_TAG, "sync")
+                                .register(Metrics.globalRegistry)
+                );
+            }
+            counter.increment(count);
+        } catch (Throwable t){
+            logger.error(t.getMessage(), t);
         }
-        counter.increment(count);
     }
 
     @Override
     public void onPushMessage(String topic, int ledger, int count) {
-        Counter counter = topicPushCounters.get(ledger);
-        if(counter == null) {
-            counter = topicPushCounters.computeIfAbsent(ledger, k ->
-                    Counter.builder(TOPIC_MSG_PUSH_COUNTER_NAME)
-                            .tag(TOPIC_TAG, topic)
-                            .tag(LEDGER_TAG, String.valueOf(ledger))
-                            .tag(CLUSTER_TAG, config.getClusterName())
-                            .tag(BROKER_TAG, config.getServerId())
-                            .tag(TYPE_TAG, "single").register(registry)
-            );
+        try {
+            Counter counter = topicPushCounters.get(ledger);
+            if(counter == null) {
+                counter = topicPushCounters.computeIfAbsent(ledger, k ->
+                        Counter.builder(TOPIC_MSG_PUSH_COUNTER_NAME)
+                                .tag(TOPIC_TAG, topic)
+                                .tag(LEDGER_TAG, String.valueOf(ledger))
+                                .tag(CLUSTER_TAG, config.getClusterName())
+                                .tag(BROKER_TAG, config.getServerId())
+                                .tag(TYPE_TAG, "single").register(registry)
+                );
+            }
+            counter.increment(count);
+        } catch (Throwable t){
+            logger.error(t.getMessage(), t);
         }
-        counter.increment(count);
     }
 
     @Override
@@ -201,35 +224,47 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     public void onStartup(Node node) {
         // storage metrics
         for (EventExecutor executor : manager.getMessageStorageEventExecutorGroup()) {
-            SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
-            Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, config.getClusterName())
-                    .tag(BROKER_TAG, config.getServerId())
-                    .tag(TYPE_TAG, "storage")
-                    .tag("name", StringUtil.EMPTY_STRING)
-                    .tag("id", se.threadProperties().name()).register(registry);
+            try {
+                SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
+                Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
+                        .tag(CLUSTER_TAG, config.getClusterName())
+                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(TYPE_TAG, "storage")
+                        .tag("name", StringUtil.EMPTY_STRING)
+                        .tag("id", se.threadProperties().name()).register(registry);
+            } catch (Throwable t){
+                logger.error(t.getMessage(), t);
+            }
         }
 
         // dispatch metrics
         for (EventExecutor executor : manager.getMessageDispatchEventExecutorGroup()) {
-            SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
-            Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, config.getClusterName())
-                    .tag(BROKER_TAG, config.getServerId())
-                    .tag(TYPE_TAG, "dispatch")
-                    .tag("name", StringUtil.EMPTY_STRING)
-                    .tag("id", se.threadProperties().name()).register(registry);
+            try {
+                SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
+                Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
+                        .tag(CLUSTER_TAG, config.getClusterName())
+                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(TYPE_TAG, "dispatch")
+                        .tag("name", StringUtil.EMPTY_STRING)
+                        .tag("id", se.threadProperties().name()).register(registry);
+            } catch (Throwable t){
+                logger.error(t.getMessage(), t);
+            }
         }
 
         // command metrics
         for (EventExecutor executor : manager.getCommandHandleEventExecutorGroup()) {
-            SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
-            Gauge.builder("netty-pending-task", se, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, config.getClusterName())
-                    .tag(BROKER_TAG, config.getServerId())
-                    .tag(TYPE_TAG, "command")
-                    .tag("name", StringUtil.EMPTY_STRING)
-                    .tag("id", se.threadProperties().name()).register(registry);
+            try {
+                SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
+                Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
+                        .tag(CLUSTER_TAG, config.getClusterName())
+                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(TYPE_TAG, "command")
+                        .tag("name", StringUtil.EMPTY_STRING)
+                        .tag("id", se.threadProperties().name()).register(registry);
+            } catch (Throwable t){
+                logger.error(t.getMessage(), t);
+            }
         }
     }
 
@@ -242,7 +277,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     public void onPartitionInit(TopicPartition topicPartition, int ledger) {
         try {
             partitionCounts.incrementAndGet();
-        }catch (Throwable ignored){}
+        }catch (Throwable t){
+            logger.error(t.getMessage(), t);
+        }
     }
 
     @Override
@@ -251,17 +288,19 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             partitionCounts.decrementAndGet();
             Optional.ofNullable(topicReceiveCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
             Optional.ofNullable(topicPushCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
-        }catch (Throwable ignored){}
+        }catch (Throwable t){
+            logger.error(t.getMessage(), t);
+        }
     }
 
     @Override
     public void onPartitionGetLeader(TopicPartition topicPartition) {
-
+        partitionLeaderCounts.incrementAndGet();
     }
 
     @Override
     public void onPartitionLostLeader(TopicPartition topicPartition) {
-
+        partitionLeaderCounts.decrementAndGet();
     }
 
     @Override

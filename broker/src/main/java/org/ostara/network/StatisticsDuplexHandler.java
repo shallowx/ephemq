@@ -17,19 +17,15 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(StatisticsDuplexHandler.class);
 
-    private MeterRegistry registry = Metrics.globalRegistry;
-
-    private AtomicLong channelCounts = new AtomicLong(0);
+    private final AtomicLong channelCounts = new AtomicLong(0);
 
     public StatisticsDuplexHandler(Config config) {
-        Tags tags = Tags.of(
-                Tag.of(BROKER_TAG, config.getServerId()),
-                Tag.of(CLUSTER_TAG, config.getClusterName())
-        );
-
         Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, AtomicLong::doubleValue)
-                .tags(tags)
-                .register(registry);
+                .tags(
+                    Tags.of(
+                    Tag.of(BROKER_TAG, config.getServerId()),
+                    Tag.of(CLUSTER_TAG, config.getClusterName()))
+                ).register(Metrics.globalRegistry);
     }
 
     @Override

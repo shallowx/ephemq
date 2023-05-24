@@ -109,3 +109,22 @@ message CancelSyncRequest{
   string topic = 2;
 }
 message CancelSyncResponse{}
+
+message CalculatePartitionsRequest{
+}
+
+message CalculatePartitionsResponse{
+  map<string, int32> partitions = 1;
+}
+
+message MigrateLedgerRequest{
+  int32 partition = 1;
+  string topic = 2;
+  string original = 3;
+  string destination = 4;
+}
+
+message MigrateLedgerResponse{
+  bool success = 1;
+  string message = 2;
+}

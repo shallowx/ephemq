@@ -13,12 +13,16 @@ public interface ProcessCommand {
         int DELETE_TOPIC = 8;
         int SYNC_LEDGER = 9;
         int UNSYNC_LEDGER = 10;
+        int CALCULATE_PARTITIONS = 11;
+
+        int MIGRATE_LEDGER = 12;
     }
 
     interface Client {
       int PUSH_MESSAGE = 1;
       int SERVER_OFFLINE = 2;
       int TOPIC_INFO_CHANGED = 3;
+      int SYNC_MESSAGE = 4;
     }
 
     interface Failure {

@@ -24,7 +24,6 @@ reliability, trillion-level capacity and flexible scalability
 - Zookeeper 3.5.x or higher
 - Java 17
 - -Dio.prometheus.client.export-protobuf.use-direct-buffers=true // prometheus directory memory
-
 # Quickstart
 
 ## Create Topic
@@ -126,4 +125,9 @@ reliability, trillion-level capacity and flexible scalability
         }
         countDownLatch.await();
     }
+```
+
+## Metrics 
+```
+0.0.0.0:8889/prometheus
 ```

@@ -119,6 +119,26 @@ public class CommandInvoker {
         }
     }
 
+    public void calculatePartitions(int timeoutMs, Promise<CalculatePartitionsResponse> promise, CalculatePartitionsRequest request) {
+        try {
+            Callback<ByteBuf> callback = assembleInvokeCallback(promise, CalculatePartitionsResponse.parser());
+            ByteBuf buf = assembleInvokeData(channel.allocator(), request);
+            channel.invoke(ProcessCommand.Server.CALCULATE_PARTITIONS, buf, timeoutMs, callback);
+        } catch (Exception e) {
+            tryFailure(promise, e);
+        }
+    }
+
+    public void migrateLedger(int timeoutMs, Promise<MigrateLedgerResponse> promise, MigrateLedgerRequest request) {
+        try {
+            Callback<ByteBuf> callback = assembleInvokeCallback(promise, MigrateLedgerResponse.parser());
+            ByteBuf buf = assembleInvokeData(channel.allocator(), request);
+            channel.invoke(ProcessCommand.Server.MIGRATE_LEDGER, buf, timeoutMs, callback);
+        } catch (Exception e) {
+            tryFailure(promise, e);
+        }
+    }
+
     private ByteBuf assembleSendMessageData(ByteBufAllocator allocator, SendMessageRequest request, MessageMetadata metadata, ByteBuf message) {
         ByteBuf data = null;
         try {

@@ -7,8 +7,7 @@ import org.ostara.remote.handle.ProcessDuplexHandler;
 import org.ostara.remote.processor.ProcessorAware;
 
 public class ServiceDuplexHandler extends ProcessDuplexHandler {
-
-    private Manager manager;
+    private final Manager manager;
 
     @Inject
     public ServiceDuplexHandler(Manager manager, ProcessorAware processor) {

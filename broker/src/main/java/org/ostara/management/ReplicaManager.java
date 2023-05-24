@@ -1,6 +1,5 @@
 package org.ostara.management;
 
-import com.google.inject.Singleton;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
@@ -26,10 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ReplicaManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ReplicaManager.class);
-    private Config config;
+    private final Config config;
     private Manager manager;
     private EventExecutor fetchExecutor;
-    private Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
+    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
 
     public ReplicaManager(Config config, Manager manager) {
         this.config = config;

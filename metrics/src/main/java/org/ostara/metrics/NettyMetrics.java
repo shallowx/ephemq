@@ -7,10 +7,10 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.util.internal.PlatformDependent;
 
-public class NettyMetrics implements MeterBinder {
+import static org.ostara.metrics.MetricsConstants.DIRECT_MEMORY_NAME;
+import static org.ostara.metrics.MetricsConstants.TYPE_TAG;
 
-    private static final String DIRECT_MEMORY_NAME = "direct_memory";
-    private static final String TYPE_TAG = "type";
+public class NettyMetrics implements MeterBinder {
 
     private final Iterable<Tag> tags;
 

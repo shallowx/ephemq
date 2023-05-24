@@ -36,7 +36,7 @@ public class Ostara {
 
     public static DefaultServer createServer(String... args) throws Exception {
         Options options = buildCommandlineOptions();
-        CommandLine commandLine = parseCmdLine(args, options, new PosixParser());
+        CommandLine commandLine = parseCmdLine(args, options, new DefaultParser());
         Properties properties = new Properties();
         String file;
         if (commandLine.hasOption('c')) {
@@ -69,7 +69,7 @@ public class Ostara {
 
     private static Options buildCommandlineOptions() {
         Options options = new Options();
-        Option option = new Option("c", "configFile", true, "server config file");
+        Option option = new Option("c", "configFile", true, "Server config file");
         option.setRequired(true);
         options.addOption(option);
 

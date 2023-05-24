@@ -129,6 +129,31 @@ public final class ServerProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CalculatePartitionsRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CalculatePartitionsResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_MigrateLedgerRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_MigrateLedgerResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -179,9 +204,17 @@ public final class ServerProto {
       "ara.protobuf.MessageOffset\0222\n\ntailOffset" +
       "\030\003 \001(\0132\036.ostara.protobuf.MessageOffset\"2" +
       "\n\021CancelSyncRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005t" +
-      "opic\030\002 \001(\t\"\024\n\022CancelSyncResponseB/\n\036org." +
-      "ostara.remote.proto.serverB\013ServerProtoP" +
-      "\001b\006proto3"
+      "opic\030\002 \001(\t\"\024\n\022CancelSyncResponse\"\034\n\032Calc" +
+      "ulatePartitionsRequest\"\242\001\n\033CalculatePart" +
+      "itionsResponse\022P\n\npartitions\030\001 \003(\0132<.ost" +
+      "ara.protobuf.CalculatePartitionsResponse" +
+      ".PartitionsEntry\0321\n\017PartitionsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\005:\0028\001\"_\n\024MigrateLe" +
+      "dgerRequest\022\021\n\tpartition\030\001 \001(\005\022\r\n\005topic\030" +
+      "\002 \001(\t\022\020\n\010original\030\003 \001(\t\022\023\n\013destination\030\004" +
+      " \001(\t\"9\n\025MigrateLedgerResponse\022\017\n\007success" +
+      "\030\001 \001(\010\022\017\n\007message\030\002 \001(\tB/\n\036org.ostara.re" +
+      "mote.proto.serverB\013ServerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -326,6 +359,36 @@ public final class ServerProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ostara_protobuf_CancelSyncResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor =
+      getDescriptor().getMessageTypes().get(22);
+    internal_static_ostara_protobuf_CalculatePartitionsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor =
+      getDescriptor().getMessageTypes().get(23);
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor,
+        new java.lang.String[] { "Partitions", });
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor =
+      internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor.getNestedTypes().get(0);
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor =
+      getDescriptor().getMessageTypes().get(24);
+    internal_static_ostara_protobuf_MigrateLedgerRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor,
+        new java.lang.String[] { "Partition", "Topic", "Original", "Destination", });
+    internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor =
+      getDescriptor().getMessageTypes().get(25);
+    internal_static_ostara_protobuf_MigrateLedgerResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor,
+        new java.lang.String[] { "Success", "Message", });
     org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
   }
 

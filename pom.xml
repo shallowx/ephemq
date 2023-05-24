@@ -240,7 +240,7 @@
     <module>remote</module>
     <module>common</module>
     <module>metrics</module>
-    <module>cli-tools</module>
+    <module>cli</module>
   </modules>
 
 </project>

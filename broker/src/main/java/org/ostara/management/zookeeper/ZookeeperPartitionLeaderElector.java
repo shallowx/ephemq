@@ -33,12 +33,12 @@ import java.util.stream.Collectors;
 public class ZookeeperPartitionLeaderElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionLeaderElector.class);
 
-    private Config config;
-    private TopicPartition topicPartition;
-    private Manager manager;
-    private ReplicaManager replicaManager;
-    private int ledger;
-    private CuratorFramework client;
+    private final Config config;
+    private final TopicPartition topicPartition;
+    private final Manager manager;
+    private final ReplicaManager replicaManager;
+    private final int ledger;
+    private final CuratorFramework client;
     private LeaderLatch latch;
 
     public ZookeeperPartitionLeaderElector(Config config, TopicPartition topicPartition, Manager manager, ReplicaManager replicaManager, int ledger) {

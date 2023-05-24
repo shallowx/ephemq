@@ -14,16 +14,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LedgerStorage {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorage.class);
-    private int ledger;
-    private String topic;
-    private LedgerConfig config;
-    private EventExecutor executor;
-    private LedgerTrigger trigger;
+    private final int ledger;
+    private final String topic;
+    private final LedgerConfig config;
+    private final EventExecutor executor;
+    private final LedgerTrigger trigger;
     private volatile Offset currentOffset;
     private volatile int segmentCount;
     private volatile LedgerSegment headSegment;
     private volatile LedgerSegment tailSegment;
-    private AtomicBoolean state = new AtomicBoolean(true);
+    private final AtomicBoolean state = new AtomicBoolean(true);
 
     public LedgerStorage(int ledger, String topic, int epoch, LedgerConfig config, EventExecutor executor, LedgerTrigger trigger) {
         this.ledger = ledger;

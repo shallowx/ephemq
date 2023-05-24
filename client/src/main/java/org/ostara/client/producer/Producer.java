@@ -1,7 +1,11 @@
 package org.ostara.client.producer;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
+import org.ostara.client.TopicPatterns;
 import org.ostara.client.internal.*;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;
@@ -21,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class Producer {
+public class Producer implements MeterBinder{
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Producer.class);
     private String name;
     private ProducerConfig config;
@@ -118,6 +122,9 @@ public class Producer {
     }
 
     private void doSend(String topic, String queue, ByteBuf message, Extras extras, int timeoutMs, Promise<SendMessageResponse> promise){
+        TopicPatterns.validateQueue(queue);
+        TopicPatterns.validateTopic(topic);
+
         MessageRouter router = client.fetchMessageRouter(topic);
         if (router == null) {
             throw new IllegalStateException("Message router not found");
@@ -177,6 +184,17 @@ public class Producer {
             }
         }
         return builder.build();
+    }
+
+    private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
+    @Override
+    public void bindTo(MeterRegistry meterRegistry) {
+        SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
+        Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
+                .tag("type", "producer-task")
+                .tag("name", name)
+                .tag("id", singleThreadEventExecutor.threadProperties().name())
+                .register(meterRegistry);
     }
 
     private class ProducerListener implements ClientListener {

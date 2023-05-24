@@ -15,9 +15,9 @@ import org.ostara.remote.handle.ConnectDuplexHandler;
 
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private Config config;
-    private Manager manager;
-    private StatisticsDuplexHandler statisticsDuplexHandler;
+    private final Config config;
+    private final Manager manager;
+    private final StatisticsDuplexHandler statisticsDuplexHandler;
 
     @Inject
     public ServiceChannelInitializer(Config config, Manager manager) {

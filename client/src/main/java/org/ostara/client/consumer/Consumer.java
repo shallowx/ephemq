@@ -3,12 +3,16 @@ package org.ostara.client.consumer;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.UnsafeByteOperations;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import org.ostara.client.TopicPatterns;
 import org.ostara.client.internal.*;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;
@@ -32,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Consumer {
+public class Consumer implements MeterBinder {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Consumer.class);
     private String name;
@@ -72,6 +76,28 @@ public class Consumer {
         executor.scheduleWithFixedDelay(this::touchChangedTask, 30, 30, TimeUnit.SECONDS);
     }
 
+    private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
+    @Override
+    public void bindTo(MeterRegistry meterRegistry) {
+        {
+            SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
+            Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
+                    .tag("type", "consumer-task")
+                    .tag("name", name)
+                    .tag("id", singleThreadEventExecutor.threadProperties().name())
+                    .register(meterRegistry);
+        }
+
+        for (EventExecutor eventExecutor : group) {
+            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
+            Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
+                    .tag("type", "consumer-handler")
+                    .tag("name", name)
+                    .tag("id", executor.threadProperties().name())
+                    .register(meterRegistry);
+        }
+    }
+
     enum Mode {
         REMAIN, APPEND, DELETE
     }
@@ -81,6 +107,9 @@ public class Consumer {
     private final Map<Integer, AtomicReference<MessageId>> ledgerSequences = new ConcurrentHashMap<>();
 
     public boolean attach(String topic, String queue) {
+        TopicPatterns.validateTopic(topic);
+        TopicPatterns.validateQueue(queue);
+
         topic = topic.intern();
         synchronized (wholeQueueTopics) {
             Map<String, Mode> topicModes = wholeQueueTopics.computeIfAbsent(queue, k -> new ConcurrentHashMap<>());
@@ -99,6 +128,9 @@ public class Consumer {
     }
 
     public boolean detach(String topic, String queue) {
+        TopicPatterns.validateTopic(topic);
+        TopicPatterns.validateQueue(queue);
+
         topic = topic.intern();
         synchronized (wholeQueueTopics) {
             Map<String, Mode> topicModes = wholeQueueTopics.get(queue);
@@ -123,6 +155,8 @@ public class Consumer {
     }
 
     public boolean clear(String topic) {
+        TopicPatterns.validateTopic(topic);
+
         topic = topic.intern();
         boolean cleared = false;
         synchronized (wholeQueueTopics) {
@@ -904,7 +938,7 @@ public class Consumer {
         }
 
         private int consistentHash(int input, int buckets) {
-            long state = input & 0xfffffffL;
+            long state = input & 0xffffffffL;
             int candidate = 0;
             int next;
             while (true) {

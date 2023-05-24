@@ -19,6 +19,25 @@ public class ClientConfig {
     private int connectionPoolCapacity = 1;
     private int createTopicTimeoutMs = 2000;
     private int deleteTopicTimeoutMs = 2000;
+    private int calculatePartitionsTimeoutMs = 5000;
+
+    private int migrateLedgerTimeoutMs = 5000;
+
+    public int getMigrateLedgerTimeoutMs() {
+        return migrateLedgerTimeoutMs;
+    }
+
+    public void setMigrateLedgerTimeoutMs(int migrateLedgerTimeoutMs) {
+        this.migrateLedgerTimeoutMs = migrateLedgerTimeoutMs;
+    }
+
+    public int getCalculatePartitionsTimeoutMs() {
+        return calculatePartitionsTimeoutMs;
+    }
+
+    public void setCalculatePartitionsTimeoutMs(int calculatePartitionsTimeoutMs) {
+        this.calculatePartitionsTimeoutMs = calculatePartitionsTimeoutMs;
+    }
 
     public List<String> getBootstrapAddresses() {
         return bootstrapAddresses;
