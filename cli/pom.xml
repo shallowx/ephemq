@@ -13,7 +13,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <picocli.version>4.7.0</picocli.version>
+    <picocli.version>4.7.1</picocli.version>
     <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
     <reflections.version>0.10.2</reflections.version>
     <serialization.version>1.4.1</serialization.version>

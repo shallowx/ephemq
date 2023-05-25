@@ -55,7 +55,7 @@
     <jsr.version>3.0.2</jsr.version>
     <kotlin.version>1.8.10</kotlin.version>
     <spock.core.version>1.3-groovy-2.5</spock.core.version>
-    <groovy.version>3.0.15</groovy.version>
+    <groovy.version>3.0.16</groovy.version>
     <byte.buddy.version>1.14.2</byte.buddy.version>
     <objenesis.version>3.2</objenesis.version>
     <gmavenplus.plugin.version>2.1.0</gmavenplus.plugin.version>
@@ -181,30 +181,6 @@
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <generateReleasePoms>false</generateReleasePoms>
           <arguments>-DskipTests</arguments>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <version>${kotlin.version}</version>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>test-compile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <jvmTarget>17</jvmTarget>
         </configuration>
       </plugin>
       <plugin>

@@ -24,10 +24,12 @@ reliability, trillion-level capacity and flexible scalability
 - Zookeeper 3.5.x or higher
 - Java 17
 - -Dio.prometheus.client.export-protobuf.use-direct-buffers=true // prometheus directory memory
+- 
 # Quickstart
+- start Zookeeper
+- start Broker: -c /path/broker.properties
 
 ## Create Topic
-
 ```
     @Test
     public void testCreateTopic() throws Exception {
@@ -48,7 +50,6 @@ reliability, trillion-level capacity and flexible scalability
 ```
 
 ## Subscribe Message
-
 ```
     @Test
     public void testAttachOfReset() throws Exception {
@@ -83,7 +84,6 @@ reliability, trillion-level capacity and flexible scalability
 ```
 
 ## Send Message
-
 ```
    @Test
     public void testContinueSend() throws Exception {
