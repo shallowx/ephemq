@@ -81,7 +81,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 case MIGRATE_LEDGER -> processMigrateLedger(channel, code, data, answer);
                 default -> {
                     if (answer != null) {
-                        String error = "Command[" + code + "] unsupported";
+                        String error = "Command[" + code + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
                 }
