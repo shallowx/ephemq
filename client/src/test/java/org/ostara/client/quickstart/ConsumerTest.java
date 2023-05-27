@@ -1,14 +1,11 @@
 package org.ostara.client.quickstart;
 
 import io.netty.buffer.ByteBuf;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 import org.ostara.client.ClientConfig;
 import org.ostara.client.consumer.Consumer;
 import org.ostara.client.consumer.ConsumerConfig;
 import org.ostara.client.consumer.MessageListener;
-import org.ostara.client.internal.Client;
-import org.ostara.client.internal.ClientListener;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;
 import org.ostara.remote.util.ByteBufUtils;

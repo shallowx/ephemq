@@ -1,6 +1,7 @@
 package org.ostara;
 
 import org.ostara.common.logging.InternalLogger;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -5,12 +5,13 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import org.ostara.common.logging.InternalLogger;
+import org.ostara.common.logging.InternalLoggerFactory;
+
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-import org.ostara.common.logging.InternalLogger;
-import org.ostara.common.logging.InternalLoggerFactory;
 
 public class PrometheusRegistry implements MetricsRegistrySetUp {
 

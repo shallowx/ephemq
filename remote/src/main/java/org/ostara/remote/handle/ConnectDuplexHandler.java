@@ -4,9 +4,9 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Future;
-import org.ostara.remote.codec.MessagePacket;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
+import org.ostara.remote.codec.MessagePacket;
 
 import java.util.concurrent.TimeUnit;
 

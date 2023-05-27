@@ -1,7 +1,6 @@
 package org.ostara.client.quickstart;
 
 import io.netty.buffer.ByteBuf;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 import org.ostara.client.ClientConfig;
 import org.ostara.client.producer.Producer;

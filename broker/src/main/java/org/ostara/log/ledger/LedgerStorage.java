@@ -10,6 +10,7 @@ import io.netty.util.concurrent.Promise;
 import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LedgerStorage {

@@ -1,6 +1,5 @@
 package org.ostara.remote.util;
 
-import static org.ostara.remote.RemoteException.Failure.UNKNOWN_EXCEPTION;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -13,19 +12,20 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.*;
+import org.ostara.common.thread.FastEventExecutorGroup;
+import org.ostara.common.util.ObjectUtils;
+import org.ostara.remote.RemoteException;
+import org.ostara.remote.codec.MessagePacket;
 
+import javax.naming.OperationNotSupportedException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import javax.naming.OperationNotSupportedException;
 
-import org.ostara.common.thread.FastEventExecutorGroup;
-import org.ostara.common.util.ObjectUtils;
-import org.ostara.remote.RemoteException;
-import org.ostara.remote.codec.MessagePacket;
+import static org.ostara.remote.RemoteException.Failure.UNKNOWN_EXCEPTION;
 
 public final class NetworkUtils {
 

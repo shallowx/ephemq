@@ -8,7 +8,7 @@ import io.netty.util.ReferenceCounted;
 
 import javax.annotation.concurrent.Immutable;
 
-import static org.ostara.remote.util.ByteBufUtils.*;
+import static org.ostara.remote.util.ByteBufUtils.defaultIfNull;
 
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {

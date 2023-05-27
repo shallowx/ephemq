@@ -1,9 +1,8 @@
 package org.ostara.metrics;
 
-import static org.ostara.common.util.TypeTransformUtils.object2Boolean;
-import static org.ostara.common.util.TypeTransformUtils.object2Int;
-import static org.ostara.common.util.TypeTransformUtils.object2String;
 import java.util.Properties;
+
+import static org.ostara.common.util.TypeTransformUtils.*;
 
 public class MetricsConfig {
 

@@ -1,8 +1,8 @@
 package org.ostara.common.util;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.Collection;
 import java.util.Map;
-import javax.naming.OperationNotSupportedException;
 
 @SuppressWarnings("unused")
 public final class ObjectUtils {

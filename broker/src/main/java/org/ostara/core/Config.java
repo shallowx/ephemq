@@ -1,6 +1,5 @@
 package org.ostara.core;
 
-import org.checkerframework.checker.units.qual.C;
 import org.ostara.common.util.TypeTransformUtils;
 
 import java.util.Properties;

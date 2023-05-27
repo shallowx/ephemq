@@ -1,24 +1,11 @@
 package org.ostara.remote.handle;
 
-import static org.ostara.common.util.ObjectUtils.checkNotNull;
-import static org.ostara.remote.RemoteException.of;
-import static org.ostara.remote.util.ByteBufUtils.buf2String;
-import static org.ostara.remote.util.ByteBufUtils.release;
-import static org.ostara.remote.util.NetworkUtils.newFailurePacket;
-import static org.ostara.remote.util.NetworkUtils.newSuccessPacket;
-import static org.ostara.remote.util.NetworkUtils.switchAddress;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.concurrent.Immutable;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.remote.RemoteException;
@@ -29,6 +16,18 @@ import org.ostara.remote.invoke.InvokeAnswer;
 import org.ostara.remote.invoke.InvokeHolder;
 import org.ostara.remote.processor.AwareInvocation;
 import org.ostara.remote.processor.ProcessorAware;
+
+import javax.annotation.concurrent.Immutable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.ostara.common.util.ObjectUtils.checkNotNull;
+import static org.ostara.remote.RemoteException.of;
+import static org.ostara.remote.util.ByteBufUtils.buf2String;
+import static org.ostara.remote.util.ByteBufUtils.release;
+import static org.ostara.remote.util.NetworkUtils.*;
 
 @Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {

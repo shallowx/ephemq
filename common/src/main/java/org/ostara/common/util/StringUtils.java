@@ -1,7 +1,7 @@
 package org.ostara.common.util;
 
-import java.util.Arrays;
 import javax.naming.OperationNotSupportedException;
+import java.util.Arrays;
 
 @SuppressWarnings("all")
 public final class StringUtils {

@@ -1,16 +1,14 @@
 package org.ostara.listener;
 
 import io.micrometer.core.instrument.*;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
-import io.netty.util.internal.StringUtil;
-import org.ostara.management.Manager;
-import org.ostara.metrics.*;
 import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
+import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
+import io.netty.util.internal.StringUtil;
 import org.ostara.common.Node;
 import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
@@ -18,6 +16,8 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.Config;
 import org.ostara.log.Log;
+import org.ostara.management.Manager;
+import org.ostara.metrics.*;
 
 import java.time.Duration;
 import java.util.Map;
@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.ostara.metrics.MetricsConstants.*;
 
 public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable{
