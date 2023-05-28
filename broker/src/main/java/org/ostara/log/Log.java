@@ -124,6 +124,7 @@ public class Log {
                 storageExecutor.submit(() -> doMigrate(dest, destChannel, promise));
             } catch (Exception e){
                 promise.tryFailure(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -141,6 +142,7 @@ public class Log {
                 storageExecutor.submit(() -> doSyncFromTarget(clientChannel, offset, timeoutMs, result));
             } catch (Throwable t){
                 result.tryFailure(t);
+                logger.error(t.getMessage(), t);
             }
         }
         return result;
@@ -199,6 +201,7 @@ public class Log {
             topicManager.getReplicaManager().syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(), timeoutMs, syncPromise);
         } catch (Exception e) {
             syncPromise.tryFailure(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -211,6 +214,7 @@ public class Log {
                 storageExecutor.submit(() ->  doUnSync(timeoutMs, promise));
             } catch (Exception e) {
                 promise.tryFailure(e);
+                logger.error(e.getMessage(), e);
             }
         }
         return promise;
@@ -259,6 +263,7 @@ public class Log {
             topicManager.getReplicaManager().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
         } catch (Exception e){
             unSyncPromise.tryFailure(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -296,6 +301,7 @@ public class Log {
             });
         } catch (Throwable t) {
             promise.tryFailure(t);
+            logger.error(t.getMessage(), t);
         }
     }
 
@@ -311,6 +317,7 @@ public class Log {
                 storageExecutor.execute(() -> doResetSubscribe(channel, resetOffset, wholeMarkers, promise));
             } catch (Throwable t) {
                 promise.tryFailure(t);
+                logger.error(t.getMessage(), t);
             }
         }
     }
@@ -332,6 +339,7 @@ public class Log {
                 storageExecutor.execute(() -> doAlterSubscribe(channel, appendMarkers, deleteMarkers, promise));
             } catch (Throwable t) {
                 promise.tryFailure(t);
+                logger.error(t.getMessage(), t);
             }
         }
     }
@@ -351,6 +359,7 @@ public class Log {
                 storageExecutor.execute(() -> doCleanSubscribe(channel, promise));
             } catch (Throwable t) {
                 promise.tryFailure(t);
+                logger.error(t.getMessage(), t);
             }
         }
     }
@@ -417,6 +426,7 @@ public class Log {
             } catch (Throwable t) {
                 payload.release();
                 promise.tryFailure(t);
+                logger.error(t.getMessage(), t);
             }
         }
     }
@@ -434,6 +444,7 @@ public class Log {
             }
         } catch (Exception e) {
             promise.tryFailure(e);
+            logger.error(e.getMessage(), e);
         } finally {
             payload.release();
         }
@@ -467,6 +478,7 @@ public class Log {
             channel.invoke(ProcessCommand.Server.SEND_MESSAGE, data, forwardTimeout, callback);
         } catch (Exception e) {
             promise.tryFailure(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -509,6 +521,7 @@ public class Log {
                 storageExecutor.execute(() -> doStart(result));
             } catch (Exception e){
                 result.tryFailure(e);
+                logger.error(e.getMessage(), e);
             }
         }
         return result;
@@ -531,6 +544,7 @@ public class Log {
                 storageExecutor.execute(() -> doClose(result));
             } catch (Exception e) {
                 result.tryFailure(e);
+                logger.error(e.getMessage(), e);
             }
         }
         return result;
