@@ -111,23 +111,33 @@ public class DefaultSocketServer {
         try {
             closedFuture.sync();
         } catch (InterruptedException e) {
-            if (logger.isErrorEnabled()) {
-                logger.error(e.getMessage(), e);
-            }
+            logger.error(e.getMessage(), e);
         }
     }
 
     public void shutdown() throws Exception {
         if (closedFuture != null) {
-            closedFuture.channel().close().sync();
+            try {
+                closedFuture.channel().close().sync();
+            } catch (Exception e){
+                logger.error(e.getMessage(), e);
+            }
         }
 
         if (bossGroup != null) {
-            bossGroup.shutdownGracefully().sync();
+            try {
+                bossGroup.shutdownGracefully().sync();
+            } catch (Exception e){
+                logger.error(e.getMessage(), e);
+            }
         }
 
         if (workGroup != null) {
-            workGroup.shutdownGracefully().sync();
+            try {
+                workGroup.shutdownGracefully().sync();
+            } catch (Exception e){
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 }
