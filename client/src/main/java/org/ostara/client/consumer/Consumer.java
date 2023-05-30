@@ -27,6 +27,7 @@ import org.ostara.remote.proto.server.*;
 import org.ostara.remote.util.NetworkUtils;
 import org.ostara.remote.util.ProtoBufUtils;
 
+import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,7 +79,7 @@ public class Consumer implements MeterBinder {
 
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
     @Override
-    public void bindTo(MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         {
             SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
             Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
@@ -89,12 +90,14 @@ public class Consumer implements MeterBinder {
         }
 
         for (EventExecutor eventExecutor : group) {
-            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
-            Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                    .tag("type", "consumer-handler")
-                    .tag("name", name)
-                    .tag("id", executor.threadProperties().name())
-                    .register(meterRegistry);
+            try {
+                SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
+                Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
+                        .tag("type", "consumer-handler")
+                        .tag("name", name)
+                        .tag("id", executor.threadProperties().name())
+                        .register(meterRegistry);
+            } catch (Throwable ignored){}
         }
     }
 
@@ -195,6 +198,7 @@ public class Consumer implements MeterBinder {
             executor.execute(this::doChangeTask);
         } catch (Throwable t) {
             changeTaskTouched.set(false);
+            logger.error("Consumer<{}> touch changed task execute failed, and trg again later", name);
         }
     }
 
@@ -806,8 +810,8 @@ public class Consumer implements MeterBinder {
 
     private class MessageHandler {
         private String id;
-        private Semaphore semaphore;
-        private EventExecutor executor;
+        private final Semaphore semaphore;
+        private final EventExecutor executor;
 
         public MessageHandler(String id, Semaphore semaphore, EventExecutor executor) {
             this.id = id;
@@ -828,6 +832,7 @@ public class Consumer implements MeterBinder {
             } catch (Throwable t){
                 data.release();
                 semaphore.release();
+                logger.error("Consumer<{}> handle message failed", id, t);
             }
         }
 

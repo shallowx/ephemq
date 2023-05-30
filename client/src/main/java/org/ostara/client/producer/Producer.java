@@ -18,6 +18,7 @@ import org.ostara.remote.proto.server.SendMessageRequest;
 import org.ostara.remote.proto.server.SendMessageResponse;
 import org.ostara.remote.util.ByteBufUtils;
 
+import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Objects;
@@ -188,7 +189,7 @@ public class Producer implements MeterBinder{
 
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
     @Override
-    public void bindTo(MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
         Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
                 .tag("type", "producer-task")
