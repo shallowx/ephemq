@@ -1,11 +1,12 @@
 package org.ostara.metrics;
 
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.util.internal.PlatformDependent;
+
+import javax.annotation.Nonnull;
 
 import static org.ostara.metrics.MetricsConstants.DIRECT_MEMORY_NAME;
 import static org.ostara.metrics.MetricsConstants.TYPE_TAG;
@@ -19,7 +20,7 @@ public class NettyMetrics implements MeterBinder {
     }
 
     @Override
-    public void bindTo(@NotNull MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         Gauge.builder(DIRECT_MEMORY_NAME, PlatformDependent::usedDirectMemory)
                 .baseUnit("bytes")
                 .tags(tags)

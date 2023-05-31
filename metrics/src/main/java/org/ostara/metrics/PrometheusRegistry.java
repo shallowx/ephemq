@@ -52,7 +52,7 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
 
             logger.info("Metrics http server is listening at {}, and scrape url={}", socketAddress, url);
         } catch (Throwable t) {
-            logger.error("Start metrics http server failed");
+            logger.error("Start metrics http server failed", t);
             throw new RuntimeException(t);
         }
     }
