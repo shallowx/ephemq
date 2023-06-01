@@ -15,7 +15,7 @@
     <connection>scm:git@github.com:shallow-rs/Ostara.git</connection>
     <developerConnection>scm:git@github.com:shallow-rs/Ostara.git</developerConnection>
     <url>git@github.com:shallow-rs/ostaraMQ.git</url>
-    <tag>ostara-all-${version}</tag>
+    <tag>ostara-all-${project.version}</tag>
   </scm>
 
   <licenses>
@@ -46,8 +46,8 @@
     <java.version>17</java.version>
     <junit.version>4.13.2</junit.version>
     <protobuf.version>3.21.8</protobuf.version>
-    <shallow.version>1.0.0-SNAPSHOT</shallow.version>
-    <netty.version>4.1.77.Final</netty.version>
+    <ostara.version>1.0.0-SNAPSHOT</ostara.version>
+    <netty.version>4.1.86.Final</netty.version>
     <fastuyil.core.version>8.5.8</fastuyil.core.version>
     <caffine.version>3.1.1</caffine.version>
     <gson.version>2.9.0</gson.version>
@@ -73,27 +73,27 @@
       <dependency>
         <groupId>org.ostara</groupId>
         <artifactId>client</artifactId>
-        <version>${shallow.version}</version>
+        <version>${ostara.version}</version>
       </dependency>
       <dependency>
         <groupId>org.ostara</groupId>
         <artifactId>broker</artifactId>
-        <version>${shallow.version}</version>
+        <version>${ostara.version}</version>
       </dependency>
       <dependency>
         <groupId>org.ostara</groupId>
         <artifactId>common</artifactId>
-        <version>${shallow.version}</version>
+        <version>${ostara.version}</version>
       </dependency>
       <dependency>
         <groupId>org.ostara</groupId>
         <artifactId>remote</artifactId>
-        <version>${shallow.version}</version>
+        <version>${ostara.version}</version>
       </dependency>
       <dependency>
         <groupId>org.ostara</groupId>
         <artifactId>mertics</artifactId>
-        <version>${shallow.version}</version>
+        <version>${ostara.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.protobuf</groupId>
