@@ -48,6 +48,7 @@ public class DefaultServer {
                 startFuture.completeExceptionally(e);
             } catch (Exception e) {
                 startFuture.completeExceptionally(e);
+                logger.error(e.getMessage(), e);
             }
             countDownLatch.countDown();
         }, "socket-server").start();

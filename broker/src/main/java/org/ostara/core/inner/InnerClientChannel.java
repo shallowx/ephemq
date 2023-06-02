@@ -13,6 +13,8 @@ import org.ostara.metrics.MetricsConstants;
 import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
 
+import static org.ostara.metrics.MetricsConstants.*;
+
 public class InnerClientChannel extends ClientChannel {
     private final Config config;
 
@@ -26,9 +28,9 @@ public class InnerClientChannel extends ClientChannel {
         Gauge.builder(CHANNEL_SEMAPHORE, semaphore, Semaphore::availablePermits)
                 .tag("local", channel.localAddress() == null ? StringUtil.EMPTY_STRING : channel.localAddress().toString())
                 .tag("remote", channel.remoteAddress() == null ? StringUtil.EMPTY_STRING : channel.remoteAddress().toString())
-                .tag(MetricsConstants.CLUSTER_TAG, config.getClusterName())
-                .tag(MetricsConstants.BROKER_TAG, config.getServerId())
-                .tag("id", id)
+                .tag(CLUSTER_TAG, config.getClusterName())
+                .tag(BROKER_TAG, config.getServerId())
+                .tag(ID, id)
                 .register(meterRegistry);
     }
 }

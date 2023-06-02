@@ -144,7 +144,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                 drt.record(bytes);
             }
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            logger.error("Metrics on command listener failed, code={}", code, t);
         }
     }
 
@@ -170,7 +170,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
             counter.increment(count);
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
+            logger.error("Metrics on receive message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
         }
     }
 
@@ -191,7 +191,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
             counter.increment(count);
         } catch (Throwable t){
-            logger.error(t.getMessage(), t);
+            logger.error("Metrics on sync message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
         }
     }
 
@@ -211,7 +211,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
             counter.increment(count);
         } catch (Throwable t){
-            logger.error(t.getMessage(), t);
+            logger.error("Metrics on push message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
         }
     }
 
@@ -222,18 +222,21 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     @Override
     public void onStartup(Node node) {
+        String clusterName = config.getClusterName();
+        String serverId = config.getServerId();
+
         // storage metrics
         for (EventExecutor executor : manager.getMessageStorageEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
-                        .tag(CLUSTER_TAG, config.getClusterName())
-                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(CLUSTER_TAG, clusterName)
+                        .tag(BROKER_TAG, serverId)
                         .tag(TYPE_TAG, "storage")
-                        .tag("name", StringUtil.EMPTY_STRING)
-                        .tag("id", se.threadProperties().name()).register(registry);
+                        .tag(NAME, StringUtil.EMPTY_STRING)
+                        .tag(ID, se.threadProperties().name()).register(registry);
             } catch (Throwable t){
-                logger.error(t.getMessage(), t);
+                logger.error("Storage metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
             }
         }
 
@@ -242,13 +245,13 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
-                        .tag(CLUSTER_TAG, config.getClusterName())
-                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(CLUSTER_TAG, clusterName)
+                        .tag(BROKER_TAG, serverId)
                         .tag(TYPE_TAG, "dispatch")
-                        .tag("name", StringUtil.EMPTY_STRING)
-                        .tag("id", se.threadProperties().name()).register(registry);
+                        .tag(NAME, StringUtil.EMPTY_STRING)
+                        .tag(ID, se.threadProperties().name()).register(registry);
             } catch (Throwable t){
-                logger.error(t.getMessage(), t);
+                logger.error("Dispatch metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
             }
         }
 
@@ -257,13 +260,13 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
-                        .tag(CLUSTER_TAG, config.getClusterName())
-                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(CLUSTER_TAG, clusterName)
+                        .tag(BROKER_TAG, serverId)
                         .tag(TYPE_TAG, "command")
-                        .tag("name", StringUtil.EMPTY_STRING)
-                        .tag("id", se.threadProperties().name()).register(registry);
+                        .tag(NAME, StringUtil.EMPTY_STRING)
+                        .tag(ID, se.threadProperties().name()).register(registry);
             } catch (Throwable t){
-                logger.error(t.getMessage(), t);
+                logger.error("Command metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
             }
         }
     }
@@ -278,7 +281,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         try {
             partitionCounts.incrementAndGet();
         }catch (Throwable t){
-            logger.error(t.getMessage(), t);
+            logger.error("Metrics on partition init listener failed, topicPartition={} ledger={}", topicPartition, ledger, t);
         }
     }
 
@@ -289,7 +292,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             Optional.ofNullable(topicReceiveCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
             Optional.ofNullable(topicPushCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
         }catch (Throwable t){
-            logger.error(t.getMessage(), t);
+            logger.error("Metrics on partition destroy listener failed, topicPartition={} ledger={}", topicPartition, ledger, t);
         }
     }
 

@@ -90,6 +90,7 @@ public class DefaultTopicListener implements TopicListener{
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtils.release(buf);
+                logger.error("Send topic change failed, channel={}", channel, e);
             }
         }
     }
@@ -107,6 +108,7 @@ public class DefaultTopicListener implements TopicListener{
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtils.release(buf);
+                logger.error("Send partition change failed, channel={}", channel, e);
             }
         }
     }

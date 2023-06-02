@@ -72,7 +72,7 @@ public class DefaultClusterListener implements ClusterListener {
             channel.writeAndFlush(awareInvocation);
         } catch (Exception e) {
             ByteBufUtils.release(buf);
-            throw new RuntimeException(e);
+            logger.error("Send server offline failed, channel={}", channel, e);
         }
     }
 

@@ -13,7 +13,6 @@ public class MetricsConstants {
     public static final String TOPIC_MSG_PUSH_COUNTER_NAME = "topic_msg_push_count";
     public static final String TOPIC_PARTITION_COUNT_GAUGE_NAME = "topic_partition_count";
     public static final String TOPIC_PARTITION_LEADER_COUNT_GAUGE_NAME = "topic+partition_leader_count";
-
     public static final String RESULT_TAG = "result";
     public static final String TOPIC_TAG = "topic";
     public static final String PARTITION_TAG = "partition";
@@ -21,4 +20,7 @@ public class MetricsConstants {
     public static final String BROKER_TAG = "broker";
     public static final String TYPE_TAG = "type";
     public static final String LEDGER_TAG = "ledger";
+    public static final String NAME = "name";
+    public static final String ID = "id";
+
 }

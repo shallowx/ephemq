@@ -9,15 +9,18 @@ import org.ostara.client.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
+import org.ostara.common.logging.InternalLogger;
+import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.Config;
 import org.ostara.management.Manager;
 import org.ostara.metrics.MetricsConstants;
 
 import java.net.SocketAddress;
 
-import static org.ostara.metrics.MetricsConstants.TYPE_TAG;
+import static org.ostara.metrics.MetricsConstants.*;
 
 public class InnerClient extends Client {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClient.class);
     private final Config config;
     private final Manager manager;
 
@@ -36,23 +39,27 @@ public class InnerClient extends Client {
         {
             SingleThreadEventExecutor executor = (SingleThreadEventExecutor) taskExecutor;
             Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                    .tag(MetricsConstants.CLUSTER_TAG, config.getClusterName())
-                    .tag(MetricsConstants.BROKER_TAG, config.getServerId())
+                    .tag(CLUSTER_TAG, config.getClusterName())
+                    .tag(BROKER_TAG, config.getServerId())
                     .tag(TYPE_TAG, "client-task")
-                    .tag("name", name)
-                    .tag("id", executor.threadProperties().name())
+                    .tag(NAME, name)
+                    .tag(ID, executor.threadProperties().name())
                     .register(meterRegistry);
         }
 
         for (EventExecutor eventExecutor : workerGroup) {
-            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
-            Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                    .tag(MetricsConstants.CLUSTER_TAG, config.getClusterName())
-                    .tag(MetricsConstants.BROKER_TAG, config.getServerId())
-                    .tag(TYPE_TAG, "client-task")
-                    .tag("name", name)
-                    .tag("id", executor.threadProperties().name())
-                    .register(meterRegistry);
+            try {
+                SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
+                Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
+                        .tag(CLUSTER_TAG, config.getClusterName())
+                        .tag(BROKER_TAG, config.getServerId())
+                        .tag(TYPE_TAG, "client-task")
+                        .tag(NAME, name)
+                        .tag(ID, executor.threadProperties().name())
+                        .register(meterRegistry);
+            } catch (Throwable t){
+                logger.error("Inner client bind failed, executor={}", eventExecutor.toString(), t);
+            }
         }
 
     }
