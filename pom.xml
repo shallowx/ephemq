@@ -60,7 +60,7 @@
     <objenesis.version>3.2</objenesis.version>
     <gmavenplus.plugin.version>2.1.0</gmavenplus.plugin.version>
     <maven.surefire-plugin.version>3.0.0-M5</maven.surefire-plugin.version>
-    <jctools.core.version>3.3.0</jctools.core.version>
+    <jctools.core.version>4.0.1</jctools.core.version>
   </properties>
 
   <dependencyManagement>
