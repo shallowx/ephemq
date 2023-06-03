@@ -5,9 +5,9 @@ import org.apache.commons.cli.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.TypeTransformUtils;
-import org.ostara.core.Beans;
-import org.ostara.core.Config;
-import org.ostara.core.DefaultServer;
+import org.ostara.core.InjectBeans;
+import org.ostara.core.CoreConfig;
+import org.ostara.core.OstaraServer;
 import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
 
@@ -29,12 +29,12 @@ public class Ostara {
         }
     }
 
-    public static DefaultServer start(DefaultServer server) throws Exception {
+    public static OstaraServer start(OstaraServer server) throws Exception {
         server.start();
         return server;
     }
 
-    public static DefaultServer createServer(String... args) throws Exception {
+    public static OstaraServer createServer(String... args) throws Exception {
         Options options = buildCommandlineOptions();
         CommandLine commandLine = parseCmdLine(args, options, new DefaultParser());
         Properties properties = new Properties();
@@ -48,15 +48,15 @@ public class Ostara {
             }
         }
 
-        Beans.init(properties);
-        Config config = Beans.getBean(Config.class);
+        InjectBeans.init(properties);
+        CoreConfig config = InjectBeans.getBean(CoreConfig.class);
         printConfig(config);
 
-        Manager manager = Beans.getBean(Manager.class);
-        MetricsListener metricsListener = Beans.getBean(MetricsListener.class);
+        Manager manager = InjectBeans.getBean(Manager.class);
+        MetricsListener metricsListener = InjectBeans.getBean(MetricsListener.class);
         manager.addMetricsListener(metricsListener);
 
-        DefaultServer server = Beans.getBean(DefaultServer.class);
+        OstaraServer server = InjectBeans.getBean(OstaraServer.class);
         server.addListener(metricsListener);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {
@@ -80,8 +80,8 @@ public class Ostara {
         return parser.parse(options, args);
     }
 
-    private static void printConfig(Config config) {
-        Method[] declaredMethods = Config.class.getDeclaredMethods();
+    private static void printConfig(CoreConfig config) {
+        Method[] declaredMethods = CoreConfig.class.getDeclaredMethods();
         StringBuilder sb = new StringBuilder("Print the config options: \n");
         String configName = null;
         for (Method method : declaredMethods) {
@@ -98,7 +98,7 @@ public class Ostara {
         logger.info(sb.toString());
     }
 
-    private static void checkReturnType(Method method, Config config, StringBuilder sb, String name) {
+    private static void checkReturnType(Method method, CoreConfig config, StringBuilder sb, String name) {
         String type = method.getReturnType().getSimpleName();
         Object invoke = null;
         try {

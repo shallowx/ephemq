@@ -14,7 +14,7 @@ import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.log.Log;
 import org.ostara.management.Manager;
 import org.ostara.metrics.*;
@@ -32,7 +32,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final io.micrometer.core.instrument.MeterRegistry registry = Metrics.globalRegistry;
-    private final Config config;
+    private final CoreConfig config;
     private final Manager manager;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
@@ -53,7 +53,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
     };
 
-    public MetricsListener(Properties properties, Config config, Manager manager) {
+    public MetricsListener(Properties properties, CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
         this.metricsSample = config.getMetricsSampleCounts();

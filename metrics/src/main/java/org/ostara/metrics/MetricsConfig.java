@@ -17,7 +17,7 @@ public class MetricsConfig {
         this.props = props;
     }
 
-    public static MetricsConfig exchange(Properties props) {
+    public static MetricsConfig fromProps(Properties props) {
         return new MetricsConfig(props);
     }
 
@@ -29,7 +29,7 @@ public class MetricsConfig {
         return object2String(props.getOrDefault(METRICS_ADDRESS, "0.0.0.0"));
     }
 
-    public boolean getMetricsEnabled() {
+    public boolean isMetricsEnabled() {
         return object2Boolean(props.getOrDefault(METRICS_ENABLED, true));
     }
 

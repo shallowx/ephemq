@@ -15,7 +15,7 @@ import org.ostara.common.TopicConfig;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.LogListener;
 import org.ostara.log.ledger.LedgerConfig;
 import org.ostara.log.ledger.LedgerCursor;
@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Log {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Log.class);
-    private final Config config;
+    private final CoreConfig config;
     private final TopicPartition topicPartition;
     private final int ledger;
     private final String topic;
@@ -60,7 +60,7 @@ public class Log {
     private Promise<SyncResponse> syncFuture;
     private Promise<CancelSyncResponse> unSyncFuture;
 
-    public Log(Config config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
+    public Log(CoreConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
         this.config = config;
         this.topicPartition = topicPartition;
         this.ledger = ledger;

@@ -5,7 +5,6 @@ import javax.naming.OperationNotSupportedException;
 public class TypeTransformUtils {
 
     private TypeTransformUtils() throws OperationNotSupportedException {
-        //unused
         throw new OperationNotSupportedException();
     }
 

@@ -6,9 +6,8 @@ import io.netty.channel.Channel;
 import io.netty.util.internal.StringUtil;
 import org.ostara.client.ClientConfig;
 import org.ostara.client.internal.ClientChannel;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
-import org.ostara.metrics.MetricsConstants;
 
 import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
@@ -16,9 +15,9 @@ import java.util.concurrent.Semaphore;
 import static org.ostara.metrics.MetricsConstants.*;
 
 public class InnerClientChannel extends ClientChannel {
-    private final Config config;
+    private final CoreConfig config;
 
-    public InnerClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, Config config, Manager manager) {
+    public InnerClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, CoreConfig config, Manager manager) {
         super(clientConfig, channel, address);
         this.config = config;
     }

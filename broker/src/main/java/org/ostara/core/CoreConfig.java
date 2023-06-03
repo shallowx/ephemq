@@ -4,7 +4,7 @@ import org.ostara.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class Config {
+public class CoreConfig {
     private static final String SERVER_ID = "server.id";
     private static final String CLUSTER_NAME = "server.cluster.name";
     private static final String ADVERTISED_ADDRESS = "server.advertised.address";
@@ -43,12 +43,12 @@ public class Config {
 
     private Properties prop;
 
-    private Config(Properties prop) {
+    private CoreConfig(Properties prop) {
         this.prop = prop;
     }
 
-    public static Config fromProps(Properties properties) {
-        return new Config(properties);
+    public static CoreConfig fromProps(Properties properties) {
+        return new CoreConfig(properties);
     }
 
     public int getMetricsSampleCounts(){

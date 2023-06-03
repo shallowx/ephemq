@@ -10,7 +10,7 @@ import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.thread.FastEventExecutor;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.log.Log;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.proto.MessageOffset;
@@ -25,12 +25,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ReplicaManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ReplicaManager.class);
-    private final Config config;
+    private final CoreConfig config;
     private Manager manager;
     private EventExecutor fetchExecutor;
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
 
-    public ReplicaManager(Config config, Manager manager) {
+    public ReplicaManager(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
     }

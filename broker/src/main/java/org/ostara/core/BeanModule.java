@@ -8,7 +8,7 @@ import com.google.inject.name.Names;
 import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
 import org.ostara.management.zookeeper.ZookeeperManager;
-import org.ostara.network.DefaultSocketServer;
+import org.ostara.network.OstaraSocketServer;
 import org.ostara.network.ServiceChannelInitializer;
 import org.ostara.network.ServiceDuplexHandler;
 import org.ostara.network.ServiceProcessorAware;
@@ -27,21 +27,21 @@ public class BeanModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Manager.class).to(ZookeeperManager.class).in(Singleton.class);
-        bind(DefaultServer.class).in(Singleton.class);
+        bind(OstaraServer.class).in(Singleton.class);
         bind(ServiceChannelInitializer.class).in(Singleton.class);
-        bind(DefaultSocketServer.class).in(Singleton.class);
+        bind(OstaraSocketServer.class).in(Singleton.class);
         bind(ProcessorAware.class).annotatedWith(Names.named("ServiceProcessorAware")).to(ServiceProcessorAware.class);
     }
 
     @Singleton
     @Provides
-    Config config() {
-        return Config.fromProps(properties);
+    CoreConfig config() {
+        return CoreConfig.fromProps(properties);
     }
 
     @Singleton
     @Provides
-    MetricsListener metricsListener(Config config, Manager manager) {
+    MetricsListener metricsListener(CoreConfig config, Manager manager) {
         return new MetricsListener(properties, config, manager);
     }
 

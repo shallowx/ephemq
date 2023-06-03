@@ -15,7 +15,7 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.APIListener;
 import org.ostara.log.Log;
 import org.ostara.management.Manager;
@@ -42,13 +42,13 @@ import static org.ostara.remote.util.ProtoBufUtils.readProto;
 public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Server {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessorAware.class);
-    private final Config config;
+    private final CoreConfig config;
     private final Manager manager;
     private final EventExecutor commandExecutor;
     private EventExecutor serviceExecutor;
 
     @Inject
-    public ServiceProcessorAware(Config config, Manager manager) {
+    public ServiceProcessorAware(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
         this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();

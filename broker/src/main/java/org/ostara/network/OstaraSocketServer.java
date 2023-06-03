@@ -12,7 +12,7 @@ import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
 
 import java.net.SocketAddress;
@@ -20,17 +20,17 @@ import java.net.SocketAddress;
 import static org.ostara.metrics.MetricsConstants.*;
 import static org.ostara.remote.util.NetworkUtils.newEventLoopGroup;
 import static org.ostara.remote.util.NetworkUtils.preferServerChannelClass;
-public class DefaultSocketServer {
+public class OstaraSocketServer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultSocketServer.class);
-    private final Config config;
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(OstaraSocketServer.class);
+    private final CoreConfig config;
     private ServiceChannelInitializer serviceChannelInitializer;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
 
     @Inject
-    public DefaultSocketServer(Config config, Manager manager) {
+    public OstaraSocketServer(CoreConfig config, Manager manager) {
         this.config = config;
     }
 

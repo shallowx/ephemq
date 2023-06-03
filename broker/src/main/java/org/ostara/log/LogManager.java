@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntCollection;
 import org.ostara.common.Offset;
 import org.ostara.common.TopicConfig;
 import org.ostara.common.TopicPartition;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.LogListener;
 import org.ostara.management.Manager;
 import org.ostara.remote.RemoteException;
@@ -23,13 +23,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LogManager {
-    private final Config config;
+    private final CoreConfig config;
     private final Manager manager;
 
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
     private final List<LogListener> listeners = new LinkedList<>();
     private final ScheduledExecutorService scheduledExecutorService;
-    public LogManager(Config config, Manager manager) {
+    public LogManager(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));

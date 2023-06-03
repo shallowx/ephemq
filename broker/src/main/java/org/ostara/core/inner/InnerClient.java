@@ -11,9 +11,8 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
-import org.ostara.metrics.MetricsConstants;
 
 import java.net.SocketAddress;
 
@@ -21,10 +20,10 @@ import static org.ostara.metrics.MetricsConstants.*;
 
 public class InnerClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClient.class);
-    private final Config config;
+    private final CoreConfig config;
     private final Manager manager;
 
-    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, Config config, Manager manager) {
+    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, CoreConfig config, Manager manager) {
         super(name, clientConfig, listener);
         this.config = config;
         this.manager = manager;

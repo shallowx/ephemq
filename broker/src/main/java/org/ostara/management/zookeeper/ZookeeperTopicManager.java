@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ostara.common.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
 import org.ostara.log.Log;
 import org.ostara.log.LogManager;
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class ZookeeperTopicManager implements TopicManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
 
-    private Config config;
+    private CoreConfig config;
     private CuratorFramework client;
     private CuratorCache cache;
     private ReplicaManager replicaManager;
@@ -54,7 +54,7 @@ public class ZookeeperTopicManager implements TopicManager {
     public ZookeeperTopicManager() {
     }
 
-    public ZookeeperTopicManager(Config config, Manager manager) {
+    public ZookeeperTopicManager(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
         this.replicaManager = new ReplicaManager(config, manager);

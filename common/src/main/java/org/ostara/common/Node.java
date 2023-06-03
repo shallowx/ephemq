@@ -5,9 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Node {
-
-    public static final String UP = "up";
-    public static final String DOWN = "down";
     private String id;
     private String host;
     private int port;

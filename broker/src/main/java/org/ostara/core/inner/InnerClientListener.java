@@ -8,7 +8,7 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
 import org.ostara.remote.proto.client.SyncMessageSignal;
 
@@ -17,7 +17,7 @@ import java.util.concurrent.Semaphore;
 public class InnerClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClientListener.class);
 
-    private Config config;
+    private CoreConfig config;
     private Manager manager;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>(){
         @Override
@@ -26,7 +26,7 @@ public class InnerClientListener implements ClientListener {
         }
     };
 
-    public InnerClientListener(Config config, Manager manager) {
+    public InnerClientListener(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
     }

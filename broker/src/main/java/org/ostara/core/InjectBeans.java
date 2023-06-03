@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 
 import java.util.Properties;
 
-public class Beans {
+public class InjectBeans {
     private static Injector injector;
 
     public static void init(Properties properties) {

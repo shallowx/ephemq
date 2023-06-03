@@ -13,7 +13,7 @@ import org.apache.zookeeper.data.Stat;
 import org.ostara.common.Node;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.ClusterListener;
 import org.ostara.management.ClusterManager;
 import org.ostara.management.JsonMapper;
@@ -29,15 +29,17 @@ import java.util.stream.Collectors;
 public class ZookeeperClusterManager implements ClusterManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     private volatile boolean registered = false;
-    private final Config config;
+    private final CoreConfig config;
     private final List<ClusterListener> listeners = new LinkedList<>();
-    private final Map<String ,Node> allNodes = new ConcurrentHashMap<>();
+    private final Map<String ,Node> activeNodes = new ConcurrentHashMap<>();
     private final CuratorFramework client;
     private CuratorCache cache;
     private LeaderLatch latch;
     private Node thisNode;
+    private static final String UP = "up";
+    private static final String DOWN = "down";
 
-    public ZookeeperClusterManager(Config config) {
+    public ZookeeperClusterManager(CoreConfig config) {
         this.config = config;
         this.client = ZookeeperClient.getClient(config, config.getClusterName());
     }
@@ -107,7 +109,7 @@ public class ZookeeperClusterManager implements ClusterManager {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 
-                        allNodes.put(node.getId(), node);
+                        activeNodes.put(node.getId(), node);
                         for (ClusterListener listener : listeners) {
                             listener.onNodeJoin(node);
                         }
@@ -117,7 +119,7 @@ public class ZookeeperClusterManager implements ClusterManager {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 
-                        allNodes.remove(node.getId());
+                        activeNodes.remove(node.getId());
                         for (ClusterListener listener : listeners) {
                             listener.onNodeLeave(node);
                         }
@@ -127,8 +129,8 @@ public class ZookeeperClusterManager implements ClusterManager {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 
-                        allNodes.put(node.getId(), node);
-                        if (Node.DOWN.equals(node.getState())) {
+                        activeNodes.put(node.getId(), node);
+                        if (DOWN.equals(node.getState())) {
                             for (ClusterListener listener : listeners) {
                                 listener.onNodeDown(node);
                             }
@@ -144,7 +146,7 @@ public class ZookeeperClusterManager implements ClusterManager {
     private void registerNode(String path) throws Exception {
         CreateBuilder createBuilder = client.create();
         thisNode = new Node(config.getServerId(), config.getAdvertisedAddress(), config.getAdvertisedPort(),
-                System.currentTimeMillis(), config.getClusterName(), Node.UP);
+                System.currentTimeMillis(), config.getClusterName(), UP);
 
         try {
             createBuilder.creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL)
@@ -173,10 +175,10 @@ public class ZookeeperClusterManager implements ClusterManager {
     private void updateNodeStateAndSleep(String path) throws Exception {
         byte[] bytes = client.getData().forPath(path);
         Node downNode = JsonMapper.deserialize(bytes, Node.class);
-        downNode.setState(Node.DOWN);
+        downNode.setState(DOWN);
         client.setData().forPath(path, JsonMapper.serialize(downNode));
 
-        allNodes.put(downNode.getId(), downNode);
+        activeNodes.put(downNode.getId(), downNode);
         if (config.getShutdownMaxWaitTimeMs() > 0) {
             TimeUnit.MILLISECONDS.sleep(config.getShutdownMaxWaitTimeMs());
         }
@@ -184,18 +186,18 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     @Override
     public List<Node> getClusterNodes() {
-        return new ArrayList<>(allNodes.values());
+        return new ArrayList<>(activeNodes.values());
     }
 
     @Override
     public List<Node> getClusterUpNodes() {
-        return allNodes.values().stream()
-                .filter(node -> Node.UP.equals(node.getState())).collect(Collectors.toList());
+        return activeNodes.values().stream()
+                .filter(node -> UP.equals(node.getState())).collect(Collectors.toList());
     }
 
     @Override
     public Node getClusterNode(String id) {
-        return allNodes.get(id).getState().equals(Node.UP) ? allNodes.get(id) : null;
+        return activeNodes.get(id).getState().equals(UP) ? activeNodes.get(id) : null;
     }
 
     @Override

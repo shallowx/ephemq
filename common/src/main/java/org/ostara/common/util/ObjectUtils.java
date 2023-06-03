@@ -13,7 +13,6 @@ public final class ObjectUtils {
     private static final int INT_ZERO = 0;
 
     private ObjectUtils() throws OperationNotSupportedException {
-        // unused.
         throw new OperationNotSupportedException();
     }
 

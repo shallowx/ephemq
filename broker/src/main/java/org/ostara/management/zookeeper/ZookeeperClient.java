@@ -6,7 +6,7 @@ import org.apache.curator.framework.state.SessionConnectionStateErrorPolicy;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +16,7 @@ public class ZookeeperClient {
 
     private static final Map<String, CuratorFramework> clients = new ConcurrentHashMap<>();
 
-    public static CuratorFramework getClient(Config config, String clusterName) {
+    public static CuratorFramework getClient(CoreConfig config, String clusterName) {
         return clients.computeIfAbsent(clusterName, namespace -> {
             String url = config.getZookeeperUrl();
             if (url == null) {

@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import org.ostara.common.Node;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.ConnectionManager;
 import org.ostara.management.Manager;
 import org.ostara.remote.processor.AwareInvocation;
@@ -21,9 +21,9 @@ public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
 
     private final Manager manager;
-    private final Config config;
+    private final CoreConfig config;
 
-    public DefaultClusterListener(Manager manager, Config config) {
+    public DefaultClusterListener(Manager manager, CoreConfig config) {
         this.manager = manager;
         this.config = config;
     }

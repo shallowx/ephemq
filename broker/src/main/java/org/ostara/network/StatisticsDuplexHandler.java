@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,7 +22,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     private final AtomicLong channelCounts = new AtomicLong(0);
 
-    public StatisticsDuplexHandler(Config config) {
+    public StatisticsDuplexHandler(CoreConfig config) {
         Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, AtomicLong::doubleValue)
                 .tags(
                     Tags.of(

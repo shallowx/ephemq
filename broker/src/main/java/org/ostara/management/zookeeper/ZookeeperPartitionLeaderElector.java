@@ -14,7 +14,7 @@ import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
 import org.ostara.log.Log;
 import org.ostara.management.JsonMapper;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class ZookeeperPartitionLeaderElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionLeaderElector.class);
 
-    private final Config config;
+    private final CoreConfig config;
     private final TopicPartition topicPartition;
     private final Manager manager;
     private final ReplicaManager replicaManager;
@@ -41,7 +41,7 @@ public class ZookeeperPartitionLeaderElector {
     private final CuratorFramework client;
     private LeaderLatch latch;
 
-    public ZookeeperPartitionLeaderElector(Config config, TopicPartition topicPartition, Manager manager, ReplicaManager replicaManager, int ledger) {
+    public ZookeeperPartitionLeaderElector(CoreConfig config, TopicPartition topicPartition, Manager manager, ReplicaManager replicaManager, int ledger) {
         this.config = config;
         this.topicPartition = topicPartition;
         this.manager = manager;

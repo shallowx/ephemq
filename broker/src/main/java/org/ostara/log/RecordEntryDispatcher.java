@@ -16,7 +16,7 @@ import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.MessageUtils;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.log.ledger.LedgerCursor;
 import org.ostara.log.ledger.LedgerStorage;
 import org.ostara.remote.codec.MessagePacket;
@@ -49,8 +49,8 @@ public class RecordEntryDispatcher {
     private final ConcurrentMap<Channel, Handler> channelHandlerMap = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, Config config, EventExecutorGroup group,
-                           IntConsumer dispatchCounter) {
+    RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, CoreConfig config, EventExecutorGroup group,
+                          IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;

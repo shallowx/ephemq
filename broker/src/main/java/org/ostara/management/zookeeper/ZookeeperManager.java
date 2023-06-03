@@ -7,7 +7,7 @@ import org.ostara.client.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.core.inner.InnerClient;
 import org.ostara.core.inner.InnerClientListener;
 import org.ostara.listener.*;
@@ -27,7 +27,7 @@ public class ZookeeperManager implements Manager {
     private LogManager logManager;
     private TopicManager topicManager;
     private ClusterManager clusterManager;
-    private Config config;
+    private CoreConfig config;
     private ConnectionManager connectionManager;
     private final List<APIListener> apiListeners = new LinkedList<>();
     private EventExecutorGroup handleGroup;
@@ -41,7 +41,7 @@ public class ZookeeperManager implements Manager {
     }
 
     @Inject
-    public ZookeeperManager(Config config) {
+    public ZookeeperManager(CoreConfig config) {
         this.config = config;
         this.connectionManager = new DefaultConnectionManager();
         this.handleGroup = NetworkUtils.newEventExecutorGroup(config.getCommandHandleThreadCounts(), "command-handle-group");

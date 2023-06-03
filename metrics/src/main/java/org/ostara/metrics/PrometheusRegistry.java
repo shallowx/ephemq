@@ -22,8 +22,8 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
 
     @Override
     public void setUp(Properties props) {
-        MetricsConfig config = MetricsConfig.exchange(props);
-        if (config.getMetricsEnabled()) {
+        MetricsConfig config = MetricsConfig.fromProps(props);
+        if (config.isMetricsEnabled()) {
             this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
             Metrics.addRegistry(this.registry);
 
@@ -33,12 +33,10 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
 
     private void setHttpServer(MetricsConfig config) {
         try {
-            InetSocketAddress socketAddress =
-                    new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
+            InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
             this.server = HttpServer.create(socketAddress, 0);
 
             String url = config.getMetricsScrapeUrl();
-
             this.server.createContext(url, exchange -> {
                 String scrape = ((PrometheusMeterRegistry) this.registry).scrape();
                 exchange.sendResponseHeaders(HttpResponseStatus.OK.code(),

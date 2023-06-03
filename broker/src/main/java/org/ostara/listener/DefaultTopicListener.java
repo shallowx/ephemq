@@ -7,7 +7,7 @@ import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.Config;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
 import org.ostara.remote.processor.AwareInvocation;
 import org.ostara.remote.processor.ProcessCommand;
@@ -23,9 +23,9 @@ public class DefaultTopicListener implements TopicListener{
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
     private final Manager manager;
-    private final Config config;
+    private final CoreConfig config;
 
-    public DefaultTopicListener(Manager manager, Config config) {
+    public DefaultTopicListener(Manager manager, CoreConfig config) {
         this.manager = manager;
         this.config = config;
     }
