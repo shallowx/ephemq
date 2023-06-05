@@ -38,7 +38,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Consumer implements MeterBinder {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Consumer.class);
     private final String name;
     private final ConsumerConfig consumerConfig;
@@ -52,7 +51,7 @@ public class Consumer implements MeterBinder {
     public Consumer(String name, ConsumerConfig consumerConfig, MessageListener listener) {
         this.name = name;
         this.consumerConfig = Objects.requireNonNull(consumerConfig, "Consumer config not found");
-        this.listener = Objects.requireNonNull(listener, "Consume message listener not found");
+        this.listener = Objects.requireNonNull(listener, "Consumer message listener not found");
         this.client = new Client(name, consumerConfig.getClientConfig(), new ConsumerListener());
     }
 
@@ -66,7 +65,7 @@ public class Consumer implements MeterBinder {
         executor = new FastEventExecutor(new DefaultThreadFactory("consumer-task"));
         int shardCount = Math.max(consumerConfig.getHandlerThreadCount(), consumerConfig.getHandlerShardCount());
         handlers = new MessageHandler[shardCount];
-        group = NetworkUtils.newEventExecutorGroup(consumerConfig.getHandlerThreadCount(), "consume-message");
+        group = NetworkUtils.newEventExecutorGroup(consumerConfig.getHandlerThreadCount(), "consumer-message-group");
         int handlerPendingCount = consumerConfig.getHandlerPendingCount();
         for (int i = 0; i < shardCount; i++) {
             Semaphore semaphore = new Semaphore(handlerPendingCount);
