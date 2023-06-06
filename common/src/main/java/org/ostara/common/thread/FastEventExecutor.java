@@ -5,6 +5,8 @@ import io.netty.util.concurrent.RejectedExecutionHandler;
 import io.netty.util.concurrent.RejectedExecutionHandlers;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import org.jctools.queues.MpscBlockingConsumerArrayQueue;
+import org.ostara.common.logging.InternalLogger;
+import org.ostara.common.logging.InternalLoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.Executor;
@@ -12,6 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 
 public class FastEventExecutor extends SingleThreadEventExecutor {
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(FastEventExecutor.class);
 
     public FastEventExecutor(ThreadFactory factory) {
         this(null, factory, true, Integer.MAX_VALUE, RejectedExecutionHandlers.reject());
@@ -42,8 +46,10 @@ public class FastEventExecutor extends SingleThreadEventExecutor {
             if (task != null) {
                 try {
                     task.run();
-                } catch (Throwable ignored) {}
-                updateLastExecutionTime();
+                } catch (Throwable t) {
+                    logger.error(t.getMessage(), t);
+                }
+                  updateLastExecutionTime();
             }
         }while (!confirmShutdown());
     }
