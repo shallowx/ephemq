@@ -1,4 +1,4 @@
-package org.ostara.client.quickstart;
+package org.ostara.client;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
@@ -27,13 +27,12 @@ public class ProducerTest {
         clientConfig.setConnectionPoolCapacity(2);
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+        CountDownLatch continueSendLatch = new CountDownLatch(2);
         for (int i = 0; i < 1; i++) {
             new Thread(() -> {
                 Producer producer = new Producer("default", producerConfig);
                 producer.start();
 
-                Random random = new Random();
                 String[] symbols = new String[]{"BTC-USDT"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
@@ -52,9 +51,9 @@ public class ProducerTest {
                     t.printStackTrace();
                 }
                 producer.close();
-                countDownLatch.countDown();
+                continueSendLatch.countDown();
             }).start();
         }
-        countDownLatch.await();
+        continueSendLatch.await();
     }
 }

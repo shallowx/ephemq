@@ -1,4 +1,4 @@
-package org.ostara.client.quickstart;
+package org.ostara.client;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsumerTest {
     @Test
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testAttachOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -28,12 +29,9 @@ public class ConsumerTest {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        Consumer consumer = new Consumer("default", consumerConfig, new MessageListener() {
-            @Override
-            public void onMessage(String topic, String queue, MessageId messageId, ByteBuf message, Extras extras) {
-                String msg = ByteBufUtils.buf2String(message, message.readableBytes());
-                System.out.printf("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
-            }
+        Consumer consumer = new Consumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
+            String msg = ByteBufUtils.buf2String(message, message.readableBytes());
+            System.out.printf("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
         });
         consumer.start();
 

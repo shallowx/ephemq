@@ -1,4 +1,4 @@
-package org.ostara.client.quickstart;
+package org.ostara.client;
 
 import org.junit.Test;
 import org.ostara.client.ClientConfig;
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class ClientTest {
 
     @Test
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testCreateTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -31,6 +32,7 @@ public class ClientTest {
     }
 
     @Test
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testClusterInfo() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -44,6 +46,8 @@ public class ClientTest {
         ClientChannel clientChannel = client.fetchChannel(null);
 
         ClusterInfo info = client.queryClusterInfo(clientChannel);
+        System.out.println(info);
+
         new CountDownLatch(1).await(5000, TimeUnit.MILLISECONDS);
         client.close();
     }

@@ -18,6 +18,9 @@ import org.ostara.core.CoreConfig;
 import org.ostara.log.Log;
 import org.ostara.management.Manager;
 import org.ostara.metrics.*;
+import org.ostara.metrics.jvm.DefaultJVMInfoMetrics;
+import org.ostara.metrics.jvm.JmxMetricsRegistry;
+import org.ostara.metrics.netty.NettyMetrics;
 
 import java.time.Duration;
 import java.util.Map;

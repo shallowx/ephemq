@@ -29,12 +29,12 @@ public class Ostara {
         }
     }
 
-    public static OstaraServer start(OstaraServer server) throws Exception {
+    private static OstaraServer start(OstaraServer server) throws Exception {
         server.start();
         return server;
     }
 
-    public static OstaraServer createServer(String... args) throws Exception {
+    private static OstaraServer createServer(String... args) throws Exception {
         Options options = buildCommandlineOptions();
         CommandLine commandLine = parseCmdLine(args, options, new DefaultParser());
         Properties properties = new Properties();

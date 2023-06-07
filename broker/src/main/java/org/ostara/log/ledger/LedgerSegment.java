@@ -36,7 +36,7 @@ public class LedgerSegment {
         return creationTime;
     }
 
-    void writeRecord(int marker, Offset offset, ByteBuf payload) {
+    protected void writeRecord(int marker, Offset offset, ByteBuf payload) {
         BufferHolder theHolder = holder;
         if (theHolder != null) {
            ByteBuf theBuffer = theHolder.buffer;
@@ -64,7 +64,7 @@ public class LedgerSegment {
         throw new IllegalStateException(String.format("Segment was released, ledger=%s", ledger));
     }
 
-    ByteBuf readRecord(int position) {
+    protected ByteBuf readRecord(int position) {
         BufferHolder theHolder = holder;
         if (theHolder != null) {
             ByteBuf theBuffer = theHolder.buffer;
@@ -75,7 +75,7 @@ public class LedgerSegment {
         return null;
     }
 
-    int locate(Offset offset) {
+    protected int locate(Offset offset) {
         if (offset == null) {
             return lastPosition;
         } else if (!offset.after(baseOffset)) {
@@ -133,25 +133,25 @@ public class LedgerSegment {
         this.next = next;
     }
 
-    boolean isActive() {
+    protected boolean isActive() {
         return holder != null;
     }
 
-    void release() {
+    protected void release() {
         holder = null;
     }
 
-    int freeBytes() {
+    protected int freeBytes() {
         BufferHolder theHolder = holder;
         return theHolder == null ? 0 : theHolder.buffer.writableBytes();
     }
 
-    int usedBytes() {
+    protected int usedBytes() {
         BufferHolder theHolder = holder;
         return theHolder == null ? 0 : theHolder.buffer.readableBytes();
     }
 
-    int capacity() {
+    protected int capacity() {
         BufferHolder theHolder = holder;
         return theHolder == null ? 0 : theHolder.buffer.capacity();
     }

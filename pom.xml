@@ -217,6 +217,7 @@
     <module>common</module>
     <module>metrics</module>
     <module>cli</module>
+      <module>benchmarks</module>
   </modules>
 
 </project>

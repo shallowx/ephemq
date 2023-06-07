@@ -3,7 +3,7 @@ package org.ostara.log.ledger;
 public class LedgerConfig {
     private int segmentRetainCounts = 3;
     private int segmentRetainMs = 30000;
-    private int segmentBufferCapacity = 4 * 1024 * 1024;
+    private int segmentBufferCapacity = 4194304; // 4 * 1024 * 1024
 
     public int segmentRetainCounts() {
         return segmentRetainCounts;

@@ -41,7 +41,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Log {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Log.class);
-    private final CoreConfig config;
     private final TopicPartition topicPartition;
     private final int ledger;
     private final String topic;
@@ -61,7 +60,6 @@ public class Log {
     private Promise<CancelSyncResponse> unSyncFuture;
 
     public Log(CoreConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
-        this.config = config;
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.getTopic();
@@ -479,16 +477,6 @@ public class Log {
         } catch (Exception e) {
             promise.tryFailure(e);
             logger.error(e.getMessage(), e);
-        }
-    }
-
-    private void execute(Promise<?> promise, Runnable runner) {
-        try {
-            commandExecutor.execute(runner);
-        }catch (Throwable t){
-            if (promise != null) {
-                promise.tryFailure(t);
-            }
         }
     }
 

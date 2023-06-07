@@ -1,6 +1,7 @@
 package org.ostara.metrics;
 
 import com.sun.net.httpserver.HttpServer;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
@@ -18,7 +19,7 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PrometheusRegistry.class);
 
     private HttpServer server;
-    private io.micrometer.core.instrument.MeterRegistry registry;
+    private MeterRegistry registry;
 
     @Override
     public void setUp(Properties props) {
@@ -27,11 +28,11 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
             this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
             Metrics.addRegistry(this.registry);
 
-            setHttpServer(config);
+            exportHttpServer(config);
         }
     }
 
-    private void setHttpServer(MetricsConfig config) {
+    private void exportHttpServer(MetricsConfig config) {
         try {
             InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
             this.server = HttpServer.create(socketAddress, 0);

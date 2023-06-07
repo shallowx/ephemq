@@ -1,4 +1,4 @@
-package org.ostara.metrics;
+package org.ostara.metrics.jvm;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
