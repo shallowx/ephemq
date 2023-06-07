@@ -58,7 +58,7 @@ public class DemoClientBootstrap {
                 threads[i] = new Thread(() -> {
                     try {
                         Channel channel = bootstrap.connect("127.0.0.1", 8888).sync().channel();
-                        invoke(channel, Integer.MAX_VALUE, 1024, 1, 5000, 2, DemoClientBootstrap::doInvokeEchoOneway);
+                        invoke(channel, Integer.MAX_VALUE, 1024, 1, 5000, 2, DemoClientBootstrap::invokeEchoOneway);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -120,7 +120,7 @@ public class DemoClientBootstrap {
         latch.wait();
     }
 
-    private static void doInvokeEchoOneway(Semaphore semaphore, Channel channel, int timeout, ByteBuf data) throws Exception {
+    private static void invokeEchoOneway(Semaphore semaphore, Channel channel, int timeout, ByteBuf data) throws Exception {
         long now = System.currentTimeMillis();
         if (semaphore.tryAcquire(timeout, TimeUnit.SECONDS)) {
             long expires = now + timeout + 1000L;
