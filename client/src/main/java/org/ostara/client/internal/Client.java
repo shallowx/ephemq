@@ -299,7 +299,9 @@ public class Client implements MeterBinder {
                 if (message == null || message.isEmpty()) {
                     message = t.getClass().getName();
                 }
+                logger.error("Refresh metadata failed, {}", message);
             }
+
             if (!taskExecutor.isShuttingDown()) {
                 taskExecutor.schedule(this, config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
             }
@@ -692,7 +694,7 @@ public class Client implements MeterBinder {
         return promise.get(config.getCalculatePartitionsTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 
-    public MigrateLedgerResponse migrateLedger(String topic, int partitions, String original, String destination) throws Exception {
+    public MigrateLedgerResponse migrateLedger(String topic, int partition, String original, String destination) throws Exception {
         MigrateLedgerResponse.Builder response = MigrateLedgerResponse.newBuilder();
         ClientChannel clientChannel = fetchChannel(null);
         ClusterInfo clusterInfo = queryClusterInfo(clientChannel);
@@ -711,16 +713,16 @@ public class Client implements MeterBinder {
             return response.setSuccess(false).setMessage(String.format("The topic %s does not exist", original)).build();
         }
         TopicInfo topicInfo = topicInfos.get(topic);
-        PartitionMetadata partitionMetadata = topicInfo.getPartitionsMap().get(partitions);
+        PartitionMetadata partitionMetadata = topicInfo.getPartitionsMap().get(partition);
         if (partitionMetadata == null) {
-            return response.setSuccess(false).setMessage(String.format("The topic %s partition %d does not exist", original)).build();
+            return response.setSuccess(false).setMessage(String.format("The topic %s partition %d does not exist", original, partition)).build();
         }
 
         clientChannel = fetchChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));
         Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         MigrateLedgerRequest request = MigrateLedgerRequest.newBuilder()
                 .setTopic(topic)
-                .setPartition(partitions)
+                .setPartition(partition)
                 .setOriginal(original)
                 .setDestination(destination)
                 .build();

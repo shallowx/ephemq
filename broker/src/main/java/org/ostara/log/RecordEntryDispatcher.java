@@ -81,7 +81,7 @@ public class RecordEntryDispatcher {
             return result;
         }
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int middleLimit = loadLimit / 2;
+        int middleLimit = loadLimit >> 1;
         synchronized (allocateHandlers) {
             if (allocateHandlers.isEmpty()) {
                 return createHandler();
@@ -312,7 +312,7 @@ public class RecordEntryDispatcher {
             try {
                 handler.dispatchExecutor.execute(() -> doDispatch(handler));
             }catch (Throwable t){
-                logger.error("dispatch submit failed: {}", handler, t);
+                logger.error("Dispatch submit failed: {}", handler, t);
             }
         }
     }
@@ -380,7 +380,7 @@ public class RecordEntryDispatcher {
                         }
                     }
                 } catch (Throwable t){
-                    logger.error("dispatch failed: {} lastOffset={}", handler, lastOffset, t);
+                    logger.error("Dispatch failed: {} lastOffset={}", handler, lastOffset, t);
                 } finally {
                     ByteBufUtils.release(entry);
                     ByteBufUtils.release(payload);
@@ -390,7 +390,7 @@ public class RecordEntryDispatcher {
                 }
             }
         } catch (Throwable t){
-            logger.error("dispatch execute failed: {} lastOffset={}", handler, lastOffset, t);
+            logger.error("Dispatch execute failed: {} lastOffset={}", handler, lastOffset, t);
         } finally {
             handler.triggered.set(false);
         }
@@ -407,7 +407,7 @@ public class RecordEntryDispatcher {
             try {
                 counter.accept(count);
             } catch (Throwable t){
-                logger.error("count failed, ledger={} topic={}", ledger, topic, t);
+                logger.error("Count failed, ledger={} topic={}", ledger, topic, t);
             }
         }
     }
@@ -429,7 +429,7 @@ public class RecordEntryDispatcher {
             });
         } catch (Throwable t){
             task.subscription.followed = true;
-            logger.error("submit failed: {}", task);
+            logger.error("Submit failed: {}", task);
         }
     }
 
@@ -490,7 +490,7 @@ public class RecordEntryDispatcher {
                         return;
                     }
                 } catch (Throwable t){
-                    logger.error("pursue failed:{} lastOffset={}", task, lastOffset, t);
+                    logger.error("Pursue failed:{} lastOffset={}", task, lastOffset, t);
                 } finally {
                     ByteBufUtils.release(entry);
                     ByteBufUtils.release(payload);
@@ -502,7 +502,7 @@ public class RecordEntryDispatcher {
                 }
             }
         } catch (Throwable t){
-            logger.error("pursue execute failed:{} lastOffset={}", task, lastOffset, t);
+            logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
         }
 
         task.pursueOffset = lastOffset;
@@ -522,7 +522,7 @@ public class RecordEntryDispatcher {
             });
         } catch (Throwable t){
             task.subscription.followed = true;
-            logger.error("submit failed: {}", task);
+            logger.error("Submit failed: {}", task);
         }
     }
 
@@ -533,7 +533,7 @@ public class RecordEntryDispatcher {
             });
         } catch (Throwable t){
             task.subscription.followed = true;
-            logger.error("submit failed: {}", task);
+            logger.error("Submit failed: {}", task);
         }
     }
 
@@ -559,7 +559,7 @@ public class RecordEntryDispatcher {
         int count = 0;
         try {
             int runTimes = 0;
-            ByteBuf entry = null;
+            ByteBuf entry;
             while ((entry = cursor.next()) != null) {
                 runTimes++;
                 ByteBuf payload = null;
@@ -601,7 +601,7 @@ public class RecordEntryDispatcher {
                     }
 
                 } catch (Throwable t){
-                    logger.error("switch to pursue, channel is full:{}", task);
+                    logger.error("Switch to pursue, channel is full:{}", task);
                 } finally {
                     ByteBufUtils.release(entry);
                     ByteBufUtils.release(payload);
@@ -613,7 +613,7 @@ public class RecordEntryDispatcher {
                 }
             }
         } catch (Throwable t){
-            logger.error("pursue execute failed:{} lastOffset={}", task, lastOffset, t);
+            logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
         }
 
         if (finished) {
@@ -652,7 +652,7 @@ public class RecordEntryDispatcher {
             return buf;
         } catch (Throwable t){
             ByteBufUtils.release(buf);
-            throw new RuntimeException(String.format("build payload error, ledger=%d topic=%s offset=%s length=%d", ledger, t, offset, entry.readableBytes()));
+            throw new RuntimeException(String.format("Build payload error, ledger=%d topic=%s offset=%s length=%d", ledger, t, offset, entry.readableBytes()));
         }
     }
 
@@ -728,10 +728,10 @@ public class RecordEntryDispatcher {
     }
 
     private static class PursueTask {
-        private Subscription subscription;
-        private LedgerCursor cursor;
+        private final Subscription subscription;
+        private final LedgerCursor cursor;
         private Offset pursueOffset;
-        private long pursueTime = System.currentTimeMillis();
+        private final long pursueTime = System.currentTimeMillis();
 
         public PursueTask(Subscription subscription, LedgerCursor cursor, Offset pursueOffset) {
             this.subscription = subscription;
