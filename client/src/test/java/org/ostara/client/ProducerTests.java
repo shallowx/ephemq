@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import org.junit.Test;
 import org.ostara.client.producer.Producer;
 import org.ostara.client.producer.ProducerConfig;
-import org.ostara.client.producer.SendCallback;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;
 import org.ostara.common.logging.InternalLogger;

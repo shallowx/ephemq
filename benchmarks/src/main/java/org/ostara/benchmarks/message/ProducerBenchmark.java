@@ -8,6 +8,7 @@ import org.ostara.client.ClientConfig;
 import org.ostara.client.producer.Producer;
 import org.ostara.client.producer.ProducerConfig;
 import org.ostara.common.Extras;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
