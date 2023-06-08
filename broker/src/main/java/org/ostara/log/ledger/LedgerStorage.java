@@ -50,7 +50,7 @@ public class LedgerStorage {
         }
     }
 
-    public void doAppendRecord(int marker, ByteBuf payload, Promise<Offset> promise) {
+    private void doAppendRecord(int marker, ByteBuf payload, Promise<Offset> promise) {
         try{
             checkActive();
 

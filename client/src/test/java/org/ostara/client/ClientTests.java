@@ -1,7 +1,6 @@
 package org.ostara.client;
 
 import org.junit.Test;
-import org.ostara.client.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ClientTest {
+public class ClientTests {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")

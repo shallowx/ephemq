@@ -1,4 +1,4 @@
-package org.ostara.remote;
+package org.ostara.remote.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

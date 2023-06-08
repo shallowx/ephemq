@@ -84,6 +84,9 @@ public class LedgerCursor {
             position = next.basePosition();
         }
     }
+    public int getPosition() {
+        return position;
+    }
 
     private LedgerSegment presentSegment() {
         LedgerSegment segment = segmentHolder.get();

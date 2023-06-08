@@ -1,4 +1,4 @@
-package org.ostara.remote;
+package org.ostara.remote.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;

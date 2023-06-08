@@ -1,20 +1,15 @@
 package org.ostara.client;
 
-import io.netty.buffer.ByteBuf;
 import org.junit.Test;
-import org.ostara.client.ClientConfig;
 import org.ostara.client.consumer.Consumer;
 import org.ostara.client.consumer.ConsumerConfig;
-import org.ostara.client.consumer.MessageListener;
-import org.ostara.common.Extras;
-import org.ostara.common.MessageId;
 import org.ostara.remote.util.ByteBufUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ConsumerTest {
+public class ConsumerTests {
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testAttachOfReset() throws Exception {
