@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ostara</groupId>
-            <artifactId>client</artifactId>
+            <artifactId>broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
