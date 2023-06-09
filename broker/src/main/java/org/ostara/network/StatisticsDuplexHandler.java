@@ -11,7 +11,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.CoreConfig;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import static org.ostara.metrics.MetricsConstants.*;
 
@@ -20,10 +20,10 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(StatisticsDuplexHandler.class);
 
-    private final AtomicLong channelCounts = new AtomicLong(0);
+    private final LongAdder channelCounts = new LongAdder();
 
     public StatisticsDuplexHandler(CoreConfig config) {
-        Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, AtomicLong::doubleValue)
+        Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, LongAdder::doubleValue)
                 .tags(
                     Tags.of(
                     Tag.of(BROKER_TAG, config.getServerId()),
@@ -33,13 +33,15 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        channelCounts.decrementAndGet();
+        logger.debug("Channel inactive, channel={}", ctx.channel());
+        channelCounts.decrement();
         super.channelInactive(ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        channelCounts.incrementAndGet();
+        logger.debug("Channel active, channel={}", ctx.channel());
+        channelCounts.increment();
         super.channelActive(ctx);
     }
 }
