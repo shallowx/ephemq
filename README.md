@@ -8,7 +8,7 @@ reliability, trillion-level capacity and flexible scalability
 - Dotted lines are optional
 
 # Example
-
+To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be omitted when deploying it in practice.
 ![image](https://github.com/shallow-rs/Ostara/blob/main/doc/image/example.gif)
 
 ## Latency
