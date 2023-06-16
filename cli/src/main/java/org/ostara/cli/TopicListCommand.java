@@ -12,7 +12,7 @@ import org.ostara.remote.util.NetworkUtils;
 import java.net.SocketAddress;
 import java.util.Map;
 
-public class TopicCommand implements Command{
+public class TopicListCommand implements Command{
     @Override
     public String name() {
         return "TopicList";

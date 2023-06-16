@@ -121,8 +121,12 @@ public class OstaraAdmin {
     private static final List<Command> commands = new ArrayList<>();
 
     private static void initCommand() {
-        Command clientCommand = new TopicCommand();
+        Command clientCommand = new TopicListCommand();
+        Command clusterCommand = new ClusterListCommand();
+        Command topicCreatedCommand = new TopicCreatedCommand();
         commands.add(clientCommand);
+        commands.add(clusterCommand);
+        commands.add(topicCreatedCommand);
     }
 
     private static Command getCommand(String name) {
