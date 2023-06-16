@@ -31,7 +31,6 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Create Topic
 ```
-    @Test
     public void testCreateTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -51,7 +50,6 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Subscribe Message
 ```
-    @Test
     public void testAttachOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -85,7 +83,6 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Send Message
 ```
-   @Test
     public void testContinueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
@@ -108,6 +105,97 @@ To demonstrate the effect, the setting of sending one message per second was imp
                     ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
                     try {
                         MessageId messageId = producer.send("#test#default", symbol, message, new Extras());
+                        System.out.println(messageId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (Throwable t){
+                    t.printStackTrace();
+                }
+                producer.close();
+                countDownLatch.countDown();
+            }).start();
+        }
+        countDownLatch.await();
+    }
+```
+## Async Send Message
+
+```
+ public void testContinueSend() throws Exception {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapAddresses(new ArrayList<>(){
+            {add("127.0.0.1:8888");}
+        });
+
+        clientConfig.setConnectionPoolCapacity(2);
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        for (int i = 0; i < 1; i++) {
+            new Thread(() -> {
+                Producer producer = new Producer("default", producerConfig);
+                producer.start();
+
+                Random random = new Random();
+                String[] symbols = new String[]{"BTC-USDT"};
+                for (int j = 0; j < Integer.MAX_VALUE; j++) {
+                    String symbol = symbols[j % symbols.length];
+                    ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+                    try {
+                        MessageId messageId = producer.sendAsync("#test#default", symbol, message, new Extras(), new SendCallback(){
+                               public void onCompleted(MessageId messageId, Throwable t) {
+                                    // todo 
+                               }
+                        });
+                        System.out.println(messageId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (Throwable t){
+                    t.printStackTrace();
+                }
+                producer.close();
+                countDownLatch.countDown();
+            }).start();
+        }
+        countDownLatch.await();
+    }
+```
+
+## SendOneway Message
+
+```
+ public void testContinueSend() throws Exception {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapAddresses(new ArrayList<>(){
+            {add("127.0.0.1:8888");}
+        });
+
+        clientConfig.setConnectionPoolCapacity(2);
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        for (int i = 0; i < 1; i++) {
+            new Thread(() -> {
+                Producer producer = new Producer("default", producerConfig);
+                producer.start();
+
+                Random random = new Random();
+                String[] symbols = new String[]{"BTC-USDT"};
+                for (int j = 0; j < Integer.MAX_VALUE; j++) {
+                    String symbol = symbols[j % symbols.length];
+                    ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+                    try {
+                        MessageId messageId = producer.sendOneway("#test#default", symbol, message, new Extras());
                         System.out.println(messageId);
                     } catch (Exception e) {
                         e.printStackTrace();
