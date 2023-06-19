@@ -2,24 +2,23 @@ package org.ostara.cli;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.ostara.client.internal.Client;
-import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.TopicConfig;
 import org.ostara.common.util.StringUtils;
 import org.ostara.remote.proto.server.CreateTopicResponse;
 import org.ostara.remote.proto.server.PartitionsReplicas;
-import org.ostara.remote.util.NetworkUtils;
 
 import java.io.File;
-import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TopicCreatedCommand implements Command {
