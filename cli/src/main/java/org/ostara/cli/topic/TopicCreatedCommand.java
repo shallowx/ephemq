@@ -1,4 +1,4 @@
-package org.ostara.cli;
+package org.ostara.cli.topic;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
+import org.ostara.cli.Command;
 import org.ostara.client.internal.Client;
 import org.ostara.common.TopicConfig;
 import org.ostara.common.util.StringUtils;

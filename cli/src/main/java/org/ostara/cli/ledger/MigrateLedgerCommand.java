@@ -1,10 +1,11 @@
-package org.ostara.cli;
+package org.ostara.cli.ledger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.ostara.cli.Command;
 import org.ostara.client.internal.Client;
 
-public class ClusterListCommand implements Command{
+public class MigrateLedgerCommand implements Command {
     @Override
     public String name() {
         return null;

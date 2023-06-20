@@ -1,6 +1,10 @@
 package org.ostara.cli;
 
 import org.apache.commons.cli.*;
+import org.ostara.cli.cluster.ClusterListCommand;
+import org.ostara.cli.topic.TopicCreatedCommand;
+import org.ostara.cli.topic.TopicDeletedCommand;
+import org.ostara.cli.topic.TopicListCommand;
 import org.ostara.client.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientListener;
@@ -124,9 +128,11 @@ public class OstaraAdmin {
         Command clientCommand = new TopicListCommand();
         Command clusterCommand = new ClusterListCommand();
         Command topicCreatedCommand = new TopicCreatedCommand();
+        Command  topicDeletedCommand = new TopicDeletedCommand();
         commands.add(clientCommand);
         commands.add(clusterCommand);
         commands.add(topicCreatedCommand);
+        commands.add(topicDeletedCommand);
     }
 
     private static Command getCommand(String name) {

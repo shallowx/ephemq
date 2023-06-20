@@ -1,4 +1,4 @@
-package org.ostara.cli;
+package org.ostara.cli.topic;
 
 import com.google.gson.Gson;
 import com.google.protobuf.ProtocolStringList;
@@ -6,6 +6,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.ostara.cli.Command;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.remote.proto.PartitionMetadata;
