@@ -1,10 +1,24 @@
 package org.ostara.cli.ledger;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.FileUtils;
 import org.ostara.cli.Command;
 import org.ostara.client.internal.Client;
+import org.ostara.common.util.StringUtils;
+import org.ostara.remote.proto.server.MigrateLedgerResponse;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @SuppressWarnings("all")
 public class MigrateLedgerCommand implements Command {
@@ -50,6 +64,51 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
+        try {
+            String file = null;
+            if(commandLine.hasOption('e')) {
+                file = commandLine.getOptionValue('e');
+                if (!StringUtils.isNullOrEmpty(file)) {
+                    String content = FileUtils.readFileToString(new File(file), StandardCharsets.UTF_8);
+                    Gson gson = new Gson();
+                    List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {}.getType());
+                    if (infos == null || infos.isEmpty()) {
+                        return;
+                    }
 
+                    for (MigrateLedger info : infos) {
+                        try {
+                            MigrateLedgerResponse response = client.migrateLedger(info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
+                            if (response.getSuccess()) {
+                                System.out.printf("%s [%s] INFO %s - migrate ledger successfully, topic=%s partition=%s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerCommand.class.getName(), info.getTopic(), info.getPartition());
+                                continue;
+                            }
+                            throw new IllegalStateException(String.format("migrate ledger failure, and try again later, topic=%s partition=%s", info.getTopic(), info.getPartition()));
+                        } catch (Exception e) {
+                            System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), e.getMessage());
+                        }
+                    }
+                }
+            }
+        } catch (Throwable t){
+            System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getMessage());
+        }
+    }
+
+    private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
+    private void retry(Client client, String topic, int partition, String original, String destination) {
+        retry.execute(() -> {
+            try {
+                client.migrateLedger(topic, partition, original, destination);
+            } catch (Exception e) {
+                System.out.printf("migrate ledger retry failure, and try again later, topic=%s partition=%s", topic, partition);
+                retry(client, topic, partition, original, destination);
+            }
+        });
+    }
+
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return   format.format(new Date());
     }
 }
