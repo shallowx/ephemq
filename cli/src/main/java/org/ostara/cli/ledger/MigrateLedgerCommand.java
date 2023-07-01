@@ -17,8 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @SuppressWarnings("all")
 public class MigrateLedgerCommand implements Command {
@@ -96,15 +95,20 @@ public class MigrateLedgerCommand implements Command {
     }
 
     private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
-    private void retry(Client client, String topic, int partition, String original, String destination) {
-        retry.execute(() -> {
+    private void retry(Client client, String topic, int partition, String original, String destination) throws ExecutionException, InterruptedException {
+        Future<?> future = retry.submit(() -> {
             try {
                 client.migrateLedger(topic, partition, original, destination);
+                return CompletableFuture.completedFuture(true);
             } catch (Exception e) {
                 System.out.printf("migrate ledger retry failure, and try again later, topic=%s partition=%s", topic, partition);
-                retry(client, topic, partition, original, destination);
+                return CompletableFuture.completedFuture(false);
             }
         });
+
+        if (future.get() == Boolean.FALSE) {
+            retry(client, topic, partition, original, destination);
+        }
     }
 
     private static String newDate() {
