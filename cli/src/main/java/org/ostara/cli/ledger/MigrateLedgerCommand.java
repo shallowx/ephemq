@@ -28,7 +28,7 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public String description() {
-        return "migrate ledger";
+        return "Migrate ledger";
     }
 
     @Override
@@ -79,12 +79,13 @@ public class MigrateLedgerCommand implements Command {
                         try {
                             MigrateLedgerResponse response = client.migrateLedger(info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
                             if (response.getSuccess()) {
-                                System.out.printf("%s [%s] INFO %s - migrate ledger successfully, topic=%s partition=%s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerCommand.class.getName(), info.getTopic(), info.getPartition());
+                                System.out.printf("%s [%s] INFO %s - Migrate ledger successfully, topic=%s partition=%s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerCommand.class.getName(), info.getTopic(), info.getPartition());
                                 continue;
                             }
-                            throw new IllegalStateException(String.format("migrate ledger failure, and try again later, topic=%s partition=%s", info.getTopic(), info.getPartition()));
+                            throw new IllegalStateException(String.format("Migrate ledger failure, and try again later, topic=%s partition=%s", info.getTopic(), info.getPartition()));
                         } catch (Exception e) {
                             System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), e.getMessage());
+                            retry(client, info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
                         }
                     }
                 }
@@ -101,13 +102,14 @@ public class MigrateLedgerCommand implements Command {
                 client.migrateLedger(topic, partition, original, destination);
                 return CompletableFuture.completedFuture(true);
             } catch (Exception e) {
-                System.out.printf("migrate ledger retry failure, and try again later, topic=%s partition=%s", topic, partition);
+                System.out.printf("Migrate ledger retry failure, and try again later, topic=%s partition=%s", topic, partition);
                 return CompletableFuture.completedFuture(false);
             }
         });
 
         if (future.get() == Boolean.FALSE) {
             retry(client, topic, partition, original, destination);
+            return;
         }
     }
 

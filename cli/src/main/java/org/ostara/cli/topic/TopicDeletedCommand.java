@@ -29,7 +29,7 @@ public class TopicDeletedCommand implements Command {
 
     @Override
     public String description() {
-        return "delete topic form broker";
+        return "Delete topic form broker";
     }
 
     @Override
@@ -82,16 +82,16 @@ public class TopicDeletedCommand implements Command {
                     }
                     Gson gson = new Gson();
                     System.out.printf("%s [%s] INFO %S - print topic[%s] metadata options: %s \n",
-                            newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), topic, gson.toJson(infos));
+                            newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), topic, gson.toJson(infos));
                     TimeUnit.MILLISECONDS.sleep(1000);
                     client.deleteTopic(topic);
                     System.out.printf("%s [%s] INFO %S - delete topic[%s] from cluster successfully \n",
-                            newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), topic);
+                            newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), topic);
                 }
             }
         } catch (Exception e) {
             System.out.printf("%s [%s] ERROR %S - delete topic[%s] from cluster failure \n",
-                    newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), finalTopic);
+                    newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
         }
     }
 

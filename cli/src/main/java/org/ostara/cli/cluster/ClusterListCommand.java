@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("all")
 public class ClusterListCommand implements Command {
     @Override
     public String name() {
@@ -28,7 +29,7 @@ public class ClusterListCommand implements Command {
 
     @Override
     public String description() {
-        return "node list all of cluster";
+        return "Node list all of cluster";
     }
 
     @Override
@@ -57,7 +58,7 @@ public class ClusterListCommand implements Command {
                 Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
                 List<NodeMetadata> metadata = new ArrayList<>(nodesMap.values());
 
-                System.out.printf("%s [%s] INFO %S - print the cluster metadata options: \n",
+                System.out.printf("%s [%s] INFO %S - Print the cluster metadata options: \n",
                         newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName());
 
                 List<Node> nodes = new ArrayList<>();

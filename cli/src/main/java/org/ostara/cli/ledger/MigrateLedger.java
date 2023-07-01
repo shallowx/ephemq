@@ -47,4 +47,14 @@ public class MigrateLedger {
     public void setTo(String to) {
         this.to = to;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "topic='" + topic + '\'' +
+                ", partition=" + partition +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                '}';
+    }
 }

@@ -74,7 +74,7 @@ public class TopicListCommand implements Command {
                             : client.queryTopicInfos(clientChannel);
 
                     if (topicInfos == null || topicInfos.isEmpty()) {
-                        System.out.printf("%s [%s] INFO %s - topic info is empty \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName());
+                        System.out.printf("%s [%s] INFO %s - Topic info is empty \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName());
                         return;
                     }
                     topics = topicInfos.values().stream().map(topicInfo -> {

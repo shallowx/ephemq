@@ -34,7 +34,7 @@ public class OstaraAdmin {
                                 printCmdHelp("ostaraadmin" + cmd.name(), options);
                                 return;
                             }
-                            System.out.printf("%s [%s] ERROR %s - the command does not exists, cname=%s \n",
+                            System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
                                     newDate(), Thread.currentThread().getName(), OstaraAdmin.class.getName(), args[1]);
                         }
                     }
@@ -47,7 +47,7 @@ public class OstaraAdmin {
                         Options options = buildOptions();
                         CommandLine cmdLine = parseCommandLine(cmdArgs, cmd.buildOptions(options));
                         if (cmdLine == null) {
-                            System.out.printf("%s [%s] ERROR %s - the command does not exists, cname=%s \n",
+                            System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
                                     newDate(), Thread.currentThread().getName(), OstaraAdmin.class.getName(), args[0]);
                             return;
                         }
@@ -72,12 +72,12 @@ public class OstaraAdmin {
                         }
                         return;
                     }
-                    System.out.printf("%s [%s] INFO %s - the command does not exists, cname=%s \n",
+                    System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
                             newDate(), Thread.currentThread().getName(), OstaraAdmin.class.getName(), args[0]);
                 }
             }
         } catch (Throwable t){
-            System.out.printf("%s [%s] INFO %s - the command does not exists, cname=%s \n",
+            System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
                     newDate(), Thread.currentThread().getName(), OstaraAdmin.class.getName(), args[0]);
             System.exit(-1);
         }
@@ -114,7 +114,7 @@ public class OstaraAdmin {
     }
 
     private static Options buildOptions(){
-        Option option = new Option("h", "help", false, "print help");
+        Option option = new Option("h", "help", false, "Print help");
         option.setRequired(false);
         Options options = new Options();
         options.addOption(option);

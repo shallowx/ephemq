@@ -33,7 +33,7 @@ public class MigrateLedgerPlanCommand implements Command {
 
     @Override
     public String description() {
-        return "create migrate plan file";
+        return "Create migrate plan file";
     }
 
     @Override

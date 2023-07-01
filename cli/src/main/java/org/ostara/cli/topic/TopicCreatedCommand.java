@@ -30,7 +30,7 @@ public class TopicCreatedCommand implements Command {
 
     @Override
     public String description() {
-        return "create topic";
+        return "Create topic";
     }
 
     @Override
@@ -77,13 +77,13 @@ public class TopicCreatedCommand implements Command {
                              TopicConfig config = metadata.config;
                              CreateTopicResponse response = client.createTopic(topic, partition, replicas, config);
                              String print = print(response, topic, partition, replicas, config);
-                             System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), print);
+                             System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), print);
                          }
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), e.getCause().getMessage());
+            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), e.getCause().getMessage());
         }
     }
 
