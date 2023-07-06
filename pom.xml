@@ -12,9 +12,9 @@
   <packaging>pom</packaging>
 
   <scm>
-    <connection>scm:git@github.com:shallow-rs/Ostara.git</connection>
-    <developerConnection>scm:git@github.com:shallow-rs/Ostara.git</developerConnection>
-    <url>git@github.com:shallow-rs/ostaraMQ.git</url>
+    <connection>scm:git@github.com:shallowx/Ostara.git</connection>
+    <developerConnection>scm:git@github.com:shallowx/Ostara.git</developerConnection>
+    <url>git@github.com:shallowx/ostaraMQ.git</url>
     <tag>ostara-all-${project.version}</tag>
   </scm>
 
@@ -28,12 +28,12 @@
 
   <organization>
     <name>Ostara</name>
-    <url>https://github.com/shallow-rs</url>
+    <url>https://github.com/shallowx</url>
   </organization>
 
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/shallow-rs/Ostara/issues</url>
+    <url>https://github.com/shallowx/Ostara/issues</url>
   </issueManagement>
 
   <properties>
