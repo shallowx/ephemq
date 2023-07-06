@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,15 +34,16 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("Channel inactive, channel={}", ctx.channel());
+        Channel channel = ctx.channel();
+        logger.debug("Statistics duplex inactive channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
         channelCounts.decrement();
         super.channelInactive(ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("Channel active, channel={}", ctx.channel());
-        channelCounts.increment();
+        Channel channel = ctx.channel();
+        logger.debug("Statistics duplex active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());        channelCounts.increment();
         super.channelActive(ctx);
     }
 }

@@ -57,6 +57,7 @@ public class Consumer implements MeterBinder {
 
     public synchronized void start() {
         if (state != null) {
+            logger.warn("The client[{}] war started", name);
             return;
         }
 
@@ -871,6 +872,7 @@ public class Consumer implements MeterBinder {
         public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
             String topic = signal.getTopic();
             if (!client.containsMessageRouter(topic)) {
+                logger.debug("The client<{}> doesn't contains topic<{}> message router", name, topic);
                 return;
             }
 
@@ -881,6 +883,7 @@ public class Consumer implements MeterBinder {
                    if (client.containsMessageRouter(topic)) {
                        MessageRouter router = client.fetchMessageRouter(topic);
                        if (router == null) {
+                           logger.warn("The client<{}> topic<{}> message router is empty", name, topic);
                            return;
                        }
 
@@ -891,7 +894,9 @@ public class Consumer implements MeterBinder {
 
                        touchChangedTask();
                    }
-               } catch (Throwable ignored){}
+               } catch (Throwable t){
+                   logger.error(t);
+               }
             }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
         }
 
@@ -913,7 +918,9 @@ public class Consumer implements MeterBinder {
 
                                 obsoleteFutures.remove(k);
                             }, consumerConfig.getControlRetryDelayMs(), TimeUnit.MILLISECONDS));
-                } catch (Throwable ignored) {}
+                } catch (Throwable t) {
+                    logger.error(t);
+                }
                 return;
             }
 
@@ -925,8 +932,7 @@ public class Consumer implements MeterBinder {
             MessageId id = new MessageId(ledger, epoch, index);
             while (true) {
                 MessageId lastId = sequence.get();
-                if (lastId == null ||
-                        (epoch == lastId.epoch() && index > lastId.index() || epoch > lastId.epoch())) {
+                if (lastId == null || (epoch == lastId.epoch() && index > lastId.index() || epoch > lastId.epoch())) {
                     if (sequence.compareAndSet(lastId, id)) {
                         break;
                     }
@@ -938,7 +944,9 @@ public class Consumer implements MeterBinder {
             try {
                 MessageHandler handler = handlers[consistentHash(marker, handlers.length)];
                 handler.handleMessage(channel, marker, id, data);
-            } catch (Throwable ignored) {}
+            } catch (Throwable t) {
+                logger.error("The client<{}> handle message failure, {}", name, t);
+            }
         }
 
         private int consistentHash(int input, int buckets) {

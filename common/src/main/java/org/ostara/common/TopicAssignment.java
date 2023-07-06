@@ -84,4 +84,19 @@ public class TopicAssignment {
     public void setVersion(int version) {
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "topic_assignment {" +
+                "topic='" + topic + '\'' +
+                ", ledgerId=" + ledgerId +
+                ", epoch=" + epoch +
+                ", partition=" + partition +
+                ", replicas=" + replicas.toString() +
+                ", leader='" + leader + '\'' +
+                ", config=" + config +
+                ", transitionalLeader='" + transitionalLeader + '\'' +
+                ", version=" + version +
+                '}';
+    }
 }

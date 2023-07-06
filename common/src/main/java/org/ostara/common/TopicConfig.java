@@ -37,4 +37,13 @@ public class TopicConfig {
     public void setSegmentRetainMs(int segmentRetainMs) {
         this.segmentRetainMs = segmentRetainMs;
     }
+
+    @Override
+    public String toString() {
+        return "topic_config {" +
+                "segmentRollingSize=" + segmentRollingSize +
+                ", segmentRetainCount=" + segmentRetainCount +
+                ", segmentRetainMs=" + segmentRetainMs +
+                '}';
+    }
 }

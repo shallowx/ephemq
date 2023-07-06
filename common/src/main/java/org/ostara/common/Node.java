@@ -105,7 +105,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node{" +
+        return "node {" +
                 "id='" + id + '\'' +
                 ", host='" + host + '\'' +
                 ", port=" + port +

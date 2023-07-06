@@ -34,7 +34,7 @@ public class TopicPartition {
 
     @Override
     public String toString() {
-        return "TopicPartition{" +
+        return "topic_partition{" +
                 "topic='" + topic + '\'' +
                 ", partition=" + partition +
                 '}';

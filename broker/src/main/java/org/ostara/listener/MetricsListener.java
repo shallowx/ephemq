@@ -35,7 +35,7 @@ import static org.ostara.metrics.MetricsConstants.*;
 public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable{
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
-    private final io.micrometer.core.instrument.MeterRegistry registry = Metrics.globalRegistry;
+    private final MeterRegistry registry = Metrics.globalRegistry;
     private final CoreConfig config;
     private final Manager manager;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
@@ -285,7 +285,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         try {
             partitionCounts.incrementAndGet();
         }catch (Throwable t){
-            logger.error("Metrics on partition init listener failed, topicPartition={} ledger={}", topicPartition, ledger, t);
+            logger.error("Metrics on partition init listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
         }
     }
 
@@ -296,7 +296,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             Optional.ofNullable(topicReceiveCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
             Optional.ofNullable(topicPushCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
         }catch (Throwable t){
-            logger.error("Metrics on partition destroy listener failed, topicPartition={} ledger={}", topicPartition, ledger, t);
+            logger.error("Metrics on partition destroy listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
         }
     }
 
@@ -312,16 +312,16 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     @Override
     public void onTopicCreated(String topic) {
-
+        logger.debug("The topic was created, and topic={}", topic);
     }
 
     @Override
     public void onTopicDeleted(String topic) {
-
+        logger.debug("The topic was deleted, and topic={}", topic);
     }
 
     @Override
     public void onPartitionChanged(TopicPartition topicPartition, TopicAssignment oldAssigment, TopicAssignment newAssigment) {
-
+        logger.debug("The topic partition was changed, and the old={} new={}", oldAssigment, newAssigment);
     }
 }
