@@ -105,6 +105,7 @@ public final class NetworkUtils {
         return new FastEventExecutorGroup(threads, f);
     }
 
+    @SuppressWarnings("unused")
     public static EventExecutorGroup newEventExecutorGroup(int threads, int maxPendingTasks, String poolName) {
         if (threads == 0) {
             threads = Runtime.getRuntime().availableProcessors();
@@ -131,7 +132,8 @@ public final class NetworkUtils {
                 ? null :
                 channel.remoteAddress().toString());
     }
-
+    
+    @SuppressWarnings("unused")
     public static <T> Promise<T> newImmediatePromise() {
         return ImmediateEventExecutor.INSTANCE.newPromise();
     }

@@ -27,6 +27,7 @@ public final class ByteBufUtils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static ByteBuf byte2Buf(byte[] bytes) {
         if (null == bytes || bytes.length == 0) {
             return null;

@@ -37,8 +37,6 @@ public final class RemoteException extends RuntimeException {
         int UNKNOWN_EXCEPTION = -1;
         int INVOKE_TIMEOUT_EXCEPTION = -2;
         int UNSUPPORTED_EXCEPTION = -3;
-        int MESSAGE_APPEND_EXCEPTION = -4;
-        int SUBSCRIBE_EXCEPTION = -5;
-        int PROCESS_EXCEPTION = -6;
+        int PROCESS_EXCEPTION = -4;
     }
 }

@@ -1,6 +1,7 @@
 package org.ostara.remote.handle;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -37,12 +38,14 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private final ProcessorAware processor;
 
     public ProcessDuplexHandler(ProcessorAware processor) {
-        this.processor = checkNotNull(processor, "Process not found");
+        this.processor = checkNotNull(processor, "Processor aware not found");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        processor.onActive(ctx.channel(), ctx.executor());
+        Channel channel = ctx.channel();
+        logger.debug("Processor duplex handler active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+        processor.onActive(channel, ctx.executor());
         ctx.fireChannelActive();
     }
 
@@ -50,8 +53,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             try {
-                logger.debug("Read message packet - [{}] form remote address - [{}]", packet,
-                        switchAddress(ctx.channel()));
+                logger.debug("Read message packet - [{}] form remote address<{}>", packet, switchAddress(ctx.channel()));
 
                 final int command = packet.command();
                 if (command > 0) {
