@@ -62,7 +62,7 @@ public class DemoClientBootstrap {
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
-                }, "TEST:" + i);
+                }, "test-" + i);
                 threads[i].start();
             }
             new CountDownLatch(1).await();
@@ -75,7 +75,7 @@ public class DemoClientBootstrap {
     }
 
     private static void invoke(Channel channel, int count, int length, int nThread, int size, int timeout, Invoker invoker) throws Exception {
-        byte[] metadata = "Test metadata".getBytes(StandardCharsets.UTF_8);
+        byte[] metadata = "This is test metadata".getBytes(StandardCharsets.UTF_8);
         byte[] content = new byte[length];
         RANDOM.nextBytes(content);
 
@@ -114,7 +114,7 @@ public class DemoClientBootstrap {
                     }
                 }
                 latch.countDown();
-            }, "Invoker-" + i);
+            }, "invoker-" + i);
             threads[i].start();
         }
         latch.wait();
@@ -137,14 +137,14 @@ public class DemoClientBootstrap {
                 long cost = System.currentTimeMillis() - now;
                 Throwable cause = f.cause();
                 if (cause != null) {
-                    logger.error("FAILURE cost:{}", cost, cause);
+                    logger.error("Failure cost:{}", cost, cause);
                 } else {
-                    logger.info("SUCCESS cost:{}", cost);
+                    logger.info("Success cost:{}", cost);
                 }
             });
             channel.writeAndFlush(awareInvocation, promise);
         } else {
-            throw new TimeoutException();
+            throw new TimeoutException(String.format("Client invoke echo oneway timeout, local_address: %s remote_address: %s", channel.localAddress().toString(), channel.remoteAddress().toString()));
         }
     }
 

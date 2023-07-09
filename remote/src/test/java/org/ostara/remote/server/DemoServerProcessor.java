@@ -33,7 +33,7 @@ public class DemoServerProcessor implements ProcessorAware {
             case 3 -> pass(data);
             default -> {
                 if (answer != null) {
-                    answer.failure(new UnsupportedOperationException("Code invalid:" + command));
+                    answer.failure(new UnsupportedOperationException("Code invalid-" + command));
                 }
             }
         }
@@ -67,7 +67,7 @@ public class DemoServerProcessor implements ProcessorAware {
         long delay = bytes < 8 ? 0 : data.readLong();
         executors.next().schedule(() -> {
             if (answer != null) {
-                answer.success(ByteBufUtils.string2Buf("server wait" + data + "ms"));
+                answer.success(ByteBufUtils.string2Buf("Server wait " + data + " ms"));
             }
         }, delay, TimeUnit.MILLISECONDS);
     }

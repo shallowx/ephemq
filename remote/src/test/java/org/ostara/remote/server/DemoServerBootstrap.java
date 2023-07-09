@@ -50,7 +50,7 @@ public class DemoServerBootstrap {
             logger.info("Demo start running, and listened at {}", 8888);
             channel.closeFuture().sync();
         } catch (Throwable t){
-            logger.error("Demo started failed");
+            logger.error("Demo started failed, {}", t);
         } finally {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
