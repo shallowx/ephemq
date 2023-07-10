@@ -30,3 +30,5 @@
         <appender-ref ref="AsyncSTDOUT"/>
     </root>
 </configuration>
+
+<!-- Customize the log configuration -->
