@@ -29,7 +29,7 @@ public class TopicDeletedCommand implements Command {
 
     @Override
     public String description() {
-        return "Delete topic form broker";
+        return "delete topic form broker";
     }
 
     @Override

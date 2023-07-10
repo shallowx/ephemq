@@ -30,7 +30,7 @@ public class TopicCreatedCommand implements Command {
 
     @Override
     public String description() {
-        return "Create topic";
+        return "create topic";
     }
 
     @Override

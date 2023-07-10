@@ -28,7 +28,7 @@ public class TopicListCommand implements Command {
 
     @Override
     public String description() {
-        return "Get topics from server";
+        return "get topics from server";
     }
 
     @Override

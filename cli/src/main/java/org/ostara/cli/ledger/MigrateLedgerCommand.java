@@ -28,7 +28,7 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public String description() {
-        return "Migrate ledger";
+        return "migrate ledger";
     }
 
     @Override

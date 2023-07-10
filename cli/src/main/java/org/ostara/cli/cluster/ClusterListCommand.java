@@ -29,7 +29,7 @@ public class ClusterListCommand implements Command {
 
     @Override
     public String description() {
-        return "Node list all of cluster";
+        return "node list all of cluster";
     }
 
     @Override
