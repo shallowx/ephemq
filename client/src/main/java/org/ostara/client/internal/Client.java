@@ -213,7 +213,7 @@ public class Client implements MeterBinder {
     }
 
     public synchronized void start() {
-        if (state != null) {
+        if (isRunning()) {
             return;
         }
 
@@ -248,7 +248,7 @@ public class Client implements MeterBinder {
     }
 
     public synchronized void close() {
-        if (state != Boolean.TRUE) {
+        if (!isRunning()) {
             return;
         }
 
