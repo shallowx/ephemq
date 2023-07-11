@@ -18,7 +18,7 @@ public class ShutdownHookThread extends Thread {
     @Override
     public void run() {
         synchronized (this) {
-            logger.info("Shutdown hook was invoked, {}", this.shutdownTimes.incrementAndGet());
+            logger.warn("Shutdown hook was invoked, {}", this.shutdownTimes.incrementAndGet());
 
             if (!this.hasShutdown) {
                 this.hasShutdown = true;
@@ -30,7 +30,7 @@ public class ShutdownHookThread extends Thread {
                 }
 
                 long consumingTime = System.currentTimeMillis() - begin;
-                logger.info("Shutdown hook over, consuming time(ms):{}", consumingTime);
+                logger.warn("Shutdown hook over, consuming time(ms):{}", consumingTime);
             }
         }
     }
