@@ -4,7 +4,7 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.internal.StringUtil;
-import org.ostara.client.ClientConfig;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;

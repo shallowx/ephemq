@@ -1,6 +1,6 @@
 package org.ostara.client.consumer;
 
-import org.ostara.client.ClientConfig;
+import org.ostara.client.internal.ClientConfig;
 
 public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();

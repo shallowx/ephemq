@@ -1,6 +1,6 @@
 package org.ostara.client.producer;
 
-import org.ostara.client.ClientConfig;
+import org.ostara.client.internal.ClientConfig;
 
 public class ProducerConfig {
     private ClientConfig clientConfig = new ClientConfig();

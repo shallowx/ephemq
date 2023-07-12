@@ -1,4 +1,4 @@
-package org.ostara.client;
+package org.ostara.client.util;
 
 import java.util.regex.Pattern;
 

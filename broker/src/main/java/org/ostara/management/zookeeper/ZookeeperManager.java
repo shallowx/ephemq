@@ -3,7 +3,7 @@ package org.ostara.management.zookeeper;
 import com.google.inject.Inject;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.ostara.client.ClientConfig;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;

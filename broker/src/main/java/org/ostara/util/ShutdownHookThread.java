@@ -1,4 +1,4 @@
-package org.ostara;
+package org.ostara.util;
 
 import org.ostara.common.logging.InternalLogger;
 

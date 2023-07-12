@@ -3,6 +3,7 @@ package org.ostara.client;
 import org.junit.Test;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.remote.proto.ClusterInfo;
 

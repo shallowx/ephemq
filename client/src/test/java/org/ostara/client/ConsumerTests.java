@@ -3,6 +3,7 @@ package org.ostara.client;
 import org.junit.Test;
 import org.ostara.client.consumer.Consumer;
 import org.ostara.client.consumer.ConsumerConfig;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.remote.util.ByteBufUtils;
 
 import java.util.ArrayList;

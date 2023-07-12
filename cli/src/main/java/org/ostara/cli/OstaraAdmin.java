@@ -5,7 +5,7 @@ import org.ostara.cli.cluster.ClusterListCommand;
 import org.ostara.cli.topic.TopicCreatedCommand;
 import org.ostara.cli.topic.TopicDeletedCommand;
 import org.ostara.cli.topic.TopicListCommand;
-import org.ostara.client.ClientConfig;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientListener;
 

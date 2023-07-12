@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
-import org.ostara.client.TopicPatterns;
+import org.ostara.client.util.TopicPatterns;
 import org.ostara.client.internal.*;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;

@@ -7,7 +7,6 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.ostara.client.ClientConfig;
 import org.ostara.remote.invoke.Callback;
 import org.ostara.remote.invoke.GenericInvokeAnswer;
 import org.ostara.remote.invoke.InvokeAnswer;

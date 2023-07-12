@@ -1,4 +1,4 @@
-package org.ostara.client;
+package org.ostara.client.internal;
 
 import java.util.ArrayList;
 import java.util.List;

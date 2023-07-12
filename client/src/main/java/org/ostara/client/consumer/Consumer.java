@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.ostara.client.TopicPatterns;
+import org.ostara.client.util.TopicPatterns;
 import org.ostara.client.internal.*;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;

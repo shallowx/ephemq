@@ -10,6 +10,7 @@ import org.ostara.core.InjectBeans;
 import org.ostara.core.OstaraServer;
 import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
+import org.ostara.util.ShutdownHookThread;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

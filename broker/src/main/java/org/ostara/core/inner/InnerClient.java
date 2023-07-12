@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.ostara.client.ClientConfig;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
