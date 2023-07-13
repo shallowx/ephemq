@@ -176,7 +176,9 @@ public class LedgerStorage {
         if (trigger != null) {
             try {
                 trigger.onRelease(ledger, oldHead, newHead);
-            } catch (Throwable ignored) {}
+            } catch (Throwable t) {
+                logger.warn("Trigger on release failed, and topic={} old_offset={} new_offset={}", topic, oldHead, newHead);
+            }
         }
     }
 
