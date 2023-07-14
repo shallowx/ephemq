@@ -31,7 +31,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Create Topic
 ```
-    public void testCreateTopic() throws Exception {
+    public void createTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
@@ -50,7 +50,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Subscribe Message
 ```
-    public void testAttachOfReset() throws Exception {
+    public void attachOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
@@ -83,7 +83,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Send Message
 ```
-    public void testContinueSend() throws Exception {
+    public void continueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
             {add("127.0.0.1:8888");}
@@ -126,7 +126,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 ## Async Send Message
 
 ```
- public void testContinueSend() throws Exception {
+ public void continueAsyncSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
             {add("127.0.0.1:8888");}
@@ -174,7 +174,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 ## SendOneway Message
 
 ```
- public void testContinueSend() throws Exception {
+ public void continueSendOneway() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
             {add("127.0.0.1:8888");}
