@@ -25,7 +25,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 - Java 17
 - -Dio.prometheus.client.export-protobuf.use-direct-buffers=true // prometheus directory memory
 - 
-# Quickstart
+# Quickly Start
 - start Zookeeper
 - start Broker: -c /path/broker.properties
 
@@ -48,7 +48,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
     }
 ```
 
-## Subscribe Message
+## Subscribe Message And Consume Message
 ```
     public void attachOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -215,7 +215,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
     }
 ```
 
-## Metrics 
+## Metrics configuration
 ```
 0.0.0.0:8889/prometheus
 ```
