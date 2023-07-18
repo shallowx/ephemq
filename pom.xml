@@ -12,10 +12,9 @@
   <packaging>pom</packaging>
 
   <scm>
-    <connection>scm:git@github.com:shallowx/Ostara.git</connection>
-    <developerConnection>scm:git@github.com:shallowx/Ostara.git</developerConnection>
-    <url>git@github.com:shallowx/ostaraMQ.git</url>
-    <tag>ostara-all-${project.version}</tag>
+    <connection>scm:git@github.com:shallowx/ostara.git</connection>
+    <developerConnection>scm:git@github.com:shallowx/ostara.git</developerConnection>
+    <tag>ostara-${project.version}</tag>
   </scm>
 
   <licenses>
@@ -27,26 +26,27 @@
   </licenses>
 
   <organization>
-    <name>Ostara</name>
+    <name>shallowx</name>
     <url>https://github.com/shallowx</url>
   </organization>
 
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/shallowx/Ostara/issues</url>
+    <url>https://github.com/shallowx/ostara/issues</url>
   </issueManagement>
 
   <properties>
+    <ostara.version>1.0.0-SNAPSHOT</ostara.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.version>17</maven.compiler.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <java.version>17</java.version>
     <maven.test.skip>false</maven.test.skip>
     <maven.javadoc.skip>true</maven.javadoc.skip>
-    <java.version>17</java.version>
-    <junit.version>4.13.2</junit.version>
+
     <protobuf.version>3.21.8</protobuf.version>
-    <ostara.version>1.0.0-SNAPSHOT</ostara.version>
     <netty.version>4.1.86.Final</netty.version>
     <fastuyil.core.version>8.5.8</fastuyil.core.version>
     <caffine.version>3.1.1</caffine.version>
@@ -61,6 +61,7 @@
     <gmavenplus.plugin.version>2.1.0</gmavenplus.plugin.version>
     <maven.surefire-plugin.version>3.0.0-M5</maven.surefire-plugin.version>
     <jctools.core.version>4.0.1</jctools.core.version>
+    <junit.version>4.13.2</junit.version>
   </properties>
 
   <dependencyManagement>
