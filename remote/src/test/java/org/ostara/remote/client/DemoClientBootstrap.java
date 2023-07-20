@@ -29,7 +29,7 @@ public class DemoClientBootstrap {
     private static final Random RANDOM = new Random();
     public static void main(String[] args) {
         EventLoopGroup group = NetworkUtils.newEventLoopGroup(true, 0, "demo-client");
-        EventExecutorGroup serviceGroup = NetworkUtils.newEventExecutorGroup(0, "demo-client-services");
+        EventExecutorGroup serviceGroup = NetworkUtils.newEventExecutorGroup(0, "demo-client-service");
         DemoClientProcessor processor = new DemoClientProcessor();
 
         try {
