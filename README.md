@@ -15,7 +15,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ![image](https://github.com/shallow-rs/Ostara/blob/main/doc/image/partition.png)
 
-## Message
+## Message Protocol
 
 ![image](https://github.com/shallow-rs/Ostara/blob/main/doc/image/message.png)
 
