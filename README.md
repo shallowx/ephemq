@@ -23,7 +23,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 - Zookeeper 3.5.x or higher
 - Java 17
-- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true // prometheus directory memory
+- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true 
 - 
 # Quickly Start
 - start Zookeeper
