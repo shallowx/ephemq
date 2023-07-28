@@ -17,7 +17,7 @@ public class ConsumerTests {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
-                add("127.0.0.1:8888");
+                add("127.0.0.1:9527");
             }
         });
         clientConfig.setConnectionPoolCapacity(2);

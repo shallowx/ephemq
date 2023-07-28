@@ -24,7 +24,7 @@ public class ProducerTests {
     public void testContinueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:8888");}
+            {add("127.0.0.1:9527");}
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -64,7 +64,7 @@ public class ProducerTests {
     public void testContinueSendAsync() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:8888");}
+            {add("127.0.0.1:9527");}
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -109,7 +109,7 @@ public class ProducerTests {
     public void testContinueSendOneway() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:8888");}
+            {add("127.0.0.1:9527");}
         });
 
         clientConfig.setConnectionPoolCapacity(2);

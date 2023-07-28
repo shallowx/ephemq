@@ -35,7 +35,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
-                add("127.0.0.1:8888");
+                add("127.0.0.1:9527");
             }
         });
 
@@ -54,7 +54,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
-                add("127.0.0.1:8888");
+                add("127.0.0.1:9527");
             }
         });
         clientConfig.setConnectionPoolCapacity(2);
@@ -86,7 +86,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
     public void continueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:8888");}
+            {add("127.0.0.1:9527");}
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -129,7 +129,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
  public void continueAsyncSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:8888");}
+            {add("127.0.0.1:9527");}
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -177,7 +177,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
  public void continueSendOneway() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:8888");}
+            {add("127.0.0.1:9527");}
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -217,5 +217,5 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 ## Metrics configuration
 ```
-0.0.0.0:8889/prometheus
+0.0.0.0:9528/prometheus
 ```
