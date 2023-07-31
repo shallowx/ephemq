@@ -4,45 +4,54 @@
 package org.ostara.remote.proto.server;
 
 public interface CreateTopicRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicRequest)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicRequest)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>string topic = 1;</code>
-   * @return The topic.
-   */
-  java.lang.String getTopic();
-  /**
-   * <code>string topic = 1;</code>
-   * @return The bytes for topic.
-   */
-  com.google.protobuf.ByteString
-      getTopicBytes();
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    java.lang.String getTopic();
 
-  /**
-   * <code>int32 partition = 2;</code>
-   * @return The partition.
-   */
-  int getPartition();
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+    getTopicBytes();
 
-  /**
-   * <code>int32 replicas = 3;</code>
-   * @return The replicas.
-   */
-  int getReplicas();
+    /**
+     * <code>int32 partition = 2;</code>
+     *
+     * @return The partition.
+     */
+    int getPartition();
 
-  /**
-   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
-   * @return Whether the configs field is set.
-   */
-  boolean hasConfigs();
-  /**
-   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
-   * @return The configs.
-   */
-  org.ostara.remote.proto.server.CreateTopicConfigRequest getConfigs();
-  /**
-   * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
-   */
-  org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder();
+    /**
+     * <code>int32 replicas = 3;</code>
+     *
+     * @return The replicas.
+     */
+    int getReplicas();
+
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     *
+     * @return Whether the configs field is set.
+     */
+    boolean hasConfigs();
+
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     *
+     * @return The configs.
+     */
+    org.ostara.remote.proto.server.CreateTopicConfigRequest getConfigs();
+
+    /**
+     * <code>.ostara.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    org.ostara.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder();
 }

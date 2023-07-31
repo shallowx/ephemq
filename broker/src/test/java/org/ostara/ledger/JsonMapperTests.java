@@ -23,7 +23,8 @@ public class JsonMapperTests {
     @Test
     public void testTestDeserialize() throws Exception {
         byte[] data = "{\"addr\":\"localhost:8080\",\"id\":1}".getBytes();
-        TypeReference<JsonObjectTest> typeRef = new TypeReference<>() {};
+        TypeReference<JsonObjectTest> typeRef = new TypeReference<>() {
+        };
         JsonObjectTest o = JsonMapper.deserialize(data, typeRef);
         Assert.assertEquals("localhost:8080", o.addr);
         Assert.assertEquals(1, o.id);
@@ -40,6 +41,7 @@ public class JsonMapperTests {
             this.id = id;
             this.addr = addr;
         }
+
         public int getId() {
             return id;
         }

@@ -72,7 +72,7 @@ public class RecordEntryDispatcher {
     }
 
     private EventExecutor channelExecutor(Channel channel) {
-        return executors[(channel.hashCode() & 0x7fffffff) %  executors.length];
+        return executors[(channel.hashCode() & 0x7fffffff) % executors.length];
     }
 
     private Handler allocateHandler(Channel channel) {
@@ -87,7 +87,7 @@ public class RecordEntryDispatcher {
                 return createHandler();
             }
 
-            Map<Handler ,Integer> selectHandlers = new HashMap<>();
+            Map<Handler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
             for (Handler handler : allocateHandlers.keySet()) {
                 int channelCount = handler.channelSubscriptionMap.size();
@@ -152,7 +152,7 @@ public class RecordEntryDispatcher {
             } else {
                 executor.execute(() -> doReset(channel, resetOffset, wholeMarkers, promise));
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             promise.tryFailure(t);
         }
     }
@@ -211,7 +211,7 @@ public class RecordEntryDispatcher {
             channelSubscriptionMap.put(channel, newSubscription);
             channelHandlerMap.putIfAbsent(channel, handler);
             promise.trySuccess(newSubscription.markers.size());
-        } catch (Throwable t){
+        } catch (Throwable t) {
             promise.tryFailure(t);
         }
     }
@@ -224,13 +224,13 @@ public class RecordEntryDispatcher {
             } else {
                 executor.execute(() -> doAlter(channel, appendMarkers, deleteMarkers, promise));
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             promise.tryFailure(t);
         }
     }
 
     private void doAlter(Channel channel, IntCollection appendMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
-        try{
+        try {
             checkActive();
             Handler handler = channelHandlerMap.get(channel);
             ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.channelSubscriptionMap;
@@ -260,7 +260,7 @@ public class RecordEntryDispatcher {
                 channelHandlerMap.remove(channel);
             }
             promise.trySuccess(markers.size());
-        } catch (Throwable t){
+        } catch (Throwable t) {
             promise.tryFailure(t);
         }
     }
@@ -271,13 +271,14 @@ public class RecordEntryDispatcher {
             if (executor.inEventLoop()) {
                 doClean(channel, promise);
             } else {
-                executor.execute(() ->  doClean(channel, promise));
+                executor.execute(() -> doClean(channel, promise));
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             promise.tryFailure(t);
         }
     }
-    private void doClean(Channel channel, Promise<Boolean> promise){
+
+    private void doClean(Channel channel, Promise<Boolean> promise) {
         try {
             checkActive();
 
@@ -311,7 +312,7 @@ public class RecordEntryDispatcher {
         if (handler.triggered.compareAndSet(false, true)) {
             try {
                 handler.dispatchExecutor.execute(() -> doDispatch(handler));
-            }catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error("Dispatch submit failed: {}", handler, t);
             }
         }
@@ -330,7 +331,7 @@ public class RecordEntryDispatcher {
         try {
             int runTimes = 0;
             ByteBuf entry;
-            while((entry = cursor.next()) != null) {
+            while ((entry = cursor.next()) != null) {
                 runTimes++;
                 ByteBuf payload = null;
                 try {
@@ -379,7 +380,7 @@ public class RecordEntryDispatcher {
                             channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         }
                     }
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     logger.error("Dispatch failed: {} lastOffset={}", handler, lastOffset, t);
                 } finally {
                     ByteBufUtils.release(entry);
@@ -389,7 +390,7 @@ public class RecordEntryDispatcher {
                     break;
                 }
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Dispatch execute failed: {} lastOffset={}", handler, lastOffset, t);
         } finally {
             handler.triggered.set(false);
@@ -402,17 +403,17 @@ public class RecordEntryDispatcher {
         }
     }
 
-    private void count(int count){
+    private void count(int count) {
         if (count > 0) {
             try {
                 counter.accept(count);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error("Count failed, ledger={} topic={}", ledger, topic, t);
             }
         }
     }
 
-    private ChannelPromise delayPursue(PursueTask task){
+    private ChannelPromise delayPursue(PursueTask task) {
         ChannelPromise promise = task.subscription.channel.newPromise();
         promise.addListener((ChannelFutureListener) f -> {
             if (f.channel().isActive()) {
@@ -422,12 +423,12 @@ public class RecordEntryDispatcher {
         return promise;
     }
 
-    private void submitPursue(PursueTask task){
+    private void submitPursue(PursueTask task) {
         try {
             channelExecutor(task.subscription.channel).execute(() -> {
                 doPursue(task);
             });
-        } catch (Throwable t){
+        } catch (Throwable t) {
             task.subscription.followed = true;
             logger.error("Submit failed: {}", task);
         }
@@ -489,7 +490,7 @@ public class RecordEntryDispatcher {
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
                     }
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     logger.error("Pursue failed:{} lastOffset={}", task, lastOffset, t);
                 } finally {
                     ByteBufUtils.release(entry);
@@ -501,7 +502,7 @@ public class RecordEntryDispatcher {
                     break;
                 }
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
         }
 
@@ -515,29 +516,29 @@ public class RecordEntryDispatcher {
         }
     }
 
-    private void submitFollow(PursueTask task){
+    private void submitFollow(PursueTask task) {
         try {
             task.subscription.handler.dispatchExecutor.execute(() -> {
                 task.subscription.followed = true;
             });
-        } catch (Throwable t){
+        } catch (Throwable t) {
             task.subscription.followed = true;
             logger.error("Submit failed: {}", task);
         }
     }
 
-    private void submitAlign(PursueTask task){
+    private void submitAlign(PursueTask task) {
         try {
             task.subscription.handler.dispatchExecutor.execute(() -> {
                 doAlign(task);
             });
-        } catch (Throwable t){
+        } catch (Throwable t) {
             task.subscription.followed = true;
             logger.error("Submit failed: {}", task);
         }
     }
 
-    private void doAlign(PursueTask task){
+    private void doAlign(PursueTask task) {
         Subscription subscription = task.subscription;
         Channel channel = subscription.channel;
         Handler handler = subscription.handler;
@@ -600,7 +601,7 @@ public class RecordEntryDispatcher {
                         return;
                     }
 
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     logger.error("Switch to pursue, channel is full:{}", task);
                 } finally {
                     ByteBufUtils.release(entry);
@@ -612,7 +613,7 @@ public class RecordEntryDispatcher {
                     break;
                 }
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
         }
 
@@ -632,10 +633,10 @@ public class RecordEntryDispatcher {
         ByteBuf buf = null;
         try {
             MessagePushSignal signal = MessagePushSignal.newBuilder()
-                           .setEpoch(offset.getEpoch())
-                         .setIndex(offset.getIndex())
-                        .setMarker(marker)
-                        .setLedger(ledger)
+                    .setEpoch(offset.getEpoch())
+                    .setIndex(offset.getIndex())
+                    .setMarker(marker)
+                    .setLedger(ledger)
                     .build();
             int signalLength = ProtoBufUtils.protoLength(signal);
             int contentLength = entry.readableBytes() - 16;
@@ -650,7 +651,7 @@ public class RecordEntryDispatcher {
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, entry.retainedSlice(entry.readerIndex() + 16, contentLength));
 
             return buf;
-        } catch (Throwable t){
+        } catch (Throwable t) {
             ByteBufUtils.release(buf);
             throw new RuntimeException(String.format("Build payload error, ledger=%d topic=%s offset=%s length=%d", ledger, t, offset, entry.readableBytes()));
         }
@@ -668,7 +669,7 @@ public class RecordEntryDispatcher {
         }
     }
 
-    private void detachMarker(Int2ObjectMap<Set<Subscription>> markerSubscriptionMap, int marker, Subscription subscription){
+    private void detachMarker(Int2ObjectMap<Set<Subscription>> markerSubscriptionMap, int marker, Subscription subscription) {
         Set<Subscription> subscriptions = markerSubscriptionMap.get(marker);
         if (subscriptions != null) {
             subscriptions.remove(subscription);
@@ -716,7 +717,7 @@ public class RecordEntryDispatcher {
                             result.trySuccess(channelMarkers);
                         }
                     });
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     result.tryFailure(t);
                 }
             }
@@ -730,8 +731,8 @@ public class RecordEntryDispatcher {
     private static class PursueTask {
         private final Subscription subscription;
         private final LedgerCursor cursor;
-        private Offset pursueOffset;
         private final long pursueTime = System.currentTimeMillis();
+        private Offset pursueOffset;
 
         public PursueTask(Subscription subscription, LedgerCursor cursor, Offset pursueOffset) {
             this.subscription = subscription;
@@ -754,7 +755,7 @@ public class RecordEntryDispatcher {
         }
     }
 
-    private static class Subscription{
+    private static class Subscription {
         private final Channel channel;
         private final IntSet markers;
         private final Handler handler;

@@ -17,9 +17,9 @@ import java.util.concurrent.Semaphore;
 public class InnerClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClientListener.class);
 
-    private CoreConfig config;
-    private Manager manager;
-    private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>(){
+    private final CoreConfig config;
+    private final Manager manager;
+    private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() throws Exception {
             return new Semaphore(100);
@@ -41,7 +41,7 @@ public class InnerClientListener implements ClientListener {
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> semaphore.release());
 
-        } catch (Throwable t){
+        } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);
         }

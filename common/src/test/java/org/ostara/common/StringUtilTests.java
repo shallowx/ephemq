@@ -9,13 +9,57 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static io.netty.util.internal.StringUtil.*;
-import static io.netty.util.internal.StringUtil.indexOfNonWhiteSpace;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StringUtilTests {
+
+    private static void checkNotCommonSuffix(String s, String p, int len) {
+        assertFalse(checkCommonSuffixSymmetric(s, p, len));
+    }
+
+    private static void checkCommonSuffix(String s, String p, int len) {
+        assertTrue(checkCommonSuffixSymmetric(s, p, len));
+    }
+
+    private static boolean checkCommonSuffixSymmetric(String s, String p, int len) {
+        boolean sp = commonSuffixOfLength(s, p, len);
+        boolean ps = commonSuffixOfLength(p, s, len);
+        assertEquals(sp, ps);
+        return sp;
+    }
+
+    private static void escapeCsv(CharSequence value, CharSequence expected) {
+        escapeCsv(value, expected, false);
+    }
+
+    private static void escapeCsvWithTrimming(CharSequence value, CharSequence expected) {
+        escapeCsv(value, expected, true);
+    }
+
+    private static void escapeCsv(CharSequence value, CharSequence expected, boolean trimOws) {
+        CharSequence escapedValue = value;
+        for (int i = 0; i < 10; ++i) {
+            escapedValue = StringUtil.escapeCsv(escapedValue, trimOws);
+            assertEquals(expected, escapedValue.toString());
+        }
+    }
+
+    private static void assertEscapeCsvAndUnEscapeCsv(String value) {
+        assertEquals(value, unescapeCsv(StringUtil.escapeCsv(value)));
+    }
+
+    private static void testSimpleClassName(Class<?> clazz) throws Exception {
+        Package pkg = clazz.getPackage();
+        String name;
+        if (pkg != null) {
+            name = clazz.getName().substring(pkg.getName().length() + 1);
+        } else {
+            name = clazz.getName();
+        }
+        assertEquals(name, simpleClassName(clazz));
+    }
 
     @Test
     public void ensureNewlineExists() {
@@ -24,10 +68,10 @@ public class StringUtilTests {
 
     @Test
     public void testToHexString() {
-        assertThat(toHexString(new byte[] { 0 }), is("0"));
-        assertThat(toHexString(new byte[] { 1 }), is("1"));
-        assertThat(toHexString(new byte[] { 0, 0 }), is("0"));
-        assertThat(toHexString(new byte[] { 1, 0 }), is("100"));
+        assertThat(toHexString(new byte[]{0}), is("0"));
+        assertThat(toHexString(new byte[]{1}), is("1"));
+        assertThat(toHexString(new byte[]{0, 0}), is("0"));
+        assertThat(toHexString(new byte[]{1, 0}), is("100"));
         assertThat(toHexString(EmptyArrays.EMPTY_BYTES), is(""));
     }
 
@@ -42,48 +86,48 @@ public class StringUtilTests {
 
     @Test
     public void splitSimple() {
-        assertArrayEquals(new String[] { "foo", "bar" }, "foo:bar".split(":"));
+        assertArrayEquals(new String[]{"foo", "bar"}, "foo:bar".split(":"));
     }
 
     @Test
     public void splitWithTrailingDelimiter() {
-        assertArrayEquals(new String[] { "foo", "bar" }, "foo,bar,".split(","));
+        assertArrayEquals(new String[]{"foo", "bar"}, "foo,bar,".split(","));
     }
 
     @Test
     public void splitWithTrailingDelimiters() {
-        assertArrayEquals(new String[] { "foo", "bar" }, "foo!bar!!".split("!"));
+        assertArrayEquals(new String[]{"foo", "bar"}, "foo!bar!!".split("!"));
     }
 
     @Test
     public void splitWithTrailingDelimitersDot() {
-        assertArrayEquals(new String[] { "foo", "bar" }, "foo.bar..".split("\\."));
+        assertArrayEquals(new String[]{"foo", "bar"}, "foo.bar..".split("\\."));
     }
 
     @Test
     public void splitWithTrailingDelimitersEq() {
-        assertArrayEquals(new String[] { "foo", "bar" }, "foo=bar==".split("="));
+        assertArrayEquals(new String[]{"foo", "bar"}, "foo=bar==".split("="));
     }
 
     @Test
     public void splitWithTrailingDelimitersSpace() {
-        assertArrayEquals(new String[] { "foo", "bar" }, "foo bar  ".split(" "));
+        assertArrayEquals(new String[]{"foo", "bar"}, "foo bar  ".split(" "));
     }
 
     @Test
     public void splitWithConsecutiveDelimiters() {
-        assertArrayEquals(new String[] { "foo", "", "bar" }, "foo$$bar".split("\\$"));
+        assertArrayEquals(new String[]{"foo", "", "bar"}, "foo$$bar".split("\\$"));
     }
 
     @Test
     public void splitWithDelimiterAtBeginning() {
-        assertArrayEquals(new String[] { "", "foo", "bar" }, "#foo#bar".split("#"));
+        assertArrayEquals(new String[]{"", "foo", "bar"}, "#foo#bar".split("#"));
     }
 
     @Test
     public void splitMaxPart() {
-        assertArrayEquals(new String[] { "foo", "bar:bar2" }, "foo:bar:bar2".split(":", 2));
-        assertArrayEquals(new String[] { "foo", "bar", "bar2" }, "foo:bar:bar2".split(":", 3));
+        assertArrayEquals(new String[]{"foo", "bar:bar2"}, "foo:bar:bar2".split(":", 2));
+        assertArrayEquals(new String[]{"foo", "bar", "bar2"}, "foo:bar:bar2".split(":", 3));
     }
 
     @Test
@@ -118,21 +162,6 @@ public class StringUtilTests {
         checkNotCommonSuffix("abcd", "axcd", 3);
 
         checkNotCommonSuffix("abcx", "abcy", 1);
-    }
-
-    private static void checkNotCommonSuffix(String s, String p, int len) {
-        assertFalse(checkCommonSuffixSymmetric(s, p, len));
-    }
-
-    private static void checkCommonSuffix(String s, String p, int len) {
-        assertTrue(checkCommonSuffixSymmetric(s, p, len));
-    }
-
-    private static boolean checkCommonSuffixSymmetric(String s, String p, int len) {
-        boolean sp = commonSuffixOfLength(s, p, len);
-        boolean ps = commonSuffixOfLength(p, s, len);
-        assertEquals(sp, ps);
-        return sp;
     }
 
     @Test
@@ -324,22 +353,6 @@ public class StringUtilTests {
         escapeCsv(value, expected);
     }
 
-    private static void escapeCsv(CharSequence value, CharSequence expected) {
-        escapeCsv(value, expected, false);
-    }
-
-    private static void escapeCsvWithTrimming(CharSequence value, CharSequence expected) {
-        escapeCsv(value, expected, true);
-    }
-
-    private static void escapeCsv(CharSequence value, CharSequence expected, boolean trimOws) {
-        CharSequence escapedValue = value;
-        for (int i = 0; i < 10; ++i) {
-            escapedValue = StringUtil.escapeCsv(escapedValue, trimOws);
-            assertEquals(expected, escapedValue.toString());
-        }
-    }
-
     @Test
     public void escapeCsvWithTrimming() {
         assertSame("", StringUtil.escapeCsv("", true));
@@ -446,10 +459,6 @@ public class StringUtilTests {
         assertEscapeCsvAndUnEscapeCsv("\n");
     }
 
-    private static void assertEscapeCsvAndUnEscapeCsv(String value) {
-        assertEquals(value, unescapeCsv(StringUtil.escapeCsv(value)));
-    }
-
     @Test
     public void testUnescapeCsvFields() {
         assertEquals(Collections.singletonList(""), unescapeCsvFields(""));
@@ -526,19 +535,6 @@ public class StringUtilTests {
         testSimpleClassName(TestClass.class);
     }
 
-    private static void testSimpleClassName(Class<?> clazz) throws Exception {
-        Package pkg = clazz.getPackage();
-        String name;
-        if (pkg != null) {
-            name = clazz.getName().substring(pkg.getName().length() + 1);
-        } else {
-            name = clazz.getName();
-        }
-        assertEquals(name, simpleClassName(clazz));
-    }
-
-    private static final class TestClass { }
-
     @Test
     public void testEndsWith() {
         assertFalse(StringUtil.endsWith("", 'u'));
@@ -568,7 +564,7 @@ public class StringUtilTests {
     @Test
     public void testJoin() {
         assertEquals("",
-                StringUtil.join(",", Collections.<CharSequence>emptyList()).toString());
+                StringUtil.join(",", Collections.emptyList()).toString());
         assertEquals("a",
                 StringUtil.join(",", Collections.singletonList("a")).toString());
         assertEquals("a,b",
@@ -617,5 +613,8 @@ public class StringUtilTests {
         assertEquals(4, indexOfNonWhiteSpace(" \tfoo\r\n", 4));
         assertEquals(-1, indexOfNonWhiteSpace(" \tfoo\r\n", 10));
         assertEquals(-1, indexOfNonWhiteSpace(" \tfoo\r\n", Integer.MAX_VALUE));
+    }
+
+    private static final class TestClass {
     }
 }

@@ -37,19 +37,18 @@ import java.util.regex.Pattern;
 
 public class ZookeeperTopicManager implements TopicManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
-
+    private static final String ALL_TOPIC_KEY = "ALL-TOPIC";
+    private final Map<Integer, ZookeeperPartitionLeaderElector> leaderElectorMap = new ConcurrentHashMap<>();
+    private final List<TopicListener> listeners = new LinkedList<>();
     private CoreConfig config;
     private CuratorFramework client;
     private CuratorCache cache;
     private ReplicaManager replicaManager;
-    private final Map<Integer, ZookeeperPartitionLeaderElector> leaderElectorMap = new ConcurrentHashMap<>();
     private DistributedAtomicInteger topicIdGenerator;
     private DistributedAtomicInteger ledgerIdGenerator;
     private Manager manager;
     private LoadingCache<String, Set<PartitionInfo>> topicCache;
     private LoadingCache<String, Set<String>> topicNamesCache;
-    private final List<TopicListener> listeners = new LinkedList<>();
-    private static final String ALL_TOPIC_KEY = "ALL-TOPIC";
 
     public ZookeeperTopicManager() {
     }
@@ -102,7 +101,7 @@ public class ZookeeperTopicManager implements TopicManager {
             partitionInfos.remove(partitionInfo);
             partitionInfos.add(partitionInfo);
             topicCache.put(topic, partitionInfos);
-        } catch (Exception e){
+        } catch (Exception e) {
             topicCache.invalidate(topic);
         }
     }
@@ -144,6 +143,9 @@ public class ZookeeperTopicManager implements TopicManager {
         replicaManager.start();
         cache = CuratorCache.build(client, PathConstants.BROKERS_TOPICS);
         CuratorCacheListener listener = CuratorCacheListener.builder().forTreeCache(client, new TreeCacheListener() {
+            final Pattern TOPIC_PARTITION = Pattern.compile("^/brokers/topics/[\\w\\-#]+/partitions/\\d+$");
+            final Pattern TOPIC = Pattern.compile("^/brokers/topics/[\\w\\-#]+$");
+
             @Override
             public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent event) throws Exception {
                 TreeCacheEvent.Type type = event.getType();
@@ -154,8 +156,6 @@ public class ZookeeperTopicManager implements TopicManager {
                 }
             }
 
-            final Pattern TOPIC_PARTITION = Pattern.compile("^/brokers/topics/[\\w\\-#]+/partitions/\\d+$");
-            final Pattern TOPIC = Pattern.compile("^/brokers/topics/[\\w\\-#]+$");
             boolean regularExpressionMatcher(String origin, Pattern pattern) {
                 if (pattern == null) {
                     return true;
@@ -254,7 +254,7 @@ public class ZookeeperTopicManager implements TopicManager {
                 }
             }
 
-            private void handleAdd(TreeCacheEvent event) throws Exception{
+            private void handleAdd(TreeCacheEvent event) throws Exception {
                 ChildData data = event.getData();
                 String path = data.getPath();
                 if (isTopicNode(path)) {
@@ -314,7 +314,7 @@ public class ZookeeperTopicManager implements TopicManager {
             for (int i = 0; i < partitions; i++) {
                 Set<String> partitionReplicaSet = new TreeSet<>();
                 for (int j = 0; j < replicas; j++) {
-                    int nodeIdx = ( i + j) % clusterUpNodes.size();
+                    int nodeIdx = (i + j) % clusterUpNodes.size();
                     Node node = clusterUpNodes.get(nodeIdx);
                     partitionReplicaSet.add(node.getId());
                 }
@@ -362,7 +362,7 @@ public class ZookeeperTopicManager implements TopicManager {
         String path = String.format(PathConstants.BROKER_TOPIC, topic);
         try {
             deleteBuilder.guaranteed().deletingChildrenIfNeeded().forPath(path);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalStateException(String.format("Topic %s does not exist", topic));
         }
     }
@@ -373,7 +373,7 @@ public class ZookeeperTopicManager implements TopicManager {
         return executor.submit(() -> {
             try {
                 initPartition(topicPartition, ledgerId, epoch, topicConfig);
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException("Init log failed", e);
             }
         });
@@ -465,7 +465,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     "Partition[topic=%s partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
             ));
         } catch (Exception e) {
-            takeoverPartition (topicPartition);
+            takeoverPartition(topicPartition);
         }
     }
 

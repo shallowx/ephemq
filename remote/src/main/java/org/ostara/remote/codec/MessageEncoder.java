@@ -16,7 +16,8 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
     private static final MessageEncoder ENCODER = new MessageEncoder();
 
-    private MessageEncoder() {}
+    private MessageEncoder() {
+    }
 
     public static MessageEncoder instance() {
         return ENCODER;
@@ -31,7 +32,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
             final ByteBuf header;
             try {
-                 header = encodeHeader(ctx.alloc(), command, answer, body.readableBytes());
+                header = encodeHeader(ctx.alloc(), command, answer, body.readableBytes());
             } catch (Throwable cause) {
                 release(body);
                 throw cause;

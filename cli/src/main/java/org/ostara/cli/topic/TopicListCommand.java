@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 public class TopicListCommand implements Command {
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return format.format(new Date());
+    }
+
     @Override
     public String name() {
         return "TopicList";
@@ -104,7 +109,7 @@ public class TopicListCommand implements Command {
                 Gson gson = new Gson();
                 System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), gson.toJson(topics));
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), t.getCause().getMessage());
         }
     }
@@ -185,10 +190,5 @@ public class TopicListCommand implements Command {
                     ", replicas=" + replicas +
                     '}';
         }
-    }
-
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
     }
 }

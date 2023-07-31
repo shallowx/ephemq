@@ -11,10 +11,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractInternalLoggerTest<T> {
+    protected final Map<String, Object> result = new HashMap<String, Object>();
     protected String loggerName = "foo";
     protected T mockLog;
     protected io.netty.util.internal.logging.InternalLogger logger;
-    protected final Map<String, Object> result = new HashMap<String, Object>();
 
     @SuppressWarnings("unchecked")
     protected <V> V getResult(String key) {
@@ -65,12 +65,12 @@ public abstract class AbstractInternalLoggerTest<T> {
 
         // test xx(format, ...arguments)
         clazz.getMethod(logMethod, String.class, Object[].class).invoke(logger, format3,
-                new Object[] { msg, msg, msg });
+                new Object[]{msg, msg, msg});
         assertTrue(result.isEmpty());
 
         // test xx(format, ...arguments), the last argument is Throwable
         clazz.getMethod(logMethod, String.class, Object[].class).invoke(logger, format3,
-                new Object[] { msg, msg, msg, ex });
+                new Object[]{msg, msg, msg, ex});
         assertTrue(result.isEmpty());
 
         // test xx(msg, Throwable)
@@ -103,13 +103,13 @@ public abstract class AbstractInternalLoggerTest<T> {
         // test xx(format, ...arguments)
         result.clear();
         clazz.getMethod(logMethod, String.class, Object[].class).invoke(logger, format3,
-                new Object[] { msg, msg, msg });
+                new Object[]{msg, msg, msg});
         assertResult(level, format3, null, msg, msg, msg);
 
         // test xx(format, ...arguments), the last argument is Throwable
         result.clear();
         clazz.getMethod(logMethod, String.class, Object[].class).invoke(logger, format3,
-                new Object[] { msg, msg, msg, ex });
+                new Object[]{msg, msg, msg, ex});
         assertResult(level, format3, ex, msg, msg, msg, ex);
 
         // test xx(msg, Throwable)
@@ -123,7 +123,9 @@ public abstract class AbstractInternalLoggerTest<T> {
         assertResult(level, null, ex);
     }
 
-    /** a just default code, you can override to fix {@linkplain #mockLog} */
+    /**
+     * a just default code, you can override to fix {@linkplain #mockLog}
+     */
     protected void assertResult(io.netty.util.internal.logging.InternalLogLevel level, String format, Throwable t, Object... args) {
         assertFalse(result.isEmpty());
     }

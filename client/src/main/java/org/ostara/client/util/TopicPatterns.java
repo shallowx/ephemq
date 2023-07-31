@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 public class TopicPatterns {
     private static final Pattern TOPIC_PATTERN = Pattern.compile("^[\\w\\-#]+$");
+
     public static void validateTopic(String topic) {
         if (topic == null) {
             throw new IllegalArgumentException("Topic not found");

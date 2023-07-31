@@ -13,7 +13,7 @@ public class MessageUtils {
         return new Offset(epoch, index);
     }
 
-    public static int getMarker(ByteBuf buf){
+    public static int getMarker(ByteBuf buf) {
         return buf.getInt(0);
     }
 
@@ -53,7 +53,7 @@ public class MessageUtils {
         if (baseEpoch == nextEpoch) {
             long baseIndex = baseOffset.getIndex();
             return baseIndex <= 0 || baseIndex + 1 == nextOffset.getIndex();
-        } else if (baseEpoch < nextEpoch){
+        } else if (baseEpoch < nextEpoch) {
             return baseEpoch <= 0 || nextOffset.getIndex() == 1;
         }
         return false;

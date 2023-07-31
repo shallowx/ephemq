@@ -29,6 +29,7 @@ public class LogManager {
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
     private final List<LogListener> listeners = new LinkedList<>();
     private final ScheduledExecutorService scheduledExecutorService;
+
     public LogManager(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
@@ -44,17 +45,17 @@ public class LogManager {
     }
 
     public void appendRecord(int ledger, int marker, ByteBuf payload, Promise<Offset> promise) {
-       Log log = getLog(ledger);
-       if (log == null) {
-           promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d ot found", ledger)));
-           return;
-       }
+        Log log = getLog(ledger);
+        if (log == null) {
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d ot found", ledger)));
+            return;
+        }
 
-       for (LogListener listener : listeners) {
-          TopicPartition topicPartition = log.getTopicPartition();
-          listener.onReceiveMessage(topicPartition.getTopic(), ledger, 1);
-       }
-       log.append(marker, payload, promise);
+        for (LogListener listener : listeners) {
+            TopicPartition topicPartition = log.getTopicPartition();
+            listener.onReceiveMessage(topicPartition.getTopic(), ledger, 1);
+        }
+        log.append(marker, payload, promise);
     }
 
     public void alterSubscribe(Channel channel, int ledger, IntCollection addMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {

@@ -132,7 +132,7 @@ public final class NetworkUtils {
                 ? null :
                 channel.remoteAddress().toString());
     }
-    
+
     @SuppressWarnings("unused")
     public static <T> Promise<T> newImmediatePromise() {
         return ImmediateEventExecutor.INSTANCE.newPromise();

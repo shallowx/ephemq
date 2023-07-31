@@ -69,12 +69,12 @@ public final class ConnectDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        if (null != heartFuture){
+        if (null != heartFuture) {
             heartFuture.cancel(false);
             heartFuture = null;
         }
 
-        if (null != idleFuture){
+        if (null != idleFuture) {
             idleFuture.cancel(false);
             idleFuture = null;
         }

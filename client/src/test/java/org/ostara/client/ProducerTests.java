@@ -23,8 +23,10 @@ public class ProducerTests {
     @Test
     public void testContinueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:9527");}
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:9527");
+            }
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -50,7 +52,7 @@ public class ProducerTests {
 
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     t.printStackTrace();
                 }
                 producer.close();
@@ -63,8 +65,10 @@ public class ProducerTests {
     @Test
     public void testContinueSendAsync() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:9527");}
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:9527");
+            }
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -95,7 +99,7 @@ public class ProducerTests {
 
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     logger.info("error:{}", t);
                 }
                 producer.close();
@@ -108,8 +112,10 @@ public class ProducerTests {
     @Test
     public void testContinueSendOneway() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setBootstrapAddresses(new ArrayList<>(){
-            {add("127.0.0.1:9527");}
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:9527");
+            }
         });
 
         clientConfig.setConnectionPoolCapacity(2);
@@ -134,7 +140,7 @@ public class ProducerTests {
 
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     logger.info("error:{}", t);
                 }
                 producer.close();

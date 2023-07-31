@@ -4,16 +4,6 @@ public final class RemoteException extends RuntimeException {
 
     private final int command;
 
-    public static RemoteException of(int command, String error) {
-        command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;
-        return new RemoteException(command, error);
-    }
-
-    public static RemoteException of(int command, String error, Throwable cause) {
-        command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;
-        return new RemoteException(command, error, cause);
-    }
-
     public RemoteException(int command, String error) {
         super(error);
         this.command = command;
@@ -22,6 +12,16 @@ public final class RemoteException extends RuntimeException {
     public RemoteException(int command, String error, Throwable cause) {
         super(error, cause);
         this.command = command;
+    }
+
+    public static RemoteException of(int command, String error) {
+        command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;
+        return new RemoteException(command, error);
+    }
+
+    public static RemoteException of(int command, String error, Throwable cause) {
+        command = command < 0 ? command : Failure.UNKNOWN_EXCEPTION;
+        return new RemoteException(command, error, cause);
     }
 
     public int getCommand() {

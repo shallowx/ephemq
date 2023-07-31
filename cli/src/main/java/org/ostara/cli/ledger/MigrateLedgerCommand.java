@@ -21,6 +21,13 @@ import java.util.concurrent.*;
 
 @SuppressWarnings("all")
 public class MigrateLedgerCommand implements Command {
+    private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
+
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return format.format(new Date());
+    }
+
     @Override
     public String name() {
         return "migrateLedger";
@@ -65,12 +72,13 @@ public class MigrateLedgerCommand implements Command {
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
             String file = null;
-            if(commandLine.hasOption('e')) {
+            if (commandLine.hasOption('e')) {
                 file = commandLine.getOptionValue('e');
                 if (!StringUtils.isNullOrEmpty(file)) {
                     String content = FileUtils.readFileToString(new File(file), StandardCharsets.UTF_8);
                     Gson gson = new Gson();
-                    List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {}.getType());
+                    List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {
+                    }.getType());
                     if (infos == null || infos.isEmpty()) {
                         return;
                     }
@@ -90,12 +98,11 @@ public class MigrateLedgerCommand implements Command {
                     }
                 }
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getMessage());
         }
     }
 
-    private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
     private void retry(Client client, String topic, int partition, String original, String destination) throws ExecutionException, InterruptedException {
         Future<?> future = retry.submit(() -> {
             try {
@@ -111,10 +118,5 @@ public class MigrateLedgerCommand implements Command {
             retry(client, topic, partition, original, destination);
             return;
         }
-    }
-
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
     }
 }

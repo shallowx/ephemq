@@ -13,15 +13,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LedgerSegment {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSegment.class);
+    private static final ReferenceQueue<BufferHolder> BUFFER_RECYCLE_QUEUE = new ReferenceQueue<>();
+    private static final Thread BUFFER_RECYCLE_THREAD;
+    private static final Map<Reference<?>, ByteBuf> buffers = new ConcurrentHashMap<>();
 
-    private volatile BufferHolder holder;
+    static {
+        BUFFER_RECYCLE_THREAD = new Thread(LedgerSegment::recycleBuffer, "segment-cycle");
+        BUFFER_RECYCLE_THREAD.setDaemon(true);
+        BUFFER_RECYCLE_THREAD.start();
+    }
+
     private final int ledger;
     private final Offset baseOffset;
     private final int basePosition;
+    private final long creationTime;
+    private volatile BufferHolder holder;
     private volatile Offset lastOffset;
     private volatile int lastPosition;
-    private final long creationTime;
-
     private volatile LedgerSegment next;
 
     public LedgerSegment(int ledger, ByteBuf buffer, Offset baseOffset) {
@@ -32,6 +40,26 @@ public class LedgerSegment {
         this.creationTime = System.currentTimeMillis();
     }
 
+    private static void recycleBuffer() {
+        while (true) {
+            try {
+                Reference<?> reference = BUFFER_RECYCLE_QUEUE.remove();
+                ByteBuf buf = buffers.remove(reference);
+                if (buf != null) {
+                    buf.release();
+                }
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    private static BufferHolder createBufferHolder(ByteBuf buf) {
+        BufferHolder holder = new BufferHolder(buf);
+        buffers.put(new PhantomReference<>(holder, BUFFER_RECYCLE_QUEUE), buf);
+        return holder;
+    }
+
     long getCreationTime() {
         return creationTime;
     }
@@ -39,26 +67,26 @@ public class LedgerSegment {
     protected void writeRecord(int marker, Offset offset, ByteBuf payload) {
         BufferHolder theHolder = holder;
         if (theHolder != null) {
-           ByteBuf theBuffer = theHolder.buffer;
-           int location = theBuffer.writerIndex();
-           try {
-             int length = 16 + payload.readableBytes();
+            ByteBuf theBuffer = theHolder.buffer;
+            int location = theBuffer.writerIndex();
+            try {
+                int length = 16 + payload.readableBytes();
 
-             theBuffer.writeInt(length);
-             theBuffer.writeInt(marker);
-             theBuffer.writeInt(offset.getEpoch());
-             theBuffer.writeLong(offset.getIndex());
-             theBuffer.writeBytes(payload);
-             theBuffer.writeInt(length);
-           } catch (Throwable t){
-               theBuffer.writerIndex(location);
-               throw new IllegalStateException(String.format("Segment write error, ledger=%s", ledger), t);
-           }
+                theBuffer.writeInt(length);
+                theBuffer.writeInt(marker);
+                theBuffer.writeInt(offset.getEpoch());
+                theBuffer.writeLong(offset.getIndex());
+                theBuffer.writeBytes(payload);
+                theBuffer.writeInt(length);
+            } catch (Throwable t) {
+                theBuffer.writerIndex(location);
+                throw new IllegalStateException(String.format("Segment write error, ledger=%s", ledger), t);
+            }
 
-           lastOffset = offset;
-           lastPosition = theBuffer.writerIndex();
+            lastOffset = offset;
+            lastPosition = theBuffer.writerIndex();
 
-           return;
+            return;
         }
 
         throw new IllegalStateException(String.format("Segment was released, ledger=%s", ledger));
@@ -69,9 +97,9 @@ public class LedgerSegment {
         if (theHolder != null) {
             ByteBuf theBuffer = theHolder.buffer;
             int length = theBuffer.getInt(position);
-           return theBuffer.retainedSlice(position + 4, length);
+            return theBuffer.retainedSlice(position + 4, length);
         }
-        logger.warn("The record is empty, and ledger={}" ,ledger);
+        logger.warn("The record is empty, and ledger={}", ledger);
         return null;
     }
 
@@ -154,36 +182,6 @@ public class LedgerSegment {
     protected int capacity() {
         BufferHolder theHolder = holder;
         return theHolder == null ? 0 : theHolder.buffer.capacity();
-    }
-
-    private static final ReferenceQueue<BufferHolder> BUFFER_RECYCLE_QUEUE = new ReferenceQueue<>();
-    private static final Thread BUFFER_RECYCLE_THREAD;
-    private static final Map<Reference<?>, ByteBuf> buffers = new ConcurrentHashMap<>();
-
-    static {
-        BUFFER_RECYCLE_THREAD = new Thread(LedgerSegment::recycleBuffer, "segment-cycle");
-        BUFFER_RECYCLE_THREAD.setDaemon(true);
-        BUFFER_RECYCLE_THREAD.start();
-    }
-
-    private static void recycleBuffer() {
-        while (true) {
-            try {
-                Reference<?> reference = BUFFER_RECYCLE_QUEUE.remove();
-                ByteBuf buf = buffers.remove(reference);
-                if (buf != null) {
-                    buf.release();
-                }
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
-    }
-
-    private static BufferHolder createBufferHolder(ByteBuf buf) {
-        BufferHolder holder = new BufferHolder(buf);
-        buffers.put(new PhantomReference<>(holder, BUFFER_RECYCLE_QUEUE), buf);
-        return holder;
     }
 
     private static class BufferHolder {

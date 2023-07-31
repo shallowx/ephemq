@@ -165,10 +165,10 @@ public class LedgerSegmentTests {
 
     private ByteBuf allocateBuf() {
         LedgerConfig config = new LedgerConfig();
-       return PooledByteBufAllocator.DEFAULT.directBuffer(config.segmentBufferCapacity(), config.segmentBufferCapacity());
+        return PooledByteBufAllocator.DEFAULT.directBuffer(config.segmentBufferCapacity(), config.segmentBufferCapacity());
     }
 
-    static class LedgerSegmentTest extends LedgerSegment{
+    static class LedgerSegmentTest extends LedgerSegment {
         public LedgerSegmentTest(int ledger, ByteBuf buffer, Offset baseOffset) {
             super(ledger, buffer, baseOffset);
         }

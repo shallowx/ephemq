@@ -28,16 +28,16 @@ import java.util.stream.Collectors;
 
 public class ZookeeperClusterManager implements ClusterManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
-    private volatile boolean registered = false;
+    private static final String UP = "up";
+    private static final String DOWN = "down";
     private final CoreConfig config;
     private final List<ClusterListener> listeners = new LinkedList<>();
-    private final Map<String ,Node> activeNodes = new ConcurrentHashMap<>();
+    private final Map<String, Node> activeNodes = new ConcurrentHashMap<>();
     private final CuratorFramework client;
+    private volatile boolean registered = false;
     private CuratorCache cache;
     private LeaderLatch latch;
     private Node thisNode;
-    private static final String UP = "up";
-    private static final String DOWN = "down";
 
     public ZookeeperClusterManager(CoreConfig config) {
         this.config = config;
@@ -100,7 +100,8 @@ public class ZookeeperClusterManager implements ClusterManager {
                             case CHILD_ADDED -> handleAdd(event);
                             case CHILD_REMOVED -> handleRemove(event);
                             case CHILD_UPDATED -> handlerUpdated(event);
-                            default -> {}
+                            default -> {
+                            }
                         }
                     }
 
@@ -125,7 +126,7 @@ public class ZookeeperClusterManager implements ClusterManager {
                         }
                     }
 
-                    private void handlerUpdated(PathChildrenCacheEvent event) throws Exception{
+                    private void handlerUpdated(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 

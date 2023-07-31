@@ -34,6 +34,12 @@ import static org.ostara.remote.util.NetworkUtils.*;
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
     private static final int FAILURE_CONTENT_LIMIT = 4 * 1024 * 1024;
+    private static final FastThreadLocal<Set<InvokeHolder<ByteBuf>>> WHOLE_INVOKE_HOLDER = new FastThreadLocal<>() {
+        @Override
+        protected Set<InvokeHolder<ByteBuf>> initialValue() throws Exception {
+            return new HashSet<>();
+        }
+    };
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
     private final ProcessorAware processor;
 
@@ -224,11 +230,4 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         logger.error("Channel<{}> caught {}", ctx.channel().toString(), cause);
         ctx.close();
     }
-
-    private static final FastThreadLocal<Set<InvokeHolder<ByteBuf>>> WHOLE_INVOKE_HOLDER = new FastThreadLocal<>() {
-        @Override
-        protected Set<InvokeHolder<ByteBuf>> initialValue() throws Exception {
-            return new HashSet<>();
-        }
-    };
 }

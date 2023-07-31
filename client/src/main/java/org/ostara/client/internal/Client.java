@@ -44,15 +44,18 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Client implements MeterBinder {
+    protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
-
-    protected String name;
     private final ClientConfig config;
     private final ClientListener listener;
     private final List<SocketAddress> bootstrapAddress;
+    private final Map<SocketAddress, List<Future<ClientChannel>>> channels = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Promise<ClientChannel>> assembleChannels = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
+    protected String name;
     protected EventLoopGroup workerGroup;
-    private Bootstrap bootstrap;
     protected EventExecutor taskExecutor;
+    private Bootstrap bootstrap;
     private volatile Boolean state;
 
     public Client(String name, ClientConfig config, ClientListener listener) {
@@ -69,13 +72,12 @@ public class Client implements MeterBinder {
         }
 
         if (size == 1) {
-           return bootstrapAddress.get(0);
+            return bootstrapAddress.get(0);
         }
 
         return bootstrapAddress.get(ThreadLocalRandom.current().nextInt(size));
     }
 
-    private final Map<SocketAddress, List<Future<ClientChannel>>> channels = new ConcurrentHashMap<>();
     public ClientChannel fetchChannel(SocketAddress address) {
         try {
             return acquireChannel(address).get(config.getChannelConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
@@ -117,11 +119,11 @@ public class Client implements MeterBinder {
             channels.computeIfAbsent(address, k -> new CopyOnWriteArrayList<>()).add(future);
             final SocketAddress theAddress = address;
             future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
-               if (!f.isSuccess()) {
-                   removeChannel(theAddress, f);
-               } else {
-                   f.getNow().onClosed(() -> removeChannel(theAddress, f));
-               }
+                if (!f.isSuccess()) {
+                    removeChannel(theAddress, f);
+                } else {
+                    f.getNow().onClosed(() -> removeChannel(theAddress, f));
+                }
             });
 
             return future;
@@ -142,8 +144,6 @@ public class Client implements MeterBinder {
         }
     }
 
-    private final ConcurrentMap<String, Promise<ClientChannel>> assembleChannels = new ConcurrentHashMap<>();
-
     public Future<ClientChannel> createChannelFuture(SocketAddress address) {
         Bootstrap theBootstrap = bootstrap.clone().handler(new InnerChannelInitializer(address));
         ChannelFuture channelFuture = theBootstrap.connect(address);
@@ -151,14 +151,14 @@ public class Client implements MeterBinder {
         Promise<ClientChannel> assemblePromise = assembleChannels
                 .computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise());
         channelFuture.addListener(future -> {
-           if (!future.isSuccess()) {
-               assemblePromise.tryFailure(future.cause());
-               assembleChannels.remove(channel.id().asLongText());
-           }
+            if (!future.isSuccess()) {
+                assemblePromise.tryFailure(future.cause());
+                assembleChannels.remove(channel.id().asLongText());
+            }
         });
 
         channel.closeFuture().addListener(f -> {
-           assemblePromise.tryFailure(new IllegalArgumentException("Client channel is closed"));
+            assemblePromise.tryFailure(new IllegalArgumentException("Client channel is closed"));
             assembleChannels.remove(channel.id().asLongText());
         });
 
@@ -242,7 +242,7 @@ public class Client implements MeterBinder {
             acquireChannel(address);
         }
 
-        taskExecutor = new DefaultEventExecutor(new DefaultThreadFactory("client("+ name +")-task"));
+        taskExecutor = new DefaultEventExecutor(new DefaultThreadFactory("client(" + name + ")-task"));
         taskExecutor.schedule(new RefreshMetadataTask(), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
     }
 
@@ -262,7 +262,6 @@ public class Client implements MeterBinder {
         }
     }
 
-    protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
     @Override
     public void bindTo(MeterRegistry meterRegistry) {
         {
@@ -284,95 +283,8 @@ public class Client implements MeterBinder {
         }
     }
 
-    private class RefreshMetadataTask implements Runnable {
-        @Override
-        public void run() {
-            if (taskExecutor.isShuttingDown()) {
-                return;
-            }
-
-            try {
-                refreshMetadata();
-            } catch (Throwable t){
-                String message = t.getMessage();
-                if (message == null || message.isEmpty()) {
-                    message = t.getClass().getName();
-                }
-                logger.error("Refresh metadata failed, {}", message);
-            }
-
-            if (!taskExecutor.isShuttingDown()) {
-                taskExecutor.schedule(this, config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
-            }
-        }
-    }
-
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
         return new ClientChannel(clientConfig, channel, address);
-    }
-
-    private class InnerChannelInitializer extends ChannelInitializer<SocketChannel> {
-
-        private final SocketAddress address;
-
-        public InnerChannelInitializer(SocketAddress address) {
-            this.address = address;
-        }
-
-        @Override
-        protected void initChannel(SocketChannel socketChannel) throws Exception {
-            ClientChannel clientChannel = createClientChannel(config, socketChannel, address);
-            socketChannel.pipeline()
-                    .addLast("packet-encoder", MessageEncoder.instance())
-                    .addLast("packet-decoder", new MessageDecoder())
-                    .addLast("connect-handler", new ConnectDuplexHandler(
-                            config.getChannelKeepPeriodMs(), config.getChannelIdleTimeoutMs()
-                            ))
-                    .addLast("service-handler", new ProcessDuplexHandler(new InnerServiceProcessor(clientChannel)));
-        }
-
-        private class InnerServiceProcessor implements ProcessorAware, ProcessCommand.Client {
-
-            private final ClientChannel clientChannel;
-
-            public InnerServiceProcessor(ClientChannel channel) {
-                this.clientChannel = channel;
-            }
-
-            @Override
-            public void onActive(Channel channel, EventExecutor executor) {
-               try {
-                  assembleChannels.computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise()).setSuccess(clientChannel);
-                  channel.closeFuture().addListener((ChannelFutureListener) f -> listener.onChannelClosed(clientChannel));
-                  listener.onChannelActive(clientChannel);
-               }catch (Throwable t){
-                   channel.close();
-               }
-            }
-
-            @Override
-            public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-                int length = data.readableBytes();
-                try {
-                    switch (command) {
-                        case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
-                        case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
-                        case ProcessCommand.Client.TOPIC_INFO_CHANGED -> onTopicChanged(clientChannel, data, answer);
-                        case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
-                        default -> {
-                            if (answer != null) {
-                                answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code unsupported: " + command));
-                            }
-                        }
-                    }
-                } catch (Throwable t) {
-                    logger.error("<{}>Client<{}> processor is error, code={} length={}", NetworkUtils.switchAddress(clientChannel.channel()), name, command, length);
-                    if (answer != null) {
-                        answer.failure(t);
-                    }
-                }
-            }
-        }
     }
 
     private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
@@ -407,13 +319,12 @@ public class Client implements MeterBinder {
         }
     }
 
-    private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
     public MessageRouter fetchMessageRouter(String topic) {
         ClientChannel channel = null;
         try {
             channel = fetchChannel(null);
             return applyMessageRouter(topic, channel, true).get();
-        }catch (Throwable t){
+        } catch (Throwable t) {
             throw new RuntimeException(
                     String.format(
                             "Fetch message router from given client channel %s failed, topic=%s",
@@ -429,7 +340,7 @@ public class Client implements MeterBinder {
                 channel = fetchChannel(null);
             }
             return applyMessageRouter(topic, channel, false).get();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             throw new RuntimeException(
                     String.format(
                             "Refresh message router from given client channel %s failed, topic=%s",
@@ -464,14 +375,14 @@ public class Client implements MeterBinder {
                     routers.remove(topic, f);
                 }
             });
-            if (result == null || (result.isDone() &&(!result.isSuccess() || result.getNow() == null))) {
+            if (result == null || (result.isDone() && (!result.isSuccess() || result.getNow() == null))) {
                 routers.put(topic, promise);
             }
         }
 
         try {
             promise.trySuccess(cachingMessageRouter(topic, queryMessageRouter(channel, topic)));
-        } catch (Throwable t){
+        } catch (Throwable t) {
             promise.tryFailure(t);
         }
         return promise;
@@ -489,7 +400,7 @@ public class Client implements MeterBinder {
 
         TopicInfo topicInfo = queryTopicInfos(channel, topic).get(topic);
         if (topicInfo == null) {
-           return null;
+            return null;
         }
         return assembleMessageRouter(topic, clusterInfo, topicInfo);
     }
@@ -514,10 +425,10 @@ public class Client implements MeterBinder {
             for (String nodeId : partition.getReplicaNodeIdsList()) {
                 NodeMetadata replicaNode = nodes.get(nodeId);
                 if (replicaNode != null) {
-                  SocketAddress address = NetworkUtils.switchSocketAddress(replicaNode.getHost(), replicaNode.getPort());
-                  if (address != null) {
-                      replicaAddress.add(address);
-                  }
+                    SocketAddress address = NetworkUtils.switchSocketAddress(replicaNode.getHost(), replicaNode.getPort());
+                    if (address != null) {
+                        replicaAddress.add(address);
+                    }
                 }
             }
 
@@ -566,17 +477,18 @@ public class Client implements MeterBinder {
             return router;
         }
     }
-    public ClusterInfo queryClusterInfo(ClientChannel channel) throws Exception {
-       try {
-           QueryClusterInfoRequest request = QueryClusterInfoRequest.newBuilder().build();
-           Promise<QueryClusterResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-           channel.invoker().queryClusterInfo(config.getMetadataTimeoutMs(), promise, request);
 
-           QueryClusterResponse response = promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS);
-           return response.hasClusterInfo() ? response.getClusterInfo() : null;
-       } catch (Exception e){
-           throw e;
-       }
+    public ClusterInfo queryClusterInfo(ClientChannel channel) throws Exception {
+        try {
+            QueryClusterInfoRequest request = QueryClusterInfoRequest.newBuilder().build();
+            Promise<QueryClusterResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+            channel.invoker().queryClusterInfo(config.getMetadataTimeoutMs(), promise, request);
+
+            QueryClusterResponse response = promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS);
+            return response.hasClusterInfo() ? response.getClusterInfo() : null;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public Map<String, TopicInfo> queryTopicInfos(ClientChannel channel, String... topics) throws Exception {
@@ -589,7 +501,7 @@ public class Client implements MeterBinder {
             channel.invoker().queryTopicInfo(config.getMetadataTimeoutMs(), promise, request);
 
             return promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS).getTopicInfosMap();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
@@ -631,7 +543,8 @@ public class Client implements MeterBinder {
                 }
                 queryRouters.put(topic, router);
             }
-        } catch (Throwable ignored){}
+        } catch (Throwable ignored) {
+        }
 
         if (queryRouters.isEmpty()) {
             return;
@@ -727,6 +640,93 @@ public class Client implements MeterBinder {
                 .build();
 
         clientChannel.invoker().migrateLedger(config.getMigrateLedgerTimeoutMs(), promise, request);
-       return promise.get(config.getMigrateLedgerTimeoutMs(), TimeUnit.MILLISECONDS);
+        return promise.get(config.getMigrateLedgerTimeoutMs(), TimeUnit.MILLISECONDS);
+    }
+
+    private class RefreshMetadataTask implements Runnable {
+        @Override
+        public void run() {
+            if (taskExecutor.isShuttingDown()) {
+                return;
+            }
+
+            try {
+                refreshMetadata();
+            } catch (Throwable t) {
+                String message = t.getMessage();
+                if (message == null || message.isEmpty()) {
+                    message = t.getClass().getName();
+                }
+                logger.error("Refresh metadata failed, {}", message);
+            }
+
+            if (!taskExecutor.isShuttingDown()) {
+                taskExecutor.schedule(this, config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
+            }
+        }
+    }
+
+    private class InnerChannelInitializer extends ChannelInitializer<SocketChannel> {
+
+        private final SocketAddress address;
+
+        public InnerChannelInitializer(SocketAddress address) {
+            this.address = address;
+        }
+
+        @Override
+        protected void initChannel(SocketChannel socketChannel) throws Exception {
+            ClientChannel clientChannel = createClientChannel(config, socketChannel, address);
+            socketChannel.pipeline()
+                    .addLast("packet-encoder", MessageEncoder.instance())
+                    .addLast("packet-decoder", new MessageDecoder())
+                    .addLast("connect-handler", new ConnectDuplexHandler(
+                            config.getChannelKeepPeriodMs(), config.getChannelIdleTimeoutMs()
+                    ))
+                    .addLast("service-handler", new ProcessDuplexHandler(new InnerServiceProcessor(clientChannel)));
+        }
+
+        private class InnerServiceProcessor implements ProcessorAware, ProcessCommand.Client {
+
+            private final ClientChannel clientChannel;
+
+            public InnerServiceProcessor(ClientChannel channel) {
+                this.clientChannel = channel;
+            }
+
+            @Override
+            public void onActive(Channel channel, EventExecutor executor) {
+                try {
+                    assembleChannels.computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise()).setSuccess(clientChannel);
+                    channel.closeFuture().addListener((ChannelFutureListener) f -> listener.onChannelClosed(clientChannel));
+                    listener.onChannelActive(clientChannel);
+                } catch (Throwable t) {
+                    channel.close();
+                }
+            }
+
+            @Override
+            public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+                int length = data.readableBytes();
+                try {
+                    switch (command) {
+                        case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
+                        case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
+                        case ProcessCommand.Client.TOPIC_INFO_CHANGED -> onTopicChanged(clientChannel, data, answer);
+                        case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
+                        default -> {
+                            if (answer != null) {
+                                answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code unsupported: " + command));
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    logger.error("<{}>Client<{}> processor is error, code={} length={}", NetworkUtils.switchAddress(clientChannel.channel()), name, command, length);
+                    if (answer != null) {
+                        answer.failure(t);
+                    }
+                }
+            }
+        }
     }
 }

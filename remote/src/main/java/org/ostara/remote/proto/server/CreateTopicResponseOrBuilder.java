@@ -4,54 +4,63 @@
 package org.ostara.remote.proto.server;
 
 public interface CreateTopicResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicResponse)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicResponse)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>string topic = 1;</code>
-   * @return The topic.
-   */
-  java.lang.String getTopic();
-  /**
-   * <code>string topic = 1;</code>
-   * @return The bytes for topic.
-   */
-  com.google.protobuf.ByteString
-      getTopicBytes();
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    java.lang.String getTopic();
 
-  /**
-   * <code>int32 partitions = 2;</code>
-   * @return The partitions.
-   */
-  int getPartitions();
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+    getTopicBytes();
 
-  /**
-   * <code>int32 topicId = 3;</code>
-   * @return The topicId.
-   */
-  int getTopicId();
+    /**
+     * <code>int32 partitions = 2;</code>
+     *
+     * @return The partitions.
+     */
+    int getPartitions();
 
-  /**
-   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-   */
-  java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> 
-      getPartitionsReplicasList();
-  /**
-   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-   */
-  org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index);
-  /**
-   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-   */
-  int getPartitionsReplicasCount();
-  /**
-   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-   */
-  java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
-      getPartitionsReplicasOrBuilderList();
-  /**
-   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-   */
-  org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
-      int index);
+    /**
+     * <code>int32 topicId = 3;</code>
+     *
+     * @return The topicId.
+     */
+    int getTopicId();
+
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    java.util.List<org.ostara.remote.proto.server.PartitionsReplicas>
+    getPartitionsReplicasList();
+
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index);
+
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    int getPartitionsReplicasCount();
+
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>
+    getPartitionsReplicasOrBuilderList();
+
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
+            int index);
 }

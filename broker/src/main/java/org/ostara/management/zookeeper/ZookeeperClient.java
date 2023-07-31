@@ -42,6 +42,6 @@ public class ZookeeperClient {
         for (CuratorFramework client : clients.values()) {
             client.close();
         }
-        clients.clear();;
+        clients.clear();
     }
 }

@@ -8,11 +8,9 @@ import org.ostara.common.util.MessageUtils;
 
 public class MessageWrapper extends AbstractReferenceCounted {
 
+    private static final ObjectPool<MessageWrapper> RECYCLER = ObjectPool.newPool(MessageWrapper::new);
     private int ledger;
     private ByteBuf message;
-
-    private static final ObjectPool<MessageWrapper> RECYCLER = ObjectPool.newPool(MessageWrapper::new);
-
     private ObjectPool.Handle<MessageWrapper> handle;
 
     private MessageWrapper() {
@@ -34,9 +32,11 @@ public class MessageWrapper extends AbstractReferenceCounted {
     public int getEpoch() {
         return MessageUtils.getEpoch(message);
     }
+
     public int getIndex() {
         return MessageUtils.getIndex(message);
     }
+
     public int getMarker() {
         return MessageUtils.getMarker(message);
     }

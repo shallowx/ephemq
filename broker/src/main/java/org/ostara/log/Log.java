@@ -95,7 +95,7 @@ public class Log {
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
 
-       this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config, manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
+        this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config, manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {
@@ -120,7 +120,7 @@ public class Log {
         } else {
             try {
                 storageExecutor.submit(() -> doMigrate(dest, destChannel, promise));
-            } catch (Exception e){
+            } catch (Exception e) {
                 promise.tryFailure(e);
                 logger.error(e.getMessage(), e);
             }
@@ -134,11 +134,11 @@ public class Log {
     public Promise<SyncResponse> syncFromTarget(ClientChannel clientChannel, Offset offset, int timeoutMs) {
         Promise<SyncResponse> result = storageExecutor.newPromise();
         if (storageExecutor.inEventLoop()) {
-             doSyncFromTarget(clientChannel, offset, timeoutMs, result);
+            doSyncFromTarget(clientChannel, offset, timeoutMs, result);
         } else {
             try {
                 storageExecutor.submit(() -> doSyncFromTarget(clientChannel, offset, timeoutMs, result));
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 result.tryFailure(t);
                 logger.error(t.getMessage(), t);
             }
@@ -209,7 +209,7 @@ public class Log {
             doUnSync(timeoutMs, promise);
         } else {
             try {
-                storageExecutor.submit(() ->  doUnSync(timeoutMs, promise));
+                storageExecutor.submit(() -> doUnSync(timeoutMs, promise));
             } catch (Exception e) {
                 promise.tryFailure(e);
                 logger.error(e.getMessage(), e);
@@ -233,8 +233,8 @@ public class Log {
         promise.addListener(future -> unSyncFuture = null);
         LogState logState = state.get();
         if (!isSynchronizing(logState) && !isMigrating(logState)) {
-           promise.trySuccess(null);
-           return;
+            promise.trySuccess(null);
+            return;
         }
 
         state.set(LogState.APPENDABLE);
@@ -259,7 +259,7 @@ public class Log {
         try {
             TopicManager topicManager = manager.getTopicManager();
             topicManager.getReplicaManager().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
-        } catch (Exception e){
+        } catch (Exception e) {
             unSyncPromise.tryFailure(e);
             logger.error(e.getMessage(), e);
         }
@@ -277,21 +277,21 @@ public class Log {
             TopicManager topicManager = manager.getTopicManager();
             Promise<SyncResponse> syncResponsePromise = syncFromTarget(destChannel, new Offset(0, 0L), 30000);
             syncResponsePromise.addListener(future -> {
-                if(future.isSuccess()) {
+                if (future.isSuccess()) {
                     commandExecutor.schedule(() -> {
                         try {
                             topicManager.handoverPartition(dest, topicPartition);
-                        } catch (Exception e){
+                        } catch (Exception e) {
 
                         }
-                    }, 30 , TimeUnit.SECONDS);
+                    }, 30, TimeUnit.SECONDS);
                     commandExecutor.schedule(() -> {
                         try {
                             topicManager.retirePartition(topicPartition);
-                        } catch (Exception e){
+                        } catch (Exception e) {
 
                         }
-                    }, 60 , TimeUnit.SECONDS);
+                    }, 60, TimeUnit.SECONDS);
                     promise.trySuccess(null);
                 } else {
                     promise.tryFailure(future.cause());
@@ -341,6 +341,7 @@ public class Log {
             }
         }
     }
+
     public void doAlterSubscribe(Channel channel, IntCollection appendMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
         LogState logState = state.get();
         if (!isActive(logState)) {
@@ -361,6 +362,7 @@ public class Log {
             }
         }
     }
+
     public void doCleanSubscribe(Channel channel, Promise<Boolean> promise) {
         entryDispatcher.clean(channel, promise);
     }
@@ -382,7 +384,7 @@ public class Log {
         return storage.currentOffset();
     }
 
-    public Offset getHeadOffset(){
+    public Offset getHeadOffset() {
         return storage.headOffset();
     }
 
@@ -507,7 +509,7 @@ public class Log {
         } else {
             try {
                 storageExecutor.execute(() -> doStart(result));
-            } catch (Exception e){
+            } catch (Exception e) {
                 result.tryFailure(e);
                 logger.error(e.getMessage(), e);
             }
@@ -570,7 +572,11 @@ public class Log {
         }
     }
 
-    public class InnerTrigger implements LedgerTrigger{
+    public enum LogState {
+        APPENDABLE, SYNCHRONIZING, MIGRATING, CLOSED
+    }
+
+    public class InnerTrigger implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int recordCount, Offset lasetOffset) {
             onAppendTrigger(ledgerId, recordCount, lasetOffset);
@@ -588,9 +594,5 @@ public class Log {
         public void accept(int value) {
             onPushMessage(value);
         }
-    }
-
-    public enum LogState {
-        APPENDABLE, SYNCHRONIZING, MIGRATING, CLOSED
     }
 }

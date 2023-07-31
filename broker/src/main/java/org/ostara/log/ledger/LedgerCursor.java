@@ -61,10 +61,10 @@ public class LedgerCursor {
     }
 
     public LedgerCursor seekToTail() {
-      LedgerSegment tail = storage.tailSegment();
-      segmentHolder = new WeakReference<>(tail);
-      position = tail.lastPosition();
-      return this;
+        LedgerSegment tail = storage.tailSegment();
+        segmentHolder = new WeakReference<>(tail);
+        position = tail.lastPosition();
+        return this;
     }
 
     private LedgerSegment rollValidSegment() {
@@ -84,6 +84,7 @@ public class LedgerCursor {
             position = next.basePosition();
         }
     }
+
     public int getPosition() {
         return position;
     }

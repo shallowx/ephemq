@@ -4,24 +4,27 @@
 package org.ostara.remote.proto;
 
 public interface MessageIdOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.MessageId)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.MessageId)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>int32 ledger = 1;</code>
-   * @return The ledger.
-   */
-  int getLedger();
+    /**
+     * <code>int32 ledger = 1;</code>
+     *
+     * @return The ledger.
+     */
+    int getLedger();
 
-  /**
-   * <code>int32 epoch = 2;</code>
-   * @return The epoch.
-   */
-  int getEpoch();
+    /**
+     * <code>int32 epoch = 2;</code>
+     *
+     * @return The epoch.
+     */
+    int getEpoch();
 
-  /**
-   * <code>int32 index = 3;</code>
-   * @return The index.
-   */
-  int getIndex();
+    /**
+     * <code>int32 index = 3;</code>
+     *
+     * @return The index.
+     */
+    int getIndex();
 }

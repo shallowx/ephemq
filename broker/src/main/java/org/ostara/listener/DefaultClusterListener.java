@@ -76,7 +76,7 @@ public class DefaultClusterListener implements ClusterListener {
         }
     }
 
-    private ByteBuf assembleServerOfflineData(Channel channel, Node node) throws Exception{
+    private ByteBuf assembleServerOfflineData(Channel channel, Node node) throws Exception {
         NodeMetadata metadata = NodeMetadata.newBuilder()
                 .setClusterName(node.getCluster())
                 .setId(node.getId())

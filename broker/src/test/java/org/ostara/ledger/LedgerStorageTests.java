@@ -21,7 +21,7 @@ public class LedgerStorageTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorageTests.class);
 
     @Test
-    public void testAppendRecord() throws Exception{
+    public void testAppendRecord() throws Exception {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
                 NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerTest());
 
@@ -29,16 +29,16 @@ public class LedgerStorageTests {
         CountDownLatch latch = new CountDownLatch(1);
         Promise<Offset> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
-           if (f.isSuccess()) {
-               Offset offset = (Offset) f.get();
-               Assert.assertEquals(offset.getEpoch(), 0);
-               Assert.assertEquals(offset.getIndex(), 1);
-           } else {
-               Throwable cause = f.cause();
-               Assert.assertNotNull(cause);
-           }
+            if (f.isSuccess()) {
+                Offset offset = (Offset) f.get();
+                Assert.assertEquals(offset.getEpoch(), 0);
+                Assert.assertEquals(offset.getIndex(), 1);
+            } else {
+                Throwable cause = f.cause();
+                Assert.assertNotNull(cause);
+            }
             logger.info("Call back successes");
-           latch.countDown();
+            latch.countDown();
         });
 
         storage.appendRecord(1, message, promise);
@@ -58,11 +58,11 @@ public class LedgerStorageTests {
 
         long bytes = storage.segmentBytes();
         message.release();
-        Assert.assertEquals(bytes, 0 );
+        Assert.assertEquals(bytes, 0);
         storage.close(null);
     }
 
-    static class LedgerTriggerTest implements LedgerTrigger{
+    static class LedgerTriggerTest implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int recordCount, Offset lasetOffset) {
             Assert.assertEquals(ledgerId, 1);

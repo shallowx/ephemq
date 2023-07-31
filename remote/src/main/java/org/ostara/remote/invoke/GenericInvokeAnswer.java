@@ -14,9 +14,8 @@ public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 
     private static final int EXPECT = 0;
     private static final int UPDATE = 1;
-
-    private volatile int completed;
     private final Callback<V> callback;
+    private volatile int completed;
 
     public GenericInvokeAnswer() {
         this(null);
@@ -38,7 +37,7 @@ public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
                 onCompleted(v, null);
                 return true;
             }
-            return  false;
+            return false;
         } finally {
             if (v instanceof ReferenceCounted buf) {
                 release(buf);
@@ -49,7 +48,7 @@ public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
     @Override
     public boolean failure(Throwable cause) {
         checkNotNull(cause, "Throwable cause must be not null");
-        if (UPDATER.compareAndSet(this, EXPECT , UPDATE)) {
+        if (UPDATER.compareAndSet(this, EXPECT, UPDATE)) {
             onCompleted(null, cause);
             return true;
         }
@@ -57,8 +56,8 @@ public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
     }
 
     private void onCompleted(V v, Throwable cause) {
-       if (null != callback) {
-           callback.operationCompleted(v, cause);
-       }
+        if (null != callback) {
+            callback.operationCompleted(v, cause);
+        }
     }
 }

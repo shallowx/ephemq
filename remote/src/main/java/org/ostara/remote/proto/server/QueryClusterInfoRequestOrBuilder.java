@@ -4,6 +4,6 @@
 package org.ostara.remote.proto.server;
 
 public interface QueryClusterInfoRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryClusterInfoRequest)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryClusterInfoRequest)
+        com.google.protobuf.MessageOrBuilder {
 }

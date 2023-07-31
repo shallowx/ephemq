@@ -4,41 +4,49 @@
 package org.ostara.remote.proto.client;
 
 public interface TopicChangedSignalOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.TopicChangedSignal)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.TopicChangedSignal)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>.ostara.protobuf.TopicChangedSignal.Type type = 1;</code>
-   * @return The enum numeric value on the wire for type.
-   */
-  int getTypeValue();
-  /**
-   * <code>.ostara.protobuf.TopicChangedSignal.Type type = 1;</code>
-   * @return The type.
-   */
-  org.ostara.remote.proto.client.TopicChangedSignal.Type getType();
+    /**
+     * <code>.ostara.protobuf.TopicChangedSignal.Type type = 1;</code>
+     *
+     * @return The enum numeric value on the wire for type.
+     */
+    int getTypeValue();
 
-  /**
-   * <code>string topic = 2;</code>
-   * @return The topic.
-   */
-  java.lang.String getTopic();
-  /**
-   * <code>string topic = 2;</code>
-   * @return The bytes for topic.
-   */
-  com.google.protobuf.ByteString
-      getTopicBytes();
+    /**
+     * <code>.ostara.protobuf.TopicChangedSignal.Type type = 1;</code>
+     *
+     * @return The type.
+     */
+    org.ostara.remote.proto.client.TopicChangedSignal.Type getType();
 
-  /**
-   * <code>int32 ledger = 3;</code>
-   * @return The ledger.
-   */
-  int getLedger();
+    /**
+     * <code>string topic = 2;</code>
+     *
+     * @return The topic.
+     */
+    java.lang.String getTopic();
 
-  /**
-   * <code>int32 ledger_version = 4;</code>
-   * @return The ledgerVersion.
-   */
-  int getLedgerVersion();
+    /**
+     * <code>string topic = 2;</code>
+     *
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+    getTopicBytes();
+
+    /**
+     * <code>int32 ledger = 3;</code>
+     *
+     * @return The ledger.
+     */
+    int getLedger();
+
+    /**
+     * <code>int32 ledger_version = 4;</code>
+     *
+     * @return The ledgerVersion.
+     */
+    int getLedgerVersion();
 }

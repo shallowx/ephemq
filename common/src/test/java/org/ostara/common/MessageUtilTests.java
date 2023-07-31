@@ -43,7 +43,7 @@ public class MessageUtilTests {
     }
 
     @Test
-    public void testGetMarker(){
+    public void testGetMarker() {
         int marker = MessageUtils.getMarker(message);
         Assert.assertEquals(marker, 1);
     }

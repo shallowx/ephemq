@@ -67,7 +67,7 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
         var whole = 0;
         ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
             if (holder.isValid() && null != consumer) {
                 doConsume(holder, consumer);
@@ -91,7 +91,7 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
         var whole = 0;
         ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
             boolean valid = holder.isValid();
 
@@ -131,10 +131,9 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
                 return new Holder(handle);
             }
         };
-
+        private final Recycler.Handle<Holder> handle;
         private long expired;
         private InvokeAnswer<?> answer;
-        private final Recycler.Handle<Holder> handle;
 
         public Holder(Recycler.Handle<Holder> handle) {
             this.handle = handle;

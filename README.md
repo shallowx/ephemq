@@ -8,7 +8,9 @@ reliability, trillion-level capacity and flexible scalability
 - Dotted lines are optional
 
 # Example
-To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be omitted when deploying it in practice.
+
+To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be
+omitted when deploying it in practice.
 ![image](https://github.com/shallow-rs/Ostara/blob/main/doc/image/example.gif)
 
 ## Latency
@@ -23,13 +25,16 @@ To demonstrate the effect, the setting of sending one message per second was imp
 
 - Zookeeper 3.5.x or higher
 - Java 17
-- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true 
-- 
+- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true
+-
+
 # Quickly Start
+
 - start Zookeeper
 - start Broker: -c /path/broker.properties
 
 ## Create Topic
+
 ```
     public void createTopic() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -49,6 +54,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 ```
 
 ## Subscribe Message And Consume Message
+
 ```
     public void attachOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -82,6 +88,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 ```
 
 ## Send Message
+
 ```
     public void continueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -123,6 +130,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
         countDownLatch.await();
     }
 ```
+
 ## Async Send Message
 
 ```
@@ -216,6 +224,7 @@ To demonstrate the effect, the setting of sending one message per second was imp
 ```
 
 ## Metrics configuration
+
 ```
 0.0.0.0:9528/prometheus
 ```

@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ReplicaManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ReplicaManager.class);
     private final CoreConfig config;
-    private Manager manager;
-    private EventExecutor fetchExecutor;
+    private final Manager manager;
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
+    private EventExecutor fetchExecutor;
 
     public ReplicaManager(CoreConfig config, Manager manager) {
         this.config = config;
@@ -139,7 +139,7 @@ public class ReplicaManager {
                 promise.trySuccess(null);
                 return promise;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             promise.tryFailure(e);
         }
         return promise;

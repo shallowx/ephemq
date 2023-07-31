@@ -23,7 +23,8 @@ public class ClientTests {
             }
         });
 
-        Client client = new Client("default", clientConfig, new ClientListener() {});
+        Client client = new Client("default", clientConfig, new ClientListener() {
+        });
         client.start();
 
         client.createTopic("#test#default", 10, 1);
@@ -41,7 +42,8 @@ public class ClientTests {
             }
         });
 
-        Client client = new Client("default", clientConfig, new ClientListener() {});
+        Client client = new Client("default", clientConfig, new ClientListener() {
+        });
         client.start();
         ClientChannel clientChannel = client.fetchChannel(null);
 

@@ -18,6 +18,7 @@ import org.ostara.remote.util.NetworkUtils;
 
 public class DemoServerBootstrap {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerBootstrap.class);
+
     public static void main(String[] args) {
         EventLoopGroup boosGroup = NetworkUtils.newEventLoopGroup(true, 1, "demo-server-boss");
         EventLoopGroup workerGroup = NetworkUtils.newEventLoopGroup(true, 0, "demo-server-worker");
@@ -49,7 +50,7 @@ public class DemoServerBootstrap {
             Channel channel = serverBootstrap.bind(8888).sync().channel();
             logger.info("Demo start running, and listened at {}", 8888);
             channel.closeFuture().sync();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Demo started failed, {}", t);
         } finally {
             boosGroup.shutdownGracefully();

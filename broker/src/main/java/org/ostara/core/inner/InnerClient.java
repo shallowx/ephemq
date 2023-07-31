@@ -5,9 +5,9 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -56,7 +56,7 @@ public class InnerClient extends Client {
                         .tag(NAME, name)
                         .tag(ID, executor.threadProperties().name())
                         .register(meterRegistry);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error("Inner client bind failed, executor={}", eventExecutor.toString(), t);
             }
         }

@@ -7,7 +7,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.ostara.cli.Command;
-import org.ostara.cli.topic.TopicListCommand;
 import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.remote.proto.ClusterInfo;
@@ -26,6 +25,11 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class MigrateLedgerPlanCommand implements Command {
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return format.format(new Date());
+    }
+
     @Override
     public String name() {
         return "migratePlan";
@@ -64,11 +68,11 @@ public class MigrateLedgerPlanCommand implements Command {
                 boolean verify = false;
                 String original = null;
                 if (commandLine.hasOption('o')) {
-                    original  = commandLine.getOptionValue('o').trim();
+                    original = commandLine.getOptionValue('o').trim();
                 }
                 List<String> excludes = null;
                 if (commandLine.hasOption('e')) {
-                    String exclude  = commandLine.getOptionValue('e').trim();
+                    String exclude = commandLine.getOptionValue('e').trim();
                     excludes = Arrays.asList(exclude.split(","));
                 }
                 if (commandLine.hasOption('v')) {
@@ -132,7 +136,7 @@ public class MigrateLedgerPlanCommand implements Command {
                 Gson gson = new Gson();
                 System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), gson.toJson(infos));
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getCause().getMessage());
         }
     }
@@ -156,10 +160,5 @@ public class MigrateLedgerPlanCommand implements Command {
         partitions.put(beoker, entries.getValue() + 1);
 
         return beoker;
-    }
-
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
     }
 }

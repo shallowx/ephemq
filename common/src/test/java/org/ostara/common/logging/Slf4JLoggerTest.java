@@ -2,6 +2,7 @@ package org.ostara.common.logging;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 

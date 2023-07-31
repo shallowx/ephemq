@@ -22,6 +22,11 @@ import java.util.Map;
 
 @SuppressWarnings("all")
 public class ClusterListCommand implements Command {
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return format.format(new Date());
+    }
+
     @Override
     public String name() {
         return "clusterList";
@@ -78,10 +83,5 @@ public class ClusterListCommand implements Command {
         } catch (Exception e) {
             System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), e.getCause().getMessage());
         }
-    }
-
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
     }
 }

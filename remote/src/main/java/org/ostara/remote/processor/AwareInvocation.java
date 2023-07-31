@@ -21,23 +21,21 @@ public final class AwareInvocation extends AbstractReferenceCounted {
             return new AwareInvocation(handle);
         }
     };
-
+    private final Recycler.Handle<AwareInvocation> handle;
     private int command;
     private ByteBuf data;
     private long expired;
     private InvokeAnswer<ByteBuf> answer;
 
-    private final Recycler.Handle<AwareInvocation> handle;
-
     public AwareInvocation(Recycler.Handle<AwareInvocation> handle) {
         this.handle = handle;
     }
 
-    public static  AwareInvocation newInvocation(int command, ByteBuf data) {
-       return newInvocation(command, data, 0, null);
+    public static AwareInvocation newInvocation(int command, ByteBuf data) {
+        return newInvocation(command, data, 0, null);
     }
 
-    public static  AwareInvocation newInvocation(int command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
+    public static AwareInvocation newInvocation(int command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
         checkPositive(command, "Command");
 
         final AwareInvocation invocation = RECYCLER.get();
@@ -49,6 +47,7 @@ public final class AwareInvocation extends AbstractReferenceCounted {
 
         return invocation;
     }
+
     public int command() {
         return command;
     }

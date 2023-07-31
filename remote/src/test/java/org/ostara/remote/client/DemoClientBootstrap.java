@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DemoClientBootstrap {
     public static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoClientBootstrap.class);
     private static final Random RANDOM = new Random();
+
     public static void main(String[] args) {
         EventLoopGroup group = NetworkUtils.newEventLoopGroup(true, 0, "demo-client");
         EventExecutorGroup serviceGroup = NetworkUtils.newEventExecutorGroup(0, "demo-client-service");
@@ -66,7 +67,7 @@ public class DemoClientBootstrap {
                 threads[i].start();
             }
             new CountDownLatch(1).await();
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e);
         } finally {
             group.shutdownGracefully();
@@ -149,7 +150,7 @@ public class DemoClientBootstrap {
     }
 
     @FunctionalInterface
-    interface Invoker{
+    interface Invoker {
         void invoke(Semaphore semaphore, Channel channel, int timeout, ByteBuf data) throws Exception;
     }
 }

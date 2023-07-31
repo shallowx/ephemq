@@ -21,7 +21,7 @@
         <appender-ref ref="STDOUT"/>
     </appender>
 
-    <logger name="org.ostara" additvity = "false" level="DEBUG">
+    <logger name="org.ostara" additvity="false" level="DEBUG">
         <appender-ref ref="AsyncSTDOUT"/>
     </logger>
 

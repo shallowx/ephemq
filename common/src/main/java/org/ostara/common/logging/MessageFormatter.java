@@ -7,6 +7,9 @@ public final class MessageFormatter {
     private static final String DELIM_STR = "{}";
     private static final char ESCAPE_CHAR = '\\';
 
+    private MessageFormatter() {
+    }
+
     static FormattingTuple format(String messagePattern, Object arg) {
         return arrayFormat(messagePattern, new Object[]{arg});
     }
@@ -24,7 +27,7 @@ public final class MessageFormatter {
 
         int lastArrIdx = argArray.length - 1;
         Object lastEntry = argArray[lastArrIdx];
-        Throwable throwable = lastEntry instanceof Throwable? (Throwable) lastEntry : null;
+        Throwable throwable = lastEntry instanceof Throwable ? (Throwable) lastEntry : null;
 
         if (messagePattern == null) {
             return new FormattingTuple(null, throwable);
@@ -61,7 +64,7 @@ public final class MessageFormatter {
         } while (j != -1);
 
         sb.append(messagePattern, i, messagePattern.length());
-        return new FormattingTuple(sb.toString(), L <= lastArrIdx? throwable : null);
+        return new FormattingTuple(sb.toString(), L <= lastArrIdx ? throwable : null);
     }
 
     private static void deeplyAppendParameter(StringBuilder sb, Object o,
@@ -228,8 +231,5 @@ public final class MessageFormatter {
             sb.append(", ");
             sb.append(a[i]);
         }
-    }
-
-    private MessageFormatter() {
     }
 }

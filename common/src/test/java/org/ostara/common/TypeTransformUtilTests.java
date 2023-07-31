@@ -41,12 +41,13 @@ public class TypeTransformUtilTests {
     @Test
     public void testObject2Double() {
         double sample = TypeTransformUtils.object2Double(prop.get("sample"));
-        Assert.assertEquals(sample, 0.9,0.0001);
+        Assert.assertEquals(sample, 0.9, 0.0001);
     }
+
     @Test
     public void testObject2Float() {
         float sample = TypeTransformUtils.object2Float(prop.get("sample"));
-        Assert.assertEquals(sample, 0.9,0.0001);
+        Assert.assertEquals(sample, 0.9, 0.0001);
     }
 
     @Test

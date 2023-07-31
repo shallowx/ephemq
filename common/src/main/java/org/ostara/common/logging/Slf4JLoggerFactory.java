@@ -14,11 +14,6 @@ public class Slf4JLoggerFactory extends InternalLoggerFactory {
         }
     }
 
-    @Override
-    public InternalLogger newLogger(String name) {
-        return wrapLogger(LoggerFactory.getLogger(name));
-    }
-
     static InternalLogger wrapLogger(Logger logger) {
         return logger instanceof LocationAwareLogger ?
                 new LocationAwareSlf4JLogger((LocationAwareLogger) logger) : new Slf4JLogger(logger);
@@ -26,6 +21,11 @@ public class Slf4JLoggerFactory extends InternalLoggerFactory {
 
     static InternalLoggerFactory getInstanceWithNopCheck() {
         return NopInstanceHolder.INSTANCE_WITH_NOP_CHECK;
+    }
+
+    @Override
+    public InternalLogger newLogger(String name) {
+        return wrapLogger(LoggerFactory.getLogger(name));
     }
 
     private static final class NopInstanceHolder {

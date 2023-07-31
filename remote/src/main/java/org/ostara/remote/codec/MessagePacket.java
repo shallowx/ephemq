@@ -23,11 +23,14 @@ public final class MessagePacket extends AbstractReferenceCounted {
             return new MessagePacket(handle);
         }
     };
-
+    private final Recycler.Handle<MessagePacket> handle;
     private int answer;
     private int command;
     private ByteBuf body;
-    private final Recycler.Handle<MessagePacket> handle;
+
+    private MessagePacket(Recycler.Handle<MessagePacket> handle) {
+        this.handle = handle;
+    }
 
     public static MessagePacket newPacket(int answer, int command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
@@ -37,10 +40,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
 
         return packet;
-    }
-
-    private MessagePacket(Recycler.Handle<MessagePacket> handle) {
-        this.handle = handle;
     }
 
     public int answer() {

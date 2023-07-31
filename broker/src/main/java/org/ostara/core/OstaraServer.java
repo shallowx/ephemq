@@ -72,7 +72,7 @@ public class OstaraServer {
             for (ServerListener listener : serverListeners) {
                 listener.onShutdown(thisNode);
                 if (listener instanceof Closeable) {
-                    ((Closeable)listener).close();
+                    ((Closeable) listener).close();
                 }
             }
         }

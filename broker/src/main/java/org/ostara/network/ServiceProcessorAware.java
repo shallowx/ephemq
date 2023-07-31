@@ -134,27 +134,27 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         ClientChannel clientChannel = innerClient.fetchChannel(destinationAddr);
                         Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
                         promise.addListener(future -> {
-                           if (future.isSuccess()) {
-                               MigrateLedgerResponse response = (MigrateLedgerResponse) future.get();
-                               Log log = manager.getLogManager().getLog(ledger);
-                               Promise<Void> migratePromise = ImmediateEventExecutor.INSTANCE.newPromise();
-                               if (answer != null) {
-                                   migratePromise.addListener(f -> {
-                                       if (f.isSuccess()) {
-                                           answer.success(proto2Buf(channel.alloc(), response));
-                                       } else {
-                                           processFailed("Process migrate ledger failed", code, channel, answer, f.cause());
-                                       }
-                                   });
-                                   log.migrate(destination, clientChannel, migratePromise);
-                               } else {
-                                   processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
-                                           RemoteException.Failure.PROCESS_EXCEPTION, response.getMessage()
-                                   ));
-                               }
-                           } else {
-                               processFailed("Process migrate ledger failed", code, channel, answer, future.cause());
-                           }
+                            if (future.isSuccess()) {
+                                MigrateLedgerResponse response = (MigrateLedgerResponse) future.get();
+                                Log log = manager.getLogManager().getLog(ledger);
+                                Promise<Void> migratePromise = ImmediateEventExecutor.INSTANCE.newPromise();
+                                if (answer != null) {
+                                    migratePromise.addListener(f -> {
+                                        if (f.isSuccess()) {
+                                            answer.success(proto2Buf(channel.alloc(), response));
+                                        } else {
+                                            processFailed("Process migrate ledger failed", code, channel, answer, f.cause());
+                                        }
+                                    });
+                                    log.migrate(destination, clientChannel, migratePromise);
+                                } else {
+                                    processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
+                                            RemoteException.Failure.PROCESS_EXCEPTION, response.getMessage()
+                                    ));
+                                }
+                            } else {
+                                processFailed("Process migrate ledger failed", code, channel, answer, future.cause());
+                            }
                         });
                         clientChannel.invoker().migrateLedger(config.getNotifyClientTimeoutMs(), promise, request);
                         recordCommand(code, bytes, System.nanoTime() - time, promise.isSuccess());
@@ -167,21 +167,21 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         if (answer != null) {
                             answer.success(proto2Buf(channel.alloc(), response));
                         }
-                        recordCommand(code, bytes,System.nanoTime() - time, true);
+                        recordCommand(code, bytes, System.nanoTime() - time, true);
                         return;
                     }
                     processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
                             RemoteException.Failure.PROCESS_EXCEPTION, "The broker is neither original broker nor destination broker"
                     ));
-                    recordCommand(code, bytes,System.nanoTime() - time, false);
-                } catch (Throwable t){
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                } catch (Throwable t) {
                     processFailed("Process migrate ledger failed", code, channel, answer, t);
-                    recordCommand(code, bytes,System.nanoTime() - time, false);
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
             processFailed("Process migrate ledger failed", code, channel, answer, t);
-            recordCommand(code, bytes,System.nanoTime() - time, false);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
@@ -206,7 +206,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
 
                             answer.success(proto2Buf(channel.alloc(), response));
                         }
-                    } catch (Throwable t){
+                    } catch (Throwable t) {
                         processFailed("Process send message failed", code, channel, answer, t);
                     }
                 } else {
@@ -215,7 +215,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
             manager.getLogManager().appendRecord(ledger, marker, data, promise);
-        }catch (Throwable t){
+        } catch (Throwable t) {
             processFailed("Process send message failed", code, channel, answer, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
@@ -262,6 +262,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
+
     private void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -316,16 +317,17 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         answer.success(proto2Buf(channel.alloc(), response));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, false);
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     processFailed("Process query topic info failed", code, channel, answer, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
-        } catch (Throwable t){
+        } catch (Throwable t) {
             processFailed("Process query topic info failed", code, channel, answer, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
+
     private void processRestSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -337,14 +339,14 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
             long index = request.getIndex();
             Promise<Integer> promise = serviceExecutor.newPromise();
             promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
-             if (f.isSuccess()) {
-                 if (answer != null) {
-                     ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
-                     answer.success(proto2Buf(channel.alloc(), response));
-                 }
-             } else {
-                 processFailed("Process reset subscription failed", code, channel, answer, f.cause());
-             }
+                if (f.isSuccess()) {
+                    if (answer != null) {
+                        ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                } else {
+                    processFailed("Process reset subscription failed", code, channel, answer, f.cause());
+                }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
             manager.getLogManager().resetSubscribe(ledger, epoch, index, channel, markers, promise);
@@ -416,39 +418,39 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
             int replicas = request.getReplicas();
             CreateTopicConfigRequest configs = request.getConfigs();
             TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
-                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(),configs.getSegmentRetainMs());
+                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs());
 
             commandExecutor.execute(() -> {
-               try {
-                   TopicManager topicManager = manager.getTopicManager();
-                   Map<String, Object> createResult = topicManager.createTopic(topic, partition, replicas, topicConfig);
-                   if (answer != null) {
-                       int topicId = (int)createResult.get(CorrelationIdConstants.TOPIC_ID);
-                       @SuppressWarnings("unchecked")
-                       Map<Integer, Set<String>> partitionReplicasMap =(Map<Integer, Set<String>>) createResult.get(CorrelationIdConstants.PARTITION_REPLICAS);
-                       List<PartitionsReplicas> partitionsReplicas = partitionReplicasMap.entrySet().stream()
-                               .map(
-                                       entry ->
-                                               PartitionsReplicas.newBuilder()
-                                                       .setPartition(entry.getKey())
-                                                       .addAllReplicas(entry.getValue())
-                                                       .build()
-                               ).toList();
-                       CreateTopicResponse response = CreateTopicResponse.newBuilder()
-                               .setTopic(topic)
-                               .setPartitions(partition)
-                               .setTopicId(topicId)
-                               .addAllPartitionsReplicas(partitionsReplicas)
-                               .build();
-                       answer.success(proto2Buf(channel.alloc(), response));
-                   }
-                   recordCommand(code, bytes, System.nanoTime() - time, true);
-               } catch (Throwable t){
-                   processFailed("Process create topic failed", code, channel, answer, t);
-                   recordCommand(code, bytes, System.nanoTime() - time, false);
-               }
+                try {
+                    TopicManager topicManager = manager.getTopicManager();
+                    Map<String, Object> createResult = topicManager.createTopic(topic, partition, replicas, topicConfig);
+                    if (answer != null) {
+                        int topicId = (int) createResult.get(CorrelationIdConstants.TOPIC_ID);
+                        @SuppressWarnings("unchecked")
+                        Map<Integer, Set<String>> partitionReplicasMap = (Map<Integer, Set<String>>) createResult.get(CorrelationIdConstants.PARTITION_REPLICAS);
+                        List<PartitionsReplicas> partitionsReplicas = partitionReplicasMap.entrySet().stream()
+                                .map(
+                                        entry ->
+                                                PartitionsReplicas.newBuilder()
+                                                        .setPartition(entry.getKey())
+                                                        .addAllReplicas(entry.getValue())
+                                                        .build()
+                                ).toList();
+                        CreateTopicResponse response = CreateTopicResponse.newBuilder()
+                                .setTopic(topic)
+                                .setPartitions(partition)
+                                .setTopicId(topicId)
+                                .addAllPartitionsReplicas(partitionsReplicas)
+                                .build();
+                        answer.success(proto2Buf(channel.alloc(), response));
+                    }
+                    recordCommand(code, bytes, System.nanoTime() - time, true);
+                } catch (Throwable t) {
+                    processFailed("Process create topic failed", code, channel, answer, t);
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                }
             });
-        } catch (Throwable t){
+        } catch (Throwable t) {
             processFailed("Process create topic failed", code, channel, answer, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
@@ -468,12 +470,12 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
                         answer.success(proto2Buf(channel.alloc(), response));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     processFailed("Process delete topic failed", code, channel, answer, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
-        }catch (Throwable t){
+        } catch (Throwable t) {
             processFailed("Process delete topic failed", code, channel, answer, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
@@ -483,7 +485,7 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
         for (APIListener listener : manager.getAPIListeners()) {
             try {
                 listener.onCommand(code, bytes, cost, ret);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.warn("Record process failed, listener={} code={}", listener == null ? null : listener.getClass().getSimpleName(), code, t);
             }
         }
@@ -504,4 +506,4 @@ public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Ser
         }
         return markerList;
     }
- }
+}

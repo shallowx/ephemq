@@ -59,7 +59,7 @@ public class DemoServerProcessor implements ProcessorAware {
             } else {
                 echo.release();
             }
-        },10, TimeUnit.MILLISECONDS);
+        }, 10, TimeUnit.MILLISECONDS);
     }
 
     private void wait(ByteBuf data, InvokeAnswer<ByteBuf> answer) {

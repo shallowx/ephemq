@@ -22,6 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 public class TopicDeletedCommand implements Command {
 
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return format.format(new Date());
+    }
+
     @Override
     public String name() {
         return "deleteTopic";
@@ -93,10 +98,5 @@ public class TopicDeletedCommand implements Command {
             System.out.printf("%s [%s] ERROR %S - delete topic[%s] from cluster failure \n",
                     newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
         }
-    }
-
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
     }
 }

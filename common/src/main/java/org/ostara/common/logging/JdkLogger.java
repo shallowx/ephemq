@@ -7,14 +7,43 @@ import java.util.logging.Logger;
 
 class JdkLogger extends AbstractInternalLogger {
 
+    static final String SELF = JdkLogger.class.getName();
+    static final String SUPER = AbstractInternalLogger.class.getName();
     @Serial
     private static final long serialVersionUID = -1767272577989225979L;
-
     final transient Logger logger;
 
     JdkLogger(Logger logger) {
         super(logger.getName());
         this.logger = logger;
+    }
+
+    private static void fillCallerData(String callerFQCN, LogRecord record) {
+        StackTraceElement[] steArray = new Throwable().getStackTrace();
+
+        int selfIndex = -1;
+        for (int i = 0; i < steArray.length; i++) {
+            final String className = steArray[i].getClassName();
+            if (className.equals(callerFQCN) || className.equals(SUPER)) {
+                selfIndex = i;
+                break;
+            }
+        }
+
+        int found = -1;
+        for (int i = selfIndex + 1; i < steArray.length; i++) {
+            final String className = steArray[i].getClassName();
+            if (!(className.equals(callerFQCN) || className.equals(SUPER))) {
+                found = i;
+                break;
+            }
+        }
+
+        if (found != -1) {
+            StackTraceElement ste = steArray[found];
+            record.setSourceClassName(ste.getClassName());
+            record.setSourceMethodName(ste.getMethodName());
+        }
     }
 
     @Override
@@ -238,36 +267,5 @@ class JdkLogger extends AbstractInternalLogger {
         record.setThrown(t);
         fillCallerData(callerFQCN, record);
         logger.log(record);
-    }
-
-    static final String SELF = JdkLogger.class.getName();
-    static final String SUPER = AbstractInternalLogger.class.getName();
-
-    private static void fillCallerData(String callerFQCN, LogRecord record) {
-        StackTraceElement[] steArray = new Throwable().getStackTrace();
-
-        int selfIndex = -1;
-        for (int i = 0; i < steArray.length; i++) {
-            final String className = steArray[i].getClassName();
-            if (className.equals(callerFQCN) || className.equals(SUPER)) {
-                selfIndex = i;
-                break;
-            }
-        }
-
-        int found = -1;
-        for (int i = selfIndex + 1; i < steArray.length; i++) {
-            final String className = steArray[i].getClassName();
-            if (!(className.equals(callerFQCN) || className.equals(SUPER))) {
-                found = i;
-                break;
-            }
-        }
-
-        if (found != -1) {
-            StackTraceElement ste = steArray[found];
-            record.setSourceClassName(ste.getClassName());
-            record.setSourceMethodName(ste.getMethodName());
-        }
     }
 }

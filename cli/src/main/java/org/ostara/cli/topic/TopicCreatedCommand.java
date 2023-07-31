@@ -23,6 +23,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TopicCreatedCommand implements Command {
+    private static String newDate() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        return format.format(new Date());
+    }
+
     @Override
     public String name() {
         return "createTopic";
@@ -66,19 +71,20 @@ public class TopicCreatedCommand implements Command {
                     if (!StringUtils.isNullOrEmpty(explainFile)) {
                         String content = FileUtils.readFileToString(new File(explainFile), StandardCharsets.UTF_8);
                         Gson gson = new Gson();
-                        List<TopicMetadata> lists = gson.fromJson(content, new TypeToken<List<TopicMetadata>>() {}.getType());
+                        List<TopicMetadata> lists = gson.fromJson(content, new TypeToken<List<TopicMetadata>>() {
+                        }.getType());
                         if (lists == null || lists.isEmpty()) {
-                          return;
+                            return;
                         }
-                         for (TopicMetadata metadata : lists) {
-                             String topic = metadata.topic;
-                             int partition = metadata.partition;
-                             int replicas = metadata.replicas;
-                             TopicConfig config = metadata.config;
-                             CreateTopicResponse response = client.createTopic(topic, partition, replicas, config);
-                             String print = print(response, topic, partition, replicas, config);
-                             System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), print);
-                         }
+                        for (TopicMetadata metadata : lists) {
+                            String topic = metadata.topic;
+                            int partition = metadata.partition;
+                            int replicas = metadata.replicas;
+                            TopicConfig config = metadata.config;
+                            CreateTopicResponse response = client.createTopic(topic, partition, replicas, config);
+                            String print = print(response, topic, partition, replicas, config);
+                            System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), print);
+                        }
                     }
                 }
             }
@@ -103,7 +109,7 @@ public class TopicCreatedCommand implements Command {
         return gSon.toJson(metadata);
     }
 
-    private static class TopicMetadata{
+    private static class TopicMetadata {
         private String topic;
         private int partition;
         private int replicas;
@@ -171,10 +177,5 @@ public class TopicCreatedCommand implements Command {
                     ", partitions=" + partitions +
                     '}';
         }
-    }
-
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
     }
 }

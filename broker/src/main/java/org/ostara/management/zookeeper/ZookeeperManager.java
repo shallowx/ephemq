@@ -3,8 +3,8 @@ package org.ostara.management.zookeeper;
 import com.google.inject.Inject;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.Client;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.CoreConfig;
@@ -23,13 +23,12 @@ import java.util.List;
 public class ZookeeperManager implements Manager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperManager.class);
-
+    private final List<APIListener> apiListeners = new LinkedList<>();
     private LogManager logManager;
     private TopicManager topicManager;
     private ClusterManager clusterManager;
     private CoreConfig config;
     private ConnectionManager connectionManager;
-    private final List<APIListener> apiListeners = new LinkedList<>();
     private EventExecutorGroup handleGroup;
     private EventExecutorGroup storageGroup;
     private EventExecutorGroup dispatchGroup;
@@ -74,7 +73,7 @@ public class ZookeeperManager implements Manager {
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);
-        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(config, this),  config, this);
+        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(config, this), config, this);
         innerClient.start();
 
         if (clusterManager != null) {

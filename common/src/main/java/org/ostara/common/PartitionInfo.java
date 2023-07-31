@@ -5,7 +5,6 @@ import java.util.Set;
 
 public class PartitionInfo {
     private final String topic;
-    private int topicId;
     private final int partition;
     private final int ledger;
     private final int epoch;
@@ -13,6 +12,7 @@ public class PartitionInfo {
     private final Set<String> replicas;
     private final TopicConfig topicConfig;
     private final int version;
+    private int topicId;
 
     public PartitionInfo(String topic, int topicId, int partition, int ledger, int epoch, String leader,
                          Set<String> replicas, TopicConfig topicConfig, int version) {

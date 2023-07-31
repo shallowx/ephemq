@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
 
-public class DefaultTopicListener implements TopicListener{
+public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
     private final Manager manager;
@@ -66,12 +66,12 @@ public class DefaultTopicListener implements TopicListener{
             PartitionInfo partitionInfo = manager.getTopicManager().getPartitionInfo(topicPartition);
             if (partitionInfo != null) {
                 if (partitionInfo.getReplicas().contains(config.getServerId())
-                && ((!Objects.equals(oldAssigment.getReplicas(), newAssigment.getReplicas())))
+                        && ((!Objects.equals(oldAssigment.getReplicas(), newAssigment.getReplicas())))
                         || !Objects.equals(oldAssigment.getLeader(), newAssigment.getLeader())) {
-                 sendPartitionChangedSignal(topicPartition, newAssigment);
+                    sendPartitionChangedSignal(topicPartition, newAssigment);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Send partition change failed", e);
         }
     }

@@ -4,48 +4,58 @@
 package org.ostara.remote.proto;
 
 public interface NodeMetadataOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeMetadata)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeMetadata)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>string cluster_name = 1;</code>
-   * @return The clusterName.
-   */
-  java.lang.String getClusterName();
-  /**
-   * <code>string cluster_name = 1;</code>
-   * @return The bytes for clusterName.
-   */
-  com.google.protobuf.ByteString
-      getClusterNameBytes();
+    /**
+     * <code>string cluster_name = 1;</code>
+     *
+     * @return The clusterName.
+     */
+    java.lang.String getClusterName();
 
-  /**
-   * <code>string id = 2;</code>
-   * @return The id.
-   */
-  java.lang.String getId();
-  /**
-   * <code>string id = 2;</code>
-   * @return The bytes for id.
-   */
-  com.google.protobuf.ByteString
-      getIdBytes();
+    /**
+     * <code>string cluster_name = 1;</code>
+     *
+     * @return The bytes for clusterName.
+     */
+    com.google.protobuf.ByteString
+    getClusterNameBytes();
 
-  /**
-   * <code>string host = 3;</code>
-   * @return The host.
-   */
-  java.lang.String getHost();
-  /**
-   * <code>string host = 3;</code>
-   * @return The bytes for host.
-   */
-  com.google.protobuf.ByteString
-      getHostBytes();
+    /**
+     * <code>string id = 2;</code>
+     *
+     * @return The id.
+     */
+    java.lang.String getId();
 
-  /**
-   * <code>int32 port = 4;</code>
-   * @return The port.
-   */
-  int getPort();
+    /**
+     * <code>string id = 2;</code>
+     *
+     * @return The bytes for id.
+     */
+    com.google.protobuf.ByteString
+    getIdBytes();
+
+    /**
+     * <code>string host = 3;</code>
+     *
+     * @return The host.
+     */
+    java.lang.String getHost();
+
+    /**
+     * <code>string host = 3;</code>
+     *
+     * @return The bytes for host.
+     */
+    com.google.protobuf.ByteString
+    getHostBytes();
+
+    /**
+     * <code>int32 port = 4;</code>
+     *
+     * @return The port.
+     */
+    int getPort();
 }

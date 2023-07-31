@@ -32,7 +32,7 @@ public class Offset implements Comparable<Offset> {
     @Override
     public int compareTo(@NotNull Offset o) {
         if (this.epoch == o.epoch) {
-            return (int)(this.index - o.index);
+            return (int) (this.index - o.index);
         }
         return this.epoch - o.epoch;
     }

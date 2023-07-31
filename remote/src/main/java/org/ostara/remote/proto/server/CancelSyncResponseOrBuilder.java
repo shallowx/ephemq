@@ -4,6 +4,6 @@
 package org.ostara.remote.proto.server;
 
 public interface CancelSyncResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CancelSyncResponse)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.CancelSyncResponse)
+        com.google.protobuf.MessageOrBuilder {
 }

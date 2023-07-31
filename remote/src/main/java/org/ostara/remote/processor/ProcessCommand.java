@@ -19,10 +19,10 @@ public interface ProcessCommand {
     }
 
     interface Client {
-      int PUSH_MESSAGE = 1;
-      int SERVER_OFFLINE = 2;
-      int TOPIC_INFO_CHANGED = 3;
-      int SYNC_MESSAGE = 4;
+        int PUSH_MESSAGE = 1;
+        int SERVER_OFFLINE = 2;
+        int TOPIC_INFO_CHANGED = 3;
+        int SYNC_MESSAGE = 4;
     }
 
     interface Failure {

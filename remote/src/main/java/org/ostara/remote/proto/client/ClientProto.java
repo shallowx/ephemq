@@ -4,105 +4,108 @@
 package org.ostara.remote.proto.client;
 
 public final class ClientProto {
-  private ClientProto() {}
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
-  }
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_ostara_protobuf_TopicChangedSignal_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_ostara_protobuf_TopicChangedSignal_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_ostara_protobuf_NodeOfflineSignal_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_ostara_protobuf_MessagePushSignal_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_ostara_protobuf_MessagePushSignal_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_ostara_protobuf_LedgerRetiredSignal_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_ostara_protobuf_SyncMessageSignal_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_ostara_protobuf_SyncMessageSignal_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.FileDescriptor
+            descriptor;
 
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
-  }
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_TopicChangedSignal_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_TopicChangedSignal_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_NodeOfflineSignal_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_MessagePushSignal_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_MessagePushSignal_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_LedgerRetiredSignal_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ostara_protobuf_SyncMessageSignal_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ostara_protobuf_SyncMessageSignal_fieldAccessorTable;
+    static {
+        java.lang.String[] descriptorData = {
+                "\n\014client.proto\022\017ostara.protobuf\032\014ostara." +
+                        "proto\"\257\001\n\022TopicChangedSignal\0226\n\004type\030\001 \001" +
+                        "(\0162(.ostara.protobuf.TopicChangedSignal." +
+                        "Type\022\r\n\005topic\030\002 \001(\t\022\016\n\006ledger\030\003 \001(\005\022\026\n\016l" +
+                        "edger_version\030\004 \001(\005\"*\n\004Type\022\n\n\006CREATE\020\000\022" +
+                        "\n\n\006UPDATE\020\001\022\n\n\006DELETE\020\003\"@\n\021NodeOfflineSi" +
+                        "gnal\022+\n\004node\030\001 \001(\0132\035.ostara.protobuf.Nod" +
+                        "eMetadata\"Q\n\021MessagePushSignal\022\016\n\006ledger" +
+                        "\030\001 \001(\005\022\016\n\006marker\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n" +
+                        "\005index\030\004 \001(\003\"\243\001\n\023LedgerRetiredSignal\022-\n\006" +
+                        "broker\030\001 \001(\0132\035.ostara.protobuf.NodeMetad" +
+                        "ata\022\016\n\006ledger\030\002 \001(\005\022\r\n\005topic\030\003 \001(\t\022\021\n\tpa" +
+                        "rtition\030\004 \001(\005\022+\n\004heir\030\005 \001(\0132\035.ostara.pro" +
+                        "tobuf.NodeMetadata\"2\n\021SyncMessageSignal\022" +
+                        "\016\n\006ledger\030\001 \001(\005\022\r\n\005count\030\002 \001(\005B/\n\036org.os" +
+                        "tara.remote.proto.clientB\013ClientProtoP\001b" +
+                        "\006proto3"
+        };
+        descriptor = com.google.protobuf.Descriptors.FileDescriptor
+                .internalBuildGeneratedFileFrom(descriptorData,
+                        new com.google.protobuf.Descriptors.FileDescriptor[]{
+                                org.ostara.remote.proto.MessageMetadataProto.getDescriptor(),
+                        });
+        internal_static_ostara_protobuf_TopicChangedSignal_descriptor =
+                getDescriptor().getMessageTypes().get(0);
+        internal_static_ostara_protobuf_TopicChangedSignal_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_ostara_protobuf_TopicChangedSignal_descriptor,
+                new java.lang.String[]{"Type", "Topic", "Ledger", "LedgerVersion",});
+        internal_static_ostara_protobuf_NodeOfflineSignal_descriptor =
+                getDescriptor().getMessageTypes().get(1);
+        internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_ostara_protobuf_NodeOfflineSignal_descriptor,
+                new java.lang.String[]{"Node",});
+        internal_static_ostara_protobuf_MessagePushSignal_descriptor =
+                getDescriptor().getMessageTypes().get(2);
+        internal_static_ostara_protobuf_MessagePushSignal_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_ostara_protobuf_MessagePushSignal_descriptor,
+                new java.lang.String[]{"Ledger", "Marker", "Epoch", "Index",});
+        internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor =
+                getDescriptor().getMessageTypes().get(3);
+        internal_static_ostara_protobuf_LedgerRetiredSignal_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor,
+                new java.lang.String[]{"Broker", "Ledger", "Topic", "Partition", "Heir",});
+        internal_static_ostara_protobuf_SyncMessageSignal_descriptor =
+                getDescriptor().getMessageTypes().get(4);
+        internal_static_ostara_protobuf_SyncMessageSignal_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_ostara_protobuf_SyncMessageSignal_descriptor,
+                new java.lang.String[]{"Ledger", "Count",});
+        org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
+    }
+    private ClientProto() {
+    }
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-      getDescriptor() {
-    return descriptor;
-  }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
-      descriptor;
-  static {
-    java.lang.String[] descriptorData = {
-      "\n\014client.proto\022\017ostara.protobuf\032\014ostara." +
-      "proto\"\257\001\n\022TopicChangedSignal\0226\n\004type\030\001 \001" +
-      "(\0162(.ostara.protobuf.TopicChangedSignal." +
-      "Type\022\r\n\005topic\030\002 \001(\t\022\016\n\006ledger\030\003 \001(\005\022\026\n\016l" +
-      "edger_version\030\004 \001(\005\"*\n\004Type\022\n\n\006CREATE\020\000\022" +
-      "\n\n\006UPDATE\020\001\022\n\n\006DELETE\020\003\"@\n\021NodeOfflineSi" +
-      "gnal\022+\n\004node\030\001 \001(\0132\035.ostara.protobuf.Nod" +
-      "eMetadata\"Q\n\021MessagePushSignal\022\016\n\006ledger" +
-      "\030\001 \001(\005\022\016\n\006marker\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n" +
-      "\005index\030\004 \001(\003\"\243\001\n\023LedgerRetiredSignal\022-\n\006" +
-      "broker\030\001 \001(\0132\035.ostara.protobuf.NodeMetad" +
-      "ata\022\016\n\006ledger\030\002 \001(\005\022\r\n\005topic\030\003 \001(\t\022\021\n\tpa" +
-      "rtition\030\004 \001(\005\022+\n\004heir\030\005 \001(\0132\035.ostara.pro" +
-      "tobuf.NodeMetadata\"2\n\021SyncMessageSignal\022" +
-      "\016\n\006ledger\030\001 \001(\005\022\r\n\005count\030\002 \001(\005B/\n\036org.os" +
-      "tara.remote.proto.clientB\013ClientProtoP\001b" +
-      "\006proto3"
-    };
-    descriptor = com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new com.google.protobuf.Descriptors.FileDescriptor[] {
-          org.ostara.remote.proto.MessageMetadataProto.getDescriptor(),
-        });
-    internal_static_ostara_protobuf_TopicChangedSignal_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_ostara_protobuf_TopicChangedSignal_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_TopicChangedSignal_descriptor,
-        new java.lang.String[] { "Type", "Topic", "Ledger", "LedgerVersion", });
-    internal_static_ostara_protobuf_NodeOfflineSignal_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_ostara_protobuf_NodeOfflineSignal_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_NodeOfflineSignal_descriptor,
-        new java.lang.String[] { "Node", });
-    internal_static_ostara_protobuf_MessagePushSignal_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_ostara_protobuf_MessagePushSignal_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_MessagePushSignal_descriptor,
-        new java.lang.String[] { "Ledger", "Marker", "Epoch", "Index", });
-    internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_ostara_protobuf_LedgerRetiredSignal_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_LedgerRetiredSignal_descriptor,
-        new java.lang.String[] { "Broker", "Ledger", "Topic", "Partition", "Heir", });
-    internal_static_ostara_protobuf_SyncMessageSignal_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_ostara_protobuf_SyncMessageSignal_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ostara_protobuf_SyncMessageSignal_descriptor,
-        new java.lang.String[] { "Ledger", "Count", });
-    org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
-  }
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistryLite registry) {
+    }
 
-  // @@protoc_insertion_point(outer_class_scope)
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistry registry) {
+        registerAllExtensions(
+                (com.google.protobuf.ExtensionRegistryLite) registry);
+    }
+
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
+    }
+
+    // @@protoc_insertion_point(outer_class_scope)
 }

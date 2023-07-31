@@ -14,14 +14,14 @@ import static org.ostara.remote.util.ByteBufUtils.release;
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     private static final int DISCARD_READ_BODY_THRESHOLD = 3;
-    enum State {
-        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
-    }
-
     private ByteBuf accumulation;
     private boolean invalidChannel;
     private State state = READ_MAGIC_NUMBER;
     private int writeFrameBytes;
+
+    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
+        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -45,13 +45,13 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 invalidChannel = true;
                 throw cause;
             } finally {
-              release(buf);
+                release(buf);
 
-              buf = accumulation;
-              if (null != buf && (!buf.isReadable() || invalidChannel)) {
-                  accumulation = null;
-                  release(buf);
-              }
+                buf = accumulation;
+                if (null != buf && (!buf.isReadable() || invalidChannel)) {
+                    accumulation = null;
+                    release(buf);
+                }
             }
         } else {
             ctx.fireChannelRead(msg);
@@ -85,7 +85,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 writeFrameBytes = frameLength;
                 state = READ_MESSAGE_COMPLETED;
             }
-            case READ_MESSAGE_COMPLETED:{
+            case READ_MESSAGE_COMPLETED: {
                 if (!buf.isReadable(writeFrameBytes)) {
                     return null;
                 }
@@ -99,7 +99,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 return MessagePacket.newPacket(answer, command, body);
             }
-            default:{
+            default: {
                 throw new DecoderException("Invalid decode state:" + state);
             }
         }
@@ -160,7 +160,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
-        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
+    enum State {
+        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
     }
 }

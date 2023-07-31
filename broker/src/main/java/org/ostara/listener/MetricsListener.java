@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.ostara.metrics.MetricsConstants.*;
 
-public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable{
+public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
@@ -42,15 +42,15 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestSuccesses = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestFailures = new ConcurrentHashMap<>();
-    private final Map<Integer, DistributionSummary> requestSizeSummary= new ConcurrentHashMap<>();
-    private final Map<Integer, DistributionSummary> requestTimesSummary= new ConcurrentHashMap<>();
+    private final Map<Integer, DistributionSummary> requestSizeSummary = new ConcurrentHashMap<>();
+    private final Map<Integer, DistributionSummary> requestTimesSummary = new ConcurrentHashMap<>();
     private final AtomicInteger partitionCounts = new AtomicInteger();
     private final AtomicInteger partitionLeaderCounts = new AtomicInteger();
     private final int metricsSample;
     private final MetricsRegistrySetUp meterRegistrySetup;
     private final JvmGcMetrics jvmGcMetrics;
 
-    private final FastThreadLocal<Integer> metricsSampleCount = new FastThreadLocal<>(){
+    private final FastThreadLocal<Integer> metricsSampleCount = new FastThreadLocal<>() {
         @Override
         protected Integer initialValue() throws Exception {
             return 0;
@@ -66,7 +66,6 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
         MetricsRegistrySetUp jmxMeterRegistrySetup = new JmxMetricsRegistry();
         jmxMeterRegistrySetup.setUp(properties);
-
 
 
         Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
@@ -93,12 +92,13 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                 .tags(Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getServerId()))
                 .register(registry);
     }
+
     @Override
     public void close() throws Exception {
         try {
             this.jvmGcMetrics.close();
             this.meterRegistrySetup.shutdown();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error(t.getMessage(), t);
         }
     }
@@ -194,7 +194,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                 );
             }
             counter.increment(count);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Metrics on sync message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
         }
     }
@@ -203,7 +203,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     public void onPushMessage(String topic, int ledger, int count) {
         try {
             Counter counter = topicPushCounters.get(ledger);
-            if(counter == null) {
+            if (counter == null) {
                 counter = topicPushCounters.computeIfAbsent(ledger, k ->
                         Counter.builder(TOPIC_MSG_PUSH_COUNTER_NAME)
                                 .tag(TOPIC_TAG, topic)
@@ -214,7 +214,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                 );
             }
             counter.increment(count);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Metrics on push message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
         }
     }
@@ -239,7 +239,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .tag(TYPE_TAG, "storage")
                         .tag(NAME, StringUtil.EMPTY_STRING)
                         .tag(ID, se.threadProperties().name()).register(registry);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error("Storage metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
             }
         }
@@ -254,7 +254,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .tag(TYPE_TAG, "dispatch")
                         .tag(NAME, StringUtil.EMPTY_STRING)
                         .tag(ID, se.threadProperties().name()).register(registry);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error("Dispatch metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
             }
         }
@@ -269,7 +269,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .tag(TYPE_TAG, "command")
                         .tag(NAME, StringUtil.EMPTY_STRING)
                         .tag(ID, se.threadProperties().name()).register(registry);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error("Command metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
             }
         }
@@ -284,7 +284,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     public void onPartitionInit(TopicPartition topicPartition, int ledger) {
         try {
             partitionCounts.incrementAndGet();
-        }catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Metrics on partition init listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
         }
     }
@@ -295,7 +295,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             partitionCounts.decrementAndGet();
             Optional.ofNullable(topicReceiveCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
             Optional.ofNullable(topicPushCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
-        }catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Metrics on partition destroy listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
         }
     }

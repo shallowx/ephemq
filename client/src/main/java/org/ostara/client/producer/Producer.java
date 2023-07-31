@@ -5,8 +5,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
-import org.ostara.client.util.TopicPatterns;
 import org.ostara.client.internal.*;
+import org.ostara.client.util.TopicPatterns;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;
 import org.ostara.common.logging.InternalLogger;
@@ -26,11 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class Producer implements MeterBinder{
+public class Producer implements MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Producer.class);
+    private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
     private final String name;
     private final ProducerConfig config;
     private final Client client;
+    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
     private EventExecutor executor;
     private volatile Boolean state;
 
@@ -41,13 +43,13 @@ public class Producer implements MeterBinder{
     }
 
     public void start() {
-       if (state != null) {
-           return;
-       }
-       state = Boolean.TRUE;
-       client.start();
+        if (state != null) {
+            return;
+        }
+        state = Boolean.TRUE;
+        client.start();
 
-       executor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
+        executor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
     }
 
     public synchronized void close() {
@@ -71,7 +73,7 @@ public class Producer implements MeterBinder{
             SendMessageResponse response = promise.get();
 
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
-        } catch (Throwable t){
+        } catch (Throwable t) {
             throw new RuntimeException(
                     String.format("Message send failed, topic=%s queue=%s length=%s", topic, queue, length), t
             );
@@ -100,7 +102,7 @@ public class Producer implements MeterBinder{
             });
 
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), promise);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             throw new RuntimeException(
                     String.format("Message async send failed, topic=%s queue=%s length=%s", topic, queue, length), t
             );
@@ -113,7 +115,7 @@ public class Producer implements MeterBinder{
         int length = ByteBufUtils.bufLength(message);
         try {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), null);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             throw new RuntimeException(
                     String.format("Message send oneway failed, topic=%s queue=%s length=%s", topic, queue, length), t
             );
@@ -122,7 +124,7 @@ public class Producer implements MeterBinder{
         }
     }
 
-    private void doSend(String topic, String queue, ByteBuf message, Extras extras, int timeoutMs, Promise<SendMessageResponse> promise){
+    private void doSend(String topic, String queue, ByteBuf message, Extras extras, int timeoutMs, Promise<SendMessageResponse> promise) {
         TopicPatterns.validateQueue(queue);
         TopicPatterns.validateTopic(topic);
 
@@ -149,7 +151,6 @@ public class Producer implements MeterBinder{
         channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message);
     }
 
-    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
     private ClientChannel fetchChannel(SocketAddress address, int ledger) {
         ClientChannel channel = ledgerChannels.get(ledger);
         if (channel != null && channel.isActive() && (address == null || channel.address().equals(address))) {
@@ -187,7 +188,6 @@ public class Producer implements MeterBinder{
         return builder.build();
     }
 
-    private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
@@ -209,20 +209,21 @@ public class Producer implements MeterBinder{
             int ledgerId = signal.getLedger();
             int version = signal.getLedgerVersion();
             executor.schedule(() -> {
-               try {
-                   if (client.containsMessageRouter(topic)) {
-                       MessageRouter router = client.fetchMessageRouter(topic);
-                       if (router == null) {
-                           return;
-                       }
+                try {
+                    if (client.containsMessageRouter(topic)) {
+                        MessageRouter router = client.fetchMessageRouter(topic);
+                        if (router == null) {
+                            return;
+                        }
 
-                       MessageLedger ledger = router.ledger(ledgerId);
-                       if (ledger != null && version != 0 && ledger.version() >= version) {
-                           return;
-                       }
-                       client.refreshMessageRouter(topic, channel);
-                   }
-               } catch (Throwable ignored){}
+                        MessageLedger ledger = router.ledger(ledgerId);
+                        if (ledger != null && version != 0 && ledger.version() >= version) {
+                            return;
+                        }
+                        client.refreshMessageRouter(topic, channel);
+                    }
+                } catch (Throwable ignored) {
+                }
             }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
         }
     }

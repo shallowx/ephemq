@@ -28,15 +28,15 @@ public class MessageFormatterTest {
         assertEquals("Val1 is null, val2 is 2.", result);
 
         result = MessageFormatter.arrayFormat(
-                "Val1 is {}, val2 is {}, val3 is {}", new Integer[] { null, null, null }).getMessage();
+                "Val1 is {}, val2 is {}, val3 is {}", new Integer[]{null, null, null}).getMessage();
         assertEquals("Val1 is null, val2 is null, val3 is null", result);
 
         result = MessageFormatter.arrayFormat(
-                "Val1 is {}, val2 is {}, val3 is {}", new Integer[] { null, 2, 3 }).getMessage();
+                "Val1 is {}, val2 is {}, val3 is {}", new Integer[]{null, 2, 3}).getMessage();
         assertEquals("Val1 is null, val2 is 2, val3 is 3", result);
 
         result = MessageFormatter.arrayFormat(
-                "Val1 is {}, val2 is {}, val3 is {}", new Integer[] { null, null, 3 }).getMessage();
+                "Val1 is {}, val2 is {}, val3 is {}", new Integer[]{null, null, 3}).getMessage();
         assertEquals("Val1 is null, val2 is null, val3 is 3", result);
     }
 
@@ -144,7 +144,7 @@ public class MessageFormatterTest {
     // tests the case when the parameters are supplied in a single array
     @Test
     public void testArrayFormat() {
-        Integer[] ia0 = { 1, 2, 3 };
+        Integer[] ia0 = {1, 2, 3};
 
         String result = MessageFormatter.arrayFormat("Value {} is smaller than {} and {}.", ia0).getMessage();
         assertEquals("Value 1 is smaller than 2 and 3.", result);
@@ -170,60 +170,60 @@ public class MessageFormatterTest {
 
     @Test
     public void testArrayValues() {
-        Integer[] p1 = { 2, 3 };
+        Integer[] p1 = {2, 3};
 
         String result = MessageFormatter.format("{}{}", 1, p1).getMessage();
         assertEquals("1[2, 3]", result);
 
         // Integer[]
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", p1 }).getMessage();
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", p1}).getMessage();
         assertEquals("a[2, 3]", result);
 
         // byte[]
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", new byte[] { 1, 2 } }).getMessage();
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", new byte[]{1, 2}}).getMessage();
         assertEquals("a[1, 2]", result);
 
         // int[]
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", new int[] { 1, 2 } }).getMessage();
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", new int[]{1, 2}}).getMessage();
         assertEquals("a[1, 2]", result);
 
         // float[]
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", new float[] { 1, 2 } }).getMessage();
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", new float[]{1, 2}}).getMessage();
         assertEquals("a[1.0, 2.0]", result);
 
         // double[]
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", new double[] { 1, 2 } }).getMessage();
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", new double[]{1, 2}}).getMessage();
         assertEquals("a[1.0, 2.0]", result);
     }
 
     @Test
     public void testMultiDimensionalArrayValues() {
-        Integer[] ia0 = { 1, 2, 3 };
-        Integer[] ia1 = { 10, 20, 30 };
+        Integer[] ia0 = {1, 2, 3};
+        Integer[] ia1 = {10, 20, 30};
 
-        Integer[][] multiIntegerA = { ia0, ia1 };
-        String result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", multiIntegerA }).getMessage();
+        Integer[][] multiIntegerA = {ia0, ia1};
+        String result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", multiIntegerA}).getMessage();
         assertEquals("a[[1, 2, 3], [10, 20, 30]]", result);
 
-        int[][] multiIntA = { { 1, 2 }, { 10, 20 } };
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", multiIntA }).getMessage();
+        int[][] multiIntA = {{1, 2}, {10, 20}};
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", multiIntA}).getMessage();
         assertEquals("a[[1, 2], [10, 20]]", result);
 
-        float[][] multiFloatA = { { 1, 2 }, { 10, 20 } };
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", multiFloatA }).getMessage();
+        float[][] multiFloatA = {{1, 2}, {10, 20}};
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", multiFloatA}).getMessage();
         assertEquals("a[[1.0, 2.0], [10.0, 20.0]]", result);
 
-        Object[][] multiOA = { ia0, ia1 };
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", multiOA }).getMessage();
+        Object[][] multiOA = {ia0, ia1};
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", multiOA}).getMessage();
         assertEquals("a[[1, 2, 3], [10, 20, 30]]", result);
 
-        Object[][][] _3DOA = { multiOA, multiOA };
-        result = MessageFormatter.arrayFormat("{}{}", new Object[] { "a", _3DOA }).getMessage();
+        Object[][][] _3DOA = {multiOA, multiOA};
+        result = MessageFormatter.arrayFormat("{}{}", new Object[]{"a", _3DOA}).getMessage();
         assertEquals("a[[[1, 2, 3], [10, 20, 30]], [[1, 2, 3], [10, 20, 30]]]", result);
 
-        Byte[] ba0 = { 0, Byte.MAX_VALUE, Byte.MIN_VALUE };
-        Short[] sa0 = { 0, Short.MIN_VALUE, Short.MAX_VALUE };
-        result = MessageFormatter.arrayFormat("{}\\{}{}", new Object[] { new Object[] { ba0, sa0 }, ia1 }).getMessage();
+        Byte[] ba0 = {0, Byte.MAX_VALUE, Byte.MIN_VALUE};
+        Short[] sa0 = {0, Short.MIN_VALUE, Short.MAX_VALUE};
+        result = MessageFormatter.arrayFormat("{}\\{}{}", new Object[]{new Object[]{ba0, sa0}, ia1}).getMessage();
         assertEquals("[[0, 127, -128], [0, -32768, 32767]]{}[10, 20, 30]", result);
     }
 
@@ -235,18 +235,18 @@ public class MessageFormatterTest {
 
         Object[] a = new Object[2];
         a[0] = 1;
-        Object[] c = { 3, a };
-        Object[] b = { 2, c };
+        Object[] c = {3, a};
+        Object[] b = {2, c};
         a[1] = b;
         assertEquals("1[2, [3, [1, [...]]]]",
-                     MessageFormatter.arrayFormat("{}{}", a).getMessage());
+                MessageFormatter.arrayFormat("{}{}", a).getMessage());
     }
 
     @Test
     public void testArrayThrowable() {
         FormattingTuple ft;
         Throwable t = new Throwable();
-        Object[] ia = { 1, 2, 3, t };
+        Object[] ia = {1, 2, 3, t};
 
         ft = MessageFormatter.arrayFormat("Value {} is smaller than {} and {}.", ia);
         assertEquals("Value 1 is smaller than 2 and 3.", ft.getMessage());

@@ -21,10 +21,11 @@ import java.util.concurrent.Callable;
 
 public class Ostara {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Ostara.class);
+
     public static void main(String[] args) {
         try {
             start(createServer(args));
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Start server failed", e);
             System.exit(-1);
         }
@@ -112,7 +113,7 @@ public class Ostara {
                 case "boolean", "Boolean" -> invoke = TypeTransformUtils.object2Boolean(method.invoke(config));
             }
             sb.append(String.format("\t %s = %s", name, invoke)).append("\n");
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new IllegalStateException(e);
         }

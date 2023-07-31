@@ -21,7 +21,7 @@
         <appender-ref ref="STDOUT"/>
     </appender>
 
-    <logger name="org.ostara" additvity = "false" level="INFO">
+    <logger name="org.ostara" additvity="false" level="INFO">
         <appender-ref ref="AsyncSTDOUT"/>
     </logger>
 
@@ -31,4 +31,4 @@
     </root>
 </configuration>
 
-<!-- Customize the log configuration -->
+        <!-- Customize the log configuration -->

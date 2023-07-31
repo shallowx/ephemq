@@ -36,12 +36,12 @@ public class CoreConfig {
     private static final String DISPATCH_ENTRY_FOLLOW_LIMIT = "dispatch.entry.follow.limit";
     private static final String DISPATCH_ENTRY_PURSUE_LIMIT = "dispatch.entry.pursue.limit";
     private static final String DISPATCH_ENTRY_ALIGN_LIMIT = "dispatch.entry.align.limit";
-    private static final String DISPATCH_ENTRY_PURSUE_TIMEOUT_MS= "dispatch.entry.pursue.timeout.ms";
+    private static final String DISPATCH_ENTRY_PURSUE_TIMEOUT_MS = "dispatch.entry.pursue.timeout.ms";
     private static final String SHUTDOWN_MAX_WAIT_TIME_MS = "shutdown.max.wait.time.ms";
     private static final String METRICS_SAMPLE_COUNT = "metrics.sample.count";
     private static final String AUX_THREAD_COUNTS = "aux.thread.counts";
 
-    private Properties prop;
+    private final Properties prop;
 
     private CoreConfig(Properties prop) {
         this.prop = prop;
@@ -51,7 +51,7 @@ public class CoreConfig {
         return new CoreConfig(properties);
     }
 
-    public int getMetricsSampleCounts(){
+    public int getMetricsSampleCounts() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(METRICS_SAMPLE_COUNT, 100));
     }
 
@@ -59,11 +59,11 @@ public class CoreConfig {
         return TypeTransformUtils.object2Boolean(prop.getOrDefault(NETWORK_LOG_DEBUG_ENABLED, false));
     }
 
-    public int getWriteBufferWaterMarker(){
+    public int getWriteBufferWaterMarker() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(WRITE_BUFFER_WATER_MARK, 30 * 1024 * 1024));
     }
 
-    public int getConnectionTimeoutMs(){
+    public int getConnectionTimeoutMs() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(CONNECTION_TIMEOUT_MS, 30000));
     }
 

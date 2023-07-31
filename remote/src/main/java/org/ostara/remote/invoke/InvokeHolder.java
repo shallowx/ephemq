@@ -12,5 +12,6 @@ public interface InvokeHolder<V> {
     boolean free(int rejoin, Consumer<InvokeAnswer<V>> consumer);
 
     int freeExpired(Consumer<InvokeAnswer<V>> consumer);
+
     int freeEntire(Consumer<InvokeAnswer<V>> consumer);
 }

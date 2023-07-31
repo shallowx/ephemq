@@ -12,8 +12,8 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.ostara.client.util.TopicPatterns;
 import org.ostara.client.internal.*;
+import org.ostara.client.util.TopicPatterns;
 import org.ostara.common.Extras;
 import org.ostara.common.MessageId;
 import org.ostara.common.logging.InternalLogger;
@@ -39,14 +39,25 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Consumer implements MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Consumer.class);
+    private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
     private final String name;
     private final ConsumerConfig consumerConfig;
     private final MessageListener listener;
     private final Client client;
+    private final Map<String, Map<String, Mode>> wholeQueueTopics = new ConcurrentHashMap<>();
+    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
+    private final Map<Integer, AtomicReference<MessageId>> ledgerSequences = new ConcurrentHashMap<>();
+    private final AtomicBoolean changeTaskTouched = new AtomicBoolean(false);
+    private final Map<String, Long> topicTokens = new HashMap<>();
+    private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
+    private final Map<String, Map<Integer, Int2IntMap>> topicLedgerMarkers = new HashMap<>();
+    private final Map<String, Future<?>> obsoleteFutures = new ConcurrentHashMap<>();
     private EventExecutor executor;
     private EventExecutorGroup group;
     private MessageHandler[] handlers;
     private volatile Boolean state;
+    private Future<?> failedRetryFuture;
+    private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
 
     public Consumer(String name, ConsumerConfig consumerConfig, MessageListener listener) {
         this.name = name;
@@ -77,7 +88,6 @@ public class Consumer implements MeterBinder {
         executor.scheduleWithFixedDelay(this::touchChangedTask, 30, 30, TimeUnit.SECONDS);
     }
 
-    private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         {
@@ -97,17 +107,10 @@ public class Consumer implements MeterBinder {
                         .tag("name", name)
                         .tag("id", executor.threadProperties().name())
                         .register(meterRegistry);
-            } catch (Throwable ignored){}
+            } catch (Throwable ignored) {
+            }
         }
     }
-
-    enum Mode {
-        REMAIN, APPEND, DELETE
-    }
-
-    private final Map<String, Map<String, Mode>> wholeQueueTopics = new ConcurrentHashMap<>();
-    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
-    private final Map<Integer, AtomicReference<MessageId>> ledgerSequences = new ConcurrentHashMap<>();
 
     public boolean attach(String topic, String queue) {
         TopicPatterns.validateTopic(topic);
@@ -146,7 +149,7 @@ public class Consumer implements MeterBinder {
                 topicModes.put(topic, Mode.DELETE);
             } else if (mode == Mode.APPEND) {
                 topicModes.remove(topic);
-            }else {
+            } else {
                 return false;
             }
             if (topicModes.isEmpty()) {
@@ -188,7 +191,6 @@ public class Consumer implements MeterBinder {
         return cleared;
     }
 
-    private final AtomicBoolean changeTaskTouched = new AtomicBoolean(false);
     private void touchChangedTask() {
         if (executor.isShuttingDown() || !changeTaskTouched.compareAndSet(false, true)) {
             return;
@@ -201,10 +203,6 @@ public class Consumer implements MeterBinder {
             logger.error("Consumer<{}> touch changed task execute failed, and trg again later", name);
         }
     }
-
-    private final Map<String, Long> topicTokens = new HashMap<>();
-    private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
-    private final Map<String, Map<Integer, Int2IntMap>> topicLedgerMarkers = new HashMap<>();
 
     private void doChangeTask() {
         changeTaskTouched.compareAndSet(true, false);
@@ -462,7 +460,7 @@ public class Consumer implements MeterBinder {
             Mode mode = entry.getValue();
             if (mode == Mode.APPEND) {
                 newMarkerCounts.mergeInt(marker, 1, Integer::sum);
-            } else if (mode == Mode.DELETE){
+            } else if (mode == Mode.DELETE) {
                 newMarkerCounts.mergeInt(marker, -1, Integer::sum);
             }
         }
@@ -528,7 +526,7 @@ public class Consumer implements MeterBinder {
             Mode mode = entry.getValue();
             if (mode == Mode.APPEND) {
                 newMarkerCounts.mergeInt(marker, 1, Integer::sum);
-            } else if (mode == Mode.DELETE){
+            } else if (mode == Mode.DELETE) {
                 newMarkerCounts.mergeInt(marker, -1, Integer::sum);
             }
         }
@@ -548,7 +546,7 @@ public class Consumer implements MeterBinder {
         IntSet deleteSet = new IntOpenHashSet();
         for (int marker : alterSet) {
             int count = newMarkerCounts.get(marker);
-            if (count > 0 ){
+            if (count > 0) {
                 appendSet.add(marker);
             } else {
                 deleteSet.add(marker);
@@ -571,23 +569,23 @@ public class Consumer implements MeterBinder {
     }
 
     private boolean doResetSubscribe(ClientChannel channel, String topic, int ledgerId, int epoch, long index, ByteString markers) {
-       try {
-           Promise<ResetSubscribeResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-           ResetSubscribeRequest request = ResetSubscribeRequest.newBuilder()
-                   .setLedger(ledgerId)
-                   .setEpoch(epoch)
-                   .setIndex(index)
-                   .setMarkers(markers)
-                   .setTopic(topic)
-                   .build();
+        try {
+            Promise<ResetSubscribeResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+            ResetSubscribeRequest request = ResetSubscribeRequest.newBuilder()
+                    .setLedger(ledgerId)
+                    .setEpoch(epoch)
+                    .setIndex(index)
+                    .setMarkers(markers)
+                    .setTopic(topic)
+                    .build();
 
-           int timeoutMs = consumerConfig.getControlTimeoutMs();
-           channel.invoker().resetSubscribe(timeoutMs, promise, request);
-           promise.get(timeoutMs, TimeUnit.MILLISECONDS);
-           return true;
-       } catch (Throwable t){
-           return false;
-       }
+            int timeoutMs = consumerConfig.getControlTimeoutMs();
+            channel.invoker().resetSubscribe(timeoutMs, promise, request);
+            promise.get(timeoutMs, TimeUnit.MILLISECONDS);
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     private boolean doAlterSubscribe(ClientChannel channel, String topic, int ledgerId, ByteString appendMarkers, ByteString deleteMarkers) {
@@ -604,7 +602,7 @@ public class Consumer implements MeterBinder {
             channel.invoker().alterSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return true;
-        } catch (Throwable t){
+        } catch (Throwable t) {
             return false;
         }
     }
@@ -621,7 +619,7 @@ public class Consumer implements MeterBinder {
             channel.invoker().cleanSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return true;
-        } catch (Throwable t){
+        } catch (Throwable t) {
             return false;
         }
     }
@@ -651,8 +649,8 @@ public class Consumer implements MeterBinder {
 
     private ClientChannel fetchChannel(SocketAddress address) {
         try {
-          return client.fetchChannel(address);
-        }catch (Throwable t){
+            return client.fetchChannel(address);
+        } catch (Throwable t) {
             return null;
         }
     }
@@ -668,7 +666,7 @@ public class Consumer implements MeterBinder {
     private MessageLedger calculateLedger(MessageRouter router, String queue) {
         try {
             return router.calculateLedger(queue);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             return null;
         }
     }
@@ -686,7 +684,7 @@ public class Consumer implements MeterBinder {
             }
 
             return UnsafeByteOperations.unsafeWrap(data);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             return null;
         }
     }
@@ -701,7 +699,7 @@ public class Consumer implements MeterBinder {
                 Map<String, Mode> topicModes = queueEntry.getValue();
 
                 Iterator<Map.Entry<String, Mode>> topicIterator = topicModes.entrySet().iterator();
-                while(topicIterator.hasNext()) {
+                while (topicIterator.hasNext()) {
                     Map.Entry<String, Mode> topicEntry = topicIterator.next();
                     String topic = topicEntry.getKey();
                     Map<String, Mode> changedQueues = changedRecords.computeIfAbsent(topic, k -> new HashMap<>());
@@ -714,7 +712,7 @@ public class Consumer implements MeterBinder {
                         topicIterator.remove();
                         topicQueueCount.putIfAbsent(topic, 0);
                     } else {
-                        topicQueueCount.compute(topic, (k ,v) -> v == null ? 1 : v + 1);
+                        topicQueueCount.compute(topic, (k, v) -> v == null ? 1 : v + 1);
                         continue;
                     }
 
@@ -761,7 +759,6 @@ public class Consumer implements MeterBinder {
         return queues;
     }
 
-    private Future<?> failedRetryFuture;
     private void scheduleFailedRetryTask(int delayMs) {
         if (failedRetryFuture != null || executor.isShuttingDown()) {
             return;
@@ -773,7 +770,6 @@ public class Consumer implements MeterBinder {
         }, delayMs, TimeUnit.MILLISECONDS);
     }
 
-    private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
     private Map<String, Map<String, Mode>> clearFailedRecords() {
         Map<String, Map<String, Mode>> dumpFailedRecords = failedRecords;
         failedRecords = new HashMap<>();
@@ -808,8 +804,12 @@ public class Consumer implements MeterBinder {
         client.close();
     }
 
+    enum Mode {
+        REMAIN, APPEND, DELETE
+    }
+
     private class MessageHandler {
-        private String id;
+        private final String id;
         private final Semaphore semaphore;
         private final EventExecutor executor;
 
@@ -828,8 +828,8 @@ public class Consumer implements MeterBinder {
             data.retain();
 
             try {
-                executor.execute((AbstractEventExecutor.LazyRunnable)() -> doHandleMessage(channel, marker, messageId, data));
-            } catch (Throwable t){
+                executor.execute((AbstractEventExecutor.LazyRunnable) () -> doHandleMessage(channel, marker, messageId, data));
+            } catch (Throwable t) {
                 data.release();
                 semaphore.release();
                 logger.error("Consumer<{}> handle message failed", id, t);
@@ -850,7 +850,7 @@ public class Consumer implements MeterBinder {
 
                 Extras extras = new Extras(metadata.getExtrasMap());
                 listener.onMessage(topic, queue, messageId, data, extras);
-            } catch (Throwable t){
+            } catch (Throwable t) {
                 logger.error(" Consumer<{}> handle message failed, address={} marker={} messageId={} length={}",
                         name, channel.address(), marker, messageId, length, t);
             } finally {
@@ -859,8 +859,6 @@ public class Consumer implements MeterBinder {
             }
         }
     }
-
-    private final Map<String, Future<?>> obsoleteFutures = new ConcurrentHashMap<>();
 
     private class ConsumerListener implements ClientListener {
         @Override
@@ -879,24 +877,24 @@ public class Consumer implements MeterBinder {
             int ledgerId = signal.getLedger();
             int ledgerVersion = signal.getLedgerVersion();
             executor.schedule(() -> {
-               try {
-                   if (client.containsMessageRouter(topic)) {
-                       MessageRouter router = client.fetchMessageRouter(topic);
-                       if (router == null) {
-                           logger.warn("The client<{}> topic<{}> message router is empty", name, topic);
-                           return;
-                       }
+                try {
+                    if (client.containsMessageRouter(topic)) {
+                        MessageRouter router = client.fetchMessageRouter(topic);
+                        if (router == null) {
+                            logger.warn("The client<{}> topic<{}> message router is empty", name, topic);
+                            return;
+                        }
 
-                       MessageLedger ledger = router.ledger(ledgerId);
-                       if (ledger == null || ledgerVersion == 0 || ledger.version() < ledgerVersion) {
-                           client.refreshMessageRouter(topic, channel);
-                       }
+                        MessageLedger ledger = router.ledger(ledgerId);
+                        if (ledger == null || ledgerVersion == 0 || ledger.version() < ledgerVersion) {
+                            client.refreshMessageRouter(topic, channel);
+                        }
 
-                       touchChangedTask();
-                   }
-               } catch (Throwable t){
-                   logger.error(t);
-               }
+                        touchChangedTask();
+                    }
+                } catch (Throwable t) {
+                    logger.error(t);
+                }
             }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
         }
 
@@ -954,7 +952,7 @@ public class Consumer implements MeterBinder {
             int candidate = 0;
             int next;
             while (true) {
-                next = (int)((candidate + 1) / (((double)((int)((state = (2862933555777941757L * state + 1)) >>> 33) + 1))/ 0x1.0p31));
+                next = (int) ((candidate + 1) / (((double) ((int) ((state = (2862933555777941757L * state + 1)) >>> 33) + 1)) / 0x1.0p31));
                 if (next > 0 && next < buckets) {
                     candidate = next;
                 } else {

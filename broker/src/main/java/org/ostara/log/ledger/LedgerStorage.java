@@ -20,11 +20,11 @@ public class LedgerStorage {
     private final LedgerConfig config;
     private final EventExecutor executor;
     private final LedgerTrigger trigger;
+    private final AtomicBoolean state = new AtomicBoolean(true);
     private volatile Offset currentOffset;
     private volatile int segmentCount;
     private volatile LedgerSegment headSegment;
     private volatile LedgerSegment tailSegment;
-    private final AtomicBoolean state = new AtomicBoolean(true);
 
     public LedgerStorage(int ledger, String topic, int epoch, LedgerConfig config, EventExecutor executor, LedgerTrigger trigger) {
         this.ledger = ledger;
@@ -51,7 +51,7 @@ public class LedgerStorage {
     }
 
     private void doAppendRecord(int marker, ByteBuf payload, Promise<Offset> promise) {
-        try{
+        try {
             checkActive();
 
             Offset theOffset = currentOffset;
@@ -73,7 +73,8 @@ public class LedgerStorage {
         if (trigger != null) {
             try {
                 trigger.onAppend(ledger, count, offset);
-            } catch (Throwable ignored) {}
+            } catch (Throwable ignored) {
+            }
         }
     }
 
@@ -129,7 +130,8 @@ public class LedgerStorage {
         } else {
             try {
                 executor.execute(this::cleanSegment);
-            } catch (Throwable ignored){}
+            } catch (Throwable ignored) {
+            }
         }
     }
 
@@ -151,7 +153,7 @@ public class LedgerStorage {
         }
     }
 
-    private void decreaseSegment(){
+    private void decreaseSegment() {
         int count = segmentCount;
         if (count == 0) {
             return;
@@ -260,11 +262,11 @@ public class LedgerStorage {
             if (executor.inEventLoop()) {
                 doClose(promise);
             } else {
-               try {
-                   executor.execute(() -> doClose(promise));
-               } catch (Throwable t){
-                   result.tryFailure(t);
-               }
+                try {
+                    executor.execute(() -> doClose(promise));
+                } catch (Throwable t) {
+                    result.tryFailure(t);
+                }
             }
         } else {
             result.trySuccess(true);
@@ -283,13 +285,13 @@ public class LedgerStorage {
         }
     }
 
-    private <T>void tryFailure(Promise<T> promise, Throwable t){
+    private <T> void tryFailure(Promise<T> promise, Throwable t) {
         if (promise != null) {
             promise.tryFailure(t);
         }
     }
 
-    private <T>void trySuccess(Promise<T> promise, T v){
+    private <T> void trySuccess(Promise<T> promise, T v) {
         if (promise != null) {
             promise.trySuccess(v);
         }

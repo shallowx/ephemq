@@ -3,9 +3,7 @@ package org.ostara.common;
 import io.netty.util.internal.ObjectUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjectUtilTests {
 
@@ -15,14 +13,14 @@ public class ObjectUtilTests {
     private static final String NON_NULL_EMPTY_STRING = "";
     private static final String NON_NULL_WHITESPACE_STRING = "  ";
     private static final Object[] NON_NULL_EMPTY_OBJECT_ARRAY = {};
-    private static final Object[] NON_NULL_FILLED_OBJECT_ARRAY = { NON_NULL_OBJECT };
+    private static final Object[] NON_NULL_FILLED_OBJECT_ARRAY = {NON_NULL_OBJECT};
     private static final CharSequence NULL_CHARSEQUENCE = (CharSequence) NULL_OBJECT;
     private static final CharSequence NON_NULL_CHARSEQUENCE = (CharSequence) NON_NULL_OBJECT;
-    private static final CharSequence NON_NULL_EMPTY_CHARSEQUENCE = (CharSequence) NON_NULL_EMPTY_STRING;
+    private static final CharSequence NON_NULL_EMPTY_CHARSEQUENCE = NON_NULL_EMPTY_STRING;
     private static final byte[] NON_NULL_EMPTY_BYTE_ARRAY = {};
-    private static final byte[] NON_NULL_FILLED_BYTE_ARRAY = { (byte) 0xa };
+    private static final byte[] NON_NULL_FILLED_BYTE_ARRAY = {(byte) 0xa};
     private static final char[] NON_NULL_EMPTY_CHAR_ARRAY = {};
-    private static final char[] NON_NULL_FILLED_CHAR_ARRAY = { 'A' };
+    private static final char[] NON_NULL_FILLED_CHAR_ARRAY = {'A'};
 
     private static final String NULL_NAME = "IS_NULL";
     private static final String NON_NULL_NAME = "NOT_NULL";
@@ -353,7 +351,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((Object[]) NON_NULL_FILLED_OBJECT_ARRAY, NON_NULL_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_FILLED_OBJECT_ARRAY, NON_NULL_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -361,7 +359,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((Object[]) NON_NULL_EMPTY_OBJECT_ARRAY, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_EMPTY_OBJECT_ARRAY, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -383,7 +381,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((byte[]) NON_NULL_FILLED_BYTE_ARRAY, NON_NULL_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_FILLED_BYTE_ARRAY, NON_NULL_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -391,7 +389,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((byte[]) NON_NULL_EMPTY_BYTE_ARRAY, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_EMPTY_BYTE_ARRAY, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -413,7 +411,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((char[]) NON_NULL_FILLED_CHAR_ARRAY, NON_NULL_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_FILLED_CHAR_ARRAY, NON_NULL_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -421,7 +419,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((char[]) NON_NULL_EMPTY_CHAR_ARRAY, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_EMPTY_CHAR_ARRAY, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -442,7 +440,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((Object[]) NON_NULL_FILLED_OBJECT_ARRAY, NON_NULL_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_FILLED_OBJECT_ARRAY, NON_NULL_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -450,7 +448,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((Object[]) NON_NULL_EMPTY_OBJECT_ARRAY, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_EMPTY_OBJECT_ARRAY, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -480,7 +478,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((String) NON_NULL_EMPTY_STRING, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_EMPTY_STRING, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -489,7 +487,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((String) NON_NULL_WHITESPACE_STRING, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_WHITESPACE_STRING, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -501,7 +499,7 @@ public class ObjectUtilTests {
         Exception actualEx = null;
 
         try {
-            ObjectUtil.checkNonEmpty((CharSequence) NULL_CHARSEQUENCE, NULL_NAME);
+            ObjectUtil.checkNonEmpty(NULL_CHARSEQUENCE, NULL_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -510,7 +508,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((CharSequence) NON_NULL_CHARSEQUENCE, NON_NULL_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_CHARSEQUENCE, NON_NULL_NAME);
         } catch (Exception e) {
             actualEx = e;
         }
@@ -518,7 +516,7 @@ public class ObjectUtilTests {
 
         actualEx = null;
         try {
-            ObjectUtil.checkNonEmpty((CharSequence) NON_NULL_EMPTY_CHARSEQUENCE, NON_NULL_EMPTY_NAME);
+            ObjectUtil.checkNonEmpty(NON_NULL_EMPTY_CHARSEQUENCE, NON_NULL_EMPTY_NAME);
         } catch (Exception e) {
             actualEx = e;
         }

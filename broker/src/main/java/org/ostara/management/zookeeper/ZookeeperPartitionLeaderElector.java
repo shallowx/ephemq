@@ -85,7 +85,7 @@ public class ZookeeperPartitionLeaderElector {
                             logger.error("Stop chunk dispatch failed", promise.cause());
                         }
                         trySyncLeader();
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         logger.error("Switch to follower failed", e);
                     }
                     for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
@@ -121,7 +121,7 @@ public class ZookeeperPartitionLeaderElector {
                     poolExecutor.schedule(() -> updateTopicAssigment(path), 50, TimeUnit.MILLISECONDS);
                 }
             });
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error("Update topic assignment task submission failed");
             poolExecutor.schedule(() -> updateTopicAssigment(path), 50, TimeUnit.MILLISECONDS);
         }
@@ -155,7 +155,7 @@ public class ZookeeperPartitionLeaderElector {
                     }
                     syncLeader(ledger);
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("Try to sync ledger failed", e);
 
                 try {
@@ -168,19 +168,19 @@ public class ZookeeperPartitionLeaderElector {
     }
 
     private void syncLeader(int ledger) throws Exception {
-       Log log  =  manager.getLogManager().getLog(ledger);
-       Node leaderNode = manager.getClusterManager().getClusterNode(latch.getLeader().getId());
+        Log log = manager.getLogManager().getLog(ledger);
+        Node leaderNode = manager.getClusterManager().getClusterNode(latch.getLeader().getId());
         Client innerClient = manager.getInnerClient();
         ClientChannel channel = innerClient.fetchChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);
         promise.addListener(future -> {
-           if (!future.isSuccess()) {
-               logger.error("Failed to sync data as a follower", future.cause());
-           }
+            if (!future.isSuccess()) {
+                logger.error("Failed to sync data as a follower", future.cause());
+            }
         });
     }
 
-    public void shutdown() throws Exception{
+    public void shutdown() throws Exception {
         if (latch != null) {
             latch.close();
         }
@@ -190,7 +190,7 @@ public class ZookeeperPartitionLeaderElector {
         return latch.hasLeadership();
     }
 
-    public String getCurrentLeader() throws Exception{
+    public String getCurrentLeader() throws Exception {
         Participant leader = latch.getLeader();
         if (leader.isLeader()) {
             return leader.getId();

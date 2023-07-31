@@ -4,6 +4,6 @@
 package org.ostara.remote.proto.server;
 
 public interface DeleteTopicResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:ostara.protobuf.DeleteTopicResponse)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:ostara.protobuf.DeleteTopicResponse)
+        com.google.protobuf.MessageOrBuilder {
 }

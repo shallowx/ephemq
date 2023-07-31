@@ -29,6 +29,6 @@ public class FastEventExecutorGroup extends MultithreadEventExecutorGroup {
     @Override
     protected EventExecutor newChild(Executor executor, Object... args) throws Exception {
         return new FastEventExecutor(this, executor,
-                (Boolean)args[0], (Integer)args[1],(RejectedExecutionHandler)args[2]);
+                (Boolean) args[0], (Integer) args[1], (RejectedExecutionHandler) args[2]);
     }
 }

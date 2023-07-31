@@ -73,6 +73,6 @@ public class LogbackConfigurationTests {
 
     @After
     public void clear() {
-       // do nothing
+        // do nothing
     }
 }

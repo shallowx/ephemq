@@ -6,15 +6,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShutdownHookThread extends Thread {
-    private volatile boolean hasShutdown = false;
     private final AtomicInteger shutdownTimes = new AtomicInteger(0);
     private final InternalLogger logger;
     private final Callable<?> callable;
+    private volatile boolean hasShutdown = false;
+
     public ShutdownHookThread(InternalLogger logger, Callable<?> callable) {
         super("Shutdown-hook-thread");
         this.logger = logger;
         this.callable = callable;
     }
+
     @Override
     public void run() {
         synchronized (this) {

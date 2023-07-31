@@ -19,9 +19,11 @@ public interface InternalLogger {
     void trace(Throwable t);
 
     boolean isDebugEnabled();
+
     void debug(String msg);
 
     void debug(String format, Object arg);
+
     void debug(String format, Object argA, Object argB);
 
     void debug(String format, Object... arguments);
@@ -35,6 +37,7 @@ public interface InternalLogger {
     void info(String msg);
 
     void info(String format, Object arg);
+
     void info(String format, Object argA, Object argB);
 
     void info(String format, Object... arguments);
@@ -48,9 +51,11 @@ public interface InternalLogger {
     void warn(String msg);
 
     void warn(String format, Object arg);
+
     void warn(String format, Object... arguments);
 
     void warn(String format, Object argA, Object argB);
+
     void warn(String msg, Throwable t);
 
     void warn(Throwable t);

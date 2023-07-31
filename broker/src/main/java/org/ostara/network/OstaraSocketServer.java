@@ -20,6 +20,7 @@ import java.net.SocketAddress;
 import static org.ostara.metrics.MetricsConstants.*;
 import static org.ostara.remote.util.NetworkUtils.newEventLoopGroup;
 import static org.ostara.remote.util.NetworkUtils.preferServerChannelClass;
+
 public class OstaraSocketServer {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(OstaraSocketServer.class);
@@ -119,7 +120,7 @@ public class OstaraSocketServer {
         if (closedFuture != null) {
             try {
                 closedFuture.channel().close().sync();
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }
@@ -127,7 +128,7 @@ public class OstaraSocketServer {
         if (bossGroup != null) {
             try {
                 bossGroup.shutdownGracefully().sync();
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }
@@ -135,7 +136,7 @@ public class OstaraSocketServer {
         if (workGroup != null) {
             try {
                 workGroup.shutdownGracefully().sync();
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }

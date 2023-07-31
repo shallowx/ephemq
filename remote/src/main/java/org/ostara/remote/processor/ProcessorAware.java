@@ -7,7 +7,8 @@ import org.ostara.remote.invoke.InvokeAnswer;
 
 public interface ProcessorAware {
 
-    default void onActive(Channel channel, EventExecutor executor){}
+    default void onActive(Channel channel, EventExecutor executor) {
+    }
 
     void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer);
 }

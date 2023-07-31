@@ -7,13 +7,10 @@ import java.io.Serial;
 
 class Log4JLogger extends AbstractInternalLogger {
 
+    static final String FQCN = Log4JLogger.class.getName();
     @Serial
     private static final long serialVersionUID = 2851357342488183058L;
-
     final transient Logger logger;
-
-    static final String FQCN = Log4JLogger.class.getName();
-
     final boolean traceCapable;
 
     Log4JLogger(Logger logger) {

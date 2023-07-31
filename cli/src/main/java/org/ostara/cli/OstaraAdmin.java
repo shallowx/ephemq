@@ -5,8 +5,8 @@ import org.ostara.cli.cluster.ClusterListCommand;
 import org.ostara.cli.topic.TopicCreatedCommand;
 import org.ostara.cli.topic.TopicDeletedCommand;
 import org.ostara.cli.topic.TopicListCommand;
-import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.Client;
+import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.ClientListener;
 
 import java.text.SimpleDateFormat;
@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 public class OstaraAdmin {
+    private static final List<Command> commands = new ArrayList<>();
+
     public static void main(String[] args) {
         main0(args);
     }
@@ -39,7 +41,8 @@ public class OstaraAdmin {
                         }
                     }
                 }
-                case 1 -> {}
+                case 1 -> {
+                }
                 default -> {
                     Command cmd = getCommand(args[0]);
                     if (cmd != null) {
@@ -61,11 +64,12 @@ public class OstaraAdmin {
                                 }
                             });
 
-                            Client client = new Client("cmdLine-client", clientConfig, new ClientListener() {});
+                            Client client = new Client("cmdLine-client", clientConfig, new ClientListener() {
+                            });
                             try {
                                 client.start();
                                 cmd.execute(cmdLine, options, client);
-                            } catch (Exception e){
+                            } catch (Exception e) {
                                 client.close();
                                 throw e;
                             }
@@ -76,7 +80,7 @@ public class OstaraAdmin {
                             newDate(), Thread.currentThread().getName(), OstaraAdmin.class.getName(), args[0]);
                 }
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
                     newDate(), Thread.currentThread().getName(), OstaraAdmin.class.getName(), args[0]);
             System.exit(-1);
@@ -94,9 +98,7 @@ public class OstaraAdmin {
         int length = args.length;
         if (length > 1) {
             String[] ret = new String[length - 1];
-            for (int i = 0; i < length; i++) {
-                ret[i] = args[i + 1];
-            }
+            System.arraycopy(args, 1, ret, 0, length);
             return ret;
         }
         return null;
@@ -104,7 +106,7 @@ public class OstaraAdmin {
 
     private static String newDate() {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return   format.format(new Date());
+        return format.format(new Date());
     }
 
     private static void printCmdHelp(String help, Options options) {
@@ -113,7 +115,7 @@ public class OstaraAdmin {
         hf.printHelp(help, options, true);
     }
 
-    private static Options buildOptions(){
+    private static Options buildOptions() {
         Option option = new Option("h", "help", false, "Print help");
         option.setRequired(false);
         Options options = new Options();
@@ -122,13 +124,11 @@ public class OstaraAdmin {
         return options;
     }
 
-    private static final List<Command> commands = new ArrayList<>();
-
     private static void initCommand() {
         Command clientCommand = new TopicListCommand();
         Command clusterCommand = new ClusterListCommand();
         Command topicCreatedCommand = new TopicCreatedCommand();
-        Command  topicDeletedCommand = new TopicDeletedCommand();
+        Command topicDeletedCommand = new TopicDeletedCommand();
         commands.add(clientCommand);
         commands.add(clusterCommand);
         commands.add(topicCreatedCommand);

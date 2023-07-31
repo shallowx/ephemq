@@ -49,8 +49,8 @@ public class FastEventExecutor extends SingleThreadEventExecutor {
                 } catch (Throwable t) {
                     logger.error(t.getMessage(), t);
                 }
-                  updateLastExecutionTime();
+                updateLastExecutionTime();
             }
-        }while (!confirmShutdown());
+        } while (!confirmShutdown());
     }
 }
