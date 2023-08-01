@@ -1,4 +1,4 @@
-package org.ostara.log.ledger;
+package org.ostara.storage.ledger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;

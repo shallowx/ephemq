@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ostara.common.Offset;
 import org.ostara.common.util.MessageUtils;
-import org.ostara.log.ledger.*;
+import org.ostara.storage.ledger.*;
 import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.NetworkUtils;
 

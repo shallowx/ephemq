@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.log.ledger.LedgerConfig;
-import org.ostara.log.ledger.LedgerStorage;
-import org.ostara.log.ledger.LedgerTrigger;
+import org.ostara.storage.ledger.LedgerConfig;
+import org.ostara.storage.ledger.LedgerStorage;
+import org.ostara.storage.ledger.LedgerTrigger;
 import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.NetworkUtils;
 

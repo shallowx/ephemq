@@ -1,4 +1,4 @@
-package org.ostara.log;
+package org.ostara.storage;
 
 import org.ostara.client.internal.ClientChannel;
 

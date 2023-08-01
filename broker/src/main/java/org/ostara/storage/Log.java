@@ -1,4 +1,4 @@
-package org.ostara.log;
+package org.ostara.storage;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Meter;
@@ -17,10 +17,10 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.CoreConfig;
 import org.ostara.listener.LogListener;
-import org.ostara.log.ledger.LedgerConfig;
-import org.ostara.log.ledger.LedgerCursor;
-import org.ostara.log.ledger.LedgerStorage;
-import org.ostara.log.ledger.LedgerTrigger;
+import org.ostara.storage.ledger.LedgerConfig;
+import org.ostara.storage.ledger.LedgerCursor;
+import org.ostara.storage.ledger.LedgerStorage;
+import org.ostara.storage.ledger.LedgerTrigger;
 import org.ostara.management.Manager;
 import org.ostara.management.TopicManager;
 import org.ostara.metrics.MetricsConstants;

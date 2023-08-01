@@ -11,7 +11,7 @@ import org.ostara.core.CoreConfig;
 import org.ostara.core.inner.InnerClient;
 import org.ostara.core.inner.InnerClientListener;
 import org.ostara.listener.*;
-import org.ostara.log.LogManager;
+import org.ostara.storage.LogManager;
 import org.ostara.management.*;
 import org.ostara.remote.util.NetworkUtils;
 

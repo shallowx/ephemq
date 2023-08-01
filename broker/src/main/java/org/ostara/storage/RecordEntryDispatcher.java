@@ -1,4 +1,4 @@
-package org.ostara.log;
+package org.ostara.storage;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -17,8 +17,8 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.MessageUtils;
 import org.ostara.core.CoreConfig;
-import org.ostara.log.ledger.LedgerCursor;
-import org.ostara.log.ledger.LedgerStorage;
+import org.ostara.storage.ledger.LedgerCursor;
+import org.ostara.storage.ledger.LedgerStorage;
 import org.ostara.remote.codec.MessagePacket;
 import org.ostara.remote.processor.ProcessCommand;
 import org.ostara.remote.proto.client.MessagePushSignal;

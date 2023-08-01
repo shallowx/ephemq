@@ -1,4 +1,4 @@
-package org.ostara.log.ledger;
+package org.ostara.storage.ledger;
 
 public class LedgerConfig {
     private int segmentRetainCounts = 3;

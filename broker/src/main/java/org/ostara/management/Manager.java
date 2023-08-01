@@ -6,7 +6,7 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import org.ostara.client.internal.Client;
 import org.ostara.listener.APIListener;
 import org.ostara.listener.MetricsListener;
-import org.ostara.log.LogManager;
+import org.ostara.storage.LogManager;
 
 import java.util.List;
 

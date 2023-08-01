@@ -1,4 +1,4 @@
-package org.ostara.log;
+package org.ostara.storage;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
