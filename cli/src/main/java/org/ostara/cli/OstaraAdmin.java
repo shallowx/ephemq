@@ -33,7 +33,7 @@ public class OstaraAdmin {
                             Options options = buildOptions();
                             options = cmd.buildOptions(options);
                             if (options != null) {
-                                printCmdHelp("ostaraadmin" + cmd.name(), options);
+                                printCmdHelp("smartAdmin" + cmd.name(), options);
                                 return;
                             }
                             System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
@@ -149,6 +149,6 @@ public class OstaraAdmin {
         for (Command cmd : commands) {
             System.out.printf("  %s-20s %s%n", cmd.name(), cmd.description());
         }
-        System.out.printf("%n see 'ostaraadmin help <command>' for more information on a specific command.%n");
+        System.out.printf("%n see 'smartAdmin help <command>' for more information on a specific command.%n");
     }
 }
