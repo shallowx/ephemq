@@ -57,14 +57,14 @@ public class OstaraAdmin {
 
                         if (cmdLine.hasOption('c')) {
                             String address = cmdLine.getOptionValue('b');
-                            ClientConfig clientConfig = new ClientConfig();
-                            clientConfig.setBootstrapAddresses(new ArrayList<>() {
+                            ClientConfig config = new ClientConfig();
+                            config.setBootstrapAddresses(new ArrayList<>() {
                                 {
                                     add(address);
                                 }
                             });
 
-                            Client client = new Client("cmdLine-client", clientConfig, new ClientListener() {
+                            Client client = new Client("cmdLine-client", config, new ClientListener() {
                             });
                             try {
                                 client.start();
