@@ -16,7 +16,7 @@ import org.ostara.remote.invoke.GenericInvokeHolder;
 import org.ostara.remote.invoke.InvokeAnswer;
 import org.ostara.remote.invoke.InvokeHolder;
 import org.ostara.remote.processor.AwareInvocation;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.processor.Processor;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.HashSet;
@@ -41,9 +41,9 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         }
     };
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
-    private final ProcessorAware processor;
+    private final Processor processor;
 
-    public ProcessDuplexHandler(ProcessorAware processor) {
+    public ProcessDuplexHandler(Processor processor) {
         this.processor = checkNotNull(processor, "Processor aware not found");
     }
 

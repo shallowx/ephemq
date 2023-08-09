@@ -8,11 +8,11 @@ import com.google.inject.name.Names;
 import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
 import org.ostara.management.zookeeper.ZookeeperManager;
-import org.ostara.network.OstaraSocketServer;
+import org.ostara.network.CoreSocketServer;
 import org.ostara.network.ServiceChannelInitializer;
 import org.ostara.network.ServiceDuplexHandler;
-import org.ostara.network.ServiceProcessorAware;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.network.ServiceProcessor;
+import org.ostara.remote.processor.Processor;
 
 import java.util.Properties;
 
@@ -29,8 +29,8 @@ public class BeanModule extends AbstractModule {
         bind(Manager.class).to(ZookeeperManager.class).in(Singleton.class);
         bind(OstaraServer.class).in(Singleton.class);
         bind(ServiceChannelInitializer.class).in(Singleton.class);
-        bind(OstaraSocketServer.class).in(Singleton.class);
-        bind(ProcessorAware.class).annotatedWith(Names.named("ServiceProcessorAware")).to(ServiceProcessorAware.class);
+        bind(CoreSocketServer.class).in(Singleton.class);
+        bind(Processor.class).annotatedWith(Names.named("ServiceProcessorAware")).to(ServiceProcessor.class);
     }
 
     @Singleton
@@ -46,7 +46,7 @@ public class BeanModule extends AbstractModule {
     }
 
     @Provides
-    ServiceDuplexHandler serviceDuplexHandler(Manager manager, @Named("ServiceProcessorAware") ProcessorAware aware) {
+    ServiceDuplexHandler serviceDuplexHandler(Manager manager, @Named("ServiceProcessorAware") Processor aware) {
         return new ServiceDuplexHandler(manager, aware);
     }
 }

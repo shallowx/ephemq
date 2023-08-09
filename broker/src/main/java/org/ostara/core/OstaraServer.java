@@ -7,7 +7,7 @@ import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.listener.ServerListener;
 import org.ostara.management.ClusterManager;
 import org.ostara.management.Manager;
-import org.ostara.network.OstaraSocketServer;
+import org.ostara.network.CoreSocketServer;
 
 import java.io.Closeable;
 import java.util.LinkedList;
@@ -21,11 +21,11 @@ public class OstaraServer {
     private final CoreConfig config;
     private final List<ServerListener> serverListeners = new LinkedList<>();
     private final CountDownLatch countDownLatch;
-    private final OstaraSocketServer defaultSocketServer;
+    private final CoreSocketServer defaultSocketServer;
     private final Manager manager;
 
     @Inject
-    public OstaraServer(CoreConfig config, OstaraSocketServer defaultSocketServer, Manager manager) {
+    public OstaraServer(CoreConfig config, CoreSocketServer defaultSocketServer, Manager manager) {
         this.config = config;
         this.defaultSocketServer = defaultSocketServer;
         this.manager = manager;

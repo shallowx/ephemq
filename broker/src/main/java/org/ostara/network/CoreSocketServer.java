@@ -21,9 +21,9 @@ import static org.ostara.metrics.MetricsConstants.*;
 import static org.ostara.remote.util.NetworkUtils.newEventLoopGroup;
 import static org.ostara.remote.util.NetworkUtils.preferServerChannelClass;
 
-public class OstaraSocketServer {
+public class CoreSocketServer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(OstaraSocketServer.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(CoreSocketServer.class);
     private final CoreConfig config;
     private ServiceChannelInitializer serviceChannelInitializer;
     private EventLoopGroup bossGroup;
@@ -31,7 +31,7 @@ public class OstaraSocketServer {
     private ChannelFuture closedFuture;
 
     @Inject
-    public OstaraSocketServer(CoreConfig config, Manager manager) {
+    public CoreSocketServer(CoreConfig config, Manager manager) {
         this.config = config;
     }
 

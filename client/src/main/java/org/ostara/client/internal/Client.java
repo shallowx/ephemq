@@ -26,7 +26,7 @@ import org.ostara.remote.handle.ConnectDuplexHandler;
 import org.ostara.remote.handle.ProcessDuplexHandler;
 import org.ostara.remote.invoke.InvokeAnswer;
 import org.ostara.remote.processor.ProcessCommand;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.processor.Processor;
 import org.ostara.remote.proto.*;
 import org.ostara.remote.proto.client.MessagePushSignal;
 import org.ostara.remote.proto.client.NodeOfflineSignal;
@@ -686,7 +686,7 @@ public class Client implements MeterBinder {
                     .addLast("service-handler", new ProcessDuplexHandler(new InnerServiceProcessor(clientChannel)));
         }
 
-        private class InnerServiceProcessor implements ProcessorAware, ProcessCommand.Client {
+        private class InnerServiceProcessor implements Processor, ProcessCommand.Client {
 
             private final ClientChannel clientChannel;
 

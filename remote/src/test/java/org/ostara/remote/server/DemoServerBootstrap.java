@@ -13,7 +13,7 @@ import org.ostara.remote.codec.MessageDecoder;
 import org.ostara.remote.codec.MessageEncoder;
 import org.ostara.remote.handle.ConnectDuplexHandler;
 import org.ostara.remote.handle.ProcessDuplexHandler;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.processor.Processor;
 import org.ostara.remote.util.NetworkUtils;
 
 public class DemoServerBootstrap {
@@ -24,7 +24,7 @@ public class DemoServerBootstrap {
         EventLoopGroup workerGroup = NetworkUtils.newEventLoopGroup(true, 0, "demo-server-worker");
         EventExecutorGroup servicesGroup = NetworkUtils.newEventExecutorGroup(0, "demo-server-service");
 
-        ProcessorAware processorAware = new DemoServerProcessor();
+        Processor processorAware = new DemoServerProcessor();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap()
                     .group(boosGroup, workerGroup)

@@ -7,7 +7,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.management.Manager;
 import org.ostara.remote.handle.ProcessDuplexHandler;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.processor.Processor;
 
 public class ServiceDuplexHandler extends ProcessDuplexHandler {
 
@@ -16,7 +16,7 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
     private final Manager manager;
 
     @Inject
-    public ServiceDuplexHandler(Manager manager, ProcessorAware processor) {
+    public ServiceDuplexHandler(Manager manager, Processor processor) {
         super(processor);
         this.manager = manager;
     }

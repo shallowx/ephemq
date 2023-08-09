@@ -24,7 +24,7 @@ import org.ostara.management.zookeeper.CorrelationIdConstants;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.invoke.InvokeAnswer;
 import org.ostara.remote.processor.ProcessCommand;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.processor.Processor;
 import org.ostara.remote.proto.*;
 import org.ostara.remote.proto.server.*;
 import org.ostara.remote.util.NetworkUtils;
@@ -39,16 +39,16 @@ import java.util.stream.Collectors;
 import static org.ostara.remote.util.ProtoBufUtils.proto2Buf;
 import static org.ostara.remote.util.ProtoBufUtils.readProto;
 
-public class ServiceProcessorAware implements ProcessorAware, ProcessCommand.Server {
+public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessorAware.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     private final CoreConfig config;
     private final Manager manager;
     private final EventExecutor commandExecutor;
     private EventExecutor serviceExecutor;
 
     @Inject
-    public ServiceProcessorAware(CoreConfig config, Manager manager) {
+    public ServiceProcessor(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
         this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();

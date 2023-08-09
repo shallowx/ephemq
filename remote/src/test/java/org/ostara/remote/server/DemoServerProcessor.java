@@ -8,13 +8,13 @@ import io.netty.util.concurrent.FastThreadLocal;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.remote.invoke.InvokeAnswer;
-import org.ostara.remote.processor.ProcessorAware;
+import org.ostara.remote.processor.Processor;
 import org.ostara.remote.util.ByteBufUtils;
 import org.ostara.remote.util.NetworkUtils;
 
 import java.util.concurrent.TimeUnit;
 
-public class DemoServerProcessor implements ProcessorAware {
+public class DemoServerProcessor implements Processor {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerProcessor.class);
     private static final EventExecutorGroup executors = NetworkUtils.newEventExecutorGroup(1, "demo-buffer-group");
@@ -22,7 +22,7 @@ public class DemoServerProcessor implements ProcessorAware {
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
-        ProcessorAware.super.onActive(channel, executor);
+        Processor.super.onActive(channel, executor);
     }
 
     @Override
