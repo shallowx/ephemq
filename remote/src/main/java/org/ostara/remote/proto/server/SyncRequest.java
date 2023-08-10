@@ -53,6 +53,7 @@ public final class SyncRequest extends
     private SyncRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private SyncRequest() {
         topic_ = "";
     }

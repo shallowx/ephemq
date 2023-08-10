@@ -51,6 +51,7 @@ public final class TopicMetadata extends
     private TopicMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private TopicMetadata() {
         name_ = "";
     }

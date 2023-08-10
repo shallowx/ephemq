@@ -45,6 +45,7 @@ public final class ClusterInfo extends
     private com.google.protobuf.MapField<
             java.lang.String, org.ostara.remote.proto.NodeMetadata> nodes_;
     private byte memoizedIsInitialized = -1;
+
     // Use ClusterInfo.newBuilder() to construct.
     private ClusterInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

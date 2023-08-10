@@ -46,6 +46,7 @@ public final class MessageId extends
     private int epoch_;
     private int index_;
     private byte memoizedIsInitialized = -1;
+
     // Use MessageId.newBuilder() to construct.
     private MessageId(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

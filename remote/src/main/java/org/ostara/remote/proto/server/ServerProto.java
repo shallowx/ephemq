@@ -377,6 +377,7 @@ public final class ServerProto {
                 new java.lang.String[]{"Success", "Message",});
         org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
     }
+
     private ServerProto() {
     }
 

@@ -47,6 +47,7 @@ public final class QueryTopicInfoRequest extends
     private QueryTopicInfoRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private QueryTopicInfoRequest() {
         topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }

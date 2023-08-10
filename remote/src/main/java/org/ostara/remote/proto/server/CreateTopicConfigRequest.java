@@ -46,6 +46,7 @@ public final class CreateTopicConfigRequest extends
     private int segmentRetainCount_;
     private int segmentRetainMs_;
     private byte memoizedIsInitialized = -1;
+
     // Use CreateTopicConfigRequest.newBuilder() to construct.
     private CreateTopicConfigRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

@@ -45,6 +45,7 @@ public final class TopicInfo extends
     private com.google.protobuf.MapField<
             java.lang.Integer, org.ostara.remote.proto.PartitionMetadata> partitions_;
     private byte memoizedIsInitialized = -1;
+
     // Use TopicInfo.newBuilder() to construct.
     private TopicInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

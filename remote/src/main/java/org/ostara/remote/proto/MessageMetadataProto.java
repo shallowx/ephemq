@@ -188,6 +188,7 @@ public final class MessageMetadataProto {
                 internal_static_ostara_protobuf_TopicSegmentInfo_descriptor,
                 new java.lang.String[]{"SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs",});
     }
+
     private MessageMetadataProto() {
     }
 

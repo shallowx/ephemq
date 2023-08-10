@@ -46,6 +46,7 @@ public final class SendMessageResponse extends
     private int epoch_;
     private long index_;
     private byte memoizedIsInitialized = -1;
+
     // Use SendMessageResponse.newBuilder() to construct.
     private SendMessageResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

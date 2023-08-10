@@ -55,6 +55,7 @@ public final class LedgerRetiredSignal extends
     private LedgerRetiredSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private LedgerRetiredSignal() {
         topic_ = "";
     }

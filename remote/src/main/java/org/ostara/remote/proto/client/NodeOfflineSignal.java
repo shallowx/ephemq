@@ -47,6 +47,7 @@ public final class NodeOfflineSignal extends
     private NodeOfflineSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private NodeOfflineSignal() {
     }
 

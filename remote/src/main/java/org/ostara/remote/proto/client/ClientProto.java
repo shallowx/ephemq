@@ -89,6 +89,7 @@ public final class ClientProto {
                 new java.lang.String[]{"Ledger", "Count",});
         org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
     }
+
     private ClientProto() {
     }
 

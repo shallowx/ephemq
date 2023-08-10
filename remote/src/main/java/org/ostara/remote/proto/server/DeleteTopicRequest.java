@@ -47,6 +47,7 @@ public final class DeleteTopicRequest extends
     private DeleteTopicRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private DeleteTopicRequest() {
         topic_ = "";
     }

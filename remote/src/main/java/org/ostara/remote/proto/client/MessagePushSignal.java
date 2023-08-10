@@ -53,6 +53,7 @@ public final class MessagePushSignal extends
     private MessagePushSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private MessagePushSignal() {
     }
 

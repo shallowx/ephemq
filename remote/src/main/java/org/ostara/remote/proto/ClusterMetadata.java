@@ -47,6 +47,7 @@ public final class ClusterMetadata extends
     private ClusterMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private ClusterMetadata() {
         name_ = "";
     }

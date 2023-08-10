@@ -46,6 +46,7 @@ public final class TopicSegmentInfo extends
     private int segmentRetainCount_;
     private int segmentRetainMs_;
     private byte memoizedIsInitialized = -1;
+
     // Use TopicSegmentInfo.newBuilder() to construct.
     private TopicSegmentInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

@@ -47,6 +47,7 @@ public final class QueryClusterResponse extends
     private QueryClusterResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private QueryClusterResponse() {
     }
 

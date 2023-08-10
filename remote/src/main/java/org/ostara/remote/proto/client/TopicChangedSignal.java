@@ -48,6 +48,7 @@ public final class TopicChangedSignal extends
     private int ledger_;
     private int ledgerVersion_;
     private byte memoizedIsInitialized = -1;
+
     // Use TopicChangedSignal.newBuilder() to construct.
     private TopicChangedSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);

@@ -16,11 +16,11 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
-import org.ostara.storage.Log;
 import org.ostara.management.JsonMapper;
 import org.ostara.management.Manager;
 import org.ostara.management.ReplicaManager;
 import org.ostara.remote.proto.server.SyncResponse;
+import org.ostara.storage.Log;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;

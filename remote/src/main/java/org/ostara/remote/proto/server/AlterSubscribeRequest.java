@@ -53,6 +53,7 @@ public final class AlterSubscribeRequest extends
     private AlterSubscribeRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
     }
+
     private AlterSubscribeRequest() {
         appendMarkers_ = com.google.protobuf.ByteString.EMPTY;
         deleteMarkers_ = com.google.protobuf.ByteString.EMPTY;
