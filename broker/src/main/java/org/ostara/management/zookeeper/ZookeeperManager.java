@@ -77,14 +77,17 @@ public class ZookeeperManager implements Manager {
         innerClient.start();
 
         if (clusterManager != null) {
+            logger.info("Cluster manager<{}> start successfully", clusterManager.getThisNode().getCluster());
             clusterManager.start();
         }
 
         if (topicManager != null) {
+            logger.info("Topic manager start successfully");
             topicManager.start();
         }
 
         if (logManager != null) {
+            logger.info("Ledger log manager start successfully");
             logManager.start();
         }
     }
@@ -92,28 +95,35 @@ public class ZookeeperManager implements Manager {
     @Override
     public void shutdown() throws Exception {
         if (clusterManager != null) {
+            logger.info("Cluster manager<{}> will shutdown", clusterManager.getThisNode().getCluster());
             clusterManager.shutdown();
         }
         if (topicManager != null) {
+            logger.info("Topic manager will shutdown");
             topicManager.shutdown();
         }
         if (logManager != null) {
+            logger.info("Ledger log manager will shutdown");
             logManager.shutdown();
         }
 
         if (handleGroup != null) {
+            logger.info("Message handle event executor group will shutdown");
             handleGroup.shutdownGracefully();
         }
 
         if (dispatchGroup != null) {
+            logger.info("Message dispatch event executor group will shutdown");
             dispatchGroup.shutdownGracefully();
         }
 
         if (storageGroup != null) {
+            logger.info("Storage event executor group will shutdown");
             storageGroup.shutdownGracefully();
         }
 
         if (innerClient != null) {
+            logger.info("Inner client will shutdown");
             innerClient.close();
         }
 
