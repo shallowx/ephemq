@@ -22,7 +22,7 @@ import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
 import org.ostara.management.JsonMapper;
 import org.ostara.management.Manager;
-import org.ostara.management.ReplicaManager;
+import org.ostara.management.ParticipantManager;
 import org.ostara.management.TopicManager;
 import org.ostara.storage.Log;
 import org.ostara.storage.LogManager;
@@ -38,12 +38,12 @@ import java.util.regex.Pattern;
 public class ZookeeperTopicManager implements TopicManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     private static final String ALL_TOPIC_KEY = "ALL-TOPIC";
-    private final Map<Integer, ZookeeperPartitionLeaderElector> leaderElectorMap = new ConcurrentHashMap<>();
+    private final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
     private final List<TopicListener> listeners = new LinkedList<>();
     private CoreConfig config;
     private CuratorFramework client;
     private CuratorCache cache;
-    private ReplicaManager replicaManager;
+    private ParticipantManager replicaManager;
     private DistributedAtomicInteger topicIdGenerator;
     private DistributedAtomicInteger ledgerIdGenerator;
     private Manager manager;
@@ -56,7 +56,7 @@ public class ZookeeperTopicManager implements TopicManager {
     public ZookeeperTopicManager(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
-        this.replicaManager = new ReplicaManager(config, manager);
+        this.replicaManager = new ParticipantManager(config, manager);
         this.client = ZookeeperClient.getClient(config, config.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
         this.ledgerIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.LEDGER_ID_COUNTER, new RetryOneTime(100));
@@ -387,7 +387,7 @@ public class ZookeeperTopicManager implements TopicManager {
         }
 
         Log log = logManager.initLog(topicPartition, ledgerId, epoch, topicConfig);
-        ZookeeperPartitionLeaderElector partitionLeaderElector = new ZookeeperPartitionLeaderElector(config, topicPartition, manager, replicaManager, ledgerId);
+        ZookeeperPartitionCoordinatorElector partitionLeaderElector = new ZookeeperPartitionCoordinatorElector(config, topicPartition, manager, replicaManager, ledgerId);
         partitionLeaderElector.elect();
         leaderElectorMap.put(ledgerId, partitionLeaderElector);
 
@@ -400,7 +400,7 @@ public class ZookeeperTopicManager implements TopicManager {
 
     @Override
     public boolean hasLeadership(int ledger) {
-        ZookeeperPartitionLeaderElector partitionLeaderElector = leaderElectorMap.get(ledger);
+        ZookeeperPartitionCoordinatorElector partitionLeaderElector = leaderElectorMap.get(ledger);
         if (partitionLeaderElector == null) {
             return false;
         }
@@ -493,7 +493,7 @@ public class ZookeeperTopicManager implements TopicManager {
 
     @Override
     public void destroyTopicPartition(TopicPartition topicPartition, int ledgerId) throws Exception {
-        ZookeeperPartitionLeaderElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
+        ZookeeperPartitionCoordinatorElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
         partitionLeaderElector.shutdown();
         manager.getLogManager().destroyLog(ledgerId);
         for (TopicListener topicListener : listeners) {
@@ -542,7 +542,7 @@ public class ZookeeperTopicManager implements TopicManager {
     }
 
     @Override
-    public ReplicaManager getReplicaManager() {
+    public ParticipantManager getReplicaManager() {
         return replicaManager;
     }
 

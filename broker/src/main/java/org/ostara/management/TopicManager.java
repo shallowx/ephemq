@@ -41,7 +41,7 @@ public interface TopicManager {
 
     void addTopicListener(TopicListener listener);
 
-    ReplicaManager getReplicaManager();
+    ParticipantManager getReplicaManager();
 
     Map<String, Integer> calculatePartitions() throws Exception;
 

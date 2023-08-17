@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ostara</groupId>
-            <artifactId>remote</artifactId>
+            <artifactId>ostara-remote</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

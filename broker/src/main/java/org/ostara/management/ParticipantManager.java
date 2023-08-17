@@ -23,14 +23,14 @@ import java.nio.channels.Channel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ReplicaManager {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ReplicaManager.class);
+public class ParticipantManager {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ParticipantManager.class);
     private final CoreConfig config;
     private final Manager manager;
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
     private EventExecutor fetchExecutor;
 
-    public ReplicaManager(CoreConfig config, Manager manager) {
+    public ParticipantManager(CoreConfig config, Manager manager) {
         this.config = config;
         this.manager = manager;
     }
