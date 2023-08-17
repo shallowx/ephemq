@@ -73,27 +73,27 @@
             </dependency>
             <dependency>
                 <groupId>org.ostara</groupId>
-                <artifactId>client</artifactId>
+                <artifactId>ostara-client</artifactId>
                 <version>${ostara.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ostara</groupId>
-                <artifactId>broker</artifactId>
+                <artifactId>ostara-broker</artifactId>
                 <version>${ostara.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ostara</groupId>
-                <artifactId>common</artifactId>
+                <artifactId>ostara-common</artifactId>
                 <version>${ostara.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ostara</groupId>
-                <artifactId>remote</artifactId>
+                <artifactId>ostara-remote</artifactId>
                 <version>${ostara.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ostara</groupId>
-                <artifactId>mertics</artifactId>
+                <artifactId>ostara-mertics</artifactId>
                 <version>${ostara.version}</version>
             </dependency>
             <dependency>

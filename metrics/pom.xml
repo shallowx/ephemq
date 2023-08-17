@@ -9,7 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>metrics</artifactId>
+    <artifactId>ostara-metrics</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
