@@ -12,21 +12,27 @@
     <artifactId>ostara-metrics</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <ostara.common.version>1.0.0-SNAPSHOT</ostara.common.version>
+        <micrometer.version>1.10.5</micrometer.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.ostara</groupId>
             <artifactId>common</artifactId>
+            <version>${ostara.common.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>1.10.5</version>
+            <version>${micrometer.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-jmx</artifactId>
-            <version>1.10.5</version>
+            <version>${micrometer.version}</version>
         </dependency>
     </dependencies>
 
