@@ -76,10 +76,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     }
 
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
-        final int command = packet.command();
-        final int answer = packet.answer();
-        final int length = packet.body().readableBytes();
-        final InvokeAnswer<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
+        var command = packet.command();
+        var answer = packet.answer();
+        var length = packet.body().readableBytes();
+        InvokeAnswer<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
                 return;
             }
@@ -106,22 +106,22 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     }
 
     private void processResponse(ChannelHandlerContext ctx, MessagePacket packet) {
-        final int command = packet.command();
-        final int answer = packet.answer();
+        var command = packet.command();
+        var answer = packet.answer();
         if (answer == 0) {
             logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),
                     command, answer);
             return;
         }
 
-        final ByteBuf buf = packet.body().retain();
-        final boolean freed;
+        var buf = packet.body().retain();
+        boolean freed;
         try {
             if (command == 0) {
                 freed = holder.free(answer, r -> r.success(buf.retain()));
             } else {
-                final String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
-                final RemoteException cause = of(command, message);
+                String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
+                RemoteException cause = of(command, message);
                 freed = holder.free(answer, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
@@ -141,8 +141,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final AwareInvocation invocation) {
-            final int answer = holder.hold(invocation.expired(), invocation.answer());
-            final MessagePacket packet;
+            int answer = holder.hold(invocation.expired(), invocation.answer());
+            MessagePacket packet;
             try {
                 packet = MessagePacket.newPacket(answer, invocation.command(), invocation.data().retain());
             } catch (Throwable cause) {
@@ -152,7 +152,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 invocation.release();
             }
 
-            final EventExecutor executor = ctx.executor();
+            EventExecutor executor = ctx.executor();
             scheduleExpiredTask(executor);
 
             if (answer != 0 && !promise.isVoid()) {
@@ -195,7 +195,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 var remnantInvoker = 0;
                 final Iterator<InvokeHolder<ByteBuf>> iterator = wholeHolders.iterator();
                 while (iterator.hasNext()) {
-                    final var holder = iterator.next();
+                    var holder = iterator.next();
                     processHolder++;
                     processInvoker += holder.freeExpired(r -> r.failure(
                             of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke handle timeout")));
@@ -220,7 +220,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        final int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
+        int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
                 String.format("Channel<%s> invoke timeout", ctx.channel().toString()))));
         logger.debug("Free entire invoke, whole={}", whole);
     }

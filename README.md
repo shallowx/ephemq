@@ -25,7 +25,7 @@ omitted when deploying it in practice.
 
 - Zookeeper 3.5.x or higher
 - Java 17
-- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true
+- -Dio.prometheus.client.export-protobuf.use-direct-buffers=true -Dio.netty.noKeySetOptimization=true
 -
 
 # Quickly Start
