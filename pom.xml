@@ -11,30 +11,6 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <scm>
-        <connection>scm:git@github.com:shallowx/ostara.git</connection>
-        <developerConnection>scm:git@github.com:shallowx/ostara.git</developerConnection>
-        <tag>ostara-${project.version}</tag>
-    </scm>
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>https://www.mit-license.org/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>shallowx</name>
-        <url>https://github.com/shallowx</url>
-    </organization>
-
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/shallowx/ostara/issues</url>
-    </issueManagement>
-
     <properties>
         <ostara.version>1.0.0-SNAPSHOT</ostara.version>
 
@@ -71,31 +47,7 @@
                 <artifactId>jctools-core</artifactId>
                 <version>${jctools.core.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.ostara</groupId>
-                <artifactId>ostara-client</artifactId>
-                <version>${ostara.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ostara</groupId>
-                <artifactId>ostara-broker</artifactId>
-                <version>${ostara.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ostara</groupId>
-                <artifactId>ostara-common</artifactId>
-                <version>${ostara.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ostara</groupId>
-                <artifactId>ostara-remote</artifactId>
-                <version>${ostara.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ostara</groupId>
-                <artifactId>ostara-mertics</artifactId>
-                <version>${ostara.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
@@ -213,6 +165,7 @@
 
     <modules>
         <module>broker</module>
+        <module>bom</module>
         <module>client</module>
         <module>remote</module>
         <module>common</module>

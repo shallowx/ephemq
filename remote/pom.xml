@@ -18,9 +18,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ostara</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ostara-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>

@@ -15,12 +15,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <logback.version>1.4.7</logback.version>
+        <micrometer.version>1.10.5</micrometer.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.ostara</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ostara-remote</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -44,7 +46,7 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>1.10.5</version>
+            <version>${micrometer.version}</version>
         </dependency>
     </dependencies>
 </project>
