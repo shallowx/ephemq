@@ -1,0 +1,14 @@
+[
+  {
+    "topic": "topic_test_1",
+    "partition": 0,
+    "from": "broker1",
+    "to": "broker2"
+  },
+  {
+    "topic": "topic_test_2",
+    "partition": 0,
+    "from": "broker2",
+    "to": "broker1"
+  }
+]

@@ -64,7 +64,7 @@ public class Ostara {
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {
             server.shutdown();
             return null;
-        }));
+        }).newThread());
 
         return server;
     }

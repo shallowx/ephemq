@@ -5,19 +5,22 @@ import org.ostara.common.logging.InternalLogger;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ShutdownHookThread extends Thread {
+public class ShutdownHookThread {
     private final AtomicInteger shutdownTimes = new AtomicInteger(0);
     private final InternalLogger logger;
     private final Callable<?> callable;
     private volatile boolean hasShutdown = false;
 
     public ShutdownHookThread(InternalLogger logger, Callable<?> callable) {
-        super("Shutdown-hook-thread");
         this.logger = logger;
         this.callable = callable;
     }
 
-    @Override
+    public Thread newThread() {
+        OstaraThreadFactory factory = new OstaraThreadFactory(getClass());
+        return factory.newThread(this::run, "Shutdown-hook-thread");
+    }
+
     public void run() {
         synchronized (this) {
             logger.warn("Shutdown hook was invoked, {}", this.shutdownTimes.incrementAndGet());
