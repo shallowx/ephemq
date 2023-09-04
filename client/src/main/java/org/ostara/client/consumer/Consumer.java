@@ -790,6 +790,7 @@ public class Consumer implements MeterBinder {
 
     public synchronized void close() throws InterruptedException {
         if (state != Boolean.TRUE) {
+            logger.warn("This consumer<{}> was closed", name);
             return;
         }
 
