@@ -246,7 +246,7 @@ public class Client implements MeterBinder {
         taskExecutor.schedule(new RefreshMetadataTask(), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
     }
 
-    public synchronized void close() {
+    public synchronized void close() throws InterruptedException {
         if (!isRunning()) {
             return;
         }
@@ -256,9 +256,22 @@ public class Client implements MeterBinder {
             Future<?> future = taskExecutor.shutdownGracefully();
             future.addListener(f -> {
                 if (workerGroup != null) {
-                    workerGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully().sync();
                 }
             });
+
+            try {
+                while (!future.isDone()) {
+                    future.wait(Integer.MAX_VALUE);
+                }
+
+                while (!taskExecutor.isTerminated()) {
+                    taskExecutor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+                }
+            } catch (Exception e) {
+                // Let the caller handle the interruption.
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

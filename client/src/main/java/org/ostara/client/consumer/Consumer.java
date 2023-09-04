@@ -788,18 +788,37 @@ public class Consumer implements MeterBinder {
         return !failedRecords.isEmpty();
     }
 
-    public synchronized void close() {
+    public synchronized void close() throws InterruptedException {
         if (state != Boolean.TRUE) {
             return;
         }
 
         state = Boolean.FALSE;
+
         if (executor != null) {
             executor.shutdownGracefully();
+           try {
+               while (!executor.isTerminated()) {
+                   executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+               }
+           } catch (Exception e) {
+               Thread.currentThread().interrupt();
+           }
         }
 
         if (group != null) {
-            group.shutdownGracefully();
+            group.shutdownGracefully().sync();
+            Iterator<EventExecutor> iterator = group.iterator();
+            while (iterator.hasNext()) {
+                try {
+                    EventExecutor next = iterator.next();
+                    while (! next.isTerminated()) {
+                        next.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+                    }
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
         client.close();
     }

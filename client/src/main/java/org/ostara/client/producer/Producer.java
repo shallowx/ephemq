@@ -52,7 +52,7 @@ public class Producer implements MeterBinder {
         executor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
     }
 
-    public synchronized void close() {
+    public synchronized void close() throws InterruptedException {
         if (state != Boolean.TRUE) {
             return;
         }
@@ -60,6 +60,14 @@ public class Producer implements MeterBinder {
         state = Boolean.FALSE;
         if (executor != null) {
             executor.shutdownGracefully();
+            try {
+                while (!executor.isTerminated()) {
+                    executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+                }
+            } catch (InterruptedException e) {
+                // Let the caller handle the interruption.
+                Thread.currentThread().interrupt();
+            }
         }
 
         client.close();
