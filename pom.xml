@@ -172,6 +172,7 @@
         <module>metrics</module>
         <module>cli</module>
         <module>benchmarks</module>
+        <module>assembler</module>
     </modules>
 
 </project>

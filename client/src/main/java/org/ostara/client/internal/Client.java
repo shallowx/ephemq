@@ -246,7 +246,7 @@ public class Client implements MeterBinder {
         taskExecutor.schedule(new RefreshMetadataTask(), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
     }
 
-    public synchronized void close() throws InterruptedException {
+    public synchronized void close() {
         if (!isRunning()) {
             return;
         }

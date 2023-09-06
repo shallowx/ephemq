@@ -1,0 +1,17 @@
+base_dir=$(dirname $0)
+set -e
+
+for file in "$base_dir"/../libs/ostara-broker-*.jar
+do
+  OSTARA_JAR_FILE = ${file}
+done
+
+SIGNAL=${SIGNAL:-TERM}
+PID=$(ps ax | grep -i "${OSTARA_JAR_FILE}" | grep java | grep -v grep | awk '{print $1}')
+
+if [-z "${PID}"]; then
+    echo "ERROR: No server to stop"
+    exit 1
+else
+  kill -s $SIGNAL $PID
+fi

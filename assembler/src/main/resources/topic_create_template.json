@@ -1,0 +1,26 @@
+[
+  {
+    "topic": "test_topic_1",
+    "partition": 10,
+    "replica": 1,
+    "config": {
+      "segmentRetainCounts": 3,
+      "segmentRetainMs": 30000,
+      "segmentBufferCapacity": 4194304
+    }
+  },
+  {
+    "topic": "test_topic_2",
+    "partition": 10,
+    "replica": 1
+  },
+  {
+    "topic": "test_topic_3",
+    "partition": 10,
+    "replica": 1,
+    "config": {
+      "segmentRetainCounts": 3,
+      "segmentBufferCapacity": 4194304
+    }
+  }
+]
