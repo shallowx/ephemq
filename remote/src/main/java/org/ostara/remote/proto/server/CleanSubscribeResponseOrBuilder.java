@@ -4,6 +4,6 @@
 package org.ostara.remote.proto.server;
 
 public interface CleanSubscribeResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.CleanSubscribeResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CleanSubscribeResponse)
+    com.google.protobuf.MessageOrBuilder {
 }

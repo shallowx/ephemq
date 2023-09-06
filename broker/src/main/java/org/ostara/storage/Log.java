@@ -70,12 +70,14 @@ public class Log {
             ledgerConfig = new LedgerConfig()
                     .segmentRetainCounts(topicConfig.getSegmentRetainCount())
                     .segmentBufferCapacity(topicConfig.getSegmentRollingSize())
-                    .segmentRetainMs(topicConfig.getSegmentRetainMs());
+                    .segmentRetainMs(topicConfig.getSegmentRetainMs())
+                    .allocate(topicConfig.isAllocate());
         } else {
             ledgerConfig = new LedgerConfig()
                     .segmentRetainCounts(config.getSegmentRetainCounts())
                     .segmentBufferCapacity(config.getSegmentRollingSize())
-                    .segmentRetainMs(config.getSegmentRetainTime());
+                    .segmentRetainMs(config.getSegmentRetainTime())
+                    .allocate(false);
         }
 
         storageExecutor = manager.getMessageStorageEventExecutorGroup().next();

@@ -418,7 +418,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             int replicas = request.getReplicas();
             CreateTopicConfigRequest configs = request.getConfigs();
             TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
-                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs());
+                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs(), configs.getAllocate());
 
             commandExecutor.execute(() -> {
                 try {

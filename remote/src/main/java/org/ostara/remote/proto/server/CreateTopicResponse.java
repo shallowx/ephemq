@@ -7,1084 +7,1011 @@ package org.ostara.remote.proto.server;
  * Protobuf type {@code ostara.protobuf.CreateTopicResponse}
  */
 public final class CreateTopicResponse extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:ostara.protobuf.CreateTopicResponse)
-        CreateTopicResponseOrBuilder {
-    public static final int TOPIC_FIELD_NUMBER = 1;
-    public static final int PARTITIONS_FIELD_NUMBER = 2;
-    public static final int TOPICID_FIELD_NUMBER = 3;
-    public static final int PARTITIONSREPLICAS_FIELD_NUMBER = 4;
-    private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:ostara.protobuf.CreateTopicResponse)
-    private static final org.ostara.remote.proto.server.CreateTopicResponse DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<CreateTopicResponse>
-            PARSER = new com.google.protobuf.AbstractParser<CreateTopicResponse>() {
-        @java.lang.Override
-        public CreateTopicResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+    com.google.protobuf.GeneratedMessageV3 implements
+    // @@protoc_insertion_point(message_implements:ostara.protobuf.CreateTopicResponse)
+    CreateTopicResponseOrBuilder {
+private static final long serialVersionUID = 0L;
+  // Use CreateTopicResponse.newBuilder() to construct.
+  private CreateTopicResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    super(builder);
+  }
+  private CreateTopicResponse() {
+    topic_ = "";
+    partitionsReplicas_ = java.util.Collections.emptyList();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.ostara.remote.proto.server.CreateTopicResponse();
+  @java.lang.Override
+  @SuppressWarnings({"unused"})
+  protected java.lang.Object newInstance(
+      UnusedPrivateParameter unused) {
+    return new CreateTopicResponse();
+  }
+
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
+  public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
+  }
+
+  @java.lang.Override
+  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+    return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable
+        .ensureFieldAccessorsInitialized(
+            org.ostara.remote.proto.server.CreateTopicResponse.class, org.ostara.remote.proto.server.CreateTopicResponse.Builder.class);
+  }
+
+  public static final int TOPIC_FIELD_NUMBER = 1;
+  private volatile java.lang.Object topic_;
+  /**
+   * <code>string topic = 1;</code>
+   * @return The topic.
+   */
+  @java.lang.Override
+  public java.lang.String getTopic() {
+    java.lang.Object ref = topic_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      topic_ = s;
+      return s;
     }
-
-    private volatile java.lang.Object topic_;
-    private int partitions_;
-    private int topicId_;
-    private java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> partitionsReplicas_;
-    private byte memoizedIsInitialized = -1;
-
-    // Use CreateTopicResponse.newBuilder() to construct.
-    private CreateTopicResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
+  }
+  /**
+   * <code>string topic = 1;</code>
+   * @return The bytes for topic.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTopicBytes() {
+    java.lang.Object ref = topic_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      topic_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
+  }
 
-    private CreateTopicResponse() {
-        topic_ = "";
-        partitionsReplicas_ = java.util.Collections.emptyList();
+  public static final int PARTITIONS_FIELD_NUMBER = 2;
+  private int partitions_;
+  /**
+   * <code>int32 partitions = 2;</code>
+   * @return The partitions.
+   */
+  @java.lang.Override
+  public int getPartitions() {
+    return partitions_;
+  }
+
+  public static final int TOPICID_FIELD_NUMBER = 3;
+  private int topicId_;
+  /**
+   * <code>int32 topicId = 3;</code>
+   * @return The topicId.
+   */
+  @java.lang.Override
+  public int getTopicId() {
+    return topicId_;
+  }
+
+  public static final int PARTITIONSREPLICAS_FIELD_NUMBER = 4;
+  private java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> partitionsReplicas_;
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> getPartitionsReplicasList() {
+    return partitionsReplicas_;
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+      getPartitionsReplicasOrBuilderList() {
+    return partitionsReplicas_;
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public int getPartitionsReplicasCount() {
+    return partitionsReplicas_.size();
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index) {
+    return partitionsReplicas_.get(index);
+  }
+  /**
+   * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+   */
+  @java.lang.Override
+  public org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
+      int index) {
+    return partitionsReplicas_.get(index);
+  }
+
+  private byte memoizedIsInitialized = -1;
+  @java.lang.Override
+  public final boolean isInitialized() {
+    byte isInitialized = memoizedIsInitialized;
+    if (isInitialized == 1) return true;
+    if (isInitialized == 0) return false;
+
+    memoizedIsInitialized = 1;
+    return true;
+  }
+
+  @java.lang.Override
+  public void writeTo(com.google.protobuf.CodedOutputStream output)
+                      throws java.io.IOException {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
     }
-
-    public static com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
+    if (partitions_ != 0) {
+      output.writeInt32(2, partitions_);
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            java.nio.ByteBuffer data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
+    if (topicId_ != 0) {
+      output.writeInt32(3, topicId_);
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            java.nio.ByteBuffer data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
+    for (int i = 0; i < partitionsReplicas_.size(); i++) {
+      output.writeMessage(4, partitionsReplicas_.get(i));
     }
+    getUnknownFields().writeTo(output);
+  }
 
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
+  @java.lang.Override
+  public int getSerializedSize() {
+    int size = memoizedSize;
+    if (size != -1) return size;
+
+    size = 0;
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
+    if (partitions_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, partitions_);
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
+    if (topicId_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, topicId_);
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
+    for (int i = 0; i < partitionsReplicas_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, partitionsReplicas_.get(i));
     }
+    size += getUnknownFields().getSerializedSize();
+    memoizedSize = size;
+    return size;
+  }
 
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input);
+  @java.lang.Override
+  public boolean equals(final java.lang.Object obj) {
+    if (obj == this) {
+     return true;
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input, extensionRegistry);
+    if (!(obj instanceof org.ostara.remote.proto.server.CreateTopicResponse)) {
+      return super.equals(obj);
     }
+    org.ostara.remote.proto.server.CreateTopicResponse other = (org.ostara.remote.proto.server.CreateTopicResponse) obj;
 
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseDelimitedWithIOException(PARSER, input);
+    if (!getTopic()
+        .equals(other.getTopic())) return false;
+    if (getPartitions()
+        != other.getPartitions()) return false;
+    if (getTopicId()
+        != other.getTopicId()) return false;
+    if (!getPartitionsReplicasList()
+        .equals(other.getPartitionsReplicasList())) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    return true;
+  }
+
+  @java.lang.Override
+  public int hashCode() {
+    if (memoizedHashCode != 0) {
+      return memoizedHashCode;
     }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    int hash = 41;
+    hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+    hash = (53 * hash) + getTopic().hashCode();
+    hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitions();
+    hash = (37 * hash) + TOPICID_FIELD_NUMBER;
+    hash = (53 * hash) + getTopicId();
+    if (getPartitionsReplicasCount() > 0) {
+      hash = (37 * hash) + PARTITIONSREPLICAS_FIELD_NUMBER;
+      hash = (53 * hash) + getPartitionsReplicasList().hashCode();
     }
+    hash = (29 * hash) + getUnknownFields().hashCode();
+    memoizedHashCode = hash;
+    return hash;
+  }
 
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input);
-    }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      com.google.protobuf.ByteString data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      com.google.protobuf.ByteString data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(byte[] data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      byte[] data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(java.io.InputStream input)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseDelimitedFrom(java.io.InputStream input)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseDelimitedFrom(
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      com.google.protobuf.CodedInputStream input)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input);
+  }
+  public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return com.google.protobuf.GeneratedMessageV3
+        .parseWithIOException(PARSER, input, extensionRegistry);
+  }
 
-    public static org.ostara.remote.proto.server.CreateTopicResponse parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input, extensionRegistry);
-    }
+  @java.lang.Override
+  public Builder newBuilderForType() { return newBuilder(); }
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(org.ostara.remote.proto.server.CreateTopicResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  @java.lang.Override
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
-    public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-    }
-
-    public static Builder newBuilder(org.ostara.remote.proto.server.CreateTopicResponse prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.ostara.remote.proto.server.CreateTopicResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<CreateTopicResponse> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new CreateTopicResponse();
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
+  @java.lang.Override
+  protected Builder newBuilderForType(
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    Builder builder = new Builder(parent);
+    return builder;
+  }
+  /**
+   * Protobuf type {@code ostara.protobuf.CreateTopicResponse}
+   */
+  public static final class Builder extends
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+      // @@protoc_insertion_point(builder_implements:ostara.protobuf.CreateTopicResponse)
+      org.ostara.remote.proto.server.CreateTopicResponseOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.ostara.remote.proto.server.CreateTopicResponse.class, org.ostara.remote.proto.server.CreateTopicResponse.Builder.class);
+        internalGetFieldAccessorTable() {
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.ostara.remote.proto.server.CreateTopicResponse.class, org.ostara.remote.proto.server.CreateTopicResponse.Builder.class);
     }
 
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topic_ = s;
-            return s;
-        }
+    // Construct using org.ostara.remote.proto.server.CreateTopicResponse.newBuilder()
+    private Builder() {
+
     }
 
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The bytes for topic.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicBytes() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topic_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
+    private Builder(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      super(parent);
 
-    /**
-     * <code>int32 partitions = 2;</code>
-     *
-     * @return The partitions.
-     */
-    @java.lang.Override
-    public int getPartitions() {
-        return partitions_;
     }
-
-    /**
-     * <code>int32 topicId = 3;</code>
-     *
-     * @return The topicId.
-     */
     @java.lang.Override
-    public int getTopicId() {
-        return topicId_;
-    }
+    public Builder clear() {
+      super.clear();
+      topic_ = "";
 
-    /**
-     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-     */
-    @java.lang.Override
-    public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> getPartitionsReplicasList() {
-        return partitionsReplicas_;
-    }
+      partitions_ = 0;
 
-    /**
-     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>
-    getPartitionsReplicasOrBuilderList() {
-        return partitionsReplicas_;
-    }
+      topicId_ = 0;
 
-    /**
-     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-     */
-    @java.lang.Override
-    public int getPartitionsReplicasCount() {
-        return partitionsReplicas_.size();
-    }
-
-    /**
-     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-     */
-    @java.lang.Override
-    public org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index) {
-        return partitionsReplicas_.get(index);
-    }
-
-    /**
-     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-     */
-    @java.lang.Override
-    public org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
-            int index) {
-        return partitionsReplicas_.get(index);
+      if (partitionsReplicasBuilder_ == null) {
+        partitionsReplicas_ = java.util.Collections.emptyList();
+      } else {
+        partitionsReplicas_ = null;
+        partitionsReplicasBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
+      return this;
     }
 
     @java.lang.Override
-    public boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
-        }
-        if (partitions_ != 0) {
-            output.writeInt32(2, partitions_);
-        }
-        if (topicId_ != 0) {
-            output.writeInt32(3, topicId_);
-        }
-        for (int i = 0; i < partitionsReplicas_.size(); i++) {
-            output.writeMessage(4, partitionsReplicas_.get(i));
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
-        }
-        if (partitions_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, partitions_);
-        }
-        if (topicId_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(3, topicId_);
-        }
-        for (int i = 0; i < partitionsReplicas_.size(); i++) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(4, partitionsReplicas_.get(i));
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof CreateTopicResponse other)) {
-            return super.equals(obj);
-        }
-
-        if (!getTopic()
-                .equals(other.getTopic())) return false;
-        if (getPartitions()
-                != other.getPartitions()) return false;
-        if (getTopicId()
-                != other.getTopicId()) return false;
-        if (!getPartitionsReplicasList()
-                .equals(other.getPartitionsReplicasList())) return false;
-        return getUnknownFields().equals(other.getUnknownFields());
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-        hash = (53 * hash) + getTopic().hashCode();
-        hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
-        hash = (53 * hash) + getPartitions();
-        hash = (37 * hash) + TOPICID_FIELD_NUMBER;
-        hash = (53 * hash) + getTopicId();
-        if (getPartitionsReplicasCount() > 0) {
-            hash = (37 * hash) + PARTITIONSREPLICAS_FIELD_NUMBER;
-            hash = (53 * hash) + getPartitionsReplicasList().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
-    }
-
-    @java.lang.Override
-    public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-                ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<CreateTopicResponse> getParserForType() {
-        return PARSER;
+    public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+      return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
     }
 
     @java.lang.Override
     public org.ostara.remote.proto.server.CreateTopicResponse getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
+      return org.ostara.remote.proto.server.CreateTopicResponse.getDefaultInstance();
     }
+
+    @java.lang.Override
+    public org.ostara.remote.proto.server.CreateTopicResponse build() {
+      org.ostara.remote.proto.server.CreateTopicResponse result = buildPartial();
+      if (!result.isInitialized()) {
+        throw newUninitializedMessageException(result);
+      }
+      return result;
+    }
+
+    @java.lang.Override
+    public org.ostara.remote.proto.server.CreateTopicResponse buildPartial() {
+      org.ostara.remote.proto.server.CreateTopicResponse result = new org.ostara.remote.proto.server.CreateTopicResponse(this);
+      int from_bitField0_ = bitField0_;
+      result.topic_ = topic_;
+      result.partitions_ = partitions_;
+      result.topicId_ = topicId_;
+      if (partitionsReplicasBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          partitionsReplicas_ = java.util.Collections.unmodifiableList(partitionsReplicas_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.partitionsReplicas_ = partitionsReplicas_;
+      } else {
+        result.partitionsReplicas_ = partitionsReplicasBuilder_.build();
+      }
+      onBuilt();
+      return result;
+    }
+
+    @java.lang.Override
+    public Builder clone() {
+      return super.clone();
+    }
+    @java.lang.Override
+    public Builder setField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return super.setField(field, value);
+    }
+    @java.lang.Override
+    public Builder clearField(
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
+      return super.clearField(field);
+    }
+    @java.lang.Override
+    public Builder clearOneof(
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      return super.clearOneof(oneof);
+    }
+    @java.lang.Override
+    public Builder setRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
+      return super.setRepeatedField(field, index, value);
+    }
+    @java.lang.Override
+    public Builder addRepeatedField(
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
+      return super.addRepeatedField(field, value);
+    }
+    @java.lang.Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
+      if (other instanceof org.ostara.remote.proto.server.CreateTopicResponse) {
+        return mergeFrom((org.ostara.remote.proto.server.CreateTopicResponse)other);
+      } else {
+        super.mergeFrom(other);
+        return this;
+      }
+    }
+
+    public Builder mergeFrom(org.ostara.remote.proto.server.CreateTopicResponse other) {
+      if (other == org.ostara.remote.proto.server.CreateTopicResponse.getDefaultInstance()) return this;
+      if (!other.getTopic().isEmpty()) {
+        topic_ = other.topic_;
+        onChanged();
+      }
+      if (other.getPartitions() != 0) {
+        setPartitions(other.getPartitions());
+      }
+      if (other.getTopicId() != 0) {
+        setTopicId(other.getTopicId());
+      }
+      if (partitionsReplicasBuilder_ == null) {
+        if (!other.partitionsReplicas_.isEmpty()) {
+          if (partitionsReplicas_.isEmpty()) {
+            partitionsReplicas_ = other.partitionsReplicas_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensurePartitionsReplicasIsMutable();
+            partitionsReplicas_.addAll(other.partitionsReplicas_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.partitionsReplicas_.isEmpty()) {
+          if (partitionsReplicasBuilder_.isEmpty()) {
+            partitionsReplicasBuilder_.dispose();
+            partitionsReplicasBuilder_ = null;
+            partitionsReplicas_ = other.partitionsReplicas_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            partitionsReplicasBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getPartitionsReplicasFieldBuilder() : null;
+          } else {
+            partitionsReplicasBuilder_.addAllMessages(other.partitionsReplicas_);
+          }
+        }
+      }
+      this.mergeUnknownFields(other.getUnknownFields());
+      onChanged();
+      return this;
+    }
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+      return true;
+    }
+
+    @java.lang.Override
+    public Builder mergeFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              topic_ = input.readStringRequireUtf8();
+
+              break;
+            } // case 10
+            case 16: {
+              partitions_ = input.readInt32();
+
+              break;
+            } // case 16
+            case 24: {
+              topicId_ = input.readInt32();
+
+              break;
+            } // case 24
+            case 34: {
+              org.ostara.remote.proto.server.PartitionsReplicas m =
+                  input.readMessage(
+                      org.ostara.remote.proto.server.PartitionsReplicas.parser(),
+                      extensionRegistry);
+              if (partitionsReplicasBuilder_ == null) {
+                ensurePartitionsReplicasIsMutable();
+                partitionsReplicas_.add(m);
+              } else {
+                partitionsReplicasBuilder_.addMessage(m);
+              }
+              break;
+            } // case 34
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.unwrapIOException();
+      } finally {
+        onChanged();
+      } // finally
+      return this;
+    }
+    private int bitField0_;
+
+    private java.lang.Object topic_ = "";
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @param value The topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopic(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      topic_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTopic() {
+      
+      topic_ = getDefaultInstance().getTopic();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @param value The bytes for topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopicBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      topic_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int partitions_ ;
+    /**
+     * <code>int32 partitions = 2;</code>
+     * @return The partitions.
+     */
+    @java.lang.Override
+    public int getPartitions() {
+      return partitions_;
+    }
+    /**
+     * <code>int32 partitions = 2;</code>
+     * @param value The partitions to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPartitions(int value) {
+      
+      partitions_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 partitions = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPartitions() {
+      
+      partitions_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int topicId_ ;
+    /**
+     * <code>int32 topicId = 3;</code>
+     * @return The topicId.
+     */
+    @java.lang.Override
+    public int getTopicId() {
+      return topicId_;
+    }
+    /**
+     * <code>int32 topicId = 3;</code>
+     * @param value The topicId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTopicId(int value) {
+      
+      topicId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 topicId = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTopicId() {
+      
+      topicId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> partitionsReplicas_ =
+      java.util.Collections.emptyList();
+    private void ensurePartitionsReplicasIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        partitionsReplicas_ = new java.util.ArrayList<org.ostara.remote.proto.server.PartitionsReplicas>(partitionsReplicas_);
+        bitField0_ |= 0x00000001;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> partitionsReplicasBuilder_;
 
     /**
-     * Protobuf type {@code ostara.protobuf.CreateTopicResponse}
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
      */
-    public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:ostara.protobuf.CreateTopicResponse)
-            org.ostara.remote.proto.server.CreateTopicResponseOrBuilder {
-        private int bitField0_;
-        private java.lang.Object topic_ = "";
-        private int partitions_;
-        private int topicId_;
-        private java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> partitionsReplicas_ =
-                java.util.Collections.emptyList();
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-                org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> partitionsReplicasBuilder_;
-
-        // Construct using org.ostara.remote.proto.server.CreateTopicResponse.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
-        public static com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.ostara.remote.proto.server.CreateTopicResponse.class, org.ostara.remote.proto.server.CreateTopicResponse.Builder.class);
-        }
-
-        @java.lang.Override
-        public Builder clear() {
-            super.clear();
-            topic_ = "";
-
-            partitions_ = 0;
-
-            topicId_ = 0;
-
-            if (partitionsReplicasBuilder_ == null) {
-                partitionsReplicas_ = java.util.Collections.emptyList();
-            } else {
-                partitionsReplicas_ = null;
-                partitionsReplicasBuilder_.clear();
-            }
-            bitField0_ = (bitField0_ & ~0x00000001);
-            return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.ostara.remote.proto.server.ServerProto.internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
-        }
-
-        @java.lang.Override
-        public org.ostara.remote.proto.server.CreateTopicResponse getDefaultInstanceForType() {
-            return org.ostara.remote.proto.server.CreateTopicResponse.getDefaultInstance();
-        }
-
-        @java.lang.Override
-        public org.ostara.remote.proto.server.CreateTopicResponse build() {
-            org.ostara.remote.proto.server.CreateTopicResponse result = buildPartial();
-            if (!result.isInitialized()) {
-                throw newUninitializedMessageException(result);
-            }
-            return result;
-        }
-
-        @java.lang.Override
-        public org.ostara.remote.proto.server.CreateTopicResponse buildPartial() {
-            org.ostara.remote.proto.server.CreateTopicResponse result = new org.ostara.remote.proto.server.CreateTopicResponse(this);
-            int from_bitField0_ = bitField0_;
-            result.topic_ = topic_;
-            result.partitions_ = partitions_;
-            result.topicId_ = topicId_;
-            if (partitionsReplicasBuilder_ == null) {
-                if (((bitField0_ & 0x00000001) != 0)) {
-                    partitionsReplicas_ = java.util.Collections.unmodifiableList(partitionsReplicas_);
-                    bitField0_ = (bitField0_ & ~0x00000001);
-                }
-                result.partitionsReplicas_ = partitionsReplicas_;
-            } else {
-                result.partitionsReplicas_ = partitionsReplicasBuilder_.build();
-            }
-            onBuilt();
-            return result;
-        }
-
-        @java.lang.Override
-        public Builder clone() {
-            return super.clone();
-        }
-
-        @java.lang.Override
-        public Builder setField(
-                com.google.protobuf.Descriptors.FieldDescriptor field,
-                java.lang.Object value) {
-            return super.setField(field, value);
-        }
-
-        @java.lang.Override
-        public Builder clearField(
-                com.google.protobuf.Descriptors.FieldDescriptor field) {
-            return super.clearField(field);
-        }
-
-        @java.lang.Override
-        public Builder clearOneof(
-                com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-            return super.clearOneof(oneof);
-        }
-
-        @java.lang.Override
-        public Builder setRepeatedField(
-                com.google.protobuf.Descriptors.FieldDescriptor field,
-                int index, java.lang.Object value) {
-            return super.setRepeatedField(field, index, value);
-        }
-
-        @java.lang.Override
-        public Builder addRepeatedField(
-                com.google.protobuf.Descriptors.FieldDescriptor field,
-                java.lang.Object value) {
-            return super.addRepeatedField(field, value);
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-            if (other instanceof org.ostara.remote.proto.server.CreateTopicResponse) {
-                return mergeFrom((org.ostara.remote.proto.server.CreateTopicResponse) other);
-            } else {
-                super.mergeFrom(other);
-                return this;
-            }
-        }
-
-        public Builder mergeFrom(org.ostara.remote.proto.server.CreateTopicResponse other) {
-            if (other == org.ostara.remote.proto.server.CreateTopicResponse.getDefaultInstance()) return this;
-            if (!other.getTopic().isEmpty()) {
-                topic_ = other.topic_;
-                onChanged();
-            }
-            if (other.getPartitions() != 0) {
-                setPartitions(other.getPartitions());
-            }
-            if (other.getTopicId() != 0) {
-                setTopicId(other.getTopicId());
-            }
-            if (partitionsReplicasBuilder_ == null) {
-                if (!other.partitionsReplicas_.isEmpty()) {
-                    if (partitionsReplicas_.isEmpty()) {
-                        partitionsReplicas_ = other.partitionsReplicas_;
-                        bitField0_ = (bitField0_ & ~0x00000001);
-                    } else {
-                        ensurePartitionsReplicasIsMutable();
-                        partitionsReplicas_.addAll(other.partitionsReplicas_);
-                    }
-                    onChanged();
-                }
-            } else {
-                if (!other.partitionsReplicas_.isEmpty()) {
-                    if (partitionsReplicasBuilder_.isEmpty()) {
-                        partitionsReplicasBuilder_.dispose();
-                        partitionsReplicasBuilder_ = null;
-                        partitionsReplicas_ = other.partitionsReplicas_;
-                        bitField0_ = (bitField0_ & ~0x00000001);
-                        partitionsReplicasBuilder_ =
-                                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                        getPartitionsReplicasFieldBuilder() : null;
-                    } else {
-                        partitionsReplicasBuilder_.addAllMessages(other.partitionsReplicas_);
-                    }
-                }
-            }
-            this.mergeUnknownFields(other.getUnknownFields());
-            onChanged();
-            return this;
-        }
-
-        @java.lang.Override
-        public boolean isInitialized() {
-            return true;
-        }
-
-        @java.lang.Override
-        public Builder mergeFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            if (extensionRegistry == null) {
-                throw new java.lang.NullPointerException();
-            }
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        case 10: {
-                            topic_ = input.readStringRequireUtf8();
-
-                            break;
-                        } // case 10
-                        case 16: {
-                            partitions_ = input.readInt32();
-
-                            break;
-                        } // case 16
-                        case 24: {
-                            topicId_ = input.readInt32();
-
-                            break;
-                        } // case 24
-                        case 34: {
-                            org.ostara.remote.proto.server.PartitionsReplicas m =
-                                    input.readMessage(
-                                            org.ostara.remote.proto.server.PartitionsReplicas.parser(),
-                                            extensionRegistry);
-                            if (partitionsReplicasBuilder_ == null) {
-                                ensurePartitionsReplicasIsMutable();
-                                partitionsReplicas_.add(m);
-                            } else {
-                                partitionsReplicasBuilder_.addMessage(m);
-                            }
-                            break;
-                        } // case 34
-                        default: {
-                            if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                                done = true; // was an endgroup tag
-                            }
-                            break;
-                        } // default:
-                    } // switch (tag)
-                } // while (!done)
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.unwrapIOException();
-            } finally {
-                onChanged();
-            } // finally
-            return this;
-        }
-
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @return The topic.
-         */
-        public java.lang.String getTopic() {
-            java.lang.Object ref = topic_;
-            if (!(ref instanceof java.lang.String)) {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                topic_ = s;
-                return s;
-            } else {
-                return (java.lang.String) ref;
-            }
-        }
-
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @param value The topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopic(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topic_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @return The bytes for topic.
-         */
-        public com.google.protobuf.ByteString
-        getTopicBytes() {
-            java.lang.Object ref = topic_;
-            if (ref instanceof String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                topic_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @param value The bytes for topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopicBytes(
-                com.google.protobuf.ByteString value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-
-            topic_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearTopic() {
-
-            topic_ = getDefaultInstance().getTopic();
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>int32 partitions = 2;</code>
-         *
-         * @return The partitions.
-         */
-        @java.lang.Override
-        public int getPartitions() {
-            return partitions_;
-        }
-
-        /**
-         * <code>int32 partitions = 2;</code>
-         *
-         * @param value The partitions to set.
-         * @return This builder for chaining.
-         */
-        public Builder setPartitions(int value) {
-
-            partitions_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>int32 partitions = 2;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearPartitions() {
-
-            partitions_ = 0;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>int32 topicId = 3;</code>
-         *
-         * @return The topicId.
-         */
-        @java.lang.Override
-        public int getTopicId() {
-            return topicId_;
-        }
-
-        /**
-         * <code>int32 topicId = 3;</code>
-         *
-         * @param value The topicId to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopicId(int value) {
-
-            topicId_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>int32 topicId = 3;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearTopicId() {
-
-            topicId_ = 0;
-            onChanged();
-            return this;
-        }
-
-        private void ensurePartitionsReplicasIsMutable() {
-            if ((bitField0_ & 0x00000001) == 0) {
-                partitionsReplicas_ = new java.util.ArrayList<org.ostara.remote.proto.server.PartitionsReplicas>(partitionsReplicas_);
-                bitField0_ |= 0x00000001;
-            }
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> getPartitionsReplicasList() {
-            if (partitionsReplicasBuilder_ == null) {
-                return java.util.Collections.unmodifiableList(partitionsReplicas_);
-            } else {
-                return partitionsReplicasBuilder_.getMessageList();
-            }
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public int getPartitionsReplicasCount() {
-            if (partitionsReplicasBuilder_ == null) {
-                return partitionsReplicas_.size();
-            } else {
-                return partitionsReplicasBuilder_.getCount();
-            }
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index) {
-            if (partitionsReplicasBuilder_ == null) {
-                return partitionsReplicas_.get(index);
-            } else {
-                return partitionsReplicasBuilder_.getMessage(index);
-            }
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder setPartitionsReplicas(
-                int index, org.ostara.remote.proto.server.PartitionsReplicas value) {
-            if (partitionsReplicasBuilder_ == null) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.set(index, value);
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.setMessage(index, value);
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder setPartitionsReplicas(
-                int index, org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
-            if (partitionsReplicasBuilder_ == null) {
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.set(index, builderForValue.build());
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.setMessage(index, builderForValue.build());
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder addPartitionsReplicas(org.ostara.remote.proto.server.PartitionsReplicas value) {
-            if (partitionsReplicasBuilder_ == null) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.add(value);
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.addMessage(value);
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder addPartitionsReplicas(
-                int index, org.ostara.remote.proto.server.PartitionsReplicas value) {
-            if (partitionsReplicasBuilder_ == null) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.add(index, value);
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.addMessage(index, value);
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder addPartitionsReplicas(
-                org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
-            if (partitionsReplicasBuilder_ == null) {
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.add(builderForValue.build());
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.addMessage(builderForValue.build());
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder addPartitionsReplicas(
-                int index, org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
-            if (partitionsReplicasBuilder_ == null) {
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.add(index, builderForValue.build());
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.addMessage(index, builderForValue.build());
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder addAllPartitionsReplicas(
-                java.lang.Iterable<? extends org.ostara.remote.proto.server.PartitionsReplicas> values) {
-            if (partitionsReplicasBuilder_ == null) {
-                ensurePartitionsReplicasIsMutable();
-                com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                        values, partitionsReplicas_);
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.addAllMessages(values);
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder clearPartitionsReplicas() {
-            if (partitionsReplicasBuilder_ == null) {
-                partitionsReplicas_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000001);
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.clear();
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public Builder removePartitionsReplicas(int index) {
-            if (partitionsReplicasBuilder_ == null) {
-                ensurePartitionsReplicasIsMutable();
-                partitionsReplicas_.remove(index);
-                onChanged();
-            } else {
-                partitionsReplicasBuilder_.remove(index);
-            }
-            return this;
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public org.ostara.remote.proto.server.PartitionsReplicas.Builder getPartitionsReplicasBuilder(
-                int index) {
-            return getPartitionsReplicasFieldBuilder().getBuilder(index);
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
-                int index) {
-            if (partitionsReplicasBuilder_ == null) {
-                return partitionsReplicas_.get(index);
-            } else {
-                return partitionsReplicasBuilder_.getMessageOrBuilder(index);
-            }
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>
-        getPartitionsReplicasOrBuilderList() {
-            if (partitionsReplicasBuilder_ != null) {
-                return partitionsReplicasBuilder_.getMessageOrBuilderList();
-            } else {
-                return java.util.Collections.unmodifiableList(partitionsReplicas_);
-            }
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public org.ostara.remote.proto.server.PartitionsReplicas.Builder addPartitionsReplicasBuilder() {
-            return getPartitionsReplicasFieldBuilder().addBuilder(
-                    org.ostara.remote.proto.server.PartitionsReplicas.getDefaultInstance());
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public org.ostara.remote.proto.server.PartitionsReplicas.Builder addPartitionsReplicasBuilder(
-                int index) {
-            return getPartitionsReplicasFieldBuilder().addBuilder(
-                    index, org.ostara.remote.proto.server.PartitionsReplicas.getDefaultInstance());
-        }
-
-        /**
-         * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas.Builder>
-        getPartitionsReplicasBuilderList() {
-            return getPartitionsReplicasFieldBuilder().getBuilderList();
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-                org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>
-        getPartitionsReplicasFieldBuilder() {
-            if (partitionsReplicasBuilder_ == null) {
-                partitionsReplicasBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                        org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>(
-                        partitionsReplicas_,
-                        ((bitField0_ & 0x00000001) != 0),
-                        getParentForChildren(),
-                        isClean());
-                partitionsReplicas_ = null;
-            }
-            return partitionsReplicasBuilder_;
-        }
-
-        @java.lang.Override
-        public Builder setUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public Builder mergeUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:ostara.protobuf.CreateTopicResponse)
+    public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas> getPartitionsReplicasList() {
+      if (partitionsReplicasBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(partitionsReplicas_);
+      } else {
+        return partitionsReplicasBuilder_.getMessageList();
+      }
     }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public int getPartitionsReplicasCount() {
+      if (partitionsReplicasBuilder_ == null) {
+        return partitionsReplicas_.size();
+      } else {
+        return partitionsReplicasBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas getPartitionsReplicas(int index) {
+      if (partitionsReplicasBuilder_ == null) {
+        return partitionsReplicas_.get(index);
+      } else {
+        return partitionsReplicasBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder setPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas value) {
+      if (partitionsReplicasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.set(index, value);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder setPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(org.ostara.remote.proto.server.PartitionsReplicas value) {
+      if (partitionsReplicasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(value);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas value) {
+      if (partitionsReplicasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(index, value);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(
+        org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(builderForValue.build());
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addPartitionsReplicas(
+        int index, org.ostara.remote.proto.server.PartitionsReplicas.Builder builderForValue) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder addAllPartitionsReplicas(
+        java.lang.Iterable<? extends org.ostara.remote.proto.server.PartitionsReplicas> values) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, partitionsReplicas_);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder clearPartitionsReplicas() {
+      if (partitionsReplicasBuilder_ == null) {
+        partitionsReplicas_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public Builder removePartitionsReplicas(int index) {
+      if (partitionsReplicasBuilder_ == null) {
+        ensurePartitionsReplicasIsMutable();
+        partitionsReplicas_.remove(index);
+        onChanged();
+      } else {
+        partitionsReplicasBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas.Builder getPartitionsReplicasBuilder(
+        int index) {
+      return getPartitionsReplicasFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
+        int index) {
+      if (partitionsReplicasBuilder_ == null) {
+        return partitionsReplicas_.get(index);  } else {
+        return partitionsReplicasBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public java.util.List<? extends org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+         getPartitionsReplicasOrBuilderList() {
+      if (partitionsReplicasBuilder_ != null) {
+        return partitionsReplicasBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(partitionsReplicas_);
+      }
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas.Builder addPartitionsReplicasBuilder() {
+      return getPartitionsReplicasFieldBuilder().addBuilder(
+          org.ostara.remote.proto.server.PartitionsReplicas.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public org.ostara.remote.proto.server.PartitionsReplicas.Builder addPartitionsReplicasBuilder(
+        int index) {
+      return getPartitionsReplicasFieldBuilder().addBuilder(
+          index, org.ostara.remote.proto.server.PartitionsReplicas.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .ostara.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public java.util.List<org.ostara.remote.proto.server.PartitionsReplicas.Builder> 
+         getPartitionsReplicasBuilderList() {
+      return getPartitionsReplicasFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder> 
+        getPartitionsReplicasFieldBuilder() {
+      if (partitionsReplicasBuilder_ == null) {
+        partitionsReplicasBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            org.ostara.remote.proto.server.PartitionsReplicas, org.ostara.remote.proto.server.PartitionsReplicas.Builder, org.ostara.remote.proto.server.PartitionsReplicasOrBuilder>(
+                partitionsReplicas_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        partitionsReplicas_ = null;
+      }
+      return partitionsReplicasBuilder_;
+    }
+    @java.lang.Override
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.setUnknownFields(unknownFields);
+    }
+
+    @java.lang.Override
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.mergeUnknownFields(unknownFields);
+    }
+
+
+    // @@protoc_insertion_point(builder_scope:ostara.protobuf.CreateTopicResponse)
+  }
+
+  // @@protoc_insertion_point(class_scope:ostara.protobuf.CreateTopicResponse)
+  private static final org.ostara.remote.proto.server.CreateTopicResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.ostara.remote.proto.server.CreateTopicResponse();
+  }
+
+  public static org.ostara.remote.proto.server.CreateTopicResponse getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  private static final com.google.protobuf.Parser<CreateTopicResponse>
+      PARSER = new com.google.protobuf.AbstractParser<CreateTopicResponse>() {
+    @java.lang.Override
+    public CreateTopicResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
+
+  public static com.google.protobuf.Parser<CreateTopicResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<CreateTopicResponse> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.ostara.remote.proto.server.CreateTopicResponse getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

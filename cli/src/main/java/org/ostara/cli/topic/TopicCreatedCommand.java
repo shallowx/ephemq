@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("all")
 public class TopicCreatedCommand implements Command {
     private static String newDate() {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
@@ -44,20 +45,8 @@ public class TopicCreatedCommand implements Command {
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option partitionOpt = new Option("p", "partition", true, "partition number");
-        partitionOpt.setRequired(true);
-        options.addOption(partitionOpt);
-
-        Option replicaOpt = new Option("r", "partition", true, "replica number");
-        partitionOpt.setRequired(true);
-        options.addOption(replicaOpt);
-
-        Option configOpt = new Option("s", "topic config", true, "topic config(JSON)");
-        partitionOpt.setRequired(true);
-        options.addOption(configOpt);
-
         Option explainOpt = new Option("e", "explain file", true, "topic to which file(JSON)");
-        partitionOpt.setRequired(true);
+        explainOpt.setRequired(true);
         options.addOption(explainOpt);
         return options;
     }

@@ -6,7 +6,8 @@
     "config": {
       "segmentRetainCounts": 3,
       "segmentRetainMs": 30000,
-      "segmentBufferCapacity": 4194304
+      "segmentBufferCapacity": 4194304,
+      "allocate": true
     }
   },
   {

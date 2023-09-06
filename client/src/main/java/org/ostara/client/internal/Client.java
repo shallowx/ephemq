@@ -587,6 +587,7 @@ public class Client implements MeterBinder {
             cr.setSegmentRetainCount(topicConfig.getSegmentRetainCount());
             cr.setSegmentRollingSize(topicConfig.getSegmentRollingSize());
             cr.setSegmentRetainMs(topicConfig.getSegmentRetainMs());
+            cr.setAllocate(topicConfig.isAllocate());
 
             cr.build();
 

@@ -44,7 +44,7 @@ public class ClusterListCommand implements Command {
         options.addOption(option);
 
         Option brokerOpt = new Option("b", "broker", true, "cluster broker addr");
-        option.setRequired(true);
+        brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
         return options;
     }
