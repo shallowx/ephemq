@@ -4,397 +4,394 @@
 package org.ostara.remote.proto.server;
 
 public final class ServerProto {
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_SendMessageRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_SendMessageRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_SendMessageResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_SendMessageResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_QueryClusterInfoRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_QueryClusterInfoRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_QueryClusterResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_QueryClusterResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_QueryTopicInfoRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_QueryTopicInfoResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_ResetSubscribeResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_AlterSubscribeRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_AlterSubscribeResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_AlterSubscribeResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CleanSubscribeRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CleanSubscribeRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CleanSubscribeResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CleanSubscribeResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CreateTopicRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CreateTopicRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CreateTopicConfigRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CreateTopicConfigRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_PartitionsReplicas_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_PartitionsReplicas_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_DeleteTopicRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_DeleteTopicRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_DeleteTopicResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_DeleteTopicResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_SyncRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_SyncRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_SyncResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_SyncResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CancelSyncRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CancelSyncRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CancelSyncResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CalculatePartitionsRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CalculatePartitionsResponse_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_MigrateLedgerRequest_fieldAccessorTable;
-    static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor;
-    static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_ostara_protobuf_MigrateLedgerResponse_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.FileDescriptor
-            descriptor;
+  private ServerProto() {}
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistryLite registry) {
+  }
 
-    static {
-        java.lang.String[] descriptorData = {
-                "\n\014server.proto\022\017ostara.protobuf\032\014ostara." +
-                        "proto\"4\n\022SendMessageRequest\022\016\n\006ledger\030\001 " +
-                        "\001(\005\022\016\n\006marker\030\002 \001(\005\"C\n\023SendMessageRespon" +
-                        "se\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005ind" +
-                        "ex\030\003 \001(\003\"\031\n\027QueryClusterInfoRequest\"J\n\024Q" +
-                        "ueryClusterResponse\0222\n\014cluster_info\030\001 \001(" +
-                        "\0132\034.ostara.protobuf.ClusterInfo\",\n\025Query" +
-                        "TopicInfoRequest\022\023\n\013topic_names\030\001 \003(\t\"\265\001" +
-                        "\n\026QueryTopicInfoResponse\022L\n\013topic_infos\030" +
-                        "\001 \003(\01327.ostara.protobuf.QueryTopicInfoRe" +
-                        "sponse.TopicInfosEntry\032M\n\017TopicInfosEntr" +
-                        "y\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.ostara.p" +
-                        "rotobuf.TopicInfo:\0028\001\"e\n\025ResetSubscribeR" +
-                        "equest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n" +
-                        "\005index\030\003 \001(\003\022\017\n\007markers\030\004 \001(\014\022\r\n\005topic\030\005" +
-                        " \001(\t\"\030\n\026ResetSubscribeResponse\"f\n\025AlterS" +
-                        "ubscribeRequest\022\016\n\006ledger\030\001 \001(\005\022\026\n\016appen" +
-                        "d_markers\030\002 \001(\014\022\026\n\016delete_markers\030\003 \001(\014\022" +
-                        "\r\n\005topic\030\004 \001(\t\"\030\n\026AlterSubscribeResponse" +
-                        "\"6\n\025CleanSubscribeRequest\022\016\n\006ledger\030\001 \001(" +
-                        "\005\022\r\n\005topic\030\002 \001(\t\"\030\n\026CleanSubscribeRespon" +
-                        "se\"\204\001\n\022CreateTopicRequest\022\r\n\005topic\030\001 \001(\t" +
-                        "\022\021\n\tpartition\030\002 \001(\005\022\020\n\010replicas\030\003 \001(\005\022:\n" +
-                        "\007configs\030\004 \001(\0132).ostara.protobuf.CreateT" +
-                        "opicConfigRequest\"k\n\030CreateTopicConfigRe" +
-                        "quest\022\032\n\022segmentRollingSize\030\001 \001(\005\022\032\n\022seg" +
-                        "mentRetainCount\030\002 \001(\005\022\027\n\017segmentRetainMs" +
-                        "\030\003 \001(\005\"\212\001\n\023CreateTopicResponse\022\r\n\005topic\030" +
-                        "\001 \001(\t\022\022\n\npartitions\030\002 \001(\005\022\017\n\007topicId\030\003 \001" +
-                        "(\005\022?\n\022partitionsReplicas\030\004 \003(\0132#.ostara." +
-                        "protobuf.PartitionsReplicas\"9\n\022Partition" +
-                        "sReplicas\022\021\n\tpartition\030\001 \001(\005\022\020\n\010replicas" +
-                        "\030\002 \003(\t\"#\n\022DeleteTopicRequest\022\r\n\005topic\030\001 " +
-                        "\001(\t\"\025\n\023DeleteTopicResponse\"J\n\013SyncReques" +
-                        "t\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005inde" +
-                        "x\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t\"\255\001\n\014SyncResponse\022" +
-                        "5\n\rcurrentOffset\030\001 \001(\0132\036.ostara.protobuf" +
-                        ".MessageOffset\0222\n\nheadOffset\030\002 \001(\0132\036.ost" +
-                        "ara.protobuf.MessageOffset\0222\n\ntailOffset" +
-                        "\030\003 \001(\0132\036.ostara.protobuf.MessageOffset\"2" +
-                        "\n\021CancelSyncRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005t" +
-                        "opic\030\002 \001(\t\"\024\n\022CancelSyncResponse\"\034\n\032Calc" +
-                        "ulatePartitionsRequest\"\242\001\n\033CalculatePart" +
-                        "itionsResponse\022P\n\npartitions\030\001 \003(\0132<.ost" +
-                        "ara.protobuf.CalculatePartitionsResponse" +
-                        ".PartitionsEntry\0321\n\017PartitionsEntry\022\013\n\003k" +
-                        "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\005:\0028\001\"_\n\024MigrateLe" +
-                        "dgerRequest\022\021\n\tpartition\030\001 \001(\005\022\r\n\005topic\030" +
-                        "\002 \001(\t\022\020\n\010original\030\003 \001(\t\022\023\n\013destination\030\004" +
-                        " \001(\t\"9\n\025MigrateLedgerResponse\022\017\n\007success" +
-                        "\030\001 \001(\010\022\017\n\007message\030\002 \001(\tB/\n\036org.ostara.re" +
-                        "mote.proto.serverB\013ServerProtoP\001b\006proto3"
-        };
-        descriptor = com.google.protobuf.Descriptors.FileDescriptor
-                .internalBuildGeneratedFileFrom(descriptorData,
-                        new com.google.protobuf.Descriptors.FileDescriptor[]{
-                                org.ostara.remote.proto.MessageMetadataProto.getDescriptor(),
-                        });
-        internal_static_ostara_protobuf_SendMessageRequest_descriptor =
-                getDescriptor().getMessageTypes().get(0);
-        internal_static_ostara_protobuf_SendMessageRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_SendMessageRequest_descriptor,
-                new java.lang.String[]{"Ledger", "Marker",});
-        internal_static_ostara_protobuf_SendMessageResponse_descriptor =
-                getDescriptor().getMessageTypes().get(1);
-        internal_static_ostara_protobuf_SendMessageResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_SendMessageResponse_descriptor,
-                new java.lang.String[]{"Ledger", "Epoch", "Index",});
-        internal_static_ostara_protobuf_QueryClusterInfoRequest_descriptor =
-                getDescriptor().getMessageTypes().get(2);
-        internal_static_ostara_protobuf_QueryClusterInfoRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_QueryClusterInfoRequest_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_QueryClusterResponse_descriptor =
-                getDescriptor().getMessageTypes().get(3);
-        internal_static_ostara_protobuf_QueryClusterResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_QueryClusterResponse_descriptor,
-                new java.lang.String[]{"ClusterInfo",});
-        internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor =
-                getDescriptor().getMessageTypes().get(4);
-        internal_static_ostara_protobuf_QueryTopicInfoRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor,
-                new java.lang.String[]{"TopicNames",});
-        internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor =
-                getDescriptor().getMessageTypes().get(5);
-        internal_static_ostara_protobuf_QueryTopicInfoResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor,
-                new java.lang.String[]{"TopicInfos",});
-        internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor =
-                internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor.getNestedTypes().get(0);
-        internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor,
-                new java.lang.String[]{"Key", "Value",});
-        internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor =
-                getDescriptor().getMessageTypes().get(6);
-        internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor,
-                new java.lang.String[]{"Ledger", "Epoch", "Index", "Markers", "Topic",});
-        internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor =
-                getDescriptor().getMessageTypes().get(7);
-        internal_static_ostara_protobuf_ResetSubscribeResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor =
-                getDescriptor().getMessageTypes().get(8);
-        internal_static_ostara_protobuf_AlterSubscribeRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor,
-                new java.lang.String[]{"Ledger", "AppendMarkers", "DeleteMarkers", "Topic",});
-        internal_static_ostara_protobuf_AlterSubscribeResponse_descriptor =
-                getDescriptor().getMessageTypes().get(9);
-        internal_static_ostara_protobuf_AlterSubscribeResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_AlterSubscribeResponse_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_CleanSubscribeRequest_descriptor =
-                getDescriptor().getMessageTypes().get(10);
-        internal_static_ostara_protobuf_CleanSubscribeRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CleanSubscribeRequest_descriptor,
-                new java.lang.String[]{"Ledger", "Topic",});
-        internal_static_ostara_protobuf_CleanSubscribeResponse_descriptor =
-                getDescriptor().getMessageTypes().get(11);
-        internal_static_ostara_protobuf_CleanSubscribeResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CleanSubscribeResponse_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_CreateTopicRequest_descriptor =
-                getDescriptor().getMessageTypes().get(12);
-        internal_static_ostara_protobuf_CreateTopicRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CreateTopicRequest_descriptor,
-                new java.lang.String[]{"Topic", "Partition", "Replicas", "Configs",});
-        internal_static_ostara_protobuf_CreateTopicConfigRequest_descriptor =
-                getDescriptor().getMessageTypes().get(13);
-        internal_static_ostara_protobuf_CreateTopicConfigRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CreateTopicConfigRequest_descriptor,
-                new java.lang.String[]{"SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs",});
-        internal_static_ostara_protobuf_CreateTopicResponse_descriptor =
-                getDescriptor().getMessageTypes().get(14);
-        internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CreateTopicResponse_descriptor,
-                new java.lang.String[]{"Topic", "Partitions", "TopicId", "PartitionsReplicas",});
-        internal_static_ostara_protobuf_PartitionsReplicas_descriptor =
-                getDescriptor().getMessageTypes().get(15);
-        internal_static_ostara_protobuf_PartitionsReplicas_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_PartitionsReplicas_descriptor,
-                new java.lang.String[]{"Partition", "Replicas",});
-        internal_static_ostara_protobuf_DeleteTopicRequest_descriptor =
-                getDescriptor().getMessageTypes().get(16);
-        internal_static_ostara_protobuf_DeleteTopicRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_DeleteTopicRequest_descriptor,
-                new java.lang.String[]{"Topic",});
-        internal_static_ostara_protobuf_DeleteTopicResponse_descriptor =
-                getDescriptor().getMessageTypes().get(17);
-        internal_static_ostara_protobuf_DeleteTopicResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_DeleteTopicResponse_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_SyncRequest_descriptor =
-                getDescriptor().getMessageTypes().get(18);
-        internal_static_ostara_protobuf_SyncRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_SyncRequest_descriptor,
-                new java.lang.String[]{"Ledger", "Epoch", "Index", "Topic",});
-        internal_static_ostara_protobuf_SyncResponse_descriptor =
-                getDescriptor().getMessageTypes().get(19);
-        internal_static_ostara_protobuf_SyncResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_SyncResponse_descriptor,
-                new java.lang.String[]{"CurrentOffset", "HeadOffset", "TailOffset",});
-        internal_static_ostara_protobuf_CancelSyncRequest_descriptor =
-                getDescriptor().getMessageTypes().get(20);
-        internal_static_ostara_protobuf_CancelSyncRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CancelSyncRequest_descriptor,
-                new java.lang.String[]{"Ledger", "Topic",});
-        internal_static_ostara_protobuf_CancelSyncResponse_descriptor =
-                getDescriptor().getMessageTypes().get(21);
-        internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CancelSyncResponse_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor =
-                getDescriptor().getMessageTypes().get(22);
-        internal_static_ostara_protobuf_CalculatePartitionsRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor,
-                new java.lang.String[]{});
-        internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor =
-                getDescriptor().getMessageTypes().get(23);
-        internal_static_ostara_protobuf_CalculatePartitionsResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor,
-                new java.lang.String[]{"Partitions",});
-        internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor =
-                internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor.getNestedTypes().get(0);
-        internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor,
-                new java.lang.String[]{"Key", "Value",});
-        internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor =
-                getDescriptor().getMessageTypes().get(24);
-        internal_static_ostara_protobuf_MigrateLedgerRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor,
-                new java.lang.String[]{"Partition", "Topic", "Original", "Destination",});
-        internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor =
-                getDescriptor().getMessageTypes().get(25);
-        internal_static_ostara_protobuf_MigrateLedgerResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor,
-                new java.lang.String[]{"Success", "Message",});
-        org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
-    }
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SendMessageRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SendMessageRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SendMessageResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SendMessageResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_QueryClusterInfoRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_QueryClusterInfoRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_QueryClusterResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_QueryClusterResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_QueryTopicInfoRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_QueryTopicInfoResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_ResetSubscribeResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_AlterSubscribeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_AlterSubscribeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_AlterSubscribeResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CleanSubscribeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CleanSubscribeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CleanSubscribeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CleanSubscribeResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CreateTopicRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CreateTopicRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CreateTopicConfigRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CreateTopicConfigRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CreateTopicResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_PartitionsReplicas_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_PartitionsReplicas_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_DeleteTopicRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_DeleteTopicRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_DeleteTopicResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_DeleteTopicResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SyncRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SyncRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_SyncResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_SyncResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CancelSyncRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CancelSyncRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CancelSyncResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CalculatePartitionsRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CalculatePartitionsResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_MigrateLedgerRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ostara_protobuf_MigrateLedgerResponse_fieldAccessorTable;
 
-    private ServerProto() {
-    }
+  public static com.google.protobuf.Descriptors.FileDescriptor
+      getDescriptor() {
+    return descriptor;
+  }
+  private static  com.google.protobuf.Descriptors.FileDescriptor
+      descriptor;
+  static {
+    java.lang.String[] descriptorData = {
+      "\n\014server.proto\022\017ostara.protobuf\032\014ostara." +
+      "proto\"4\n\022SendMessageRequest\022\016\n\006ledger\030\001 " +
+      "\001(\005\022\016\n\006marker\030\002 \001(\005\"C\n\023SendMessageRespon" +
+      "se\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005ind" +
+      "ex\030\003 \001(\003\"\031\n\027QueryClusterInfoRequest\"J\n\024Q" +
+      "ueryClusterResponse\0222\n\014cluster_info\030\001 \001(" +
+      "\0132\034.ostara.protobuf.ClusterInfo\",\n\025Query" +
+      "TopicInfoRequest\022\023\n\013topic_names\030\001 \003(\t\"\265\001" +
+      "\n\026QueryTopicInfoResponse\022L\n\013topic_infos\030" +
+      "\001 \003(\01327.ostara.protobuf.QueryTopicInfoRe" +
+      "sponse.TopicInfosEntry\032M\n\017TopicInfosEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.ostara.p" +
+      "rotobuf.TopicInfo:\0028\001\"e\n\025ResetSubscribeR" +
+      "equest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n" +
+      "\005index\030\003 \001(\003\022\017\n\007markers\030\004 \001(\014\022\r\n\005topic\030\005" +
+      " \001(\t\"\030\n\026ResetSubscribeResponse\"f\n\025AlterS" +
+      "ubscribeRequest\022\016\n\006ledger\030\001 \001(\005\022\026\n\016appen" +
+      "d_markers\030\002 \001(\014\022\026\n\016delete_markers\030\003 \001(\014\022" +
+      "\r\n\005topic\030\004 \001(\t\"\030\n\026AlterSubscribeResponse" +
+      "\"6\n\025CleanSubscribeRequest\022\016\n\006ledger\030\001 \001(" +
+      "\005\022\r\n\005topic\030\002 \001(\t\"\030\n\026CleanSubscribeRespon" +
+      "se\"\204\001\n\022CreateTopicRequest\022\r\n\005topic\030\001 \001(\t" +
+      "\022\021\n\tpartition\030\002 \001(\005\022\020\n\010replicas\030\003 \001(\005\022:\n" +
+      "\007configs\030\004 \001(\0132).ostara.protobuf.CreateT" +
+      "opicConfigRequest\"}\n\030CreateTopicConfigRe" +
+      "quest\022\032\n\022segmentRollingSize\030\001 \001(\005\022\032\n\022seg" +
+      "mentRetainCount\030\002 \001(\005\022\027\n\017segmentRetainMs" +
+      "\030\003 \001(\005\022\020\n\010allocate\030\004 \001(\010\"\212\001\n\023CreateTopic" +
+      "Response\022\r\n\005topic\030\001 \001(\t\022\022\n\npartitions\030\002 " +
+      "\001(\005\022\017\n\007topicId\030\003 \001(\005\022?\n\022partitionsReplic" +
+      "as\030\004 \003(\0132#.ostara.protobuf.PartitionsRep" +
+      "licas\"9\n\022PartitionsReplicas\022\021\n\tpartition" +
+      "\030\001 \001(\005\022\020\n\010replicas\030\002 \003(\t\"#\n\022DeleteTopicR" +
+      "equest\022\r\n\005topic\030\001 \001(\t\"\025\n\023DeleteTopicResp" +
+      "onse\"J\n\013SyncRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005e" +
+      "poch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t" +
+      "\"\255\001\n\014SyncResponse\0225\n\rcurrentOffset\030\001 \001(\013" +
+      "2\036.ostara.protobuf.MessageOffset\0222\n\nhead" +
+      "Offset\030\002 \001(\0132\036.ostara.protobuf.MessageOf" +
+      "fset\0222\n\ntailOffset\030\003 \001(\0132\036.ostara.protob" +
+      "uf.MessageOffset\"2\n\021CancelSyncRequest\022\016\n" +
+      "\006ledger\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"\024\n\022CancelSy" +
+      "ncResponse\"\034\n\032CalculatePartitionsRequest" +
+      "\"\242\001\n\033CalculatePartitionsResponse\022P\n\npart" +
+      "itions\030\001 \003(\0132<.ostara.protobuf.Calculate" +
+      "PartitionsResponse.PartitionsEntry\0321\n\017Pa" +
+      "rtitionsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
+      "\005:\0028\001\"_\n\024MigrateLedgerRequest\022\021\n\tpartiti" +
+      "on\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\022\020\n\010original\030\003 \001(" +
+      "\t\022\023\n\013destination\030\004 \001(\t\"9\n\025MigrateLedgerR" +
+      "esponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(" +
+      "\tB/\n\036org.ostara.remote.proto.serverB\013Ser" +
+      "verProtoP\001b\006proto3"
+    };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+          org.ostara.remote.proto.MessageMetadataProto.getDescriptor(),
+        });
+    internal_static_ostara_protobuf_SendMessageRequest_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_ostara_protobuf_SendMessageRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SendMessageRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Marker", });
+    internal_static_ostara_protobuf_SendMessageResponse_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_ostara_protobuf_SendMessageResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SendMessageResponse_descriptor,
+        new java.lang.String[] { "Ledger", "Epoch", "Index", });
+    internal_static_ostara_protobuf_QueryClusterInfoRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_ostara_protobuf_QueryClusterInfoRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_QueryClusterInfoRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_QueryClusterResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_ostara_protobuf_QueryClusterResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_QueryClusterResponse_descriptor,
+        new java.lang.String[] { "ClusterInfo", });
+    internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_ostara_protobuf_QueryTopicInfoRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_QueryTopicInfoRequest_descriptor,
+        new java.lang.String[] { "TopicNames", });
+    internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_ostara_protobuf_QueryTopicInfoResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor,
+        new java.lang.String[] { "TopicInfos", });
+    internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor =
+      internal_static_ostara_protobuf_QueryTopicInfoResponse_descriptor.getNestedTypes().get(0);
+    internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_ostara_protobuf_ResetSubscribeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_ResetSubscribeRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Epoch", "Index", "Markers", "Topic", });
+    internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_ostara_protobuf_ResetSubscribeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_ResetSubscribeResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_ostara_protobuf_AlterSubscribeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_AlterSubscribeRequest_descriptor,
+        new java.lang.String[] { "Ledger", "AppendMarkers", "DeleteMarkers", "Topic", });
+    internal_static_ostara_protobuf_AlterSubscribeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_ostara_protobuf_AlterSubscribeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_AlterSubscribeResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_CleanSubscribeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_ostara_protobuf_CleanSubscribeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CleanSubscribeRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Topic", });
+    internal_static_ostara_protobuf_CleanSubscribeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_ostara_protobuf_CleanSubscribeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CleanSubscribeResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_CreateTopicRequest_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_ostara_protobuf_CreateTopicRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CreateTopicRequest_descriptor,
+        new java.lang.String[] { "Topic", "Partition", "Replicas", "Configs", });
+    internal_static_ostara_protobuf_CreateTopicConfigRequest_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_ostara_protobuf_CreateTopicConfigRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CreateTopicConfigRequest_descriptor,
+        new java.lang.String[] { "SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs", "Allocate", });
+    internal_static_ostara_protobuf_CreateTopicResponse_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_ostara_protobuf_CreateTopicResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CreateTopicResponse_descriptor,
+        new java.lang.String[] { "Topic", "Partitions", "TopicId", "PartitionsReplicas", });
+    internal_static_ostara_protobuf_PartitionsReplicas_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_ostara_protobuf_PartitionsReplicas_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_PartitionsReplicas_descriptor,
+        new java.lang.String[] { "Partition", "Replicas", });
+    internal_static_ostara_protobuf_DeleteTopicRequest_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_ostara_protobuf_DeleteTopicRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_DeleteTopicRequest_descriptor,
+        new java.lang.String[] { "Topic", });
+    internal_static_ostara_protobuf_DeleteTopicResponse_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_ostara_protobuf_DeleteTopicResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_DeleteTopicResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_SyncRequest_descriptor =
+      getDescriptor().getMessageTypes().get(18);
+    internal_static_ostara_protobuf_SyncRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SyncRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Epoch", "Index", "Topic", });
+    internal_static_ostara_protobuf_SyncResponse_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_ostara_protobuf_SyncResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_SyncResponse_descriptor,
+        new java.lang.String[] { "CurrentOffset", "HeadOffset", "TailOffset", });
+    internal_static_ostara_protobuf_CancelSyncRequest_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_ostara_protobuf_CancelSyncRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CancelSyncRequest_descriptor,
+        new java.lang.String[] { "Ledger", "Topic", });
+    internal_static_ostara_protobuf_CancelSyncResponse_descriptor =
+      getDescriptor().getMessageTypes().get(21);
+    internal_static_ostara_protobuf_CancelSyncResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CancelSyncResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor =
+      getDescriptor().getMessageTypes().get(22);
+    internal_static_ostara_protobuf_CalculatePartitionsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CalculatePartitionsRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor =
+      getDescriptor().getMessageTypes().get(23);
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor,
+        new java.lang.String[] { "Partitions", });
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor =
+      internal_static_ostara_protobuf_CalculatePartitionsResponse_descriptor.getNestedTypes().get(0);
+    internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor =
+      getDescriptor().getMessageTypes().get(24);
+    internal_static_ostara_protobuf_MigrateLedgerRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MigrateLedgerRequest_descriptor,
+        new java.lang.String[] { "Partition", "Topic", "Original", "Destination", });
+    internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor =
+      getDescriptor().getMessageTypes().get(25);
+    internal_static_ostara_protobuf_MigrateLedgerResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ostara_protobuf_MigrateLedgerResponse_descriptor,
+        new java.lang.String[] { "Success", "Message", });
+    org.ostara.remote.proto.MessageMetadataProto.getDescriptor();
+  }
 
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistryLite registry) {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistry registry) {
-        registerAllExtensions(
-                (com.google.protobuf.ExtensionRegistryLite) registry);
-    }
-
-    public static com.google.protobuf.Descriptors.FileDescriptor
-    getDescriptor() {
-        return descriptor;
-    }
-
-    // @@protoc_insertion_point(outer_class_scope)
+  // @@protoc_insertion_point(outer_class_scope)
 }

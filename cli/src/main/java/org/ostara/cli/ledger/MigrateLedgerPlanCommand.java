@@ -51,11 +51,11 @@ public class MigrateLedgerPlanCommand implements Command {
         options.addOption(partitionOpt);
 
         Option replicaOpt = new Option("e", "exclude broker", true, "exclude broker");
-        partitionOpt.setRequired(true);
+        replicaOpt.setRequired(true);
         options.addOption(replicaOpt);
 
         Option configOpt = new Option("v", "verify completed", true, "verify completed");
-        partitionOpt.setRequired(true);
+        configOpt.setRequired(true);
         options.addOption(configOpt);
 
         return options;

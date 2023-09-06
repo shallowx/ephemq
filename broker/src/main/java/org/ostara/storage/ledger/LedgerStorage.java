@@ -33,7 +33,12 @@ public class LedgerStorage {
         this.currentOffset = new Offset(epoch, 0L);
         this.executor = executor;
         this.trigger = trigger;
-        this.headSegment = this.tailSegment = new LedgerSegment(ledger, Unpooled.EMPTY_BUFFER, currentOffset);
+        if (config.isAllocate()) {
+            // For topics with a predictably high message volume, prioritize upfront memory allocation to prevent initial message spikes
+            this.headSegment = this.tailSegment = new LedgerSegment(ledger, allocateBuffer(config.segmentBufferCapacity()), currentOffset);
+        } else {
+            this.headSegment = this.tailSegment = new LedgerSegment(ledger, Unpooled.EMPTY_BUFFER, currentOffset);
+        }
     }
 
     public void appendRecord(int marker, ByteBuf payload, Promise<Offset> promise) {
@@ -271,7 +276,6 @@ public class LedgerStorage {
         } else {
             result.trySuccess(true);
         }
-
         return result;
     }
 

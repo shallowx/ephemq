@@ -4,20 +4,18 @@
 package org.ostara.remote.proto.server;
 
 public interface SendMessageRequestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.SendMessageRequest)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.SendMessageRequest)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    int getLedger();
+  /**
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
+   */
+  int getLedger();
 
-    /**
-     * <code>int32 marker = 2;</code>
-     *
-     * @return The marker.
-     */
-    int getMarker();
+  /**
+   * <code>int32 marker = 2;</code>
+   * @return The marker.
+   */
+  int getMarker();
 }

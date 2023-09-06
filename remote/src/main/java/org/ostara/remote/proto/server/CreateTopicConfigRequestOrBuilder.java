@@ -4,27 +4,30 @@
 package org.ostara.remote.proto.server;
 
 public interface CreateTopicConfigRequestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicConfigRequest)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CreateTopicConfigRequest)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 segmentRollingSize = 1;</code>
-     *
-     * @return The segmentRollingSize.
-     */
-    int getSegmentRollingSize();
+  /**
+   * <code>int32 segmentRollingSize = 1;</code>
+   * @return The segmentRollingSize.
+   */
+  int getSegmentRollingSize();
 
-    /**
-     * <code>int32 segmentRetainCount = 2;</code>
-     *
-     * @return The segmentRetainCount.
-     */
-    int getSegmentRetainCount();
+  /**
+   * <code>int32 segmentRetainCount = 2;</code>
+   * @return The segmentRetainCount.
+   */
+  int getSegmentRetainCount();
 
-    /**
-     * <code>int32 segmentRetainMs = 3;</code>
-     *
-     * @return The segmentRetainMs.
-     */
-    int getSegmentRetainMs();
+  /**
+   * <code>int32 segmentRetainMs = 3;</code>
+   * @return The segmentRetainMs.
+   */
+  int getSegmentRetainMs();
+
+  /**
+   * <code>bool allocate = 4;</code>
+   * @return The allocate.
+   */
+  boolean getAllocate();
 }

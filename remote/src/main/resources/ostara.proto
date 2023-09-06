@@ -63,4 +63,5 @@ message TopicSegmentInfo {
   int32 segmentRollingSize = 1;
   int32 segmentRetainCount = 2;
   int32 segmentRetainMs = 3;
+  bool allocate = 4;
 }

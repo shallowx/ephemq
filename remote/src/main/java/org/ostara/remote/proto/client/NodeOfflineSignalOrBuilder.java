@@ -4,25 +4,21 @@
 package org.ostara.remote.proto.client;
 
 public interface NodeOfflineSignalOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeOfflineSignal)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.NodeOfflineSignal)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>.ostara.protobuf.NodeMetadata node = 1;</code>
-     *
-     * @return Whether the node field is set.
-     */
-    boolean hasNode();
-
-    /**
-     * <code>.ostara.protobuf.NodeMetadata node = 1;</code>
-     *
-     * @return The node.
-     */
-    org.ostara.remote.proto.NodeMetadata getNode();
-
-    /**
-     * <code>.ostara.protobuf.NodeMetadata node = 1;</code>
-     */
-    org.ostara.remote.proto.NodeMetadataOrBuilder getNodeOrBuilder();
+  /**
+   * <code>.ostara.protobuf.NodeMetadata node = 1;</code>
+   * @return Whether the node field is set.
+   */
+  boolean hasNode();
+  /**
+   * <code>.ostara.protobuf.NodeMetadata node = 1;</code>
+   * @return The node.
+   */
+  org.ostara.remote.proto.NodeMetadata getNode();
+  /**
+   * <code>.ostara.protobuf.NodeMetadata node = 1;</code>
+   */
+  org.ostara.remote.proto.NodeMetadataOrBuilder getNodeOrBuilder();
 }

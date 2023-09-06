@@ -4,25 +4,21 @@
 package org.ostara.remote.proto.server;
 
 public interface QueryClusterResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryClusterResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.QueryClusterResponse)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>.ostara.protobuf.ClusterInfo cluster_info = 1;</code>
-     *
-     * @return Whether the clusterInfo field is set.
-     */
-    boolean hasClusterInfo();
-
-    /**
-     * <code>.ostara.protobuf.ClusterInfo cluster_info = 1;</code>
-     *
-     * @return The clusterInfo.
-     */
-    org.ostara.remote.proto.ClusterInfo getClusterInfo();
-
-    /**
-     * <code>.ostara.protobuf.ClusterInfo cluster_info = 1;</code>
-     */
-    org.ostara.remote.proto.ClusterInfoOrBuilder getClusterInfoOrBuilder();
+  /**
+   * <code>.ostara.protobuf.ClusterInfo cluster_info = 1;</code>
+   * @return Whether the clusterInfo field is set.
+   */
+  boolean hasClusterInfo();
+  /**
+   * <code>.ostara.protobuf.ClusterInfo cluster_info = 1;</code>
+   * @return The clusterInfo.
+   */
+  org.ostara.remote.proto.ClusterInfo getClusterInfo();
+  /**
+   * <code>.ostara.protobuf.ClusterInfo cluster_info = 1;</code>
+   */
+  org.ostara.remote.proto.ClusterInfoOrBuilder getClusterInfoOrBuilder();
 }

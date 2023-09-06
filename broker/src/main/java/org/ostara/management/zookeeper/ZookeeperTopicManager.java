@@ -296,7 +296,7 @@ public class ZookeeperTopicManager implements TopicManager {
         try {
             Collections.shuffle(clusterUpNodes);
             topicConfig = topicConfig == null
-                    ? new TopicConfig(config.getSegmentRollingSize(), config.getSegmentRetainCounts(), config.getSegmentRetainTime())
+                    ? new TopicConfig(config.getSegmentRollingSize(), config.getSegmentRetainCounts(), config.getSegmentRetainTime(), false)
                     : topicConfig;
 
             Map<String, Object> createResult = new HashMap<>(2);

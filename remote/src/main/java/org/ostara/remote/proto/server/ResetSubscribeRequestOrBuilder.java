@@ -4,49 +4,42 @@
 package org.ostara.remote.proto.server;
 
 public interface ResetSubscribeRequestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.ResetSubscribeRequest)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.ResetSubscribeRequest)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    int getLedger();
+  /**
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
+   */
+  int getLedger();
 
-    /**
-     * <code>int32 epoch = 2;</code>
-     *
-     * @return The epoch.
-     */
-    int getEpoch();
+  /**
+   * <code>int32 epoch = 2;</code>
+   * @return The epoch.
+   */
+  int getEpoch();
 
-    /**
-     * <code>int64 index = 3;</code>
-     *
-     * @return The index.
-     */
-    long getIndex();
+  /**
+   * <code>int64 index = 3;</code>
+   * @return The index.
+   */
+  long getIndex();
 
-    /**
-     * <code>bytes markers = 4;</code>
-     *
-     * @return The markers.
-     */
-    com.google.protobuf.ByteString getMarkers();
+  /**
+   * <code>bytes markers = 4;</code>
+   * @return The markers.
+   */
+  com.google.protobuf.ByteString getMarkers();
 
-    /**
-     * <code>string topic = 5;</code>
-     *
-     * @return The topic.
-     */
-    java.lang.String getTopic();
-
-    /**
-     * <code>string topic = 5;</code>
-     *
-     * @return The bytes for topic.
-     */
-    com.google.protobuf.ByteString
-    getTopicBytes();
+  /**
+   * <code>string topic = 5;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 5;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 }

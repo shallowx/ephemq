@@ -4,14 +4,16 @@ public class TopicConfig {
     private int segmentRollingSize;
     private int segmentRetainCount;
     private int segmentRetainMs;
+    private boolean allocate;
 
     public TopicConfig() {
     }
 
-    public TopicConfig(int segmentRollingSize, int segmentRetainCount, int segmentRetainMs) {
+    public TopicConfig(int segmentRollingSize, int segmentRetainCount, int segmentRetainMs, boolean allocate) {
         this.segmentRollingSize = segmentRollingSize;
         this.segmentRetainCount = segmentRetainCount;
         this.segmentRetainMs = segmentRetainMs;
+        this.allocate = allocate;
     }
 
     public int getSegmentRollingSize() {
@@ -38,12 +40,21 @@ public class TopicConfig {
         this.segmentRetainMs = segmentRetainMs;
     }
 
+    public boolean isAllocate() {
+        return allocate;
+    }
+
+    public void setAllocate(boolean allocate) {
+        this.allocate = allocate;
+    }
+
     @Override
     public String toString() {
-        return "topic_config {" +
+        return "TopicConfig{" +
                 "segmentRollingSize=" + segmentRollingSize +
                 ", segmentRetainCount=" + segmentRetainCount +
                 ", segmentRetainMs=" + segmentRetainMs +
+                ", allocate=" + allocate +
                 '}';
     }
 }

@@ -4,45 +4,40 @@
 package org.ostara.remote.proto.server;
 
 public interface CalculatePartitionsResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:ostara.protobuf.CalculatePartitionsResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:ostara.protobuf.CalculatePartitionsResponse)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>map&lt;string, int32&gt; partitions = 1;</code>
-     */
-    int getPartitionsCount();
+  /**
+   * <code>map&lt;string, int32&gt; partitions = 1;</code>
+   */
+  int getPartitionsCount();
+  /**
+   * <code>map&lt;string, int32&gt; partitions = 1;</code>
+   */
+  boolean containsPartitions(
+      java.lang.String key);
+  /**
+   * Use {@link #getPartitionsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, java.lang.Integer>
+  getPartitions();
+  /**
+   * <code>map&lt;string, int32&gt; partitions = 1;</code>
+   */
+  java.util.Map<java.lang.String, java.lang.Integer>
+  getPartitionsMap();
+  /**
+   * <code>map&lt;string, int32&gt; partitions = 1;</code>
+   */
 
-    /**
-     * <code>map&lt;string, int32&gt; partitions = 1;</code>
-     */
-    boolean containsPartitions(
-            java.lang.String key);
+  int getPartitionsOrDefault(
+      java.lang.String key,
+      int defaultValue);
+  /**
+   * <code>map&lt;string, int32&gt; partitions = 1;</code>
+   */
 
-    /**
-     * Use {@link #getPartitionsMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.String, java.lang.Integer>
-    getPartitions();
-
-    /**
-     * <code>map&lt;string, int32&gt; partitions = 1;</code>
-     */
-    java.util.Map<java.lang.String, java.lang.Integer>
-    getPartitionsMap();
-
-    /**
-     * <code>map&lt;string, int32&gt; partitions = 1;</code>
-     */
-
-    int getPartitionsOrDefault(
-            java.lang.String key,
-            int defaultValue);
-
-    /**
-     * <code>map&lt;string, int32&gt; partitions = 1;</code>
-     */
-
-    int getPartitionsOrThrow(
-            java.lang.String key);
+  int getPartitionsOrThrow(
+      java.lang.String key);
 }
