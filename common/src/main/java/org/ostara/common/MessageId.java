@@ -38,6 +38,10 @@ public class MessageId {
 
     @Override
     public String toString() {
-        return ledger + "-" + epoch + "-" + index;
+        return "message_id{" +
+                "ledger=" + ledger +
+                ", epoch=" + epoch +
+                ", index=" + index +
+                '}';
     }
 }

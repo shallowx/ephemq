@@ -50,10 +50,10 @@ public class TopicConfig {
 
     @Override
     public String toString() {
-        return "TopicConfig{" +
-                "segmentRollingSize=" + segmentRollingSize +
-                ", segmentRetainCount=" + segmentRetainCount +
-                ", segmentRetainMs=" + segmentRetainMs +
+        return "topic_config{" +
+                "segment_rolling_size=" + segmentRollingSize +
+                ", segment_retain_count=" + segmentRetainCount +
+                ", segment_retainMs=" + segmentRetainMs +
                 ", allocate=" + allocate +
                 '}';
     }

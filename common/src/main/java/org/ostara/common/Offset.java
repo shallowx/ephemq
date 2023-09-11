@@ -60,6 +60,9 @@ public class Offset implements Comparable<Offset> {
 
     @Override
     public String toString() {
-        return epoch + "-" + index;
+        return "offset{" +
+                "epoch=" + epoch +
+                ", index=" + index +
+                '}';
     }
 }

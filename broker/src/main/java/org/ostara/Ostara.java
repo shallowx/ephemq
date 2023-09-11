@@ -26,7 +26,7 @@ public class Ostara {
         try {
             start(createServer(args));
         } catch (Exception e) {
-            logger.error("Start server failed", e);
+            logger.error("Start ostara broker server failed", e);
             System.exit(-1);
         }
     }
@@ -93,7 +93,7 @@ public class Ostara {
             }
 
             if (name.startsWith("is")) {
-                configName = name.substring(3);
+                configName = name.substring(2);
             }
             checkReturnType(method, config, sb, configName);
         }
@@ -101,16 +101,17 @@ public class Ostara {
     }
 
     private static void checkReturnType(Method method, CoreConfig config, StringBuilder sb, String name) {
-        String type = method.getReturnType().getSimpleName();
-        Object invoke = null;
+        String simpleName = method.getReturnType().getSimpleName();
+        Object invoke;
         try {
-            switch (type) {
+            switch (simpleName) {
                 case "int", "Integer" -> invoke = TypeTransformUtils.object2Int(method.invoke(config));
                 case "long", "Long" -> invoke = TypeTransformUtils.object2Long(method.invoke(config));
                 case "double", "Double" -> invoke = TypeTransformUtils.object2Double(method.invoke(config));
                 case "float", "Float" -> invoke = TypeTransformUtils.object2Float(method.invoke(config));
                 case "String" -> invoke = TypeTransformUtils.object2String(method.invoke(config));
                 case "boolean", "Boolean" -> invoke = TypeTransformUtils.object2Boolean(method.invoke(config));
+                default -> throw new IllegalArgumentException(String.format("Illegal parameter<%s>", name));
             }
             sb.append(String.format("\t %s = %s", name, invoke)).append("\n");
         } catch (Exception e) {
