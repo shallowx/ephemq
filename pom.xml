@@ -173,7 +173,6 @@
         <module>cli</module>
         <module>benchmarks</module>
         <module>assembler</module>
-        <module>proxy</module>
     </modules>
 
 </project>
