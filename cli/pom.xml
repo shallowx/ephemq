@@ -19,6 +19,7 @@
         <serialization.version>1.4.1</serialization.version>
         <common.cli.version>1.5.0</common.cli.version>
         <commons.io.version>2.11.0</commons.io.version>
+        <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
     </properties>
 
     <dependencies>
@@ -59,7 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven.jar.plugin.version}</version>
                 <configuration>
                     <archive>
                         <manifest>

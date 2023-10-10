@@ -174,5 +174,4 @@
         <module>benchmarks</module>
         <module>assembler</module>
     </modules>
-
 </project>
