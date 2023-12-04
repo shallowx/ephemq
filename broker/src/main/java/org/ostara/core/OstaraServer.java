@@ -1,6 +1,8 @@
 package org.ostara.core;
 
 import com.google.inject.Inject;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.EventExecutor;
 import org.ostara.common.Node;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -14,15 +16,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class OstaraServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(OstaraServer.class);
-
     private final CoreConfig config;
     private final List<ServerListener> serverListeners = new LinkedList<>();
     private final CountDownLatch countDownLatch;
     private final CoreSocketServer defaultSocketServer;
     private final Manager manager;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
 
     @Inject
     public OstaraServer(CoreConfig config, CoreSocketServer defaultSocketServer, Manager manager) {
@@ -38,7 +42,7 @@ public class OstaraServer {
 
     public void start() throws Exception {
         CompletableFuture<Void> startFuture = new CompletableFuture<>();
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 defaultSocketServer.start();
                 startFuture.complete(null);
@@ -51,7 +55,7 @@ public class OstaraServer {
                 logger.error(e.getMessage(), e);
             }
             countDownLatch.countDown();
-        }, "socket-server").start();
+        });
 
         manager.start();
         for (ServerListener listener : serverListeners) {
@@ -61,7 +65,6 @@ public class OstaraServer {
                 listener.onStartup(thisNode);
             }
         }
-
         countDownLatch.await();
     }
 
@@ -76,8 +79,10 @@ public class OstaraServer {
                 }
             }
         }
-
         manager.shutdown();
         defaultSocketServer.shutdown();
+        if (!executor.isTerminated() && !executor.isShutdown()) {
+            executor.shutdown();
+        }
     }
 }
