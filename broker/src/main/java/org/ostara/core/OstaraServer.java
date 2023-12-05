@@ -26,7 +26,7 @@ public class OstaraServer {
     private final CountDownLatch countDownLatch;
     private final CoreSocketServer defaultSocketServer;
     private final Manager manager;
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
+    private static final ExecutorService socketServerExecutor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
     @Inject
     public OstaraServer(CoreConfig config, CoreSocketServer defaultSocketServer, Manager manager) {
         this.config = config;
@@ -41,7 +41,7 @@ public class OstaraServer {
 
     public void start() throws Exception {
         CompletableFuture<Void> startFuture = new CompletableFuture<>();
-        executor.execute(() -> {
+        socketServerExecutor.execute(() -> {
             try {
                 defaultSocketServer.start();
                 startFuture.complete(null);
@@ -81,5 +81,8 @@ public class OstaraServer {
         }
         manager.shutdown();
         defaultSocketServer.shutdown();
+        if (!socketServerExecutor.isTerminated() || !socketServerExecutor.isShutdown()) {
+            socketServerExecutor.shutdown();
+        }
     }
 }
