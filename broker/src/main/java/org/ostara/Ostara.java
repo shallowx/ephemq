@@ -90,12 +90,13 @@ public class Ostara {
             String name = method.getName();
             if (name.startsWith("get")) {
                 configName = name.substring(3);
+                checkReturnType(method, config, sb, configName);
             }
 
             if (name.startsWith("is")) {
                 configName = name.substring(2);
+                checkReturnType(method, config, sb, configName);
             }
-            checkReturnType(method, config, sb, configName);
         }
         logger.info(sb.toString());
     }
@@ -109,8 +110,8 @@ public class Ostara {
                 case "long", "Long" -> invoke = TypeTransformUtils.object2Long(method.invoke(config));
                 case "double", "Double" -> invoke = TypeTransformUtils.object2Double(method.invoke(config));
                 case "float", "Float" -> invoke = TypeTransformUtils.object2Float(method.invoke(config));
-                case "String" -> invoke = TypeTransformUtils.object2String(method.invoke(config));
                 case "boolean", "Boolean" -> invoke = TypeTransformUtils.object2Boolean(method.invoke(config));
+                case "String" -> invoke = TypeTransformUtils.object2String(method.invoke(config));
                 default -> throw new IllegalArgumentException(String.format("Illegal parameter<%s>", name));
             }
             sb.append(String.format("\t %s = %s", name, invoke)).append("\n");

@@ -77,8 +77,8 @@ public class ZookeeperManager implements Manager {
         innerClient.start();
 
         if (clusterManager != null) {
-            logger.info("Cluster manager<{}> start successfully", clusterManager.getThisNode().getCluster());
             clusterManager.start();
+            logger.info("Cluster manager<{}> start successfully", clusterManager.getThisNode().getCluster());
         }
 
         if (topicManager != null) {

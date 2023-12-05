@@ -27,7 +27,6 @@ public class OstaraServer {
     private final CoreSocketServer defaultSocketServer;
     private final Manager manager;
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
-
     @Inject
     public OstaraServer(CoreConfig config, CoreSocketServer defaultSocketServer, Manager manager) {
         this.config = config;
@@ -51,11 +50,12 @@ public class OstaraServer {
                 Thread.currentThread().interrupt();
                 startFuture.completeExceptionally(e);
             } catch (Exception e) {
-                startFuture.completeExceptionally(e);
                 logger.error(e.getMessage(), e);
+                startFuture.completeExceptionally(e);
             }
             countDownLatch.countDown();
         });
+        startFuture.get();
 
         manager.start();
         for (ServerListener listener : serverListeners) {
@@ -81,8 +81,5 @@ public class OstaraServer {
         }
         manager.shutdown();
         defaultSocketServer.shutdown();
-        if (!executor.isTerminated() && !executor.isShutdown()) {
-            executor.shutdown();
-        }
     }
 }
