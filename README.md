@@ -49,6 +49,7 @@ omitted when deploying it in practice.
         client.start();
 
         client.createTopic("#test#default", 10, 1);
+        // only test
         new CountDownLatch(1).await(5000, TimeUnit.MILLISECONDS);
         client.close();
     }
@@ -83,6 +84,7 @@ omitted when deploying it in practice.
             consumer.attach("#test#default", symbol);
         }
 
+        // only test
         new CountDownLatch(1).await(10, TimeUnit.MINUTES);
         consumer.close();
     }

@@ -36,6 +36,7 @@ public class ConsumerTests {
             consumer.attach("#test#default", symbol);
         }
 
+        // only test
         new CountDownLatch(1).await(10, TimeUnit.MINUTES);
         consumer.close();
     }
