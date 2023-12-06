@@ -14,14 +14,14 @@ import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.core.CoreConfig;
+import org.ostara.beans.CoreConfig;
 import org.ostara.management.Manager;
 import org.ostara.metrics.MetricsRegistrySetUp;
 import org.ostara.metrics.PrometheusRegistry;
 import org.ostara.metrics.jvm.DefaultJVMInfoMetrics;
 import org.ostara.metrics.jvm.JmxMetricsRegistry;
 import org.ostara.metrics.netty.NettyMetrics;
-import org.ostara.storage.Log;
+import org.ostara.ledger.Log;
 
 import java.time.Duration;
 import java.util.Map;

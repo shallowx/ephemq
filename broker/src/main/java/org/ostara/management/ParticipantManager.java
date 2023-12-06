@@ -10,14 +10,14 @@ import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.thread.FastEventExecutor;
-import org.ostara.core.CoreConfig;
+import org.ostara.beans.CoreConfig;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.proto.MessageOffset;
 import org.ostara.remote.proto.server.CancelSyncRequest;
 import org.ostara.remote.proto.server.CancelSyncResponse;
 import org.ostara.remote.proto.server.SyncRequest;
 import org.ostara.remote.proto.server.SyncResponse;
-import org.ostara.storage.Log;
+import org.ostara.ledger.Log;
 
 import java.nio.channels.Channel;
 import java.util.Map;

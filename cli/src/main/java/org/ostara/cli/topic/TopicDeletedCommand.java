@@ -64,9 +64,7 @@ public class TopicDeletedCommand implements Command {
                         return;
                     }
                     List<PartitionInfo> infos = new ArrayList<>();
-                    Iterator<TopicInfo> iterator = topicInfos.values().iterator();
-                    while (iterator.hasNext()) {
-                        TopicInfo topicInfo = iterator.next();
+                    for (TopicInfo topicInfo : topicInfos.values()) {
                         TopicMetadata metadata = topicInfo.getTopic();
                         Map<Integer, PartitionMetadata> partitionsMap = topicInfo.getPartitionsMap();
                         for (Map.Entry<Integer, PartitionMetadata> entry : partitionsMap.entrySet()) {

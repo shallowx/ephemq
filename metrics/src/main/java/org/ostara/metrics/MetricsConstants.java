@@ -13,6 +13,7 @@ public class MetricsConstants {
     public static final String TOPIC_MSG_PUSH_COUNTER_NAME = "topic_msg_push_count";
     public static final String TOPIC_PARTITION_COUNT_GAUGE_NAME = "topic_partition_count";
     public static final String TOPIC_PARTITION_LEADER_COUNT_GAUGE_NAME = "topic+partition_leader_count";
+    public static final String PROXY_SYNC_CHUNK_COUNT_SUMMARY_NAME = "proxy_sync_chunk_count";
     public static final String RESULT_TAG = "result";
     public static final String TOPIC_TAG = "topic";
     public static final String PARTITION_TAG = "partition";

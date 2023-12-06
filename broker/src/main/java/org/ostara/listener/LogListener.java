@@ -1,6 +1,6 @@
 package org.ostara.listener;
 
-import org.ostara.storage.Log;
+import org.ostara.ledger.Log;
 
 public interface LogListener {
     void onInitLog(Log log);

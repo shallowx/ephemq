@@ -4,6 +4,7 @@ import io.netty.util.concurrent.FastThreadLocalThread;
 import io.netty.util.internal.ObjectUtil;
 import io.netty.util.internal.StringUtil;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -83,7 +84,7 @@ public class OstaraThreadFactory implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(Runnable r) {
+    public Thread newThread(@Nonnull Runnable r) {
         Thread t = newThread(r, prefix + nextId.incrementAndGet());
         try {
             if (t.isDaemon() != daemon) {

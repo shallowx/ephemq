@@ -7,8 +7,6 @@ import org.junit.Test;
 import org.ostara.common.Offset;
 import org.ostara.common.util.MessageUtils;
 import org.ostara.remote.util.ByteBufUtils;
-import org.ostara.storage.ledger.LedgerConfig;
-import org.ostara.storage.ledger.LedgerSegment;
 
 import java.util.UUID;
 
