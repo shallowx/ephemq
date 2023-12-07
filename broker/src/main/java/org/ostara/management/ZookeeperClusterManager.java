@@ -28,12 +28,13 @@ public class ZookeeperClusterManager implements ClusterManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     private static final String UP = "up";
     private static final String DOWN = "down";
-    private final CoreConfig config;
-    private final List<ClusterListener> listeners = new LinkedList<>();
+    protected final CoreConfig config;
+    protected final List<ClusterListener> listeners = new LinkedList<>();
     private final Map<String, Node> activeNodes = new ConcurrentHashMap<>();
-    private final CuratorFramework client;
+    protected final CuratorFramework client;
     private volatile boolean registered = false;
-    private CuratorCache cache;
+    protected ConnectionStateListener connectionStateListener;
+    protected CuratorCache cache;
     private LeaderLatch latch;
     private Node thisNode;
 
@@ -44,7 +45,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     @Override
     public void start() throws Exception {
-        ConnectionStateListener stateListener = (client, state) -> {
+        connectionStateListener = (client, state) -> {
             if (state == ConnectionState.RECONNECTED) {
                 try {
                     Stat stat = client.checkExists().forPath(String.format(PathConstants.BROKERS_ID, config.getServerId()));
@@ -59,7 +60,7 @@ public class ZookeeperClusterManager implements ClusterManager {
             }
         };
 
-        client.getConnectionStateListenable().addListener(stateListener);
+        client.getConnectionStateListenable().addListener(connectionStateListener);
         startBrokersListener(PathConstants.BROKERS_IDS);
         electController();
         registerNode(PathConstants.BROKERS_ID);
@@ -87,7 +88,7 @@ public class ZookeeperClusterManager implements ClusterManager {
         latch.start();
     }
 
-    private void startBrokersListener(String path) {
+    protected void startBrokersListener(String path) {
         cache = CuratorCache.build(client, path);
         CuratorCacheListener listener = CuratorCacheListener.builder()
                 .forPathChildrenCache(path, client, new PathChildrenCacheListener() {
@@ -142,7 +143,7 @@ public class ZookeeperClusterManager implements ClusterManager {
         cache.start();
     }
 
-    private void registerNode(String path) throws Exception {
+    protected void registerNode(String path) throws Exception {
         CreateBuilder createBuilder = client.create();
         thisNode = new Node(config.getServerId(), config.getAdvertisedAddress(), config.getAdvertisedPort(),
                 System.currentTimeMillis(), config.getClusterName(), UP);
@@ -157,7 +158,7 @@ public class ZookeeperClusterManager implements ClusterManager {
         }
     }
 
-    private void unregistered(String path) throws Exception {
+    protected void unregistered(String path) throws Exception {
         if (client == null || !registered) {
             return;
         }

@@ -29,6 +29,7 @@ public class CoreConfig {
     private static final String NOTIFY_CLIENT_TIMEOUT_MS = "notify.client.timeout.ms";
 
     private static final String COMMAND_HANDLE_THREAD_COUNTS = "command.handler.thread.counts";
+    private static final String MESSAGE_SYNC_THREAD_COUNTS = "message.sync.thread.counts";
     private static final String MESSAGE_STORAGE_THREAD_COUNTS = "message.storage.thread.counts";
 
     private static final String MESSAGE_DISPATCH_THREAD_COUNTS = "message.dispatch.thread.counts";
@@ -82,6 +83,10 @@ public class CoreConfig {
 
     public int getProxyLeaderSyncInitialDelayMs() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_INITIAL_DELAY_MS, 60000));
+    }
+
+    public int getMessageSyncThreadCounts() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(MESSAGE_SYNC_THREAD_COUNTS, Runtime.getRuntime().availableProcessors()));
     }
 
     public int getProxyLeaderSyncPeriodMs() {
