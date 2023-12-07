@@ -751,6 +751,19 @@ public class RecordEntryDispatcher {
         private Handler(EventExecutor executor) {
             this.dispatchExecutor = executor;
         }
+
+        @Override
+        public String toString() {
+            return "Handler{" +
+                    "id='" + id + '\'' +
+                    ", channelSubscriptionMap=" + channelSubscriptionMap +
+                    ", markerSubscriptionMap=" + markerSubscriptionMap +
+                    ", triggered=" + triggered +
+                    ", dispatchExecutor=" + dispatchExecutor +
+                    ", followOffset=" + followOffset +
+                    ", followCursor=" + followCursor +
+                    '}';
+        }
     }
 
     private static class Subscription {

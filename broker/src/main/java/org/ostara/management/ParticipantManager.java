@@ -1,5 +1,6 @@
 package org.ostara.management;
 
+import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
@@ -11,6 +12,7 @@ import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.thread.FastEventExecutor;
 import org.ostara.core.CoreConfig;
+import org.ostara.ledger.LogManager;
 import org.ostara.remote.RemoteException;
 import org.ostara.remote.proto.MessageOffset;
 import org.ostara.remote.proto.server.CancelSyncRequest;
@@ -18,8 +20,6 @@ import org.ostara.remote.proto.server.CancelSyncResponse;
 import org.ostara.remote.proto.server.SyncRequest;
 import org.ostara.remote.proto.server.SyncResponse;
 import org.ostara.ledger.Log;
-
-import java.nio.channels.Channel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -129,6 +129,16 @@ public class ParticipantManager {
         return promise;
     }
 
+    public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {
+        LogManager logManager = manager.getLogManager();
+        Log log = logManager.getLog(ledger);
+        if (log == null) {
+            promise.trySuccess(null);
+            return;
+        }
+        log.detachSynchronize(channel, promise);
+    }
+
     public Promise<Void> stopChunkDispatch(int ledger, Promise<Void> promise) {
         if (promise == null) {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
@@ -139,6 +149,7 @@ public class ParticipantManager {
                 promise.trySuccess(null);
                 return promise;
             }
+            log.detachAllSynchronize(promise);
         } catch (Exception e) {
             promise.tryFailure(e);
         }

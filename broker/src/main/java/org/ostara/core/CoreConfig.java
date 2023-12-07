@@ -55,6 +55,13 @@ public class CoreConfig {
     private static final String PROXY_SYNC_CHECK_INTERVAL_MS = "proxy.sync.check.interval.ms";
     private static final String PROXY_TOPIC_CHANGE_DELAY_MS = "proxy.topic.change.delay.ms";
 
+    private static final String CHUNK_DISPATCH_ENTRY_LOAD_LIMIT = "chunk.dispatch.entry.load.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT = "chunk.dispatch.entry.follow.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT = "chunk.dispatch.entry.pursue.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT = "chunk.dispatch.entry.align.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS = "chunk.dispatch.entry.pursue.timeout.ms";
+    private static final String CHUNK_DISPATCH_ENTRY_BYTES_LIMIT = "chunk.dispatch.entry.bytes.LIMIT";
+
     private final Properties prop;
 
     private CoreConfig(Properties prop) {
@@ -214,6 +221,32 @@ public class CoreConfig {
     public int getDispatchEntryPursueTimeoutMs() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(DISPATCH_ENTRY_PURSUE_TIMEOUT_MS, 10000));
     }
+
+    public int getChunkDispatchEntryBytesLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_BYTES_LIMIT, 65536));
+    }
+
+    public int getChunkDispatchEntryLoadLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_LOAD_LIMIT, 50));
+    }
+
+    public int getChunkDispatchEntryFollowLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT, 100));
+    }
+
+    public int getChunkDispatchEntryPursueLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT, 500));
+    }
+
+    public int getChunkDispatchEntryAlignLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT, 2000));
+    }
+
+    public int getChunkDispatchEntryPursueTimeoutMs() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS, 10000));
+    }
+
+
 
     public int getCommandHandleThreadCounts() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_COUNTS, Runtime.getRuntime().availableProcessors()));
