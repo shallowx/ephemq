@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntList;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.Offset;
 import org.ostara.common.TopicConfig;

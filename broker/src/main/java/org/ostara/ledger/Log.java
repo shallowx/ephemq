@@ -15,7 +15,7 @@ import org.ostara.common.TopicConfig;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.LogListener;
 import org.ostara.management.Manager;
 import org.ostara.management.TopicManager;

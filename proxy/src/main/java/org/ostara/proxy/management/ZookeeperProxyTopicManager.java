@@ -9,7 +9,7 @@ import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;

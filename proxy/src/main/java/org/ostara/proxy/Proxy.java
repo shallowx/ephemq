@@ -2,8 +2,8 @@ package org.ostara.proxy;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.ostara.beans.CoreConfig;
-import org.ostara.beans.OstaraServer;
+import org.ostara.core.CoreConfig;
+import org.ostara.core.OstaraServer;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.TypeTransformUtils;

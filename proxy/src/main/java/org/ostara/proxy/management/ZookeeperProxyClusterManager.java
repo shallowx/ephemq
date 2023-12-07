@@ -2,7 +2,7 @@ package org.ostara.proxy.management;
 
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.zookeeper.data.Stat;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.common.Node;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;

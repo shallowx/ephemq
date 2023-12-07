@@ -6,7 +6,7 @@ import org.apache.curator.framework.state.SessionConnectionStateErrorPolicy;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,4 +1,4 @@
-package org.ostara.beans;
+package org.ostara.core;
 
 import org.ostara.common.util.TypeTransformUtils;
 

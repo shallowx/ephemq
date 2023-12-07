@@ -2,8 +2,8 @@ package org.ostara.proxy.management;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.ostara.beans.CoreConfig;
-import org.ostara.beans.client.InnerClient;
+import org.ostara.core.CoreConfig;
+import org.ostara.core.InnerClient;
 import org.ostara.client.internal.*;
 import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;

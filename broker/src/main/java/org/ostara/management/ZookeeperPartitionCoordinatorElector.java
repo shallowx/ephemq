@@ -14,7 +14,7 @@ import org.ostara.common.TopicAssignment;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
 import org.ostara.remote.proto.server.SyncResponse;
 import org.ostara.ledger.Log;

@@ -1,6 +1,6 @@
 package org.ostara.proxy;
 
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
 

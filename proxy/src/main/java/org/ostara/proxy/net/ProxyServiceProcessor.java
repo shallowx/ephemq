@@ -3,7 +3,7 @@ package org.ostara.proxy.net;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
 import org.ostara.net.ServiceProcessor;
 import org.ostara.remote.invoke.InvokeAnswer;

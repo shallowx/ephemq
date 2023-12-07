@@ -2,13 +2,14 @@ package org.ostara.proxy.management;
 
 import com.google.inject.Inject;
 import io.netty.util.concurrent.EventExecutor;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.ledger.LogManager;
 import org.ostara.listener.DefaultClusterListener;
 import org.ostara.management.DefaultConnectionManager;
 import org.ostara.management.ZookeeperManager;
+import org.ostara.proxy.ProxyLog;
 import org.ostara.remote.util.NetworkUtils;
 
 public class ZookeeperProxyManager extends ZookeeperManager implements ProxyZookeeperManager {

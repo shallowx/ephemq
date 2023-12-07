@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ostara.common.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
 import org.ostara.ledger.Log;
 import org.ostara.ledger.LogManager;

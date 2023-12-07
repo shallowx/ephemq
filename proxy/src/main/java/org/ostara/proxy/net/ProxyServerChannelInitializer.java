@@ -1,7 +1,7 @@
 package org.ostara.proxy.net;
 
 import com.google.inject.Inject;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.management.Manager;
 import org.ostara.net.ServiceChannelInitializer;
 import org.ostara.net.ServiceDuplexHandler;

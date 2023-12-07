@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.apache.curator.framework.CuratorFramework;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.Node;
 import org.ostara.common.logging.InternalLogger;
