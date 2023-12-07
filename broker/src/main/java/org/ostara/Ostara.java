@@ -5,9 +5,9 @@ import org.apache.commons.cli.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.TypeTransformUtils;
-import org.ostara.beans.CoreConfig;
-import org.ostara.beans.InjectBeans;
-import org.ostara.beans.OstaraServer;
+import org.ostara.core.CoreConfig;
+import org.ostara.core.InjectBeans;
+import org.ostara.core.OstaraServer;
 import org.ostara.listener.MetricsListener;
 import org.ostara.management.Manager;
 import org.ostara.util.ShutdownHookThread;
@@ -31,9 +31,8 @@ public class Ostara {
         }
     }
 
-    private static OstaraServer start(OstaraServer server) throws Exception {
+    private static void start(OstaraServer server) throws Exception {
         server.start();
-        return server;
     }
 
     private static OstaraServer createServer(String... args) throws Exception {
@@ -85,7 +84,7 @@ public class Ostara {
     private static void printConfig(CoreConfig config) {
         Method[] declaredMethods = CoreConfig.class.getDeclaredMethods();
         StringBuilder sb = new StringBuilder("Print the config options: \n");
-        String configName = null;
+        String configName;
         for (Method method : declaredMethods) {
             String name = method.getName();
             if (name.startsWith("get")) {

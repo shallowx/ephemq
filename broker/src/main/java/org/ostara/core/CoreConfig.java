@@ -1,4 +1,4 @@
-package org.ostara.beans;
+package org.ostara.core;
 
 import org.ostara.common.util.TypeTransformUtils;
 
@@ -29,6 +29,7 @@ public class CoreConfig {
     private static final String NOTIFY_CLIENT_TIMEOUT_MS = "notify.client.timeout.ms";
 
     private static final String COMMAND_HANDLE_THREAD_COUNTS = "command.handler.thread.counts";
+    private static final String MESSAGE_SYNC_THREAD_COUNTS = "message.sync.thread.counts";
     private static final String MESSAGE_STORAGE_THREAD_COUNTS = "message.storage.thread.counts";
 
     private static final String MESSAGE_DISPATCH_THREAD_COUNTS = "message.dispatch.thread.counts";
@@ -53,6 +54,13 @@ public class CoreConfig {
     private static final String PROXY_RESUME_TASK_SCHEDULE_DELAY_MS = "proxy.resume.task.schedule.delay.ms";
     private static final String PROXY_SYNC_CHECK_INTERVAL_MS = "proxy.sync.check.interval.ms";
     private static final String PROXY_TOPIC_CHANGE_DELAY_MS = "proxy.topic.change.delay.ms";
+
+    private static final String CHUNK_DISPATCH_ENTRY_LOAD_LIMIT = "chunk.dispatch.entry.load.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT = "chunk.dispatch.entry.follow.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT = "chunk.dispatch.entry.pursue.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT = "chunk.dispatch.entry.align.limit";
+    private static final String CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS = "chunk.dispatch.entry.pursue.timeout.ms";
+    private static final String CHUNK_DISPATCH_ENTRY_BYTES_LIMIT = "chunk.dispatch.entry.bytes.LIMIT";
 
     private final Properties prop;
 
@@ -82,6 +90,10 @@ public class CoreConfig {
 
     public int getProxyLeaderSyncInitialDelayMs() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_INITIAL_DELAY_MS, 60000));
+    }
+
+    public int getMessageSyncThreadCounts() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(MESSAGE_SYNC_THREAD_COUNTS, Runtime.getRuntime().availableProcessors()));
     }
 
     public int getProxyLeaderSyncPeriodMs() {
@@ -209,6 +221,32 @@ public class CoreConfig {
     public int getDispatchEntryPursueTimeoutMs() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(DISPATCH_ENTRY_PURSUE_TIMEOUT_MS, 10000));
     }
+
+    public int getChunkDispatchEntryBytesLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_BYTES_LIMIT, 65536));
+    }
+
+    public int getChunkDispatchEntryLoadLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_LOAD_LIMIT, 50));
+    }
+
+    public int getChunkDispatchEntryFollowLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT, 100));
+    }
+
+    public int getChunkDispatchEntryPursueLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT, 500));
+    }
+
+    public int getChunkDispatchEntryAlignLimit() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT, 2000));
+    }
+
+    public int getChunkDispatchEntryPursueTimeoutMs() {
+        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS, 10000));
+    }
+
+
 
     public int getCommandHandleThreadCounts() {
         return TypeTransformUtils.object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_COUNTS, Runtime.getRuntime().availableProcessors()));

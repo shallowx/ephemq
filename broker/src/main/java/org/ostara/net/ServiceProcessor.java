@@ -15,7 +15,7 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.APIListener;
 import org.ostara.management.Manager;
 import org.ostara.management.TopicManager;
@@ -28,6 +28,7 @@ import org.ostara.remote.proto.*;
 import org.ostara.remote.proto.server.*;
 import org.ostara.remote.util.NetworkUtils;
 import org.ostara.ledger.Log;
+import org.ostara.remote.util.ProtoBufUtils;
 
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -42,10 +43,10 @@ import static org.ostara.remote.util.ProtoBufUtils.readProto;
 public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
-    private final CoreConfig config;
-    private final Manager manager;
-    private final EventExecutor commandExecutor;
-    private EventExecutor serviceExecutor;
+    protected final CoreConfig config;
+    protected final Manager manager;
+    protected final EventExecutor commandExecutor;
+    protected EventExecutor serviceExecutor;
 
     @Inject
     public ServiceProcessor(CoreConfig config, Manager manager) {
@@ -61,6 +62,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         channel.closeFuture().addListener(future -> {
             for (Log log : manager.getLogManager().getLedgerId2LogMap().values()) {
                 log.cleanSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
+                log.detachSynchronize(channel, ImmediateEventExecutor.INSTANCE.newPromise());
             }
         });
     }
@@ -79,7 +81,11 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 case CREATE_TOPIC -> processCreateTopic(channel, code, data, answer);
                 case DELETE_TOPIC -> processDeleteTopic(channel, code, data, answer);
                 case MIGRATE_LEDGER -> processMigrateLedger(channel, code, data, answer);
+                case SYNC_LEDGER -> processSyncLedger(channel, code, data, answer);
+                case UNSYNC_LEDGER -> processUnSyncLedger(channel, code, data, answer);
+                case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, answer);
                 default -> {
+                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtils.switchAddress(channel), code, length);
                     if (answer != null) {
                         String error = "Command[" + code + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
@@ -93,7 +99,98 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processSyncLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            SyncRequest request = readProto(data, SyncRequest.parser());
+            int ledger = request.getLedger();
+            int epoch = request.getEpoch();
+            long index = request.getIndex();
+
+            Promise<SyncResponse> promise = serviceExecutor.newPromise();
+            promise.addListener((GenericFutureListener<Future<SyncResponse>>) f -> {
+                if (f.isSuccess()) {
+                    try {
+                        if (answer != null) {
+                            SyncResponse response = f.getNow();
+                            answer.success(proto2Buf(channel.alloc(), response));
+                        }
+                    } catch (Exception e) {
+                        processFailed("process sync ledger failed", code, channel, answer, e);
+                    }
+                } else {
+                    processFailed("process sync ledger failed", code, channel, answer, f.cause());
+                }
+                recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
+            });
+            manager.getTopicManager().getReplicaManager().subscribeLedger(ledger, epoch, index, channel, promise);
+        } catch (Exception e) {
+            processFailed("process sync ledger failed", code, channel, answer, e);
+            recordCommand(code, bytes, System.nanoTime() - time,false);
+        }
+
+    }
+
+    protected void processUnSyncLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            CancelSyncRequest request = readProto(data, CancelSyncRequest.parser());
+            int ledger = request.getLedger();
+            Promise<Void> promise = serviceExecutor.newPromise();
+            promise.addListener(f -> {
+                if (f.isSuccess()) {
+                    try {
+                        if (answer != null) {
+                            CancelSyncResponse response = CancelSyncResponse.newBuilder().build();
+                            answer.success(proto2Buf(channel.alloc(), response));
+                        }
+                    } catch (Exception e) {
+                        processFailed("process un-sync ledger failed", code, channel, answer, e);
+                    }
+                } else {
+                    processFailed("process un-sync ledger failed", code, channel, answer, f.cause());
+                }
+                recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
+            });
+
+            manager.getTopicManager().getReplicaManager().unSubscribeLedger(ledger, channel, promise);
+        } catch (Exception e) {
+            processFailed("process un-sync ledger failed", code, channel, answer, e);
+            recordCommand(code, bytes, System.nanoTime() - time,false);
+        }
+    }
+
+    protected void processCalculatePartitions(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        long time = System.nanoTime();
+        int bytes = data.readableBytes();
+        try {
+            commandExecutor.execute(() -> {
+                try {
+                    TopicManager topicManager = manager.getTopicManager();
+                    Map<String, Integer> partitions = topicManager.calculatePartitions();
+                    CalculatePartitionsResponse.Builder response = CalculatePartitionsResponse.newBuilder();
+                    if (partitions != null) {
+                        response.putAllPartitions(partitions);
+                    }
+
+                    if (answer != null) {
+                        answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response.build()));
+                    }
+                    recordCommand(code, bytes, System.nanoTime() - time, true);
+                } catch (Exception e) {
+                    processFailed("Process calculate partition failed", code, channel, answer, e);
+                    recordCommand(code, bytes, System.nanoTime() - time, false);
+                }
+            });
+        } catch (Exception e) {
+            processFailed("Process calculate partition failed", code, channel, answer, e);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
+        }
+    }
+
+    protected void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -185,7 +282,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processSendMessage(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processSendMessage(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -221,7 +318,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -263,7 +360,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -328,7 +425,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processRestSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processRestSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -356,7 +453,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -383,7 +480,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -408,7 +505,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processCreateTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processCreateTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -456,7 +553,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -481,7 +578,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void recordCommand(int code, int bytes, long cost, boolean ret) {
+    protected void recordCommand(int code, int bytes, long cost, boolean ret) {
         for (APIListener listener : manager.getAPIListeners()) {
             try {
                 listener.onCommand(code, bytes, cost, ret);
@@ -491,14 +588,14 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         }
     }
 
-    private void processFailed(String err, int code, Channel channel, InvokeAnswer<ByteBuf> answer, Throwable throwable) {
+    protected void processFailed(String err, int code, Channel channel, InvokeAnswer<ByteBuf> answer, Throwable throwable) {
         logger.error("{}: command={} address={}", err, code, NetworkUtils.switchAddress(channel), throwable);
         if (answer != null) {
             answer.failure(throwable);
         }
     }
 
-    private IntList convertMarkers(ByteString markers) throws Exception {
+    protected IntList convertMarkers(ByteString markers) throws Exception {
         CodedInputStream stream = markers.newCodedInput();
         IntList markerList = new IntArrayList(markers.size() / 4);
         while (!stream.isAtEnd()) {

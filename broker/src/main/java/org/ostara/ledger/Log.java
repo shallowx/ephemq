@@ -9,13 +9,14 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
+import org.checkerframework.checker.units.qual.C;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.Offset;
 import org.ostara.common.TopicConfig;
 import org.ostara.common.TopicPartition;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.LogListener;
 import org.ostara.management.Manager;
 import org.ostara.management.TopicManager;
@@ -55,8 +56,8 @@ public class Log {
     protected ClientChannel syncChannel;
     protected Promise<SyncResponse> syncFuture;
     protected Promise<CancelSyncResponse> unSyncFuture;
-    protected ClientChannel preparedFollowChannel;
     protected CoreConfig config;
+    protected RecordChunkEntryDispatcher chunkEntryDispatcher;
 
     public Log(CoreConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
         this.config = config;
@@ -98,6 +99,7 @@ public class Log {
                 .tags(tags).register(Metrics.globalRegistry);
 
         this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config, manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
+        this.chunkEntryDispatcher = new RecordChunkEntryDispatcher(ledger, topic, storage, config, manager.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {
@@ -130,7 +132,7 @@ public class Log {
     }
 
     public int getSubscriberCount() {
-        return entryDispatcher.channelCount();
+        return entryDispatcher.channelCount() + chunkEntryDispatcher.channelCount();
     }
 
     public Promise<SyncResponse> syncFromTarget(ClientChannel clientChannel, Offset offset, int timeoutMs) {
@@ -327,7 +329,16 @@ public class Log {
             )));
             return;
         }
-        // TODO chunk attach
+        chunkEntryDispatcher.attach(channel, initOffset, promise);
+    }
+
+    public void detachAllSynchronize(Promise<Void> promise) {
+        try {
+            chunkEntryDispatcher.detachAll();
+            promise.trySuccess(null);
+        } catch (Exception e) {
+            promise.tryFailure(e);
+        }
     }
 
     public void cleanStorage() {
@@ -584,7 +595,7 @@ public class Log {
 
     protected void onAppendTrigger(int ledgerId, int recordCount, Offset lastOffset) {
         entryDispatcher.dispatch();
-        // TODO chunk dispatch
+        chunkEntryDispatcher.dispatch();
     }
 
     protected void onReleaseTrigger(int ledgerId, Offset oldHead, Offset newHead) {
@@ -636,6 +647,23 @@ public class Log {
         }
     }
 
+    public void detachSynchronize(Channel channel, Promise<Void> promise) {
+        if (storageExecutor.inEventLoop()) {
+            doDetachSynchronize(channel, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> doDetachSynchronize(channel, promise));
+            }catch (Exception e) {
+                promise.tryFailure(e);
+            }
+        }
+    }
+
+    private void doDetachSynchronize(Channel channel, Promise<Void> promise) {
+        chunkEntryDispatcher.detach(channel, promise);
+    }
+
+
     public enum LogState {
         APPENDABLE, SYNCHRONIZING, MIGRATING, CLOSED
     }
@@ -653,10 +681,17 @@ public class Log {
     }
 
     private class InnerEntryDispatchCounter implements IntConsumer {
-
         @Override
         public void accept(int value) {
             onPushMessage(value);
         }
     }
+
+    private class InnerEntryChunkDispatchCounter implements IntConsumer {
+        @Override
+        public void accept(int value) {
+            onSyncMessage(value);
+        }
+    }
+
 }

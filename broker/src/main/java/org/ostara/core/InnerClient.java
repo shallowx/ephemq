@@ -1,4 +1,4 @@
-package org.ostara.beans.client;
+package org.ostara.core;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -11,7 +11,6 @@ import org.ostara.client.internal.ClientConfig;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
 import org.ostara.management.Manager;
 
 import java.net.SocketAddress;

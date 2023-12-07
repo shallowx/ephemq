@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.ostara.common.*;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.TopicListener;
 import org.ostara.ledger.Log;
 import org.ostara.ledger.LogManager;
@@ -33,18 +33,18 @@ import java.util.regex.Pattern;
 
 public class ZookeeperTopicManager implements TopicManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
-    private static final String ALL_TOPIC_KEY = "ALL-TOPIC";
-    private final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
-    private final List<TopicListener> listeners = new LinkedList<>();
-    private CoreConfig config;
-    private CuratorFramework client;
-    private CuratorCache cache;
-    private ParticipantManager replicaManager;
-    private DistributedAtomicInteger topicIdGenerator;
-    private DistributedAtomicInteger ledgerIdGenerator;
-    private Manager manager;
-    private LoadingCache<String, Set<PartitionInfo>> topicCache;
-    private LoadingCache<String, Set<String>> topicNamesCache;
+    protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
+    protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
+    protected final List<TopicListener> listeners = new LinkedList<>();
+    protected CoreConfig config;
+    protected CuratorFramework client;
+    protected CuratorCache cache;
+    protected ParticipantManager replicaManager;
+    protected DistributedAtomicInteger topicIdGenerator;
+    protected DistributedAtomicInteger ledgerIdGenerator;
+    protected Manager manager;
+    protected LoadingCache<String, Set<PartitionInfo>> topicCache;
+    protected LoadingCache<String, Set<String>> topicNamesCache;
 
     public ZookeeperTopicManager() {
     }

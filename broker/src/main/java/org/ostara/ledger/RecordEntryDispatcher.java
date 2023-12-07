@@ -16,7 +16,7 @@ import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
 import org.ostara.common.util.MessageUtils;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.remote.codec.MessagePacket;
 import org.ostara.remote.processor.ProcessCommand;
 import org.ostara.remote.proto.client.MessagePushSignal;
@@ -750,6 +750,19 @@ public class RecordEntryDispatcher {
 
         private Handler(EventExecutor executor) {
             this.dispatchExecutor = executor;
+        }
+
+        @Override
+        public String toString() {
+            return "Handler{" +
+                    "id='" + id + '\'' +
+                    ", channelSubscriptionMap=" + channelSubscriptionMap +
+                    ", markerSubscriptionMap=" + markerSubscriptionMap +
+                    ", triggered=" + triggered +
+                    ", dispatchExecutor=" + dispatchExecutor +
+                    ", followOffset=" + followOffset +
+                    ", followCursor=" + followCursor +
+                    '}';
         }
     }
 

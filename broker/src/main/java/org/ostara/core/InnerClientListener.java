@@ -1,4 +1,4 @@
-package org.ostara.beans.client;
+package org.ostara.core;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -8,7 +8,6 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.client.internal.ClientListener;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
 import org.ostara.management.Manager;
 import org.ostara.remote.proto.client.SyncMessageSignal;
 

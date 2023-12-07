@@ -7,9 +7,9 @@ import org.ostara.client.internal.Client;
 import org.ostara.client.internal.ClientConfig;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
-import org.ostara.beans.CoreConfig;
-import org.ostara.beans.client.InnerClient;
-import org.ostara.beans.client.InnerClientListener;
+import org.ostara.core.CoreConfig;
+import org.ostara.core.InnerClient;
+import org.ostara.core.InnerClientListener;
 import org.ostara.listener.*;
 import org.ostara.remote.util.NetworkUtils;
 import org.ostara.ledger.LogManager;
@@ -23,17 +23,18 @@ public class ZookeeperManager implements Manager {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperManager.class);
     private final List<APIListener> apiListeners = new LinkedList<>();
-    private LogManager logManager;
-    private TopicManager topicManager;
-    private ClusterManager clusterManager;
-    private CoreConfig config;
-    private ConnectionManager connectionManager;
-    private EventExecutorGroup handleGroup;
-    private EventExecutorGroup storageGroup;
-    private EventExecutorGroup dispatchGroup;
-    private EventExecutorGroup auxGroup;
-    private List<EventExecutor> auxEventExecutors;
-    private Client innerClient;
+    protected LogManager logManager;
+    protected TopicManager topicManager;
+    protected ClusterManager clusterManager;
+    protected CoreConfig config;
+    protected ConnectionManager connectionManager;
+    protected EventExecutorGroup handleGroup;
+    protected EventExecutorGroup storageGroup;
+    protected EventExecutorGroup dispatchGroup;
+    protected EventExecutorGroup syncGroup;
+    protected EventExecutorGroup auxGroup;
+    protected List<EventExecutor> auxEventExecutors;
+    protected Client innerClient;
 
     public ZookeeperManager() {
     }
@@ -42,6 +43,7 @@ public class ZookeeperManager implements Manager {
     public ZookeeperManager(CoreConfig config) {
         this.config = config;
         this.connectionManager = new DefaultConnectionManager();
+        this.syncGroup = NetworkUtils.newEventExecutorGroup(config.getMessageSyncThreadCounts(), "sync-group");
         this.handleGroup = NetworkUtils.newEventExecutorGroup(config.getCommandHandleThreadCounts(), "command-handle-group");
         this.storageGroup = NetworkUtils.newEventExecutorGroup(config.getMessageStorageThreadCounts(), "storage-group");
         this.dispatchGroup = NetworkUtils.newEventExecutorGroup(config.getMessageDispatchThreadCounts(), "dispatch-group");

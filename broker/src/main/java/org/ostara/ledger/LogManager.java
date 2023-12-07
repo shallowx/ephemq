@@ -10,7 +10,7 @@ import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.Offset;
 import org.ostara.common.TopicConfig;
 import org.ostara.common.TopicPartition;
-import org.ostara.beans.CoreConfig;
+import org.ostara.core.CoreConfig;
 import org.ostara.listener.LogListener;
 import org.ostara.management.Manager;
 import org.ostara.remote.RemoteException;

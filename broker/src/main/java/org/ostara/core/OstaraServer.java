@@ -1,4 +1,4 @@
-package org.ostara.beans;
+package org.ostara.core;
 
 import com.google.inject.Inject;
 import io.netty.util.concurrent.DefaultThreadFactory;

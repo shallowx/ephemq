@@ -1,4 +1,4 @@
-package org.ostara.beans;
+package org.ostara.core;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
