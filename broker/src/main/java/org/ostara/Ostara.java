@@ -31,9 +31,8 @@ public class Ostara {
         }
     }
 
-    private static OstaraServer start(OstaraServer server) throws Exception {
+    private static void start(OstaraServer server) throws Exception {
         server.start();
-        return server;
     }
 
     private static OstaraServer createServer(String... args) throws Exception {
@@ -85,7 +84,7 @@ public class Ostara {
     private static void printConfig(CoreConfig config) {
         Method[] declaredMethods = CoreConfig.class.getDeclaredMethods();
         StringBuilder sb = new StringBuilder("Print the config options: \n");
-        String configName = null;
+        String configName;
         for (Method method : declaredMethods) {
             String name = method.getName();
             if (name.startsWith("get")) {
