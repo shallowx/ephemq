@@ -100,4 +100,17 @@ public class LedgerCursor {
         position = head.basePosition();
         return head;
     }
+
+    public ChunkRecord nextChunk(int bytesLimit) {
+        LedgerSegment segment;
+        while ((segment = rollValidSegment()) != null) {
+            ChunkRecord record = segment.readChunkRecord(position, bytesLimit);
+            if (record != null) {
+                position += record.data().readableBytes();
+                return record;
+            }
+        }
+
+        return null;
+    }
 }

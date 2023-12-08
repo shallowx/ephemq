@@ -186,18 +186,4 @@ public class ZookeeperPartitionCoordinatorElector {
     public boolean isLeader() {
         return latch.hasLeadership();
     }
-
-    public String getCurrentLeader() throws Exception {
-        Participant leader = latch.getLeader();
-        if (leader.isLeader()) {
-            return leader.getId();
-        }
-
-        return null;
-    }
-
-    public Set<String> getParticipants() throws Exception {
-        Collection<Participant> participants = latch.getParticipants();
-        return participants.stream().map(Participant::getId).collect(Collectors.toSet());
-    }
 }

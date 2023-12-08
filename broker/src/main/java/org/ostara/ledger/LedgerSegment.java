@@ -202,6 +202,31 @@ public class LedgerSegment {
         throw new IllegalStateException("segment is released");
     }
 
+    public ChunkRecord readChunkRecord(int position, int bytesLimit) {
+        BufferHolder theHolder = holder;
+        if (theHolder != null) {
+            ByteBuf theBuffer = theHolder.buffer;
+            int limit = lastPosition;
+            int count = 0;
+            int bytes = 0;
+            int location = position;
+            while (location < limit) {
+                int length = theBuffer.getInt(location);
+                int theBytes = 8 + length;
+                if (theBytes + bytes > bytesLimit && count != 0) {
+                    break;
+                }
+                count++;
+                bytes += theBytes;
+                location += theBytes;
+            }
+
+            ByteBuf buf = theBuffer.retainedSlice(position, bytes);
+            return new ChunkRecord(count, buf);
+        }
+        return null;
+    }
+
     private static class BufferHolder {
         ByteBuf buffer;
 

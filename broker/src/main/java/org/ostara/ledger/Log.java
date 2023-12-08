@@ -588,6 +588,7 @@ public class Log {
         state.set(LogState.CLOSED);
         storage.close(null);
         entryDispatcher.close(null);
+        chunkEntryDispatcher.close(null);
         Metrics.globalRegistry.remove(this.segmentBytesMeter);
         Metrics.globalRegistry.remove(this.segmentCountMeter);
         promise.trySuccess(true);
