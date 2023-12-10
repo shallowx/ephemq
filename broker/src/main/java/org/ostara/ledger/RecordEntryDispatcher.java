@@ -737,6 +737,16 @@ public class RecordEntryDispatcher {
             this.cursor = cursor;
             this.pursueOffset = pursueOffset;
         }
+
+        @Override
+        public String toString() {
+            return "PursueTask{" +
+                    "subscription=" + subscription +
+                    ", cursor=" + cursor +
+                    ", pursueTime=" + pursueTime +
+                    ", pursueOffset=" + pursueOffset +
+                    '}';
+        }
     }
 
     private static class Handler {
@@ -777,6 +787,17 @@ public class RecordEntryDispatcher {
             this.channel = channel;
             this.markers = markers;
             this.handler = handler;
+        }
+
+        @Override
+        public String toString() {
+            return "Subscription{" +
+                    "channel=" + channel +
+                    ", markers=" + markers +
+                    ", handler=" + handler +
+                    ", dispatchOffset=" + dispatchOffset +
+                    ", followed=" + followed +
+                    '}';
         }
     }
 }

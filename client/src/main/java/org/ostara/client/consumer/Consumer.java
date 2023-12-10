@@ -112,7 +112,7 @@ public class Consumer implements MeterBinder {
         }
     }
 
-    public boolean attach(String topic, String queue) {
+    public boolean subscribe(String topic, String queue) {
         TopicPatterns.validateTopic(topic);
         TopicPatterns.validateQueue(queue);
 
@@ -133,7 +133,7 @@ public class Consumer implements MeterBinder {
         return true;
     }
 
-    public boolean detach(String topic, String queue) {
+    public boolean deSubscribe(String topic, String queue) {
         TopicPatterns.validateTopic(topic);
         TopicPatterns.validateQueue(queue);
 

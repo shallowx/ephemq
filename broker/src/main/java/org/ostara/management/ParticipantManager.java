@@ -136,7 +136,7 @@ public class ParticipantManager {
             promise.trySuccess(null);
             return;
         }
-        log.detachSynchronize(channel, promise);
+        log.subscribeSynchronize(channel, promise);
     }
 
     public Promise<Void> stopChunkDispatch(int ledger, Promise<Void> promise) {

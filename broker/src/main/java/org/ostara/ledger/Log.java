@@ -9,7 +9,6 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
-import org.checkerframework.checker.units.qual.C;
 import org.ostara.client.internal.ClientChannel;
 import org.ostara.common.Offset;
 import org.ostara.common.TopicConfig;
@@ -334,7 +333,7 @@ public class Log {
 
     public void detachAllSynchronize(Promise<Void> promise) {
         try {
-            chunkEntryDispatcher.detachAll();
+            chunkEntryDispatcher.deSubscribeAll();
             promise.trySuccess(null);
         } catch (Exception e) {
             promise.tryFailure(e);
@@ -648,20 +647,20 @@ public class Log {
         }
     }
 
-    public void detachSynchronize(Channel channel, Promise<Void> promise) {
+    public void subscribeSynchronize(Channel channel, Promise<Void> promise) {
         if (storageExecutor.inEventLoop()) {
-            doDetachSynchronize(channel, promise);
+            doSubscribeSynchronize(channel, promise);
         } else {
             try {
-                storageExecutor.execute(() -> doDetachSynchronize(channel, promise));
+                storageExecutor.execute(() -> doSubscribeSynchronize(channel, promise));
             }catch (Exception e) {
                 promise.tryFailure(e);
             }
         }
     }
 
-    private void doDetachSynchronize(Channel channel, Promise<Void> promise) {
-        chunkEntryDispatcher.detach(channel, promise);
+    private void doSubscribeSynchronize(Channel channel, Promise<Void> promise) {
+        chunkEntryDispatcher.deSubscribe(channel, promise);
     }
 
 

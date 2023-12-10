@@ -33,7 +33,7 @@ public class ConsumerTests {
 
         String[] symbols = new String[]{"BTC-USDT"};
         for (String symbol : symbols) {
-            consumer.attach("#test#default", symbol);
+            consumer.subscribe("#test#default", symbol);
         }
 
         // only test

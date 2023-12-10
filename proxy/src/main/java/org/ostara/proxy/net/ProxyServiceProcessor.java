@@ -374,7 +374,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 promise.trySuccess(null);
                 return;
             }
-            log.detachSynchronize(channel, promise);
+            log.subscribeSynchronize(channel, promise);
         } catch (Throwable t) {
             processFailed("process un-sync ledger failed", command, channel, answer, t);
             recordCommand(command, bytes, System.nanoTime() - time,false);

@@ -62,7 +62,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         channel.closeFuture().addListener(future -> {
             for (Log log : manager.getLogManager().getLedgerId2LogMap().values()) {
                 log.cleanSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
-                log.detachSynchronize(channel, ImmediateEventExecutor.INSTANCE.newPromise());
+                log.subscribeSynchronize(channel, ImmediateEventExecutor.INSTANCE.newPromise());
             }
         });
     }

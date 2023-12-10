@@ -4,14 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.checkerframework.checker.units.qual.C;
 import org.ostara.common.Offset;
 import org.ostara.common.logging.InternalLogger;
 import org.ostara.common.logging.InternalLoggerFactory;
@@ -76,26 +74,26 @@ public class RecordChunkEntryDispatcher {
         return executors[(channel.hashCode() & 0x7fffffff) % executors.length];
     }
 
-    public void detachAll() {
+    public void deSubscribeAll() {
         for (Channel channel : channelHandlerMap.keySet()) {
-            detach(channel, ImmediateEventExecutor.INSTANCE.newPromise());
+            deSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
         }
     }
 
-    public void detach(Channel channel, Promise<Void> promise) {
+    public void deSubscribe(Channel channel, Promise<Void> promise) {
         try {
             EventExecutor executor = channelExecutor(channel);
             if (executor.inEventLoop()) {
-                doDetach(channel, promise);
+                doDeSubscribe(channel, promise);
             } else {
-                executor.execute(() -> doDetach(channel, promise));
+                executor.execute(() -> doDeSubscribe(channel, promise));
             }
         } catch (Exception e) {
             promise.tryFailure(e);
         }
     }
 
-    private void doDetach(Channel channel, Promise<Void> promise) {
+    private void doDeSubscribe(Channel channel, Promise<Void> promise) {
         try {
             if (!state.get()) {
                 throw new IllegalStateException("Chunk disptacher is inactive");
@@ -282,13 +280,13 @@ public class RecordChunkEntryDispatcher {
 
     private void submitPursue(PursueTask pursueTask) {
         try {
-            channelExecutor(pursueTask.synchronization.channel).execute(() -> dpPursue(pursueTask));
+            channelExecutor(pursueTask.synchronization.channel).execute(() -> doPursue(pursueTask));
         } catch (Exception e){
             submitFollow(pursueTask);
         }
     }
 
-    private void dpPursue(PursueTask pursueTask) {
+    private void doPursue(PursueTask pursueTask) {
         Synchronization synchronization = pursueTask.synchronization;
         Channel channel = synchronization.channel;
         Handler handler = synchronization.handler;
@@ -540,7 +538,7 @@ public class RecordChunkEntryDispatcher {
                         for (Channel channel : channelHandlerMap.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
                                 channels.add(channel);
-                                doDetach(channel, ImmediateEventExecutor.INSTANCE.newPromise());
+                                doDeSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
                             }
                         }
 

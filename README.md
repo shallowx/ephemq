@@ -58,7 +58,7 @@ omitted when deploying it in practice.
 ## Subscribe Message And Consume Message
 
 ```
-    public void attachOfReset() throws Exception {
+    public void subscribeOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
