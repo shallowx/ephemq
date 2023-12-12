@@ -3,13 +3,14 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ostara</artifactId>
-        <groupId>org.ostara</groupId>
+        <artifactId>meteor</artifactId>
+        <groupId>org.meteor</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ostara-cli</artifactId>
+    <artifactId>meteor-cli</artifactId>
+    <name>meteor-cli</name>
     <packaging>jar</packaging>
 
     <properties>
@@ -30,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ostara-client</artifactId>
+            <artifactId>meteor-client</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -45,7 +46,7 @@
     </dependencies>
 
     <build>
-        <finalName>ostara-broker-${project.version}</finalName>
+        <finalName>meteor-broker-${project.version}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -64,7 +65,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.ostara.cli.OstaraAdmin</mainClass>
+                            <mainClass>org.meteor.cli.meteorAdmin</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

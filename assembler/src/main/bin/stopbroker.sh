@@ -1,13 +1,13 @@
 base_dir=$(dirname $0)
 set -e
 
-for file in "$base_dir"/../libs/ostara-broker-*.jar
+for file in "$base_dir"/../libs/meteor-broker-*.jar
 do
-  OSTARA_JAR_FILE = ${file}
+  METEOR_JAR_FILE = ${file}
 done
 
 SIGNAL=${SIGNAL:-TERM}
-PID=$(ps ax | grep -i "${OSTARA_JAR_FILE}" | grep java | grep -v grep | awk '{print $1}')
+PID=$(ps ax | grep -i "${METEOR_JAR_FILE}" | grep java | grep -v grep | awk '{print $1}')
 
 if [-z "${PID}"]; then
     echo "ERROR: No server to stop"

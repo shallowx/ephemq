@@ -33,13 +33,13 @@ if [[! -d ${LOG_DIR}]]; then
     mkdir -p "${LOG_DIR}"
 fi
 
-for file in "$base_dir"/../libs/ostara-broker-*.jar
+for file in "$base_dir"/../libs/meteor-broker-*.jar
 do
-  OSTARA_JAR_FILE = ${file}
+  METEOR_JAR_FILE = ${file}
 done
 
 if [[ -n $1 && $1 == 'foreground']]; then
-    exec ${JAVA_EXE} -server -Dlogback.configurationFile=${LOG_FILE} -Dostara.log.dir=${LOG_DIR} ${JAVA_OPTS} -jar ${OSTARA_JAR_FILE} -c ${CONFIG_FILE}
+    exec ${JAVA_EXE} -server -Dlogback.configurationFile=${LOG_FILE} -Dmeteor.log.dir=${LOG_DIR} ${JAVA_OPTS} -jar ${METEOR_JAR_FILE} -c ${CONFIG_FILE}
 else
-    nohup ${JAVA_EXE} -server -Dlogback.configurationFile=${LOG_FILE} -Dostara.log.dir=${LOG_DIR} ${JAVA_OPTS} -jar ${OSTARA_JAR_FILE} -c ${CONFIG_FILE} > /dev/null 2>&1 &
+    nohup ${JAVA_EXE} -server -Dlogback.configurationFile=${LOG_FILE} -Dmeteor.log.dir=${LOG_DIR} ${JAVA_OPTS} -jar ${METEOR_JAR_FILE} -c ${CONFIG_FILE} > /dev/null 2>&1 &
 fi

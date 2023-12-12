@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara</artifactId>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>proxy</artifactId>
-    <name>ostara-proxy</name>
+    <artifactId>meteor-proxy</artifactId>
+    <name>meteor-proxy</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -23,8 +23,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ostara</groupId>
-            <artifactId>ostara-broker</artifactId>
+            <groupId>org.meteor</groupId>
+            <artifactId>meteor-broker</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -35,7 +35,7 @@
     </dependencies>
 
     <build>
-        <finalName>ostara-proxy-${project.version}</finalName>
+        <finalName>meteor-proxy-${project.version}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -54,7 +54,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.ostara.proxy.Proxy</mainClass>
+                            <mainClass>org.meteor.proxy.Proxy</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

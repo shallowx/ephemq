@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara</artifactId>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ostara-benchmarks</artifactId>
+    <artifactId>meteor-benchmarks</artifactId>
+    <name>meteor-benchmarks</name>
     <packaging>jar</packaging>
 
     <properties>
@@ -20,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ostara-broker</artifactId>
+            <artifactId>meteor-broker</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -9,15 +9,15 @@
     <relativePath />
   </parent>
 
-  <groupId>org.ostara</groupId>
-  <artifactId>ostara-bom</artifactId>
+  <groupId>org.meteor</groupId>
+  <artifactId>meteor-bom</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <scm>
-    <connection>scm:git@github.com:shallowx/ostara.git</connection>
-    <developerConnection>scm:git@github.com:shallowx/ostara.git</developerConnection>
-    <tag>ostara-${project.version}</tag>
+    <connection>scm:git@github.com:shallowx/meteor.git</connection>
+    <developerConnection>scm:git@github.com:shallowx/meteor.git</developerConnection>
+    <tag>meteor-${project.version}</tag>
   </scm>
 
   <licenses>
@@ -35,13 +35,13 @@
 
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/shallowx/ostara/issues</url>
+    <url>https://github.com/shallowx/meteor/issues</url>
   </issueManagement>
 
   <properties>
     <!-- Keep in sync with ../pom.xml -->
     <tcnative.version>2.0.61.Final</tcnative.version>
-    <ostara.version>1.0.0-SNAPSHOT</ostara.version>
+    <meteor.version>1.0.0-SNAPSHOT</meteor.version>
   </properties>
 
   <build>
@@ -57,29 +57,34 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara-client</artifactId>
-        <version>${ostara.version}</version>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor-client</artifactId>
+        <version>${meteor.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara-broker</artifactId>
-        <version>${ostara.version}</version>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor-broker</artifactId>
+        <version>${meteor.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara-common</artifactId>
-        <version>${ostara.version}</version>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor-common</artifactId>
+        <version>${meteor.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara-remote</artifactId>
-        <version>${ostara.version}</version>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor-remote</artifactId>
+        <version>${meteor.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara-mertics</artifactId>
-        <version>${ostara.version}</version>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor-mertics</artifactId>
+        <version>${meteor.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor-proxy</artifactId>
+        <version>${meteor.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

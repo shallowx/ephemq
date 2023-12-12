@@ -2,12 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.ostara</groupId>
-        <artifactId>ostara</artifactId>
+        <groupId>org.meteor</groupId>
+        <artifactId>meteor</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ostara-assembler</artifactId>
+    <artifactId>meteor-assembler</artifactId>
+    <name>meteor-assembler</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -19,18 +20,18 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ostara-broker</artifactId>
+            <artifactId>meteor-broker</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ostara-cli</artifactId>
+            <artifactId>meteor-cli</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>ostara-${project.version}</finalName>
+        <finalName>meteor-${project.version}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>

@@ -1,0 +1,5 @@
+package org.meteor.common.logging;
+
+public enum InternalLogLevel {
+    TRACE, DEBUG, INFO, WARN, ERROR
+}

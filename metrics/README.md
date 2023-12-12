@@ -1,3 +1,3 @@
 ### metrics
 
-- org.ostara.metrics.MetricsConstants
+- org.meteor.metrics.MetricsConstants

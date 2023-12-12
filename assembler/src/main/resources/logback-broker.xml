@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <contextListener class="org.ostara.listener.LoggerStartupListener"/>
+    <contextListener class="org.meteor.listener.LoggerStartupListener"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -21,7 +21,7 @@
         <appender-ref ref="STDOUT"/>
     </appender>
 
-    <logger name="org.ostara" additvity="false" level="INFO">
+    <logger name="org.meteor" additvity="false" level="INFO">
         <appender-ref ref="AsyncSTDOUT"/>
     </logger>
 

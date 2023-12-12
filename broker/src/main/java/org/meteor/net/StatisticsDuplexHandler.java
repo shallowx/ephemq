@@ -1,0 +1,51 @@
+package org.meteor.net;
+
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.core.CoreConfig;
+
+import java.util.concurrent.atomic.LongAdder;
+
+import static org.meteor.metrics.MetricsConstants.*;
+
+
+@ChannelHandler.Sharable
+public class StatisticsDuplexHandler extends ChannelDuplexHandler {
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(StatisticsDuplexHandler.class);
+
+    private final LongAdder channelCounts = new LongAdder();
+
+    public StatisticsDuplexHandler(CoreConfig config) {
+        Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, LongAdder::doubleValue)
+                .tags(
+                        Tags.of(
+                                Tag.of(BROKER_TAG, config.getServerId()),
+                                Tag.of(CLUSTER_TAG, config.getClusterName()))
+                ).register(Metrics.globalRegistry);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        logger.debug("Statistics duplex inactive channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+        channelCounts.decrement();
+        super.channelInactive(ctx);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        logger.debug("Statistics duplex active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+        channelCounts.increment();
+        super.channelActive(ctx);
+    }
+}

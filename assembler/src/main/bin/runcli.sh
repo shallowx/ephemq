@@ -22,9 +22,9 @@ if [[! -d ${LOG_DIR}]]; then
     mkdir -p "${LOG_DIR}"
 fi
 
-for file in "$base_dir"/../libs/ostara-cli-*.jar
+for file in "$base_dir"/../libs/meteor-cli-*.jar
 do
-  OSTARA_JAR_FILE = ${file}
+  METEOR_JAR_FILE = ${file}
 done
 
-$JAVA -server ${JAVA_OPTS} -jar ${OSTARA_JAR_FILE} "$@"
+$JAVA -server ${JAVA_OPTS} -jar ${METEOR_JAR_FILE} "$@"
