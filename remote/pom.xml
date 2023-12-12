@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>meteor-remote</artifactId>
+    <artifactId>remote</artifactId>
     <name>meteor-remote</name>
     <packaging>jar</packaging>
 

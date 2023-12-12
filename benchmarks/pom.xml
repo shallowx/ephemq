@@ -9,7 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>meteor-benchmarks</artifactId>
+    <artifactId>benchmarks</artifactId>
     <name>meteor-benchmarks</name>
     <packaging>jar</packaging>
 

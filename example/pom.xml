@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>org.meteor</groupId>
-            <artifactId>meteor-client</artifactId>
+            <artifactId>client</artifactId>
             <version>${meteor.client.version}</version>
         </dependency>
     </dependencies>

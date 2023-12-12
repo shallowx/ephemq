@@ -7,7 +7,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>meteor-assembler</artifactId>
+    <artifactId>assembler</artifactId>
     <name>meteor-assembler</name>
 
     <properties>

@@ -9,7 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>meteor-proxy</artifactId>
+    <artifactId>proxy</artifactId>
     <name>meteor-proxy</name>
 
     <properties>
@@ -24,7 +24,7 @@
     <dependencies>
         <dependency>
             <groupId>org.meteor</groupId>
-            <artifactId>meteor-broker</artifactId>
+            <artifactId>broker</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
