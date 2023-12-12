@@ -3,7 +3,7 @@
 Ostara is a distributed messaging and streaming platform on based memory with low latency, high performance and
 reliability, trillion-level capacity and flexible scalability
 
-![image](https://github.com/shallow-rs/meteor/blob/main/doc/image/infra.png)
+![image](https://github.com/shallowx/meteor/blob/main/doc/image/infra.png)
 
 - Dotted lines are optional
 
@@ -12,15 +12,15 @@ reliability, trillion-level capacity and flexible scalability
 
 - To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be
 omitted when deploying it in practice.
-![image](https://github.com/shallow-rs/meteor/blob/main/doc/image/example.gif)
+![image](https://github.com/shallowx/meteor/blob/main/doc/image/example.gif)
 
 ## Latency
 
-![image](https://github.com/shallow-rs/meteor/blob/main/doc/image/partition.png)
+![image](https://github.com/shallowx/meteor/blob/main/doc/image/partition.png)
 
 ## Message Protocol
 
-![image](https://github.com/shallow-rs/meteor/blob/main/doc/image/message.png)
+![image](https://github.com/shallowx/meteor/blob/main/doc/image/message.png)
 
 # Environment
 
