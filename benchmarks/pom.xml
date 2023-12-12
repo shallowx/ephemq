@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>benchmarks</artifactId>
-    <name>meteor-benchmarks</name>
     <packaging>jar</packaging>
 
     <properties>
@@ -21,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meteor-broker</artifactId>
+            <artifactId>broker</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

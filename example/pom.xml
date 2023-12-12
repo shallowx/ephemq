@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>example</artifactId>
-    <name>meteor-example</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

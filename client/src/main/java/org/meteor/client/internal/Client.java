@@ -22,7 +22,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
-import org.meteor.remote.handle.ConnectDuplexHandler;
+import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.ProcessCommand;
@@ -694,7 +694,7 @@ public class Client implements MeterBinder {
             socketChannel.pipeline()
                     .addLast("packet-encoder", MessageEncoder.instance())
                     .addLast("packet-decoder", new MessageDecoder())
-                    .addLast("connect-handler", new ConnectDuplexHandler(
+                    .addLast("connect-handler", new HeartbeatDuplexHandler(
                             config.getChannelKeepPeriodMs(), config.getChannelIdleTimeoutMs()
                     ))
                     .addLast("service-handler", new ProcessDuplexHandler(new InnerServiceProcessor(clientChannel)));

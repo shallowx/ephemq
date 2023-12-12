@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.meteor</groupId>
-  <artifactId>meteor-bom</artifactId>
+  <artifactId>bom</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -57,32 +57,32 @@
     <dependencies>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>meteor-client</artifactId>
+        <artifactId>client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>meteor-broker</artifactId>
+        <artifactId>broker</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>meteor-common</artifactId>
+        <artifactId>common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>meteor-remote</artifactId>
+        <artifactId>remote</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>meteor-mertics</artifactId>
+        <artifactId>mertics</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>meteor-proxy</artifactId>
+        <artifactId>proxy</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

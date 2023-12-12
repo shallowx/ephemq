@@ -11,7 +11,7 @@ import org.meteor.core.InjectBeans;
 import org.meteor.management.Manager;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
-import org.meteor.remote.handle.ConnectDuplexHandler;
+import org.meteor.remote.handle.HeartbeatDuplexHandler;
 
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -37,7 +37,7 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
         pipeline.addLast("statistics-handler", statisticsDuplexHandler);
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
-        pipeline.addLast("connect-handler", new ConnectDuplexHandler(0, 60000));
+        pipeline.addLast("connect-handler", new HeartbeatDuplexHandler(0, 60000));
         pipeline.addLast("processor-handler", getServiceDuplexHandler());
     }
 

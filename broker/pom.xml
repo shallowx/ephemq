@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>broker</artifactId>
-    <name>meteor-broker</name>
     <packaging>jar</packaging>
 
     <properties>
@@ -55,17 +54,17 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meteor-metrics</artifactId>
+            <artifactId>metrics</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meteor-remote</artifactId>
+            <artifactId>remote</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meteor-client</artifactId>
+            <artifactId>client</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -82,6 +81,12 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-x-discovery</artifactId>
             <version>${curator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.meteor</groupId>
+            <artifactId>remote</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

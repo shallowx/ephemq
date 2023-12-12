@@ -8,7 +8,6 @@
     </parent>
 
     <artifactId>assembler</artifactId>
-    <name>meteor-assembler</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -20,12 +19,12 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meteor-broker</artifactId>
+            <artifactId>broker</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meteor-cli</artifactId>
+            <artifactId>cli</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
