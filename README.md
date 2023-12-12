@@ -1,6 +1,6 @@
 # Architecture
 
-Ostara is a distributed messaging and streaming platform on based memory with low latency, high performance and
+Meteor is a distributed messaging and streaming platform on based memory with low latency, high performance and
 reliability, trillion-level capacity and flexible scalability
 
 ![image](https://github.com/shallowx/meteor/blob/main/doc/image/infra.png)

@@ -38,7 +38,7 @@ public class ProducerTests {
                 Producer producer = new Producer("default", producerConfig);
                 producer.start();
 
-                String[] symbols = new String[]{"BTC-USDT"};
+                String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
                     ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
@@ -80,7 +80,7 @@ public class ProducerTests {
                 Producer producer = new Producer("default", producerConfig);
                 producer.start();
 
-                String[] symbols = new String[]{"BTC-USDT"};
+                String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
                     ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
@@ -127,7 +127,7 @@ public class ProducerTests {
                 Producer producer = new Producer("default", producerConfig);
                 producer.start();
 
-                String[] symbols = new String[]{"BTC-USDT"};
+                String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
                     ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());

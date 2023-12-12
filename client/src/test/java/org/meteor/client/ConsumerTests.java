@@ -31,7 +31,7 @@ public class ConsumerTests {
         });
         consumer.start();
 
-        String[] symbols = new String[]{"BTC-USDT"};
+        String[] symbols = new String[]{"test-queue"};
         for (String symbol : symbols) {
             consumer.subscribe("#test#default", symbol);
         }
