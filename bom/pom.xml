@@ -10,14 +10,14 @@
   </parent>
 
   <groupId>org.meteor</groupId>
-  <artifactId>bom</artifactId>
+  <artifactId>meteor-bom</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <scm>
     <connection>scm:git@github.com:shallowx/meteor.git</connection>
     <developerConnection>scm:git@github.com:shallowx/meteor.git</developerConnection>
-    <tag>meteor-${project.version}</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>
@@ -41,7 +41,6 @@
   <properties>
     <!-- Keep in sync with ../pom.xml -->
     <tcnative.version>2.0.61.Final</tcnative.version>
-    <meteor.version>1.0.0-SNAPSHOT</meteor.version>
   </properties>
 
   <build>
@@ -59,32 +58,32 @@
       <dependency>
         <groupId>org.meteor</groupId>
         <artifactId>meteor-client</artifactId>
-        <version>${meteor.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
         <artifactId>meteor-broker</artifactId>
-        <version>${meteor.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
         <artifactId>meteor-common</artifactId>
-        <version>${meteor.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
         <artifactId>meteor-remote</artifactId>
-        <version>${meteor.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
         <artifactId>meteor-mertics</artifactId>
-        <version>${meteor.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
         <artifactId>meteor-proxy</artifactId>
-        <version>${meteor.version}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

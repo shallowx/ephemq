@@ -11,8 +11,8 @@ import org.meteor.remote.codec.MessagePacket;
 import java.util.concurrent.TimeUnit;
 
 
-public final class ConnectDuplexHandler extends ChannelDuplexHandler {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConnectDuplexHandler.class);
+public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(HeartbeatDuplexHandler.class);
 
     private final long heartPeriodMs;
     private final long idleTimeoutMs;
@@ -23,7 +23,7 @@ public final class ConnectDuplexHandler extends ChannelDuplexHandler {
     private long lastReadTime;
     private long heartLastUpdateTime;
 
-    public ConnectDuplexHandler(long heartPeriodMS, long idleTimeoutMs) {
+    public HeartbeatDuplexHandler(long heartPeriodMS, long idleTimeoutMs) {
         this.heartPeriodMs = StrictMath.max(heartPeriodMS, 0);
         this.idleTimeoutMs = StrictMath.max(idleTimeoutMs, 0);
     }

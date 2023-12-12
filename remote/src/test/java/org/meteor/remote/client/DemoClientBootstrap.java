@@ -9,7 +9,7 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessageEncoder;
-import org.meteor.remote.handle.ConnectDuplexHandler;
+import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.processor.AwareInvocation;
@@ -49,7 +49,7 @@ public class DemoClientBootstrap {
                     socketChannel.pipeline()
                             .addLast("packet-encoder", MessageEncoder.instance())
                             .addLast("paket-decoder", new MessageDecoder())
-                            .addLast("connect-handler", new ConnectDuplexHandler(20000, 30000))
+                            .addLast("connect-handler", new HeartbeatDuplexHandler(20000, 30000))
                             .addLast("service-handler", new ProcessDuplexHandler(processor));
                 }
             });
