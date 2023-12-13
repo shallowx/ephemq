@@ -2,7 +2,7 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.NetworkConfiguration;
 import org.meteor.management.ConnectionManager;
 import org.meteor.management.Manager;
 import org.meteor.common.Node;
@@ -21,9 +21,9 @@ public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
 
     private final Manager manager;
-    private final CoreConfig config;
+    private final NetworkConfiguration config;
 
-    public DefaultClusterListener(Manager manager, CoreConfig config) {
+    public DefaultClusterListener(Manager manager, NetworkConfiguration config) {
         this.manager = manager;
         this.config = config;
     }

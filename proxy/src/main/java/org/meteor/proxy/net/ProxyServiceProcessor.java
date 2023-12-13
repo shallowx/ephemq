@@ -15,13 +15,14 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.ProxyConfiguration;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogManager;
 import org.meteor.listener.TopicListener;
 import org.meteor.management.Manager;
 import org.meteor.net.ServiceProcessor;
-import org.meteor.proxy.Proxy;
+import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.management.LedgerSyncManager;
 import org.meteor.proxy.management.ProxyClusterManager;
 import org.meteor.proxy.management.ProxyTopicManager;
@@ -41,15 +42,16 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ProxyServiceProcessor extends ServiceProcessor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Proxy.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
     private static final int MIN_REPLICA_LIMIT = 2;
     private final LedgerSyncManager syncManager;
     private final ProxyClusterManager proxyClusterManager;
     private final int subscribeThreshold;
+    private final ServerConfiguration serverConfiguration;
 
-    public ProxyServiceProcessor(CoreConfig config, Manager manager) {
-        super(config, manager);
+    public ProxyServiceProcessor(ServerConfiguration config, Manager manager) {
+        super(config.getCommonConfiguration(), config.getNetworkConfiguration(), manager);
         if (manager instanceof ProxyZookeeperManager) {
             this.syncManager = ((ProxyZookeeperManager) manager).getLedgerSyncManager();
             this.proxyClusterManager = (ProxyClusterManager)manager.getClusterManager();
@@ -57,7 +59,8 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             this.syncManager = null;
             this.proxyClusterManager = null;
         }
-        this.subscribeThreshold = config.getProxyHeavyLoadSubscriberThreshold();
+        this.serverConfiguration = config;
+        this.subscribeThreshold = config.getProxyConfiguration().getProxyHeavyLoadSubscriberThreshold();
     }
 
     @Override
@@ -141,13 +144,13 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private ProxyLog getLog(LogManager logManager, int ledger, MessageLedger messageLedger) {
         return (ProxyLog) logManager.getOrInitLog(ledger, _ledger -> {
             TopicConfig topicConfig = new TopicConfig(
-                    config.getSegmentRollingSize(),
-                    config.getSegmentRetainCounts(),
-                    config.getSegmentRetainTime(),
+                    serverConfiguration.getSegmentConfiguration().getSegmentRollingSize(),
+                    serverConfiguration.getSegmentConfiguration().getSegmentRetainLimit(),
+                    serverConfiguration.getSegmentConfiguration().getSegmentRetainTime(),
                     true
             );
             TopicPartition topicPartition = new TopicPartition(messageLedger.topic(), messageLedger.partition());
-            Log log = new ProxyLog(config, topicPartition, ledger, 0, manager, topicConfig);
+            Log log = new ProxyLog(serverConfiguration, topicPartition, ledger, 0, manager, topicConfig);
             for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
                 listener.onPartitionInit(topicPartition, ledger);
             }

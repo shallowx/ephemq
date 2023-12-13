@@ -2,12 +2,13 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import org.meteor.core.CoreConfig;
 import org.meteor.common.PartitionInfo;
 import org.meteor.common.TopicAssignment;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.NetworkConfiguration;
 import org.meteor.management.Manager;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.ProcessCommand;
@@ -23,11 +24,14 @@ public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
     private final Manager manager;
-    private final CoreConfig config;
+    private final CommonConfiguration commonConfiguration;
+    private final NetworkConfiguration networkConfiguration;
 
-    public DefaultTopicListener(Manager manager, CoreConfig config) {
+    public DefaultTopicListener(Manager manager, CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration) {
         this.manager = manager;
-        this.config = config;
+        this.commonConfiguration = commonConfiguration;
+        this.networkConfiguration = networkConfiguration;
+
     }
 
     @Override
@@ -65,7 +69,7 @@ public class DefaultTopicListener implements TopicListener {
         try {
             PartitionInfo partitionInfo = manager.getTopicManager().getPartitionInfo(topicPartition);
             if (partitionInfo != null) {
-                if (partitionInfo.getReplicas().contains(config.getServerId())
+                if (partitionInfo.getReplicas().contains(commonConfiguration.getServerId())
                         && ((!Objects.equals(oldAssigment.getReplicas(), newAssigment.getReplicas())))
                         || !Objects.equals(oldAssigment.getLeader(), newAssigment.getLeader())) {
                     sendPartitionChangedSignal(topicPartition, newAssigment);
@@ -86,7 +90,7 @@ public class DefaultTopicListener implements TopicListener {
             ByteBuf buf = null;
             try {
                 buf = assembleTopicChangedSignal(channel, topic, type);
-                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, config.getNotifyClientTimeoutMs(), null);
+                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMs(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtils.release(buf);
@@ -104,7 +108,7 @@ public class DefaultTopicListener implements TopicListener {
             ByteBuf buf = null;
             try {
                 buf = assemblePartitionChangedSignal(channel, topicPartition.getTopic(), assignment);
-                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, config.getNotifyClientTimeoutMs(), null);
+                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMs(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtils.release(buf);

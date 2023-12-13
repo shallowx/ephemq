@@ -9,10 +9,10 @@ import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.meteor.core.CoreConfig;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.configuration.ProxyConfiguration;
 import org.meteor.management.Manager;
 import org.meteor.management.ParticipantManager;
 import org.meteor.management.ZookeeperTopicManager;
@@ -27,18 +27,18 @@ public class ZookeeperProxyTopicManager extends ZookeeperTopicManager implements
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicManager.class);
     private LoadingCache<String, TopicInfo> topicMetaCache;
     private final LedgerSyncManager syncManager;
-    @Inject
-    public ZookeeperProxyTopicManager(CoreConfig config, Manager manager) {
-        this.config = config;
+    private final ProxyConfiguration proxyConfiguration;
+    public ZookeeperProxyTopicManager(ProxyConfiguration config, Manager manager) {
+        this.proxyConfiguration = config;
         this.manager = manager;
         this.syncManager = ((ZookeeperProxyManager) manager).getLedgerSyncManager();
-        this.replicaManager = new ParticipantManager(config, manager);
+        this.replicaManager = new ParticipantManager(manager);
     }
 
     @Override
     public void start() throws Exception {
         this.topicMetaCache = Caffeine.newBuilder().refreshAfterWrite(30, TimeUnit.SECONDS)
-                .build(new CacheLoader<String, TopicInfo>() {
+                .build(new CacheLoader<>() {
                     @Override
                     public @Nullable TopicInfo load(String key) throws Exception {
                         try {
@@ -59,8 +59,8 @@ public class ZookeeperProxyTopicManager extends ZookeeperTopicManager implements
         }
 
         try {
-            channel.invoker().queryTopicInfo(config.getProxyLeaderSyncUpstreamTimeoutMs(), promise, builder.build());
-            QueryTopicInfoResponse response = promise.get(config.getProxyLeaderSyncUpstreamTimeoutMs(), TimeUnit.MILLISECONDS);
+            channel.invoker().queryTopicInfo(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs(), promise, builder.build());
+            QueryTopicInfoResponse response = promise.get(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs(), TimeUnit.MILLISECONDS);
             return response.getTopicInfosMap();
         } catch (Throwable t){
             logger.error(t.getMessage(), t);
@@ -82,7 +82,7 @@ public class ZookeeperProxyTopicManager extends ZookeeperTopicManager implements
             }
             ret.put(topic, info);
         }
-        return null;
+        return ret;
     }
 
     @Override

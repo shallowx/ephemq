@@ -5,7 +5,6 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.meteor.core.CoreConfig;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogManager;
 import org.meteor.client.internal.ClientChannel;
@@ -26,13 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ParticipantManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ParticipantManager.class);
-    private final CoreConfig config;
     private final Manager manager;
-    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
     private EventExecutor fetchExecutor;
 
-    public ParticipantManager(CoreConfig config, Manager manager) {
-        this.config = config;
+    public ParticipantManager(Manager manager) {
         this.manager = manager;
     }
 
@@ -80,6 +76,7 @@ public class ParticipantManager {
                 promise.tryFailure(future.cause());
             }
         });
+        log.attachSynchronize(channel, Offset.of(epoch, index), attachPromise);
     }
 
     public Promise<SyncResponse> syncLeader(TopicPartition topicPartition, int ledger, ClientChannel channel,

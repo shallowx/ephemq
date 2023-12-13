@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.CommonConfiguration;
 
 import java.util.concurrent.atomic.LongAdder;
 
@@ -24,7 +24,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     private final LongAdder channelCounts = new LongAdder();
 
-    public StatisticsDuplexHandler(CoreConfig config) {
+    public StatisticsDuplexHandler(CommonConfiguration config) {
         Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, channelCounts, LongAdder::doubleValue)
                 .tags(
                         Tags.of(

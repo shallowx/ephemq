@@ -4,47 +4,34 @@ import io.netty.buffer.ByteBuf;
 import org.meteor.common.Offset;
 import org.meteor.common.util.MessageUtils;
 
-public class ChunkRecord {
-    private final int count;
-    private final ByteBuf data;
-
-    public ChunkRecord(int count, ByteBuf data) {
-        this.count = count;
-        this.data = data;
-    }
-
-    public ByteBuf data() {
-        return data;
-    }
-    public int count() {
-        return count;
-    }
-
+public record ChunkRecord(int count, ByteBuf data) {
     public Offset getStartOffset() {
         int location = data.readerIndex();
-        int epoch = data.getInt( location + 8);
-        long index = data.getLong( location + 12);
+        int epoch = data.getInt(location + 8);
+        long index = data.getLong(location + 12);
         return new Offset(epoch, index);
     }
+
     public int getStartEpoch() {
         int length = data.getInt(data.readableBytes());
-        ByteBuf message = data.slice( 4 , length);
+        ByteBuf message = data.slice(4, length);
         return MessageUtils.getEpoch(message);
     }
 
     public long getStartIndex() {
         int length = data.getInt(data.readableBytes());
-        ByteBuf message = data.slice( 4 , length);
+        ByteBuf message = data.slice(4, length);
         return MessageUtils.getEpoch(message);
     }
 
     public Offset getEndOffset() {
         int location = data.writerIndex();
-        int length = data.getInt( location - 4);
-        int epoch = data.getInt( location - length);
-        long index = data.getLong( location - location + 4);
+        int length = data.getInt(location - 4);
+        int epoch = data.getInt(location - length);
+        long index = data.getLong(location - length + 4);
         return new Offset(epoch, index);
     }
+
     public int getEndEpoch() {
         int bytes = data.readableBytes();
         int length = data.getInt(bytes - 4);

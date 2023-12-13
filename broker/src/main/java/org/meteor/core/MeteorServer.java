@@ -1,11 +1,10 @@
 package org.meteor.core;
 
-import com.google.inject.Inject;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.meteor.listener.ServerListener;
 import org.meteor.management.ClusterManager;
 import org.meteor.management.Manager;
-import org.meteor.net.CoreSocketServer;
+import org.meteor.net.DefaultSocketServer;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -20,15 +19,13 @@ import java.util.concurrent.Executors;
 
 public class MeteorServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorServer.class);
-    private final CoreConfig config;
     private final List<ServerListener> serverListeners = new LinkedList<>();
     private final CountDownLatch countDownLatch;
-    private final CoreSocketServer defaultSocketServer;
+    private final DefaultSocketServer defaultSocketServer;
     private final Manager manager;
     private static final ExecutorService socketServerExecutor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
-    @Inject
-    public MeteorServer(CoreConfig config, CoreSocketServer defaultSocketServer, Manager manager) {
-        this.config = config;
+
+    public MeteorServer(DefaultSocketServer defaultSocketServer, Manager manager) {
         this.defaultSocketServer = defaultSocketServer;
         this.manager = manager;
         this.countDownLatch = new CountDownLatch(1);

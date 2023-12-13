@@ -1,6 +1,5 @@
 package org.meteor.net;
 
-import com.google.inject.Inject;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
 import io.netty.bootstrap.ServerBootstrap;
@@ -12,52 +11,49 @@ import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.NetworkConfiguration;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.management.Manager;
-
 import java.net.SocketAddress;
-
 import static org.meteor.metrics.MetricsConstants.*;
 import static org.meteor.remote.util.NetworkUtils.newEventLoopGroup;
 import static org.meteor.remote.util.NetworkUtils.preferServerChannelClass;
 
-public class CoreSocketServer {
+public class DefaultSocketServer {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(CoreSocketServer.class);
-    private final CoreConfig config;
-    private ServiceChannelInitializer serviceChannelInitializer;
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultSocketServer.class);
+    private final CommonConfiguration commonConfiguration;
+    private final NetworkConfiguration networkConfiguration;
+    protected ServiceChannelInitializer serviceChannelInitializer;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
 
-    @Inject
-    public CoreSocketServer(CoreConfig config, Manager manager) {
-        this.config = config;
-    }
-
-    @Inject
-    public void setServiceChannelInitializer(ServiceChannelInitializer serviceChannelInitializer) {
-        this.serviceChannelInitializer = serviceChannelInitializer;
+    public DefaultSocketServer(ServerConfiguration serverConfiguration, Manager manager) {
+        this.commonConfiguration = serverConfiguration.getCommonConfiguration();
+        this.networkConfiguration = serverConfiguration.getNetworkConfiguration();
+        this.serviceChannelInitializer = new ServiceChannelInitializer(commonConfiguration, networkConfiguration, manager);
     }
 
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(true, config.getIoThreadCounts(), "server-acceptor");
+        bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor");
         for (EventExecutor executor : bossGroup) {
             SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
             Gauge.builder(NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, config.getClusterName())
-                    .tag(BROKER_TAG, config.getServerId())
+                    .tag(CLUSTER_TAG, commonConfiguration.getClusterName())
+                    .tag(BROKER_TAG, commonConfiguration.getServerId())
                     .tag(TYPE_TAG, "acceptor")
                     .tag("name", StringUtil.EMPTY_STRING)
                     .tag("id", singleThreadEventExecutor.threadProperties().name()).register(Metrics.globalRegistry);
         }
 
-        workGroup = newEventLoopGroup(true, config.getNetworkThreadCounts(), "server-processor");
+        workGroup = newEventLoopGroup(true, networkConfiguration.getNetworkThreadLimit(), "server-processor");
         for (EventExecutor executor : workGroup) {
             SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
             Gauge.builder(NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, config.getClusterName())
-                    .tag(BROKER_TAG, config.getServerId())
+                    .tag(CLUSTER_TAG, commonConfiguration.getClusterName())
+                    .tag(BROKER_TAG, commonConfiguration.getServerId())
                     .tag(TYPE_TAG, "processor")
                     .tag("name", StringUtil.EMPTY_STRING)
                     .tag("id", singleThreadEventExecutor.threadProperties().name()).register(Metrics.globalRegistry);
@@ -74,15 +70,15 @@ public class CoreSocketServer {
                 .childOption(ChannelOption.SO_RCVBUF, 65536)
                 .childHandler(serviceChannelInitializer);
 
-        if (config.isNetworkLogDebugEnabled()) {
+        if (networkConfiguration.isNetworkLogDebugEnabled()) {
             bootstrap.handler(new LoggingHandler(LogLevel.DEBUG));
         }
 
-        WriteBufferWaterMark mark = new WriteBufferWaterMark(config.getWriteBufferWaterMarker() >> 1,
-                config.getWriteBufferWaterMarker());
+        WriteBufferWaterMark mark = new WriteBufferWaterMark(networkConfiguration.getWriteBufferWaterMarker() >> 1,
+                networkConfiguration.getWriteBufferWaterMarker());
         bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, mark);
 
-        ChannelFuture future = bootstrap.bind(config.getAdvertisedAddress(), config.getAdvertisedPort())
+        ChannelFuture future = bootstrap.bind(commonConfiguration.getAdvertisedAddress(), commonConfiguration.getAdvertisedPort())
                 .addListener((ChannelFutureListener) f -> {
                     if (f.isSuccess() && logger.isInfoEnabled()) {
                         logger.info("Socket server is listening at {}", f.channel().localAddress());
@@ -93,9 +89,9 @@ public class CoreSocketServer {
 
         closedFuture = future.channel().closeFuture();
 
-        int compatiblePort = config.getCompatiblePort();
-        if (future.isSuccess() && compatiblePort >= 0 && compatiblePort != config.getAdvertisedPort()) {
-            Channel compatibleChannel = bootstrap.bind(config.getAdvertisedAddress(), compatiblePort)
+        int compatiblePort = commonConfiguration.getCompatiblePort();
+        if (future.isSuccess() && compatiblePort >= 0 && compatiblePort != commonConfiguration.getAdvertisedPort()) {
+            Channel compatibleChannel = bootstrap.bind(commonConfiguration.getAdvertisedAddress(), compatiblePort)
                     .addListener((ChannelFutureListener) cf -> {
                         if (cf.isSuccess()) {
                             SocketAddress address = cf.channel().localAddress();

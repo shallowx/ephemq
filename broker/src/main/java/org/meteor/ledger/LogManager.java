@@ -10,7 +10,7 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.Offset;
 import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.LogListener;
 import org.meteor.management.Manager;
 import org.meteor.remote.RemoteException;
@@ -24,14 +24,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LogManager {
-    private final CoreConfig config;
+    private final ServerConfiguration config;
     private final Manager manager;
-
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
     private final List<LogListener> listeners = new LinkedList<>();
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public LogManager(CoreConfig config, Manager manager) {
+    public LogManager(ServerConfiguration config, Manager manager) {
         this.config = config;
         this.manager = manager;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));
@@ -135,7 +134,7 @@ public class LogManager {
         return listeners;
     }
 
-    public void saveSyncData(ClientChannel channel, int ledger, int count, ByteBuf data, Promise<Integer> promise) {
+    public void saveSyncData(Channel channel, int ledger, int count, ByteBuf data, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));

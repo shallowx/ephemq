@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.management.Manager;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientListener;
@@ -15,8 +16,6 @@ import java.util.concurrent.Semaphore;
 
 public class InnerClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClientListener.class);
-
-    private final CoreConfig config;
     private final Manager manager;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
@@ -25,8 +24,7 @@ public class InnerClientListener implements ClientListener {
         }
     };
 
-    public InnerClientListener(CoreConfig config, Manager manager) {
-        this.config = config;
+    public InnerClientListener(Manager manager) {
         this.manager = manager;
     }
 
@@ -39,7 +37,7 @@ public class InnerClientListener implements ClientListener {
             int count = signal.getCount();
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> semaphore.release());
-
+            manager.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);

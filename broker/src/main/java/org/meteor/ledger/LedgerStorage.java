@@ -3,6 +3,7 @@ package org.meteor.ledger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
@@ -303,7 +304,7 @@ public class LedgerStorage {
         }
     }
 
-    public void appendChunkRecord(ClientChannel channel, int count, ByteBuf buf, Promise<Integer> promise) {
+    public void appendChunkRecord(Channel channel, int count, ByteBuf buf, Promise<Integer> promise) {
         buf.retain();
         if (executor.inEventLoop()) {
             doAppendChunkRecord(channel, count, buf, promise);
@@ -317,7 +318,7 @@ public class LedgerStorage {
         }
     }
 
-    private void doAppendChunkRecord(ClientChannel channel, int count, ByteBuf buf, Promise<Integer> promise) {
+    private void doAppendChunkRecord(Channel channel, int count, ByteBuf buf, Promise<Integer> promise) {
         try {
             checkActive();
             int appendCount = 0;

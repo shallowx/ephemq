@@ -1,27 +1,26 @@
-package org.meteor;
+package org.meteor.proxy;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
 import org.meteor.configuration.ServerConfiguration;
-import org.meteor.listener.MetricsListener;
-import org.meteor.management.Manager;
+import org.meteor.core.MeteorServer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.util.TypeTransformUtils;
-import org.meteor.core.MeteorServer;
-import org.meteor.management.ZookeeperManager;
+import org.meteor.listener.MetricsListener;
+import org.meteor.management.Manager;
 import org.meteor.net.DefaultSocketServer;
+import org.meteor.proxy.management.ZookeeperProxyManager;
+import org.meteor.proxy.net.MeteorProxyServer;
+import org.meteor.proxy.net.ProxySocketServer;
 import org.meteor.util.ShutdownHookThread;
-
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
-public class Meteor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Meteor.class);
+public class MeteorProxy {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     public static void main(String[] args) throws Exception {
         start(createServer(args));
     }
@@ -30,23 +29,12 @@ public class Meteor {
         try {
             server.start();
         } catch (Exception e) {
-            logger.error("Start meteor broker server failed", e);
+            logger.error("Start meteor proxy server failed", e);
             System.exit(-1);
         }
     }
 
     private static MeteorServer createServer(String... args) throws Exception {
-        Properties properties = loadConfigurationProperties(args);
-        ServerConfiguration configuration = new ServerConfiguration(properties);
-
-        Manager manager = new ZookeeperManager(configuration);
-        MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), manager);
-        manager.addMetricsListener(metricsListener);
-        DefaultSocketServer socketServer = new DefaultSocketServer(configuration, manager);
-        return initializeServer(metricsListener, socketServer, manager);
-    }
-
-    private static Properties loadConfigurationProperties(String... args) throws Exception {
         Options options = constructCommandlineOptions();
         DefaultParser parser = new DefaultParser();
         CommandLine commandLine = parser.parse(options, args);
@@ -60,12 +48,16 @@ public class Meteor {
                 }
             }
         }
-        return properties;
-    }
 
-    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Manager manager) {
-        MeteorServer server = new MeteorServer(socketServer, manager);
-        server.addListener(listener);
+        ServerConfiguration configuration = new ServerConfiguration(properties);
+
+        Manager manager = new ZookeeperProxyManager(configuration);
+        MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), manager);
+        manager.addMetricsListener(metricsListener);
+
+        ProxySocketServer socketServer = new ProxySocketServer(configuration, manager);
+        MeteorServer server = new MeteorProxyServer(socketServer, manager);
+        server.addListener(metricsListener);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {
             server.shutdown();
@@ -82,12 +74,5 @@ public class Meteor {
         options.addOption(option);
 
         return options;
-    }
-
-    private static String generateConfigName(Method method, String prefix) {
-        if (method.getName().startsWith(prefix)) {
-            return method.getName().substring(prefix.length());
-        }
-        return null;
     }
 }

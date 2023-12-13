@@ -6,7 +6,7 @@ import org.apache.curator.framework.state.SessionConnectionStateErrorPolicy;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.ZookeeperConfiguration;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +16,7 @@ public class ZookeeperClient {
 
     private static final Map<String, CuratorFramework> clients = new ConcurrentHashMap<>();
 
-    public static CuratorFramework getClient(CoreConfig config, String clusterName) {
+    public static CuratorFramework getClient(ZookeeperConfiguration config, String clusterName) {
         return clients.computeIfAbsent(clusterName, namespace -> {
             String url = config.getZookeeperUrl();
             if (url == null) {

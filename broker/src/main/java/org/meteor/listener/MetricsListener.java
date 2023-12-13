@@ -9,7 +9,8 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.MetricsConfiguration;
 import org.meteor.ledger.Log;
 import org.meteor.common.Node;
 import org.meteor.common.TopicAssignment;
@@ -36,7 +37,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
-    private final CoreConfig config;
+    private final CommonConfiguration config;
     private final Manager manager;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
@@ -57,10 +58,10 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
     };
 
-    public MetricsListener(Properties properties, CoreConfig config, Manager manager) {
+    public MetricsListener(Properties properties, CommonConfiguration config, MetricsConfiguration metricsConfiguration, Manager manager) {
         this.config = config;
         this.manager = manager;
-        this.metricsSample = config.getMetricsSampleCounts();
+        this.metricsSample = metricsConfiguration.getMetricsSampleLimit();
         this.meterRegistrySetup = new PrometheusRegistry();
         this.meterRegistrySetup.setUp(properties);
 

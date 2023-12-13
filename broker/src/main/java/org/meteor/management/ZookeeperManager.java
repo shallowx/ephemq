@@ -1,9 +1,8 @@
 package org.meteor.management;
 
-import com.google.inject.Inject;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.LogManager;
 import org.meteor.listener.*;
 import org.meteor.client.internal.Client;
@@ -26,7 +25,7 @@ public class ZookeeperManager implements Manager {
     protected LogManager logManager;
     protected TopicManager topicManager;
     protected ClusterManager clusterManager;
-    protected CoreConfig config;
+    protected ServerConfiguration configuration;
     protected ConnectionManager connectionManager;
     protected EventExecutorGroup handleGroup;
     protected EventExecutorGroup storageGroup;
@@ -39,26 +38,25 @@ public class ZookeeperManager implements Manager {
     public ZookeeperManager() {
     }
 
-    @Inject
-    public ZookeeperManager(CoreConfig config) {
-        this.config = config;
+    public ZookeeperManager(ServerConfiguration configuration) {
+        this.configuration = configuration;
         this.connectionManager = new DefaultConnectionManager();
-        this.syncGroup = NetworkUtils.newEventExecutorGroup(config.getMessageSyncThreadCounts(), "sync-group");
-        this.handleGroup = NetworkUtils.newEventExecutorGroup(config.getCommandHandleThreadCounts(), "command-handle-group");
-        this.storageGroup = NetworkUtils.newEventExecutorGroup(config.getMessageStorageThreadCounts(), "storage-group");
-        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(config.getMessageDispatchThreadCounts(), "dispatch-group");
+        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageSyncThreadLimit(), "sync-group");
+        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getCommandHandleThreadLimit(), "command-handle-group");
+        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageStorageThreadLimit(), "storage-group");
+        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageDispatchThreadLimit(), "dispatch-group");
 
-        clusterManager = new ZookeeperClusterManager(config);
-        ClusterListener clusterListener = new DefaultClusterListener(this, config);
+        clusterManager = new ZookeeperClusterManager(configuration);
+        ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfiguration());
         clusterManager.addClusterListener(clusterListener);
 
-        logManager = new LogManager(config, this);
-        topicManager = new ZookeeperTopicManager(config, this);
-        TopicListener topicListener = new DefaultTopicListener(this, config);
+        logManager = new LogManager(configuration, this);
+        topicManager = new ZookeeperTopicManager(configuration, this);
+        TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfiguration(),configuration.getNetworkConfiguration());
         topicManager.addTopicListener(topicListener);
 
-        auxGroup = NetworkUtils.newEventExecutorGroup(config.getAuxThreadCounts(), "aux-group");
-        auxEventExecutors = new ArrayList<>(config.getAuxThreadCounts());
+        auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getAuxThreadLimit(), "aux-group");
+        auxEventExecutors = new ArrayList<>(configuration.getCommonConfiguration().getAuxThreadLimit());
         for (EventExecutor executor : auxGroup) {
             auxEventExecutors.add(executor);
         }
@@ -67,14 +65,14 @@ public class ZookeeperManager implements Manager {
     @Override
     public void start() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        List<String> clusterNodeAddress = Collections.singletonList(config.getAdvertisedAddress() + ":" + config.getAdvertisedPort());
+        List<String> clusterNodeAddress = Collections.singletonList(configuration.getCommonConfiguration().getAdvertisedAddress() + ":" + configuration.getCommonConfiguration().getAdvertisedPort());
 
         clientConfig.setBootstrapAddresses(clusterNodeAddress);
-        clientConfig.setChannelConnectionTimeoutMs(config.getConnectionTimeoutMs());
+        clientConfig.setChannelConnectionTimeoutMs(configuration.getNetworkConfiguration().getConnectionTimeoutMs());
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);
-        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(config, this), config, this);
+        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(this), configuration.getCommonConfiguration(), this);
         innerClient.start();
 
         if (clusterManager != null) {

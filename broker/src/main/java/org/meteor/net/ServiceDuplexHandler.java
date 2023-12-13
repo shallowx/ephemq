@@ -1,6 +1,5 @@
 package org.meteor.net;
 
-import com.google.inject.Inject;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.meteor.management.Manager;
@@ -15,7 +14,6 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
 
     private final Manager manager;
 
-    @Inject
     public ServiceDuplexHandler(Manager manager, Processor processor) {
         super(processor);
         this.manager = manager;

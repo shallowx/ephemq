@@ -1,6 +1,5 @@
 package org.meteor.net;
 
-import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.ProtocolStringList;
@@ -11,6 +10,8 @@ import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.meteor.common.*;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.NetworkConfiguration;
 import org.meteor.ledger.Log;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
@@ -18,7 +19,6 @@ import org.meteor.remote.proto.*;
 import org.meteor.remote.proto.server.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
 import org.meteor.listener.APIListener;
 import org.meteor.management.Manager;
 import org.meteor.management.TopicManager;
@@ -43,15 +43,16 @@ import static org.meteor.remote.util.ProtoBufUtils.readProto;
 public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
-    protected final CoreConfig config;
+    protected final CommonConfiguration commonConfiguration;
+    private final NetworkConfiguration networkConfiguration;
     protected final Manager manager;
     protected final EventExecutor commandExecutor;
     protected EventExecutor serviceExecutor;
 
-    @Inject
-    public ServiceProcessor(CoreConfig config, Manager manager) {
-        this.config = config;
+    public ServiceProcessor(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Manager manager) {
         this.manager = manager;
+        this.commonConfiguration = commonConfiguration;
+        this.networkConfiguration = networkConfiguration;
         this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();
     }
 
@@ -212,7 +213,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                     TopicPartition topicPartition = new TopicPartition(topic, partition);
                     PartitionInfo partitionInfo = topicManager.getPartitionInfo(topicPartition);
                     int ledger = partitionInfo.getLedger();
-                    if (config.getServerId().equals(original)) {
+                    if (commonConfiguration.getServerId().equals(original)) {
                         if (!topicManager.hasLeadership(ledger)) {
                             processFailed("Process migrate ledger failed", code, channel, answer,
                                     RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The original broker does not have leader role of %s", topicPartition)));
@@ -253,12 +254,12 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                                 processFailed("Process migrate ledger failed", code, channel, answer, future.cause());
                             }
                         });
-                        clientChannel.invoker().migrateLedger(config.getNotifyClientTimeoutMs(), promise, request);
+                        clientChannel.invoker().migrateLedger(networkConfiguration.getNotifyClientTimeoutMs(), promise, request);
                         recordCommand(code, bytes, System.nanoTime() - time, promise.isSuccess());
                         return;
                     }
 
-                    if (config.getServerId().equals(destination)) {
+                    if (commonConfiguration.getServerId().equals(destination)) {
                         topicManager.takeoverPartition(topicPartition);
                         MigrateLedgerResponse response = MigrateLedgerResponse.newBuilder().setSuccess(true).build();
                         if (answer != null) {
@@ -324,7 +325,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         try {
             commandExecutor.execute(() -> {
                 try {
-                    String clusterName = config.getClusterName();
+                    String clusterName = commonConfiguration.getClusterName();
                     List<Node> clusterUpNodes = manager.getClusterManager().getClusterUpNodes();
                     Map<String, NodeMetadata> nodeMetadataMap = clusterUpNodes.stream().collect(
                             Collectors.toMap(Node::getId, node ->

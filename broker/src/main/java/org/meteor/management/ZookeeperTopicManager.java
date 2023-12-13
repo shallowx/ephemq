@@ -16,7 +16,7 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.common.*;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.*;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogManager;
 import org.meteor.common.logging.InternalLogger;
@@ -36,7 +36,9 @@ public class ZookeeperTopicManager implements TopicManager {
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
     protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
     protected final List<TopicListener> listeners = new LinkedList<>();
-    protected CoreConfig config;
+    protected CommonConfiguration commonConfiguration;
+    protected SegmentConfiguration segmentConfiguration;
+    private ZookeeperConfiguration zookeeperConfiguration;
     protected CuratorFramework client;
     protected CuratorCache cache;
     protected ParticipantManager replicaManager;
@@ -49,11 +51,13 @@ public class ZookeeperTopicManager implements TopicManager {
     public ZookeeperTopicManager() {
     }
 
-    public ZookeeperTopicManager(CoreConfig config, Manager manager) {
-        this.config = config;
+    public ZookeeperTopicManager(ServerConfiguration config, Manager manager) {
+        this.commonConfiguration = config.getCommonConfiguration();
+        this.segmentConfiguration = config.getSegmentConfiguration();
+        this.zookeeperConfiguration = config.getZookeeperConfiguration();
         this.manager = manager;
-        this.replicaManager = new ParticipantManager(config, manager);
-        this.client = ZookeeperClient.getClient(config, config.getClusterName());
+        this.replicaManager = new ParticipantManager(manager);
+        this.client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), commonConfiguration.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
         this.ledgerIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.LEDGER_ID_COUNTER, new RetryOneTime(100));
         this.topicCache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
@@ -191,7 +195,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     }
 
                     if (oldAssignment.getTransitionalLeader() != null && assignment.getTransitionalLeader() == null) {
-                        if (config.getServerId().equals(oldAssignment.getTransitionalLeader())) {
+                        if (commonConfiguration.getServerId().equals(oldAssignment.getTransitionalLeader())) {
                             destroyTopicPartitionAsync(topicPartition, assignment.getLedgerId());
                         }
                     }
@@ -204,7 +208,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     Set<String> reducedReplicas = new HashSet<>(oldReplicas);
                     reducedReplicas.removeAll(replicas);
                     for (String id : reducedReplicas) {
-                        if (id.equals(config.getServerId())) {
+                        if (id.equals(commonConfiguration.getServerId())) {
                             String transitionalLeader = assignment.getTransitionalLeader();
                             if (id.equals(transitionalLeader)) {
                                 continue;
@@ -215,7 +219,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     Set<String> addReplicas = new HashSet<>(oldReplicas);
                     addReplicas.removeAll(oldReplicas);
                     for (String id : addReplicas) {
-                        if (id.equals(config.getServerId())) {
+                        if (id.equals(commonConfiguration.getServerId())) {
                             initTopicPartitionAsync(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
                         }
                     }
@@ -243,7 +247,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
                     TopicPartition topicPartition = new TopicPartition(topic, partition);
-                    if (replicas.contains(config.getServerId())) {
+                    if (replicas.contains(commonConfiguration.getServerId())) {
                         destroyTopicPartitionAsync(topicPartition, assignment.getLedgerId());
                     }
                     topicCache.invalidate(topicPartition.getTopic());
@@ -270,7 +274,7 @@ public class ZookeeperTopicManager implements TopicManager {
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
                     TopicPartition topicPartition = new TopicPartition(topic, partition);
-                    if (replicas.contains(config.getServerId())) {
+                    if (replicas.contains(commonConfiguration.getServerId())) {
                         initTopicPartitionAsync(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
                     }
                     topicCache.get(topicPartition.getTopic());
@@ -292,7 +296,7 @@ public class ZookeeperTopicManager implements TopicManager {
         try {
             Collections.shuffle(clusterUpNodes);
             topicConfig = topicConfig == null
-                    ? new TopicConfig(config.getSegmentRollingSize(), config.getSegmentRetainCounts(), config.getSegmentRetainTime(), false)
+                    ? new TopicConfig(segmentConfiguration.getSegmentRollingSize(), segmentConfiguration.getSegmentRetainLimit(), segmentConfiguration.getSegmentRetainTime(), false)
                     : topicConfig;
 
             Map<String, Object> createResult = new HashMap<>(2);
@@ -383,7 +387,7 @@ public class ZookeeperTopicManager implements TopicManager {
         }
 
         Log log = logManager.initLog(topicPartition, ledgerId, epoch, topicConfig);
-        ZookeeperPartitionCoordinatorElector partitionLeaderElector = new ZookeeperPartitionCoordinatorElector(config, topicPartition, manager, replicaManager, ledgerId);
+        ZookeeperPartitionCoordinatorElector partitionLeaderElector = new ZookeeperPartitionCoordinatorElector(commonConfiguration, zookeeperConfiguration, topicPartition, manager, replicaManager, ledgerId);
         partitionLeaderElector.elect();
         leaderElectorMap.put(ledgerId, partitionLeaderElector);
 

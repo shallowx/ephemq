@@ -6,7 +6,8 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.recipes.leader.Participant;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.ZookeeperConfiguration;
 import org.meteor.ledger.Log;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class ZookeeperPartitionCoordinatorElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionCoordinatorElector.class);
 
-    private final CoreConfig config;
+    private final CommonConfiguration configuration;
     private final TopicPartition topicPartition;
     private final Manager manager;
     private final ParticipantManager replicaManager;
@@ -35,20 +36,20 @@ public class ZookeeperPartitionCoordinatorElector {
     private final CuratorFramework client;
     private LeaderLatch latch;
 
-    public ZookeeperPartitionCoordinatorElector(CoreConfig config, TopicPartition topicPartition, Manager manager, ParticipantManager replicaManager, int ledger) {
-        this.config = config;
+    public ZookeeperPartitionCoordinatorElector(CommonConfiguration brokerConfiguration, ZookeeperConfiguration zookeeperConfiguration, TopicPartition topicPartition, Manager manager, ParticipantManager replicaManager, int ledger) {
+        this.configuration = brokerConfiguration;
         this.topicPartition = topicPartition;
         this.manager = manager;
         this.replicaManager = replicaManager;
         this.ledger = ledger;
-        this.client = ZookeeperClient.getClient(config, config.getClusterName());
+        this.client = ZookeeperClient.getClient(zookeeperConfiguration, configuration.getClusterName());
     }
 
     public void elect() throws Exception {
         String path = String.format(
                 PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition()
         );
-        latch = new LeaderLatch(client, path, config.getServerId(), LeaderLatch.CloseMode.NOTIFY_LEADER);
+        latch = new LeaderLatch(client, path, configuration.getServerId(), LeaderLatch.CloseMode.NOTIFY_LEADER);
         latch.addListener(new LeaderLatchListener() {
             @Override
             public void isLeader() {
@@ -98,11 +99,11 @@ public class ZookeeperPartitionCoordinatorElector {
         try {
             poolExecutor.execute(() -> {
                 try {
-                    logger.info("Change leader of {} to {}", ledger, config.getServerId());
+                    logger.info("Change leader of {} to {}", ledger, configuration.getServerId());
 
                     byte[] bytes = client.getData().forPath(path);
                     TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
-                    topicAssignment.setLeader(config.getServerId());
+                    topicAssignment.setLeader(configuration.getServerId());
                     topicAssignment.setEpoch(topicAssignment.getEpoch() + 1);
                     client.setData().forPath(path, JsonMapper.serialize(topicAssignment));
 
@@ -138,13 +139,13 @@ public class ZookeeperPartitionCoordinatorElector {
                 }
                 logger.info("The leader of {} is {}", ledger, leader.getId());
 
-                if (!latch.hasLeadership() && !leader.getId().equals(config.getServerId())) {
+                if (!latch.hasLeadership() && !leader.getId().equals(configuration.getServerId())) {
                     byte[] bytes = client.getData().forPath(
                             String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition())
                     );
 
                     TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
-                    if (topicAssignment.getReplicas().contains(config.getServerId())) {
+                    if (topicAssignment.getReplicas().contains(configuration.getServerId())) {
                         logger.info("As the follower replica of {}, ledger={}", topicPartition, ledger);
                     }
                     syncLeader(ledger);

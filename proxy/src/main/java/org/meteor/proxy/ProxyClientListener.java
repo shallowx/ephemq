@@ -11,9 +11,9 @@ import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
-import org.meteor.core.CoreConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.configuration.ProxyConfiguration;
 import org.meteor.management.Manager;
 import org.meteor.proxy.management.LedgerSyncManager;
 import org.meteor.proxy.management.ProxyTopicManager;
@@ -38,32 +38,27 @@ import static org.meteor.metrics.MetricsConstants.*;
 
 
 public class ProxyClientListener implements ClientListener {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Proxy.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
-    private final CoreConfig coreConfig;
     private final Manager manager;
     private final LedgerSyncManager syncManager;
     private Client client;
-    private final EventExecutor taskExecutor;
-    private final CoreConfig config;
+    private final ProxyConfiguration proxyConfiguration;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() throws Exception {
-            return new Semaphore(coreConfig.getProxyLeaderSyncSemaphore());
+            return new Semaphore(proxyConfiguration.getProxyLeaderSyncSemaphore());
         }
     };
 
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
 
-    public ProxyClientListener(CoreConfig coreConfig, Manager manager, LedgerSyncManager syncManager) {
-        this.coreConfig = coreConfig;
-        this.config = coreConfig;
+    public ProxyClientListener(ProxyConfiguration proxyConfiguration, Manager manager, LedgerSyncManager syncManager) {
+        this.proxyConfiguration = proxyConfiguration;
         this.manager = manager;
         this.syncManager = syncManager;
-        this.taskExecutor = manager.getAuxEventExecutorGroup().next();
-        this.taskExecutor.scheduleWithFixedDelay(() -> {
-            this.checkSync();
-        }, coreConfig.getProxySyncCheckIntervalMs(), coreConfig.getProxySyncCheckIntervalMs(), TimeUnit.MILLISECONDS);
+        EventExecutor taskExecutor = manager.getAuxEventExecutorGroup().next();
+        taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMs(), proxyConfiguration.getProxySyncCheckIntervalMs(), TimeUnit.MILLISECONDS);
     }
 
     private void checkSync() {
@@ -99,10 +94,11 @@ public class ProxyClientListener implements ClientListener {
             EventExecutor executor = fixedExecutor(topic);
             try {
                 executor.execute(() -> {
-                    resumeSync(syncChannel, topic, ledger, false);
+                   try {
+                       resumeSync(syncChannel, topic, ledger, false);
+                   } catch (Exception ignored){}
                 });
             } catch (Exception ignored) {
-
             }
         }
     }
@@ -119,14 +115,14 @@ public class ProxyClientListener implements ClientListener {
                 summary = chunkCountSummaries.computeIfAbsent(ledger,
                         s -> DistributionSummary.builder(PROXY_SYNC_CHUNK_COUNT_SUMMARY_NAME)
                         .tags(Tags.of("ledger", String.valueOf(ledger))
-                                .and(BROKER_TAG, config.getServerId())
-                                .and(CLUSTER_TAG, config.getClusterName()))
+                                .and(BROKER_TAG, proxyConfiguration.getCommonConfiguration().getServerId())
+                                .and(CLUSTER_TAG, proxyConfiguration.getCommonConfiguration().getClusterName()))
                         .register(Metrics.globalRegistry));
             }
             summary.record(count);
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(f -> semaphore.release());
-            manager.getLogManager().saveSyncData(channel, ledger, count, data, promise);
+            manager.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);
@@ -156,7 +152,7 @@ public class ProxyClientListener implements ClientListener {
         }
         int ledger = signal.getLedger();
         int ledgerVersion = signal.getLedgerVersion();
-        int randomDelay = ThreadLocalRandom.current().nextInt(config.getProxyTopicChangeDelayMs());
+        int randomDelay = ThreadLocalRandom.current().nextInt(proxyConfiguration.getProxyTopicChangeDelayMs());
         try {
             executor.schedule(()-> {
                try {

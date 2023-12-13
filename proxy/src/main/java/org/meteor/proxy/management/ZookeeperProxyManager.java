@@ -1,10 +1,9 @@
 package org.meteor.proxy.management;
 
-import com.google.inject.Inject;
 import io.netty.util.concurrent.EventExecutor;
-import org.meteor.core.CoreConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.LogManager;
 import org.meteor.listener.DefaultClusterListener;
 import org.meteor.management.DefaultConnectionManager;
@@ -15,25 +14,24 @@ public class ZookeeperProxyManager extends ZookeeperManager implements ProxyZook
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyManager.class);
     private final LedgerSyncManager syncManager;
 
-    @Inject
-    public ZookeeperProxyManager(CoreConfig config) {
-        super();
-        this.config = config;
+    public ZookeeperProxyManager(ServerConfiguration configuration) {
+        super(configuration);
+
         this.connectionManager = new DefaultConnectionManager();
-        this.handleGroup = NetworkUtils.newEventExecutorGroup(config.getCommandHandleThreadCounts(), "proxy-handle");
-        this.storageGroup = NetworkUtils.newEventExecutorGroup(config.getMessageStorageThreadCounts(), "proxy-storage");
-        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(config.getMessageDispatchThreadCounts(), "proxy-dispatch");
-        this.syncGroup = NetworkUtils.newEventExecutorGroup(config.getMessageSyncThreadCounts(), "proxy-sync");
-        this.auxGroup = NetworkUtils.newEventExecutorGroup(config.getAuxThreadCounts(), "proxy-aux");
+        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getCommandHandleThreadLimit(), "proxy-handle");
+        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageStorageThreadLimit(), "proxy-storage");
+        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageDispatchThreadLimit(), "proxy-dispatch");
+        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageSyncThreadLimit(), "proxy-sync");
+        this.auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getAuxThreadLimit(), "proxy-aux");
         for (EventExecutor executor : auxGroup) {
             this.auxEventExecutors.add(executor);
         }
 
-        this.syncManager = new ZookeeperLedgerSyncManager(config, this);
-        this.topicManager = new ZookeeperProxyTopicManager(config, this);
-        this.clusterManager = new ZookeeperProxyClusterManager(config, syncManager);
-        this.clusterManager.addClusterListener(new DefaultClusterListener(this, config));
-        this.logManager = new LogManager(config, this);
+        this.syncManager = new ZookeeperLedgerSyncManager(configuration.getProxyConfiguration(), this);
+        this.topicManager = new ZookeeperProxyTopicManager(configuration.getProxyConfiguration(), this);
+        this.clusterManager = new ZookeeperProxyClusterManager(configuration);
+        this.clusterManager.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfiguration()));
+        this.logManager = new LogManager(configuration, this);
     }
 
     @Override
@@ -44,7 +42,7 @@ public class ZookeeperProxyManager extends ZookeeperManager implements ProxyZook
     @Override
     public void start() throws Exception {
         super.start();
-        this.clusterManager.start();
+        this.syncManager.start();
     }
 
     @Override

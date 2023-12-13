@@ -3,7 +3,7 @@ package org.meteor.proxy.management;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.ProxyConfiguration;
 import org.meteor.core.InnerClient;
 import org.meteor.common.Offset;
 import org.meteor.common.logging.InternalLogger;
@@ -25,25 +25,25 @@ import java.util.concurrent.TimeUnit;
 public abstract class LedgerSyncManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncManager.class);
 
-    protected final CoreConfig config;
+    protected final ProxyConfiguration config;
     protected final Manager manager;
     protected final Client proxyClient;
     protected final EventExecutor taskExecutor;
 
-    public LedgerSyncManager(CoreConfig config, Manager manager) {
+    public LedgerSyncManager(ProxyConfiguration config, Manager manager) {
         this.config = config;
         this.manager = manager;
         ClientConfig clientConfig = new ClientConfig();
         final List<String> upstreamServers = Arrays.stream(config.getProxyUpstreamServers()
                 .split(",")).map(String::trim).toList();
         clientConfig.setBootstrapAddresses(upstreamServers);
-        clientConfig.setChannelConnectionTimeoutMs(config.getConnectionTimeoutMs());
+        clientConfig.setChannelConnectionTimeoutMs(config.getProxyChannelConnectionTimeoutMs());
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(1048576);
-        clientConfig.setWorkerThreadCount(config.getProxyClientWorkerThreadCounts());
+        clientConfig.setWorkerThreadCount(config.getProxyClientWorkerThreadLimit());
         clientConfig.setConnectionPoolCapacity(config.getProxyClientPoolSize());
         ProxyClientListener listener = new ProxyClientListener(config, manager, this);
-        this.proxyClient = new InnerClient("proxy-client", clientConfig, listener, config, manager);
+        this.proxyClient = new InnerClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), manager);
         listener.setClient(proxyClient);
         this.taskExecutor = manager.getAuxEventExecutorGroup().next();
     }

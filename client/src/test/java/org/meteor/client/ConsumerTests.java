@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class ConsumerTests {
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void testAttachOfReset() throws Exception {
+    public void testSubscribeOfReset() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
-                add("127.0.0.1:9527");
+                add("127.0.0.1:19527");
             }
         });
         clientConfig.setConnectionPoolCapacity(2);

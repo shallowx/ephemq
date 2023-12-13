@@ -13,7 +13,9 @@ import org.apache.zookeeper.data.Stat;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.ProxyConfiguration;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.ClusterListener;
 
 import java.util.ArrayList;
@@ -25,22 +27,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ZookeeperClusterManager implements ClusterManager {
+    private static final String UP = "UP";
+    private static final String DOWN = "DOWN";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
-    private static final String UP = "up";
-    private static final String DOWN = "down";
-    protected final CoreConfig config;
+    private final CommonConfiguration configuration;
     protected final List<ClusterListener> listeners = new LinkedList<>();
     private final Map<String, Node> activeNodes = new ConcurrentHashMap<>();
-    protected final CuratorFramework client;
+    protected CuratorFramework client;
     private volatile boolean registered = false;
     protected ConnectionStateListener connectionStateListener;
     protected CuratorCache cache;
     private LeaderLatch latch;
     private Node thisNode;
 
-    public ZookeeperClusterManager(CoreConfig config) {
-        this.config = config;
-        this.client = ZookeeperClient.getClient(config, config.getClusterName());
+    public ZookeeperClusterManager(ServerConfiguration config) {
+        this.configuration = config.getCommonConfiguration();
+        this.client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), config.getCommonConfiguration().getClusterName());
     }
 
     @Override
@@ -48,7 +50,7 @@ public class ZookeeperClusterManager implements ClusterManager {
         connectionStateListener = (client, state) -> {
             if (state == ConnectionState.RECONNECTED) {
                 try {
-                    Stat stat = client.checkExists().forPath(String.format(PathConstants.BROKERS_ID, config.getServerId()));
+                    Stat stat = client.checkExists().forPath(String.format(PathConstants.BROKERS_ID, configuration.getServerId()));
                     if (stat != null) {
                         return;
                     }
@@ -67,7 +69,7 @@ public class ZookeeperClusterManager implements ClusterManager {
     }
 
     private void electController() throws Exception {
-        latch = new LeaderLatch(client, PathConstants.CONTROLLER, config.getServerId(), LeaderLatch.CloseMode.NOTIFY_LEADER);
+        latch = new LeaderLatch(client, PathConstants.CONTROLLER, configuration.getServerId(), LeaderLatch.CloseMode.NOTIFY_LEADER);
         latch.addListener(new LeaderLatchListener() {
             @Override
             public void isLeader() {
@@ -145,16 +147,15 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     protected void registerNode(String path) throws Exception {
         CreateBuilder createBuilder = client.create();
-        thisNode = new Node(config.getServerId(), config.getAdvertisedAddress(), config.getAdvertisedPort(),
-                System.currentTimeMillis(), config.getClusterName(), UP);
+        thisNode = new Node(configuration.getServerId(), configuration.getAdvertisedAddress(), configuration.getAdvertisedPort(),
+                System.currentTimeMillis(), configuration.getClusterName(), UP);
 
         try {
             createBuilder.creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL)
-                    .forPath(String.format(path, config.getServerId()), JsonMapper.serialize(thisNode));
-
+                    .forPath(String.format(path, configuration.getServerId()), JsonMapper.serialize(thisNode));
             registered = true;
         } catch (KeeperException.NodeExistsException e) {
-            throw new RuntimeException(String.format("Server id[%s] should be unique", config.getServerId()));
+            throw new RuntimeException(String.format("Server id[%s] should be unique", configuration.getServerId()));
         }
     }
 
@@ -163,7 +164,7 @@ public class ZookeeperClusterManager implements ClusterManager {
             return;
         }
 
-        String nodePath = String.format(path, config.getServerId());
+        String nodePath = String.format(path, configuration.getServerId());
         updateNodeStateAndSleep(nodePath);
         if (client.checkExists().forPath(nodePath) != null) {
             client.delete().forPath(nodePath);
@@ -179,8 +180,8 @@ public class ZookeeperClusterManager implements ClusterManager {
         client.setData().forPath(path, JsonMapper.serialize(downNode));
 
         activeNodes.put(downNode.getId(), downNode);
-        if (config.getShutdownMaxWaitTimeMs() > 0) {
-            TimeUnit.MILLISECONDS.sleep(config.getShutdownMaxWaitTimeMs());
+        if (configuration.getShutdownMaxWaitTimeMs() > 0) {
+            TimeUnit.MILLISECONDS.sleep(configuration.getShutdownMaxWaitTimeMs());
         }
     }
 
@@ -227,6 +228,6 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     @Override
     public String getClusterName() {
-        return config.getClusterName();
+        return configuration.getClusterName();
     }
 }

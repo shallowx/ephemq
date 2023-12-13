@@ -53,7 +53,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.meteor.proxy.Proxy</mainClass>
+                            <mainClass>org.meteor.proxy.MeteorProxy</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

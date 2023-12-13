@@ -15,7 +15,7 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.core.CoreConfig;
+import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.LogListener;
 import org.meteor.management.Manager;
 import org.meteor.management.TopicManager;
@@ -55,15 +55,13 @@ public class Log {
     protected ClientChannel syncChannel;
     protected Promise<SyncResponse> syncFuture;
     protected Promise<CancelSyncResponse> unSyncFuture;
-    protected CoreConfig config;
     protected RecordChunkEntryDispatcher chunkEntryDispatcher;
 
-    public Log(CoreConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
-        this.config = config;
+    public Log(ServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.getTopic();
-        this.forwardTimeout = config.getDispatchEntryFollowLimit();
+        this.forwardTimeout = config.getRecordDispatchConfiguration().getDispatchEntryFollowLimit();
         this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();
         LedgerConfig ledgerConfig;
         if (topicConfig != null) {
@@ -74,9 +72,9 @@ public class Log {
                     .allocate(topicConfig.isAllocate());
         } else {
             ledgerConfig = new LedgerConfig()
-                    .segmentRetainCounts(config.getSegmentRetainCounts())
-                    .segmentBufferCapacity(config.getSegmentRollingSize())
-                    .segmentRetainMs(config.getSegmentRetainTime())
+                    .segmentRetainCounts(config.getSegmentConfiguration().getSegmentRetainLimit())
+                    .segmentBufferCapacity(config.getSegmentConfiguration().getSegmentRollingSize())
+                    .segmentRetainMs(config.getSegmentConfiguration().getSegmentRetainTime())
                     .allocate(false);
         }
 
@@ -86,8 +84,8 @@ public class Log {
         this.listeners = manager.getLogManager().getLogListeners();
         Tags tags = Tags.of(MetricsConstants.TOPIC_TAG, topicPartition.getTopic())
                 .and(MetricsConstants.PARTITION_TAG, String.valueOf(topicPartition.getPartition()))
-                .and(MetricsConstants.BROKER_TAG, config.getServerId())
-                .and(MetricsConstants.CLUSTER_TAG, config.getClusterName())
+                .and(MetricsConstants.BROKER_TAG, config.getCommonConfiguration().getServerId())
+                .and(MetricsConstants.CLUSTER_TAG, config.getCommonConfiguration().getClusterName())
                 .and(MetricsConstants.LEDGER_TAG, Integer.toString(ledger));
 
         this.segmentCountMeter = Gauge.builder(MetricsConstants.LOG_SEGMENT_COUNT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentCount)
@@ -97,8 +95,8 @@ public class Log {
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
 
-        this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config, manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
-        this.chunkEntryDispatcher = new RecordChunkEntryDispatcher(ledger, topic, storage, config, manager.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
+        this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config.getRecordDispatchConfiguration(), manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
+        this.chunkEntryDispatcher = new RecordChunkEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfiguration(), manager.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {
@@ -614,7 +612,7 @@ public class Log {
         }
     }
 
-    public void appendChunk(ClientChannel channel, int count, ByteBuf buf, Promise<Integer> promise) {
+    public void appendChunk(Channel channel, int count, ByteBuf buf, Promise<Integer> promise) {
         buf.retain();
         if (storageExecutor.inEventLoop()) {
             dpAppendChunk(channel, count, buf, promise);
@@ -628,7 +626,7 @@ public class Log {
         }
     }
 
-    private void dpAppendChunk(ClientChannel channel, int count, ByteBuf buf, Promise<Integer> promise) {
+    private void dpAppendChunk(Channel channel, int count, ByteBuf buf, Promise<Integer> promise) {
         try {
            promise.addListener((GenericFutureListener<Future<Integer>>) future -> {
                if (future.isSuccess()) {
