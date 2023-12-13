@@ -30,7 +30,7 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public String name() {
-        return "migrateLedger";
+        return "ml";
     }
 
     @Override
@@ -80,6 +80,7 @@ public class MigrateLedgerCommand implements Command {
                     List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {
                     }.getType());
                     if (infos == null || infos.isEmpty()) {
+                        System.out.printf("%s [%s] INFO %s - Migrate ledger successfully, partition ledger doex not exists \n", newDate(), Thread.currentThread().getName(), MigrateLedgerCommand.class.getName());
                         return;
                     }
 
@@ -100,6 +101,7 @@ public class MigrateLedgerCommand implements Command {
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getMessage());
+            throw new RuntimeException(t);
         }
     }
 

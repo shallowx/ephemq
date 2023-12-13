@@ -74,7 +74,6 @@ public class MeteorAdmin {
                                 throw e;
                             }
                         }
-                        return;
                     }
                     System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
                             newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
@@ -129,6 +128,7 @@ public class MeteorAdmin {
         Command clusterCommand = new ClusterListCommand();
         Command topicCreatedCommand = new TopicCreatedCommand();
         Command topicDeletedCommand = new TopicDeletedCommand();
+
         commands.add(clientCommand);
         commands.add(clusterCommand);
         commands.add(topicCreatedCommand);

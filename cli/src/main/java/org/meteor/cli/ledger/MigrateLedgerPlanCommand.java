@@ -32,12 +32,12 @@ public class MigrateLedgerPlanCommand implements Command {
 
     @Override
     public String name() {
-        return "migratePlan";
+        return "mlp";
     }
 
     @Override
     public String description() {
-        return "create migrate plan file";
+        return "create migrate plan";
     }
 
     @Override
@@ -96,11 +96,13 @@ public class MigrateLedgerPlanCommand implements Command {
                 }
 
                 if (ids.isEmpty()) {
+                    System.out.printf("%s [%s] WARN %s - cluster node does not exists \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName());
                     return;
                 }
                 List<MigrateLedger> infos = new LinkedList<>();
                 Map<String, TopicInfo> topicInfos = client.queryTopicInfos(clientChannel);
                 if (topicInfos == null || topicInfos.isEmpty()) {
+                    System.out.printf("%s [%s] WARN %s - topic does not exists \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName());
                     return;
                 }
                 int limit = 0;
@@ -138,6 +140,7 @@ public class MigrateLedgerPlanCommand implements Command {
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getCause().getMessage());
+            throw new RuntimeException(t);
         }
     }
 
@@ -156,9 +159,9 @@ public class MigrateLedgerPlanCommand implements Command {
         Map.Entry<String, Integer> entries = list.stream().filter(entry -> !relicaBrokres.contains(entry.getKey()))
                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
                 .collect(Collectors.toList()).get(0);
-        String beoker = entries.getKey();
-        partitions.put(beoker, entries.getValue() + 1);
+        String broker = entries.getKey();
+        partitions.put(broker, entries.getValue() + 1);
 
-        return beoker;
+        return broker;
     }
 }

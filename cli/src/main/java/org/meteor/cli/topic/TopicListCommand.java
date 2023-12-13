@@ -28,7 +28,7 @@ public class TopicListCommand implements Command {
 
     @Override
     public String name() {
-        return "TopicList";
+        return "topics";
     }
 
     @Override
@@ -111,6 +111,7 @@ public class TopicListCommand implements Command {
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), t.getCause().getMessage());
+            throw new RuntimeException(t);
         }
     }
 

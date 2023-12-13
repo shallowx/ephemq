@@ -29,7 +29,7 @@ public class ClusterListCommand implements Command {
 
     @Override
     public String name() {
-        return "clusterList";
+        return "clusters";
     }
 
     @Override
@@ -82,6 +82,7 @@ public class ClusterListCommand implements Command {
             }
         } catch (Exception e) {
             System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), e.getCause().getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

@@ -31,7 +31,7 @@ public class TopicCreatedCommand implements Command {
 
     @Override
     public String name() {
-        return "createTopic";
+        return "ct";
     }
 
     @Override
@@ -79,6 +79,7 @@ public class TopicCreatedCommand implements Command {
             }
         } catch (Exception e) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), e.getCause().getMessage());
+            throw new RuntimeException(e);
         }
     }
 

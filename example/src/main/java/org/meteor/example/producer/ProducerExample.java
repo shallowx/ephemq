@@ -4,16 +4,23 @@ import io.netty.buffer.ByteBuf;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.producer.Producer;
 import org.meteor.client.producer.ProducerConfig;
+import org.meteor.client.producer.SendCallback;
 import org.meteor.common.Extras;
+import org.meteor.common.MessageId;
 import org.meteor.remote.util.ByteBufUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class ProducerExample {
-    public void sendOneway() throws Exception {
+
+    private final Producer producer;
+
+    public ProducerExample() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
             {
@@ -24,12 +31,15 @@ public class ProducerExample {
         clientConfig.setConnectionPoolCapacity(2);
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
+        Producer producer = new Producer("default-producer", producerConfig);
+        producer.start();
+        this.producer = producer;
+    }
+
+    public void sendOneway() throws Exception {
         CountDownLatch continueSendLatch = new CountDownLatch(2);
         for (int i = 0; i < 1; i++) {
             new Thread(() -> {
-                Producer producer = new Producer("default", producerConfig);
-                producer.start();
-
                 String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
@@ -47,5 +57,23 @@ public class ProducerExample {
             }).start();
         }
         continueSendLatch.await();
+    }
+
+    public void send() {
+        Map<String, String> entries =  new HashMap<>();
+        entries.put("key", "v");
+        Extras extras = new Extras(entries);
+        producer.send("#test#default", "test-topic", ByteBufUtils.string2Buf(UUID.randomUUID().toString()), extras);
+    }
+
+    public void sendAsync() {
+        producer.sendAsync("#test#default", "test-topic", ByteBufUtils.string2Buf(UUID.randomUUID().toString()), new Extras(), new AsyncSendCallback());
+    }
+
+    static class AsyncSendCallback implements SendCallback {
+        @Override
+        public void onCompleted(MessageId messageId, Throwable t) {
+            // what to do as needed
+        }
     }
 }

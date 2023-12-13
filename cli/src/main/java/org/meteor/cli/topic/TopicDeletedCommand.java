@@ -29,7 +29,7 @@ public class TopicDeletedCommand implements Command {
 
     @Override
     public String name() {
-        return "deleteTopic";
+        return "dt";
     }
 
     @Override
@@ -95,6 +95,7 @@ public class TopicDeletedCommand implements Command {
         } catch (Exception e) {
             System.out.printf("%s [%s] ERROR %S - delete topic[%s] from cluster failure \n",
                     newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
+            throw new RuntimeException(e);
         }
     }
 }
