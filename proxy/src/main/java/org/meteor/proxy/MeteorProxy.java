@@ -8,7 +8,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.listener.MetricsListener;
 import org.meteor.coordinatio.Coordinator;
-import org.meteor.proxy.coordinatio.ZookeeperProxyCoordinator;
+import org.meteor.proxy.coordinatio.ProxyDefaultCoordinator;
 import org.meteor.proxy.net.MeteorProxyServer;
 import org.meteor.proxy.net.ProxySocketServer;
 import org.meteor.util.ShutdownHookThread;
@@ -50,12 +50,12 @@ public class MeteorProxy {
 
         ServerConfiguration configuration = new ServerConfiguration(properties);
 
-        Coordinator manager = new ZookeeperProxyCoordinator(configuration);
-        MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), manager);
-        manager.addMetricsListener(metricsListener);
+        Coordinator coordinator = new ProxyDefaultCoordinator(configuration);
+        MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);
+        coordinator.addMetricsListener(metricsListener);
 
-        ProxySocketServer socketServer = new ProxySocketServer(configuration, manager);
-        MeteorServer server = new MeteorProxyServer(socketServer, manager);
+        ProxySocketServer socketServer = new ProxySocketServer(configuration, coordinator);
+        MeteorServer server = new MeteorProxyServer(socketServer, coordinator);
         server.addListener(metricsListener);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {

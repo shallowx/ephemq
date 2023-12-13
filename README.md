@@ -9,8 +9,7 @@
 
 # Example
 - For better demonstration of the running effect, set the time interval to 1 second for easy demo creation, but it actually supports high traffic and meets subtle-level latency
-- To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be
-omitted when deploying it in practice.
+- To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be omitted when deploying it in practice.
 ![image](https://github.com/shallowx/meteor/blob/main/doc/image/example.gif)
 
 ## Latency

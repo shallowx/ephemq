@@ -25,12 +25,12 @@ import java.util.concurrent.TimeUnit;
 public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implements ProxyTopicCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);
     private LoadingCache<String, TopicInfo> topicMetaCache;
-    private final LedgerSyncCoordinator syncManager;
+    private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyConfiguration proxyConfiguration;
     public ZookeeperProxyTopicCoordinator(ProxyConfiguration config, Coordinator manager) {
         this.proxyConfiguration = config;
         this.manager = manager;
-        this.syncManager = ((ProxyDefaultCoordinator) manager).getLedgerSyncManager();
+        this.syncCoordinator = ((ProxyDefaultCoordinator) manager).getLedgerSyncCoordinator();
         this.replicaManager = new ParticipantCoordinator(manager);
     }
 
@@ -41,7 +41,7 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
                     @Override
                     public @Nullable TopicInfo load(String key) throws Exception {
                         try {
-                            ClientChannel channel = syncManager.getProxyClient().fetchChannel(null);
+                            ClientChannel channel = syncCoordinator.getProxyClient().fetchChannel(null);
                             Map<String, TopicInfo> ret = acquireFromUpstream(Lists.newArrayList(key), channel);
                             return (ret == null || ret.isEmpty()) ? null : ret.get(key);
                         } catch (Exception e) {

@@ -43,7 +43,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
 
     private void commitLoad() throws Exception {
         long now = System.currentTimeMillis();
-        for (Log log : manager.getLogManager().getLedgerId2LogMap().values()) {
+        for (Log log : coordinator.getLogManager().getLedgerId2LogMap().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
@@ -71,7 +71,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private Map<Integer, Integer> calculateLedgerThroughput() {
         Map<Integer, Integer> ret = new HashMap<>();
         long interval = (System.currentTimeMillis() - commitTime) / 1000;
-        for (Log log : manager.getLogManager().getLedgerId2LogMap().values()) {
+        for (Log log : coordinator.getLogManager().getLedgerId2LogMap().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
             long newValue = proxyLog.getDispatchTotal();
             Long oldValue = dispatchTotal.put(proxyLog, newValue);

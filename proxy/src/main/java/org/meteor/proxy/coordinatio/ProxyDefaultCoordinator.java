@@ -12,7 +12,7 @@ import org.meteor.remote.util.NetworkUtils;
 
 public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);
-    private final LedgerSyncCoordinator syncManager;
+    private final LedgerSyncCoordinator syncCoordinator;
 
     public ProxyDefaultCoordinator(ServerConfiguration configuration) {
         super(configuration);
@@ -27,7 +27,7 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
             this.auxEventExecutors.add(executor);
         }
 
-        this.syncManager = new ProxyLedgerSyncCoordinator(configuration.getProxyConfiguration(), this);
+        this.syncCoordinator = new ProxyLedgerSyncCoordinator(configuration.getProxyConfiguration(), this);
         this.topicManager = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
         this.clusterManager = new ZookeeperProxyClusterCoordinator(configuration);
         this.clusterManager.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfiguration()));
@@ -35,19 +35,19 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
     }
 
     @Override
-    public LedgerSyncCoordinator getLedgerSyncManager() {
-        return syncManager;
+    public LedgerSyncCoordinator getLedgerSyncCoordinator() {
+        return syncCoordinator;
     }
 
     @Override
     public void start() throws Exception {
         super.start();
-        this.syncManager.start();
+        this.syncCoordinator.start();
     }
 
     @Override
     public void shutdown() throws Exception {
         super.shutdown();
-        this.syncManager.shutDown();
+        this.syncCoordinator.shutDown();
     }
 }

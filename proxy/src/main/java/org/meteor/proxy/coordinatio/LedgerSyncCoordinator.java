@@ -26,13 +26,13 @@ public abstract class LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncCoordinator.class);
 
     protected final ProxyConfiguration config;
-    protected final Coordinator manager;
+    protected final Coordinator coordinator;
     protected final Client proxyClient;
     protected final EventExecutor taskExecutor;
 
-    public LedgerSyncCoordinator(ProxyConfiguration config, Coordinator manager) {
+    public LedgerSyncCoordinator(ProxyConfiguration config, Coordinator coordinator) {
         this.config = config;
-        this.manager = manager;
+        this.coordinator = coordinator;
         ClientConfig clientConfig = new ClientConfig();
         final List<String> upstreamServers = Arrays.stream(config.getProxyUpstreamServers()
                 .split(",")).map(String::trim).toList();
@@ -42,10 +42,10 @@ public abstract class LedgerSyncCoordinator {
         clientConfig.setSocketReceiveBufferSize(1048576);
         clientConfig.setWorkerThreadCount(config.getProxyClientWorkerThreadLimit());
         clientConfig.setConnectionPoolCapacity(config.getProxyClientPoolSize());
-        ProxyClientListener listener = new ProxyClientListener(config, manager, this);
-        this.proxyClient = new InnerClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), manager);
+        ProxyClientListener listener = new ProxyClientListener(config, coordinator, this);
+        this.proxyClient = new InnerClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), coordinator);
         listener.setClient(proxyClient);
-        this.taskExecutor = manager.getAuxEventExecutorGroup().next();
+        this.taskExecutor = coordinator.getAuxEventExecutorGroup().next();
     }
 
     public void start() {
@@ -64,7 +64,7 @@ public abstract class LedgerSyncCoordinator {
         Promise<Boolean> promise = taskExecutor.newPromise();
         promise.addListener(f -> {
             if (f.isSuccess() && (Boolean)f.getNow()) {
-                manager.getLogManager().destroyLog(log.getLedger());
+                coordinator.getLogManager().destroyLog(log.getLedger());
             }
         });
         log.deSyncAndCloseIfNotSubscribe(promise);
@@ -78,7 +78,7 @@ public abstract class LedgerSyncCoordinator {
             return ret;
         }
 
-        Log log = manager.getLogManager().getLog(ledger);
+        Log log = coordinator.getLogManager().getLog(ledger);
         if (log == null) {
             ret.trySuccess(null);
             return ret;

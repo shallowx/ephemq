@@ -28,8 +28,8 @@ public class ProxyLog extends Log {
     private volatile Offset headLocation = new Offset(0, 0);
     private final LongAdder dispatchTotal = new LongAdder();
     private final ProxyConfiguration proxyConfiguration;
-    public ProxyLog(ServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Coordinator manager, TopicConfig topicConfig) {
-        super(config, topicPartition, ledger, epoch, manager, topicConfig);
+    public ProxyLog(ServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
+        super(config, topicPartition, ledger, epoch, coordinator, topicConfig);
         this.proxyConfiguration = config.getProxyConfiguration();
     }
 
@@ -66,7 +66,7 @@ public class ProxyLog extends Log {
                     closePromise.addListener(future -> {
                         if (future.isSuccess()) {
                             promise.trySuccess((Boolean) future.get());
-                            for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
+                            for (TopicListener listener : coordinator.getTopicManager().getTopicListener()) {
                                 listener.onPartitionDestroy(topicPartition, ledger);
                             }
                         } else {
@@ -84,7 +84,7 @@ public class ProxyLog extends Log {
         closePromise.addListener(f -> {
             if (f.isSuccess()) {
                 promise.trySuccess((Boolean) f.get());
-                for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
+                for (TopicListener listener : coordinator.getTopicManager().getTopicListener()) {
                     listener.onPartitionDestroy(topicPartition, ledger);
                 }
             } else {

@@ -40,7 +40,7 @@ import static org.meteor.metrics.MetricsConstants.*;
 public class ProxyClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private final LedgerSyncCoordinator syncManager;
     private Client client;
     private final ProxyConfiguration proxyConfiguration;
@@ -55,14 +55,14 @@ public class ProxyClientListener implements ClientListener {
 
     public ProxyClientListener(ProxyConfiguration proxyConfiguration, Coordinator manager, LedgerSyncCoordinator syncManager) {
         this.proxyConfiguration = proxyConfiguration;
-        this.manager = manager;
+        this.coordinator = manager;
         this.syncManager = syncManager;
         EventExecutor taskExecutor = manager.getAuxEventExecutorGroup().next();
         taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMs(), proxyConfiguration.getProxySyncCheckIntervalMs(), TimeUnit.MILLISECONDS);
     }
 
     private void checkSync() {
-        Map<Integer, Log> map = manager.getLogManager().getLedgerId2LogMap();
+        Map<Integer, Log> map = coordinator.getLogManager().getLedgerId2LogMap();
         if (map == null) {
             return;
         }
@@ -122,7 +122,7 @@ public class ProxyClientListener implements ClientListener {
             summary.record(count);
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(f -> semaphore.release());
-            manager.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
+            coordinator.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);
@@ -170,7 +170,7 @@ public class ProxyClientListener implements ClientListener {
                            refreshFailed = true;
                            logger.error(e.getMessage(),e);
                        }
-                       ProxyTopicCoordinator topicManager = (ProxyTopicCoordinator)manager.getTopicManager();
+                       ProxyTopicCoordinator topicManager = (ProxyTopicCoordinator)coordinator.getTopicManager();
                        topicManager.refreshTopicMetadata(Collections.singletonList(topic), channel);
                    }
                     resumeSync(channel, topic, ledger, refreshFailed);
@@ -187,7 +187,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void noticeTopicChanged(TopicChangedSignal signal) {
-        Set<Channel> channels = manager.getConnectionManager().getChannels();
+        Set<Channel> channels = coordinator.getConnectionManager().getChannels();
         if (channels.isEmpty()) {
             return;
         }
@@ -233,7 +233,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void resumeChannelSync(ClientChannel channel, boolean refreshRouter) {
-        Collection<Log> logs = manager.getLogManager().getLedgerId2LogMap().values();
+        Collection<Log> logs = coordinator.getLogManager().getLedgerId2LogMap().values();
         Map<String, List<Log>> groupedLogs = logs.stream().filter(log -> channel == log.getSyncChannel()).collect(Collectors.groupingBy(Log::getTopic));
         if (groupedLogs.isEmpty()) {
             return;
@@ -285,7 +285,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private EventExecutor fixedExecutor(String topic) {
-        List<EventExecutor> executors = manager.getAuxEventExecutors();
+        List<EventExecutor> executors = coordinator.getAuxEventExecutors();
         return executors.get((Objects.hash(topic) & 0x7fffffff) % executors.size());
     }
 

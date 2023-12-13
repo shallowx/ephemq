@@ -44,7 +44,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
     private static final int MIN_REPLICA_LIMIT = 2;
-    private final LedgerSyncCoordinator syncManager;
+    private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyClusterCoordinator proxyClusterManager;
     private final int subscribeThreshold;
     private final ServerConfiguration serverConfiguration;
@@ -52,10 +52,10 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     public ProxyServiceProcessor(ServerConfiguration config, Coordinator manager) {
         super(config.getCommonConfiguration(), config.getNetworkConfiguration(), manager);
         if (manager instanceof ProxyCoordinator) {
-            this.syncManager = ((ProxyCoordinator) manager).getLedgerSyncManager();
+            this.syncCoordinator = ((ProxyCoordinator) manager).getLedgerSyncCoordinator();
             this.proxyClusterManager = (ProxyClusterCoordinator)manager.getClusterManager();
         } else {
-            this.syncManager = null;
+            this.syncCoordinator = null;
             this.proxyClusterManager = null;
         }
         this.serverConfiguration = config;
@@ -125,9 +125,9 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     int epoch = request.getEpoch();
                     long index = request.getIndex();
                     String topic = request.getTopic();
-                    MessageLedger messageLedger = syncManager.getMessageLedger(topic, ledger);
+                    MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
                     ProxyLog log = getLog(logManager, ledger, messageLedger);
-                    ClientChannel syncChannel = syncManager.getSyncChannel(messageLedger);
+                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index,channel, promise);
                 } catch (Throwable t) {
                     processFailed("process sync ledger failed", command, channel, answer, t);
@@ -409,9 +409,9 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                        }
                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                    });
-                   MessageLedger messageLedger = syncManager.getMessageLedger(topic, ledger);
+                   MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
                    ProxyLog log = getLog(logManager, ledger, messageLedger);
-                   ClientChannel syncChannel = syncManager.getSyncChannel(messageLedger);
+                   ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                    log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
                } catch (Exception e) {
                    processFailed("process rest subscribe failed", command, channel, answer, e);

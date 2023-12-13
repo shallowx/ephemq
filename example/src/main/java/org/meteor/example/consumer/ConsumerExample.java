@@ -51,6 +51,6 @@ public class ConsumerExample {
     }
 
     public void clean() {
-        consumer.clear("detest#default#topic")
+        consumer.clear("detest#default#topic");
     }
 }
