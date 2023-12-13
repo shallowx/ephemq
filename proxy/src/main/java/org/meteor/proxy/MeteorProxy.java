@@ -3,13 +3,12 @@ package org.meteor.proxy;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
 import org.meteor.configuration.ServerConfiguration;
-import org.meteor.core.MeteorServer;
+import org.meteor.internal.MeteorServer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.listener.MetricsListener;
-import org.meteor.management.Manager;
-import org.meteor.net.DefaultSocketServer;
-import org.meteor.proxy.management.ZookeeperProxyManager;
+import org.meteor.coordinatio.Coordinator;
+import org.meteor.proxy.coordinatio.ZookeeperProxyCoordinator;
 import org.meteor.proxy.net.MeteorProxyServer;
 import org.meteor.proxy.net.ProxySocketServer;
 import org.meteor.util.ShutdownHookThread;
@@ -51,7 +50,7 @@ public class MeteorProxy {
 
         ServerConfiguration configuration = new ServerConfiguration(properties);
 
-        Manager manager = new ZookeeperProxyManager(configuration);
+        Coordinator manager = new ZookeeperProxyCoordinator(configuration);
         MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), manager);
         manager.addMetricsListener(metricsListener);
 

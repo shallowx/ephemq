@@ -17,7 +17,7 @@ import org.meteor.common.TopicAssignment;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import org.meteor.metrics.MetricsRegistrySetUp;
 import org.meteor.metrics.PrometheusRegistry;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
@@ -38,7 +38,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
     private final CommonConfiguration config;
-    private final Manager manager;
+    private final Coordinator manager;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestSuccesses = new ConcurrentHashMap<>();
@@ -58,7 +58,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
     };
 
-    public MetricsListener(Properties properties, CommonConfiguration config, MetricsConfiguration metricsConfiguration, Manager manager) {
+    public MetricsListener(Properties properties, CommonConfiguration config, MetricsConfiguration metricsConfiguration, Coordinator manager) {
         this.config = config;
         this.manager = manager;
         this.metricsSample = metricsConfiguration.getMetricsSampleLimit();

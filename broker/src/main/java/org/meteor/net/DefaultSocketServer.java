@@ -14,7 +14,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.CommonConfiguration;
 import org.meteor.configuration.NetworkConfiguration;
 import org.meteor.configuration.ServerConfiguration;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import java.net.SocketAddress;
 import static org.meteor.metrics.MetricsConstants.*;
 import static org.meteor.remote.util.NetworkUtils.newEventLoopGroup;
@@ -30,7 +30,7 @@ public class DefaultSocketServer {
     private EventLoopGroup workGroup;
     private ChannelFuture closedFuture;
 
-    public DefaultSocketServer(ServerConfiguration serverConfiguration, Manager manager) {
+    public DefaultSocketServer(ServerConfiguration serverConfiguration, Coordinator manager) {
         this.commonConfiguration = serverConfiguration.getCommonConfiguration();
         this.networkConfiguration = serverConfiguration.getNetworkConfiguration();
         this.serviceChannelInitializer = new ServiceChannelInitializer(commonConfiguration, networkConfiguration, manager);

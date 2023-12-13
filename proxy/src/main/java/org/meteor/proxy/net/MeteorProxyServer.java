@@ -1,10 +1,10 @@
 package org.meteor.proxy.net;
 
-import org.meteor.core.MeteorServer;
-import org.meteor.management.Manager;
+import org.meteor.internal.MeteorServer;
+import org.meteor.coordinatio.Coordinator;
 
 public class MeteorProxyServer extends MeteorServer {
-    public MeteorProxyServer(ProxySocketServer proxySocketServer, Manager manager) {
+    public MeteorProxyServer(ProxySocketServer proxySocketServer, Coordinator manager) {
         super(proxySocketServer, manager);
     }
 }

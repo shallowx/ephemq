@@ -14,9 +14,9 @@ import org.meteor.client.internal.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.ProxyConfiguration;
-import org.meteor.management.Manager;
-import org.meteor.proxy.management.LedgerSyncManager;
-import org.meteor.proxy.management.ProxyTopicManager;
+import org.meteor.coordinatio.Coordinator;
+import org.meteor.proxy.coordinatio.LedgerSyncCoordinator;
+import org.meteor.proxy.coordinatio.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
@@ -40,8 +40,8 @@ import static org.meteor.metrics.MetricsConstants.*;
 public class ProxyClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
-    private final Manager manager;
-    private final LedgerSyncManager syncManager;
+    private final Coordinator manager;
+    private final LedgerSyncCoordinator syncManager;
     private Client client;
     private final ProxyConfiguration proxyConfiguration;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
@@ -53,7 +53,7 @@ public class ProxyClientListener implements ClientListener {
 
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
 
-    public ProxyClientListener(ProxyConfiguration proxyConfiguration, Manager manager, LedgerSyncManager syncManager) {
+    public ProxyClientListener(ProxyConfiguration proxyConfiguration, Coordinator manager, LedgerSyncCoordinator syncManager) {
         this.proxyConfiguration = proxyConfiguration;
         this.manager = manager;
         this.syncManager = syncManager;
@@ -170,7 +170,7 @@ public class ProxyClientListener implements ClientListener {
                            refreshFailed = true;
                            logger.error(e.getMessage(),e);
                        }
-                       ProxyTopicManager topicManager = (ProxyTopicManager)manager.getTopicManager();
+                       ProxyTopicCoordinator topicManager = (ProxyTopicCoordinator)manager.getTopicManager();
                        topicManager.refreshTopicMetadata(Collections.singletonList(topic), channel);
                    }
                     resumeSync(channel, topic, ledger, refreshFailed);

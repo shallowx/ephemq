@@ -7,20 +7,19 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.meteor.configuration.CommonConfiguration;
 import org.meteor.configuration.NetworkConfiguration;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
-import org.meteor.remote.processor.Processor;
 
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     protected final CommonConfiguration commonConfiguration;
     protected final NetworkConfiguration networkConfiguration;
-    protected final Manager manager;
+    protected final Coordinator manager;
     protected final StatisticsDuplexHandler statisticsDuplexHandler;
 
-    public ServiceChannelInitializer(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Manager manager) {
+    public ServiceChannelInitializer(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Coordinator manager) {
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
         this.manager = manager;

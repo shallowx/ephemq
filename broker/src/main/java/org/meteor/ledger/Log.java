@@ -17,8 +17,8 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.LogListener;
-import org.meteor.management.Manager;
-import org.meteor.management.TopicManager;
+import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatio.TopicCoordinator;
 import org.meteor.metrics.MetricsConstants;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.invoke.Callback;
@@ -46,7 +46,7 @@ public class Log {
     protected final EventExecutor commandExecutor;
     protected final RecordEntryDispatcher entryDispatcher;
     protected final List<LogListener> listeners;
-    protected final Manager manager;
+    protected final Coordinator manager;
     protected final Meter segmentCountMeter;
     protected final Meter segmentBytesMeter;
     protected final int forwardTimeout;
@@ -57,7 +57,7 @@ public class Log {
     protected Promise<CancelSyncResponse> unSyncFuture;
     protected RecordChunkEntryDispatcher chunkEntryDispatcher;
 
-    public Log(ServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Manager manager, TopicConfig topicConfig) {
+    public Log(ServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Coordinator manager, TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.getTopic();
@@ -196,7 +196,7 @@ public class Log {
             } else {
                 syncOffset = currentOffset;
             }
-            TopicManager topicManager = manager.getTopicManager();
+            TopicCoordinator topicManager = manager.getTopicManager();
             topicManager.getReplicaManager().syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(), timeoutMs, syncPromise);
         } catch (Exception e) {
             syncPromise.tryFailure(e);
@@ -258,7 +258,7 @@ public class Log {
             return;
         }
         try {
-            TopicManager topicManager = manager.getTopicManager();
+            TopicCoordinator topicManager = manager.getTopicManager();
             topicManager.getReplicaManager().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
         } catch (Exception e) {
             unSyncPromise.tryFailure(e);
@@ -275,7 +275,7 @@ public class Log {
         migration = new Migration(ledger, destChannel);
         state.set(LogState.MIGRATING);
         try {
-            TopicManager topicManager = manager.getTopicManager();
+            TopicCoordinator topicManager = manager.getTopicManager();
             Promise<SyncResponse> syncResponsePromise = syncFromTarget(destChannel, new Offset(0, 0L), 30000);
             syncResponsePromise.addListener(future -> {
                 if (future.isSuccess()) {

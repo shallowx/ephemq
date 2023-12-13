@@ -6,13 +6,12 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.ints.IntCollection;
-import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.Offset;
 import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.LogListener;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import org.meteor.remote.RemoteException;
 
 import java.util.LinkedList;
@@ -25,12 +24,12 @@ import java.util.concurrent.TimeUnit;
 
 public class LogManager {
     private final ServerConfiguration config;
-    private final Manager manager;
+    private final Coordinator manager;
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
     private final List<LogListener> listeners = new LinkedList<>();
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public LogManager(ServerConfiguration config, Manager manager) {
+    public LogManager(ServerConfiguration config, Coordinator manager) {
         this.config = config;
         this.manager = manager;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));

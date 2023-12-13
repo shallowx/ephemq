@@ -9,7 +9,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.CommonConfiguration;
 import org.meteor.configuration.NetworkConfiguration;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.TopicChangedSignal;
@@ -23,11 +23,11 @@ import java.util.Set;
 public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
-    private final Manager manager;
+    private final Coordinator manager;
     private final CommonConfiguration commonConfiguration;
     private final NetworkConfiguration networkConfiguration;
 
-    public DefaultTopicListener(Manager manager, CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration) {
+    public DefaultTopicListener(Coordinator manager, CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration) {
         this.manager = manager;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;

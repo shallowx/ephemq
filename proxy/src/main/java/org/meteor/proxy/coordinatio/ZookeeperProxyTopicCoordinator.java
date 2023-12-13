@@ -1,0 +1,111 @@
+package org.meteor.proxy.coordinatio;
+
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.collect.Lists;
+import io.netty.util.concurrent.ImmediateEventExecutor;
+import io.netty.util.concurrent.Promise;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.meteor.client.internal.ClientChannel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.configuration.ProxyConfiguration;
+import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatio.ParticipantCoordinator;
+import org.meteor.coordinatio.ZookeeperTopicCoordinator;
+import org.meteor.remote.proto.TopicInfo;
+import org.meteor.remote.proto.server.QueryTopicInfoRequest;
+import org.meteor.remote.proto.server.QueryTopicInfoResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implements ProxyTopicCoordinator {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);
+    private LoadingCache<String, TopicInfo> topicMetaCache;
+    private final LedgerSyncCoordinator syncManager;
+    private final ProxyConfiguration proxyConfiguration;
+    public ZookeeperProxyTopicCoordinator(ProxyConfiguration config, Coordinator manager) {
+        this.proxyConfiguration = config;
+        this.manager = manager;
+        this.syncManager = ((ProxyDefaultCoordinator) manager).getLedgerSyncManager();
+        this.replicaManager = new ParticipantCoordinator(manager);
+    }
+
+    @Override
+    public void start() throws Exception {
+        this.topicMetaCache = Caffeine.newBuilder().refreshAfterWrite(30, TimeUnit.SECONDS)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public @Nullable TopicInfo load(String key) throws Exception {
+                        try {
+                            ClientChannel channel = syncManager.getProxyClient().fetchChannel(null);
+                            Map<String, TopicInfo> ret = acquireFromUpstream(Lists.newArrayList(key), channel);
+                            return (ret == null || ret.isEmpty()) ? null : ret.get(key);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    }
+                });
+    }
+    private Map<String, TopicInfo> acquireFromUpstream(List<String> topics, ClientChannel channel) {
+        Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        QueryTopicInfoRequest.Builder builder = QueryTopicInfoRequest.newBuilder();
+        if (topics != null && !topics.isEmpty()) {
+            builder.addAllTopicNames(topics);
+        }
+
+        try {
+            channel.invoker().queryTopicInfo(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs(), promise, builder.build());
+            QueryTopicInfoResponse response = promise.get(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs(), TimeUnit.MILLISECONDS);
+            return response.getTopicInfosMap();
+        } catch (Throwable t){
+            logger.error(t.getMessage(), t);
+            return null;
+        }
+    }
+
+
+    @Override
+    public Map<String, TopicInfo> acquireTopicMetadata(List<String> topics) {
+        if (topics.isEmpty()) {
+            return acquireFromUpstream(topics, null);
+        }
+        Map<String, TopicInfo> ret = new Object2ObjectOpenHashMap<>();
+        for (String topic : topics) {
+            TopicInfo info = topicMetaCache.get(topic);
+            if (info == null) {
+                continue;
+            }
+            ret.put(topic, info);
+        }
+        return ret;
+    }
+
+    @Override
+    public void refreshTopicMetadata(List<String> topics, ClientChannel channel) {
+        Map<String, TopicInfo> ret = acquireFromUpstream(topics, channel);
+        if (ret == null) {
+            for (String topic : topics) {
+                invalidTopicMetadata(topic);
+            }
+            return;
+        }
+
+        for (Map.Entry<String, TopicInfo> entry : ret.entrySet()) {
+            String topic = entry.getKey();
+            TopicInfo info = entry.getValue();
+            if(info == null) {
+                continue;
+            }
+            topicMetaCache.put(topic, info);
+        }
+    }
+
+    @Override
+    public void invalidTopicMetadata(String topic) {
+        topicMetaCache.invalidate(topic);
+    }
+}

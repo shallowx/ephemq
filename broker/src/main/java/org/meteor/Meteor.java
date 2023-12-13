@@ -4,12 +4,11 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.MetricsListener;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.util.TypeTransformUtils;
-import org.meteor.core.MeteorServer;
-import org.meteor.management.ZookeeperManager;
+import org.meteor.internal.MeteorServer;
+import org.meteor.coordinatio.DefaultCoordinator;
 import org.meteor.net.DefaultSocketServer;
 import org.meteor.util.ShutdownHookThread;
 
@@ -39,7 +38,7 @@ public class Meteor {
         Properties properties = loadConfigurationProperties(args);
         ServerConfiguration configuration = new ServerConfiguration(properties);
 
-        Manager manager = new ZookeeperManager(configuration);
+        Coordinator manager = new DefaultCoordinator(configuration);
         MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), manager);
         manager.addMetricsListener(metricsListener);
         DefaultSocketServer socketServer = new DefaultSocketServer(configuration, manager);
@@ -63,7 +62,7 @@ public class Meteor {
         return properties;
     }
 
-    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Manager manager) {
+    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Coordinator manager) {
         MeteorServer server = new MeteorServer(socketServer, manager);
         server.addListener(listener);
 

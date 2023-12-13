@@ -20,9 +20,9 @@ import org.meteor.remote.proto.server.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.listener.APIListener;
-import org.meteor.management.Manager;
-import org.meteor.management.TopicManager;
-import org.meteor.management.CorrelationIdConstants;
+import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatio.TopicCoordinator;
+import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.ProcessCommand;
@@ -45,11 +45,11 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     protected final CommonConfiguration commonConfiguration;
     private final NetworkConfiguration networkConfiguration;
-    protected final Manager manager;
+    protected final Coordinator manager;
     protected final EventExecutor commandExecutor;
     protected EventExecutor serviceExecutor;
 
-    public ServiceProcessor(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Manager manager) {
+    public ServiceProcessor(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Coordinator manager) {
         this.manager = manager;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
@@ -169,7 +169,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
         try {
             commandExecutor.execute(() -> {
                 try {
-                    TopicManager topicManager = manager.getTopicManager();
+                    TopicCoordinator topicManager = manager.getTopicManager();
                     Map<String, Integer> partitions = topicManager.calculatePartitions();
                     CalculatePartitionsResponse.Builder response = CalculatePartitionsResponse.newBuilder();
                     if (partitions != null) {
@@ -209,7 +209,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
             commandExecutor.execute(() -> {
                 try {
-                    TopicManager topicManager = manager.getTopicManager();
+                    TopicCoordinator topicManager = manager.getTopicManager();
                     TopicPartition topicPartition = new TopicPartition(topic, partition);
                     PartitionInfo partitionInfo = topicManager.getPartitionInfo(topicPartition);
                     int ledger = partitionInfo.getLedger();
@@ -369,7 +369,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             ProtocolStringList topicNamesList = request.getTopicNamesList();
             commandExecutor.execute(() -> {
                 try {
-                    TopicManager topicManager = manager.getTopicManager();
+                    TopicCoordinator topicManager = manager.getTopicManager();
                     Set<String> topicNames = new HashSet<>();
                     if (topicNamesList.isEmpty()) {
                         topicNames.addAll(topicManager.getAllTopics());
@@ -520,7 +520,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
             commandExecutor.execute(() -> {
                 try {
-                    TopicManager topicManager = manager.getTopicManager();
+                    TopicCoordinator topicManager = manager.getTopicManager();
                     Map<String, Object> createResult = topicManager.createTopic(topic, partition, replicas, topicConfig);
                     if (answer != null) {
                         int topicId = (int) createResult.get(CorrelationIdConstants.TOPIC_ID);

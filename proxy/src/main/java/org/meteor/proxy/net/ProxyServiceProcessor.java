@@ -15,18 +15,17 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ProxyConfiguration;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogManager;
 import org.meteor.listener.TopicListener;
-import org.meteor.management.Manager;
+import org.meteor.coordinatio.Coordinator;
 import org.meteor.net.ServiceProcessor;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.management.LedgerSyncManager;
-import org.meteor.proxy.management.ProxyClusterManager;
-import org.meteor.proxy.management.ProxyTopicManager;
-import org.meteor.proxy.management.ProxyZookeeperManager;
+import org.meteor.proxy.coordinatio.LedgerSyncCoordinator;
+import org.meteor.proxy.coordinatio.ProxyClusterCoordinator;
+import org.meteor.proxy.coordinatio.ProxyTopicCoordinator;
+import org.meteor.proxy.coordinatio.ProxyCoordinator;
 import org.meteor.proxy.ProxyLog;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
@@ -45,16 +44,16 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
     private static final int MIN_REPLICA_LIMIT = 2;
-    private final LedgerSyncManager syncManager;
-    private final ProxyClusterManager proxyClusterManager;
+    private final LedgerSyncCoordinator syncManager;
+    private final ProxyClusterCoordinator proxyClusterManager;
     private final int subscribeThreshold;
     private final ServerConfiguration serverConfiguration;
 
-    public ProxyServiceProcessor(ServerConfiguration config, Manager manager) {
+    public ProxyServiceProcessor(ServerConfiguration config, Coordinator manager) {
         super(config.getCommonConfiguration(), config.getNetworkConfiguration(), manager);
-        if (manager instanceof ProxyZookeeperManager) {
-            this.syncManager = ((ProxyZookeeperManager) manager).getLedgerSyncManager();
-            this.proxyClusterManager = (ProxyClusterManager)manager.getClusterManager();
+        if (manager instanceof ProxyCoordinator) {
+            this.syncManager = ((ProxyCoordinator) manager).getLedgerSyncManager();
+            this.proxyClusterManager = (ProxyClusterCoordinator)manager.getClusterManager();
         } else {
             this.syncManager = null;
             this.proxyClusterManager = null;
@@ -173,7 +172,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     }
 
                     QueryTopicInfoResponse.Builder newResponse = QueryTopicInfoResponse.newBuilder();
-                    ProxyTopicManager topicManager = (ProxyTopicManager) manager.getTopicManager();
+                    ProxyTopicCoordinator topicManager = (ProxyTopicCoordinator) manager.getTopicManager();
                     Map<String, TopicInfo> topicInfoMap = topicManager.acquireTopicMetadata(request.getTopicNamesList());
                     Map<String, TopicInfo> newTopicInfoMap = new Object2ObjectOpenHashMap<>();
                     if (topicInfoMap != null && !topicInfoMap.isEmpty()) {
