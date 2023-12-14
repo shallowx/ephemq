@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -17,16 +17,17 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.Log;
-import org.meteor.ledger.LogManager;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.TopicListener;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.net.ServiceProcessor;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.coordinatio.LedgerSyncCoordinator;
-import org.meteor.proxy.coordinatio.ProxyClusterCoordinator;
-import org.meteor.proxy.coordinatio.ProxyTopicCoordinator;
-import org.meteor.proxy.coordinatio.ProxyCoordinator;
-import org.meteor.proxy.ProxyLog;
+import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
+import org.meteor.proxy.coordinatior.ProxyClusterCoordinator;
+import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
+import org.meteor.proxy.coordinatior.ProxyCoordinator;
+import org.meteor.proxy.internal.ProxyLog;
+import org.meteor.proxy.internal.ProxyServerConfiguration;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.proto.PartitionMetadata;
@@ -42,21 +43,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
-
     private static final int MIN_REPLICA_LIMIT = 2;
     private final LedgerSyncCoordinator syncCoordinator;
-    private final ProxyClusterCoordinator proxyClusterManager;
+    private final ProxyClusterCoordinator proxyClusterCoordinator;
     private final int subscribeThreshold;
-    private final ServerConfiguration serverConfiguration;
+    private final ProxyServerConfiguration serverConfiguration;
 
-    public ProxyServiceProcessor(ServerConfiguration config, Coordinator manager) {
-        super(config.getCommonConfiguration(), config.getNetworkConfiguration(), manager);
-        if (manager instanceof ProxyCoordinator) {
-            this.syncCoordinator = ((ProxyCoordinator) manager).getLedgerSyncCoordinator();
-            this.proxyClusterManager = (ProxyClusterCoordinator)manager.getClusterManager();
+    public ProxyServiceProcessor(ProxyServerConfiguration config, Coordinator coordinator) {
+        super(config.getCommonConfiguration(), config.getNetworkConfiguration(), coordinator);
+        if (coordinator instanceof ProxyCoordinator) {
+            this.syncCoordinator = ((ProxyCoordinator) coordinator).getLedgerSyncCoordinator();
+            this.proxyClusterCoordinator = (ProxyClusterCoordinator)coordinator.getClusterCoordinator();
         } else {
             this.syncCoordinator = null;
-            this.proxyClusterManager = null;
+            this.proxyClusterCoordinator = null;
         }
         this.serverConfiguration = config;
         this.subscribeThreshold = config.getProxyConfiguration().getProxyHeavyLoadSubscriberThreshold();
@@ -97,7 +97,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
 
     @Override
     protected void processSyncLedger(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogManager logManager = manager.getLogManager();
+        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -126,7 +126,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     long index = request.getIndex();
                     String topic = request.getTopic();
                     MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
-                    ProxyLog log = getLog(logManager, ledger, messageLedger);
+                    ProxyLog log = getLog(logCoordinator, ledger, messageLedger);
                     ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index,channel, promise);
                 } catch (Throwable t) {
@@ -140,8 +140,8 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
-    private ProxyLog getLog(LogManager logManager, int ledger, MessageLedger messageLedger) {
-        return (ProxyLog) logManager.getOrInitLog(ledger, _ledger -> {
+    private ProxyLog getLog(LogCoordinator logCoordinator, int ledger, MessageLedger messageLedger) {
+        return (ProxyLog) logCoordinator.getOrInitLog(ledger, _ledger -> {
             TopicConfig topicConfig = new TopicConfig(
                     serverConfiguration.getSegmentConfiguration().getSegmentRollingSize(),
                     serverConfiguration.getSegmentConfiguration().getSegmentRetainLimit(),
@@ -149,8 +149,8 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     true
             );
             TopicPartition topicPartition = new TopicPartition(messageLedger.topic(), messageLedger.partition());
-            Log log = new ProxyLog(serverConfiguration, topicPartition, ledger, 0, manager, topicConfig);
-            for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
+            Log log = new ProxyLog(serverConfiguration, topicPartition, ledger, 0, coordinator, topicConfig);
+            for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
                 listener.onPartitionInit(topicPartition, ledger);
             }
             log.start(null);
@@ -166,14 +166,14 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             QueryTopicInfoRequest request = ProtoBufUtils.readProto(data, QueryTopicInfoRequest.parser());
             commandExecutor.execute(() -> {
                 try {
-                    List<Node> clusterUpNodes = proxyClusterManager.getClusterUpNodes();
+                    List<Node> clusterUpNodes = proxyClusterCoordinator.getClusterUpNodes();
                     if (clusterUpNodes == null || clusterUpNodes.isEmpty()) {
                         throw new IllegalStateException("cluster node is empty");
                     }
 
                     QueryTopicInfoResponse.Builder newResponse = QueryTopicInfoResponse.newBuilder();
-                    ProxyTopicCoordinator topicManager = (ProxyTopicCoordinator) manager.getTopicManager();
-                    Map<String, TopicInfo> topicInfoMap = topicManager.acquireTopicMetadata(request.getTopicNamesList());
+                    ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) coordinator.getTopicCoordinator();
+                    Map<String, TopicInfo> topicInfoMap = topicCoordinator.acquireTopicMetadata(request.getTopicNamesList());
                     Map<String, TopicInfo> newTopicInfoMap = new Object2ObjectOpenHashMap<>();
                     if (topicInfoMap != null && !topicInfoMap.isEmpty()) {
                         for (Map.Entry<String, TopicInfo> entry : topicInfoMap.entrySet()) {
@@ -252,7 +252,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private NavigableMap<String, Integer> calculateReplicas(Channel channel, String topic, int ledger) {
         int allThroughput = 0;
         NavigableMap<String, Integer> nodes = new TreeMap<>();
-        for (Node node : proxyClusterManager.getClusterUpNodes()) {
+        for (Node node : proxyClusterCoordinator.getClusterUpNodes()) {
             if (node == null) {
                 continue;
             }
@@ -322,7 +322,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             return nodes;
         }
         NavigableMap<String, Integer> selectNodes = new TreeMap<>();
-        List<String> routeNodes = proxyClusterManager.route2Nodes(token, replicaCount);
+        List<String> routeNodes = proxyClusterCoordinator.route2Nodes(token, replicaCount);
         for (String node : routeNodes) {
             Integer throughput = nodes.get(node);
             selectNodes.put(node, throughput == null ? 0 : throughput);
@@ -370,8 +370,8 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 }
                 recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
             });
-            LogManager logManager = manager.getLogManager();
-            Log log = logManager.getLog(ledger);
+            LogCoordinator logCoordinator = coordinator.getLogCoordinator();
+            Log log = logCoordinator.getLog(ledger);
             if (log == null) {
                 promise.trySuccess(null);
                 return;
@@ -385,7 +385,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
 
     @Override
     protected void processRestSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogManager logManager = manager.getLogManager();
+        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -410,7 +410,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                    });
                    MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
-                   ProxyLog log = getLog(logManager, ledger, messageLedger);
+                   ProxyLog log = getLog(logCoordinator, ledger, messageLedger);
                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                    log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
                } catch (Exception e) {
@@ -426,7 +426,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
 
     @Override
     protected void processAlterSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogManager logManager = manager.getLogManager();
+        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -448,7 +448,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
-                    Log log = logManager.getLog(ledger);
+                    Log log = logCoordinator.getLog(ledger);
                     if (log == null) {
                         promise.tryFailure(new IllegalStateException("alter subscribe failed, since log does not exist"));
                         return;
@@ -466,7 +466,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
     @Override
     protected void processCleanSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogManager logManager = manager.getLogManager();
+        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -485,7 +485,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
-                    logManager.cleanSubscribe(channel, request.getLedger(), promise);
+                    logCoordinator.cleanSubscribe(channel, request.getLedger(), promise);
                 } catch (Exception e) {
                     processFailed("process clean subscribe failed", command, channel, answer, e);
                     recordCommand(command, bytes, System.nanoTime() - time,false);

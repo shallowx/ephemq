@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import io.netty.channel.Channel;
 

@@ -7,7 +7,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.meteor.configuration.CommonConfiguration;
 import org.meteor.configuration.NetworkConfiguration;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
@@ -16,13 +16,13 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
 
     protected final CommonConfiguration commonConfiguration;
     protected final NetworkConfiguration networkConfiguration;
-    protected final Coordinator manager;
+    protected final Coordinator coordinator;
     protected final StatisticsDuplexHandler statisticsDuplexHandler;
 
-    public ServiceChannelInitializer(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Coordinator manager) {
+    public ServiceChannelInitializer(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Coordinator coordinator) {
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
-        this.manager = manager;
+        this.coordinator = coordinator;
         this.statisticsDuplexHandler = new StatisticsDuplexHandler(commonConfiguration);
     }
 
@@ -37,6 +37,6 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new HeartbeatDuplexHandler(0, 60000));
-        pipeline.addLast("processor-handler", new ServiceDuplexHandler(manager, new ServiceProcessor(commonConfiguration, networkConfiguration, manager)));
+        pipeline.addLast("processor-handler", new ServiceDuplexHandler(coordinator, new ServiceProcessor(commonConfiguration, networkConfiguration, coordinator)));
     }
 }

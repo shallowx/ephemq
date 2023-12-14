@@ -3,8 +3,8 @@ package org.meteor.listener;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.meteor.configuration.NetworkConfiguration;
-import org.meteor.coordinatio.ConnectionCoordinator;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.ConnectionCoordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -20,11 +20,11 @@ import java.util.Set;
 public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
 
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private final NetworkConfiguration config;
 
-    public DefaultClusterListener(Coordinator manager, NetworkConfiguration config) {
-        this.manager = manager;
+    public DefaultClusterListener(Coordinator coordinator, NetworkConfiguration config) {
+        this.coordinator = coordinator;
         this.config = config;
     }
 
@@ -55,8 +55,8 @@ public class DefaultClusterListener implements ClusterListener {
     }
 
     private void processServerOffline(Node node) {
-        ConnectionCoordinator connectionManager = manager.getConnectionManager();
-        Set<Channel> channels = connectionManager.getChannels();
+        ConnectionCoordinator connectionCoordinator = coordinator.getConnectionCoordinator();
+        Set<Channel> channels = connectionCoordinator.getChannels();
         if (channels != null && !channels.isEmpty()) {
             for (Channel channel : channels) {
                 sendServerOfflineData(channel, node);

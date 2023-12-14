@@ -3,15 +3,14 @@ package org.meteor.configuration;
 import java.util.Properties;
 
 public class ServerConfiguration {
-    private final CommonConfiguration commonConfiguration;
-    private final ChunkRecordDispatchConfiguration chunkRecordDispatchConfiguration;
-    private final MessageConfiguration messageConfiguration;
-    private final MetricsConfiguration metricsConfiguration;
-    private final NetworkConfiguration networkConfiguration;
-    private final RecordDispatchConfiguration recordDispatchConfiguration;
-    private final ZookeeperConfiguration zookeeperConfiguration;
-    private final ProxyConfiguration proxyConfiguration;
-    private final SegmentConfiguration segmentConfiguration;
+    protected final CommonConfiguration commonConfiguration;
+    protected final ChunkRecordDispatchConfiguration chunkRecordDispatchConfiguration;
+    protected final MessageConfiguration messageConfiguration;
+    protected final MetricsConfiguration metricsConfiguration;
+    protected final NetworkConfiguration networkConfiguration;
+    protected final RecordDispatchConfiguration recordDispatchConfiguration;
+    protected final ZookeeperConfiguration zookeeperConfiguration;
+    protected final SegmentConfiguration segmentConfiguration;
 
     public ServerConfiguration (Properties properties) {
         this.commonConfiguration = new CommonConfiguration(properties);
@@ -22,8 +21,6 @@ public class ServerConfiguration {
         this.recordDispatchConfiguration = new RecordDispatchConfiguration(properties);
         this.zookeeperConfiguration = new ZookeeperConfiguration(properties);
         this.segmentConfiguration =new SegmentConfiguration(properties);
-        this.proxyConfiguration =new ProxyConfiguration(properties, this.commonConfiguration, this.networkConfiguration, this.zookeeperConfiguration, this
-                .segmentConfiguration);
     }
 
     public CommonConfiguration getCommonConfiguration() {
@@ -52,10 +49,6 @@ public class ServerConfiguration {
 
     public ZookeeperConfiguration getZookeeperConfiguration() {
         return zookeeperConfiguration;
-    }
-
-    public ProxyConfiguration getProxyConfiguration() {
-        return proxyConfiguration;
     }
 
     public SegmentConfiguration getSegmentConfiguration() {

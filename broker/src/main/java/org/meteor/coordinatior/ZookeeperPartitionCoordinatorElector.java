@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
@@ -32,17 +32,17 @@ public class ZookeeperPartitionCoordinatorElector {
 
     private final CommonConfiguration configuration;
     private final TopicPartition topicPartition;
-    private final Coordinator manager;
-    private final ParticipantCoordinator replicaManager;
+    private final Coordinator coordinator;
+    private final ParticipantCoordinator participantCoordinator;
     private final int ledger;
     private final CuratorFramework client;
     private LeaderLatch latch;
 
-    public ZookeeperPartitionCoordinatorElector(CommonConfiguration brokerConfiguration, ZookeeperConfiguration zookeeperConfiguration, TopicPartition topicPartition, Coordinator manager, ParticipantCoordinator replicaManager, int ledger) {
+    public ZookeeperPartitionCoordinatorElector(CommonConfiguration brokerConfiguration, ZookeeperConfiguration zookeeperConfiguration, TopicPartition topicPartition, Coordinator coordinator, ParticipantCoordinator participantCoordinator, int ledger) {
         this.configuration = brokerConfiguration;
         this.topicPartition = topicPartition;
-        this.manager = manager;
-        this.replicaManager = replicaManager;
+        this.coordinator = coordinator;
+        this.participantCoordinator = participantCoordinator;
         this.ledger = ledger;
         this.client = ZookeeperClient.getClient(zookeeperConfiguration, configuration.getClusterName());
     }
@@ -65,7 +65,7 @@ public class ZookeeperPartitionCoordinatorElector {
                         logger.error("Can't write leader info to zookeeper for {}", topicPartition, e);
                     }
 
-                    for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
+                    for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
                         listener.onPartitionGetLeader(topicPartition);
                     }
                 });
@@ -77,7 +77,7 @@ public class ZookeeperPartitionCoordinatorElector {
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
                     try {
-                        Promise<Void> promise = replicaManager.stopChunkDispatch(ledger, null);
+                        Promise<Void> promise = participantCoordinator.stopChunkDispatch(ledger, null);
                         if (promise.cause() != null) {
                             logger.error("Stop chunk dispatch failed", promise.cause());
                         }
@@ -85,7 +85,7 @@ public class ZookeeperPartitionCoordinatorElector {
                     } catch (Exception e) {
                         logger.error("Switch to follower failed", e);
                     }
-                    for (TopicListener listener : manager.getTopicManager().getTopicListener()) {
+                    for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
                         listener.onPartitionLostLeader(topicPartition);
                     }
                 });
@@ -109,7 +109,7 @@ public class ZookeeperPartitionCoordinatorElector {
                     topicAssignment.setEpoch(topicAssignment.getEpoch() + 1);
                     client.setData().forPath(path, JsonCoordinator.serialize(topicAssignment));
 
-                    Log log = manager.getLogManager().getLog(topicAssignment.getLedgerId());
+                    Log log = coordinator.getLogCoordinator().getLog(topicAssignment.getLedgerId());
                     if (log != null) {
                         log.updateEpoch(topicAssignment.getEpoch());
                     }
@@ -125,7 +125,7 @@ public class ZookeeperPartitionCoordinatorElector {
     }
 
     private EventExecutor getPoolExecutor(TopicPartition topicPartition) {
-        List<EventExecutor> auxEventExecutors = manager.getAuxEventExecutors();
+        List<EventExecutor> auxEventExecutors = coordinator.getAuxEventExecutors();
         return auxEventExecutors.get((Objects.hashCode(topicPartition) & 0xfffffff7) & auxEventExecutors.size());
     }
 
@@ -165,9 +165,9 @@ public class ZookeeperPartitionCoordinatorElector {
     }
 
     private void syncLeader(int ledger) throws Exception {
-        Log log = manager.getLogManager().getLog(ledger);
-        Node leaderNode = manager.getClusterManager().getClusterNode(latch.getLeader().getId());
-        Client innerClient = manager.getInnerClient();
+        Log log = coordinator.getLogCoordinator().getLog(ledger);
+        Node leaderNode = coordinator.getClusterCoordinator().getClusterNode(latch.getLeader().getId());
+        Client innerClient = coordinator.getInnerClient();
         ClientChannel channel = innerClient.fetchChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);
         promise.addListener(future -> {

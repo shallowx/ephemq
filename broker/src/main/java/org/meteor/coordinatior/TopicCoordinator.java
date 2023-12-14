@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import org.meteor.common.PartitionInfo;
 import org.meteor.common.TopicConfig;
@@ -41,7 +41,7 @@ public interface TopicCoordinator {
 
     void addTopicListener(TopicListener listener);
 
-    ParticipantCoordinator getReplicaManager();
+    ParticipantCoordinator getParticipantCoordinator();
 
     Map<String, Integer> calculatePartitions() throws Exception;
 

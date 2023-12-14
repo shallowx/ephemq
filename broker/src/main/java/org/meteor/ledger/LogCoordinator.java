@@ -4,14 +4,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Promise;
-import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import org.meteor.common.Offset;
 import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.configuration.ServerConfiguration;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.listener.LogListener;
-import org.meteor.coordinatio.Coordinator;
 import org.meteor.remote.RemoteException;
 
 import java.util.LinkedList;
@@ -21,17 +20,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
-public class LogManager {
+public class LogCoordinator {
     private final ServerConfiguration config;
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
     private final List<LogListener> listeners = new LinkedList<>();
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public LogManager(ServerConfiguration config, Coordinator manager) {
+    public LogCoordinator(ServerConfiguration config, Coordinator coordinator) {
         this.config = config;
-        this.manager = manager;
+        this.coordinator = coordinator;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));
     }
 
@@ -92,7 +92,7 @@ public class LogManager {
     }
 
     public Log initLog(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) {
-        Log log = new Log(config, topicPartition, ledgerId, epoch, manager, topicConfig);
+        Log log = new Log(config, topicPartition, ledgerId, epoch, coordinator, topicConfig);
         this.ledgerId2LogMap.putIfAbsent(ledgerId, log);
         for (LogListener listener : listeners) {
             listener.onInitLog(log);

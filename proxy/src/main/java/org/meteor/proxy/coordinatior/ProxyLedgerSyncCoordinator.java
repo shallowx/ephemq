@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatio;
+package org.meteor.proxy.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
@@ -7,13 +7,13 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ProxyConfiguration;
+import org.meteor.proxy.internal.ProxyConfiguration;
 import org.meteor.ledger.Log;
-import org.meteor.coordinatio.JsonCoordinator;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.JsonCoordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.ProxyLog;
+import org.meteor.proxy.internal.ProxyLog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +28,10 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
 
     private final ProxyConfiguration proxyConfiguration;
 
-    public ProxyLedgerSyncCoordinator(ProxyConfiguration proxyConfiguration, Coordinator manager) {
-        super(proxyConfiguration, manager);
+    public ProxyLedgerSyncCoordinator(ProxyConfiguration proxyConfiguration, Coordinator coordinator) {
+        super(proxyConfiguration, coordinator);
         this.proxyConfiguration = proxyConfiguration;
-        EventExecutor executor = manager.getAuxEventExecutorGroup().next();
+        EventExecutor executor = coordinator.getAuxEventExecutorGroup().next();
         executor.scheduleAtFixedRate(() -> {
             try {
                 commitLoad();
@@ -43,7 +43,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
 
     private void commitLoad() throws Exception {
         long now = System.currentTimeMillis();
-        for (Log log : coordinator.getLogManager().getLedgerId2LogMap().values()) {
+        for (Log log : coordinator.getLogCoordinator().getLedgerId2LogMap().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
@@ -71,9 +71,9 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private Map<Integer, Integer> calculateLedgerThroughput() {
         Map<Integer, Integer> ret = new HashMap<>();
         long interval = (System.currentTimeMillis() - commitTime) / 1000;
-        for (Log log : coordinator.getLogManager().getLedgerId2LogMap().values()) {
+        for (Log log : coordinator.getLogCoordinator().getLedgerId2LogMap().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
-            long newValue = proxyLog.getDispatchTotal();
+            long newValue = proxyLog.getTotalDispatchedMessages();
             Long oldValue = dispatchTotal.put(proxyLog, newValue);
             if (oldValue == null || oldValue <= 0) {
                 continue;

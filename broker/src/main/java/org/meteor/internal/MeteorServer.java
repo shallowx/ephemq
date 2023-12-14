@@ -2,8 +2,8 @@ package org.meteor.internal;
 
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.meteor.listener.ServerListener;
-import org.meteor.coordinatio.ClusterCoordinator;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.ClusterCoordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.net.DefaultSocketServer;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
@@ -22,12 +22,12 @@ public class MeteorServer {
     private final List<ServerListener> serverListeners = new LinkedList<>();
     private final CountDownLatch countDownLatch;
     private final DefaultSocketServer defaultSocketServer;
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private static final ExecutorService socketServerExecutor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
 
-    public MeteorServer(DefaultSocketServer defaultSocketServer, Coordinator manager) {
+    public MeteorServer(DefaultSocketServer defaultSocketServer, Coordinator coordinator) {
         this.defaultSocketServer = defaultSocketServer;
-        this.manager = manager;
+        this.coordinator = coordinator;
         this.countDownLatch = new CountDownLatch(1);
     }
 
@@ -53,11 +53,11 @@ public class MeteorServer {
         });
         startFuture.get();
 
-        manager.start();
+        coordinator.start();
         for (ServerListener listener : serverListeners) {
-            ClusterCoordinator clusterManager = manager.getClusterManager();
-            if (clusterManager != null) {
-                Node thisNode = clusterManager.getThisNode();
+            ClusterCoordinator clusterCoordinator = coordinator.getClusterCoordinator();
+            if (clusterCoordinator != null) {
+                Node thisNode = clusterCoordinator.getThisNode();
                 listener.onStartup(thisNode);
             }
         }
@@ -65,9 +65,9 @@ public class MeteorServer {
     }
 
     public void shutdown() throws Exception {
-        ClusterCoordinator clusterManager = manager.getClusterManager();
-        if (clusterManager != null) {
-            Node thisNode = clusterManager.getThisNode();
+        ClusterCoordinator clusterCoordinator = coordinator.getClusterCoordinator();
+        if (clusterCoordinator != null) {
+            Node thisNode = clusterCoordinator.getThisNode();
             for (ServerListener listener : serverListeners) {
                 listener.onShutdown(thisNode);
                 if (listener instanceof Closeable) {
@@ -75,7 +75,7 @@ public class MeteorServer {
                 }
             }
         }
-        manager.shutdown();
+        coordinator.shutdown();
         defaultSocketServer.shutdown();
         if (!socketServerExecutor.isTerminated() || !socketServerExecutor.isShutdown()) {
             socketServerExecutor.shutdown();

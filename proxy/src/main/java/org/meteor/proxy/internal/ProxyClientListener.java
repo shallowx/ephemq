@@ -1,4 +1,4 @@
-package org.meteor.proxy;
+package org.meteor.proxy.internal;
 
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Metrics;
@@ -13,10 +13,10 @@ import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ProxyConfiguration;
-import org.meteor.coordinatio.Coordinator;
-import org.meteor.proxy.coordinatio.LedgerSyncCoordinator;
-import org.meteor.proxy.coordinatio.ProxyTopicCoordinator;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.proxy.MeteorProxy;
+import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
+import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
@@ -41,7 +41,7 @@ public class ProxyClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
     private final Coordinator coordinator;
-    private final LedgerSyncCoordinator syncManager;
+    private final LedgerSyncCoordinator syncCoordinator;
     private Client client;
     private final ProxyConfiguration proxyConfiguration;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
@@ -53,16 +53,16 @@ public class ProxyClientListener implements ClientListener {
 
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
 
-    public ProxyClientListener(ProxyConfiguration proxyConfiguration, Coordinator manager, LedgerSyncCoordinator syncManager) {
+    public ProxyClientListener(ProxyConfiguration proxyConfiguration, Coordinator coordinator, LedgerSyncCoordinator syncCoordinator) {
         this.proxyConfiguration = proxyConfiguration;
-        this.coordinator = manager;
-        this.syncManager = syncManager;
-        EventExecutor taskExecutor = manager.getAuxEventExecutorGroup().next();
+        this.coordinator = coordinator;
+        this.syncCoordinator = syncCoordinator;
+        EventExecutor taskExecutor = coordinator.getAuxEventExecutorGroup().next();
         taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMs(), proxyConfiguration.getProxySyncCheckIntervalMs(), TimeUnit.MILLISECONDS);
     }
 
     private void checkSync() {
-        Map<Integer, Log> map = coordinator.getLogManager().getLedgerId2LogMap();
+        Map<Integer, Log> map = coordinator.getLogCoordinator().getLedgerId2LogMap();
         if (map == null) {
             return;
         }
@@ -122,7 +122,7 @@ public class ProxyClientListener implements ClientListener {
             summary.record(count);
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(f -> semaphore.release());
-            coordinator.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
+            coordinator.getLogCoordinator().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);
@@ -170,8 +170,8 @@ public class ProxyClientListener implements ClientListener {
                            refreshFailed = true;
                            logger.error(e.getMessage(),e);
                        }
-                       ProxyTopicCoordinator topicManager = (ProxyTopicCoordinator)coordinator.getTopicManager();
-                       topicManager.refreshTopicMetadata(Collections.singletonList(topic), channel);
+                       ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator)coordinator.getTopicCoordinator();
+                       topicCoordinator.refreshTopicMetadata(Collections.singletonList(topic), channel);
                    }
                     resumeSync(channel, topic, ledger, refreshFailed);
                    if (signal.getType() == TopicChangedSignal.Type.DELETE) {
@@ -187,7 +187,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void noticeTopicChanged(TopicChangedSignal signal) {
-        Set<Channel> channels = coordinator.getConnectionManager().getChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getChannels();
         if (channels.isEmpty()) {
             return;
         }
@@ -233,7 +233,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void resumeChannelSync(ClientChannel channel, boolean refreshRouter) {
-        Collection<Log> logs = coordinator.getLogManager().getLedgerId2LogMap().values();
+        Collection<Log> logs = coordinator.getLogCoordinator().getLedgerId2LogMap().values();
         Map<String, List<Log>> groupedLogs = logs.stream().filter(log -> channel == log.getSyncChannel()).collect(Collectors.groupingBy(Log::getTopic));
         if (groupedLogs.isEmpty()) {
             return;
@@ -261,7 +261,7 @@ public class ProxyClientListener implements ClientListener {
         }
     }
 
-    private Promise<Void> resumeSync(ClientChannel channel, String topic, int ledger, boolean refreshRouter) {
+    private void resumeSync(ClientChannel channel, String topic, int ledger, boolean refreshRouter) {
         Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
             if (!f.isSuccess()) {
@@ -276,12 +276,11 @@ public class ProxyClientListener implements ClientListener {
                     client.refreshMessageRouter(topic, null);
                 }
             }
-            syncManager.resumeSync(channel, topic, ledger, promise);
+            syncCoordinator.resumeSync(channel, topic, ledger, promise);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             promise.tryFailure(e);
         }
-        return promise;
     }
 
     private EventExecutor fixedExecutor(String topic) {

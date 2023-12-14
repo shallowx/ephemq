@@ -1,16 +1,16 @@
-package org.meteor.proxy.coordinatio;
+package org.meteor.proxy.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
-import org.meteor.configuration.ProxyConfiguration;
+import org.meteor.proxy.internal.ProxyConfiguration;
 import org.meteor.internal.InnerClient;
 import org.meteor.common.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinatio.Coordinator;
-import org.meteor.proxy.ProxyClientListener;
-import org.meteor.proxy.ProxyLog;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.proxy.internal.ProxyClientListener;
+import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.ledger.Log;
@@ -64,7 +64,7 @@ public abstract class LedgerSyncCoordinator {
         Promise<Boolean> promise = taskExecutor.newPromise();
         promise.addListener(f -> {
             if (f.isSuccess() && (Boolean)f.getNow()) {
-                coordinator.getLogManager().destroyLog(log.getLedger());
+                coordinator.getLogCoordinator().destroyLog(log.getLedger());
             }
         });
         log.deSyncAndCloseIfNotSubscribe(promise);
@@ -78,7 +78,7 @@ public abstract class LedgerSyncCoordinator {
             return ret;
         }
 
-        Log log = coordinator.getLogManager().getLog(ledger);
+        Log log = coordinator.getLogCoordinator().getLog(ledger);
         if (log == null) {
             ret.trySuccess(null);
             return ret;

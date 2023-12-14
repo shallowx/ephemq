@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatio;
+package org.meteor.proxy.coordinatior;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -11,10 +11,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ProxyConfiguration;
-import org.meteor.coordinatio.Coordinator;
-import org.meteor.coordinatio.ParticipantCoordinator;
-import org.meteor.coordinatio.ZookeeperTopicCoordinator;
+import org.meteor.proxy.internal.ProxyConfiguration;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinatior.ParticipantCoordinator;
+import org.meteor.coordinatior.ZookeeperTopicCoordinator;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.QueryTopicInfoRequest;
 import org.meteor.remote.proto.server.QueryTopicInfoResponse;
@@ -27,11 +27,11 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
     private LoadingCache<String, TopicInfo> topicMetaCache;
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyConfiguration proxyConfiguration;
-    public ZookeeperProxyTopicCoordinator(ProxyConfiguration config, Coordinator manager) {
+    public ZookeeperProxyTopicCoordinator(ProxyConfiguration config, Coordinator coordinator) {
         this.proxyConfiguration = config;
-        this.manager = manager;
-        this.syncCoordinator = ((ProxyDefaultCoordinator) manager).getLedgerSyncCoordinator();
-        this.replicaManager = new ParticipantCoordinator(manager);
+        this.coordinator = coordinator;
+        this.syncCoordinator = ((ProxyDefaultCoordinator) coordinator).getLedgerSyncCoordinator();
+        this.participantCoordinator = new ParticipantCoordinator(coordinator);
     }
 
     @Override

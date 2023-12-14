@@ -1,23 +1,24 @@
-package org.meteor.proxy.coordinatio;
+package org.meteor.proxy.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.ServerConfiguration;
-import org.meteor.ledger.LogManager;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.DefaultClusterListener;
-import org.meteor.coordinatio.DefaultConnectionCoordinator;
-import org.meteor.coordinatio.DefaultCoordinator;
+import org.meteor.coordinatior.DefaultConnectionCoordinator;
+import org.meteor.coordinatior.DefaultCoordinator;
+import org.meteor.proxy.internal.ProxyServerConfiguration;
 import org.meteor.remote.util.NetworkUtils;
 
 public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);
     private final LedgerSyncCoordinator syncCoordinator;
 
-    public ProxyDefaultCoordinator(ServerConfiguration configuration) {
+    public ProxyDefaultCoordinator(ProxyServerConfiguration configuration) {
         super(configuration);
 
-        this.connectionManager = new DefaultConnectionCoordinator();
+        this.connectionCoordinator = new DefaultConnectionCoordinator();
         this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getCommandHandleThreadLimit(), "proxy-handle");
         this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageStorageThreadLimit(), "proxy-storage");
         this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageDispatchThreadLimit(), "proxy-dispatch");
@@ -28,10 +29,10 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
         }
 
         this.syncCoordinator = new ProxyLedgerSyncCoordinator(configuration.getProxyConfiguration(), this);
-        this.topicManager = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
-        this.clusterManager = new ZookeeperProxyClusterCoordinator(configuration);
-        this.clusterManager.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfiguration()));
-        this.logManager = new LogManager(configuration, this);
+        this.topicCoordinator = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
+        this.clusterCoordinator = new ZookeeperProxyClusterCoordinator(configuration);
+        this.clusterCoordinator.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfiguration()));
+        this.logCoordinator = new LogCoordinator(configuration, this);
     }
 
     @Override

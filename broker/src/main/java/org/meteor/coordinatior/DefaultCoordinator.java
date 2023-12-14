@@ -1,10 +1,10 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.internal.ZookeeperClient;
-import org.meteor.ledger.LogManager;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.*;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientConfig;
@@ -23,11 +23,11 @@ public class DefaultCoordinator implements Coordinator {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultCoordinator.class);
     private final List<APIListener> apiListeners = new LinkedList<>();
-    protected LogManager logManager;
-    protected TopicCoordinator topicManager;
-    protected ClusterCoordinator clusterManager;
+    protected LogCoordinator logCoordinator;
+    protected TopicCoordinator topicCoordinator;
+    protected ClusterCoordinator clusterCoordinator;
     protected ServerConfiguration configuration;
-    protected ConnectionCoordinator connectionManager;
+    protected ConnectionCoordinator connectionCoordinator;
     protected EventExecutorGroup handleGroup;
     protected EventExecutorGroup storageGroup;
     protected EventExecutorGroup dispatchGroup;
@@ -41,20 +41,20 @@ public class DefaultCoordinator implements Coordinator {
 
     public DefaultCoordinator(ServerConfiguration configuration) {
         this.configuration = configuration;
-        this.connectionManager = new DefaultConnectionCoordinator();
+        this.connectionCoordinator = new DefaultConnectionCoordinator();
         this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageSyncThreadLimit(), "sync-group");
         this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getCommandHandleThreadLimit(), "command-handle-group");
         this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageStorageThreadLimit(), "storage-group");
         this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageDispatchThreadLimit(), "dispatch-group");
 
-        clusterManager = new ZookeeperClusterCoordinator(configuration);
+        clusterCoordinator = new ZookeeperClusterCoordinator(configuration);
         ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfiguration());
-        clusterManager.addClusterListener(clusterListener);
+        clusterCoordinator.addClusterListener(clusterListener);
 
-        logManager = new LogManager(configuration, this);
-        topicManager = new ZookeeperTopicCoordinator(configuration, this);
+        logCoordinator = new LogCoordinator(configuration, this);
+        topicCoordinator = new ZookeeperTopicCoordinator(configuration, this);
         TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfiguration(),configuration.getNetworkConfiguration());
-        topicManager.addTopicListener(topicListener);
+        topicCoordinator.addTopicListener(topicListener);
 
         auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getAuxThreadLimit(), "aux-group");
         auxEventExecutors = new ArrayList<>(configuration.getCommonConfiguration().getAuxThreadLimit());
@@ -76,35 +76,35 @@ public class DefaultCoordinator implements Coordinator {
         innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(this), configuration.getCommonConfiguration(), this);
         innerClient.start();
 
-        if (clusterManager != null) {
-            clusterManager.start();
-            logger.info("Cluster manager<{}> start successfully", clusterManager.getThisNode().getCluster());
+        if (clusterCoordinator != null) {
+            clusterCoordinator.start();
+            logger.info("Cluster coordinator<{}> start successfully", clusterCoordinator.getThisNode().getCluster());
         }
 
-        if (topicManager != null) {
-            logger.info("Topic manager start successfully");
-            topicManager.start();
+        if (topicCoordinator != null) {
+            logger.info("Topic coordinator start successfully");
+            topicCoordinator.start();
         }
 
-        if (logManager != null) {
-            logger.info("Ledger log manager start successfully");
-            logManager.start();
+        if (logCoordinator != null) {
+            logger.info("Ledger log coordinator start successfully");
+            logCoordinator.start();
         }
     }
 
     @Override
     public void shutdown() throws Exception {
-        if (clusterManager != null) {
-            logger.info("Cluster manager<{}> will shutdown", clusterManager.getThisNode().getCluster());
-            clusterManager.shutdown();
+        if (clusterCoordinator != null) {
+            logger.info("Cluster coordinator<{}> will shutdown", clusterCoordinator.getThisNode().getCluster());
+            clusterCoordinator.shutdown();
         }
-        if (topicManager != null) {
-            logger.info("Topic manager will shutdown");
-            topicManager.shutdown();
+        if (topicCoordinator != null) {
+            logger.info("Topic coordinator will shutdown");
+            topicCoordinator.shutdown();
         }
-        if (logManager != null) {
-            logger.info("Ledger log manager will shutdown");
-            logManager.shutdown();
+        if (logCoordinator != null) {
+            logger.info("Ledger log coordinator will shutdown");
+            logCoordinator.shutdown();
         }
 
         if (handleGroup != null) {
@@ -136,33 +136,33 @@ public class DefaultCoordinator implements Coordinator {
     }
 
     @Override
-    public TopicCoordinator getTopicManager() {
-        return topicManager;
+    public TopicCoordinator getTopicCoordinator() {
+        return topicCoordinator;
     }
 
     @Override
-    public ClusterCoordinator getClusterManager() {
-        return clusterManager;
+    public ClusterCoordinator getClusterCoordinator() {
+        return clusterCoordinator;
     }
 
     @Override
-    public LogManager getLogManager() {
-        return logManager;
+    public LogCoordinator getLogCoordinator() {
+        return logCoordinator;
     }
 
     @Override
-    public ConnectionCoordinator getConnectionManager() {
-        return connectionManager;
+    public ConnectionCoordinator getConnectionCoordinator() {
+        return connectionCoordinator;
     }
 
     @Override
     public void addMetricsListener(MetricsListener listener) {
-        if (logManager != null) {
-            logManager.addLogListener(Collections.singletonList(listener));
+        if (logCoordinator != null) {
+            logCoordinator.addLogListener(Collections.singletonList(listener));
         }
 
-        if (topicManager != null) {
-            topicManager.addTopicListener(listener);
+        if (topicCoordinator != null) {
+            topicCoordinator.addTopicListener(listener);
         }
 
         apiListeners.add(listener);

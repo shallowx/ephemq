@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -6,7 +6,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.ledger.Log;
-import org.meteor.ledger.LogManager;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.Offset;
 import org.meteor.common.TopicPartition;
@@ -22,11 +22,11 @@ import org.meteor.remote.proto.server.SyncResponse;
 
 public class ParticipantCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ParticipantCoordinator.class);
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private EventExecutor fetchExecutor;
 
-    public ParticipantCoordinator(Coordinator manager) {
-        this.manager = manager;
+    public ParticipantCoordinator(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     public void start() throws Exception {
@@ -40,7 +40,7 @@ public class ParticipantCoordinator {
     }
 
     public void subscribeLedger(int ledger, int epoch, long index, Channel channel, Promise<SyncResponse> promise) {
-        Log log = manager.getLogManager().getLog(ledger);
+        Log log = coordinator.getLogCoordinator().getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
             return;
@@ -83,7 +83,7 @@ public class ParticipantCoordinator {
         }
 
         try {
-            Log log = manager.getLogManager().getLog(ledger);
+            Log log = coordinator.getLogCoordinator().getLog(ledger);
             if (log == null) {
                 promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
                 return promise;
@@ -125,8 +125,8 @@ public class ParticipantCoordinator {
     }
 
     public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {
-        LogManager logManager = manager.getLogManager();
-        Log log = logManager.getLog(ledger);
+        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
+        Log log = logCoordinator.getLog(ledger);
         if (log == null) {
             promise.trySuccess(null);
             return;
@@ -139,7 +139,7 @@ public class ParticipantCoordinator {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
         try {
-            Log log = manager.getLogManager().getLog(ledger);
+            Log log = coordinator.getLogCoordinator().getLog(ledger);
             if (log == null) {
                 promise.trySuccess(null);
                 return promise;

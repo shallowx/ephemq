@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientListener;
 import org.meteor.common.logging.InternalLogger;
@@ -15,7 +15,7 @@ import java.util.concurrent.Semaphore;
 
 public class InnerClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClientListener.class);
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() throws Exception {
@@ -23,8 +23,8 @@ public class InnerClientListener implements ClientListener {
         }
     };
 
-    public InnerClientListener(Coordinator manager) {
-        this.manager = manager;
+    public InnerClientListener(Coordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class InnerClientListener implements ClientListener {
             int count = signal.getCount();
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> semaphore.release());
-            manager.getLogManager().saveSyncData(channel.channel(), ledger, count, data, promise);
+            coordinator.getLogCoordinator().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);

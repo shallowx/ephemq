@@ -1,9 +1,9 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.meteor.ledger.LogManager;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.MetricsListener;
 import org.meteor.client.internal.Client;
 import org.meteor.listener.APIListener;
@@ -15,13 +15,13 @@ public interface Coordinator {
 
     void shutdown() throws Exception;
 
-    TopicCoordinator getTopicManager();
+    TopicCoordinator getTopicCoordinator();
 
-    ClusterCoordinator getClusterManager();
+    ClusterCoordinator getClusterCoordinator();
 
-    LogManager getLogManager();
+    LogCoordinator getLogCoordinator();
 
-    ConnectionCoordinator getConnectionManager();
+    ConnectionCoordinator getConnectionCoordinator();
 
     void addMetricsListener(MetricsListener listener);
 

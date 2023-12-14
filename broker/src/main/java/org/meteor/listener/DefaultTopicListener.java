@@ -9,7 +9,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.CommonConfiguration;
 import org.meteor.configuration.NetworkConfiguration;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.TopicChangedSignal;
@@ -23,12 +23,12 @@ import java.util.Set;
 public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private final CommonConfiguration commonConfiguration;
     private final NetworkConfiguration networkConfiguration;
 
-    public DefaultTopicListener(Coordinator manager, CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration) {
-        this.manager = manager;
+    public DefaultTopicListener(Coordinator coordinator, CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration) {
+        this.coordinator = coordinator;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
 
@@ -67,7 +67,7 @@ public class DefaultTopicListener implements TopicListener {
     @Override
     public void onPartitionChanged(TopicPartition topicPartition, TopicAssignment oldAssigment, TopicAssignment newAssigment) {
         try {
-            PartitionInfo partitionInfo = manager.getTopicManager().getPartitionInfo(topicPartition);
+            PartitionInfo partitionInfo = coordinator.getTopicCoordinator().getPartitionInfo(topicPartition);
             if (partitionInfo != null) {
                 if (partitionInfo.getReplicas().contains(commonConfiguration.getServerId())
                         && ((!Objects.equals(oldAssigment.getReplicas(), newAssigment.getReplicas())))
@@ -81,7 +81,7 @@ public class DefaultTopicListener implements TopicListener {
     }
 
     private void sendTopicChangedSignal(String topic, TopicChangedSignal.Type type) {
-        Set<Channel> channels = manager.getConnectionManager().getChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getChannels();
         if (channels.isEmpty()) {
             return;
         }
@@ -100,7 +100,7 @@ public class DefaultTopicListener implements TopicListener {
     }
 
     private void sendPartitionChangedSignal(TopicPartition topicPartition, TopicAssignment assignment) {
-        Set<Channel> channels = manager.getConnectionManager().getChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getChannels();
         if (channels.isEmpty()) {
             return;
         }

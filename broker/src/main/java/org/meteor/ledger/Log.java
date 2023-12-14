@@ -17,8 +17,8 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.LogListener;
-import org.meteor.coordinatio.Coordinator;
-import org.meteor.coordinatio.TopicCoordinator;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinatior.TopicCoordinator;
 import org.meteor.metrics.MetricsConstants;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.invoke.Callback;
@@ -81,7 +81,7 @@ public class Log {
         storageExecutor = coordinator.getMessageStorageEventExecutorGroup().next();
         this.storage = new LedgerStorage(ledger, topicPartition.getTopic(), epoch, ledgerConfig, storageExecutor, new InnerTrigger());
         this.coordinator = coordinator;
-        this.listeners = coordinator.getLogManager().getLogListeners();
+        this.listeners = coordinator.getLogCoordinator().getLogListeners();
         Tags tags = Tags.of(MetricsConstants.TOPIC_TAG, topicPartition.getTopic())
                 .and(MetricsConstants.PARTITION_TAG, String.valueOf(topicPartition.getPartition()))
                 .and(MetricsConstants.BROKER_TAG, config.getCommonConfiguration().getServerId())
@@ -196,8 +196,8 @@ public class Log {
             } else {
                 syncOffset = currentOffset;
             }
-            TopicCoordinator topicManager = coordinator.getTopicManager();
-            topicManager.getReplicaManager().syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(), timeoutMs, syncPromise);
+            TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+            topicCoordinator.getParticipantCoordinator().syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(), timeoutMs, syncPromise);
         } catch (Exception e) {
             syncPromise.tryFailure(e);
             logger.error(e.getMessage(), e);
@@ -258,8 +258,8 @@ public class Log {
             return;
         }
         try {
-            TopicCoordinator topicManager = coordinator.getTopicManager();
-            topicManager.getReplicaManager().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
+            TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+            topicCoordinator.getParticipantCoordinator().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
         } catch (Exception e) {
             unSyncPromise.tryFailure(e);
             logger.error(e.getMessage(), e);
@@ -275,22 +275,21 @@ public class Log {
         migration = new Migration(ledger, destChannel);
         state.set(LogState.MIGRATING);
         try {
-            TopicCoordinator topicManager = coordinator.getTopicManager();
+            TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
             Promise<SyncResponse> syncResponsePromise = syncFromTarget(destChannel, new Offset(0, 0L), 30000);
             syncResponsePromise.addListener(future -> {
                 if (future.isSuccess()) {
                     commandExecutor.schedule(() -> {
                         try {
-                            topicManager.handoverPartition(dest, topicPartition);
-                        } catch (Exception e) {
+                            topicCoordinator.handoverPartition(dest, topicPartition);
+                        } catch (Exception ignored) {
 
                         }
                     }, 30, TimeUnit.SECONDS);
                     commandExecutor.schedule(() -> {
                         try {
-                            topicManager.retirePartition(topicPartition);
-                        } catch (Exception e) {
-
+                            topicCoordinator.retirePartition(topicPartition);
+                        } catch (Exception ignored) {
                         }
                     }, 60, TimeUnit.SECONDS);
                     promise.trySuccess(null);
@@ -492,7 +491,7 @@ public class Log {
         }
 
         try {
-            ClientChannel channel = migration.getChannel();
+            ClientChannel channel = migration.channel();
             SendMessageRequest request = SendMessageRequest.newBuilder()
                     .setLedger(ledger)
                     .setMarker(marker)

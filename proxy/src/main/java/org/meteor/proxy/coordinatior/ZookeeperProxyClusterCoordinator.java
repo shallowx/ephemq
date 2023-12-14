@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatio;
+package org.meteor.proxy.coordinatior;
 
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.zookeeper.data.Stat;
@@ -6,18 +6,20 @@ import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.util.ConsistentHashingRing;
-import org.meteor.configuration.ProxyConfiguration;
+import org.meteor.proxy.internal.ProxyConfiguration;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.ClusterListener;
 import org.meteor.internal.ZookeeperClient;
-import org.meteor.coordinatio.ZookeeperClusterCoordinator;
+import org.meteor.coordinatior.ZookeeperClusterCoordinator;
+import org.meteor.proxy.internal.ProxyServerConfiguration;
+
 import java.util.List;
 
 public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);
     private final ConsistentHashingRing hashingRing;
     private final ProxyConfiguration proxyConfiguration;
-    public ZookeeperProxyClusterCoordinator(ServerConfiguration configuration) {
+    public ZookeeperProxyClusterCoordinator(ProxyServerConfiguration configuration) {
         super(configuration);
         this.proxyConfiguration = configuration.getProxyConfiguration();
         this.client = ZookeeperClient.getClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());

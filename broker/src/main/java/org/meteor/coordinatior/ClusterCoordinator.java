@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import org.meteor.listener.ClusterListener;
 import org.meteor.common.Node;

@@ -7,13 +7,16 @@ import org.meteor.internal.MeteorServer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.listener.MetricsListener;
-import org.meteor.coordinatio.Coordinator;
-import org.meteor.proxy.coordinatio.ProxyDefaultCoordinator;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.proxy.coordinatior.ProxyDefaultCoordinator;
+import org.meteor.proxy.internal.ProxyMetricsListener;
+import org.meteor.proxy.internal.ProxyServerConfiguration;
 import org.meteor.proxy.net.MeteorProxyServer;
 import org.meteor.proxy.net.ProxySocketServer;
 import org.meteor.util.ShutdownHookThread;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -33,10 +36,20 @@ public class MeteorProxy {
         }
     }
 
-    private static MeteorServer createServer(String... args) throws Exception {
+    private static MeteorProxyServer createServer(String... args) throws Exception {
+        CommandLine commandLine = parseCommandLine(args);
+        Properties properties = loadPropertiesFromFile(commandLine);
+        ProxyServerConfiguration configuration = new ProxyServerConfiguration(properties);
+        return configureMeteorProxyServer(configuration, properties);
+    }
+
+    private static CommandLine parseCommandLine(String... args) throws ParseException {
         Options options = constructCommandlineOptions();
         DefaultParser parser = new DefaultParser();
-        CommandLine commandLine = parser.parse(options, args);
+        return parser.parse(options, args);
+    }
+
+    private static Properties loadPropertiesFromFile(CommandLine commandLine) throws IOException {
         Properties properties = new Properties();
         String file;
         if (commandLine.hasOption('c')) {
@@ -47,22 +60,22 @@ public class MeteorProxy {
                 }
             }
         }
+        return properties;
+    }
 
-        ServerConfiguration configuration = new ServerConfiguration(properties);
-
+    private static MeteorProxyServer configureMeteorProxyServer(ProxyServerConfiguration configuration, Properties properties) {
         Coordinator coordinator = new ProxyDefaultCoordinator(configuration);
         MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);
         coordinator.addMetricsListener(metricsListener);
 
         ProxySocketServer socketServer = new ProxySocketServer(configuration, coordinator);
-        MeteorServer server = new MeteorProxyServer(socketServer, coordinator);
+        MeteorProxyServer server = new MeteorProxyServer(socketServer, coordinator);
         server.addListener(metricsListener);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {
             server.shutdown();
             return null;
         }).newThread());
-
         return server;
     }
 

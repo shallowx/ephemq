@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.internal.StringUtil;
 import org.meteor.configuration.CommonConfiguration;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 
@@ -17,7 +17,7 @@ import static org.meteor.metrics.MetricsConstants.*;
 public class InnerClientChannel extends ClientChannel {
     private final CommonConfiguration configuration;
 
-    public InnerClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, CommonConfiguration configuration, Coordinator manager) {
+    public InnerClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, CommonConfiguration configuration, Coordinator coordinator) {
         super(clientConfig, channel, address);
         this.configuration = configuration;
     }

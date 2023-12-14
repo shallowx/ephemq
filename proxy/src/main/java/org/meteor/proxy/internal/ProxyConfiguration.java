@@ -1,6 +1,10 @@
-package org.meteor.configuration;
+package org.meteor.proxy.internal;
 
 import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.NetworkConfiguration;
+import org.meteor.configuration.SegmentConfiguration;
+import org.meteor.configuration.ZookeeperConfiguration;
 
 import java.util.Properties;
 
@@ -20,21 +24,12 @@ public class ProxyConfiguration {
 
     private final Properties prop;
     private final CommonConfiguration commonConfiguration;
-    private final NetworkConfiguration networkConfiguration;
     private final ZookeeperConfiguration zookeeperConfiguration;
 
-    private final SegmentConfiguration segmentConfiguration;
-
-    public ProxyConfiguration(Properties prop, CommonConfiguration configuration, NetworkConfiguration networkConfiguration, ZookeeperConfiguration zookeeperConfiguration, SegmentConfiguration segmentConfiguration) {
+    public ProxyConfiguration(Properties prop, CommonConfiguration configuration, ZookeeperConfiguration zookeeperConfiguration) {
         this.prop = prop;
         this.commonConfiguration = configuration;
-        this.networkConfiguration = networkConfiguration;
         this.zookeeperConfiguration = zookeeperConfiguration;
-        this.segmentConfiguration = segmentConfiguration;
-    }
-
-    public SegmentConfiguration getSegmentConfiguration() {
-        return segmentConfiguration;
     }
 
     public ZookeeperConfiguration getZookeeperConfiguration() {
@@ -43,10 +38,6 @@ public class ProxyConfiguration {
 
     public CommonConfiguration getCommonConfiguration() {
         return commonConfiguration;
-    }
-
-    public NetworkConfiguration getNetworkConfiguration() {
-        return networkConfiguration;
     }
 
     public int getProxyLeaderSyncPeriodMs() {
@@ -76,7 +67,7 @@ public class ProxyConfiguration {
     }
 
     public String getProxyUpstreamServers() {
-        return TypeTransformUtils.object2String(prop.getOrDefault(PROXY_UPSTREAM_SERVERS, "127.0.0.1:19527"));
+        return TypeTransformUtils.object2String(prop.getOrDefault(PROXY_UPSTREAM_SERVERS, "127.0.0.1:9527"));
     }
 
     public int getProxyHeavyLoadSubscriberThreshold() {

@@ -17,7 +17,7 @@ import org.meteor.common.TopicAssignment;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.metrics.MetricsRegistrySetUp;
 import org.meteor.metrics.PrometheusRegistry;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
@@ -38,7 +38,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
     private final CommonConfiguration config;
-    private final Coordinator manager;
+    private final Coordinator coordinator;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestSuccesses = new ConcurrentHashMap<>();
@@ -58,9 +58,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
     };
 
-    public MetricsListener(Properties properties, CommonConfiguration config, MetricsConfiguration metricsConfiguration, Coordinator manager) {
+    public MetricsListener(Properties properties, CommonConfiguration config, MetricsConfiguration metricsConfiguration, Coordinator coordinator) {
         this.config = config;
-        this.manager = manager;
+        this.coordinator = coordinator;
         this.metricsSample = metricsConfiguration.getMetricsSampleLimit();
         this.meterRegistrySetup = new PrometheusRegistry();
         this.meterRegistrySetup.setUp(properties);
@@ -231,7 +231,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         String serverId = config.getServerId();
 
         // storage metrics
-        for (EventExecutor executor : manager.getMessageStorageEventExecutorGroup()) {
+        for (EventExecutor executor : coordinator.getMessageStorageEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
@@ -246,7 +246,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
 
         // dispatch metrics
-        for (EventExecutor executor : manager.getMessageDispatchEventExecutorGroup()) {
+        for (EventExecutor executor : coordinator.getMessageDispatchEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
@@ -261,7 +261,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
 
         // command metrics
-        for (EventExecutor executor : manager.getCommandHandleEventExecutorGroup()) {
+        for (EventExecutor executor : coordinator.getCommandHandleEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)

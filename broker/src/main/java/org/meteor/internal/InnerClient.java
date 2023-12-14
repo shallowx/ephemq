@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import org.meteor.configuration.CommonConfiguration;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
@@ -20,17 +20,17 @@ import static org.meteor.metrics.MetricsConstants.*;
 public class InnerClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClient.class);
     private final CommonConfiguration configuration;
-    private final Coordinator manager;
+    private final Coordinator coordinator;
 
-    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfiguration configuration, Coordinator manager) {
+    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfiguration configuration, Coordinator coordinator) {
         super(name, clientConfig, listener);
         this.configuration = configuration;
-        this.manager = manager;
+        this.coordinator = coordinator;
     }
 
     @Override
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
-        return new InnerClientChannel(clientConfig, channel, address, configuration, manager);
+        return new InnerClientChannel(clientConfig, channel, address, configuration, coordinator);
     }
 
     public void bindTo(MeterRegistry meterRegistry) {

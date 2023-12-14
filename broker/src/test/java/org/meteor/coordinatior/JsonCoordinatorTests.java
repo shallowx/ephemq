@@ -1,4 +1,4 @@
-package org.meteor.coordinatio;
+package org.meteor.coordinatior;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.Assert;

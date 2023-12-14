@@ -1,6 +1,6 @@
-package org.meteor.proxy.coordinatio;
+package org.meteor.proxy.coordinatior;
 
-import org.meteor.coordinatio.ClusterCoordinator;
+import org.meteor.coordinatior.ClusterCoordinator;
 
 import java.util.List;
 

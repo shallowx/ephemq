@@ -4,11 +4,11 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
 import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.MetricsListener;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.internal.MeteorServer;
-import org.meteor.coordinatio.DefaultCoordinator;
+import org.meteor.coordinatior.DefaultCoordinator;
 import org.meteor.net.DefaultSocketServer;
 import org.meteor.util.ShutdownHookThread;
 
@@ -38,11 +38,11 @@ public class Meteor {
         Properties properties = loadConfigurationProperties(args);
         ServerConfiguration configuration = new ServerConfiguration(properties);
 
-        Coordinator manager = new DefaultCoordinator(configuration);
-        MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), manager);
-        manager.addMetricsListener(metricsListener);
-        DefaultSocketServer socketServer = new DefaultSocketServer(configuration, manager);
-        return initializeServer(metricsListener, socketServer, manager);
+        Coordinator coordinator = new DefaultCoordinator(configuration);
+        MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);
+        coordinator.addMetricsListener(metricsListener);
+        DefaultSocketServer socketServer = new DefaultSocketServer(configuration, coordinator);
+        return initializeServer(metricsListener, socketServer, coordinator);
     }
 
     private static Properties loadConfigurationProperties(String... args) throws Exception {
@@ -62,8 +62,8 @@ public class Meteor {
         return properties;
     }
 
-    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Coordinator manager) {
-        MeteorServer server = new MeteorServer(socketServer, manager);
+    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Coordinator coordinator) {
+        MeteorServer server = new MeteorServer(socketServer, coordinator);
         server.addListener(listener);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {

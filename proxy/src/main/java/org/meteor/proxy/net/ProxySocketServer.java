@@ -1,11 +1,12 @@
 package org.meteor.proxy.net;
 
 import org.meteor.configuration.ServerConfiguration;
-import org.meteor.coordinatio.Coordinator;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.net.DefaultSocketServer;
+import org.meteor.proxy.internal.ProxyServerConfiguration;
 
 public class ProxySocketServer extends DefaultSocketServer {
-    public ProxySocketServer(ServerConfiguration serverConfiguration, Coordinator coordinator) {
+    public ProxySocketServer(ProxyServerConfiguration serverConfiguration, Coordinator coordinator) {
         super(serverConfiguration, coordinator);
         this.serviceChannelInitializer = new ProxyServerChannelInitializer(serverConfiguration, coordinator);
     }
