@@ -13,6 +13,7 @@ public class CommonConfiguration {
     private static final String SHUTDOWN_MAX_WAIT_TIME_MS = "shutdown.max.wait.time.ms";
     private static final String AUX_THREAD_LIMIT = "aux.thread.limit";
     private static final String COMMAND_HANDLE_THREAD_LIMIT = "command.handler.thread.limit";
+    private static final String SOCKET_PREFER_EPOLL = "socket.prefer.epoll";
     private final Properties prop;
 
     public CommonConfiguration(Properties prop) {
@@ -21,6 +22,10 @@ public class CommonConfiguration {
 
     public String getServerId() {
         return TypeTransformUtils.object2String(prop.getOrDefault(SERVER_ID, "default"));
+    }
+
+    public boolean isSocketPreferEpoll() {
+        return TypeTransformUtils.object2Boolean(prop.getOrDefault(SOCKET_PREFER_EPOLL, true));
     }
 
     public String getClusterName() {
