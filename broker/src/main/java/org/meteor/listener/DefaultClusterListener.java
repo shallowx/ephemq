@@ -2,7 +2,7 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import org.meteor.configuration.NetworkConfig;
+import org.meteor.config.NetworkConfig;
 import org.meteor.coordinatior.ConnectionCoordinator;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.common.Node;

@@ -1,8 +1,8 @@
 package org.meteor.proxy.internal;
 
 import org.meteor.common.util.TypeTransformUtils;
-import org.meteor.configuration.CommonConfig;
-import org.meteor.configuration.ZookeeperConfig;
+import org.meteor.config.CommonConfig;
+import org.meteor.config.ZookeeperConfig;
 
 import java.util.Properties;
 

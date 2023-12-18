@@ -1,7 +1,7 @@
 package org.meteor.proxy.internal;
 
-import org.meteor.configuration.CommonConfig;
-import org.meteor.configuration.MetricsConfig;
+import org.meteor.config.CommonConfig;
+import org.meteor.config.MetricsConfig;
 import org.meteor.listener.MetricsListener;
 import org.meteor.coordinatior.Coordinator;
 

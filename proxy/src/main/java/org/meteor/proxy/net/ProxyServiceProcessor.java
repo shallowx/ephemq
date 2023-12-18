@@ -49,7 +49,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private final ProxyServerConfig serverConfiguration;
 
     public ProxyServiceProcessor(ProxyServerConfig config, Coordinator coordinator) {
-        super(config.getCommonConfiguration(), config.getNetworkConfiguration(), coordinator);
+        super(config.getCommonConfig(), config.getNetworkConfig(), coordinator);
         if (coordinator instanceof ProxyCoordinator) {
             this.syncCoordinator = ((ProxyCoordinator) coordinator).getLedgerSyncCoordinator();
             this.proxyClusterCoordinator = (ProxyClusterCoordinator)coordinator.getClusterCoordinator();
@@ -142,9 +142,9 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private ProxyLog getLog(LogCoordinator logCoordinator, int ledger, MessageLedger messageLedger) {
         return (ProxyLog) logCoordinator.getOrInitLog(ledger, _ledger -> {
             TopicConfig topicConfig = new TopicConfig(
-                    serverConfiguration.getSegmentConfiguration().getSegmentRollingSize(),
-                    serverConfiguration.getSegmentConfiguration().getSegmentRetainLimit(),
-                    serverConfiguration.getSegmentConfiguration().getSegmentRetainTime(),
+                    serverConfiguration.getSegmentConfig().getSegmentRollingSize(),
+                    serverConfiguration.getSegmentConfig().getSegmentRetainLimit(),
+                    serverConfiguration.getSegmentConfig().getSegmentRetainTime(),
                     true
             );
             TopicPartition topicPartition = new TopicPartition(messageLedger.topic(), messageLedger.partition());

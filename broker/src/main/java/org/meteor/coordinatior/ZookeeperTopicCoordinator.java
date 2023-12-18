@@ -16,7 +16,7 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.common.*;
-import org.meteor.configuration.*;
+import org.meteor.config.*;
 import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
@@ -55,12 +55,12 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     public ZookeeperTopicCoordinator(ServerConfig config, Coordinator coordinator) {
-        this.commonConfiguration = config.getCommonConfiguration();
-        this.segmentConfiguration = config.getSegmentConfiguration();
-        this.zookeeperConfiguration = config.getZookeeperConfiguration();
+        this.commonConfiguration = config.getCommonConfig();
+        this.segmentConfiguration = config.getSegmentConfig();
+        this.zookeeperConfiguration = config.getZookeeperConfig();
         this.coordinator = coordinator;
         this.participantCoordinator = new ParticipantCoordinator(coordinator);
-        this.client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), commonConfiguration.getClusterName());
+        this.client = ZookeeperClient.getClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
         this.ledgerIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.LEDGER_ID_COUNTER, new RetryOneTime(100));
         this.topicCache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)

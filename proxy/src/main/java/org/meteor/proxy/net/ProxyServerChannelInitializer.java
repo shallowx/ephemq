@@ -15,7 +15,7 @@ import org.meteor.remote.handle.HeartbeatDuplexHandler;
 public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
     private final ProxyServerConfig serverConfiguration;
     public ProxyServerChannelInitializer(ProxyServerConfig serverConfiguration, Coordinator coordinator) {
-        super(serverConfiguration.getCommonConfiguration(), serverConfiguration.getNetworkConfiguration(), coordinator);
+        super(serverConfiguration.getCommonConfig(), serverConfiguration.getNetworkConfig(), coordinator);
         this.serverConfiguration = serverConfiguration;
     }
 

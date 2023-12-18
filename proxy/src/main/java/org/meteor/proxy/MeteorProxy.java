@@ -64,7 +64,7 @@ public class MeteorProxy {
 
     private static MeteorProxyServer configureMeteorProxyServer(ProxyServerConfig configuration, Properties properties) {
         Coordinator coordinator = new ProxyDefaultCoordinator(configuration);
-        MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);
+        MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(), coordinator);
         coordinator.addMetricsListener(metricsListener);
 
         ProxySocketServer socketServer = new ProxySocketServer(configuration, coordinator);

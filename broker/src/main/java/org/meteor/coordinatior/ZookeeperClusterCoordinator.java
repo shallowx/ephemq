@@ -13,8 +13,8 @@ import org.apache.zookeeper.data.Stat;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.CommonConfig;
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.CommonConfig;
+import org.meteor.config.ServerConfig;
 import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.listener.ClusterListener;
@@ -42,8 +42,8 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private Node thisNode;
 
     public ZookeeperClusterCoordinator(ServerConfig config) {
-        this.configuration = config.getCommonConfiguration();
-        this.client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), config.getCommonConfiguration().getClusterName());
+        this.configuration = config.getCommonConfig();
+        this.client = ZookeeperClient.getClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
     }
 
     @Override

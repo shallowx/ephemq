@@ -2,7 +2,7 @@ package org.meteor;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.ServerConfig;
 import org.meteor.listener.MetricsListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.common.logging.InternalLogger;
@@ -39,7 +39,7 @@ public class Meteor {
         ServerConfig configuration = new ServerConfig(properties);
 
         Coordinator coordinator = new DefaultCoordinator(configuration);
-        MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);
+        MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(), coordinator);
         coordinator.addMetricsListener(metricsListener);
         DefaultSocketServer socketServer = new DefaultSocketServer(configuration, coordinator);
         return initializeServer(metricsListener, socketServer, coordinator);

@@ -18,11 +18,11 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
         super(configuration);
 
         this.connectionCoordinator = new DefaultConnectionCoordinator();
-        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getCommandHandleThreadLimit(), "proxy-handle");
-        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageStorageThreadLimit(), "proxy-storage");
-        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageDispatchThreadLimit(), "proxy-dispatch");
-        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageSyncThreadLimit(), "proxy-sync");
-        this.auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getAuxThreadLimit(), "proxy-aux");
+        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
+        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");
+        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "proxy-dispatch");
+        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "proxy-sync");
+        this.auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "proxy-aux");
         for (EventExecutor executor : auxGroup) {
             this.auxEventExecutors.add(executor);
         }
@@ -30,7 +30,7 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
         this.syncCoordinator = new ProxyLedgerSyncCoordinator(configuration.getProxyConfiguration(), this);
         this.topicCoordinator = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
         this.clusterCoordinator = new ZookeeperProxyClusterCoordinator(configuration);
-        this.clusterCoordinator.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfiguration()));
+        this.clusterCoordinator.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfig()));
         this.logCoordinator = new LogCoordinator(configuration, this);
     }
 

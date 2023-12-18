@@ -14,7 +14,7 @@ import org.meteor.common.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.util.MessageUtils;
-import org.meteor.configuration.ChunkRecordDispatchConfig;
+import org.meteor.config.ChunkRecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.SyncMessageSignal;

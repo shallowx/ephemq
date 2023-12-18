@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.CommonConfig;
+import org.meteor.config.CommonConfig;
 
 import java.util.concurrent.atomic.LongAdder;
 

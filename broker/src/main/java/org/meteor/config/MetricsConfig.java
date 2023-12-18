@@ -1,4 +1,4 @@
-package org.meteor.configuration;
+package org.meteor.config;
 
 import org.meteor.common.util.TypeTransformUtils;
 

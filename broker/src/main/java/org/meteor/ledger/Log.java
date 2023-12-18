@@ -15,7 +15,7 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.ServerConfig;
 import org.meteor.listener.LogListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.TopicCoordinator;
@@ -61,7 +61,7 @@ public class Log {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.getTopic();
-        this.forwardTimeout = config.getRecordDispatchConfiguration().getDispatchEntryFollowLimit();
+        this.forwardTimeout = config.getRecordDispatchConfig().getDispatchEntryFollowLimit();
         this.commandExecutor = coordinator.getCommandHandleEventExecutorGroup().next();
         LedgerConfig ledgerConfig;
         if (topicConfig != null) {
@@ -72,9 +72,9 @@ public class Log {
                     .allocate(topicConfig.isAllocate());
         } else {
             ledgerConfig = new LedgerConfig()
-                    .segmentRetainCounts(config.getSegmentConfiguration().getSegmentRetainLimit())
-                    .segmentBufferCapacity(config.getSegmentConfiguration().getSegmentRollingSize())
-                    .segmentRetainMs(config.getSegmentConfiguration().getSegmentRetainTime())
+                    .segmentRetainCounts(config.getSegmentConfig().getSegmentRetainLimit())
+                    .segmentBufferCapacity(config.getSegmentConfig().getSegmentRollingSize())
+                    .segmentRetainMs(config.getSegmentConfig().getSegmentRetainTime())
                     .allocate(false);
         }
 
@@ -84,8 +84,8 @@ public class Log {
         this.listeners = coordinator.getLogCoordinator().getLogListeners();
         Tags tags = Tags.of(MetricsConstants.TOPIC_TAG, topicPartition.getTopic())
                 .and(MetricsConstants.PARTITION_TAG, String.valueOf(topicPartition.getPartition()))
-                .and(MetricsConstants.BROKER_TAG, config.getCommonConfiguration().getServerId())
-                .and(MetricsConstants.CLUSTER_TAG, config.getCommonConfiguration().getClusterName())
+                .and(MetricsConstants.BROKER_TAG, config.getCommonConfig().getServerId())
+                .and(MetricsConstants.CLUSTER_TAG, config.getCommonConfig().getClusterName())
                 .and(MetricsConstants.LEDGER_TAG, Integer.toString(ledger));
 
         this.segmentCountMeter = Gauge.builder(MetricsConstants.LOG_SEGMENT_COUNT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentCount)
@@ -95,8 +95,8 @@ public class Log {
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
 
-        this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config.getRecordDispatchConfiguration(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
-        this.chunkEntryDispatcher = new RecordChunkEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfiguration(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
+        this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
+        this.chunkEntryDispatcher = new RecordChunkEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {

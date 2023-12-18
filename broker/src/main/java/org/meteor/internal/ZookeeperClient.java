@@ -6,7 +6,7 @@ import org.apache.curator.framework.state.SessionConnectionStateErrorPolicy;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ZookeeperConfig;
+import org.meteor.config.ZookeeperConfig;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.ints.IntCollection;
 import org.meteor.common.Offset;
 import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.listener.LogListener;
 import org.meteor.remote.RemoteException;

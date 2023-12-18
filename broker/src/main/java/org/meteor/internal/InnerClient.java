@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.meteor.configuration.CommonConfig;
+import org.meteor.config.CommonConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;

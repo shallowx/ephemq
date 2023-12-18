@@ -1,6 +1,6 @@
 package org.meteor.proxy.internal;
 
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.ServerConfig;
 
 import java.util.Properties;
 
@@ -8,7 +8,7 @@ public class ProxyServerConfig extends ServerConfig {
     private final ProxyConfig proxyConfiguration;
     public ProxyServerConfig(Properties properties) {
         super(properties);
-        this.proxyConfiguration =new ProxyConfig(properties, this.commonConfiguration, this.zookeeperConfiguration);
+        this.proxyConfiguration =new ProxyConfig(properties, this.commonConfig, this.zookeeperConfig);
     }
 
     public ProxyConfig getProxyConfiguration() {

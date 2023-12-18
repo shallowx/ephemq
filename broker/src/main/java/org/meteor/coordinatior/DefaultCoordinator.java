@@ -2,7 +2,7 @@ package org.meteor.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.ServerConfig;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.*;
@@ -42,22 +42,22 @@ public class DefaultCoordinator implements Coordinator {
     public DefaultCoordinator(ServerConfig configuration) {
         this.configuration = configuration;
         this.connectionCoordinator = new DefaultConnectionCoordinator();
-        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageSyncThreadLimit(), "sync-group");
-        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getCommandHandleThreadLimit(), "command-handle-group");
-        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageStorageThreadLimit(), "storage-group");
-        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageDispatchThreadLimit(), "dispatch-group");
+        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "sync-group");
+        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "command-handle-group");
+        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
+        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "dispatch-group");
 
         clusterCoordinator = new ZookeeperClusterCoordinator(configuration);
-        ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfiguration());
+        ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfig());
         clusterCoordinator.addClusterListener(clusterListener);
 
         logCoordinator = new LogCoordinator(configuration, this);
         topicCoordinator = new ZookeeperTopicCoordinator(configuration, this);
-        TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfiguration(),configuration.getNetworkConfiguration());
+        TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(),configuration.getNetworkConfig());
         topicCoordinator.addTopicListener(topicListener);
 
-        auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfiguration().getAuxThreadLimit(), "aux-group");
-        auxEventExecutors = new ArrayList<>(configuration.getCommonConfiguration().getAuxThreadLimit());
+        auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "aux-group");
+        auxEventExecutors = new ArrayList<>(configuration.getCommonConfig().getAuxThreadLimit());
         for (EventExecutor executor : auxGroup) {
             auxEventExecutors.add(executor);
         }
@@ -66,14 +66,14 @@ public class DefaultCoordinator implements Coordinator {
     @Override
     public void start() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
-        List<String> clusterNodeAddress = Collections.singletonList(configuration.getCommonConfiguration().getAdvertisedAddress() + ":" + configuration.getCommonConfiguration().getAdvertisedPort());
+        List<String> clusterNodeAddress = Collections.singletonList(configuration.getCommonConfig().getAdvertisedAddress() + ":" + configuration.getCommonConfig().getAdvertisedPort());
 
         clientConfig.setBootstrapAddresses(clusterNodeAddress);
-        clientConfig.setChannelConnectionTimeoutMs(configuration.getNetworkConfiguration().getConnectionTimeoutMs());
+        clientConfig.setChannelConnectionTimeoutMs(configuration.getNetworkConfig().getConnectionTimeoutMs());
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);
-        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(this), configuration.getCommonConfiguration(), this);
+        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(this), configuration.getCommonConfig(), this);
         innerClient.start();
 
         if (clusterCoordinator != null) {

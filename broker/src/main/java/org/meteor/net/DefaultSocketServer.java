@@ -11,9 +11,9 @@ import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.CommonConfig;
-import org.meteor.configuration.NetworkConfig;
-import org.meteor.configuration.ServerConfig;
+import org.meteor.config.CommonConfig;
+import org.meteor.config.NetworkConfig;
+import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
 import java.net.SocketAddress;
 import static org.meteor.metrics.MetricsConstants.*;
@@ -31,8 +31,8 @@ public class DefaultSocketServer {
     private ChannelFuture closedFuture;
 
     public DefaultSocketServer(ServerConfig serverConfiguration, Coordinator coordinator) {
-        this.commonConfiguration = serverConfiguration.getCommonConfiguration();
-        this.networkConfiguration = serverConfiguration.getNetworkConfiguration();
+        this.commonConfiguration = serverConfiguration.getCommonConfig();
+        this.networkConfiguration = serverConfiguration.getNetworkConfig();
         this.serviceChannelInitializer = new ServiceChannelInitializer(commonConfiguration, networkConfiguration, coordinator);
     }
 
