@@ -7,7 +7,7 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.proxy.internal.ProxyConfiguration;
+import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.ledger.Log;
 import org.meteor.coordinatior.JsonCoordinator;
 import org.meteor.coordinatior.Coordinator;
@@ -26,9 +26,9 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private final WeakHashMap<ProxyLog, Long> dispatchTotal = new WeakHashMap<>();
     private long commitTime = System.currentTimeMillis();
 
-    private final ProxyConfiguration proxyConfiguration;
+    private final ProxyConfig proxyConfiguration;
 
-    public ProxyLedgerSyncCoordinator(ProxyConfiguration proxyConfiguration, Coordinator coordinator) {
+    public ProxyLedgerSyncCoordinator(ProxyConfig proxyConfiguration, Coordinator coordinator) {
         super(proxyConfiguration, coordinator);
         this.proxyConfiguration = proxyConfiguration;
         EventExecutor executor = coordinator.getAuxEventExecutorGroup().next();

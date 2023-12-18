@@ -13,8 +13,8 @@ import org.apache.zookeeper.data.Stat;
 import org.meteor.common.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.CommonConfiguration;
-import org.meteor.configuration.ServerConfiguration;
+import org.meteor.configuration.CommonConfig;
+import org.meteor.configuration.ServerConfig;
 import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.listener.ClusterListener;
@@ -31,7 +31,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private static final String UP = "UP";
     private static final String DOWN = "DOWN";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
-    private final CommonConfiguration configuration;
+    private final CommonConfig configuration;
     protected final List<ClusterListener> listeners = new LinkedList<>();
     private final Map<String, Node> activeNodes = new ConcurrentHashMap<>();
     protected CuratorFramework client;
@@ -41,7 +41,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private LeaderLatch latch;
     private Node thisNode;
 
-    public ZookeeperClusterCoordinator(ServerConfiguration config) {
+    public ZookeeperClusterCoordinator(ServerConfig config) {
         this.configuration = config.getCommonConfiguration();
         this.client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), config.getCommonConfiguration().getClusterName());
     }

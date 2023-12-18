@@ -7,8 +7,8 @@ import org.meteor.common.TopicAssignment;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.CommonConfiguration;
-import org.meteor.configuration.NetworkConfiguration;
+import org.meteor.configuration.CommonConfig;
+import org.meteor.configuration.NetworkConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.ProcessCommand;
@@ -24,10 +24,10 @@ public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
 
     private final Coordinator coordinator;
-    private final CommonConfiguration commonConfiguration;
-    private final NetworkConfiguration networkConfiguration;
+    private final CommonConfig commonConfiguration;
+    private final NetworkConfig networkConfiguration;
 
-    public DefaultTopicListener(Coordinator coordinator, CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration) {
+    public DefaultTopicListener(Coordinator coordinator, CommonConfig commonConfiguration, NetworkConfig networkConfiguration) {
         this.coordinator = coordinator;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;

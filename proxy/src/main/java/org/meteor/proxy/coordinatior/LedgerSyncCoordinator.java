@@ -3,7 +3,7 @@ package org.meteor.proxy.coordinatior;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
-import org.meteor.proxy.internal.ProxyConfiguration;
+import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.internal.InnerClient;
 import org.meteor.common.Offset;
 import org.meteor.common.logging.InternalLogger;
@@ -25,12 +25,12 @@ import java.util.concurrent.TimeUnit;
 public abstract class LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncCoordinator.class);
 
-    protected final ProxyConfiguration config;
+    protected final ProxyConfig config;
     protected final Coordinator coordinator;
     protected final Client proxyClient;
     protected final EventExecutor taskExecutor;
 
-    public LedgerSyncCoordinator(ProxyConfiguration config, Coordinator coordinator) {
+    public LedgerSyncCoordinator(ProxyConfig config, Coordinator coordinator) {
         this.config = config;
         this.coordinator = coordinator;
         ClientConfig clientConfig = new ClientConfig();

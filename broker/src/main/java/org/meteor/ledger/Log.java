@@ -15,7 +15,7 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ServerConfiguration;
+import org.meteor.configuration.ServerConfig;
 import org.meteor.listener.LogListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.TopicCoordinator;
@@ -57,7 +57,7 @@ public class Log {
     protected Promise<CancelSyncResponse> unSyncFuture;
     protected RecordChunkEntryDispatcher chunkEntryDispatcher;
 
-    public Log(ServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
+    public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.getTopic();

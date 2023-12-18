@@ -4,12 +4,12 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class MetricsConfiguration {
+public class MetricsConfig {
 
     private static final String METRICS_SAMPLE_LIMIT = "metrics.sample.limit";
     private final Properties prop;
 
-    public MetricsConfiguration(Properties prop) {
+    public MetricsConfig(Properties prop) {
         this.prop = prop;
     }
 

@@ -15,7 +15,6 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.TopicListener;
@@ -27,7 +26,7 @@ import org.meteor.proxy.coordinatior.ProxyClusterCoordinator;
 import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.proxy.coordinatior.ProxyCoordinator;
 import org.meteor.proxy.internal.ProxyLog;
-import org.meteor.proxy.internal.ProxyServerConfiguration;
+import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.proto.PartitionMetadata;
@@ -47,9 +46,9 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyClusterCoordinator proxyClusterCoordinator;
     private final int subscribeThreshold;
-    private final ProxyServerConfiguration serverConfiguration;
+    private final ProxyServerConfig serverConfiguration;
 
-    public ProxyServiceProcessor(ProxyServerConfiguration config, Coordinator coordinator) {
+    public ProxyServiceProcessor(ProxyServerConfig config, Coordinator coordinator) {
         super(config.getCommonConfiguration(), config.getNetworkConfiguration(), coordinator);
         if (coordinator instanceof ProxyCoordinator) {
             this.syncCoordinator = ((ProxyCoordinator) coordinator).getLedgerSyncCoordinator();

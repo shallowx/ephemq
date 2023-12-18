@@ -43,7 +43,7 @@ public class ProxyClientListener implements ClientListener {
     private final Coordinator coordinator;
     private final LedgerSyncCoordinator syncCoordinator;
     private Client client;
-    private final ProxyConfiguration proxyConfiguration;
+    private final ProxyConfig proxyConfiguration;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() throws Exception {
@@ -53,7 +53,7 @@ public class ProxyClientListener implements ClientListener {
 
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
 
-    public ProxyClientListener(ProxyConfiguration proxyConfiguration, Coordinator coordinator, LedgerSyncCoordinator syncCoordinator) {
+    public ProxyClientListener(ProxyConfig proxyConfiguration, Coordinator coordinator, LedgerSyncCoordinator syncCoordinator) {
         this.proxyConfiguration = proxyConfiguration;
         this.coordinator = coordinator;
         this.syncCoordinator = syncCoordinator;

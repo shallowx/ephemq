@@ -11,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.proxy.internal.ProxyConfiguration;
+import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.ParticipantCoordinator;
 import org.meteor.coordinatior.ZookeeperTopicCoordinator;
@@ -26,8 +26,8 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);
     private LoadingCache<String, TopicInfo> topicMetaCache;
     private final LedgerSyncCoordinator syncCoordinator;
-    private final ProxyConfiguration proxyConfiguration;
-    public ZookeeperProxyTopicCoordinator(ProxyConfiguration config, Coordinator coordinator) {
+    private final ProxyConfig proxyConfiguration;
+    public ZookeeperProxyTopicCoordinator(ProxyConfig config, Coordinator coordinator) {
         this.proxyConfiguration = config;
         this.coordinator = coordinator;
         this.syncCoordinator = ((ProxyDefaultCoordinator) coordinator).getLedgerSyncCoordinator();

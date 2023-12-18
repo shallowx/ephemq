@@ -10,7 +10,6 @@ import org.meteor.common.TopicConfig;
 import org.meteor.common.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ServerConfiguration;
 import org.meteor.listener.TopicListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.proxy.MeteorProxy;
@@ -26,8 +25,8 @@ public class ProxyLog extends Log {
     private volatile Offset tailLocation = new Offset(0, 0);
     private volatile Offset headLocation = new Offset(0, 0);
     private final LongAdder totalDispatchedMessages = new LongAdder();
-    private final ProxyConfiguration proxyConfiguration;
-    public ProxyLog(ProxyServerConfiguration config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
+    private final ProxyConfig proxyConfiguration;
+    public ProxyLog(ProxyServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         super(config, topicPartition, ledger, epoch, coordinator, topicConfig);
         this.proxyConfiguration = config.getProxyConfiguration();
     }

@@ -4,7 +4,7 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class RecordDispatchConfiguration {
+public class RecordDispatchConfig {
     private static final String DISPATCH_ENTRY_LOAD_LIMIT = "dispatch.entry.load.limit";
     private static final String DISPATCH_ENTRY_FOLLOW_LIMIT = "dispatch.entry.follow.limit";
     private static final String DISPATCH_ENTRY_PURSUE_LIMIT = "dispatch.entry.pursue.limit";
@@ -12,7 +12,7 @@ public class RecordDispatchConfiguration {
     private static final String DISPATCH_ENTRY_PURSUE_TIMEOUT_MS = "dispatch.entry.pursue.timeout.ms";
     private final Properties prop;
 
-    public RecordDispatchConfiguration(Properties prop) {
+    public RecordDispatchConfig(Properties prop) {
         this.prop = prop;
     }
 

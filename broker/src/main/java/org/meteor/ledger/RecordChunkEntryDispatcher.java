@@ -14,7 +14,7 @@ import org.meteor.common.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.util.MessageUtils;
-import org.meteor.configuration.ChunkRecordDispatchConfiguration;
+import org.meteor.configuration.ChunkRecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.SyncMessageSignal;
@@ -47,7 +47,7 @@ public class RecordChunkEntryDispatcher {
     private final ConcurrentMap<Channel, Handler> channelHandlerMap = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    public RecordChunkEntryDispatcher(int ledger, String topic, LedgerStorage storage, ChunkRecordDispatchConfiguration config, EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
+    public RecordChunkEntryDispatcher(int ledger, String topic, LedgerStorage storage, ChunkRecordDispatchConfig config, EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;

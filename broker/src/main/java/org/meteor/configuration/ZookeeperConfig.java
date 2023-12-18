@@ -4,7 +4,7 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class ZookeeperConfiguration {
+public class ZookeeperConfig {
     private static final String ZOOKEEPER_URL = "zookeeper.url";
     private static final String ZOOKEEPER_CONNECTION_RETRY_SLEEP_MS = "zookeeper.connection.retry.sleep.ms";
     private static final String ZOOKEEPER_CONNECTION_RETRIES = "zookeeper.connection.retries";
@@ -12,7 +12,7 @@ public class ZookeeperConfiguration {
     private static final String ZOOKEEPER_SESSION_TIMEOUT_MS = "zookeeper.session.timeout.ms";
     private final Properties prop;
 
-    public ZookeeperConfiguration(Properties prop) {
+    public ZookeeperConfig(Properties prop) {
         this.prop = prop;
     }
 

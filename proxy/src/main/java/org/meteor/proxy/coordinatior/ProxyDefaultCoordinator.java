@@ -3,19 +3,18 @@ package org.meteor.proxy.coordinatior;
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.configuration.ServerConfiguration;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.DefaultClusterListener;
 import org.meteor.coordinatior.DefaultConnectionCoordinator;
 import org.meteor.coordinatior.DefaultCoordinator;
-import org.meteor.proxy.internal.ProxyServerConfiguration;
+import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtils;
 
 public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);
     private final LedgerSyncCoordinator syncCoordinator;
 
-    public ProxyDefaultCoordinator(ProxyServerConfiguration configuration) {
+    public ProxyDefaultCoordinator(ProxyServerConfig configuration) {
         super(configuration);
 
         this.connectionCoordinator = new DefaultConnectionCoordinator();

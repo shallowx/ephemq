@@ -4,7 +4,7 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class ChunkRecordDispatchConfiguration {
+public class ChunkRecordDispatchConfig {
     private static final String CHUNK_DISPATCH_ENTRY_LOAD_LIMIT = "chunk.dispatch.entry.load.limit";
     private static final String CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT = "chunk.dispatch.entry.follow.limit";
     private static final String CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT = "chunk.dispatch.entry.pursue.limit";
@@ -13,7 +13,7 @@ public class ChunkRecordDispatchConfiguration {
     private static final String CHUNK_DISPATCH_ENTRY_BYTES_LIMIT = "chunk.dispatch.entry.bytes.limit";
     private final Properties prop;
 
-    public ChunkRecordDispatchConfiguration(Properties prop) {
+    public ChunkRecordDispatchConfig(Properties prop) {
         this.prop = prop;
     }
 

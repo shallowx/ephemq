@@ -1,14 +1,12 @@
 package org.meteor.proxy.internal;
 
 import org.meteor.common.util.TypeTransformUtils;
-import org.meteor.configuration.CommonConfiguration;
-import org.meteor.configuration.NetworkConfiguration;
-import org.meteor.configuration.SegmentConfiguration;
-import org.meteor.configuration.ZookeeperConfiguration;
+import org.meteor.configuration.CommonConfig;
+import org.meteor.configuration.ZookeeperConfig;
 
 import java.util.Properties;
 
-public class ProxyConfiguration {
+public class ProxyConfig {
     private static final String PROXY_UPSTREAM_SERVERS = "proxy.upstream.servers";
     private static final String PROXY_HEAVY_LOAD_SUBSCRIBER_THRESHOLD = "proxy.heavy.load.subscriber.threshold";
     private static final String PROXY_CLIENT_WORKER_THREAD_LIMIT = "proxy.client.worker.thread.limit";
@@ -23,20 +21,20 @@ public class ProxyConfiguration {
     private static final String PROXY_TOPIC_CHANGE_DELAY_MS = "proxy.topic.change.delay.ms";
 
     private final Properties prop;
-    private final CommonConfiguration commonConfiguration;
-    private final ZookeeperConfiguration zookeeperConfiguration;
+    private final CommonConfig commonConfiguration;
+    private final ZookeeperConfig zookeeperConfiguration;
 
-    public ProxyConfiguration(Properties prop, CommonConfiguration configuration, ZookeeperConfiguration zookeeperConfiguration) {
+    public ProxyConfig(Properties prop, CommonConfig configuration, ZookeeperConfig zookeeperConfiguration) {
         this.prop = prop;
         this.commonConfiguration = configuration;
         this.zookeeperConfiguration = zookeeperConfiguration;
     }
 
-    public ZookeeperConfiguration getZookeeperConfiguration() {
+    public ZookeeperConfig getZookeeperConfiguration() {
         return zookeeperConfiguration;
     }
 
-    public CommonConfiguration getCommonConfiguration() {
+    public CommonConfig getCommonConfiguration() {
         return commonConfiguration;
     }
 

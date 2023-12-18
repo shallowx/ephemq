@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.meteor.configuration.CommonConfiguration;
+import org.meteor.configuration.CommonConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
@@ -19,10 +19,10 @@ import static org.meteor.metrics.MetricsConstants.*;
 
 public class InnerClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClient.class);
-    private final CommonConfiguration configuration;
+    private final CommonConfig configuration;
     private final Coordinator coordinator;
 
-    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfiguration configuration, Coordinator coordinator) {
+    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfig configuration, Coordinator coordinator) {
         super(name, clientConfig, listener);
         this.configuration = configuration;
         this.coordinator = coordinator;

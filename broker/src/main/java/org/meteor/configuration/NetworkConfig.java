@@ -4,7 +4,7 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class NetworkConfiguration {
+public class NetworkConfig {
     private static final String CONNECTION_TIMEOUT_MS = "connection.timeout.ms";
     private static final String NETWORK_LOG_DEBUG_ENABLED = "network.log.debug.enabled";
     private static final String WRITE_BUFFER_WATER_MARK = "socket.write.buffer.high.watermark";
@@ -13,7 +13,7 @@ public class NetworkConfiguration {
     private static final String NOTIFY_CLIENT_TIMEOUT_MS = "notify.client.timeout.ms";
     private final Properties prop;
 
-    public NetworkConfiguration(Properties prop) {
+    public NetworkConfig(Properties prop) {
         this.prop = prop;
     }
 

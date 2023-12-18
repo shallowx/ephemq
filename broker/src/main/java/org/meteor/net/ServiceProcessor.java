@@ -10,8 +10,8 @@ import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.meteor.common.*;
-import org.meteor.configuration.CommonConfiguration;
-import org.meteor.configuration.NetworkConfiguration;
+import org.meteor.configuration.CommonConfig;
+import org.meteor.configuration.NetworkConfig;
 import org.meteor.ledger.Log;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
@@ -43,13 +43,13 @@ import static org.meteor.remote.util.ProtoBufUtils.readProto;
 public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
-    protected final CommonConfiguration commonConfiguration;
-    private final NetworkConfiguration networkConfiguration;
+    protected final CommonConfig commonConfiguration;
+    private final NetworkConfig networkConfiguration;
     protected final Coordinator coordinator;
     protected final EventExecutor commandExecutor;
     protected EventExecutor serviceExecutor;
 
-    public ServiceProcessor(CommonConfiguration commonConfiguration, NetworkConfiguration networkConfiguration, Coordinator coordinator) {
+    public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Coordinator coordinator) {
         this.coordinator = coordinator;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;

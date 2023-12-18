@@ -4,7 +4,7 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class CommonConfiguration {
+public class CommonConfig {
     private static final String SERVER_ID = "server.id";
     private static final String CLUSTER_NAME = "server.cluster.name";
     private static final String ADVERTISED_ADDRESS = "server.advertised.address";
@@ -16,7 +16,7 @@ public class CommonConfiguration {
     private static final String SOCKET_PREFER_EPOLL = "socket.prefer.epoll";
     private final Properties prop;
 
-    public CommonConfiguration(Properties prop) {
+    public CommonConfig(Properties prop) {
         this.prop = prop;
     }
 

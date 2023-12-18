@@ -4,14 +4,14 @@ import org.meteor.common.util.TypeTransformUtils;
 
 import java.util.Properties;
 
-public class SegmentConfiguration {
+public class SegmentConfig {
     private static final String SEGMENT_ROLLING_SIZE = "segment.rolling.size";
     private static final String SEGMENT_RETAIN_LIMIT = "segment.retain.limit";
     private static final String SEGMENT_RETAIN_TIME = "segment.retain.time.ms";
 
     private final Properties prop;
 
-    public SegmentConfiguration(Properties prop) {
+    public SegmentConfig(Properties prop) {
         this.prop = prop;
     }
 

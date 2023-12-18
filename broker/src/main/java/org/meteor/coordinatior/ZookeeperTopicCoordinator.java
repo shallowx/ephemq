@@ -39,9 +39,9 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
     protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
     protected final List<TopicListener> listeners = new LinkedList<>();
-    protected CommonConfiguration commonConfiguration;
-    protected SegmentConfiguration segmentConfiguration;
-    private ZookeeperConfiguration zookeeperConfiguration;
+    protected CommonConfig commonConfiguration;
+    protected SegmentConfig segmentConfiguration;
+    private ZookeeperConfig zookeeperConfiguration;
     protected CuratorFramework client;
     protected CuratorCache cache;
     protected ParticipantCoordinator participantCoordinator;
@@ -54,7 +54,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     public ZookeeperTopicCoordinator() {
     }
 
-    public ZookeeperTopicCoordinator(ServerConfiguration config, Coordinator coordinator) {
+    public ZookeeperTopicCoordinator(ServerConfig config, Coordinator coordinator) {
         this.commonConfiguration = config.getCommonConfiguration();
         this.segmentConfiguration = config.getSegmentConfiguration();
         this.zookeeperConfiguration = config.getZookeeperConfiguration();

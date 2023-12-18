@@ -2,7 +2,7 @@ package org.meteor;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.meteor.configuration.ServerConfiguration;
+import org.meteor.configuration.ServerConfig;
 import org.meteor.listener.MetricsListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.common.logging.InternalLogger;
@@ -36,7 +36,7 @@ public class Meteor {
 
     private static MeteorServer createServer(String... args) throws Exception {
         Properties properties = loadConfigurationProperties(args);
-        ServerConfiguration configuration = new ServerConfiguration(properties);
+        ServerConfig configuration = new ServerConfig(properties);
 
         Coordinator coordinator = new DefaultCoordinator(configuration);
         MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);

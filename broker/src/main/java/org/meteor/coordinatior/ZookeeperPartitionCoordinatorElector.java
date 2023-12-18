@@ -6,8 +6,8 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.recipes.leader.Participant;
-import org.meteor.configuration.CommonConfiguration;
-import org.meteor.configuration.ZookeeperConfiguration;
+import org.meteor.configuration.CommonConfig;
+import org.meteor.configuration.ZookeeperConfig;
 import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.ledger.Log;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class ZookeeperPartitionCoordinatorElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionCoordinatorElector.class);
 
-    private final CommonConfiguration configuration;
+    private final CommonConfig configuration;
     private final TopicPartition topicPartition;
     private final Coordinator coordinator;
     private final ParticipantCoordinator participantCoordinator;
@@ -38,7 +38,7 @@ public class ZookeeperPartitionCoordinatorElector {
     private final CuratorFramework client;
     private LeaderLatch latch;
 
-    public ZookeeperPartitionCoordinatorElector(CommonConfiguration brokerConfiguration, ZookeeperConfiguration zookeeperConfiguration, TopicPartition topicPartition, Coordinator coordinator, ParticipantCoordinator participantCoordinator, int ledger) {
+    public ZookeeperPartitionCoordinatorElector(CommonConfig brokerConfiguration, ZookeeperConfig zookeeperConfiguration, TopicPartition topicPartition, Coordinator coordinator, ParticipantCoordinator participantCoordinator, int ledger) {
         this.configuration = brokerConfiguration;
         this.topicPartition = topicPartition;
         this.coordinator = coordinator;

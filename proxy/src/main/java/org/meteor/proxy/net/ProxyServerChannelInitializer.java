@@ -4,18 +4,17 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.meteor.configuration.ServerConfiguration;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.net.ServiceChannelInitializer;
 import org.meteor.net.ServiceDuplexHandler;
-import org.meteor.proxy.internal.ProxyServerConfiguration;
+import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 
 public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
-    private final ProxyServerConfiguration serverConfiguration;
-    public ProxyServerChannelInitializer(ProxyServerConfiguration serverConfiguration, Coordinator coordinator) {
+    private final ProxyServerConfig serverConfiguration;
+    public ProxyServerChannelInitializer(ProxyServerConfig serverConfiguration, Coordinator coordinator) {
         super(serverConfiguration.getCommonConfiguration(), serverConfiguration.getNetworkConfiguration(), coordinator);
         this.serverConfiguration = serverConfiguration;
     }

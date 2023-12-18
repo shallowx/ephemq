@@ -2,7 +2,7 @@ package org.meteor.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.meteor.configuration.ServerConfiguration;
+import org.meteor.configuration.ServerConfig;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.*;
@@ -26,7 +26,7 @@ public class DefaultCoordinator implements Coordinator {
     protected LogCoordinator logCoordinator;
     protected TopicCoordinator topicCoordinator;
     protected ClusterCoordinator clusterCoordinator;
-    protected ServerConfiguration configuration;
+    protected ServerConfig configuration;
     protected ConnectionCoordinator connectionCoordinator;
     protected EventExecutorGroup handleGroup;
     protected EventExecutorGroup storageGroup;
@@ -39,7 +39,7 @@ public class DefaultCoordinator implements Coordinator {
     public DefaultCoordinator() {
     }
 
-    public DefaultCoordinator(ServerConfiguration configuration) {
+    public DefaultCoordinator(ServerConfig configuration) {
         this.configuration = configuration;
         this.connectionCoordinator = new DefaultConnectionCoordinator();
         this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfiguration().getMessageSyncThreadLimit(), "sync-group");

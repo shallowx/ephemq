@@ -2,7 +2,6 @@ package org.meteor.proxy;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.meteor.configuration.ServerConfiguration;
 import org.meteor.internal.MeteorServer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -10,7 +9,7 @@ import org.meteor.listener.MetricsListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.proxy.coordinatior.ProxyDefaultCoordinator;
 import org.meteor.proxy.internal.ProxyMetricsListener;
-import org.meteor.proxy.internal.ProxyServerConfiguration;
+import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.proxy.net.MeteorProxyServer;
 import org.meteor.proxy.net.ProxySocketServer;
 import org.meteor.util.ShutdownHookThread;
@@ -39,7 +38,7 @@ public class MeteorProxy {
     private static MeteorProxyServer createServer(String... args) throws Exception {
         CommandLine commandLine = parseCommandLine(args);
         Properties properties = loadPropertiesFromFile(commandLine);
-        ProxyServerConfiguration configuration = new ProxyServerConfiguration(properties);
+        ProxyServerConfig configuration = new ProxyServerConfig(properties);
         return configureMeteorProxyServer(configuration, properties);
     }
 
@@ -63,7 +62,7 @@ public class MeteorProxy {
         return properties;
     }
 
-    private static MeteorProxyServer configureMeteorProxyServer(ProxyServerConfiguration configuration, Properties properties) {
+    private static MeteorProxyServer configureMeteorProxyServer(ProxyServerConfig configuration, Properties properties) {
         Coordinator coordinator = new ProxyDefaultCoordinator(configuration);
         MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfiguration(), configuration.getMetricsConfiguration(), coordinator);
         coordinator.addMetricsListener(metricsListener);

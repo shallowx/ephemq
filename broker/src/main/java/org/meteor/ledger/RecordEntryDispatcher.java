@@ -16,7 +16,7 @@ import org.meteor.common.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.util.MessageUtils;
-import org.meteor.configuration.RecordDispatchConfiguration;
+import org.meteor.configuration.RecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.MessagePushSignal;
@@ -47,7 +47,7 @@ public class RecordEntryDispatcher {
     private final ConcurrentMap<Channel, Handler> channelHandlerMap = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfiguration config, EventExecutorGroup group,
+    RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
                           IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
