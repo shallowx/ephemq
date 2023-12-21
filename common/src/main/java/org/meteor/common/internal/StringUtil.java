@@ -1,10 +1,10 @@
-package org.meteor.common.util;
+package org.meteor.common.internal;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.Arrays;
 
 @SuppressWarnings("all")
-public final class StringUtils {
+public final class StringUtil {
 
     public static final char DOUBLE_QUOTE = '\"';
     public static final char TAB = '\t';
@@ -49,7 +49,7 @@ public final class StringUtils {
         HEX2B['f'] = (byte) 15;
     }
 
-    private StringUtils() throws OperationNotSupportedException {
+    private StringUtil() throws OperationNotSupportedException {
         // Unused.
         throw new OperationNotSupportedException();
     }
@@ -63,7 +63,7 @@ public final class StringUtils {
     }
 
     public static String simpleClassName(Class<?> clazz) {
-        String className = ObjectUtils.checkNotNull(clazz, "clazz").getName();
+        String className = ObjectUtil.checkNotNull(clazz, "clazz").getName();
         final int lastDotIdx = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
         if (lastDotIdx > -1) {
             return className.substring(lastDotIdx + 1);

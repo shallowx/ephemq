@@ -1,7 +1,7 @@
 package org.meteor.common.logging;
 
-import org.meteor.common.util.ObjectUtils;
-import org.meteor.common.util.StringUtils;
+import org.meteor.common.internal.ObjectUtil;
+import org.meteor.common.internal.StringUtil;
 
 import java.io.ObjectStreamException;
 import java.io.Serial;
@@ -15,7 +15,7 @@ public abstract class AbstractInternalLogger implements InternalLogger, Serializ
     private final String name;
 
     protected AbstractInternalLogger(String name) {
-        this.name = ObjectUtils.checkNotNull(name, "name");
+        this.name = ObjectUtil.checkNotNull(name, "name");
     }
 
     @Override
@@ -138,6 +138,6 @@ public abstract class AbstractInternalLogger implements InternalLogger, Serializ
 
     @Override
     public String toString() {
-        return StringUtils.simpleClassName(this) + '(' + name() + ')';
+        return StringUtil.simpleClassName(this) + '(' + name() + ')';
     }
 }

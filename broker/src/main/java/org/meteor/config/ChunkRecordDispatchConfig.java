@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -18,26 +18,26 @@ public class ChunkRecordDispatchConfig {
     }
 
     public int getChunkDispatchEntryBytesLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_BYTES_LIMIT, 65536));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_BYTES_LIMIT, 65536));
     }
 
     public int getChunkDispatchEntryLoadLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_LOAD_LIMIT, 50));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_LOAD_LIMIT, 50));
     }
 
     public int getChunkDispatchEntryFollowLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT, 100));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT, 100));
     }
 
     public int getChunkDispatchEntryPursueLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT, 500));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT, 500));
     }
 
     public int getChunkDispatchEntryAlignLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT, 2000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT, 2000));
     }
 
     public int getChunkDispatchEntryPursueTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS, 10000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS, 10000));
     }
 }

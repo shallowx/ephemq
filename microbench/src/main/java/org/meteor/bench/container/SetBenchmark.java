@@ -1,4 +1,4 @@
-package org.meteor.benchmarks.container;
+package org.meteor.bench.container;
 
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;

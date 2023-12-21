@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -18,25 +18,25 @@ public class NetworkConfig {
     }
 
     public boolean isNetworkLogDebugEnabled() {
-        return TypeTransformUtils.object2Boolean(prop.getOrDefault(NETWORK_LOG_DEBUG_ENABLED, false));
+        return TypeTransformUtil.object2Boolean(prop.getOrDefault(NETWORK_LOG_DEBUG_ENABLED, false));
     }
 
     public int getWriteBufferWaterMarker() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(WRITE_BUFFER_WATER_MARK, 30 * 1024 * 1024));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(WRITE_BUFFER_WATER_MARK, 30 * 1024 * 1024));
     }
 
     public int getConnectionTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(CONNECTION_TIMEOUT_MS, 30000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CONNECTION_TIMEOUT_MS, 30000));
     }
 
     public int getNetworkThreadLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(NETWORK_THREAD_LIMIT, Runtime.getRuntime().availableProcessors() * 4));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(NETWORK_THREAD_LIMIT, Runtime.getRuntime().availableProcessors() * 4));
     }
 
     public int getIoThreadLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(IO_THREAD_LIMIT, 1));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(IO_THREAD_LIMIT, 1));
     }
     public int getNotifyClientTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(NOTIFY_CLIENT_TIMEOUT_MS, 100));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(NOTIFY_CLIENT_TIMEOUT_MS, 100));
     }
 }

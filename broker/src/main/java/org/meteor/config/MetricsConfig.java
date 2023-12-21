@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -14,6 +14,6 @@ public class MetricsConfig {
     }
 
     public int getMetricsSampleLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(METRICS_SAMPLE_LIMIT, 100));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(METRICS_SAMPLE_LIMIT, 100));
     }
 }

@@ -1,10 +1,10 @@
-package org.meteor.common.util;
+package org.meteor.common.internal;
 
 
 import io.netty.buffer.ByteBuf;
 import org.meteor.common.message.Offset;
 
-public class MessageUtils {
+public class MessageUtil {
     public static Offset getOffset(ByteBuf buf) {
         int location = buf.readerIndex();
         int epoch = buf.getInt(location + 4);

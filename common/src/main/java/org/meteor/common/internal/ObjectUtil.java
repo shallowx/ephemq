@@ -1,18 +1,18 @@
-package org.meteor.common.util;
+package org.meteor.common.internal;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.Collection;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public final class ObjectUtils {
+public final class ObjectUtil {
 
     private static final float FLOAT_ZERO = 0.0F;
     private static final double DOUBLE_ZERO = 0.0D;
     private static final long LONG_ZERO = 0L;
     private static final int INT_ZERO = 0;
 
-    private ObjectUtils() throws OperationNotSupportedException {
+    private ObjectUtil() throws OperationNotSupportedException {
         throw new OperationNotSupportedException();
     }
 

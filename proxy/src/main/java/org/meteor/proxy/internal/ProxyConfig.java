@@ -1,6 +1,6 @@
 package org.meteor.proxy.internal;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
 
@@ -39,48 +39,48 @@ public class ProxyConfig {
     }
 
     public int getProxyLeaderSyncPeriodMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_PERIOD_MS, 60000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_PERIOD_MS, 60000));
     }
 
     public int getProxyLeaderSyncSemaphore() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_SEMAPHORE, 100));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_SEMAPHORE, 100));
     }
 
     public int getProxyLeaderSyncUpstreamTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_UPSTREAM_TIMEOUT_MS, 1900));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_UPSTREAM_TIMEOUT_MS, 1900));
     }
     public int getProxyChannelConnectionTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_CHANNEL_CONNECTION_TIMEOUT_MS, 3000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_CHANNEL_CONNECTION_TIMEOUT_MS, 3000));
     }
     public int getProxyResumeTaskScheduleDelayMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_RESUME_TASK_SCHEDULE_DELAY_MS, 3000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_RESUME_TASK_SCHEDULE_DELAY_MS, 3000));
     }
 
     public int getProxySyncCheckIntervalMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_SYNC_CHECK_INTERVAL_MS, 5000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_SYNC_CHECK_INTERVAL_MS, 5000));
     }
 
     public int getProxyTopicChangeDelayMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_TOPIC_CHANGE_DELAY_MS, 15000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_TOPIC_CHANGE_DELAY_MS, 15000));
     }
 
     public String getProxyUpstreamServers() {
-        return TypeTransformUtils.object2String(prop.getOrDefault(PROXY_UPSTREAM_SERVERS, "127.0.0.1:9527"));
+        return TypeTransformUtil.object2String(prop.getOrDefault(PROXY_UPSTREAM_SERVERS, "127.0.0.1:9527"));
     }
 
     public int getProxyHeavyLoadSubscriberThreshold() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_HEAVY_LOAD_SUBSCRIBER_THRESHOLD, 200000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_HEAVY_LOAD_SUBSCRIBER_THRESHOLD, 200000));
     }
 
     public int getProxyClientWorkerThreadLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_CLIENT_WORKER_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_CLIENT_WORKER_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
     }
 
     public int getProxyClientPoolSize() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_CLIENT_POOL_SIZE, 3));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_CLIENT_POOL_SIZE, 3));
     }
 
     public int getProxyLeaderSyncInitialDelayMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_INITIAL_DELAY_MS, 60000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_INITIAL_DELAY_MS, 60000));
     }
 }

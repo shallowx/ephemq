@@ -9,7 +9,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.meteor.cli.Command;
 import org.meteor.client.internal.Client;
-import org.meteor.common.util.StringUtils;
+import org.meteor.common.internal.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
 
 import java.io.File;
@@ -74,7 +74,7 @@ public class MigrateLedgerCommand implements Command {
             String file = null;
             if (commandLine.hasOption('e')) {
                 file = commandLine.getOptionValue('e');
-                if (!StringUtils.isNullOrEmpty(file)) {
+                if (!StringUtil.isNullOrEmpty(file)) {
                     String content = FileUtils.readFileToString(new File(file), StandardCharsets.UTF_8);
                     Gson gson = new Gson();
                     List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {

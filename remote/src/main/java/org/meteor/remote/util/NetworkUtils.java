@@ -13,7 +13,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.*;
 import org.meteor.common.thread.FastEventExecutorGroup;
-import org.meteor.common.util.ObjectUtils;
+import org.meteor.common.internal.ObjectUtil;
 import org.meteor.remote.RemoteException;
 import org.meteor.remote.codec.MessagePacket;
 
@@ -47,7 +47,7 @@ public final class NetworkUtils {
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
         final int size = addresses == null ? 0 : addresses.size();
-        if (ObjectUtils.checkPositive(size, "bootstrap address") > 0) {
+        if (ObjectUtil.checkPositive(size, "bootstrap address") > 0) {
             List<SocketAddress> answers = new LinkedList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);

@@ -2,7 +2,7 @@ package org.meteor.ledger;
 
 import io.netty.buffer.ByteBuf;
 import org.meteor.common.message.Offset;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 
 public record ChunkRecord(int count, ByteBuf data) {
     public Offset getStartOffset() {
@@ -15,13 +15,13 @@ public record ChunkRecord(int count, ByteBuf data) {
     public int getStartEpoch() {
         int length = data.getInt(data.readableBytes());
         ByteBuf message = data.slice(4, length);
-        return MessageUtils.getEpoch(message);
+        return MessageUtil.getEpoch(message);
     }
 
     public long getStartIndex() {
         int length = data.getInt(data.readableBytes());
         ByteBuf message = data.slice(4, length);
-        return MessageUtils.getEpoch(message);
+        return MessageUtil.getEpoch(message);
     }
 
     public Offset getEndOffset() {
@@ -36,13 +36,13 @@ public record ChunkRecord(int count, ByteBuf data) {
         int bytes = data.readableBytes();
         int length = data.getInt(bytes - 4);
         ByteBuf message = data.slice(bytes - 4 - length, length);
-        return MessageUtils.getEpoch(message);
+        return MessageUtil.getEpoch(message);
     }
 
     public long getEndIndex() {
         int bytes = data.readableBytes();
         int length = data.getInt(bytes - 4);
         ByteBuf message = data.slice(bytes - 4 - length, length);
-        return MessageUtils.getIndex(message);
+        return MessageUtil.getIndex(message);
     }
 }

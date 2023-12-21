@@ -1,4 +1,4 @@
-package org.meteor.benchmarks.container;
+package org.meteor.bench.container;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.openjdk.jmh.annotations.*;

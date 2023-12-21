@@ -169,7 +169,7 @@
         <module>common</module>
         <module>metrics</module>
         <module>cli</module>
-        <module>benchmarks</module>
+        <module>microbench</module>
         <module>assembler</module>
         <module>proxy</module>
         <module>example</module>

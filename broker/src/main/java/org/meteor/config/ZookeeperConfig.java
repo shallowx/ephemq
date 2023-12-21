@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -17,22 +17,22 @@ public class ZookeeperConfig {
     }
 
     public String getZookeeperUrl() {
-        return TypeTransformUtils.object2String(prop.getOrDefault(ZOOKEEPER_URL, "localhost:2181"));
+        return TypeTransformUtil.object2String(prop.getOrDefault(ZOOKEEPER_URL, "localhost:2181"));
     }
 
     public int getZookeeperConnectionRetrySleepMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(ZOOKEEPER_CONNECTION_RETRY_SLEEP_MS, 30000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(ZOOKEEPER_CONNECTION_RETRY_SLEEP_MS, 30000));
     }
 
     public int getZookeeperConnectionRetries() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(ZOOKEEPER_CONNECTION_RETRIES, 3));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(ZOOKEEPER_CONNECTION_RETRIES, 3));
     }
 
     public int getZookeeperConnectionTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(ZOOKEEPER_CONNECTION_TIMEOUT_MS, 5000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(ZOOKEEPER_CONNECTION_TIMEOUT_MS, 5000));
     }
 
     public int getZookeeperSessionTimeoutMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(ZOOKEEPER_SESSION_TIMEOUT_MS, 30000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(ZOOKEEPER_SESSION_TIMEOUT_MS, 30000));
     }
 }

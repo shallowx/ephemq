@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.internal.ObjectPool;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 
 public class MessageWrapper extends AbstractReferenceCounted {
 
@@ -30,23 +30,23 @@ public class MessageWrapper extends AbstractReferenceCounted {
     }
 
     public int getEpoch() {
-        return MessageUtils.getEpoch(message);
+        return MessageUtil.getEpoch(message);
     }
 
     public int getIndex() {
-        return MessageUtils.getIndex(message);
+        return MessageUtil.getIndex(message);
     }
 
     public int getMarker() {
-        return MessageUtils.getMarker(message);
+        return MessageUtil.getMarker(message);
     }
 
     public ByteBuf getBody() {
-        return MessageUtils.getBody(message);
+        return MessageUtil.getBody(message);
     }
 
     public ByteBuf getMeta() {
-        return MessageUtils.getMeta(message);
+        return MessageUtil.getMeta(message);
     }
 
     public int getLedger() {

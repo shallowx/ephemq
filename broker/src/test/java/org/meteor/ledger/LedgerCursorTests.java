@@ -5,7 +5,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.meteor.common.message.Offset;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 import org.meteor.remote.util.ByteBufUtils;
 import org.meteor.remote.util.NetworkUtils;
 
@@ -63,7 +63,7 @@ public class LedgerCursorTests {
 
         LedgerCursor cursor = new LedgerCursor(storage, segment, 0);
         ByteBuf next = cursor.next();
-        ByteBuf payload = MessageUtils.getPayload(next);
+        ByteBuf payload = MessageUtil.getPayload(next);
         String message = ByteBufUtils.buf2String(payload, 4 * 1024 * 1024);
         Assert.assertEquals(message, content);
 

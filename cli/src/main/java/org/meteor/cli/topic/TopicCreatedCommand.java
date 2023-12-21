@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.meteor.cli.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.TopicConfig;
-import org.meteor.common.util.StringUtils;
+import org.meteor.common.internal.StringUtil;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.PartitionsReplicas;
 
@@ -57,7 +57,7 @@ public class TopicCreatedCommand implements Command {
             if (commandLine.hasOption('b')) {
                 if (commandLine.hasOption('e')) {
                     String explainFile = commandLine.getOptionValue('e');
-                    if (!StringUtils.isNullOrEmpty(explainFile)) {
+                    if (!StringUtil.isNullOrEmpty(explainFile)) {
                         String content = FileUtils.readFileToString(new File(explainFile), StandardCharsets.UTF_8);
                         Gson gson = new Gson();
                         List<TopicMetadata> lists = gson.fromJson(content, new TypeToken<List<TopicMetadata>>() {

@@ -15,7 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 import org.meteor.config.RecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
@@ -333,7 +333,7 @@ public class RecordEntryDispatcher {
                 runTimes++;
                 ByteBuf payload = null;
                 try {
-                    Offset offset = MessageUtils.getOffset(entry);
+                    Offset offset = MessageUtil.getOffset(entry);
                     if (!offset.after(lastOffset)) {
                         if (runTimes > followLimit) {
                             break;
@@ -342,7 +342,7 @@ public class RecordEntryDispatcher {
                     }
 
                     lastOffset = offset;
-                    int marker = MessageUtils.getMarker(entry);
+                    int marker = MessageUtil.getMarker(entry);
                     Set<Subscription> subscriptions = markerSubscriptionMap.get(marker);
                     if (subscriptions == null) {
                         if (runTimes > followLimit) {
@@ -459,7 +459,7 @@ public class RecordEntryDispatcher {
                 runTimes++;
                 ByteBuf payload = null;
                 try {
-                    Offset offset = MessageUtils.getOffset(entry);
+                    Offset offset = MessageUtil.getOffset(entry);
                     if (!offset.after(lastOffset)) {
                         if (runTimes > pursueLimit) {
                             finished = false;
@@ -468,7 +468,7 @@ public class RecordEntryDispatcher {
                         continue;
                     }
                     lastOffset = offset;
-                    int marker = MessageUtils.getMarker(entry);
+                    int marker = MessageUtil.getMarker(entry);
                     if (!markers.contains(marker)) {
                         if (runTimes > pursueLimit) {
                             finished = false;
@@ -563,7 +563,7 @@ public class RecordEntryDispatcher {
                 runTimes++;
                 ByteBuf payload = null;
                 try {
-                    Offset offset = MessageUtils.getOffset(entry);
+                    Offset offset = MessageUtil.getOffset(entry);
                     if (!offset.after(lastOffset)) {
                         if (runTimes > alignLimit) {
                             finished = false;
@@ -578,7 +578,7 @@ public class RecordEntryDispatcher {
                         return;
                     }
                     lastOffset = offset;
-                    int marker = MessageUtils.getMarker(entry);
+                    int marker = MessageUtil.getMarker(entry);
                     if (!markers.contains(marker)) {
                         if (runTimes > pursueLimit) {
                             finished = false;

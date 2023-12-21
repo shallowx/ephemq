@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -16,15 +16,15 @@ public class SegmentConfig {
     }
 
     public int getSegmentRollingSize() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(SEGMENT_ROLLING_SIZE, 4194304));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(SEGMENT_ROLLING_SIZE, 4194304));
     }
 
     public int getSegmentRetainLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(SEGMENT_RETAIN_LIMIT, 3));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(SEGMENT_RETAIN_LIMIT, 3));
     }
 
     public int getSegmentRetainTime() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(SEGMENT_RETAIN_TIME, 30000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(SEGMENT_RETAIN_TIME, 30000));
     }
 
 }

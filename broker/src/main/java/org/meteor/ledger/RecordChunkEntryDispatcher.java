@@ -13,7 +13,7 @@ import io.netty.util.concurrent.Promise;
 import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 import org.meteor.config.ChunkRecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
@@ -175,7 +175,7 @@ public class RecordChunkEntryDispatcher {
                     }
 
                     Offset startOffset = chunk.getStartOffset();
-                    if (!MessageUtils.isContinuous(lastOffset, startOffset)) {
+                    if (!MessageUtil.isContinuous(lastOffset, startOffset)) {
                         logger.warn("Chunk met discontinuous message, {} basePffset={} nextOffset={} runtimes={}",
                                 handler, lastOffset, startOffset, runTimes);
                     }
@@ -319,7 +319,7 @@ public class RecordChunkEntryDispatcher {
                         continue;
                     }
                     Offset startOffset = chunk.getStartOffset();
-                    if (!MessageUtils.isContinuous(lastOffset, startOffset)) {
+                    if (!MessageUtil.isContinuous(lastOffset, startOffset)) {
                         logger.warn("Chunk met discontinuous message, {} basePffset={} nextOffset={} runtimes={}",
                                 pursueTask, lastOffset, startOffset, runtimes);
                     }
@@ -414,7 +414,7 @@ public class RecordChunkEntryDispatcher {
                     }
 
                     Offset startOffset = chunk.getStartOffset();
-                    if (!MessageUtils.isContinuous(lastOffset, startOffset)) {
+                    if (!MessageUtil.isContinuous(lastOffset, startOffset)) {
                         logger.warn("Chunk met discontinuous message, {} basePffset={} nextOffset={} runtimes={}",
                                 pursueTask, lastOffset, startOffset, runtimes);
                     }

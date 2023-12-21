@@ -1,6 +1,6 @@
 package org.meteor.common.logging;
 
-import org.meteor.common.util.ObjectUtils;
+import org.meteor.common.internal.ObjectUtil;
 
 public abstract class InternalLoggerFactory {
 
@@ -79,7 +79,7 @@ public abstract class InternalLoggerFactory {
     }
 
     public static void setDefaultFactory(InternalLoggerFactory defaultFactory) {
-        InternalLoggerFactory.defaultFactory = ObjectUtils.checkNotNull(defaultFactory, "defaultFactory");
+        InternalLoggerFactory.defaultFactory = ObjectUtil.checkNotNull(defaultFactory, "defaultFactory");
     }
 
 

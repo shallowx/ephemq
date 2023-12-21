@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.util.TypeTransformUtils;
+import org.meteor.common.internal.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -21,37 +21,37 @@ public class CommonConfig {
     }
 
     public String getServerId() {
-        return TypeTransformUtils.object2String(prop.getOrDefault(SERVER_ID, "default"));
+        return TypeTransformUtil.object2String(prop.getOrDefault(SERVER_ID, "default"));
     }
 
     public boolean isSocketPreferEpoll() {
-        return TypeTransformUtils.object2Boolean(prop.getOrDefault(SOCKET_PREFER_EPOLL, true));
+        return TypeTransformUtil.object2Boolean(prop.getOrDefault(SOCKET_PREFER_EPOLL, true));
     }
 
     public String getClusterName() {
-        return TypeTransformUtils.object2String(prop.getOrDefault(CLUSTER_NAME, "default"));
+        return TypeTransformUtil.object2String(prop.getOrDefault(CLUSTER_NAME, "default"));
     }
 
     public String getAdvertisedAddress() {
-        return TypeTransformUtils.object2String(prop.getOrDefault(ADVERTISED_ADDRESS, "localhost"));
+        return TypeTransformUtil.object2String(prop.getOrDefault(ADVERTISED_ADDRESS, "localhost"));
     }
 
     public int getAdvertisedPort() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(ADVERTISED_PORT, 8888));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(ADVERTISED_PORT, 8888));
     }
 
     public int getCompatiblePort() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(COMPATIBLE_PORT, -1));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(COMPATIBLE_PORT, -1));
     }
 
     public int getShutdownMaxWaitTimeMs() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(SHUTDOWN_MAX_WAIT_TIME_MS, 45000));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(SHUTDOWN_MAX_WAIT_TIME_MS, 45000));
     }
 
     public int getAuxThreadLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(AUX_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(AUX_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
     }
     public int getCommandHandleThreadLimit() {
-        return TypeTransformUtils.object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
     }
 }

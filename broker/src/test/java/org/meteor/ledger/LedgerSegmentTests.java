@@ -5,7 +5,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.meteor.common.message.Offset;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 import org.meteor.remote.util.ByteBufUtils;
 
 import java.util.UUID;
@@ -60,7 +60,7 @@ public class LedgerSegmentTests {
         segment.writeRecord(1, offset, data);
 
         ByteBuf record = segment.readRecord(0);
-        ByteBuf payload = MessageUtils.getPayload(record);
+        ByteBuf payload = MessageUtil.getPayload(record);
         byte[] bytes = ByteBufUtils.buf2Bytes(payload);
         String uuid = new String(bytes);
 

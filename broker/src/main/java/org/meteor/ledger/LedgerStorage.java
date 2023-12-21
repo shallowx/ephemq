@@ -11,7 +11,7 @@ import io.netty.util.concurrent.Promise;
 import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.util.MessageUtils;
+import org.meteor.common.internal.MessageUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -324,7 +324,7 @@ public class LedgerStorage {
             Offset lastOffset = currentOffset;
             int location = buf.readerIndex();
             final Offset startOffset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
-            if (logger.isWarnEnabled() && !MessageUtils.isContinuous(lastOffset, startOffset)) {
+            if (logger.isWarnEnabled() && !MessageUtil.isContinuous(lastOffset, startOffset)) {
                 logger.warn("Received append chunk message from {} is discontinuous, ledger={} topic={} lastOffset={} startOffset={}",
                         channel, ledger, topic, lastOffset, startOffset);
             }

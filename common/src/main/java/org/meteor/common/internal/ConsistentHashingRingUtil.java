@@ -1,4 +1,4 @@
-package org.meteor.common.util;
+package org.meteor.common.internal;
 
 import com.google.common.collect.Sets;
 import com.google.common.hash.HashFunction;
@@ -9,18 +9,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ConsistentHashingRing {
+public class ConsistentHashingRingUtil {
     private final NavigableMap<Integer, NavigableSet<String>> virtualNodes = new TreeMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final HashFunction function = Hashing.murmur3_32();
     private final int virtualNodeSize;
     private final Set<String> nodes = new HashSet<>();
 
-    public ConsistentHashingRing() {
+    public ConsistentHashingRingUtil() {
         this(256);
     }
 
-    public ConsistentHashingRing(int virtualNodeSize) {
+    public ConsistentHashingRingUtil(int virtualNodeSize) {
         this.virtualNodeSize = virtualNodeSize;
     }
 
