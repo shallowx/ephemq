@@ -8,9 +8,9 @@ import io.netty.buffer.*;
 import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
-public class ProtoBufUtils {
+public class ProtoBufUtil {
 
-    private ProtoBufUtils() throws OperationNotSupportedException {
+    private ProtoBufUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }
@@ -33,7 +33,7 @@ public class ProtoBufUtils {
 
             return buf;
         } catch (Throwable t) {
-            ByteBufUtils.release(buf);
+            ByteBufUtil.release(buf);
             throw t;
         }
     }
@@ -42,7 +42,7 @@ public class ProtoBufUtils {
         ByteBuf buf = null;
         try {
             boolean isDirect = payload != null && payload.isDirect();
-            buf = allocator.ioBuffer(protoLength(proto) + (isDirect ? 0 : ByteBufUtils.bufLength(payload)));
+            buf = allocator.ioBuffer(protoLength(proto) + (isDirect ? 0 : ByteBufUtil.bufLength(payload)));
             writeProto(buf, proto);
             if (isDirect) {
                 buf = Unpooled.wrappedUnmodifiableBuffer(buf, payload.retainedSlice());

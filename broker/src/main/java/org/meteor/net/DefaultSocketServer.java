@@ -16,9 +16,9 @@ import org.meteor.config.NetworkConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
 import java.net.SocketAddress;
-import static org.meteor.metrics.MetricsConstants.*;
-import static org.meteor.remote.util.NetworkUtils.newEventLoopGroup;
-import static org.meteor.remote.util.NetworkUtils.preferServerChannelClass;
+import static org.meteor.metrics.config.MetricsConstants.*;
+import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
+import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
 
 public class DefaultSocketServer {
 

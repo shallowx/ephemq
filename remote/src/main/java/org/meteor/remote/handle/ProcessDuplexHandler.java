@@ -11,7 +11,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.invoke.GenericInvokeAnswer;
 import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.RemoteException;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.invoke.GenericInvokeHolder;
 import org.meteor.remote.invoke.InvokeHolder;
@@ -25,10 +25,10 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.meteor.common.internal.ObjectUtil.checkNotNull;
-import static org.meteor.remote.RemoteException.of;
-import static org.meteor.remote.util.ByteBufUtils.buf2String;
-import static org.meteor.remote.util.ByteBufUtils.release;
-import static org.meteor.remote.util.NetworkUtils.*;
+import static org.meteor.remote.processor.RemoteException.of;
+import static org.meteor.remote.util.ByteBufUtil.buf2String;
+import static org.meteor.remote.util.ByteBufUtil.release;
+import static org.meteor.remote.util.NetworkUtil.*;
 
 @Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {

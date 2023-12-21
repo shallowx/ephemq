@@ -7,7 +7,7 @@ import org.meteor.client.producer.ProducerConfig;
 import org.meteor.client.producer.SendCallback;
 import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class ProducerExample {
                 String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
-                    ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+                    ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
                         producer.sendOneway("#test#default", symbol, message, new Extras());
                     } catch (Exception ignored) {}
@@ -63,11 +63,11 @@ public class ProducerExample {
         Map<String, String> entries =  new HashMap<>();
         entries.put("key", "v");
         Extras extras = new Extras(entries);
-        producer.send("#test#default", "test-topic", ByteBufUtils.string2Buf(UUID.randomUUID().toString()), extras);
+        producer.send("#test#default", "test-topic", ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras);
     }
 
     public void sendAsync() {
-        producer.sendAsync("#test#default", "test-topic", ByteBufUtils.string2Buf(UUID.randomUUID().toString()), new Extras(), new AsyncSendCallback());
+        producer.sendAsync("#test#default", "test-topic", ByteBufUtil.string2Buf(UUID.randomUUID().toString()), new Extras(), new AsyncSendCallback());
     }
 
     static class AsyncSendCallback implements SendCallback {

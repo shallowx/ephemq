@@ -11,7 +11,7 @@ import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
@@ -69,7 +69,7 @@ public class TopicListCommand implements Command {
                 if (StringUtil.isNullOrEmpty(address)) {
                     throw new IllegalStateException();
                 }
-                SocketAddress socketAddress = NetworkUtils.switchSocketAddress(address);
+                SocketAddress socketAddress = NetworkUtil.switchSocketAddress(address);
                 ClientChannel clientChannel = client.fetchChannel(socketAddress);
                 List<TopicMetadata> topics = new ArrayList<>();
                 if (commandLine.hasOption("t")) {

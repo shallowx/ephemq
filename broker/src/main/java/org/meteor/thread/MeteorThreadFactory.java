@@ -1,4 +1,4 @@
-package org.meteor.util;
+package org.meteor.thread;
 
 import io.netty.util.concurrent.FastThreadLocalThread;
 import io.netty.util.internal.ObjectUtil;

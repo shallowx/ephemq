@@ -19,16 +19,16 @@ import org.meteor.config.ServerConfig;
 import org.meteor.listener.LogListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.TopicCoordinator;
-import org.meteor.metrics.MetricsConstants;
-import org.meteor.remote.RemoteException;
+import org.meteor.metrics.config.MetricsConstants;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.invoke.Callback;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.proto.server.SyncResponse;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -496,11 +496,11 @@ public class Log {
                     .setLedger(ledger)
                     .setMarker(marker)
                     .build();
-            ByteBuf data = ProtoBufUtils.protoPayloadBuf(channel.allocator(), request, payload);
+            ByteBuf data = ProtoBufUtil.protoPayloadBuf(channel.allocator(), request, payload);
             Callback<ByteBuf> callback = (v, c) -> {
                 if (c == null) {
                     try {
-                        SendMessageResponse response = ProtoBufUtils.readProto(v, SendMessageResponse.parser());
+                        SendMessageResponse response = ProtoBufUtil.readProto(v, SendMessageResponse.parser());
                         promise.trySuccess(new Offset(response.getEpoch(), response.getIndex()));
                     } catch (Throwable t) {
                         promise.tryFailure(t);
@@ -640,7 +640,7 @@ public class Log {
         } catch (Exception e) {
             promise.tryFailure(e);
         } finally {
-            ByteBufUtils.release(buf);
+            ByteBufUtil.release(buf);
         }
     }
 

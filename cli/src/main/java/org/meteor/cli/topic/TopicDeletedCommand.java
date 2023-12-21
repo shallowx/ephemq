@@ -13,7 +13,7 @@ import org.meteor.common.message.PartitionInfo;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.TopicMetadata;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
@@ -54,7 +54,7 @@ public class TopicDeletedCommand implements Command {
                 if (StringUtil.isNullOrEmpty(address)) {
                     throw new IllegalStateException();
                 }
-                SocketAddress socketAddress = NetworkUtils.switchSocketAddress(address);
+                SocketAddress socketAddress = NetworkUtil.switchSocketAddress(address);
                 ClientChannel clientChannel = client.fetchChannel(socketAddress);
                 if (commandLine.hasOption('t')) {
                     String topic = commandLine.getOptionValue('t');

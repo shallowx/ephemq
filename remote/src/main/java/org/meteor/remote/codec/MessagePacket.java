@@ -8,7 +8,7 @@ import io.netty.util.ReferenceCounted;
 
 import javax.annotation.concurrent.Immutable;
 
-import static org.meteor.remote.util.ByteBufUtils.defaultIfNull;
+import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {

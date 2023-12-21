@@ -15,7 +15,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import java.net.SocketAddress;
 
-import static org.meteor.metrics.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class InnerClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClient.class);

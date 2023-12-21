@@ -15,11 +15,11 @@ import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.*;
-import org.meteor.client.util.TopicPatterns;
+import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.RemoteException;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
@@ -33,8 +33,8 @@ import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-import org.meteor.remote.util.NetworkUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.NetworkUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
@@ -62,7 +62,7 @@ public class Client implements MeterBinder {
         this.name = name;
         this.config = Objects.requireNonNull(config, "client config not found");
         this.listener = Objects.requireNonNull(listener, "client lister not found");
-        this.bootstrapAddress = NetworkUtils.switchSocketAddress(config.getBootstrapAddresses());
+        this.bootstrapAddress = NetworkUtil.switchSocketAddress(config.getBootstrapAddresses());
     }
 
     private SocketAddress bootstrapAddress() {
@@ -217,7 +217,7 @@ public class Client implements MeterBinder {
         }
 
         state = Boolean.TRUE;
-        workerGroup = NetworkUtils.newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadCount(), "client-worker(" + name + ")");
+        workerGroup = NetworkUtil.newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadCount(), "client-worker(" + name + ")");
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
         builder.negativeTtl(30);
@@ -231,7 +231,7 @@ public class Client implements MeterBinder {
         builder.nameServerProvider(DefaultDnsServerAddressStreamProvider.INSTANCE);
         bootstrap = new Bootstrap()
                 .group(workerGroup)
-                .channel(NetworkUtils.preferChannelClass(config.isSocketEpollPrefer()))
+                .channel(NetworkUtil.preferChannelClass(config.isSocketEpollPrefer()))
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, false)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getChannelConnectionTimeoutMs())
@@ -301,7 +301,7 @@ public class Client implements MeterBinder {
     }
 
     private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        SyncMessageSignal signal = ProtoBufUtils.readProto(data, SyncMessageSignal.parser());
+        SyncMessageSignal signal = ProtoBufUtil.readProto(data, SyncMessageSignal.parser());
         listener.onSyncMessage(channel, signal, data);
         if (answer != null) {
             answer.success(null);
@@ -309,7 +309,7 @@ public class Client implements MeterBinder {
     }
 
     private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        TopicChangedSignal signal = ProtoBufUtils.readProto(data, TopicChangedSignal.parser());
+        TopicChangedSignal signal = ProtoBufUtil.readProto(data, TopicChangedSignal.parser());
         listener.onTopicChanged(channel, signal);
         if (answer != null) {
             answer.success(null);
@@ -317,7 +317,7 @@ public class Client implements MeterBinder {
     }
 
     private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        NodeOfflineSignal signal = ProtoBufUtils.readProto(data, NodeOfflineSignal.parser());
+        NodeOfflineSignal signal = ProtoBufUtil.readProto(data, NodeOfflineSignal.parser());
         listener.onNodeOffline(channel, signal);
         if (answer != null) {
             answer.success(null);
@@ -325,7 +325,7 @@ public class Client implements MeterBinder {
     }
 
     private void onPushMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        MessagePushSignal signal = ProtoBufUtils.readProto(data, MessagePushSignal.parser());
+        MessagePushSignal signal = ProtoBufUtil.readProto(data, MessagePushSignal.parser());
         listener.onPushMessage(channel, signal, data);
         if (answer != null) {
             answer.success(null);
@@ -431,14 +431,14 @@ public class Client implements MeterBinder {
             SocketAddress leaderAddress = null;
             NodeMetadata leaderNode = nodes.get(partition.getLeaderNodeId());
             if (leaderNode != null) {
-                leaderAddress = NetworkUtils.switchSocketAddress(leaderNode.getHost(), leaderNode.getPort());
+                leaderAddress = NetworkUtil.switchSocketAddress(leaderNode.getHost(), leaderNode.getPort());
             }
 
             List<SocketAddress> replicaAddress = new ArrayList<>();
             for (String nodeId : partition.getReplicaNodeIdsList()) {
                 NodeMetadata replicaNode = nodes.get(nodeId);
                 if (replicaNode != null) {
-                    SocketAddress address = NetworkUtils.switchSocketAddress(replicaNode.getHost(), replicaNode.getPort());
+                    SocketAddress address = NetworkUtil.switchSocketAddress(replicaNode.getHost(), replicaNode.getPort());
                     if (address != null) {
                         replicaAddress.add(address);
                     }
@@ -573,9 +573,9 @@ public class Client implements MeterBinder {
     }
 
     public CreateTopicResponse createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
-        TopicPatterns.validatePartition(partitions);
-        TopicPatterns.validateTopic(topic);
-        TopicPatterns.validateLedgerReplica(replicas);
+        TopicPatternUtil.validatePartition(partitions);
+        TopicPatternUtil.validateTopic(topic);
+        TopicPatternUtil.validateLedgerReplica(replicas);
 
         CreateTopicRequest.Builder request = CreateTopicRequest.newBuilder()
                 .setTopic(topic)
@@ -602,7 +602,7 @@ public class Client implements MeterBinder {
     }
 
     public DeleteTopicResponse deleteTopic(String topic) throws Exception {
-        TopicPatterns.validateTopic(topic);
+        TopicPatternUtil.validateTopic(topic);
 
         DeleteTopicRequest request = DeleteTopicRequest.newBuilder().setTopic(topic).build();
         Promise<DeleteTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
@@ -735,7 +735,7 @@ public class Client implements MeterBinder {
                         }
                     }
                 } catch (Throwable t) {
-                    logger.error("<{}>Client<{}> processor is error, code={} length={}", NetworkUtils.switchAddress(clientChannel.channel()), name, command, length);
+                    logger.error("<{}>Client<{}> processor is error, code={} length={}", NetworkUtil.switchAddress(clientChannel.channel()), name, command, length);
                     if (answer != null) {
                         answer.failure(t);
                     }

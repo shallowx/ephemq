@@ -18,8 +18,8 @@ import org.meteor.config.ChunkRecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.SyncMessageSignal;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -210,8 +210,8 @@ public class RecordChunkEntryDispatcher {
                 } catch (Exception e){
                     logger.error("chunk disptach failed, {} lastOffset={}", handler, lastOffset, e);
                 } finally {
-                    ByteBufUtils.release(chunk.data());
-                    ByteBufUtils.release(payload);
+                    ByteBufUtil.release(chunk.data());
+                    ByteBufUtil.release(payload);
                 }
 
                 if (runTimes > followLimit || chunk.count() <= 1){
@@ -238,7 +238,7 @@ public class RecordChunkEntryDispatcher {
                     .setLedger(ledger)
                     .setCount(chunk.count())
                     .build();
-            int length = ProtoBufUtils.protoLength(signal);
+            int length = ProtoBufUtil.protoLength(signal);
             ByteBuf data = chunk.data();
             int contextLength = data.readableBytes();
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + length);
@@ -246,11 +246,11 @@ public class RecordChunkEntryDispatcher {
             buf.writeMedium(MessagePacket.HEADER_LENGTH + length + contextLength);
             buf.writeInt(ProcessCommand.Client.SYNC_MESSAGE);
             buf.writeInt(0);
-            ProtoBufUtils.writeProto(buf, signal);
+            ProtoBufUtil.writeProto(buf, signal);
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, data.retainedSlice());
             return buf;
         } catch (Exception e) {
-            ByteBufUtils.release(buf);
+            ByteBufUtil.release(buf);
             throw new RuntimeException(String.format(
                     "Build payload error, ledger={} topic={} startOffset={} ednOffset={} length={}",
                     ledger, topic, startOffset, endOffset, chunk.data().readableBytes()
@@ -339,8 +339,8 @@ public class RecordChunkEntryDispatcher {
                 }catch (Exception e) {
                     logger.error("chunk pursue failed, {} lastOffset={}", pursueTask, lastOffset, e);
                 } finally {
-                    ByteBufUtils.release(chunk.data());
-                    ByteBufUtils.release(payload);
+                    ByteBufUtil.release(chunk.data());
+                    ByteBufUtil.release(payload);
                 }
 
                 if (runtimes > pursueLimit || chunk.count() <= 1) {
@@ -439,8 +439,8 @@ public class RecordChunkEntryDispatcher {
                 } catch (Exception e){
                     logger.error("chunk align failed, {} lastOffset={}", pursueTask, lastOffset, e);
                 } finally {
-                    ByteBufUtils.release(chunk.data());
-                    ByteBufUtils.release(payload);
+                    ByteBufUtil.release(chunk.data());
+                    ByteBufUtil.release(payload);
                 }
 
                 if (runtimes > pursueLimit || chunk.count() <= 1) {

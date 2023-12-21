@@ -14,21 +14,21 @@ import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.processor.Processor;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 public class DemoServerBootstrap {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerBootstrap.class);
 
     public static void main(String[] args) {
-        EventLoopGroup boosGroup = NetworkUtils.newEventLoopGroup(true, 1, "demo-server-boss");
-        EventLoopGroup workerGroup = NetworkUtils.newEventLoopGroup(true, 0, "demo-server-worker");
-        EventExecutorGroup servicesGroup = NetworkUtils.newEventExecutorGroup(0, "demo-server-service");
+        EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss");
+        EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker");
+        EventExecutorGroup servicesGroup = NetworkUtil.newEventExecutorGroup(0, "demo-server-service");
 
         Processor processorAware = new DemoServerProcessor();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap()
                     .group(boosGroup, workerGroup)
-                    .channel(NetworkUtils.preferServerChannelClass(true))
+                    .channel(NetworkUtil.preferServerChannelClass(true))
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .childOption(ChannelOption.TCP_NODELAY, true)

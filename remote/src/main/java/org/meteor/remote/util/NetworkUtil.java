@@ -14,7 +14,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.*;
 import org.meteor.common.thread.FastEventExecutorGroup;
 import org.meteor.common.internal.ObjectUtil;
-import org.meteor.remote.RemoteException;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.codec.MessagePacket;
 
 import javax.naming.OperationNotSupportedException;
@@ -25,9 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-public final class NetworkUtils {
+public final class NetworkUtil {
 
-    private NetworkUtils() throws OperationNotSupportedException {
+    private NetworkUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }
@@ -38,11 +38,11 @@ public final class NetworkUtils {
 
     public static MessagePacket newFailurePacket(int answer, Throwable cause) {
         if (cause instanceof RemoteException e) {
-            return MessagePacket.newPacket(answer, e.getCommand(), ByteBufUtils.string2Buf(e.getMessage()));
+            return MessagePacket.newPacket(answer, e.getCommand(), ByteBufUtil.string2Buf(e.getMessage()));
         }
 
         return MessagePacket.newPacket(answer, RemoteException.Failure.UNKNOWN_EXCEPTION,
-                ByteBufUtils.string2Buf(cause == null ? null : cause.getMessage()));
+                ByteBufUtil.string2Buf(cause == null ? null : cause.getMessage()));
     }
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {

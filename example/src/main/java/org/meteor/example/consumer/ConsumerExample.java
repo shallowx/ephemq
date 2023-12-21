@@ -3,7 +3,7 @@ package org.meteor.example.consumer;
 import org.meteor.client.consumer.Consumer;
 import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.internal.ClientConfig;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
@@ -27,7 +27,7 @@ public class ConsumerExample {
         consumerConfig.setClientConfig(clientConfig);
 
         Consumer consumer = new Consumer("default-consumer", consumerConfig, (topic, queue, messageId, message, extras) -> {
-            String msg = ByteBufUtils.buf2String(message, message.readableBytes());
+            String msg = ByteBufUtil.buf2String(message, message.readableBytes());
             System.out.printf("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
         });
         consumer.start();

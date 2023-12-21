@@ -11,7 +11,7 @@ import org.meteor.remote.invoke.Callback;
 import org.meteor.remote.invoke.GenericInvokeAnswer;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.AwareInvocation;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 
 import java.net.SocketAddress;
 import java.util.Objects;
@@ -85,21 +85,21 @@ public class ClientChannel implements MeterBinder {
     }
 
     public void invoke(int code, ByteBuf data, int timeoutMs, Callback<ByteBuf> callback) {
-        int length = ByteBufUtils.bufLength(data);
+        int length = ByteBufUtil.bufLength(data);
         try {
             long time = System.currentTimeMillis();
             if (semaphore.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
                 try {
                     if (callback == null) {
                         ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                        channel.writeAndFlush(AwareInvocation.newInvocation(code, ByteBufUtils.retainBuf(data)), promise);
+                        channel.writeAndFlush(AwareInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)), promise);
                     } else {
                         long expires = timeoutMs + time;
                         InvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((v, c) -> {
                             semaphore.release();
                             callback.operationCompleted(v, c);
                         });
-                        channel.writeAndFlush(AwareInvocation.newInvocation(code, ByteBufUtils.retainBuf(data), expires, answer));
+                        channel.writeAndFlush(AwareInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, answer));
                     }
                 } catch (Throwable t) {
                     semaphore.release();
@@ -118,7 +118,7 @@ public class ClientChannel implements MeterBinder {
                 throw cause;
             }
         } finally {
-            ByteBufUtils.release(data);
+            ByteBufUtil.release(data);
         }
     }
 

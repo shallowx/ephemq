@@ -6,8 +6,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.meteor.common.message.Offset;
 import org.meteor.common.internal.MessageUtil;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public class LedgerCursorTests {
     @Test
     public void testCopy() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
         ByteBuf buf = allocateBuf();
         LedgerSegmentTests.LedgerSegmentTest segment = new LedgerSegmentTests.LedgerSegmentTest(1, buf, new Offset(0, 0L));
 
@@ -32,7 +32,7 @@ public class LedgerCursorTests {
     @Test
     public void testHasNext() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
 
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
@@ -50,10 +50,10 @@ public class LedgerCursorTests {
     @Test
     public void testNext() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
 
         String content = UUID.randomUUID().toString();
-        ByteBuf data = ByteBufUtils.string2Buf(content);
+        ByteBuf data = ByteBufUtil.string2Buf(content);
 
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
@@ -64,7 +64,7 @@ public class LedgerCursorTests {
         LedgerCursor cursor = new LedgerCursor(storage, segment, 0);
         ByteBuf next = cursor.next();
         ByteBuf payload = MessageUtil.getPayload(next);
-        String message = ByteBufUtils.buf2String(payload, 4 * 1024 * 1024);
+        String message = ByteBufUtil.buf2String(payload, 4 * 1024 * 1024);
         Assert.assertEquals(message, content);
 
         buf.release();
@@ -75,10 +75,10 @@ public class LedgerCursorTests {
     @Test
     public void testSeekTo() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
 
         String content = UUID.randomUUID().toString();
-        ByteBuf data = ByteBufUtils.string2Buf(content);
+        ByteBuf data = ByteBufUtil.string2Buf(content);
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
         LedgerSegmentTests.LedgerSegmentTest segment = new LedgerSegmentTests.LedgerSegmentTest(1, buf, offset);
@@ -96,10 +96,10 @@ public class LedgerCursorTests {
     @Test
     public void testSeekToTail() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerCursorTests.LedgerTriggerCursorTest());
 
         String content = UUID.randomUUID().toString();
-        ByteBuf data = ByteBufUtils.string2Buf(content);
+        ByteBuf data = ByteBufUtil.string2Buf(content);
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
         LedgerSegmentTests.LedgerSegmentTest segment = new LedgerSegmentTests.LedgerSegmentTest(1, buf, offset);
@@ -117,7 +117,7 @@ public class LedgerCursorTests {
     }
 
     private ByteBuf buildPayload() {
-        return ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+        return ByteBufUtil.string2Buf(UUID.randomUUID().toString());
     }
 
     private ByteBuf allocateBuf() {

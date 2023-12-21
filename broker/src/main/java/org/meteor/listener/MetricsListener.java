@@ -18,8 +18,8 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.metrics.MetricsRegistrySetUp;
-import org.meteor.metrics.PrometheusRegistry;
+import org.meteor.metrics.config.MetricsRegistrySetUp;
+import org.meteor.metrics.config.PrometheusRegistry;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
 import org.meteor.metrics.jvm.JmxMetricsRegistry;
 import org.meteor.metrics.netty.NettyMetrics;
@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.meteor.metrics.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable {
 

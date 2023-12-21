@@ -13,7 +13,7 @@ import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.processor.AwareInvocation;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
@@ -29,14 +29,14 @@ public class DemoClientBootstrap {
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args) {
-        EventLoopGroup group = NetworkUtils.newEventLoopGroup(true, 0, "demo-client");
-        EventExecutorGroup serviceGroup = NetworkUtils.newEventExecutorGroup(0, "demo-client-service");
+        EventLoopGroup group = NetworkUtil.newEventLoopGroup(true, 0, "demo-client");
+        EventExecutorGroup serviceGroup = NetworkUtil.newEventExecutorGroup(0, "demo-client-service");
         DemoClientProcessor processor = new DemoClientProcessor();
 
         try {
             Bootstrap bootstrap = new Bootstrap()
                     .group(group)
-                    .channel(NetworkUtils.preferChannelClass(true))
+                    .channel(NetworkUtil.preferChannelClass(true))
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.SO_KEEPALIVE, false)

@@ -13,8 +13,8 @@ import org.meteor.coordinatior.Coordinator;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -93,7 +93,7 @@ public class DefaultTopicListener implements TopicListener {
                 AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMs(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
-                ByteBufUtils.release(buf);
+                ByteBufUtil.release(buf);
                 logger.error("Send topic change failed, channel={}", channel, e);
             }
         }
@@ -111,7 +111,7 @@ public class DefaultTopicListener implements TopicListener {
                 AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMs(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
-                ByteBufUtils.release(buf);
+                ByteBufUtil.release(buf);
                 logger.error("Send partition change failed, channel={}", channel, e);
             }
         }
@@ -119,9 +119,9 @@ public class DefaultTopicListener implements TopicListener {
 
     private ByteBuf assembleTopicChangedSignal(Channel channel, String topic, TopicChangedSignal.Type type) throws IOException {
         TopicChangedSignal signal = TopicChangedSignal.newBuilder().setType(type).setTopic(topic).build();
-        int length = ProtoBufUtils.protoLength(signal);
+        int length = ProtoBufUtil.protoLength(signal);
         ByteBuf buf = channel.alloc().ioBuffer(length);
-        ProtoBufUtils.writeProto(buf, signal);
+        ProtoBufUtil.writeProto(buf, signal);
         return buf;
     }
 
@@ -132,9 +132,9 @@ public class DefaultTopicListener implements TopicListener {
                 .setLedger(assignment.getLedgerId())
                 .setLedgerVersion(assignment.getVersion())
                 .build();
-        int length = ProtoBufUtils.protoLength(signal);
+        int length = ProtoBufUtil.protoLength(signal);
         ByteBuf buf = channel.alloc().ioBuffer(length);
-        ProtoBufUtils.writeProto(buf, signal);
+        ProtoBufUtil.writeProto(buf, signal);
         return buf;
     }
 }

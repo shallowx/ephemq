@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.meteor.common.message.Offset;
 import org.meteor.common.internal.MessageUtil;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.UUID;
 
@@ -55,13 +55,13 @@ public class LedgerSegmentTests {
         ByteBuf buf = allocateBuf();
         LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
         String content = UUID.randomUUID().toString();
-        ByteBuf data = ByteBufUtils.string2Buf(content);
+        ByteBuf data = ByteBufUtil.string2Buf(content);
 
         segment.writeRecord(1, offset, data);
 
         ByteBuf record = segment.readRecord(0);
         ByteBuf payload = MessageUtil.getPayload(record);
-        byte[] bytes = ByteBufUtils.buf2Bytes(payload);
+        byte[] bytes = ByteBufUtil.buf2Bytes(payload);
         String uuid = new String(bytes);
 
         buf.release();
@@ -101,7 +101,7 @@ public class LedgerSegmentTests {
         ByteBuf initBuf = allocateBuf();
         LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
         String message = UUID.randomUUID().toString();
-        ByteBuf buf = ByteBufUtils.string2Buf(message);
+        ByteBuf buf = ByteBufUtil.string2Buf(message);
         segment.writeRecord(1, offset, buf);
 
         int free = segment.freeBytes();
@@ -117,7 +117,7 @@ public class LedgerSegmentTests {
         ByteBuf initBuf = allocateBuf();
         LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
         String message = UUID.randomUUID().toString();
-        ByteBuf buf = ByteBufUtils.string2Buf(message);
+        ByteBuf buf = ByteBufUtil.string2Buf(message);
         segment.writeRecord(1, offset, buf);
 
         int used = segment.usedBytes();
@@ -158,7 +158,7 @@ public class LedgerSegmentTests {
     }
 
     private ByteBuf buildPayload() {
-        return ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+        return ByteBufUtil.string2Buf(UUID.randomUUID().toString());
     }
 
     private ByteBuf allocateBuf() {

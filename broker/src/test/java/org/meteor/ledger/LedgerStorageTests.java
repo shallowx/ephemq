@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -20,9 +20,9 @@ public class LedgerStorageTests {
     @Test
     public void testAppendRecord() throws Exception {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerTest());
 
-        ByteBuf message = ByteBufUtils.string2Buf("test-append-record");
+        ByteBuf message = ByteBufUtil.string2Buf("test-append-record");
         CountDownLatch latch = new CountDownLatch(1);
         Promise<Offset> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
@@ -47,9 +47,9 @@ public class LedgerStorageTests {
     @Test
     public void testSegmentBytes() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-                NetworkUtils.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerTest());
+                NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerTest());
 
-        ByteBuf message = ByteBufUtils.string2Buf("test-append-record");
+        ByteBuf message = ByteBufUtil.string2Buf("test-append-record");
         Promise<Offset> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         storage.appendRecord(1, message, promise);
 

@@ -1,3 +1,3 @@
 ### metrics
 
-- org.meteor.metrics.MetricsConstants
+- org.meteor.metrics.config.MetricsConstants

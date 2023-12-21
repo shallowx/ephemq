@@ -6,7 +6,7 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
 import org.meteor.client.internal.*;
-import org.meteor.client.util.TopicPatterns;
+import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
 import org.meteor.common.logging.InternalLogger;
@@ -16,7 +16,7 @@ import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;
@@ -74,7 +74,7 @@ public class Producer implements MeterBinder {
     }
 
     public MessageId send(String topic, String queue, ByteBuf message, Extras extras) {
-        int length = ByteBufUtils.bufLength(message);
+        int length = ByteBufUtil.bufLength(message);
         try {
             Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             doSend(topic, queue, message, extras, config.getSendTimeoutMs(), promise);
@@ -86,12 +86,12 @@ public class Producer implements MeterBinder {
                     String.format("Message send failed, topic=%s queue=%s length=%s", topic, queue, length), t
             );
         } finally {
-            ByteBufUtils.release(message);
+            ByteBufUtil.release(message);
         }
     }
 
     public void sendAsync(String topic, String queue, ByteBuf message, Extras extras, SendCallback callback) {
-        int length = ByteBufUtils.bufLength(message);
+        int length = ByteBufUtil.bufLength(message);
         try {
 
             if (callback == null) {
@@ -115,12 +115,12 @@ public class Producer implements MeterBinder {
                     String.format("Message async send failed, topic=%s queue=%s length=%s", topic, queue, length), t
             );
         } finally {
-            ByteBufUtils.release(message);
+            ByteBufUtil.release(message);
         }
     }
 
     public void sendOneway(String topic, String queue, ByteBuf message, Extras extras) {
-        int length = ByteBufUtils.bufLength(message);
+        int length = ByteBufUtil.bufLength(message);
         try {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), null);
         } catch (Throwable t) {
@@ -128,13 +128,13 @@ public class Producer implements MeterBinder {
                     String.format("Message send oneway failed, topic=%s queue=%s length=%s", topic, queue, length), t
             );
         } finally {
-            ByteBufUtils.release(message);
+            ByteBufUtil.release(message);
         }
     }
 
     private void doSend(String topic, String queue, ByteBuf message, Extras extras, int timeoutMs, Promise<SendMessageResponse> promise) {
-        TopicPatterns.validateQueue(queue);
-        TopicPatterns.validateTopic(topic);
+        TopicPatternUtil.validateQueue(queue);
+        TopicPatternUtil.validateTopic(topic);
 
         MessageRouter router = client.fetchMessageRouter(topic);
         if (router == null) {

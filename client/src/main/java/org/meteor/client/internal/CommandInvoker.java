@@ -9,8 +9,8 @@ import org.meteor.remote.invoke.Callback;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.*;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 public class CommandInvoker {
     private final ClientChannel channel;
@@ -142,24 +142,24 @@ public class CommandInvoker {
     private ByteBuf assembleSendMessageData(ByteBufAllocator allocator, SendMessageRequest request, MessageMetadata metadata, ByteBuf message) {
         ByteBuf data = null;
         try {
-            int length = ProtoBufUtils.protoLength(request) + ProtoBufUtils.protoLength(metadata) + ByteBufUtils.bufLength(message);
+            int length = ProtoBufUtil.protoLength(request) + ProtoBufUtil.protoLength(metadata) + ByteBufUtil.bufLength(message);
             data = allocator.ioBuffer(length);
 
-            ProtoBufUtils.writeProto(data, request);
-            ProtoBufUtils.writeProto(data, metadata);
+            ProtoBufUtil.writeProto(data, request);
+            ProtoBufUtil.writeProto(data, metadata);
             if (message != null && message.isReadable()) {
                 data.writeBytes(message, message.readerIndex(), message.readableBytes());
             }
             return data;
         } catch (Throwable t) {
-            ByteBufUtils.release(data);
+            ByteBufUtil.release(data);
             throw new RuntimeException("Assemble send message failed");
         }
     }
 
     private ByteBuf assembleInvokeData(ByteBufAllocator allocator, MessageLite lite) {
         try {
-            return ProtoBufUtils.proto2Buf(allocator, lite);
+            return ProtoBufUtil.proto2Buf(allocator, lite);
         } catch (Throwable t) {
             String type = lite == null ? null : lite.getClass().getSimpleName();
             throw new RuntimeException("Assemble request data failed, type=" + type, t);
@@ -170,7 +170,7 @@ public class CommandInvoker {
         return promise == null ? null : (v, c) -> {
             if (c == null) {
                 try {
-                    promise.trySuccess(ProtoBufUtils.readProto(v, parser));
+                    promise.trySuccess(ProtoBufUtil.readProto(v, parser));
                 } catch (Throwable t) {
                     promise.tryFailure(t);
                 }

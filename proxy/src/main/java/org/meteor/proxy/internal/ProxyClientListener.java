@@ -22,8 +22,8 @@ import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.ledger.Log;
 
 import java.net.SocketAddress;
@@ -34,7 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static org.meteor.metrics.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 
 public class ProxyClientListener implements ClientListener {
@@ -205,24 +205,24 @@ public class ProxyClientListener implements ClientListener {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
-            ByteBufUtils.release(payload);
+            ByteBufUtil.release(payload);
         }
     }
 
     private ByteBuf buildPayload(ByteBufAllocator alloc, TopicChangedSignal signal, int command) {
         ByteBuf buf = null;
         try {
-            int length = MessagePacket.HEADER_LENGTH + ProtoBufUtils.protoLength(signal);
+            int length = MessagePacket.HEADER_LENGTH + ProtoBufUtil.protoLength(signal);
             buf = alloc.ioBuffer(length);
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(length);
             buf.writeInt(command);
             buf.writeInt(0);
 
-            ProtoBufUtils.writeProto(buf, signal);
+            ProtoBufUtil.writeProto(buf, signal);
             return buf;
         } catch (Exception e){
-            ByteBufUtils.release(buf);
+            ByteBufUtil.release(buf);
             throw new RuntimeException(String.format("Build signal payload error, command=%d signal=%s", command, signal));
         }
     }

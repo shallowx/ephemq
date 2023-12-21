@@ -10,7 +10,7 @@ import org.meteor.remote.invoke.InvokeAnswer;
 import javax.annotation.concurrent.Immutable;
 
 import static org.meteor.common.internal.ObjectUtil.checkPositive;
-import static org.meteor.remote.util.ByteBufUtils.defaultIfNull;
+import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
 public final class AwareInvocation extends AbstractReferenceCounted {

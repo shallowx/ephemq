@@ -6,9 +6,9 @@ import io.netty.buffer.Unpooled;
 import javax.naming.OperationNotSupportedException;
 import java.nio.charset.StandardCharsets;
 
-public final class ByteBufUtils {
+public final class ByteBufUtil {
 
-    private ByteBufUtils() throws OperationNotSupportedException {
+    private ByteBufUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();
     }

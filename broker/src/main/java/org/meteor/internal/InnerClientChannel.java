@@ -12,7 +12,7 @@ import org.meteor.client.internal.ClientConfig;
 import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
 
-import static org.meteor.metrics.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class InnerClientChannel extends ClientChannel {
     private final CommonConfig configuration;

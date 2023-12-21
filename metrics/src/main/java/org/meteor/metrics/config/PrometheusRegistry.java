@@ -1,4 +1,4 @@
-package org.meteor.metrics;
+package org.meteor.metrics.config;
 
 import com.sun.net.httpserver.HttpServer;
 import io.micrometer.core.instrument.MeterRegistry;

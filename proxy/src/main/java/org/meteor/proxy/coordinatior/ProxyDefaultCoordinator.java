@@ -8,7 +8,7 @@ import org.meteor.listener.DefaultClusterListener;
 import org.meteor.coordinatior.DefaultConnectionCoordinator;
 import org.meteor.coordinatior.DefaultCoordinator;
 import org.meteor.proxy.internal.ProxyServerConfig;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);
@@ -18,11 +18,11 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
         super(configuration);
 
         this.connectionCoordinator = new DefaultConnectionCoordinator();
-        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
-        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");
-        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "proxy-dispatch");
-        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "proxy-sync");
-        this.auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "proxy-aux");
+        this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
+        this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");
+        this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "proxy-dispatch");
+        this.syncGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "proxy-sync");
+        this.auxGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "proxy-aux");
         for (EventExecutor executor : auxGroup) {
             this.auxEventExecutors.add(executor);
         }

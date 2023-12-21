@@ -20,8 +20,8 @@ import org.meteor.config.RecordDispatchConfig;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.MessagePushSignal;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -381,8 +381,8 @@ public class RecordEntryDispatcher {
                 } catch (Throwable t) {
                     logger.error("Dispatch failed: {} lastOffset={}", handler, lastOffset, t);
                 } finally {
-                    ByteBufUtils.release(entry);
-                    ByteBufUtils.release(payload);
+                    ByteBufUtil.release(entry);
+                    ByteBufUtil.release(payload);
                 }
                 if (runTimes > followLimit) {
                     break;
@@ -491,8 +491,8 @@ public class RecordEntryDispatcher {
                 } catch (Throwable t) {
                     logger.error("Pursue failed:{} lastOffset={}", task, lastOffset, t);
                 } finally {
-                    ByteBufUtils.release(entry);
-                    ByteBufUtils.release(payload);
+                    ByteBufUtil.release(entry);
+                    ByteBufUtil.release(payload);
                 }
 
                 if (runTimes > pursueLimit) {
@@ -602,8 +602,8 @@ public class RecordEntryDispatcher {
                 } catch (Throwable t) {
                     logger.error("Switch to pursue, channel is full:{}", task);
                 } finally {
-                    ByteBufUtils.release(entry);
-                    ByteBufUtils.release(payload);
+                    ByteBufUtil.release(entry);
+                    ByteBufUtil.release(payload);
                 }
 
                 if (runTimes > alignLimit) {
@@ -636,7 +636,7 @@ public class RecordEntryDispatcher {
                     .setMarker(marker)
                     .setLedger(ledger)
                     .build();
-            int signalLength = ProtoBufUtils.protoLength(signal);
+            int signalLength = ProtoBufUtil.protoLength(signal);
             int contentLength = entry.readableBytes() - 16;
 
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
@@ -645,12 +645,12 @@ public class RecordEntryDispatcher {
             buf.writeInt(ProcessCommand.Client.PUSH_MESSAGE);
             buf.writeInt(0);
 
-            ProtoBufUtils.writeProto(buf, signal);
+            ProtoBufUtil.writeProto(buf, signal);
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, entry.retainedSlice(entry.readerIndex() + 16, contentLength));
 
             return buf;
         } catch (Throwable t) {
-            ByteBufUtils.release(buf);
+            ByteBufUtil.release(buf);
             throw new RuntimeException(String.format("Build payload error, ledger=%d topic=%s offset=%s length=%d", ledger, t, offset, entry.readableBytes()));
         }
     }

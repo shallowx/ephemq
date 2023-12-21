@@ -11,7 +11,7 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.message.Node;
 import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.NodeMetadata;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
@@ -57,7 +57,7 @@ public class ClusterListCommand implements Command {
                 if (StringUtil.isNullOrEmpty(addr)) {
                     throw new IllegalArgumentException();
                 }
-                SocketAddress socketAddress = NetworkUtils.switchSocketAddress(addr);
+                SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
                 ClientChannel clientChannel = client.fetchChannel(socketAddress);
                 ClusterInfo clusterInfo = client.queryClusterInfo(clientChannel);
                 Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();

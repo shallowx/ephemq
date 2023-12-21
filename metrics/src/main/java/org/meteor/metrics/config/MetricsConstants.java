@@ -1,4 +1,4 @@
-package org.meteor.metrics;
+package org.meteor.metrics.config;
 
 public class MetricsConstants {
     public static final String ACTIVE_CHANNEL_GAUGE_NAME = "active_channel_count";

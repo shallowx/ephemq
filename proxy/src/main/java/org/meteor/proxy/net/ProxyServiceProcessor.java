@@ -27,13 +27,13 @@ import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.proxy.coordinatior.ProxyCoordinator;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.proxy.internal.ProxyServerConfig;
-import org.meteor.remote.RemoteException;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.*;
-import org.meteor.remote.util.NetworkUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.NetworkUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -79,7 +79,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 case SYNC_LEDGER -> processSyncLedger(channel, command, data, answer);
                 case UNSYNC_LEDGER -> processUnSyncLedger(channel, command, data,answer);
                 default -> {
-                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtils.switchAddress(channel), command, length);
+                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
                     if (answer != null) {
                         String error = "Command[" + command + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
@@ -87,7 +87,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 }
             }
         } catch (Throwable t) {
-            logger.error("<{}> process error, code={}, length={}", NetworkUtils.switchAddress(channel), command, length);
+            logger.error("<{}> process error, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
             if (answer != null) {
                 answer.failure(t);
             }
@@ -100,7 +100,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
-            SyncRequest request = ProtoBufUtils.readProto(data, SyncRequest.parser());
+            SyncRequest request = ProtoBufUtil.readProto(data, SyncRequest.parser());
             commandExecutor.submit(() -> {
                 try {
                     Promise<SyncResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
@@ -109,7 +109,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                            try {
                                if (answer != null) {
                                    SyncResponse response = f.getNow();
-                                   answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response));
+                                   answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                                }
                            } catch (Throwable t) {
                                processFailed("process sync ledger failed", command, channel, answer, t);
@@ -162,7 +162,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
-            QueryTopicInfoRequest request = ProtoBufUtils.readProto(data, QueryTopicInfoRequest.parser());
+            QueryTopicInfoRequest request = ProtoBufUtil.readProto(data, QueryTopicInfoRequest.parser());
             commandExecutor.execute(() -> {
                 try {
                     List<Node> clusterUpNodes = proxyClusterCoordinator.getClusterUpNodes();
@@ -210,7 +210,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     }
                     newResponse.putAllTopicInfos(newTopicInfoMap);
                     if (answer != null) {
-                        answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), newResponse.build()));
+                        answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), newResponse.build()));
                     }
                     recordCommand(command, bytes, System.nanoTime() -time, true);
                 }catch (Exception e) {
@@ -351,7 +351,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
-            CancelSyncRequest request = ProtoBufUtils.readProto(data, CancelSyncRequest.parser());
+            CancelSyncRequest request = ProtoBufUtil.readProto(data, CancelSyncRequest.parser());
             int ledger = request.getLedger();
             Promise<Void> promise = commandExecutor.newPromise();
             promise.addListener(f -> {
@@ -359,7 +359,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     try {
                         if (answer != null) {
                             CancelSyncResponse response = CancelSyncResponse.newBuilder().build();
-                            answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response));
+                            answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                         }
                     } catch (Throwable t) {
                         processFailed("process un-sync ledger failed", command, channel, answer, t);
@@ -388,7 +388,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
-            ResetSubscribeRequest request = ProtoBufUtils.readProto(data, ResetSubscribeRequest.parser());
+            ResetSubscribeRequest request = ProtoBufUtil.readProto(data, ResetSubscribeRequest.parser());
             commandExecutor.execute(() -> {
                try {
                    String topic = request.getTopic();
@@ -401,7 +401,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                        if (f.isSuccess()) {
                            if (answer != null) {
                                ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
-                               answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response));
+                               answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                            }
                        } else {
                            processFailed("process rest subscribe failed", command, channel, answer, f.cause());
@@ -429,7 +429,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
-            AlterSubscribeRequest request = ProtoBufUtils.readProto(data, AlterSubscribeRequest.parser());
+            AlterSubscribeRequest request = ProtoBufUtil.readProto(data, AlterSubscribeRequest.parser());
             commandExecutor.execute(() -> {
                 try {
                     int ledger = request.getLedger();
@@ -440,7 +440,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         if (f.isSuccess()) {
                             if (answer != null) {
                                 AlterSubscribeResponse response = AlterSubscribeResponse.newBuilder().build();
-                                answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response));
+                                answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                             }
                         } else {
                             processFailed("process alter subscribe failed", command, channel, answer, f.cause());
@@ -469,7 +469,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
-            CleanSubscribeRequest request = ProtoBufUtils.readProto(data, CleanSubscribeRequest.parser());
+            CleanSubscribeRequest request = ProtoBufUtil.readProto(data, CleanSubscribeRequest.parser());
             commandExecutor.execute(() -> {
                 try {
                     Promise<Boolean> promise = ImmediateEventExecutor.INSTANCE.newPromise();
@@ -477,7 +477,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         if (f.isSuccess()) {
                             if (answer != null) {
                                 CleanSubscribeResponse response = CleanSubscribeResponse.newBuilder().build();
-                                answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response));
+                                answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                             }
                         } else {
                             processFailed("process clean subscribe failed", command, channel, answer, f.cause());

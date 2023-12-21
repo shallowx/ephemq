@@ -10,7 +10,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.internal.MeteorServer;
 import org.meteor.coordinatior.DefaultCoordinator;
 import org.meteor.net.DefaultSocketServer;
-import org.meteor.util.ShutdownHookThread;
+import org.meteor.thread.ShutdownHookThread;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

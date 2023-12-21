@@ -6,7 +6,7 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.meteor.remote.codec.MessageDecoder.State.*;
@@ -45,12 +45,12 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 invalidChannel = true;
                 throw cause;
             } finally {
-                ByteBufUtils.release(buf);
+                ByteBufUtil.release(buf);
 
                 buf = accumulation;
                 if (null != buf && (!buf.isReadable() || invalidChannel)) {
                     accumulation = null;
-                    ByteBufUtils.release(buf);
+                    ByteBufUtil.release(buf);
                 }
             }
         } else {
@@ -139,7 +139,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (null != accumulation) {
-            ByteBufUtils.release(accumulation);
+            ByteBufUtil.release(accumulation);
             accumulation = null;
         }
 
@@ -155,7 +155,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 ctx.fireChannelRead(buf);
                 ctx.fireChannelReadComplete();
             } else {
-                ByteBufUtils.release(buf);
+                ByteBufUtil.release(buf);
             }
         }
     }

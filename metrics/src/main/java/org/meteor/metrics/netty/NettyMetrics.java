@@ -8,8 +8,8 @@ import io.netty.util.internal.PlatformDependent;
 
 import javax.annotation.Nonnull;
 
-import static org.meteor.metrics.MetricsConstants.DIRECT_MEMORY_NAME;
-import static org.meteor.metrics.MetricsConstants.TYPE_TAG;
+import static org.meteor.metrics.config.MetricsConstants.DIRECT_MEMORY_NAME;
+import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 
 public class NettyMetrics implements MeterBinder {
 

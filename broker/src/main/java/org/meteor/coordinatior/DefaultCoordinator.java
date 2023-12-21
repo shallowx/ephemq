@@ -12,7 +12,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.internal.InnerClient;
 import org.meteor.internal.InnerClientListener;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,10 +42,10 @@ public class DefaultCoordinator implements Coordinator {
     public DefaultCoordinator(ServerConfig configuration) {
         this.configuration = configuration;
         this.connectionCoordinator = new DefaultConnectionCoordinator();
-        this.syncGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "sync-group");
-        this.handleGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "command-handle-group");
-        this.storageGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
-        this.dispatchGroup = NetworkUtils.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "dispatch-group");
+        this.syncGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "sync-group");
+        this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "command-handle-group");
+        this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
+        this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "dispatch-group");
 
         clusterCoordinator = new ZookeeperClusterCoordinator(configuration);
         ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfig());
@@ -56,7 +56,7 @@ public class DefaultCoordinator implements Coordinator {
         TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(),configuration.getNetworkConfig());
         topicCoordinator.addTopicListener(topicListener);
 
-        auxGroup = NetworkUtils.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "aux-group");
+        auxGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "aux-group");
         auxEventExecutors = new ArrayList<>(configuration.getCommonConfig().getAuxThreadLimit());
         for (EventExecutor executor : auxGroup) {
             auxEventExecutors.add(executor);

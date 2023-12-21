@@ -1,4 +1,4 @@
-package org.meteor.metrics;
+package org.meteor.metrics.config;
 
 import java.util.Properties;
 

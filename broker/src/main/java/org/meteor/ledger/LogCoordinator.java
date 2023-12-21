@@ -11,7 +11,7 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.listener.LogListener;
-import org.meteor.remote.RemoteException;
+import org.meteor.remote.processor.RemoteException;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -9,7 +9,7 @@ import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.util.ByteBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -41,7 +41,7 @@ public class ProducerTests {
                 String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
-                    ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+                    ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
                         MessageId messageId = producer.send("#test#default", symbol, message, new Extras());
                         logger.info("MessageId:[{}]", messageId);
@@ -83,7 +83,7 @@ public class ProducerTests {
                 String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
-                    ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+                    ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
                         producer.sendAsync("#test#default", symbol, message, new Extras(), (messageId, t) -> {
                             if (t != null) {
@@ -130,7 +130,7 @@ public class ProducerTests {
                 String[] symbols = new String[]{"test-queue"};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
-                    ByteBuf message = ByteBufUtils.string2Buf(UUID.randomUUID().toString());
+                    ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
                         producer.sendOneway("#test#default", symbol, message, new Extras());
                     } catch (Exception e) {

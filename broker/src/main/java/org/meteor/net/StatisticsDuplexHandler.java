@@ -14,7 +14,7 @@ import org.meteor.config.CommonConfig;
 
 import java.util.concurrent.atomic.LongAdder;
 
-import static org.meteor.metrics.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 
 @ChannelHandler.Sharable

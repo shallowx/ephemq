@@ -2,7 +2,7 @@ package org.meteor.client.util;
 
 import java.util.regex.Pattern;
 
-public class TopicPatterns {
+public class TopicPatternUtil {
     private static final Pattern TOPIC_PATTERN = Pattern.compile("^[\\w\\-#]+$");
 
     public static void validateTopic(String topic) {

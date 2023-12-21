@@ -9,7 +9,7 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
 
-import static org.meteor.remote.util.ByteBufUtils.release;
+import static org.meteor.remote.util.ByteBufUtil.release;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {

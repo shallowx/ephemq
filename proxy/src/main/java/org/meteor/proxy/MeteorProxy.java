@@ -12,7 +12,7 @@ import org.meteor.proxy.internal.ProxyMetricsListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.proxy.net.MeteorProxyServer;
 import org.meteor.proxy.net.ProxySocketServer;
-import org.meteor.util.ShutdownHookThread;
+import org.meteor.thread.ShutdownHookThread;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;

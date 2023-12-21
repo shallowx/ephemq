@@ -12,8 +12,8 @@ import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.util.Set;
 
@@ -71,7 +71,7 @@ public class DefaultClusterListener implements ClusterListener {
             AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.SERVER_OFFLINE, buf, config.getNotifyClientTimeoutMs(), null);
             channel.writeAndFlush(awareInvocation);
         } catch (Exception e) {
-            ByteBufUtils.release(buf);
+            ByteBufUtil.release(buf);
             logger.error("Send server offline failed, channel={}", channel, e);
         }
     }
@@ -85,9 +85,9 @@ public class DefaultClusterListener implements ClusterListener {
                 .build();
 
         NodeOfflineSignal signal = NodeOfflineSignal.newBuilder().setNode(metadata).build();
-        int length = ProtoBufUtils.protoLength(signal);
+        int length = ProtoBufUtil.protoLength(signal);
         ByteBuf buf = channel.alloc().ioBuffer(length);
-        ProtoBufUtils.writeProto(buf, signal);
+        ProtoBufUtil.writeProto(buf, signal);
         return buf;
     }
 }

@@ -23,12 +23,12 @@ import org.meteor.listener.APIListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.TopicCoordinator;
 import org.meteor.internal.CorrelationIdConstants;
-import org.meteor.remote.RemoteException;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.processor.Processor;
-import org.meteor.remote.util.NetworkUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.NetworkUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.meteor.remote.util.ProtoBufUtils.proto2Buf;
-import static org.meteor.remote.util.ProtoBufUtils.readProto;
+import static org.meteor.remote.util.ProtoBufUtil.proto2Buf;
+import static org.meteor.remote.util.ProtoBufUtil.readProto;
 
 public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
@@ -86,7 +86,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 case UNSYNC_LEDGER -> processUnSyncLedger(channel, code, data, answer);
                 case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, answer);
                 default -> {
-                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtils.switchAddress(channel), code, length);
+                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
                     if (answer != null) {
                         String error = "Command[" + code + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
@@ -177,7 +177,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                     }
 
                     if (answer != null) {
-                        answer.success(ProtoBufUtils.proto2Buf(channel.alloc(), response.build()));
+                        answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response.build()));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Exception e) {
@@ -590,7 +590,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
     }
 
     protected void processFailed(String err, int code, Channel channel, InvokeAnswer<ByteBuf> answer, Throwable throwable) {
-        logger.error("{}: command={} address={}", err, code, NetworkUtils.switchAddress(channel), throwable);
+        logger.error("{}: command={} address={}", err, code, NetworkUtil.switchAddress(channel), throwable);
         if (answer != null) {
             answer.failure(throwable);
         }

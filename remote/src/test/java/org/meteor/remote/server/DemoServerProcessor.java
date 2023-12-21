@@ -9,15 +9,15 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.Processor;
-import org.meteor.remote.util.ByteBufUtils;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.ByteBufUtil;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.util.concurrent.TimeUnit;
 
 public class DemoServerProcessor implements Processor {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerProcessor.class);
-    private static final EventExecutorGroup executors = NetworkUtils.newEventExecutorGroup(1, "demo-buffer-group");
+    private static final EventExecutorGroup executors = NetworkUtil.newEventExecutorGroup(1, "demo-buffer-group");
     private static final FastThreadLocal<ByteBuf> BUFFER = new FastThreadLocal<>();
 
     @Override
@@ -67,7 +67,7 @@ public class DemoServerProcessor implements Processor {
         long delay = bytes < 8 ? 0 : data.readLong();
         executors.next().schedule(() -> {
             if (answer != null) {
-                answer.success(ByteBufUtils.string2Buf("Server wait " + data + " ms"));
+                answer.success(ByteBufUtil.string2Buf("Server wait " + data + " ms"));
             }
         }, delay, TimeUnit.MILLISECONDS);
     }

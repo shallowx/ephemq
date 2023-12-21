@@ -4,7 +4,7 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.jmx.JmxConfig;
 import io.micrometer.jmx.JmxMeterRegistry;
-import org.meteor.metrics.MetricsRegistrySetUp;
+import org.meteor.metrics.config.MetricsRegistrySetUp;
 
 import java.util.Properties;
 

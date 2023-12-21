@@ -14,7 +14,7 @@ import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.CalculatePartitionsResponse;
-import org.meteor.remote.util.NetworkUtils;
+import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
@@ -82,7 +82,7 @@ public class MigrateLedgerPlanCommand implements Command {
                 if (StringUtil.isNullOrEmpty(addr)) {
                     throw new IllegalArgumentException();
                 }
-                SocketAddress socketAddress = NetworkUtils.switchSocketAddress(addr);
+                SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
                 ClientChannel clientChannel = client.fetchChannel(socketAddress);
 
                 ClusterInfo clusterInfo = client.queryClusterInfo(clientChannel);

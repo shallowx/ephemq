@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.meteor.client.internal.*;
-import org.meteor.client.util.TopicPatterns;
+import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.remote.proto.server.*;
 import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
@@ -24,8 +24,8 @@ import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-import org.meteor.remote.util.NetworkUtils;
-import org.meteor.remote.util.ProtoBufUtils;
+import org.meteor.remote.util.NetworkUtil;
+import org.meteor.remote.util.ProtoBufUtil;
 
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;
@@ -77,7 +77,7 @@ public class Consumer implements MeterBinder {
         executor = new FastEventExecutor(new DefaultThreadFactory("consumer-task"));
         int shardCount = Math.max(consumerConfig.getHandlerThreadCount(), consumerConfig.getHandlerShardCount());
         handlers = new MessageHandler[shardCount];
-        group = NetworkUtils.newEventExecutorGroup(consumerConfig.getHandlerThreadCount(), "consumer-message-group");
+        group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadCount(), "consumer-message-group");
         int handlerPendingCount = consumerConfig.getHandlerPendingCount();
         for (int i = 0; i < shardCount; i++) {
             Semaphore semaphore = new Semaphore(handlerPendingCount);
@@ -113,8 +113,8 @@ public class Consumer implements MeterBinder {
     }
 
     public boolean subscribe(String topic, String queue) {
-        TopicPatterns.validateTopic(topic);
-        TopicPatterns.validateQueue(queue);
+        TopicPatternUtil.validateTopic(topic);
+        TopicPatternUtil.validateQueue(queue);
 
         topic = topic.intern();
         synchronized (wholeQueueTopics) {
@@ -134,8 +134,8 @@ public class Consumer implements MeterBinder {
     }
 
     public boolean deSubscribe(String topic, String queue) {
-        TopicPatterns.validateTopic(topic);
-        TopicPatterns.validateQueue(queue);
+        TopicPatternUtil.validateTopic(topic);
+        TopicPatternUtil.validateQueue(queue);
 
         topic = topic.intern();
         synchronized (wholeQueueTopics) {
@@ -161,7 +161,7 @@ public class Consumer implements MeterBinder {
     }
 
     public boolean clear(String topic) {
-        TopicPatterns.validateTopic(topic);
+        TopicPatternUtil.validateTopic(topic);
 
         topic = topic.intern();
         boolean cleared = false;
@@ -859,7 +859,7 @@ public class Consumer implements MeterBinder {
         private void doHandleMessage(ClientChannel channel, int marker, MessageId messageId, ByteBuf data) {
             int length = data.readableBytes();
             try {
-                MessageMetadata metadata = ProtoBufUtils.readProto(data, MessageMetadata.parser());
+                MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
                 String topic = metadata.getTopic();
                 String queue = metadata.getQueue();
                 Map<String, Mode> topicModes = wholeQueueTopics.get(queue);
@@ -926,7 +926,7 @@ public class Consumer implements MeterBinder {
             long index = signal.getIndex();
             if (!channel.equals(ledgerChannels.get(ledger))) {
                 try {
-                    MessageMetadata metadata = ProtoBufUtils.readProto(data, MessageMetadata.parser());
+                    MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
                     String topic = metadata.getTopic();
                     obsoleteFutures.computeIfAbsent(ledger + "@" + channel.id(),
                             k -> executor.schedule(() -> {
