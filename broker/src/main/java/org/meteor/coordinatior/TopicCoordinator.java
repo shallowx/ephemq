@@ -1,8 +1,8 @@
 package org.meteor.coordinatior;
 
-import org.meteor.common.PartitionInfo;
-import org.meteor.common.TopicConfig;
-import org.meteor.common.TopicPartition;
+import org.meteor.common.message.PartitionInfo;
+import org.meteor.common.message.TopicConfig;
+import org.meteor.common.message.TopicPartition;
 import org.meteor.listener.TopicListener;
 
 import java.util.List;

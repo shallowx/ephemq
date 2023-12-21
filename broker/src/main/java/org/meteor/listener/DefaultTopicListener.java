@@ -2,9 +2,9 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import org.meteor.common.PartitionInfo;
-import org.meteor.common.TopicAssignment;
-import org.meteor.common.TopicPartition;
+import org.meteor.common.message.PartitionInfo;
+import org.meteor.common.message.TopicAssignment;
+import org.meteor.common.message.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;

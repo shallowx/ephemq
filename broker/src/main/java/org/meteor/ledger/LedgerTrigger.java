@@ -1,6 +1,6 @@
 package org.meteor.ledger;
 
-import org.meteor.common.Offset;
+import org.meteor.common.message.Offset;
 
 public interface LedgerTrigger {
     void onAppend(int ledgerId, int recordCount, Offset lasetOffset);

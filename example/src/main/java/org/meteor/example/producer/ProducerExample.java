@@ -5,8 +5,8 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.producer.Producer;
 import org.meteor.client.producer.ProducerConfig;
 import org.meteor.client.producer.SendCallback;
-import org.meteor.common.Extras;
-import org.meteor.common.MessageId;
+import org.meteor.common.message.Extras;
+import org.meteor.common.message.MessageId;
 import org.meteor.remote.util.ByteBufUtils;
 
 import java.util.ArrayList;

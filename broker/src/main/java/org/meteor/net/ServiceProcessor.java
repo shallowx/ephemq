@@ -9,7 +9,7 @@ import io.netty.util.concurrent.*;
 import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import org.meteor.common.*;
+import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.ledger.Log;
@@ -210,8 +210,8 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             commandExecutor.execute(() -> {
                 try {
                     TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
-                    TopicPartition topicPartition = new TopicPartition(topic, partition);
-                    PartitionInfo partitionInfo = topicCoordinator.getPartitionInfo(topicPartition);
+                    org.meteor.common.message.TopicPartition topicPartition = new TopicPartition(topic, partition);
+                    org.meteor.common.message.PartitionInfo partitionInfo = topicCoordinator.getPartitionInfo(topicPartition);
                     int ledger = partitionInfo.getLedger();
                     if (commonConfiguration.getServerId().equals(original)) {
                         if (!topicCoordinator.hasLeadership(ledger)) {
@@ -220,7 +220,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                             return;
                         }
 
-                        Node destNode = coordinator.getClusterCoordinator().getClusterNode(destination);
+                        org.meteor.common.message.Node destNode = coordinator.getClusterCoordinator().getClusterNode(destination);
                         if (destNode == null) {
                             processFailed("Process migrate ledger failed", code, channel, answer,
                                     RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The destination broker %s is not in cluster", destination)));
@@ -290,12 +290,12 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             SendMessageRequest request = readProto(data, SendMessageRequest.parser());
             int ledger = request.getLedger();
             int marker = request.getMarker();
-            Promise<Offset> promise = serviceExecutor.newPromise();
-            promise.addListener((GenericFutureListener<Future<Offset>>) f -> {
+            Promise<org.meteor.common.message.Offset> promise = serviceExecutor.newPromise();
+            promise.addListener((GenericFutureListener<Future<org.meteor.common.message.Offset>>) f -> {
                 if (f.isSuccess()) {
                     try {
                         if (answer != null) {
-                            Offset offset = f.getNow();
+                            org.meteor.common.message.Offset offset = f.getNow();
                             SendMessageResponse response = SendMessageResponse.newBuilder()
                                     .setLedger(ledger)
                                     .setEpoch(offset.getEpoch())
@@ -326,9 +326,9 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             commandExecutor.execute(() -> {
                 try {
                     String clusterName = commonConfiguration.getClusterName();
-                    List<Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterUpNodes();
+                    List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterUpNodes();
                     Map<String, NodeMetadata> nodeMetadataMap = clusterUpNodes.stream().collect(
-                            Collectors.toMap(Node::getId, node ->
+                            Collectors.toMap(org.meteor.common.message.Node::getId, node ->
                                     NodeMetadata.newBuilder()
                                             .setClusterName(clusterName)
                                             .setId(node.getId())
@@ -379,7 +379,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
                     QueryTopicInfoResponse.Builder builder = QueryTopicInfoResponse.newBuilder();
                     for (String topicName : topicNames) {
-                        Set<PartitionInfo> partitionInfos = topicCoordinator.getTopicInfo(topicName);
+                        Set<org.meteor.common.message.PartitionInfo> partitionInfos = topicCoordinator.getTopicInfo(topicName);
                         if (partitionInfos == null || partitionInfos.isEmpty()) {
                             continue;
                         }
@@ -391,7 +391,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                                 .build();
 
                         TopicInfo.Builder topicInfoBuilder = TopicInfo.newBuilder().setTopic(topicMetadata);
-                        for (PartitionInfo info : partitionInfos) {
+                        for (org.meteor.common.message.PartitionInfo info : partitionInfos) {
                             PartitionMetadata.Builder partitionMetadataBuilder = PartitionMetadata.newBuilder()
                                     .setTopicName(topicName)
                                     .setId(info.getPartition())
@@ -515,8 +515,8 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             int partition = request.getPartition();
             int replicas = request.getReplicas();
             CreateTopicConfigRequest configs = request.getConfigs();
-            TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
-                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs(), configs.getAllocate());
+            org.meteor.common.message.TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
+                    ? null : new org.meteor.common.message.TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs(), configs.getAllocate());
 
             commandExecutor.execute(() -> {
                 try {

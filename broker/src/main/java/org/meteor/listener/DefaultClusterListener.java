@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import org.meteor.config.NetworkConfig;
 import org.meteor.coordinatior.ConnectionCoordinator;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.common.Node;
+import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.processor.AwareInvocation;

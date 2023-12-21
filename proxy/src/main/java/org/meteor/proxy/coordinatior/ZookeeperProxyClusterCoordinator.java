@@ -2,7 +2,7 @@ package org.meteor.proxy.coordinatior;
 
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.zookeeper.data.Stat;
-import org.meteor.common.Node;
+import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.util.ConsistentHashingRing;

@@ -1,4 +1,4 @@
-package org.meteor.common;
+package org.meteor.common.message;
 
 
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;

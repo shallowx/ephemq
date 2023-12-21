@@ -1,6 +1,6 @@
 package org.meteor.listener;
 
-import org.meteor.common.Node;
+import org.meteor.common.message.Node;
 
 public interface ServerListener {
     void onStartup(Node node);

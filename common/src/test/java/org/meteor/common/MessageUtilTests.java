@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtils;
 
 import java.nio.charset.StandardCharsets;

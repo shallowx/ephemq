@@ -1,4 +1,4 @@
-package org.meteor.common;
+package org.meteor.common.message;
 
 import java.util.HashMap;
 import java.util.Iterator;

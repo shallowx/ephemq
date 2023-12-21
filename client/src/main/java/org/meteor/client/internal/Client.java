@@ -16,7 +16,7 @@ import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.*;
 import org.meteor.client.util.TopicPatterns;
-import org.meteor.common.TopicConfig;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.RemoteException;

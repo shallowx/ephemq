@@ -1,8 +1,8 @@
 package org.meteor.client.consumer;
 
 import io.netty.buffer.ByteBuf;
-import org.meteor.common.Extras;
-import org.meteor.common.MessageId;
+import org.meteor.common.message.Extras;
+import org.meteor.common.message.MessageId;
 
 @FunctionalInterface
 public interface MessageListener {

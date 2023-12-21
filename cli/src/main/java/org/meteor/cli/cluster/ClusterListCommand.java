@@ -8,7 +8,7 @@ import org.apache.commons.cli.Options;
 import org.meteor.cli.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.common.Node;
+import org.meteor.common.message.Node;
 import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.util.NetworkUtils;

@@ -1,7 +1,7 @@
 package org.meteor.listener;
 
-import org.meteor.common.TopicAssignment;
-import org.meteor.common.TopicPartition;
+import org.meteor.common.message.TopicAssignment;
+import org.meteor.common.message.TopicPartition;
 
 public interface TopicListener {
     void onPartitionInit(TopicPartition topicPartition, int ledger);

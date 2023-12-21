@@ -9,7 +9,7 @@ import org.apache.commons.cli.Options;
 import org.meteor.cli.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.common.PartitionInfo;
+import org.meteor.common.message.PartitionInfo;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.TopicMetadata;

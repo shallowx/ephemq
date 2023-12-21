@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Assert;
 import org.junit.Test;
-import org.meteor.common.Offset;
+import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtils;
 import org.meteor.remote.util.ByteBufUtils;
 

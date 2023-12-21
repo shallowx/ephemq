@@ -2,7 +2,7 @@ package org.meteor.common.util;
 
 
 import io.netty.buffer.ByteBuf;
-import org.meteor.common.Offset;
+import org.meteor.common.message.Offset;
 
 public class MessageUtils {
     public static Offset getOffset(ByteBuf buf) {

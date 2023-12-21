@@ -1,4 +1,4 @@
-package org.meteor.common;
+package org.meteor.common.message;
 
 public class MessageId {
     private final int ledger;

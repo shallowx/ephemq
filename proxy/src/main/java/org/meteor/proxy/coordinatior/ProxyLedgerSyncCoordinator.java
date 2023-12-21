@@ -4,7 +4,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.apache.curator.framework.CuratorFramework;
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.common.Node;
+import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.proxy.internal.ProxyConfig;
