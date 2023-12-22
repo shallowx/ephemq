@@ -170,7 +170,7 @@
         <module>metrics</module>
         <module>cli</module>
         <module>microbench</module>
-        <module>assembler</module>
+        <module>distribution</module>
         <module>proxy</module>
         <module>example</module>
     </modules>
