@@ -3,11 +3,21 @@ package org.meteor.example.consumer;
 import org.meteor.client.consumer.Consumer;
 import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.internal.ClientConfig;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.example.client.ClientExample;
 import org.meteor.remote.util.ByteBufUtil;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class ConsumerExample {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerExample.class);
+
+    public static void main(String[] args) {
+
+    }
+
+
 
     private final Consumer consumer;
 
@@ -28,7 +38,7 @@ public class ConsumerExample {
 
         Consumer consumer = new Consumer("default-consumer", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
-            System.out.printf("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
+            logger.error("messageId={} topic={} queue={} message={} \n", messageId, topic, queue, msg);
         });
         consumer.start();
         this.consumer = consumer;

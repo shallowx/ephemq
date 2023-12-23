@@ -5,8 +5,11 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.producer.Producer;
 import org.meteor.client.producer.ProducerConfig;
 import org.meteor.client.producer.SendCallback;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
+import org.meteor.example.consumer.ConsumerExample;
 import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.ArrayList;
@@ -17,6 +20,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class ProducerExample {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerExample.class);
+
+    public static void main(String[] args) {
+
+    }
 
     private final Producer producer;
 

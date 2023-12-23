@@ -7,6 +7,7 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.ClientListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
@@ -15,23 +16,32 @@ import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.DeleteTopicResponse;
 
 public class ClientExample {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientExample.class);
+    public static void main(String[] args) throws Exception {
+        ClientExample newClient = new ClientExample();
+        newClient.createTopic();
 
-    private Client client;
-    public void newClient() {
-        client = new Client("default-client", new ClientConfig(), new DefaultClientListener());
+        Thread.sleep(3_000L);
+
+        newClient.delTopic();
+    }
+
+    private static final String EXAMPLE_TOPIC = "example-topic";
+    private final Client client;
+
+    public ClientExample() {
+        this.client = new Client("default-client", new ClientConfig(), new DefaultClientListener());;
     }
 
     public void createTopic() throws Exception {
         // Supports multiple partitions, but only supports a single copy of a partition
-        CreateTopicResponse response = client.createTopic("default-topic", 10, 1);
+        CreateTopicResponse response = client.createTopic(EXAMPLE_TOPIC, 10, 1);
         logger.info("topic:{}", response.getTopic());
         // do something
     }
 
-    public void DelTopic() throws Exception {
-        DeleteTopicResponse response = client.deleteTopic("default-topic");
+    public void delTopic() throws Exception {
+        DeleteTopicResponse response = client.deleteTopic(EXAMPLE_TOPIC);
         logger.info("response:{}", response.toString());
     }
 
