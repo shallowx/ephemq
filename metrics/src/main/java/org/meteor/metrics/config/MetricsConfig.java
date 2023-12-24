@@ -2,7 +2,7 @@ package org.meteor.metrics.config;
 
 import java.util.Properties;
 
-import static org.meteor.common.util.TypeTransformUtils.*;
+import static org.meteor.common.internal.TypeTransformUtil.*;
 
 public class MetricsConfig {
 

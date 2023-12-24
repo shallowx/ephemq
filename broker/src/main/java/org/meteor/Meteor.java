@@ -82,11 +82,4 @@ public class Meteor {
 
         return options;
     }
-
-    private static String generateConfigName(Method method, String prefix) {
-        if (method.getName().startsWith(prefix)) {
-            return method.getName().substring(prefix.length());
-        }
-        return null;
-    }
 }
