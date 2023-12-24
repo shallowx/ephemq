@@ -1,4 +1,4 @@
-package org.meteor.ledger;
+package org.meteor.dispatch;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -15,12 +15,16 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.internal.MessageUtil;
 import org.meteor.config.ChunkRecordDispatchConfig;
+import org.meteor.ledger.ChunkRecord;
+import org.meteor.ledger.LedgerCursor;
+import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -96,7 +100,7 @@ public class RecordChunkEntryDispatcher {
     private void doDeSubscribe(Channel channel, Promise<Void> promise) {
         try {
             if (!state.get()) {
-                throw new IllegalStateException("Chunk disptacher is inactive");
+                throw new IllegalStateException("Chunk dispatcher is inactive");
             }
             Handler handler = channelHandlerMap.get(channel);
             if (handler == null) {
@@ -176,7 +180,7 @@ public class RecordChunkEntryDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset)) {
-                        logger.warn("Chunk met discontinuous message, {} basePffset={} nextOffset={} runtimes={}",
+                        logger.warn("Chunk met discontinuous message, {} baseOffset={} nextOffset={} runtimes={}",
                                 handler, lastOffset, startOffset, runTimes);
                     }
 
@@ -195,7 +199,7 @@ public class RecordChunkEntryDispatcher {
                         }
                         synchronization.dispatchOffset = endOffset;
                         if (payload == null) {
-                            payload = constructpayload(startOffset, endOffset, chunk, channel.alloc());
+                            payload = constructPayload(startOffset, endOffset, chunk, channel.alloc());
                         }
 
                         count += chunk.count();
@@ -208,7 +212,7 @@ public class RecordChunkEntryDispatcher {
                         }
                     }
                 } catch (Exception e){
-                    logger.error("chunk disptach failed, {} lastOffset={}", handler, lastOffset, e);
+                    logger.error("chunk dispatch failed, {} lastOffset={}", handler, lastOffset, e);
                 } finally {
                     ByteBufUtil.release(chunk.data());
                     ByteBufUtil.release(payload);
@@ -219,7 +223,7 @@ public class RecordChunkEntryDispatcher {
                 }
             }
         } catch (Exception e){
-            logger.error("chunk disptach failed, {} lastOffset={}", handler, lastOffset, e);
+            logger.error("chunk dispatch failed, {} lastOffset={}", handler, lastOffset, e);
         } finally {
             handler.triggered.set(false);
         }
@@ -231,7 +235,7 @@ public class RecordChunkEntryDispatcher {
         }
     }
 
-    private ByteBuf constructpayload(Offset startOffset, Offset endOffset, ChunkRecord chunk, ByteBufAllocator alloc) {
+    private ByteBuf constructPayload(Offset startOffset, Offset endOffset, ChunkRecord chunk, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             SyncMessageSignal signal = SyncMessageSignal.newBuilder()
@@ -252,7 +256,7 @@ public class RecordChunkEntryDispatcher {
         } catch (Exception e) {
             ByteBufUtil.release(buf);
             throw new RuntimeException(String.format(
-                    "Build payload error, ledger={} topic={} startOffset={} ednOffset={} length={}",
+                    "Build payload error, ledger=%d topic=%s startOffset=%s ednOffset=%s length=%d",
                     ledger, topic, startOffset, endOffset, chunk.data().readableBytes()
             ));
         }
@@ -320,13 +324,13 @@ public class RecordChunkEntryDispatcher {
                     }
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset)) {
-                        logger.warn("Chunk met discontinuous message, {} basePffset={} nextOffset={} runtimes={}",
+                        logger.warn("Chunk met discontinuous message, {} baseOffset={} nextOffset={} runtimes={}",
                                 pursueTask, lastOffset, startOffset, runtimes);
                     }
 
                     lastOffset = endOffset;
                     synchronization.dispatchOffset = endOffset;
-                    payload = constructpayload(startOffset, endOffset, chunk, channel.alloc());
+                    payload = constructPayload(startOffset, endOffset, chunk, channel.alloc());
                     count += chunk.count();
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
@@ -415,7 +419,7 @@ public class RecordChunkEntryDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset)) {
-                        logger.warn("Chunk met discontinuous message, {} basePffset={} nextOffset={} runtimes={}",
+                        logger.warn("Chunk met discontinuous message, {} baseOffset={} nextOffset={} runtimes={}",
                                 pursueTask, lastOffset, startOffset, runtimes);
                     }
                     if (startOffset.after(alignOffset)) {
@@ -426,7 +430,7 @@ public class RecordChunkEntryDispatcher {
 
                     lastOffset = endOffset;
                     synchronization.dispatchOffset = endOffset;
-                    payload = constructpayload(startOffset, endOffset, chunk, channel.alloc());
+                    payload = constructPayload(startOffset, endOffset, chunk, channel.alloc());
                     count += chunk.count();
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
@@ -479,7 +483,7 @@ public class RecordChunkEntryDispatcher {
     private void doAttach(Channel channel, Offset offset, Promise<Void> promise) {
         try {
             if (!state.get()) {
-                throw new IllegalStateException("Chunk disptacher is inactive");
+                throw new IllegalStateException("Chunk dispatcher is inactive");
             }
 
             Handler handler = allocateHandler(channel);
@@ -624,6 +628,7 @@ public class RecordChunkEntryDispatcher {
         }
     }
 
+    @Immutable
     private class Handler {
         private final String id = UUID.randomUUID().toString();
         private final ConcurrentMap<Channel, Synchronization> channelSynchronizationMap = new ConcurrentHashMap<>();
@@ -642,10 +647,11 @@ public class RecordChunkEntryDispatcher {
             return storage +
                     "handler=" + id +
                     "followOffset=" + followOffset +
-                    "allchannels=" + channelSynchronizationMap.size();
+                    "allChannels=" + channelSynchronizationMap.size();
         }
     }
 
+    @Immutable
     private class Synchronization {
         private final Channel channel;
         private final Handler handler;
@@ -667,6 +673,7 @@ public class RecordChunkEntryDispatcher {
         }
     }
 
+    @Immutable
     private class PursueTask {
         private final Synchronization synchronization;
         private final LedgerCursor pursueCursor;

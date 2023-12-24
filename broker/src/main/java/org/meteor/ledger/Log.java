@@ -16,6 +16,8 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ServerConfig;
+import org.meteor.dispatch.RecordChunkEntryDispatcher;
+import org.meteor.dispatch.RecordEntryDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.TopicCoordinator;

@@ -1,4 +1,4 @@
-package org.meteor.ledger;
+package org.meteor.dispatch;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -17,6 +17,8 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.internal.MessageUtil;
 import org.meteor.config.RecordDispatchConfig;
+import org.meteor.ledger.LedgerCursor;
+import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.MessagePushSignal;
@@ -31,7 +33,6 @@ import java.util.function.IntConsumer;
 
 public class RecordEntryDispatcher {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordEntryDispatcher.class);
-
     private final int ledger;
     private final String topic;
     private final LedgerStorage storage;
@@ -47,7 +48,7 @@ public class RecordEntryDispatcher {
     private final ConcurrentMap<Channel, Handler> channelHandlerMap = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
+    public RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
                           IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
@@ -82,13 +83,13 @@ public class RecordEntryDispatcher {
         int middleLimit = loadLimit >> 1;
         synchronized (allocateHandlers) {
             if (allocateHandlers.isEmpty()) {
-                return createHandler();
+                return Handler.newHandler(allocateHandlers, executors);
             }
 
             Map<Handler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
             for (Handler handler : allocateHandlers.keySet()) {
-                int channelCount = handler.channelSubscriptionMap.size();
+                int channelCount = handler.getChannelSubscriptionMap().size();
                 if (channelCount >= loadLimit) {
                     continue;
                 }
@@ -96,13 +97,13 @@ public class RecordEntryDispatcher {
                 if (channelCount >= middleLimit) {
                     randomBound += loadLimit - channelCount;
                     selectHandlers.put(handler, channelCount);
-                } else if (result == null || result.channelSubscriptionMap.size() < channelCount) {
+                } else if (result == null || result.getChannelSubscriptionMap().size() < channelCount) {
                     result = handler;
                 }
             }
 
             if (selectHandlers.isEmpty() || randomBound == 0) {
-                return result != null ? result : createHandler();
+                return result != null ? result : Handler.newHandler(allocateHandlers, executors);
             }
 
             int index = random.nextInt(randomBound);
@@ -113,34 +114,10 @@ public class RecordEntryDispatcher {
                     return entry.getKey();
                 }
             }
-            return result != null ? result : createHandler();
+            return result != null ? result : Handler.newHandler(allocateHandlers, executors);
         }
     }
 
-    private Handler createHandler() {
-        synchronized (allocateHandlers) {
-            int[] countArray = new int[executors.length];
-            allocateHandlers.values().forEach(i -> countArray[i]++);
-            int index = 0;
-            if (countArray[index] > 0) {
-                for (int i = 1; i < countArray.length; i++) {
-                    int v = countArray[i];
-                    if (v == 0) {
-                        index = i;
-                        break;
-                    }
-
-                    if (v < countArray[i]) {
-                        index = i;
-                    }
-                }
-            }
-
-            Handler result = new Handler(executors[index]);
-            allocateHandlers.put(result, index);
-            return result;
-        }
-    }
 
     public void reset(Channel channel, Offset resetOffset, IntCollection wholeMarkers, Promise<Integer> promise) {
         try {
@@ -172,19 +149,19 @@ public class RecordEntryDispatcher {
             }
 
             Handler handler = allocateHandler(channel);
-            ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler.channelSubscriptionMap;
+            ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler.getChannelSubscriptionMap();
             Subscription oldSubscription = channelSubscriptionMap.get(channel);
             Subscription newSubscription = new Subscription(channel, new IntOpenHashSet(wholeMarkers), handler);
-            handler.dispatchExecutor.execute(() -> {
-                Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.markerSubscriptionMap;
+            handler.getDispatchExecutor().execute(() -> {
+                Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.getMarkerSubscriptionMap();
                 if (oldSubscription != null) {
-                    oldSubscription.markers.forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, newSubscription));
+                    oldSubscription.getMarkers().forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, newSubscription));
                 }
 
                 wholeMarkers.forEach((int marker) -> attachMarker(markerSubscriptionMap, marker, newSubscription));
-                if (handler.followCursor == null) {
-                    handler.followOffset = storage.currentOffset();
-                    handler.followCursor = storage.cursor(handler.followOffset);
+                if (handler.getFollowCursor() == null) {
+                    handler.setFollowOffset(storage.currentOffset());
+                    handler.setFollowCursor(storage.cursor(handler.getFollowOffset()));
                     dispatchHandlers.add(handler);
                     touchDispatch(handler);
                 }
@@ -197,18 +174,18 @@ public class RecordEntryDispatcher {
                     dispatchOffset = storage.currentOffset();
                 }
 
-                newSubscription.dispatchOffset = dispatchOffset;
-                if (dispatchOffset.before(handler.followOffset)) {
+                newSubscription.setDispatchOffset(dispatchOffset);
+                if (dispatchOffset.before(handler.getFollowOffset())) {
                     PursueTask task = new PursueTask(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
                     submitPursue(task);
                 } else {
-                    newSubscription.followed = true;
+                    newSubscription.setFollowed(true);
                 }
             });
 
             channelSubscriptionMap.put(channel, newSubscription);
             channelHandlerMap.putIfAbsent(channel, handler);
-            promise.trySuccess(newSubscription.markers.size());
+            promise.trySuccess(newSubscription.getMarkers().size());
         } catch (Throwable t) {
             promise.tryFailure(t);
         }
@@ -231,26 +208,26 @@ public class RecordEntryDispatcher {
         try {
             checkActive();
             Handler handler = channelHandlerMap.get(channel);
-            ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.channelSubscriptionMap;
+            ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
             Subscription subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
                 promise.tryFailure(new IllegalArgumentException("Alter is invalid"));
                 return;
             }
 
-            handler.dispatchExecutor.execute(() -> {
-                Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.markerSubscriptionMap;
+            handler.getDispatchExecutor().execute(() -> {
+                Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.getMarkerSubscriptionMap();
                 deleteMarkers.forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, subscription));
                 appendMarkers.forEach((int marker) -> attachMarker(markerSubscriptionMap, marker, subscription));
 
                 if (markerSubscriptionMap.isEmpty()) {
                     dispatchHandlers.remove(handler);
-                    handler.followCursor = null;
-                    handler.followOffset = null;
+                    handler.setFollowCursor(null);
+                    handler.setFollowOffset(null);
                 }
             });
 
-            IntSet markers = subscription.markers;
+            IntSet markers = subscription.getMarkers();
             markers.removeAll(deleteMarkers);
             markers.addAll(appendMarkers);
             if (markers.isEmpty()) {
@@ -281,20 +258,20 @@ public class RecordEntryDispatcher {
             checkActive();
 
             Handler handler = channelHandlerMap.get(channel);
-            ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.channelSubscriptionMap;
+            ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
             Subscription subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
                 promise.trySuccess(false);
                 return;
             }
 
-            handler.dispatchExecutor.execute(() -> {
-                Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.markerSubscriptionMap;
-                subscription.markers.forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, subscription));
+            handler.getDispatchExecutor().execute(() -> {
+                Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.getMarkerSubscriptionMap();
+                subscription.getMarkers().forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, subscription));
                 if (markerSubscriptionMap.isEmpty()) {
                     dispatchHandlers.remove(handler);
-                    handler.followOffset = null;
-                    handler.followCursor = null;
+                    handler.setFollowOffset(null);
+                    handler.setFollowCursor(null);
                 }
             });
 
@@ -307,9 +284,9 @@ public class RecordEntryDispatcher {
     }
 
     private void touchDispatch(Handler handler) {
-        if (handler.triggered.compareAndSet(false, true)) {
+        if (handler.getTriggered().compareAndSet(false, true)) {
             try {
-                handler.dispatchExecutor.execute(() -> doDispatch(handler));
+                handler.getDispatchExecutor().execute(() -> doDispatch(handler));
             } catch (Throwable t) {
                 logger.error("Dispatch submit failed: {}", handler, t);
             }
@@ -317,14 +294,14 @@ public class RecordEntryDispatcher {
     }
 
     private void doDispatch(Handler handler) {
-        LedgerCursor cursor = handler.followCursor;
+        LedgerCursor cursor = handler.getFollowCursor();
         if (cursor == null) {
-            handler.triggered.set(false);
+            handler.getTriggered().set(false);
             return;
         }
 
-        Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.markerSubscriptionMap;
-        Offset lastOffset = handler.followOffset;
+        Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = handler.getMarkerSubscriptionMap();
+        Offset lastOffset = handler.getFollowOffset();
         int count = 0;
         try {
             int runTimes = 0;
@@ -352,19 +329,19 @@ public class RecordEntryDispatcher {
                     }
 
                     for (Subscription subscription : subscriptions) {
-                        if (!subscription.followed) {
+                        if (!subscription.isFollowed()) {
                             continue;
                         }
-                        Channel channel = subscription.channel;
+                        Channel channel = subscription.getChannel();
                         if (!channel.isActive()) {
                             continue;
                         }
 
-                        if (!offset.after(subscription.dispatchOffset)) {
+                        if (!offset.after(subscription.getDispatchOffset())) {
                             continue;
                         }
 
-                        subscription.dispatchOffset = offset;
+                        subscription.setDispatchOffset(offset);
                         if (payload == null) {
                             payload = buildPayload(marker, offset, entry, channel.alloc());
                         }
@@ -373,7 +350,7 @@ public class RecordEntryDispatcher {
                         if (channel.isWritable()) {
                             channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                         } else {
-                            subscription.followed = false;
+                            subscription.setFollowed(false);
                             PursueTask task = new PursueTask(subscription, cursor.copy(), offset);
                             channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         }
@@ -391,10 +368,10 @@ public class RecordEntryDispatcher {
         } catch (Throwable t) {
             logger.error("Dispatch execute failed: {} lastOffset={}", handler, lastOffset, t);
         } finally {
-            handler.triggered.set(false);
+            handler.getTriggered().set(false);
         }
 
-        handler.followOffset = lastOffset;
+        handler.setFollowOffset(lastOffset);
         count(count);
         if (cursor.hashNext()) {
             touchDispatch(handler);
@@ -412,7 +389,7 @@ public class RecordEntryDispatcher {
     }
 
     private ChannelPromise delayPursue(PursueTask task) {
-        ChannelPromise promise = task.subscription.channel.newPromise();
+        ChannelPromise promise = task.getSubscription().getChannel().newPromise();
         promise.addListener((ChannelFutureListener) f -> {
             if (f.channel().isActive()) {
                 submitPursue(task);
@@ -423,34 +400,34 @@ public class RecordEntryDispatcher {
 
     private void submitPursue(PursueTask task) {
         try {
-            channelExecutor(task.subscription.channel).execute(() -> {
+            channelExecutor(task.getSubscription().getChannel()).execute(() -> {
                 doPursue(task);
             });
         } catch (Throwable t) {
-            task.subscription.followed = true;
+            task.getSubscription().setFollowed(true);
             logger.error("Submit failed: {}", task);
         }
     }
 
     private void doPursue(PursueTask task) {
-        Subscription subscription = task.subscription;
-        Channel channel = subscription.channel;
-        Handler handler = subscription.handler;
+        Subscription subscription = task.getSubscription();
+        Channel channel = subscription.getChannel();
+        Handler handler = subscription.getHandler();
 
-        if (!channel.isActive() || subscription != handler.channelSubscriptionMap.get(channel)) {
+        if (!channel.isActive() || subscription != handler.getChannelSubscriptionMap().get(channel)) {
             return;
         }
 
-        if (System.currentTimeMillis() - task.pursueTime > pursueTimeoutMs) {
+        if (System.currentTimeMillis() - task.getPursueTime() > pursueTimeoutMs) {
             logger.warn("Giving up pursue:{}", task);
             submitFollow(task);
             return;
         }
 
-        IntSet markers = subscription.markers;
-        LedgerCursor cursor = task.cursor;
+        IntSet markers = subscription.getMarkers();
+        LedgerCursor cursor = task.getCursor();
         boolean finished = true;
-        Offset lastOffset = task.pursueOffset;
+        Offset lastOffset = task.getPursueOffset();
         int count = 0;
         try {
             int runTimes = 0;
@@ -477,13 +454,13 @@ public class RecordEntryDispatcher {
                         continue;
                     }
 
-                    subscription.dispatchOffset = offset;
+                    subscription.setDispatchOffset(offset);
                     payload = buildPayload(marker, offset, entry, channel.alloc());
                     count++;
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                     } else {
-                        task.pursueOffset = lastOffset;
+                        task.setPursueOffset(lastOffset);
                         count(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
@@ -504,9 +481,9 @@ public class RecordEntryDispatcher {
             logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
         }
 
-        task.pursueOffset = lastOffset;
+        task.setPursueOffset(lastOffset);
         count(count);
-        Offset alignOffset = handler.followOffset;
+        Offset alignOffset = handler.getFollowOffset();
         if (finished || (alignOffset != null && !lastOffset.before(alignOffset))) {
             submitAlign(task);
         } else {
@@ -515,45 +492,47 @@ public class RecordEntryDispatcher {
     }
 
     private void submitFollow(PursueTask task) {
+        Subscription subscription = task.getSubscription();
         try {
-            task.subscription.handler.dispatchExecutor.execute(() -> {
-                task.subscription.followed = true;
+            subscription.getHandler().getDispatchExecutor().execute(() -> {
+                subscription.setFollowed(true);
             });
         } catch (Throwable t) {
-            task.subscription.followed = true;
+            subscription.setFollowed(true);
             logger.error("Submit failed: {}", task);
         }
     }
 
     private void submitAlign(PursueTask task) {
+        Subscription subscription = task.getSubscription();
         try {
-            task.subscription.handler.dispatchExecutor.execute(() -> {
+            subscription.getHandler().getDispatchExecutor().execute(() -> {
                 doAlign(task);
             });
         } catch (Throwable t) {
-            task.subscription.followed = true;
+            subscription.setFollowed(true);
             logger.error("Submit failed: {}", task);
         }
     }
 
     private void doAlign(PursueTask task) {
-        Subscription subscription = task.subscription;
-        Channel channel = subscription.channel;
-        Handler handler = subscription.handler;
+        Subscription subscription = task.getSubscription();
+        Channel channel = subscription.getChannel();
+        Handler handler = subscription.getHandler();
 
-        if (!channel.isActive() || subscription != handler.channelSubscriptionMap.get(channel)) {
+        if (!channel.isActive() || subscription != handler.getChannelSubscriptionMap().get(channel)) {
             return;
         }
 
-        Offset alignOffset = handler.followOffset;
-        Offset lastOffset = task.pursueOffset;
+        Offset alignOffset = handler.getFollowOffset();
+        Offset lastOffset = task.getPursueOffset();
         if (!lastOffset.before(alignOffset)) {
-            subscription.followed = true;
+            subscription.setFollowed(true);
             return;
         }
 
-        IntSet markers = subscription.markers;
-        LedgerCursor cursor = task.cursor;
+        IntSet markers = subscription.getMarkers();
+        LedgerCursor cursor = task.getCursor();
         boolean finished = true;
         int count = 0;
         try {
@@ -573,7 +552,7 @@ public class RecordEntryDispatcher {
                     }
 
                     if (offset.after(alignOffset)) {
-                        subscription.followed = true;
+                        subscription.setFollowed(true);
                         count(count);
                         return;
                     }
@@ -587,13 +566,13 @@ public class RecordEntryDispatcher {
                         continue;
                     }
 
-                    subscription.dispatchOffset = offset;
+                    subscription.setDispatchOffset(offset);
                     payload = buildPayload(marker, offset, entry, channel.alloc());
                     count++;
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                     } else {
-                        task.pursueOffset = lastOffset;
+                        task.setPursueOffset(lastOffset);
                         count(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
@@ -616,12 +595,12 @@ public class RecordEntryDispatcher {
         }
 
         if (finished) {
-            subscription.followed = true;
+            subscription.setFollowed(true);
             count(count);
             return;
         }
 
-        task.pursueOffset = lastOffset;
+        task.setPursueOffset(lastOffset);
         count(count);
         submitPursue(task);
     }
@@ -661,7 +640,7 @@ public class RecordEntryDispatcher {
         }
 
         for (Handler handler : dispatchHandlers) {
-            if (handler.followCursor != null) {
+            if (handler.getFollowCursor() != null) {
                 touchDispatch(handler);
             }
         }
@@ -702,10 +681,10 @@ public class RecordEntryDispatcher {
                         for (Channel channel : channelHandlerMap.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
                                 Handler handler = channelHandlerMap.get(channel);
-                                ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.channelSubscriptionMap;
+                                ConcurrentMap<Channel, Subscription> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
                                 Subscription subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
                                 if (subscription != null) {
-                                    channelMarkers.put(channel, subscription.markers);
+                                    channelMarkers.put(channel, subscription.getMarkers());
                                 }
                                 doClean(channel, ImmediateEventExecutor.INSTANCE.newPromise());
                             }
@@ -724,80 +703,5 @@ public class RecordEntryDispatcher {
             result.trySuccess(null);
         }
         return result;
-    }
-
-    private static class PursueTask {
-        private final Subscription subscription;
-        private final LedgerCursor cursor;
-        private final long pursueTime = System.currentTimeMillis();
-        private Offset pursueOffset;
-
-        public PursueTask(Subscription subscription, LedgerCursor cursor, Offset pursueOffset) {
-            this.subscription = subscription;
-            this.cursor = cursor;
-            this.pursueOffset = pursueOffset;
-        }
-
-        @Override
-        public String toString() {
-            return "PursueTask{" +
-                    "subscription=" + subscription +
-                    ", cursor=" + cursor +
-                    ", pursueTime=" + pursueTime +
-                    ", pursueOffset=" + pursueOffset +
-                    '}';
-        }
-    }
-
-    private static class Handler {
-        private final String id = UUID.randomUUID().toString();
-        private final ConcurrentMap<Channel, Subscription> channelSubscriptionMap = new ConcurrentHashMap<>();
-        private final Int2ObjectMap<Set<Subscription>> markerSubscriptionMap = new Int2ObjectOpenHashMap<>();
-        private final AtomicBoolean triggered = new AtomicBoolean(false);
-        private final EventExecutor dispatchExecutor;
-        private volatile Offset followOffset;
-        private volatile LedgerCursor followCursor;
-
-        private Handler(EventExecutor executor) {
-            this.dispatchExecutor = executor;
-        }
-
-        @Override
-        public String toString() {
-            return "Handler{" +
-                    "id='" + id + '\'' +
-                    ", channelSubscriptionMap=" + channelSubscriptionMap +
-                    ", markerSubscriptionMap=" + markerSubscriptionMap +
-                    ", triggered=" + triggered +
-                    ", dispatchExecutor=" + dispatchExecutor +
-                    ", followOffset=" + followOffset +
-                    ", followCursor=" + followCursor +
-                    '}';
-        }
-    }
-
-    private static class Subscription {
-        private final Channel channel;
-        private final IntSet markers;
-        private final Handler handler;
-        private Offset dispatchOffset;
-        private boolean followed = false;
-
-        public Subscription(Channel channel, IntSet markers, Handler handler) {
-            this.channel = channel;
-            this.markers = markers;
-            this.handler = handler;
-        }
-
-        @Override
-        public String toString() {
-            return "Subscription{" +
-                    "channel=" + channel +
-                    ", markers=" + markers +
-                    ", handler=" + handler +
-                    ", dispatchOffset=" + dispatchOffset +
-                    ", followed=" + followed +
-                    '}';
-        }
     }
 }
