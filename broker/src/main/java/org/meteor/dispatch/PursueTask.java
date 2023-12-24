@@ -6,13 +6,13 @@ import org.meteor.ledger.LedgerCursor;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class PursueTask {
-    private final Subscription subscription;
+public class PursueTask<E> {
+    private final E subscription;
     private final LedgerCursor cursor;
     private final long pursueTime = System.currentTimeMillis();
     private Offset pursueOffset;
 
-    public PursueTask(Subscription subscription, LedgerCursor cursor, Offset pursueOffset) {
+    public PursueTask(E subscription, LedgerCursor cursor, Offset pursueOffset) {
         this.subscription = subscription;
         this.cursor = cursor;
         this.pursueOffset = pursueOffset;
@@ -22,7 +22,7 @@ public class PursueTask {
         this.pursueOffset = pursueOffset;
     }
 
-    public Subscription getSubscription() {
+    public E getSubscription() {
         return subscription;
     }
 
