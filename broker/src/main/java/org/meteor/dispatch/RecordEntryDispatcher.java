@@ -15,7 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.internal.MessageUtil;
+import org.meteor.common.util.MessageUtil;
 import org.meteor.config.RecordDispatchConfig;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;

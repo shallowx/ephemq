@@ -1,4 +1,4 @@
-package org.meteor.common.internal;
+package org.meteor.proxy.coordinatior;
 
 import com.google.common.collect.Sets;
 import com.google.common.hash.HashFunction;
@@ -9,18 +9,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ConsistentHashingRingUtil {
+public class ConsistentHashingRing {
     private final NavigableMap<Integer, NavigableSet<String>> virtualNodes = new TreeMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final HashFunction function = Hashing.murmur3_32();
     private final int virtualNodeSize;
     private final Set<String> nodes = new HashSet<>();
 
-    public ConsistentHashingRingUtil() {
+    public ConsistentHashingRing() {
         this(256);
     }
 
-    public ConsistentHashingRingUtil(int virtualNodeSize) {
+    public ConsistentHashingRing(int virtualNodeSize) {
         this.virtualNodeSize = virtualNodeSize;
     }
 
@@ -52,7 +52,7 @@ public class ConsistentHashingRingUtil {
         Lock writeLock = lock.writeLock();
         writeLock.lock();
         try {
-            if (!nodes.remove(nodes)) {
+            if (!nodes.remove(node)) {
                 return;
             }
 
@@ -76,7 +76,7 @@ public class ConsistentHashingRingUtil {
         readLock.lock();
         try {
             if (virtualNodes.isEmpty() || size < 1) {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
             size = Math.min(size, nodes.size());
             LinkedHashSet<String> selectNodes = Sets.newLinkedHashSetWithExpectedSize(size);

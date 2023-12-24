@@ -9,6 +9,7 @@ import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 
+import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
 
@@ -23,7 +24,7 @@ public class InnerClientChannel extends ClientChannel {
     }
 
     @Override
-    public void bindTo(MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         Gauge.builder(CHANNEL_SEMAPHORE, semaphore, Semaphore::availablePermits)
                 .tag("local", channel.localAddress() == null ? StringUtil.EMPTY_STRING : channel.localAddress().toString())
                 .tag("remote", channel.remoteAddress() == null ? StringUtil.EMPTY_STRING : channel.remoteAddress().toString())

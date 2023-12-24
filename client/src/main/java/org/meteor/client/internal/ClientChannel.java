@@ -13,6 +13,7 @@ import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.util.ByteBufUtil;
 
+import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
@@ -123,7 +124,7 @@ public class ClientChannel implements MeterBinder {
     }
 
     @Override
-    public void bindTo(MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
 
     }
 }

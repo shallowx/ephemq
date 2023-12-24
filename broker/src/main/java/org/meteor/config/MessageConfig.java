@@ -1,6 +1,7 @@
 package org.meteor.config;
 
-import org.meteor.common.internal.TypeTransformUtil;
+import io.netty.util.NettyRuntime;
+import org.meteor.common.util.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -15,14 +16,14 @@ public class MessageConfig {
     }
 
     public int getMessageSyncThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_SYNC_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_SYNC_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 
     public int getMessageStorageThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_STORAGE_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_STORAGE_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 
     public int getMessageDispatchThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_DISPATCH_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_DISPATCH_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 }

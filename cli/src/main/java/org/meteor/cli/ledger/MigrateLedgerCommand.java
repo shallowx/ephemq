@@ -9,7 +9,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.meteor.cli.Command;
 import org.meteor.client.internal.Client;
-import org.meteor.common.internal.StringUtil;
+import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
 
 import java.io.File;
@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
-@SuppressWarnings("all")
 public class MigrateLedgerCommand implements Command {
     private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
 

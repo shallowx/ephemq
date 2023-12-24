@@ -13,7 +13,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.*;
 import org.meteor.common.thread.FastEventExecutorGroup;
-import org.meteor.common.internal.ObjectUtil;
+import org.meteor.common.util.ObjectUtil;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.codec.MessagePacket;
 

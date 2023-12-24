@@ -1,6 +1,8 @@
 package org.meteor.cli;
 
 import org.apache.commons.cli.*;
+import org.meteor.cli.ledger.MigrateLedgerCommand;
+import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.topic.TopicCreatedCommand;
 import org.meteor.cli.cluster.ClusterListCommand;
 import org.meteor.cli.topic.TopicDeletedCommand;
@@ -124,15 +126,19 @@ public class MeteorAdmin {
     }
 
     private static void initCommand() {
-        Command clientCommand = new TopicListCommand();
-        Command clusterCommand = new ClusterListCommand();
-        Command topicCreatedCommand = new TopicCreatedCommand();
-        Command topicDeletedCommand = new TopicDeletedCommand();
+        Command clientCmd = new TopicListCommand();
+        Command clusterCmd = new ClusterListCommand();
+        Command topicCreatedCmd= new TopicCreatedCommand();
+        Command topicDeletedCmd = new TopicDeletedCommand();
+        Command planCmd = new MigrateLedgerPlanCommand();
+        Command migrateCmd = new MigrateLedgerCommand();
 
-        commands.add(clientCommand);
-        commands.add(clusterCommand);
-        commands.add(topicCreatedCommand);
-        commands.add(topicDeletedCommand);
+        commands.add(clientCmd);
+        commands.add(clusterCmd);
+        commands.add(topicCreatedCmd);
+        commands.add(topicDeletedCmd);
+        commands.add(planCmd);
+        commands.add(migrateCmd);
     }
 
     private static Command getCommand(String name) {

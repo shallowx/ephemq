@@ -1,6 +1,7 @@
 package org.meteor.config;
 
-import org.meteor.common.internal.TypeTransformUtil;
+import io.netty.util.NettyRuntime;
+import org.meteor.common.util.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -49,9 +50,9 @@ public class CommonConfig {
     }
 
     public int getAuxThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(AUX_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(AUX_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
     public int getCommandHandleThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 }

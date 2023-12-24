@@ -1,4 +1,4 @@
-package org.meteor.common.internal;
+package org.meteor.common.util;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.Arrays;

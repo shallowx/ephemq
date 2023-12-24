@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static org.meteor.common.internal.ObjectUtil.checkNotNull;
+import static org.meteor.common.util.ObjectUtil.checkNotNull;
 import static org.meteor.remote.processor.RemoteException.of;
 import static org.meteor.remote.util.ByteBufUtil.buf2String;
 import static org.meteor.remote.util.ByteBufUtil.release;

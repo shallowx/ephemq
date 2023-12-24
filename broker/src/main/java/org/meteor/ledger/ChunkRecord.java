@@ -2,7 +2,7 @@ package org.meteor.ledger;
 
 import io.netty.buffer.ByteBuf;
 import org.meteor.common.message.Offset;
-import org.meteor.common.internal.MessageUtil;
+import org.meteor.common.util.MessageUtil;
 
 public record ChunkRecord(int count, ByteBuf data) {
     public Offset getStartOffset() {

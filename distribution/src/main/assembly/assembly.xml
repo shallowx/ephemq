@@ -19,7 +19,6 @@
             <fileMode>755</fileMode>
             <includes>
                 <include>*.sh</include>
-                <include>*.cmd</include>
             </includes>
             <outputDirectory>bin</outputDirectory>
         </fileSet>

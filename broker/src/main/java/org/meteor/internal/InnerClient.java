@@ -13,6 +13,8 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.ClientListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+
+import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 
 import static org.meteor.metrics.config.MetricsConstants.*;
@@ -28,12 +30,11 @@ public class InnerClient extends Client {
         this.coordinator = coordinator;
     }
 
-    @Override
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
         return new InnerClientChannel(clientConfig, channel, address, configuration, coordinator);
     }
 
-    public void bindTo(MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         {
             SingleThreadEventExecutor executor = (SingleThreadEventExecutor) taskExecutor;
             Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)

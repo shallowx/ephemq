@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>metrics</artifactId>
-    <packaging>jar</packaging>
 
     <properties>
         <micrometer.version>1.10.5</micrometer.version>

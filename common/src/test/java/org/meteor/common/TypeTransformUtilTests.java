@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.meteor.common.internal.TypeTransformUtil;
+import org.meteor.common.util.TypeTransformUtil;
 
 import java.util.Properties;
 

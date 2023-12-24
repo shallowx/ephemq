@@ -1,6 +1,7 @@
 package org.meteor.proxy.internal;
 
-import org.meteor.common.internal.TypeTransformUtil;
+import io.netty.util.NettyRuntime;
+import org.meteor.common.util.TypeTransformUtil;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
 
@@ -73,7 +74,7 @@ public class ProxyConfig {
     }
 
     public int getProxyClientWorkerThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_CLIENT_WORKER_THREAD_LIMIT, Runtime.getRuntime().availableProcessors()));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(PROXY_CLIENT_WORKER_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 
     public int getProxyClientPoolSize() {

@@ -5,7 +5,7 @@ import io.netty.util.ReferenceCounted;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import static io.netty.util.ReferenceCountUtil.release;
-import static org.meteor.common.internal.ObjectUtil.checkNotNull;
+import static org.meteor.common.util.ObjectUtil.checkNotNull;
 
 public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 

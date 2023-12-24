@@ -5,7 +5,6 @@ import org.apache.zookeeper.data.Stat;
 import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.internal.ConsistentHashingRingUtil;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.listener.ClusterListener;
 import org.meteor.internal.ZookeeperClient;
@@ -16,13 +15,13 @@ import java.util.List;
 
 public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);
-    private final ConsistentHashingRingUtil hashingRing;
+    private final ConsistentHashingRing hashingRing;
     private final ProxyConfig proxyConfiguration;
     public ZookeeperProxyClusterCoordinator(ProxyServerConfig configuration) {
         super(configuration);
         this.proxyConfiguration = configuration.getProxyConfiguration();
         this.client = ZookeeperClient.getClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
-        this.hashingRing = new ConsistentHashingRingUtil();
+        this.hashingRing = new ConsistentHashingRing();
         this.listeners.add(this);
     }
 

@@ -1,7 +1,7 @@
 package org.meteor.common.logging;
 
-import org.meteor.common.internal.ObjectUtil;
-import org.meteor.common.internal.StringUtil;
+import org.meteor.common.util.ObjectUtil;
+import org.meteor.common.util.StringUtil;
 
 import java.io.ObjectStreamException;
 import java.io.Serial;

@@ -24,7 +24,6 @@
 - JVM Args: -c *.properties -Dio.prometheus.client.export-protobuf.use-direct-buffers=true -Dio.netty.noKeySetOptimization=true
 
 ## Metrics configuration
-```
-0.0.0.0:9528/prometheus
-```
+- 0.0.0.0:9528/prometheus
+- Support metrics and monitoring, data collection uses prometheus components
 

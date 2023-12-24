@@ -24,4 +24,6 @@ public interface ClientListener {
 
     default void onSyncMessage(ClientChannel channel, SyncMessageSignal signal, ByteBuf data) {
     }
+
+    default void listenerCompleted() throws InterruptedException {}
 }

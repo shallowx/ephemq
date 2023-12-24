@@ -130,7 +130,7 @@ public abstract class LedgerSyncCoordinator {
 
     @Nonnull
     public MessageLedger getMessageLedger(String topic, int ledger) {
-        MessageRouter router = proxyClient.fetchMessageRouter(topic);
+        MessageRouter router = proxyClient.fetchRouter(topic);
         if (router == null) {
             throw new IllegalStateException(String.format("Message router not found for %s", topic));
         }

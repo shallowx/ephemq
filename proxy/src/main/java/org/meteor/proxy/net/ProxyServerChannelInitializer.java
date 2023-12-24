@@ -20,7 +20,7 @@ public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
     }
 
     @Override
-    protected void initChannel(SocketChannel socketChannel) throws Exception {
+    protected void initChannel(SocketChannel socketChannel) {
         ChannelPipeline pipeline = socketChannel.pipeline();
         if (networkConfiguration.isNetworkLogDebugEnabled()) {
             pipeline.addLast("logging-handler", new LoggingHandler(LogLevel.DEBUG));

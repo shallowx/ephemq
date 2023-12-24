@@ -1,6 +1,6 @@
 package org.meteor.config;
 
-import org.meteor.common.internal.TypeTransformUtil;
+import org.meteor.common.util.TypeTransformUtil;
 
 import java.util.Properties;
 

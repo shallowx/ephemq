@@ -1,45 +1,38 @@
 package org.meteor.client.producer;
 
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
 import org.meteor.client.internal.*;
 import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.remote.proto.MessageMetadata;
-import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.util.ByteBufUtil;
-
-import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
-public class Producer implements MeterBinder {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Producer.class);
-    private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
+public class Producer {
     private final String name;
     private final ProducerConfig config;
     private final Client client;
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
-    private EventExecutor executor;
+
     private volatile Boolean state;
+    private final ClientListener listener;
 
     public Producer(String name, ProducerConfig config) {
+        this(name, config, null);
+    }
+
+    public Producer(String name, ProducerConfig config, ClientListener clientListener) {
         this.name = name;
         this.config = Objects.requireNonNull(config, "Producer config not found");
-        this.client = new Client(name, config.getClientConfig(), new ProducerListener());
+        this.listener = clientListener == null ? new DefaultProducerListener(this) : clientListener;
+        this.client = new Client(name, config.getClientConfig(), listener);
     }
 
     public void start() {
@@ -48,8 +41,10 @@ public class Producer implements MeterBinder {
         }
         state = Boolean.TRUE;
         client.start();
+    }
 
-        executor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
+    public String getName() {
+        return name;
     }
 
     public synchronized void close() {
@@ -58,19 +53,24 @@ public class Producer implements MeterBinder {
         }
 
         state = Boolean.FALSE;
-        if (executor != null) {
-            executor.shutdownGracefully();
-            try {
-                while (!executor.isTerminated()) {
-                    executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
-                }
-            } catch (InterruptedException e) {
-                // Let the caller handle the interruption.
-                Thread.currentThread().interrupt();
-            }
+        try {
+            listener.listenerCompleted();
+        } catch (InterruptedException ignored) {
         }
 
         client.close();
+    }
+
+    boolean containsRouter(String topic) {
+        return client.containsRouter(topic);
+    }
+
+    MessageRouter fetchRouter(String topic) {
+        return client.fetchRouter(topic);
+    }
+
+    void refreshRouter(String topic, ClientChannel channel) {
+        client.refreshRouter(topic, channel);
     }
 
     public MessageId send(String topic, String queue, ByteBuf message, Extras extras) {
@@ -136,12 +136,12 @@ public class Producer implements MeterBinder {
         TopicPatternUtil.validateQueue(queue);
         TopicPatternUtil.validateTopic(topic);
 
-        MessageRouter router = client.fetchMessageRouter(topic);
+        MessageRouter router = client.fetchRouter(topic);
         if (router == null) {
             throw new IllegalStateException("Message router not found");
         }
 
-        MessageLedger ledger = router.calculateLedger(queue);
+        MessageLedger ledger = router.routeLedger(queue);
         if (ledger == null) {
             throw new IllegalStateException("Message ledger not found");
         }
@@ -151,9 +151,9 @@ public class Producer implements MeterBinder {
             throw new IllegalStateException("Message leader not found");
         }
 
-        int marker = router.calculateMarker(queue);
+        int marker = router.routeMarker(queue);
         SendMessageRequest request = SendMessageRequest.newBuilder().setLedger(ledger.id()).setMarker(marker).build();
-        MessageMetadata metadata = assembleMetadata(topic, queue, extras);
+        MessageMetadata metadata = buildMetadata(topic, queue, extras);
 
         ClientChannel channel = fetchChannel(leader, ledger.id());
         channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message);
@@ -182,7 +182,7 @@ public class Producer implements MeterBinder {
         }
     }
 
-    private MessageMetadata assembleMetadata(String topic, String queue, Extras extras) {
+    private MessageMetadata buildMetadata(String topic, String queue, Extras extras) {
         MessageMetadata.Builder builder = MessageMetadata.newBuilder().setTopic(topic).setQueue(queue);
         if (extras != null) {
             for (Map.Entry<String, String> entry : extras) {
@@ -196,43 +196,4 @@ public class Producer implements MeterBinder {
         return builder.build();
     }
 
-    @Override
-    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-        SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
-        Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                .tag("type", "producer-task")
-                .tag("name", name)
-                .tag("id", singleThreadEventExecutor.threadProperties().name())
-                .register(meterRegistry);
-    }
-
-    private class ProducerListener implements ClientListener {
-        @Override
-        public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
-            String topic = signal.getTopic();
-            if (!client.containsMessageRouter(topic)) {
-                return;
-            }
-
-            int ledgerId = signal.getLedger();
-            int version = signal.getLedgerVersion();
-            executor.schedule(() -> {
-                try {
-                    if (client.containsMessageRouter(topic)) {
-                        MessageRouter router = client.fetchMessageRouter(topic);
-                        if (router == null) {
-                            return;
-                        }
-
-                        MessageLedger ledger = router.ledger(ledgerId);
-                        if (ledger != null && version != 0 && ledger.version() >= version) {
-                            return;
-                        }
-                        client.refreshMessageRouter(topic, channel);
-                    }
-                } catch (Throwable ignored) {
-                }
-            }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
-        }
-    }
 }

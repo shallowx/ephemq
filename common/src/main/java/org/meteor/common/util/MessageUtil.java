@@ -1,4 +1,4 @@
-package org.meteor.common.internal;
+package org.meteor.common.util;
 
 
 import io.netty.buffer.ByteBuf;

@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("all")
 public class MigrateLedgerPlanCommand implements Command {
     private static String newDate() {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");

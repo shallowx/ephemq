@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cli</artifactId>
-    <packaging>jar</packaging>
 
     <properties>
         <picocli.version>4.7.1</picocli.version>
@@ -45,7 +44,7 @@
     </dependencies>
 
     <build>
-        <finalName>meteor-broker-${project.version}</finalName>
+        <finalName>meteor-cli-${project.version}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -64,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.meteor.cli.meteorAdmin</mainClass>
+                            <mainClass>org.meteor.cli.MeteorAdmin</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

@@ -1,6 +1,7 @@
 package org.meteor.config;
 
-import org.meteor.common.internal.TypeTransformUtil;
+import io.netty.util.NettyRuntime;
+import org.meteor.common.util.TypeTransformUtil;
 
 import java.util.Properties;
 
@@ -30,7 +31,7 @@ public class NetworkConfig {
     }
 
     public int getNetworkThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(NETWORK_THREAD_LIMIT, Runtime.getRuntime().availableProcessors() * 4));
+        return TypeTransformUtil.object2Int(prop.getOrDefault(NETWORK_THREAD_LIMIT, NettyRuntime.availableProcessors() * 4));
     }
 
     public int getIoThreadLimit() {

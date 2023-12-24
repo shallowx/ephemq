@@ -1,11 +1,12 @@
 package org.meteor.client.internal;
 
+import io.netty.util.NettyRuntime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClientConfig {
     private List<String> bootstrapAddresses = new ArrayList<>();
-
     private boolean socketEpollPrefer = true;
     private int socketSendBufferSize = 65536;
     private int socketReceiveBufferSize = 65536;
@@ -13,7 +14,7 @@ public class ClientConfig {
     private int channelKeepPeriodMs = 20000;
     private int channelIdleTimeoutMs = 30000;
     private int channelInvokePermits = 100;
-    private int workerThreadCount = Runtime.getRuntime().availableProcessors();
+    private int workerThreadCount = NettyRuntime.availableProcessors();
     private int metadataTimeoutMs = 5000;
     private int metadataRefreshPeriodMs = 5000;
     private int connectionPoolCapacity = 1;

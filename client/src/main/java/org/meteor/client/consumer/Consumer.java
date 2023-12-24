@@ -3,10 +3,6 @@ package org.meteor.client.consumer;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.UnsafeByteOperations;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.MeterBinder;
-import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -15,34 +11,21 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.meteor.client.internal.*;
 import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.remote.proto.server.*;
-import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.thread.FastEventExecutor;
-import org.meteor.remote.proto.MessageMetadata;
-import org.meteor.remote.proto.client.MessagePushSignal;
-import org.meteor.remote.proto.client.NodeOfflineSignal;
-import org.meteor.remote.proto.client.TopicChangedSignal;
-import org.meteor.remote.util.NetworkUtil;
-import org.meteor.remote.util.ProtoBufUtil;
-
-import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Consumer implements MeterBinder {
+public class Consumer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Consumer.class);
-    private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
     private final String name;
     private final ConsumerConfig consumerConfig;
-    private final MessageListener listener;
     private final Client client;
     private final Map<String, Map<String, Mode>> wholeQueueTopics = new ConcurrentHashMap<>();
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
@@ -51,19 +34,24 @@ public class Consumer implements MeterBinder {
     private final Map<String, Long> topicTokens = new HashMap<>();
     private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
     private final Map<String, Map<Integer, Int2IntMap>> topicLedgerMarkers = new HashMap<>();
-    private final Map<String, Future<?>> obsoleteFutures = new ConcurrentHashMap<>();
-    private EventExecutor executor;
-    private EventExecutorGroup group;
-    private MessageHandler[] handlers;
+    EventExecutor executor;
+
     private volatile Boolean state;
     private Future<?> failedRetryFuture;
     private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
+    private final ClientListener listener;
 
-    public Consumer(String name, ConsumerConfig consumerConfig, MessageListener listener) {
+    public Consumer(String name, ConsumerConfig consumerConfig, MessageListener messageListener) {
+        this(name, consumerConfig, messageListener, null);
+    }
+
+    public Consumer(String name, ConsumerConfig consumerConfig, MessageListener messageListener, ClientListener clientListener) {
         this.name = name;
         this.consumerConfig = Objects.requireNonNull(consumerConfig, "Consumer config not found");
-        this.listener = Objects.requireNonNull(listener, "Consumer message listener not found");
-        this.client = new Client(name, consumerConfig.getClientConfig(), new ConsumerListener());
+        this.listener = clientListener == null
+                ? new DefaultConsumerListener(this, consumerConfig, Objects.requireNonNull(messageListener, "Consumer message listener not found"))
+                : clientListener;
+        this.client = new Client(name, consumerConfig.getClientConfig(), listener);
     }
 
     public synchronized void start() {
@@ -75,44 +63,38 @@ public class Consumer implements MeterBinder {
         state = Boolean.TRUE;
         client.start();
         executor = new FastEventExecutor(new DefaultThreadFactory("consumer-task"));
-        int shardCount = Math.max(consumerConfig.getHandlerThreadCount(), consumerConfig.getHandlerShardCount());
-        handlers = new MessageHandler[shardCount];
-        group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadCount(), "consumer-message-group");
-        int handlerPendingCount = consumerConfig.getHandlerPendingCount();
-        for (int i = 0; i < shardCount; i++) {
-            Semaphore semaphore = new Semaphore(handlerPendingCount);
-            MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next());
-            this.handlers[i] = messageHandler;
-        }
-
         executor.scheduleWithFixedDelay(this::touchChangedTask, 30, 30, TimeUnit.SECONDS);
     }
 
-    @Override
-    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-        {
-            SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
-            Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                    .tag("type", "consumer-task")
-                    .tag("name", name)
-                    .tag("id", singleThreadEventExecutor.threadProperties().name())
-                    .register(meterRegistry);
-        }
-
-        for (EventExecutor eventExecutor : group) {
-            try {
-                SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
-                Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                        .tag("type", "consumer-handler")
-                        .tag("name", name)
-                        .tag("id", executor.threadProperties().name())
-                        .register(meterRegistry);
-            } catch (Throwable ignored) {
-            }
-        }
+    public String getName() {
+        return name;
     }
 
-    public boolean subscribe(String topic, String queue) {
+    public EventExecutor getExecutor() {
+        return executor;
+    }
+
+    public Map<String, Map<String, Mode>> getWholeQueueTopics() {
+        return wholeQueueTopics;
+    }
+
+    public Map<Integer, ClientChannel> getLedgerChannels() {
+        return ledgerChannels;
+    }
+
+    public Map<Integer, AtomicReference<MessageId>> getLedgerSequences() {
+        return ledgerSequences;
+    }
+
+    boolean containsRouter(String topic) {
+        return client.containsRouter(topic);
+    }
+
+    void refreshRouter(String topic, ClientChannel channel) {
+        client.refreshRouter(topic, channel);
+    }
+
+    public void subscribe(String topic, String queue) {
         TopicPatternUtil.validateTopic(topic);
         TopicPatternUtil.validateQueue(queue);
 
@@ -125,15 +107,14 @@ public class Consumer implements MeterBinder {
             } else if (mode == Mode.DELETE) {
                 topicModes.put(topic, Mode.REMAIN);
             } else {
-                return false;
+                return;
             }
         }
 
         touchChangedTask();
-        return true;
     }
 
-    public boolean deSubscribe(String topic, String queue) {
+    public void deSubscribe(String topic, String queue) {
         TopicPatternUtil.validateTopic(topic);
         TopicPatternUtil.validateQueue(queue);
 
@@ -141,7 +122,7 @@ public class Consumer implements MeterBinder {
         synchronized (wholeQueueTopics) {
             Map<String, Mode> topicModes = wholeQueueTopics.get(queue);
             if (topicModes == null) {
-                return false;
+                return;
             }
 
             Mode mode = topicModes.get(topic);
@@ -150,17 +131,16 @@ public class Consumer implements MeterBinder {
             } else if (mode == Mode.APPEND) {
                 topicModes.remove(topic);
             } else {
-                return false;
+                return;
             }
             if (topicModes.isEmpty()) {
                 wholeQueueTopics.remove(queue);
             }
         }
         touchChangedTask();
-        return true;
     }
 
-    public boolean clear(String topic) {
+    public void clear(String topic) {
         TopicPatternUtil.validateTopic(topic);
 
         topic = topic.intern();
@@ -188,10 +168,9 @@ public class Consumer implements MeterBinder {
         if (cleared) {
             touchChangedTask();
         }
-        return cleared;
     }
 
-    private void touchChangedTask() {
+    void touchChangedTask() {
         if (executor.isShuttingDown() || !changeTaskTouched.compareAndSet(false, true)) {
             return;
         }
@@ -305,7 +284,7 @@ public class Consumer implements MeterBinder {
             }
 
             ledgerChannels.remove(ledgerId);
-            channel = newLedgerChannel(topic, ledger, channel);
+            channel = newLedgerChannel(ledger, channel);
             if (channel == null || !channel.isActive()) {
                 queues.forEach(q -> failedQueues.put(q, Mode.APPEND));
                 continue;
@@ -313,7 +292,7 @@ public class Consumer implements MeterBinder {
 
             Int2IntMap markersCounts = new Int2IntOpenHashMap(queues.size());
             for (String queue : queues) {
-                int marker = router.calculateMarker(queue);
+                int marker = router.routeMarker(queue);
                 markersCounts.mergeInt(marker, 1, Integer::sum);
             }
 
@@ -337,7 +316,7 @@ public class Consumer implements MeterBinder {
             }
 
             ledgerChannels.put(ledgerId, channel);
-            if (!doResetSubscribe(channel, topic, ledger.id(), epoch, index, markers)) {
+            if (doResetSubscribe(channel, topic, ledger.id(), epoch, index, markers)) {
                 doCleanSubscribe(channel, topic, ledger.id());
                 ledgerChannels.remove(ledgerId);
                 queues.forEach(q -> failedQueues.put(q, Mode.APPEND));
@@ -456,7 +435,7 @@ public class Consumer implements MeterBinder {
                 : new Int2IntOpenHashMap(markerCounts);
 
         for (Map.Entry<String, Mode> entry : changedQueues.entrySet()) {
-            int marker = router.calculateMarker(entry.getKey());
+            int marker = router.routeMarker(entry.getKey());
             Mode mode = entry.getValue();
             if (mode == Mode.APPEND) {
                 newMarkerCounts.mergeInt(marker, 1, Integer::sum);
@@ -476,7 +455,7 @@ public class Consumer implements MeterBinder {
             doCleanSubscribe(channel, topic, ledgerId);
         }
         ledgerChannels.remove(ledgerId);
-        channel = newLedgerChannel(topic, ledger, channel);
+        channel = newLedgerChannel(ledger, channel);
         if (channel == null || !channel.isActive()) {
             return changedQueues;
         }
@@ -502,7 +481,7 @@ public class Consumer implements MeterBinder {
         }
 
         ledgerChannels.put(ledgerId, channel);
-        if (!doResetSubscribe(channel, topic, ledgerId, epoch, index, markers)) {
+        if (doResetSubscribe(channel, topic, ledgerId, epoch, index, markers)) {
             doCleanSubscribe(channel, topic, ledgerId);
             ledgerChannels.remove(ledgerId);
             return changedQueues;
@@ -520,7 +499,7 @@ public class Consumer implements MeterBinder {
         Int2IntMap newMarkerCounts = new Int2IntOpenHashMap(markerCounts);
 
         for (Map.Entry<String, Mode> entry : changedQueues.entrySet()) {
-            int marker = router.calculateMarker(entry.getKey());
+            int marker = router.routeMarker(entry.getKey());
             alterSet.add(marker);
 
             Mode mode = entry.getValue();
@@ -582,9 +561,9 @@ public class Consumer implements MeterBinder {
             int timeoutMs = consumerConfig.getControlTimeoutMs();
             channel.invoker().resetSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
-            return true;
-        } catch (Throwable t) {
             return false;
+        } catch (Throwable t) {
+            return true;
         }
     }
 
@@ -607,7 +586,7 @@ public class Consumer implements MeterBinder {
         }
     }
 
-    private boolean doCleanSubscribe(ClientChannel channel, String topic, int ledgerId) {
+    void doCleanSubscribe(ClientChannel channel, String topic, int ledgerId) {
         try {
             Promise<CleanSubscribeResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             CleanSubscribeRequest request = CleanSubscribeRequest.newBuilder()
@@ -618,13 +597,11 @@ public class Consumer implements MeterBinder {
             int timeoutMs = consumerConfig.getControlTimeoutMs();
             channel.invoker().cleanSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
-            return true;
-        } catch (Throwable t) {
-            return false;
+        } catch (Throwable ignored) {
         }
     }
 
-    private ClientChannel newLedgerChannel(String topic, MessageLedger ledger, ClientChannel channel) {
+    private ClientChannel newLedgerChannel(MessageLedger ledger, ClientChannel channel) {
         SocketAddress leader = ledger.leader();
         if (leader != null) {
             ClientChannel clientChannel = fetchChannel(leader);
@@ -655,9 +632,9 @@ public class Consumer implements MeterBinder {
         }
     }
 
-    private MessageRouter fetchRouter(String topic) {
+    MessageRouter fetchRouter(String topic) {
         try {
-            return client.fetchMessageRouter(topic);
+            return client.fetchRouter(topic);
         } catch (Throwable t) {
             return null;
         }
@@ -665,7 +642,7 @@ public class Consumer implements MeterBinder {
 
     private MessageLedger calculateLedger(MessageRouter router, String queue) {
         try {
-            return router.calculateLedger(queue);
+            return router.routeLedger(queue);
         } catch (Throwable t) {
             return null;
         }
@@ -806,184 +783,7 @@ public class Consumer implements MeterBinder {
                Thread.currentThread().interrupt();
            }
         }
-
-        if (group != null) {
-            group.shutdownGracefully().sync();
-            Iterator<EventExecutor> iterator = group.iterator();
-            while (iterator.hasNext()) {
-                try {
-                    EventExecutor next = iterator.next();
-                    while (! next.isTerminated()) {
-                        next.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
-                    }
-                } catch (Exception e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
+        listener.listenerCompleted();
         client.close();
-    }
-
-    enum Mode {
-        REMAIN, APPEND, DELETE
-    }
-
-    private class MessageHandler {
-        private final String id;
-        private final Semaphore semaphore;
-        private final EventExecutor executor;
-
-        public MessageHandler(String id, Semaphore semaphore, EventExecutor executor) {
-            this.id = id;
-            this.semaphore = semaphore;
-            this.executor = executor;
-        }
-
-        void handleMessage(ClientChannel channel, int marker, MessageId messageId, ByteBuf data) {
-            if (executor.isShuttingDown()) {
-                return;
-            }
-
-            semaphore.acquireUninterruptibly();
-            data.retain();
-
-            try {
-                executor.execute((AbstractEventExecutor.LazyRunnable) () -> doHandleMessage(channel, marker, messageId, data));
-            } catch (Throwable t) {
-                data.release();
-                semaphore.release();
-                logger.error("Consumer<{}> handle message failed", id, t);
-            }
-        }
-
-        private void doHandleMessage(ClientChannel channel, int marker, MessageId messageId, ByteBuf data) {
-            int length = data.readableBytes();
-            try {
-                MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
-                String topic = metadata.getTopic();
-                String queue = metadata.getQueue();
-                Map<String, Mode> topicModes = wholeQueueTopics.get(queue);
-                Mode mode = topicModes == null ? null : topicModes.get(topic);
-                if (mode == null || mode == Mode.DELETE) {
-                    return;
-                }
-
-                Extras extras = new Extras(metadata.getExtrasMap());
-                listener.onMessage(topic, queue, messageId, data, extras);
-            } catch (Throwable t) {
-                logger.error(" Consumer<{}> handle message failed, address={} marker={} messageId={} length={}",
-                        name, channel.address(), marker, messageId, length, t);
-            } finally {
-                data.release();
-                semaphore.release();
-            }
-        }
-    }
-
-    private class ConsumerListener implements ClientListener {
-        @Override
-        public void onChannelClosed(ClientChannel channel) {
-            touchChangedTask();
-        }
-
-        @Override
-        public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
-            String topic = signal.getTopic();
-            if (!client.containsMessageRouter(topic)) {
-                logger.debug("The client<{}> doesn't contains topic<{}> message router", name, topic);
-                return;
-            }
-
-            int ledgerId = signal.getLedger();
-            int ledgerVersion = signal.getLedgerVersion();
-            executor.schedule(() -> {
-                try {
-                    if (client.containsMessageRouter(topic)) {
-                        MessageRouter router = client.fetchMessageRouter(topic);
-                        if (router == null) {
-                            logger.warn("The client<{}> topic<{}> message router is empty", name, topic);
-                            return;
-                        }
-
-                        MessageLedger ledger = router.ledger(ledgerId);
-                        if (ledger == null || ledgerVersion == 0 || ledger.version() < ledgerVersion) {
-                            client.refreshMessageRouter(topic, channel);
-                        }
-
-                        touchChangedTask();
-                    }
-                } catch (Throwable t) {
-                    logger.error(t);
-                }
-            }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
-        }
-
-        @Override
-        public void onPushMessage(ClientChannel channel, MessagePushSignal signal, ByteBuf data) {
-            int ledger = signal.getLedger();
-            int marker = signal.getMarker();
-            int epoch = signal.getEpoch();
-            long index = signal.getIndex();
-            if (!channel.equals(ledgerChannels.get(ledger))) {
-                try {
-                    MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
-                    String topic = metadata.getTopic();
-                    obsoleteFutures.computeIfAbsent(ledger + "@" + channel.id(),
-                            k -> executor.schedule(() -> {
-                                if (channel.isActive() && !channel.equals(ledgerChannels.get(ledger))) {
-                                    doCleanSubscribe(channel, topic, ledger);
-                                }
-
-                                obsoleteFutures.remove(k);
-                            }, consumerConfig.getControlRetryDelayMs(), TimeUnit.MILLISECONDS));
-                } catch (Throwable t) {
-                    logger.error(t);
-                }
-                return;
-            }
-
-            AtomicReference<MessageId> sequence = ledgerSequences.get(ledger);
-            if (sequence == null) {
-                return;
-            }
-
-            MessageId id = new MessageId(ledger, epoch, index);
-            while (true) {
-                MessageId lastId = sequence.get();
-                if (lastId == null || (epoch == lastId.epoch() && index > lastId.index() || epoch > lastId.epoch())) {
-                    if (sequence.compareAndSet(lastId, id)) {
-                        break;
-                    }
-                } else {
-                    return;
-                }
-            }
-
-            try {
-                MessageHandler handler = handlers[consistentHash(marker, handlers.length)];
-                handler.handleMessage(channel, marker, id, data);
-            } catch (Throwable t) {
-                logger.error("The client<{}> handle message failure, {}", name, t);
-            }
-        }
-
-        private int consistentHash(int input, int buckets) {
-            long state = input & 0xffffffffL;
-            int candidate = 0;
-            int next;
-            while (true) {
-                next = (int) ((candidate + 1) / (((double) ((int) ((state = (2862933555777941757L * state + 1)) >>> 33) + 1)) / 0x1.0p31));
-                if (next > 0 && next < buckets) {
-                    candidate = next;
-                } else {
-                    return candidate;
-                }
-            }
-        }
-
-        @Override
-        public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-            ClientListener.super.onNodeOffline(channel, signal);
-        }
     }
 }

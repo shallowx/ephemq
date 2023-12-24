@@ -74,7 +74,7 @@ public class ProxyClientListener implements ClientListener {
             if (syncChannel == null) {
                 continue;
             }
-            MessageRouter router = client.fetchMessageRouter(topic);
+            MessageRouter router = client.fetchRouter(topic);
             if (router == null) {
                 continue;
             }
@@ -143,7 +143,7 @@ public class ProxyClientListener implements ClientListener {
             return;
         }
         String topic = signal.getTopic();
-        if (!client.containsMessageRouter(topic)) {
+        if (!client.containsRouter(topic)) {
             return;
         }
         EventExecutor executor = fixedExecutor(topic);
@@ -156,7 +156,7 @@ public class ProxyClientListener implements ClientListener {
         try {
             executor.schedule(()-> {
                try {
-                   MessageRouter router = client.fetchMessageRouter(topic);
+                   MessageRouter router = client.fetchRouter(topic);
                    if (router == null) {
                        logger.warn("Can not fetch message router of {}, will ignore signal{}", topic, signal);
                        return;
@@ -165,7 +165,7 @@ public class ProxyClientListener implements ClientListener {
                    boolean refreshFailed = false;
                    if (messageLedger == null || ledgerVersion == 0 || messageLedger.version() < ledgerVersion) {
                        try {
-                           client.refreshMessageRouter(topic, channel);
+                           client.refreshRouter(topic, channel);
                        } catch (Exception e) {
                            refreshFailed = true;
                            logger.error(e.getMessage(),e);
@@ -243,9 +243,9 @@ public class ProxyClientListener implements ClientListener {
             try {
                 if (refreshRouter) {
                     if (channel.isActive()) {
-                        client.refreshMessageRouter(topic, channel);
+                        client.refreshRouter(topic, channel);
                     } else {
-                        client.refreshMessageRouter(topic, null);
+                        client.refreshRouter(topic, null);
                     }
                     EventExecutor executor = fixedExecutor(topic);
                     if (executor.isShuttingDown()) {
@@ -271,9 +271,9 @@ public class ProxyClientListener implements ClientListener {
         try {
             if (refreshRouter) {
                 if (channel.isActive()) {
-                    client.refreshMessageRouter(topic, channel);
+                    client.refreshRouter(topic, channel);
                 } else {
-                    client.refreshMessageRouter(topic, null);
+                    client.refreshRouter(topic, null);
                 }
             }
             syncCoordinator.resumeSync(channel, topic, ledger, promise);

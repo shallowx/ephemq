@@ -38,7 +38,7 @@ public class DemoServerBootstrap {
 
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                protected void initChannel(SocketChannel socketChannel) throws Exception {
+                protected void initChannel(SocketChannel socketChannel) {
                     socketChannel.pipeline()
                             .addLast(servicesGroup, "packet-encoder", MessageEncoder.instance())
                             .addLast(servicesGroup, "paket-decoder", new MessageDecoder())

@@ -4,11 +4,9 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
@@ -19,22 +17,9 @@ import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.processor.RemoteException;
-import org.meteor.remote.codec.MessageDecoder;
-import org.meteor.remote.codec.MessageEncoder;
-import org.meteor.remote.handle.HeartbeatDuplexHandler;
-import org.meteor.remote.handle.ProcessDuplexHandler;
-import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.processor.ProcessCommand;
-import org.meteor.remote.processor.Processor;
 import org.meteor.remote.proto.*;
 import org.meteor.remote.proto.server.*;
-import org.meteor.remote.proto.client.MessagePushSignal;
-import org.meteor.remote.proto.client.NodeOfflineSignal;
-import org.meteor.remote.proto.client.SyncMessageSignal;
-import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.NetworkUtil;
-import org.meteor.remote.util.ProtoBufUtil;
 
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
@@ -80,7 +65,7 @@ public class Client implements MeterBinder {
 
     public ClientChannel fetchChannel(SocketAddress address) {
         try {
-            return acquireChannel(address).get(config.getChannelConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
+            return applyChannel(address).get(config.getChannelConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             if (address == null) {
                 throw new RuntimeException("Fetch random client channel failed", t);
@@ -89,8 +74,12 @@ public class Client implements MeterBinder {
         }
     }
 
+    public ConcurrentMap<String, Future<MessageRouter>> getRouters() {
+        return routers;
+    }
+
     @Nonnull
-    private Future<ClientChannel> acquireChannel(SocketAddress address) {
+    private Future<ClientChannel> applyChannel(SocketAddress address) {
         Future<ClientChannel> future;
         if (address == null) {
             future = randomAcquire();
@@ -104,18 +93,18 @@ public class Client implements MeterBinder {
             }
         }
 
-        List<Future<ClientChannel>> futures = listValidChannels(address);
+        List<Future<ClientChannel>> futures = filter(address);
         if (futures != null && futures.size() >= config.getConnectionPoolCapacity()) {
             return futures.get(ThreadLocalRandom.current().nextInt(futures.size()));
         }
 
         synchronized (channels) {
-            futures = listValidChannels(address);
+            futures = filter(address);
             if (futures != null && futures.size() >= config.getConnectionPoolCapacity()) {
                 return futures.get(ThreadLocalRandom.current().nextInt(futures.size()));
             }
 
-            future = createChannelFuture(address);
+            future = channelFuture(address);
             channels.computeIfAbsent(address, k -> new CopyOnWriteArrayList<>()).add(future);
             final SocketAddress theAddress = address;
             future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
@@ -144,8 +133,8 @@ public class Client implements MeterBinder {
         }
     }
 
-    public Future<ClientChannel> createChannelFuture(SocketAddress address) {
-        Bootstrap theBootstrap = bootstrap.clone().handler(new InnerChannelInitializer(address));
+    public Future<ClientChannel> channelFuture(SocketAddress address) {
+        Bootstrap theBootstrap = bootstrap.clone().handler(new InternalChannelInitializer(address, config, listener, assembleChannels));
         ChannelFuture channelFuture = theBootstrap.connect(address);
         Channel channel = channelFuture.channel();
         Promise<ClientChannel> assemblePromise = assembleChannels
@@ -165,12 +154,12 @@ public class Client implements MeterBinder {
         return assemblePromise;
     }
 
-    private List<Future<ClientChannel>> listValidChannels(SocketAddress address) {
+    private List<Future<ClientChannel>> filter(SocketAddress address) {
         List<Future<ClientChannel>> futures = channels.get(address);
-        return futures == null ? null : futures.stream().filter(this::isValidChannel).collect(Collectors.toList());
+        return futures == null ? null : futures.stream().filter(this::isValid).collect(Collectors.toList());
     }
 
-    private boolean isValidChannel(Future<ClientChannel> future) {
+    private boolean isValid(Future<ClientChannel> future) {
         if (future == null) {
             return false;
         }
@@ -194,7 +183,7 @@ public class Client implements MeterBinder {
         }
         List<Future<ClientChannel>> validChannels = channels.values().stream()
                 .flatMap(Collection::stream)
-                .filter(this::isValidChannel).toList();
+                .filter(this::isValid).toList();
 
         if (validChannels.isEmpty()) {
             return null;
@@ -239,11 +228,11 @@ public class Client implements MeterBinder {
                 .option(ChannelOption.SO_RCVBUF, config.getSocketReceiveBufferSize())
                 .resolver(new RoundRobinDnsAddressResolverGroup(builder));
         for (SocketAddress address : bootstrapAddress) {
-            acquireChannel(address);
+            applyChannel(address);
         }
 
         taskExecutor = new DefaultEventExecutor(new DefaultThreadFactory("client(" + name + ")-task"));
-        taskExecutor.schedule(new RefreshMetadataTask(), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
+        taskExecutor.schedule(new RefreshMetadataTask(this, config), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
     }
 
     public synchronized void close() {
@@ -276,7 +265,7 @@ public class Client implements MeterBinder {
     }
 
     @Override
-    public void bindTo(MeterRegistry meterRegistry) {
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         {
             SingleThreadEventExecutor executor = (SingleThreadEventExecutor) taskExecutor;
             Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
@@ -296,47 +285,11 @@ public class Client implements MeterBinder {
         }
     }
 
-    protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
-        return new ClientChannel(clientConfig, channel, address);
-    }
-
-    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        SyncMessageSignal signal = ProtoBufUtil.readProto(data, SyncMessageSignal.parser());
-        listener.onSyncMessage(channel, signal, data);
-        if (answer != null) {
-            answer.success(null);
-        }
-    }
-
-    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        TopicChangedSignal signal = ProtoBufUtil.readProto(data, TopicChangedSignal.parser());
-        listener.onTopicChanged(channel, signal);
-        if (answer != null) {
-            answer.success(null);
-        }
-    }
-
-    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        NodeOfflineSignal signal = ProtoBufUtil.readProto(data, NodeOfflineSignal.parser());
-        listener.onNodeOffline(channel, signal);
-        if (answer != null) {
-            answer.success(null);
-        }
-    }
-
-    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
-        MessagePushSignal signal = ProtoBufUtil.readProto(data, MessagePushSignal.parser());
-        listener.onPushMessage(channel, signal, data);
-        if (answer != null) {
-            answer.success(null);
-        }
-    }
-
-    public MessageRouter fetchMessageRouter(String topic) {
+    public MessageRouter fetchRouter(String topic) {
         ClientChannel channel = null;
         try {
             channel = fetchChannel(null);
-            return applyMessageRouter(topic, channel, true).get();
+            return applyRouter(topic, channel, true).get();
         } catch (Throwable t) {
             throw new RuntimeException(
                     String.format(
@@ -347,12 +300,12 @@ public class Client implements MeterBinder {
         }
     }
 
-    public MessageRouter refreshMessageRouter(String topic, ClientChannel channel) {
+    public void refreshRouter(String topic, ClientChannel channel) {
         try {
             if (channel == null) {
                 channel = fetchChannel(null);
             }
-            return applyMessageRouter(topic, channel, false).get();
+            applyRouter(topic, channel, false).get();
         } catch (Throwable t) {
             throw new RuntimeException(
                     String.format(
@@ -363,11 +316,11 @@ public class Client implements MeterBinder {
         }
     }
 
-    public boolean containsMessageRouter(String topic) {
+    public boolean containsRouter(String topic) {
         return routers.containsKey(topic);
     }
 
-    private Future<MessageRouter> applyMessageRouter(String topic, ClientChannel channel, boolean useCached) {
+    private Future<MessageRouter> applyRouter(String topic, ClientChannel channel, boolean useCached) {
         if (useCached) {
             Future<MessageRouter> result = routers.get(topic);
             if (result != null && (!result.isDone() || result.isSuccess())) {
@@ -394,14 +347,14 @@ public class Client implements MeterBinder {
         }
 
         try {
-            promise.trySuccess(cachingMessageRouter(topic, queryMessageRouter(channel, topic)));
+            promise.trySuccess(cachingRouter(topic, queryRouter(channel, topic)));
         } catch (Throwable t) {
             promise.tryFailure(t);
         }
         return promise;
     }
 
-    private MessageRouter queryMessageRouter(ClientChannel channel, String topic) throws Exception {
+    private MessageRouter queryRouter(ClientChannel channel, String topic) throws Exception {
         if (!channel.isActive()) {
             throw new IllegalStateException("Client channel is inactive");
         }
@@ -415,10 +368,10 @@ public class Client implements MeterBinder {
         if (topicInfo == null) {
             return null;
         }
-        return assembleMessageRouter(topic, clusterInfo, topicInfo);
+        return buildRouter(topic, clusterInfo, topicInfo);
     }
 
-    private MessageRouter assembleMessageRouter(String topic, ClusterInfo clusterInfo, TopicInfo topicInfo) {
+     MessageRouter buildRouter(String topic, ClusterInfo clusterInfo, TopicInfo topicInfo) {
         TopicMetadata topicMetadata = topicInfo.hasTopic() ? topicInfo.getTopic() : null;
         if (topicMetadata == null) {
             return null;
@@ -453,7 +406,7 @@ public class Client implements MeterBinder {
         return new MessageRouter(token, topic, ledgers);
     }
 
-    private MessageRouter mergeMessageRouter(MessageRouter cacheRouter, MessageRouter queryRouter) {
+    private MessageRouter mergeRouter(MessageRouter cacheRouter, MessageRouter queryRouter) {
         if (cacheRouter == null) {
             return queryRouter;
         }
@@ -478,11 +431,11 @@ public class Client implements MeterBinder {
         return new MessageRouter(queryRouter.token(), queryRouter.topic(), ledgers);
     }
 
-    private MessageRouter cachingMessageRouter(String topic, MessageRouter router) {
+    MessageRouter cachingRouter(String topic, MessageRouter router) {
         synchronized (routers) {
             Future<MessageRouter> future = routers.get(topic);
             if (future != null && future.isDone() && future.isSuccess()) {
-                router = mergeMessageRouter(future.getNow(), router);
+                router = mergeRouter(future.getNow(), router);
             }
 
             future = new SucceededFuture<>(ImmediateEventExecutor.INSTANCE, router);
@@ -516,55 +469,6 @@ public class Client implements MeterBinder {
             return promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS).getTopicInfosMap();
         } catch (Exception e) {
             throw e;
-        }
-    }
-
-    private void refreshMetadata() {
-        Set<String> topics = new HashSet<>();
-        for (Map.Entry<String, Future<MessageRouter>> entry : routers.entrySet()) {
-            String topic = entry.getKey();
-            Future<MessageRouter> future = entry.getValue();
-            if (future.isDone() && future.isSuccess() && future.getNow() == null) {
-                routers.remove(topic, future);
-                continue;
-            }
-
-            topics.add(topic);
-        }
-
-        if (topics.isEmpty()) {
-            return;
-        }
-
-        Map<String, MessageRouter> queryRouters = new HashMap<>();
-        try {
-            ClientChannel channel = fetchChannel(null);
-            ClusterInfo clusterInfo = queryClusterInfo(channel);
-            if (clusterInfo == null) {
-                throw new IllegalStateException("Cluster node not found");
-            }
-
-            Map<String, TopicInfo> topicInfos = queryTopicInfos(channel, topics.toArray(new String[0]));
-            for (String topic : topics) {
-                TopicInfo topicInfo = topicInfos.get(topic);
-                if (topicInfo == null) {
-                    continue;
-                }
-                MessageRouter router = assembleMessageRouter(topic, clusterInfo, topicInfo);
-                if (router == null) {
-                    continue;
-                }
-                queryRouters.put(topic, router);
-            }
-        } catch (Throwable ignored) {
-        }
-
-        if (queryRouters.isEmpty()) {
-            return;
-        }
-
-        for (Map.Entry<String, MessageRouter> entry : queryRouters.entrySet()) {
-            cachingMessageRouter(entry.getKey(), entry.getValue());
         }
     }
 
@@ -655,92 +559,5 @@ public class Client implements MeterBinder {
 
         clientChannel.invoker().migrateLedger(config.getMigrateLedgerTimeoutMs(), promise, request);
         return promise.get(config.getMigrateLedgerTimeoutMs(), TimeUnit.MILLISECONDS);
-    }
-
-    private class RefreshMetadataTask implements Runnable {
-        @Override
-        public void run() {
-            if (taskExecutor.isShuttingDown()) {
-                return;
-            }
-
-            try {
-                refreshMetadata();
-            } catch (Throwable t) {
-                String message = t.getMessage();
-                if (message == null || message.isEmpty()) {
-                    message = t.getClass().getName();
-                }
-                logger.error("Refresh metadata failed, {}", message);
-            }
-
-            if (!taskExecutor.isShuttingDown()) {
-                taskExecutor.schedule(this, config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
-            }
-        }
-    }
-
-    private class InnerChannelInitializer extends ChannelInitializer<SocketChannel> {
-
-        private final SocketAddress address;
-
-        public InnerChannelInitializer(SocketAddress address) {
-            this.address = address;
-        }
-
-        @Override
-        protected void initChannel(SocketChannel socketChannel) throws Exception {
-            ClientChannel clientChannel = createClientChannel(config, socketChannel, address);
-            socketChannel.pipeline()
-                    .addLast("packet-encoder", MessageEncoder.instance())
-                    .addLast("packet-decoder", new MessageDecoder())
-                    .addLast("connect-handler", new HeartbeatDuplexHandler(
-                            config.getChannelKeepPeriodMs(), config.getChannelIdleTimeoutMs()
-                    ))
-                    .addLast("service-handler", new ProcessDuplexHandler(new InnerServiceProcessor(clientChannel)));
-        }
-
-        private class InnerServiceProcessor implements Processor, ProcessCommand.Client {
-
-            private final ClientChannel clientChannel;
-
-            public InnerServiceProcessor(ClientChannel channel) {
-                this.clientChannel = channel;
-            }
-
-            @Override
-            public void onActive(Channel channel, EventExecutor executor) {
-                try {
-                    assembleChannels.computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise()).setSuccess(clientChannel);
-                    channel.closeFuture().addListener((ChannelFutureListener) f -> listener.onChannelClosed(clientChannel));
-                    listener.onChannelActive(clientChannel);
-                } catch (Throwable t) {
-                    channel.close();
-                }
-            }
-
-            @Override
-            public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-                int length = data.readableBytes();
-                try {
-                    switch (command) {
-                        case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
-                        case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
-                        case ProcessCommand.Client.TOPIC_INFO_CHANGED -> onTopicChanged(clientChannel, data, answer);
-                        case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
-                        default -> {
-                            if (answer != null) {
-                                answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code unsupported: " + command));
-                            }
-                        }
-                    }
-                } catch (Throwable t) {
-                    logger.error("<{}>Client<{}> processor is error, code={} length={}", NetworkUtil.switchAddress(clientChannel.channel()), name, command, length);
-                    if (answer != null) {
-                        answer.failure(t);
-                    }
-                }
-            }
-        }
     }
 }

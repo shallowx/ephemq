@@ -31,11 +31,12 @@ public class MessageRouter {
         return ledgers.get(id);
     }
 
-    public MessageLedger calculateLedger(String queue) {
+    public MessageLedger routeLedger(String queue) {
         int length = ledgerIds.length;
         if (length == 0) {
             return null;
         }
+
         if (length == 1) {
             return ledgers.get(ledgerIds[0]);
         }
@@ -43,7 +44,7 @@ public class MessageRouter {
         return ledgers.get(ledgerIds[((31 * topic.hashCode() + queue.hashCode()) & 0x7fffffff) % length]);
     }
 
-    public int calculateMarker(String queue) {
+    public int routeMarker(String queue) {
         return 31 * queue.hashCode() + topic.hashCode();
     }
 }

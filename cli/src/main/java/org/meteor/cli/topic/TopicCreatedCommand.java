@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.meteor.cli.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.TopicConfig;
-import org.meteor.common.internal.StringUtil;
+import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.PartitionsReplicas;
 
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("all")
 public class TopicCreatedCommand implements Command {
     private static String newDate() {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");

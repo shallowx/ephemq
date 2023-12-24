@@ -27,6 +27,11 @@
             <artifactId>cli</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>proxy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -85,7 +90,7 @@
                 <version>${maven.assembly.plugin.version}</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/release-assembly.xml</descriptor>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

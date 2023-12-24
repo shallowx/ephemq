@@ -22,7 +22,7 @@ if [[-z ${JAVA_EXE}]]; then
 fi
 
 if [[-z ${LOG_FILE}]]; then
-    LOG_FILE = "${base_dir}/../config/logback-broker.xml"
+    LOG_FILE = "${base_dir}/../config/logback.xml"
 fi
 
 if [[-z ${LOG_DIR}]]; then

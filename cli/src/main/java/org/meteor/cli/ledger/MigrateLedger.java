@@ -6,9 +6,6 @@ public class MigrateLedger {
     private String from;
     private String to;
 
-    public MigrateLedger() {
-    }
-
     public MigrateLedger(String topic, int partition, String from, String to) {
         this.topic = topic;
         this.partition = partition;

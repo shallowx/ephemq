@@ -1,12 +1,13 @@
 package org.meteor.client.consumer;
 
+import io.netty.util.NettyRuntime;
 import org.meteor.client.internal.ClientConfig;
 
 public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();
     private int controlTimeoutMs = 5000;
     private int controlRetryDelayMs = 2000;
-    private int handlerThreadCount = Runtime.getRuntime().availableProcessors();
+    private int handlerThreadCount = NettyRuntime.availableProcessors();
     private int handlerShardCount = handlerThreadCount * 10;
     private int handlerPendingCount = 100;
 

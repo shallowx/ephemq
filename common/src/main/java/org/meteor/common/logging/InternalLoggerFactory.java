@@ -1,6 +1,6 @@
 package org.meteor.common.logging;
 
-import org.meteor.common.internal.ObjectUtil;
+import org.meteor.common.util.ObjectUtil;
 
 public abstract class InternalLoggerFactory {
 
