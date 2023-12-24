@@ -54,8 +54,10 @@ public class MessageUtil {
             long baseIndex = baseOffset.getIndex();
             return baseIndex <= 0 || baseIndex + 1 == nextOffset.getIndex();
         } else if (baseEpoch < nextEpoch) {
-            return baseEpoch <= 0 || nextOffset.getIndex() == 1;
+            long baseIndex = baseOffset.getIndex();
+            return baseIndex <= 0 || nextOffset.getIndex() == 1;
+        } else {
+            return false;
         }
-        return false;
     }
 }
