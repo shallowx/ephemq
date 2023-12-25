@@ -8,11 +8,11 @@
 
     <groupId>org.meteor</groupId>
     <artifactId>meteor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <properties>
-        <meteor.version>1.0.0-SNAPSHOT</meteor.version>
+        <revision>1.0.0-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>17</maven.compiler.version>
         <maven.compiler.source>17</maven.compiler.source>
