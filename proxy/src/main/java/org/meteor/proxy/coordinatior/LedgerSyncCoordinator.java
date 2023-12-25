@@ -4,7 +4,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
 import org.meteor.proxy.internal.ProxyConfig;
-import org.meteor.internal.InnerClient;
+import org.meteor.internal.InternalClient;
 import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -43,7 +43,7 @@ public abstract class LedgerSyncCoordinator {
         clientConfig.setWorkerThreadCount(config.getProxyClientWorkerThreadLimit());
         clientConfig.setConnectionPoolCapacity(config.getProxyClientPoolSize());
         ProxyClientListener listener = new ProxyClientListener(config, coordinator, this);
-        this.proxyClient = new InnerClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), coordinator);
+        this.proxyClient = new InternalClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), coordinator);
         listener.setClient(proxyClient);
         this.taskExecutor = coordinator.getAuxEventExecutorGroup().next();
     }

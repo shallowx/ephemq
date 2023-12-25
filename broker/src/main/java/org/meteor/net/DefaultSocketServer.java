@@ -21,7 +21,6 @@ import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
 import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
 
 public class DefaultSocketServer {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultSocketServer.class);
     private final CommonConfig commonConfiguration;
     private final NetworkConfig networkConfiguration;
@@ -38,26 +37,10 @@ public class DefaultSocketServer {
 
     public void start() throws Exception {
         bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor");
-        for (EventExecutor executor : bossGroup) {
-            SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
-            Gauge.builder(NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, commonConfiguration.getClusterName())
-                    .tag(BROKER_TAG, commonConfiguration.getServerId())
-                    .tag(TYPE_TAG, "acceptor")
-                    .tag("name", StringUtil.EMPTY_STRING)
-                    .tag("id", singleThreadEventExecutor.threadProperties().name()).register(Metrics.globalRegistry);
-        }
+        gauge(bossGroup, "acceptor");
 
         workGroup = newEventLoopGroup(true, networkConfiguration.getNetworkThreadLimit(), "server-processor");
-        for (EventExecutor executor : workGroup) {
-            SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
-            Gauge.builder(NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                    .tag(CLUSTER_TAG, commonConfiguration.getClusterName())
-                    .tag(BROKER_TAG, commonConfiguration.getServerId())
-                    .tag(TYPE_TAG, "processor")
-                    .tag("name", StringUtil.EMPTY_STRING)
-                    .tag("id", singleThreadEventExecutor.threadProperties().name()).register(Metrics.globalRegistry);
-        }
+        gauge(workGroup, "processor");
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
@@ -101,6 +84,18 @@ public class DefaultSocketServer {
                         }
                     }).channel();
             closedFuture.addListener(f -> compatibleChannel.close());
+        }
+    }
+
+    private void gauge(EventLoopGroup workGroup, String processor) {
+        for (EventExecutor executor : workGroup) {
+            SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
+            Gauge.builder(NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
+                    .tag(CLUSTER_TAG, commonConfiguration.getClusterName())
+                    .tag(BROKER_TAG, commonConfiguration.getServerId())
+                    .tag(TYPE_TAG, processor)
+                    .tag("name", StringUtil.EMPTY_STRING)
+                    .tag("id", singleThreadEventExecutor.threadProperties().name()).register(Metrics.globalRegistry);
         }
     }
 

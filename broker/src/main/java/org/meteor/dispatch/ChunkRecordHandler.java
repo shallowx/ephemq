@@ -7,31 +7,29 @@ import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-public class RecordChunkHandler extends AbstractHandler<RecordChunkSynchronization, RecordChunkHandler> {
-    static final RecordChunkHandler INSTANCE = new RecordChunkHandler();
-    private final List<RecordChunkSynchronization> synchronizations = new ArrayList<>();
-
-    public RecordChunkHandler() {
+public class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronization, ChunkRecordHandler> {
+    static final ChunkRecordHandler INSTANCE = new ChunkRecordHandler();
+    private final List<ChunkRecordSynchronization> synchronizations = new ArrayList<>();
+    public ChunkRecordHandler() {
         super(null);
     }
-
-    public RecordChunkHandler(EventExecutor executor) {
+    public ChunkRecordHandler(EventExecutor executor) {
         super(executor);
     }
 
     @Override
-    int[] getCounts(EventExecutor[] executors, WeakHashMap<RecordChunkHandler, Integer> handlers) {
+    int[] getCounts(EventExecutor[] executors, WeakHashMap<ChunkRecordHandler, Integer> handlers) {
         int[] counts = new int[executors.length];
         handlers.values().forEach(i -> counts[i]++);
         return counts;
     }
 
     @Override
-    Function<EventExecutor, RecordChunkHandler> apply() {
-        return RecordChunkHandler::new;
+    Function<EventExecutor, ChunkRecordHandler> apply() {
+        return ChunkRecordHandler::new;
     }
 
-    public List<RecordChunkSynchronization> getSynchronizations() {
+    public List<ChunkRecordSynchronization> getSynchronizations() {
         return synchronizations;
     }
 

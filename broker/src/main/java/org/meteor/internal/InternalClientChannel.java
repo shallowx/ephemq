@@ -15,10 +15,10 @@ import java.util.concurrent.Semaphore;
 
 import static org.meteor.metrics.config.MetricsConstants.*;
 
-public class InnerClientChannel extends ClientChannel {
+public class InternalClientChannel extends ClientChannel {
     private final CommonConfig configuration;
 
-    public InnerClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, CommonConfig configuration, Coordinator coordinator) {
+    public InternalClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, CommonConfig configuration, Coordinator coordinator) {
         super(clientConfig, channel, address);
         this.configuration = configuration;
     }

@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
     private final CommonConfig config;
@@ -107,18 +106,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     @Override
     public void onCommand(int code, int bytes, long cost, boolean ret) {
         try {
-            Map<Integer, Counter> counters = ret ? requestSuccesses : requestFailures;
-            Counter counter = counters.get(code);
-            if (counter == null) {
-                counter = counters.computeIfAbsent(code,
-                        s -> Counter.builder(REQUEST_STATE_COUNTER_NAME)
-                                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
-                                        .and(BROKER_TAG, config.getServerId())
-                                        .and(CLUSTER_TAG, config.getClusterName())
-                                        .and(RESULT_TAG, ret ? "success" : "failure"))
-                                .register(registry));
-            }
-
+            Counter counter = getCounter(code, ret);
             counter.increment();
             Integer sample = metricsSampleCount.get();
             metricsSampleCount.set(sample + 1);
@@ -151,6 +139,21 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         } catch (Throwable t) {
             logger.error("Metrics on command listener failed, code={}", code, t);
         }
+    }
+
+    private Counter getCounter(int code, boolean ret) {
+        Map<Integer, Counter> counters = ret ? requestSuccesses : requestFailures;
+        Counter counter = counters.get(code);
+        if (counter == null) {
+            counter = counters.computeIfAbsent(code,
+                    s -> Counter.builder(REQUEST_STATE_COUNTER_NAME)
+                            .tags(Tags.of(TYPE_TAG, String.valueOf(code))
+                                    .and(BROKER_TAG, config.getServerId())
+                                    .and(CLUSTER_TAG, config.getClusterName())
+                                    .and(RESULT_TAG, ret ? "success" : "failure"))
+                            .register(registry));
+        }
+        return counter;
     }
 
     @Override
@@ -222,7 +225,6 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     @Override
     public void onChunkPushMessage(String topic, int ledger, int count) {
-
     }
 
     @Override
@@ -277,9 +279,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     }
 
     @Override
-    public void onShutdown(Node node) {
-
-    }
+    public void onShutdown(Node node) {}
 
     @Override
     public void onPartitionInit(TopicPartition topicPartition, int ledger) {

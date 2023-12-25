@@ -11,7 +11,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 public class LoggerStartupListener extends ContextAwareBase implements LoggerContextListener, LifeCycle {
 
     private static final String DEFAULT_LOG_DIR = "/tmp/meteor";
-    private boolean started = false;
+    private volatile boolean started = false;
 
     @Override
     public boolean isResetResistant() {
@@ -20,26 +20,22 @@ public class LoggerStartupListener extends ContextAwareBase implements LoggerCon
 
     @Override
     public void onStart(LoggerContext loggerContext) {
-
     }
 
     @Override
     public void onReset(LoggerContext loggerContext) {
-
     }
 
     @Override
     public void onStop(LoggerContext loggerContext) {
-
     }
 
     @Override
     public void onLevelChange(Logger logger, Level level) {
-
     }
 
     @Override
-    public void start() {
+    public synchronized void start() {
         if (started) {
             return;
         }
@@ -56,11 +52,10 @@ public class LoggerStartupListener extends ContextAwareBase implements LoggerCon
 
     @Override
     public void stop() {
-
     }
 
     @Override
     public boolean isStarted() {
-        return false;
+        return started;
     }
 }

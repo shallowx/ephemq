@@ -76,8 +76,8 @@ public class ParticipantCoordinator {
         log.attachSynchronize(channel, Offset.of(epoch, index), attachPromise);
     }
 
-    public Promise<SyncResponse> syncLeader(TopicPartition topicPartition, int ledger, ClientChannel channel,
-                                            int epoch, long index, int timeoutMs, Promise<SyncResponse> promise) {
+    public void syncLeader(TopicPartition topicPartition, int ledger, ClientChannel channel,
+                           int epoch, long index, int timeoutMs, Promise<SyncResponse> promise) {
         if (promise == null) {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
@@ -86,7 +86,7 @@ public class ParticipantCoordinator {
             Log log = coordinator.getLogCoordinator().getLog(ledger);
             if (log == null) {
                 promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
-                return promise;
+                return;
             }
             logger.info("Synchronize data of {} from {} with epoch: {}, index:{}", ledger, channel, epoch, index);
             SyncRequest request = SyncRequest.newBuilder()
@@ -101,10 +101,9 @@ public class ParticipantCoordinator {
             promise.tryFailure(e);
             logger.error(e.getLocalizedMessage(), e);
         }
-        return promise;
     }
 
-    public Promise<CancelSyncResponse> unSyncLedger(TopicPartition topicPartition, int ledger, ClientChannel channel, int timeoutMs, Promise<CancelSyncResponse> promise) {
+    public void unSyncLedger(TopicPartition topicPartition, int ledger, ClientChannel channel, int timeoutMs, Promise<CancelSyncResponse> promise) {
         if (promise == null) {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
@@ -121,7 +120,6 @@ public class ParticipantCoordinator {
             logger.error(e.getLocalizedMessage(), e);
         }
 
-        return promise;
     }
 
     public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {

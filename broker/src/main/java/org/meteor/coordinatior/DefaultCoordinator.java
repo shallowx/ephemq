@@ -10,8 +10,8 @@ import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.internal.InnerClient;
-import org.meteor.internal.InnerClientListener;
+import org.meteor.internal.InternalClient;
+import org.meteor.internal.InternalClientListener;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class DefaultCoordinator implements Coordinator {
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);
-        innerClient = new InnerClient("inner-client", clientConfig, new InnerClientListener(this), configuration.getCommonConfig(), this);
+        innerClient = new InternalClient("inner-client", clientConfig, new InternalClientListener(this, configuration.getChunkRecordDispatchConfig().getChunkDispatchSyncSemaphore()), configuration.getCommonConfig(), this);
         innerClient.start();
 
         if (clusterCoordinator != null) {

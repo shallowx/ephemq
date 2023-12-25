@@ -19,19 +19,19 @@ import java.net.SocketAddress;
 
 import static org.meteor.metrics.config.MetricsConstants.*;
 
-public class InnerClient extends Client {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClient.class);
+public class InternalClient extends Client {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClient.class);
     private final CommonConfig configuration;
     private final Coordinator coordinator;
 
-    public InnerClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfig configuration, Coordinator coordinator) {
+    public InternalClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfig configuration, Coordinator coordinator) {
         super(name, clientConfig, listener);
         this.configuration = configuration;
         this.coordinator = coordinator;
     }
 
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
-        return new InnerClientChannel(clientConfig, channel, address, configuration, coordinator);
+        return new InternalClientChannel(clientConfig, channel, address, configuration, coordinator);
     }
 
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {

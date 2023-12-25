@@ -19,7 +19,6 @@ import java.util.Set;
 
 public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
-
     private final Coordinator coordinator;
     private final NetworkConfig config;
 
@@ -30,12 +29,10 @@ public class DefaultClusterListener implements ClusterListener {
 
     @Override
     public void onGetControlRole(Node node) {
-
     }
 
     @Override
     public void onLostControlRole(Node node) {
-
     }
 
     @Override

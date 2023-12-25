@@ -104,10 +104,10 @@ public class ZookeeperPartitionCoordinatorElector {
                     logger.info("Change leader of {} to {}", ledger, configuration.getServerId());
 
                     byte[] bytes = client.getData().forPath(path);
-                    TopicAssignment topicAssignment = JsonCoordinator.deserialize(bytes, TopicAssignment.class);
+                    TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
                     topicAssignment.setLeader(configuration.getServerId());
                     topicAssignment.setEpoch(topicAssignment.getEpoch() + 1);
-                    client.setData().forPath(path, JsonCoordinator.serialize(topicAssignment));
+                    client.setData().forPath(path, JsonMapper.serialize(topicAssignment));
 
                     Log log = coordinator.getLogCoordinator().getLog(topicAssignment.getLedgerId());
                     if (log != null) {
@@ -146,7 +146,7 @@ public class ZookeeperPartitionCoordinatorElector {
                             String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition())
                     );
 
-                    TopicAssignment topicAssignment = JsonCoordinator.deserialize(bytes, TopicAssignment.class);
+                    TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
                     if (topicAssignment.getReplicas().contains(configuration.getServerId())) {
                         logger.info("As the follower replica of {}, ledger={}", topicPartition, ledger);
                     }

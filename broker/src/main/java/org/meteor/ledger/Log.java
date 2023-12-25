@@ -16,7 +16,7 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ServerConfig;
-import org.meteor.dispatch.RecordChunkEntryDispatcher;
+import org.meteor.dispatch.ChunkRecordEntryDispatcher;
 import org.meteor.dispatch.RecordEntryDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.coordinatior.Coordinator;
@@ -57,7 +57,7 @@ public class Log {
     protected ClientChannel syncChannel;
     protected Promise<SyncResponse> syncFuture;
     protected Promise<CancelSyncResponse> unSyncFuture;
-    protected RecordChunkEntryDispatcher chunkEntryDispatcher;
+    protected ChunkRecordEntryDispatcher chunkEntryDispatcher;
 
     public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
@@ -98,7 +98,7 @@ public class Log {
                 .tags(tags).register(Metrics.globalRegistry);
 
         this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
-        this.chunkEntryDispatcher = new RecordChunkEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
+        this.chunkEntryDispatcher = new ChunkRecordEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {

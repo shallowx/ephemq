@@ -9,7 +9,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.ledger.Log;
-import org.meteor.coordinatior.JsonCoordinator;
+import org.meteor.coordinatior.JsonMapper;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.proxy.MeteorProxy;
@@ -63,9 +63,9 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
         CuratorFramework client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         String path = String.format(ZookeeperPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
         byte[] bytes = client.getData().forPath(path);
-        Node proxyNode = JsonCoordinator.deserialize(bytes, Node.class);
+        Node proxyNode = JsonMapper.deserialize(bytes, Node.class);
         proxyNode.setLedgerThroughput(calculateLedgerThroughput());
-        client.setData().forPath(path, JsonCoordinator.serialize(proxyNode));
+        client.setData().forPath(path, JsonMapper.serialize(proxyNode));
     }
 
     private Map<Integer, Integer> calculateLedgerThroughput() {

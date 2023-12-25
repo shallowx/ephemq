@@ -13,18 +13,20 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 
 import java.util.concurrent.Semaphore;
 
-public class InnerClientListener implements ClientListener {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(InnerClientListener.class);
+public class InternalClientListener implements ClientListener {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClientListener.class);
     private final Coordinator coordinator;
+    private final int semaphore;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() throws Exception {
-            return new Semaphore(100);
+            return new Semaphore(semaphore);
         }
     };
 
-    public InnerClientListener(Coordinator coordinator) {
+    public InternalClientListener(Coordinator coordinator, int semaphore) {
         this.coordinator = coordinator;
+        this.semaphore = semaphore;
     }
 
     @Override
@@ -35,7 +37,12 @@ public class InnerClientListener implements ClientListener {
             int ledger = signal.getLedger();
             int count = signal.getCount();
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            promise.addListener(future -> semaphore.release());
+            promise.addListener(future -> {
+                semaphore.release();
+                if (!future.isSuccess()) {
+                    logger.error("Channel<{}> sync message error", channel.toString());
+                }
+            });
             coordinator.getLogCoordinator().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();

@@ -3,7 +3,7 @@ package org.meteor.ledger;
 public class LedgerConfig {
     private int segmentRetainCounts = 3;
     private int segmentRetainMs = 30000;
-    private int segmentBufferCapacity = 4194304; // 4 * 1024 * 1024
+    private int segmentBufferCapacity = 4194304;
     private boolean allocate;
 
     public int segmentRetainCounts() {

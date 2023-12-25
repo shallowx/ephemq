@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-public class JsonCoordinator {
+public class JsonMapper {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {

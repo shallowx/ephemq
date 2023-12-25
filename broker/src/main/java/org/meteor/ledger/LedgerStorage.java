@@ -12,7 +12,6 @@ import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.util.MessageUtil;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LedgerStorage {

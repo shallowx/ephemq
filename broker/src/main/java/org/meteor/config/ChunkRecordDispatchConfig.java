@@ -11,10 +11,15 @@ public class ChunkRecordDispatchConfig {
     private static final String CHUNK_DISPATCH_ENTRY_ALIGN_LIMIT = "chunk.dispatch.entry.align.limit";
     private static final String CHUNK_DISPATCH_ENTRY_PURSUE_TIMEOUT_MS = "chunk.dispatch.entry.pursue.timeout.ms";
     private static final String CHUNK_DISPATCH_ENTRY_BYTES_LIMIT = "chunk.dispatch.entry.bytes.limit";
+    private static final String CHUNK_SYNC_SEMAPHORE_LIMIT = "chunk.sync.semaphore.limit";
     private final Properties prop;
 
     public ChunkRecordDispatchConfig(Properties prop) {
         this.prop = prop;
+    }
+
+    public int getChunkDispatchSyncSemaphore() {
+        return TypeTransformUtil.object2Int(prop.getOrDefault(CHUNK_SYNC_SEMAPHORE_LIMIT, 100));
     }
 
     public int getChunkDispatchEntryBytesLimit() {

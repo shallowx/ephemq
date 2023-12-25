@@ -11,9 +11,9 @@ public class JsonCoordinatorTests {
     @Test
     public void testSerialize() throws Exception {
         JsonObjectTest o = new JsonObjectTest(1, "localhost:8080");
-        byte[] bytes = JsonCoordinator.serialize(o);
+        byte[] bytes = JsonMapper.serialize(o);
 
-        JsonObjectTest obj = JsonCoordinator.deserialize(bytes, JsonObjectTest.class);
+        JsonObjectTest obj = JsonMapper.deserialize(bytes, JsonObjectTest.class);
         Assert.assertEquals(o, obj);
         Assert.assertEquals(o.id, obj.id);
         Assert.assertEquals(o.addr, obj.addr);
@@ -24,7 +24,7 @@ public class JsonCoordinatorTests {
         byte[] data = "{\"addr\":\"localhost:8080\",\"id\":1}".getBytes();
         TypeReference<JsonObjectTest> typeRef = new TypeReference<>() {
         };
-        JsonObjectTest o = JsonCoordinator.deserialize(data, typeRef);
+        JsonObjectTest o = JsonMapper.deserialize(data, typeRef);
         Assert.assertEquals("localhost:8080", o.addr);
         Assert.assertEquals(1, o.id);
     }

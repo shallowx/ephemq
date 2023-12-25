@@ -126,7 +126,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, partition);
                 Stat stat = new Stat();
                 bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-                org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+                org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
                 String leader = assignment.getLeader();
                 Set<String> replicas = assignment.getReplicas();
                 int ledgerId = assignment.getLedgerId();
@@ -182,13 +182,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
                     int version = data.getStat().getVersion();
-                    org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
+                    org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
                     assignment.setVersion(version);
 
                     Set<String> replicas = assignment.getReplicas();
                     byte[] oldNodeData = oldData.getData();
                     int oldVersion = oldData.getStat().getVersion();
-                    org.meteor.common.message.TopicAssignment oldAssignment = JsonCoordinator.deserialize(oldNodeData, org.meteor.common.message.TopicAssignment.class);
+                    org.meteor.common.message.TopicAssignment oldAssignment = JsonMapper.deserialize(oldNodeData, org.meteor.common.message.TopicAssignment.class);
                     oldAssignment.setVersion(oldVersion);
 
                     org.meteor.common.message.TopicPartition topicPartition = new org.meteor.common.message.TopicPartition(assignment.getTopic(), assignment.getPartition());
@@ -245,7 +245,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
-                    org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
+                    org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
                     String topic = assignment.getTopic();
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
@@ -272,7 +272,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
-                    org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
+                    org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
                     String topic = assignment.getTopic();
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
@@ -332,7 +332,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 assignment.setReplicas(partitionReplicaSet);
                 assignment.setConfig(topicConfig);
                 CuratorOp partitionOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT)
-                        .forPath(partitionPath, JsonCoordinator.serialize(assignment));
+                        .forPath(partitionPath, JsonMapper.serialize(assignment));
                 ops.add(partitionOp);
             }
 
@@ -416,10 +416,10 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+            org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
             int ledgerId = assignment.getLedgerId();
             assignment.setTransitionalLeader(null);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonCoordinator.serialize(assignment));
+            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
             Log log = coordinator.getLogCoordinator().getLog(ledgerId);
             participantCoordinator.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
         } catch (KeeperException.NoNodeException e) {
@@ -437,13 +437,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+            org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
             String leader = assignment.getLeader();
             assignment.setTransitionalLeader(leader);
             assignment.setLeader(heir);
             assignment.getReplicas().remove(leader);
             assignment.getReplicas().add(heir);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonCoordinator.serialize(assignment));
+            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
                     "Partition[topic=%s partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
@@ -459,9 +459,9 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            org.meteor.common.message.TopicAssignment assignment = JsonCoordinator.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+            org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
             assignment.setEpoch(assignment.getEpoch() + 1);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonCoordinator.serialize(assignment));
+            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
             initPartition(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(

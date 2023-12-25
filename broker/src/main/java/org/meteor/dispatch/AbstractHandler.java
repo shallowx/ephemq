@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-@Immutable
 public abstract class AbstractHandler<E, T> {
 
     protected final String id = UUID.randomUUID().toString();

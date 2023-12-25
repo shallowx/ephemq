@@ -5,6 +5,8 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
@@ -12,8 +14,6 @@ import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.listener.LogListener;
 import org.meteor.remote.processor.RemoteException;
-
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +26,7 @@ public class LogCoordinator {
     private final ServerConfig config;
     private final Coordinator coordinator;
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
-    private final List<LogListener> listeners = new LinkedList<>();
+    private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
     private final ScheduledExecutorService scheduledExecutorService;
 
     public LogCoordinator(ServerConfig config, Coordinator coordinator) {

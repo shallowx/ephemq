@@ -22,7 +22,6 @@ import java.util.Set;
 
 public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
-
     private final Coordinator coordinator;
     private final CommonConfig commonConfiguration;
     private final NetworkConfig networkConfiguration;
@@ -36,22 +35,18 @@ public class DefaultTopicListener implements TopicListener {
 
     @Override
     public void onPartitionInit(TopicPartition topicPartition, int ledger) {
-
     }
 
     @Override
     public void onPartitionDestroy(TopicPartition topicPartition, int ledger) {
-
     }
 
     @Override
     public void onPartitionGetLeader(TopicPartition topicPartition) {
-
     }
 
     @Override
     public void onPartitionLostLeader(TopicPartition topicPartition) {
-
     }
 
     @Override

@@ -41,7 +41,6 @@ import static org.meteor.remote.util.ProtoBufUtil.proto2Buf;
 import static org.meteor.remote.util.ProtoBufUtil.readProto;
 
 public class ServiceProcessor implements Processor, ProcessCommand.Server {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     protected final CommonConfig commonConfiguration;
     private final NetworkConfig networkConfiguration;
@@ -94,6 +93,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 }
             }
         } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
             if (answer != null) {
                 answer.failure(t);
             }

@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ZookeeperClient {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClient.class);
-
     private static final Map<String, CuratorFramework> clients = new ConcurrentHashMap<>();
 
     public static CuratorFramework getClient(ZookeeperConfig config, String clusterName) {
@@ -23,7 +22,6 @@ public class ZookeeperClient {
                 throw new IllegalStateException("Zookeeper address not found");
             }
             logger.info("Using {} as zookeeper address", url);
-
             CuratorFramework client = CuratorFrameworkFactory.builder()
                     .connectString(url)
                     .namespace(namespace)

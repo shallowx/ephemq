@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class RecordSynchronization extends Synchronization<RecordHandler> {
+public class RecordSynchronization extends AbstractSynchronization<RecordHandler> {
     private final IntSet markers;
 
     public RecordSynchronization(Channel channel, RecordHandler handler, IntSet markers) {
