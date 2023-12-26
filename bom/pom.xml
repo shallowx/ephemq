@@ -41,6 +41,7 @@
   <properties>
     <!-- Keep in sync with ../pom.xml -->
     <tcnative.version>2.0.61.Final</tcnative.version>
+    <flatten.version>1.2.7</flatten.version>
   </properties>
 
   <build>
@@ -49,6 +50,31 @@
         <groupId>com.commsen.maven</groupId>
         <artifactId>bom-helper-maven-plugin</artifactId>
         <version>0.4.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>${flatten.version}</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>bom</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <phase>process-resources</phase>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <phase>clean</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
