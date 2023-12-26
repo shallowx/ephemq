@@ -13,12 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(HeartbeatDuplexHandler.class);
-
     private final long heartPeriodMs;
     private final long idleTimeoutMs;
     private Future<?> heartFuture;
     private Future<?> idleFuture;
-
     private long lastWriteTime;
     private long lastReadTime;
     private long heartLastUpdateTime;

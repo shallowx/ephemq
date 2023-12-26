@@ -10,7 +10,6 @@ public class ProxyServerConfig extends ServerConfig {
         super(properties);
         this.proxyConfiguration =new ProxyConfig(properties, this.commonConfig, this.zookeeperConfig);
     }
-
     public ProxyConfig getProxyConfiguration() {
         return proxyConfiguration;
     }

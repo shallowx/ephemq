@@ -6,13 +6,15 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.meteor.remote.codec.MessageDecoder.State.*;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
-
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageDecoder.class);
     private static final int DISCARD_READ_BODY_THRESHOLD = 3;
     private ByteBuf accumulation;
     private boolean invalidChannel;
@@ -28,6 +30,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         if (msg instanceof final ByteBuf in) {
             if (invalidChannel) {
                 in.release();
+                logger.debug("Invalid channel<{}>", ctx.channel().toString());
                 return;
             }
 
@@ -43,10 +46,10 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 }
             } catch (Throwable cause) {
                 invalidChannel = true;
+                logger.debug(cause.getMessage(), cause);
                 throw cause;
             } finally {
                 ByteBufUtil.release(buf);
-
                 buf = accumulation;
                 if (null != buf && (!buf.isReadable() || invalidChannel)) {
                     accumulation = null;

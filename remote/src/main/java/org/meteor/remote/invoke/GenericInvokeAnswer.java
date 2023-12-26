@@ -8,15 +8,12 @@ import static io.netty.util.ReferenceCountUtil.release;
 import static org.meteor.common.util.ObjectUtil.checkNotNull;
 
 public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
-
     @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<GenericInvokeAnswer> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokeAnswer.class, "completed");
-
     private static final int EXPECT = 0;
     private static final int UPDATE = 1;
     private final Callback<V> callback;
     private volatile int completed;
-
     public GenericInvokeAnswer() {
         this(null);
     }

@@ -8,23 +8,18 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.function.Consumer;
 
 public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
-
     private final Int2ObjectMap<Holder> holders;
     private int offset;
-
     public GenericInvokeHolder() {
         this(2048);
     }
-
     public GenericInvokeHolder(int capacity) {
         this.holders = new Int2ObjectLinkedOpenHashMap<>(capacity);
     }
-
     @Override
     public int size() {
         return holders.size();
     }
-
     @Override
     public boolean isEmpty() {
         return holders.isEmpty();

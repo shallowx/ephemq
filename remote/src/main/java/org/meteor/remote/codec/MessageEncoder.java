@@ -8,12 +8,14 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 
 import static org.meteor.remote.util.ByteBufUtil.release;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
-
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageEncoder.class);
     private static final MessageEncoder ENCODER = new MessageEncoder();
 
     private MessageEncoder() {
@@ -35,6 +37,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
                 header = encodeHeader(ctx.alloc(), command, answer, body.readableBytes());
             } catch (Throwable cause) {
                 release(body);
+                logger.debug(cause.getMessage(), cause);
                 throw cause;
             } finally {
                 packet.release();
@@ -56,7 +59,6 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         header.writeMedium(contentLength + MessagePacket.HEADER_LENGTH);
         header.writeInt(command);
         header.writeInt(answer);
-
         return header;
     }
 
@@ -72,7 +74,6 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
             ctx.write(body, promise);
             return;
         }
-
         final PromiseCombiner combiner = new PromiseCombiner(ctx.executor());
         combiner.add(ctx.write(header));
         combiner.add(ctx.write(body));

@@ -17,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class ProducerTests {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerTests.class);
 
     @Test
@@ -46,14 +45,15 @@ public class ProducerTests {
                         MessageId messageId = producer.send("#test#default", symbol, message, new Extras());
                         logger.info("MessageId:[{}]", messageId);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
 
                 try {
+                    // the duration setting only for testing
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    logger.error(t.getMessage(), t);
                 }
                 producer.close();
                 continueSendLatch.countDown();
@@ -139,6 +139,7 @@ public class ProducerTests {
                 }
 
                 try {
+                    // the duration setting only for testing
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable t) {
                     logger.info("error:{}", t);

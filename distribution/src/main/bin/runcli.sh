@@ -5,7 +5,7 @@ base_dir=$(dirname $0)
 set -e
 
 if [[ -z ${JAVA_OPTS}]]; then
-  JAVA_OPTS = "-Xms4g -Xmx4g -XX:+UseG1GC -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:+MaxDirectMemorySize=16g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpPath=/tmp/heapdump.hprof =Dio.netty.maxDirectMemory=-1"
+  JAVA_OPTS = "-XX:MinHeapSize=4g -XX:InitialHeapSize=4g -XX:MaxHeapSize=4g -XX:-UseLargePage -XX:+UseZGC -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:+MaxDirectMemorySize=8g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -Dio.netty.tryReflectionSetAccessible=true -XX:+HeapDumpPath=/tmp/heapdump.hprof -Dio.netty.maxDirectMemory=-1 --add-exports java.base/jdk.internal.misc=ALL-UNNAMED -add-opens java.base/java.nio=ALL-UNNAMED"
 fi
 
 if [[ -n ${JAVA_HOME}]]; then

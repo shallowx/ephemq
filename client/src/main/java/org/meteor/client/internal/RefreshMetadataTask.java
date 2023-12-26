@@ -81,10 +81,12 @@ public class RefreshMetadataTask implements Runnable {
                 }
                 queryRouters.put(topic, router);
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
         }
 
         if (queryRouters.isEmpty()) {
+            logger.debug("Message router is empty");
             return;
         }
 

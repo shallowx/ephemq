@@ -7,6 +7,8 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import org.meteor.client.internal.*;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 
@@ -15,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class DefaultProducerListener implements ClientListener, MeterBinder {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
     private final Producer producer;
     private final EventExecutor executor;
@@ -28,6 +31,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
     public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
         String topic = signal.getTopic();
         if (!producer.containsRouter(topic)) {
+            logger.debug("It's not contains the topic<{}> router", topic);
             return;
         }
 
@@ -38,16 +42,19 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
                 if (producer.containsRouter(topic)) {
                     MessageRouter router = producer.fetchRouter(topic);
                     if (router == null) {
+                        logger.debug("the topic<{}> router is empty", topic);
                         return;
                     }
 
                     MessageLedger ledger = router.ledger(ledgerId);
                     if (ledger != null && version != 0 && ledger.version() >= version) {
+                        logger.debug("the topic<{}> router is not need to refresh", topic);
                         return;
                     }
                     producer.refreshRouter(topic, channel);
                 }
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                logger.debug(t.getMessage(), t);
             }
         }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
     }
@@ -62,6 +69,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
                 .register(meterRegistry);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void listenerCompleted() {
         executor.shutdownGracefully();
@@ -70,6 +78,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
                 executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
+            logger.debug(e.getMessage(), e);
             Thread.currentThread().interrupt();
         }
     }

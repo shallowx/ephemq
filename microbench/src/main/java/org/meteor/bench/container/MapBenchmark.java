@@ -23,7 +23,7 @@ public class MapBenchmark {
     private final Map<Integer, Object> treeMap = new TreeMap<>();
     private final Map<Integer, Object> concurrentHashMap = new ConcurrentHashMap<>();
     private final Map<Integer, Object> concurrentSkipListMap = new ConcurrentSkipListMap<>();
-    private final Map<Integer, Object> Int2ObjectArrayMap = new Int2ObjectArrayMap<>();
+    private final Map<Integer, Object> int2ObjectArrayMap = new Int2ObjectArrayMap<>();
 
     @Setup
     public void setUp() {
@@ -32,7 +32,7 @@ public class MapBenchmark {
             treeMap.put(i, new Object());
             concurrentHashMap.put(i, new Object());
             concurrentSkipListMap.put(i, new Object());
-            Int2ObjectArrayMap.put(i, new Object());
+            int2ObjectArrayMap.put(i, new Object());
         }
     }
 
@@ -75,7 +75,7 @@ public class MapBenchmark {
     @Benchmark
     public void testInt2ObjectArrayMap(Blackhole blackhole) {
         Object o = null;
-        for (Map.Entry<Integer, Object> entry : Int2ObjectArrayMap.entrySet()) {
+        for (Map.Entry<Integer, Object> entry : int2ObjectArrayMap.entrySet()) {
             o = entry;
         }
         blackhole.consume(o);

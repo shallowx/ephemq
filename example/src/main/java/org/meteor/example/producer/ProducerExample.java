@@ -21,9 +21,14 @@ import java.util.concurrent.TimeUnit;
 
 public class ProducerExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerExample.class);
+    private static final String EXAMPLE_TOPIC = "example-topic";
+    private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
+        ProducerExample example = new ProducerExample();
+        example.send();
+        example.sendAsync();
+        example.sendOneway();
     }
 
     private final Producer producer;
@@ -48,12 +53,12 @@ public class ProducerExample {
         CountDownLatch continueSendLatch = new CountDownLatch(2);
         for (int i = 0; i < 1; i++) {
             new Thread(() -> {
-                String[] symbols = new String[]{"test-queue"};
+                String[] symbols = new String[]{EXAMPLE_TOPIC_QUEUE};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];
                     ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
-                        producer.sendOneway("#test#default", symbol, message, new Extras());
+                        producer.sendOneway(EXAMPLE_TOPIC, symbol, message, new Extras());
                     } catch (Exception ignored) {}
                 }
 
@@ -71,11 +76,11 @@ public class ProducerExample {
         Map<String, String> entries =  new HashMap<>();
         entries.put("key", "v");
         Extras extras = new Extras(entries);
-        producer.send("#test#default", "test-topic", ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras);
+        producer.send(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras);
     }
 
     public void sendAsync() {
-        producer.sendAsync("#test#default", "test-topic", ByteBufUtil.string2Buf(UUID.randomUUID().toString()), new Extras(), new AsyncSendCallback());
+        producer.sendAsync(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), new Extras(), new AsyncSendCallback());
     }
 
     static class AsyncSendCallback implements SendCallback {

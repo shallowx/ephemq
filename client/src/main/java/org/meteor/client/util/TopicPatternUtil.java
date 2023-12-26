@@ -23,7 +23,7 @@ public class TopicPatternUtil {
 
     public static void validateLedgerReplica(int number) {
         if (number <= 0) {
-            throw new IllegalArgumentException("Ledger replica limit should be > 0");
+            throw new IllegalArgumentException("Ledger replicas limit should be > 0");
         }
     }
 

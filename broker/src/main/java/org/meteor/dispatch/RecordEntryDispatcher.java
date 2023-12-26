@@ -176,7 +176,7 @@ public class RecordEntryDispatcher {
 
                 newSubscription.setDispatchOffset(dispatchOffset);
                 if (dispatchOffset.before(handler.getFollowOffset())) {
-                    PursueTask task = new PursueTask(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
+                    PursueTask<RecordSynchronization> task = new PursueTask<>(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
                     submitPursue(task);
                 } else {
                     newSubscription.setFollowed(true);
@@ -351,7 +351,7 @@ public class RecordEntryDispatcher {
                             channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                         } else {
                             subscription.setFollowed(false);
-                            PursueTask task = new PursueTask(subscription, cursor.copy(), offset);
+                            PursueTask<RecordSynchronization> task = new PursueTask<>(subscription, cursor.copy(), offset);
                             channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         }
                     }
@@ -412,7 +412,7 @@ public class RecordEntryDispatcher {
     private void doPursue(PursueTask<RecordSynchronization> task) {
         RecordSynchronization subscription = task.getSubscription();
         Channel channel = subscription.getChannel();
-        AbstractHandler handler = subscription.getHandler();
+        AbstractHandler<RecordSynchronization, RecordHandler> handler = subscription.getHandler();
 
         if (!channel.isActive() || subscription != handler.getChannelSubscriptionMap().get(channel)) {
             return;
@@ -444,7 +444,7 @@ public class RecordEntryDispatcher {
                         }
                         continue;
                     }
-                    lastOffset = offset;
+                    lastOffset= offset;
                     int marker = MessageUtil.getMarker(entry);
                     if (!markers.contains(marker)) {
                         if (runTimes > pursueLimit) {
@@ -556,6 +556,7 @@ public class RecordEntryDispatcher {
                         count(count);
                         return;
                     }
+
                     lastOffset = offset;
                     int marker = MessageUtil.getMarker(entry);
                     if (!markers.contains(marker)) {
@@ -680,7 +681,7 @@ public class RecordEntryDispatcher {
                     executor.submit(() -> {
                         for (Channel channel : channelHandlerMap.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
-                                AbstractHandler handler = channelHandlerMap.get(channel);
+                                AbstractHandler<RecordSynchronization, RecordHandler> handler = channelHandlerMap.get(channel);
                                 ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
                                 RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
                                 if (subscription != null) {

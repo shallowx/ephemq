@@ -22,10 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
-
     private final WeakHashMap<ProxyLog, Long> dispatchTotal = new WeakHashMap<>();
     private long commitTime = System.currentTimeMillis();
-
     private final ProxyConfig proxyConfiguration;
 
     public ProxyLedgerSyncCoordinator(ProxyConfig proxyConfiguration, Coordinator coordinator) {

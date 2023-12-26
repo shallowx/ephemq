@@ -15,9 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class PrometheusRegistry implements MetricsRegistrySetUp {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(PrometheusRegistry.class);
-
     private HttpServer server;
     private MeterRegistry registry;
 
@@ -48,7 +46,6 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
                 }
             });
             new Thread(this.server::start).start();
-
             logger.info("Prometheus http server is listening at {}, and scrape url={}", socketAddress, url);
         } catch (Throwable t) {
             logger.error("Start prometheus http server failed", t);

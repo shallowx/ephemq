@@ -8,7 +8,7 @@ if [[ -z ${CONFIG_FILE}]]; then
 fi
 
 if [[ -z ${JAVA_OPTS}]]; then
-  JAVA_OPTS = "-Xms4g -Xmx4g -XX:+UseG1GC -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:+MaxDirectMemorySize=16g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpPath=/tmp/heapdump.hprof =Dio.netty.maxDirectMemory=-1"
+  JAVA_OPTS = "-XX:MinHeapSize=8g -XX:InitialHeapSize=8g -XX:MaxHeapSize=8g -XX:-UseLargePage -XX:+UseZGC -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:+MaxDirectMemorySize=32g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -Dio.netty.tryReflectionSetAccessible=true -XX:+HeapDumpPath=/tmp/heapdump.hprof -Dio.netty.maxDirectMemory=-1 --add-exports java.base/jdk.internal.misc=ALL-UNNAMED -add-opens java.base/java.nio=ALL-UNNAMED"
 fi
 
 if [[ -n ${JAVA_HOME}]]; then
@@ -22,7 +22,7 @@ if [[-z ${JAVA_EXE}]]; then
 fi
 
 if [[-z ${LOG_FILE}]]; then
-    LOG_FILE = "${base_dir}/../config/logback.xml"
+    LOG_FILE = "${base_dir}/../config/logback-broker.xml"
 fi
 
 if [[-z ${LOG_DIR}]]; then

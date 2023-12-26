@@ -65,15 +65,12 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
         throw new UnsupportedOperationException();
     }
 
-
     @Override
     public void onGetControlRole(Node node) {
-
     }
 
     @Override
     public void onLostControlRole(Node node) {
-
     }
 
     @Override

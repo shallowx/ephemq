@@ -14,7 +14,6 @@ import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
 public final class AwareInvocation extends AbstractReferenceCounted {
-
     private static final Recycler<AwareInvocation> RECYCLER = new Recycler<>() {
         @Override
         protected AwareInvocation newObject(Handle<AwareInvocation> handle) {

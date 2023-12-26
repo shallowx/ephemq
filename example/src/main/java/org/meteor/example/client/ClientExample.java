@@ -17,13 +17,11 @@ import org.meteor.remote.proto.server.DeleteTopicResponse;
 
 public class ClientExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientExample.class);
+
     public static void main(String[] args) throws Exception {
-        ClientExample newClient = new ClientExample();
-        newClient.createTopic();
-
-        Thread.sleep(3_000L);
-
-        newClient.delTopic();
+        ClientExample example = new ClientExample();
+        example.createTopic();
+        example.delTopic();
     }
 
     private static final String EXAMPLE_TOPIC = "example-topic";
@@ -36,7 +34,7 @@ public class ClientExample {
     public void createTopic() throws Exception {
         // Supports multiple partitions, but only supports a single copy of a partition
         CreateTopicResponse response = client.createTopic(EXAMPLE_TOPIC, 10, 1);
-        logger.info("topic:{}", response.getTopic());
+        logger.info("topic:{} topic_id:{} partition:{}", response.getTopic(), response.getTopicId(), response.getPartitions());
         // do something
     }
 

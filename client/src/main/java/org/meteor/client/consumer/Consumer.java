@@ -73,23 +73,18 @@ public class Consumer {
     public EventExecutor getExecutor() {
         return executor;
     }
-
     public Map<String, Map<String, Mode>> getWholeQueueTopics() {
         return wholeQueueTopics;
     }
-
     public Map<Integer, ClientChannel> getLedgerChannels() {
         return ledgerChannels;
     }
-
     public Map<Integer, AtomicReference<MessageId>> getLedgerSequences() {
         return ledgerSequences;
     }
-
     boolean containsRouter(String topic) {
         return client.containsRouter(topic);
     }
-
     void refreshRouter(String topic, ClientChannel channel) {
         client.refreshRouter(topic, channel);
     }
@@ -114,7 +109,7 @@ public class Consumer {
         touchChangedTask();
     }
 
-    public void deSubscribe(String topic, String queue) {
+    public void cancelSubscribe(String topic, String queue) {
         TopicPatternUtil.validateTopic(topic);
         TopicPatternUtil.validateQueue(queue);
 
@@ -563,6 +558,8 @@ public class Consumer {
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return false;
         } catch (Throwable t) {
+            logger.debug("Reset subscribe error, topic={} channel={} ledger_id={} epoch={} index={} markers={}",
+                    topic, channel, ledgerId, epoch, index, markers, t.getMessage(), t);
             return true;
         }
     }
@@ -582,6 +579,8 @@ public class Consumer {
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return true;
         } catch (Throwable t) {
+            logger.debug("Alter subscribe error, topic={} channel={} ledger_id={} append_markers={} delete_markers={}",
+                    topic, channel, ledgerId, appendMarkers, deleteMarkers, t.getMessage(), t);
             return false;
         }
     }
@@ -597,7 +596,8 @@ public class Consumer {
             int timeoutMs = consumerConfig.getControlTimeoutMs();
             channel.invoker().cleanSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            logger.debug(t.getMessage(), t);
         }
     }
 
@@ -620,7 +620,6 @@ public class Consumer {
         if (ledger.replicas().isEmpty() && (channel != null && channel.isActive())) {
             return channel;
         }
-
         return null;
     }
 
@@ -628,6 +627,7 @@ public class Consumer {
         try {
             return client.fetchChannel(address);
         } catch (Throwable t) {
+            logger.debug("fetch channel error, address={}", address.toString(), t.getMessage(), t);
             return null;
         }
     }
@@ -636,6 +636,7 @@ public class Consumer {
         try {
             return client.fetchRouter(topic);
         } catch (Throwable t) {
+            logger.debug("fetch router error, topic={}", topic, t.getMessage(), t);
             return null;
         }
     }
@@ -644,6 +645,7 @@ public class Consumer {
         try {
             return router.routeLedger(queue);
         } catch (Throwable t) {
+            logger.debug("calculate ledger error, topic={} queue={}",router.topic(), queue, t.getMessage(), t);
             return null;
         }
     }
@@ -662,6 +664,7 @@ public class Consumer {
 
             return UnsafeByteOperations.unsafeWrap(data);
         } catch (Throwable t) {
+            logger.debug("generate markers error, markers={}", markers, t.getMessage(), t);
             return null;
         }
     }
@@ -765,14 +768,13 @@ public class Consumer {
         return !failedRecords.isEmpty();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public synchronized void close() throws InterruptedException {
         if (state != Boolean.TRUE) {
-            logger.warn("This consumer<{}> was closed", name);
+            logger.warn("This consumer<{}> was closed, don't execute it replay", name);
             return;
         }
-
         state = Boolean.FALSE;
-
         if (executor != null) {
             executor.shutdownGracefully();
            try {

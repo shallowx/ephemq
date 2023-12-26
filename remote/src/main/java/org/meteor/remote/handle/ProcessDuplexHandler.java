@@ -42,7 +42,6 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     };
     private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
     private final Processor processor;
-
     public ProcessDuplexHandler(Processor processor) {
         this.processor = checkNotNull(processor, "Processor aware not found");
     }

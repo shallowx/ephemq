@@ -4,7 +4,6 @@ import org.meteor.client.internal.ClientConfig;
 
 public class ProducerConfig {
     private ClientConfig clientConfig = new ClientConfig();
-
     private int sendTimeoutMs = 2000;
     private int sendAsyncTimeoutMs = 2000;
     private int sendOnewayTimeoutMs = 2000;

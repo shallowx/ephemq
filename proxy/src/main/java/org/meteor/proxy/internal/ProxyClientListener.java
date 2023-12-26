@@ -39,7 +39,6 @@ import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class ProxyClientListener implements ClientListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
-
     private final Coordinator coordinator;
     private final LedgerSyncCoordinator syncCoordinator;
     private Client client;
@@ -72,23 +71,26 @@ public class ProxyClientListener implements ClientListener {
             int ledger = log.getLedger();
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
+                logger.debug("Can not find sync channel of topic={} ledger={} , will ignore check", topic, ledger);
                 continue;
             }
             MessageRouter router = client.fetchRouter(topic);
             if (router == null) {
+                logger.debug("Can not find message router of topic={} ledger={} , will ignore check", topic, ledger);
                 continue;
             }
             MessageLedger messageLedger = router.ledger(ledger);
             if (messageLedger == null) {
-                logger.warn("Can not find message ledger of topic={} ledger={} , will ignore check", topic, ledger);
+                logger.debug("Can not find message ledger of topic={} ledger={} , will ignore check", topic, ledger);
                 continue;
             }
             List<SocketAddress> replicas = messageLedger.replicas();
             if (replicas == null || replicas.isEmpty()) {
-                logger.warn("Current lodger of topic={} ledger={} is not available for proxy, will ignore check", topic, ledger);
+                logger.debug("Current lodger of topic={} ledger={} is not available for proxy, will ignore check", topic, ledger);
                 continue;
             }
             if (replicas.contains(syncChannel.address()) && syncChannel.isActive()) {
+                logger.debug("Can not find partition replicas of topic={} ledger={} , will ignore check", topic, ledger);
                 continue;
             }
             EventExecutor executor = fixedExecutor(topic);
@@ -98,7 +100,8 @@ public class ProxyClientListener implements ClientListener {
                        resumeSync(syncChannel, topic, ledger, false);
                    } catch (Exception ignored){}
                 });
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                logger.debug(e.getMessage(), e);
             }
         }
     }

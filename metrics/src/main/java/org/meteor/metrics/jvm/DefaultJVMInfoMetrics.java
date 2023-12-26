@@ -8,7 +8,6 @@ import io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics;
 
 public class DefaultJVMInfoMetrics extends JvmInfoMetrics {
     private final Iterable<Tag> tags;
-
     public DefaultJVMInfoMetrics(Iterable<Tag> tags) {
         this.tags = tags;
     }

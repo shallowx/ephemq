@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.*;
 import org.meteor.client.internal.*;
 import org.meteor.client.util.TopicPatternUtil;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
 import org.meteor.remote.proto.MessageMetadata;
@@ -16,6 +18,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Producer {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Producer.class);
     private final String name;
     private final ProducerConfig config;
     private final Client client;
@@ -37,6 +40,7 @@ public class Producer {
 
     public void start() {
         if (state != null) {
+            logger.warn("Producer<{}> is running, don't run it replay", name);
             return;
         }
         state = Boolean.TRUE;
@@ -49,6 +53,7 @@ public class Producer {
 
     public synchronized void close() {
         if (state != Boolean.TRUE) {
+            logger.warn("Producer<{}> was closed, don't execute it replay", name);
             return;
         }
 
@@ -56,19 +61,17 @@ public class Producer {
         try {
             listener.listenerCompleted();
         } catch (InterruptedException ignored) {
+            // keep empty
         }
-
         client.close();
     }
 
     boolean containsRouter(String topic) {
         return client.containsRouter(topic);
     }
-
     MessageRouter fetchRouter(String topic) {
         return client.fetchRouter(topic);
     }
-
     void refreshRouter(String topic, ClientChannel channel) {
         client.refreshRouter(topic, channel);
     }
@@ -79,7 +82,6 @@ public class Producer {
             Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             doSend(topic, queue, message, extras, config.getSendTimeoutMs(), promise);
             SendMessageResponse response = promise.get();
-
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
         } catch (Throwable t) {
             throw new RuntimeException(
@@ -93,7 +95,6 @@ public class Producer {
     public void sendAsync(String topic, String queue, ByteBuf message, Extras extras, SendCallback callback) {
         int length = ByteBufUtil.bufLength(message);
         try {
-
             if (callback == null) {
                 doSend(topic, queue, message, extras, config.getSendOnewayTimeoutMs(), null);
                 return;
@@ -108,7 +109,6 @@ public class Producer {
                     callback.onCompleted(null, f.cause());
                 }
             });
-
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), promise);
         } catch (Throwable t) {
             throw new RuntimeException(
@@ -174,10 +174,8 @@ public class Producer {
             if (channel != null && channel.isActive() && channel.address().equals(address)) {
                 return channel;
             }
-
             channel = client.fetchChannel(address);
             ledgerChannels.put(ledger, channel);
-
             return channel;
         }
     }
@@ -195,5 +193,4 @@ public class Producer {
         }
         return builder.build();
     }
-
 }

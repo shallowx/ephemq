@@ -40,7 +40,7 @@ public class PursueTask<E> {
 
     @Override
     public String toString() {
-        return "PursueTask{" +
+        return "pursue_task{" +
                 "subscription=" + subscription +
                 ", cursor=" + cursor +
                 ", pursueTime=" + pursueTime +

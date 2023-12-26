@@ -5,22 +5,23 @@ import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.example.client.ClientExample;
 import org.meteor.remote.util.ByteBufUtil;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class ConsumerExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerExample.class);
+    private static final String EXAMPLE_TOPIC = "example-topic";
+    private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
+        ConsumerExample example = new ConsumerExample();
+        example.subscribe();
+        example.cancelSubscribe();
+        example.clear();
     }
 
-
-
     private final Consumer consumer;
-
     public ConsumerExample() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -45,22 +46,22 @@ public class ConsumerExample {
     }
 
     public void subscribe() throws Exception {
-        String[] symbols = new String[]{"test-queue"};
+        String[] symbols = new String[]{EXAMPLE_TOPIC_QUEUE};
         for (String symbol : symbols) {
-            consumer.subscribe("#test#default#topic", symbol);
+            consumer.subscribe(EXAMPLE_TOPIC, symbol);
         }
         new CountDownLatch(1).await();
     }
 
-    public void deSubscribe() throws Exception {
-        String[] symbols = new String[]{"test-queue"};
+    public void cancelSubscribe() throws Exception {
+        String[] symbols = new String[]{EXAMPLE_TOPIC_QUEUE};
         for (String symbol : symbols) {
-            consumer.deSubscribe("#test#default#topic", symbol);
+            consumer.cancelSubscribe(EXAMPLE_TOPIC, symbol);
         }
         new CountDownLatch(1).await();
     }
 
-    public void clean() {
-        consumer.clear("detest#default#topic");
+    public void clear() {
+        consumer.clear(EXAMPLE_TOPIC);
     }
 }

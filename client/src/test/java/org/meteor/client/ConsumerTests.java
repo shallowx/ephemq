@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.consumer.Consumer;
 import org.meteor.client.internal.ClientConfig;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class ConsumerTests {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTests.class);
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testSubscribeOfReset() throws Exception {
@@ -27,7 +30,7 @@ public class ConsumerTests {
 
         Consumer consumer = new Consumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
-            System.out.printf("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
+            logger.info("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
         });
         consumer.start();
 
@@ -36,7 +39,7 @@ public class ConsumerTests {
             consumer.subscribe("#test#default", symbol);
         }
 
-        // only test
+        // the duration setting only for testing
         new CountDownLatch(1).await(10, TimeUnit.MINUTES);
         consumer.close();
     }
