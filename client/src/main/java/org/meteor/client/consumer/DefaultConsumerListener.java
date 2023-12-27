@@ -61,7 +61,9 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
     public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
         String topic = signal.getTopic();
         if (!consumer.containsRouter(topic)) {
-            logger.debug("The doesn't contains topic<{}> message router", topic);
+            if (logger.isDebugEnabled()) {
+                logger.debug("The doesn't contains topic<{}> message router", topic);
+            }
             return;
         }
 
@@ -72,7 +74,9 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
                 if (consumer.containsRouter(topic)) {
                     MessageRouter router = consumer.fetchRouter(topic);
                     if (router == null) {
-                        logger.warn("The topic<{}> message router is empty", topic);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("The topic<{}> message router is empty", topic);
+                        }
                         return;
                     }
 
@@ -134,7 +138,9 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
             MessageHandler handler = handlers[consistentHash(marker, handlers.length)];
             handler.handle(channel, marker, id, data);
         } catch (Throwable t) {
-            logger.error("The handle message failure, {}", t);
+            if (logger.isErrorEnabled()) {
+                logger.error("The handle message failure, {}", t);
+            }
         }
     }
 
@@ -157,6 +163,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
         ClientListener.super.onNodeOffline(channel, signal);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void listenerCompleted() throws InterruptedException {
         if (group != null) {

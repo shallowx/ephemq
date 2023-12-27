@@ -186,7 +186,9 @@ public class Client implements MeterBinder {
                 .filter(this::isValid).toList();
 
         if (validChannels.isEmpty()) {
-            logger.debug("Valid channel is empty");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Valid channel is empty");
+            }
             return null;
         }
 
@@ -203,7 +205,9 @@ public class Client implements MeterBinder {
 
     public synchronized void start() {
         if (isRunning()) {
-            logger.warn("Client<{}> is running, don't run it replay", name);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Client<{}> is running, don't run it replay", name);
+            }
             return;
         }
 
@@ -237,9 +241,12 @@ public class Client implements MeterBinder {
         taskExecutor.schedule(new RefreshMetadataTask(this, config), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public synchronized void close() {
         if (!isRunning()) {
-            logger.warn("Client<{}> was closed, don't execute it replay", name);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Client<{}> was closed, don't execute it replay", name);
+            }
             return;
         }
 

@@ -176,7 +176,7 @@ public final class ObjectUtil {
     }
 
     public static CharSequence checkNonEmpty(final CharSequence value, final String name) {
-        if (checkNotNull(value, name).length() == 0) {
+        if (checkNotNull(value, name).isEmpty()) {
             throw new IllegalArgumentException("Param '" + name + "' must not be empty");
         }
         return value;

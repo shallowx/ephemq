@@ -85,17 +85,21 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 case UNSYNC_LEDGER -> processUnSyncLedger(channel, code, data, answer);
                 case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, answer);
                 default -> {
-                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
                     if (answer != null) {
                         String error = "Command[" + code + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
+                    if (logger.isErrorEnabled()) {
+                        logger.error("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
+                    }
                 }
             }
         } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
             if (answer != null) {
                 answer.failure(t);
+            }
+            if (logger.isErrorEnabled()) {
+                logger.error(t.getMessage(), t);
             }
         }
     }
@@ -584,15 +588,19 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             try {
                 listener.onCommand(code, bytes, cost, ret);
             } catch (Throwable t) {
-                logger.warn("Record process failed, listener={} code={}", listener == null ? null : listener.getClass().getSimpleName(), code, t);
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Record process failed, listener={} code={}", listener == null ? null : listener.getClass().getSimpleName(), code, t);
+                }
             }
         }
     }
 
     protected void processFailed(String err, int code, Channel channel, InvokeAnswer<ByteBuf> answer, Throwable throwable) {
-        logger.error("{}: command={} address={}", err, code, NetworkUtil.switchAddress(channel), throwable);
         if (answer != null) {
             answer.failure(throwable);
+        }
+        if (logger.isErrorEnabled()) {
+            logger.error("{}: command={} address={}", err, code, NetworkUtil.switchAddress(channel), throwable);
         }
     }
 

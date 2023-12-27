@@ -71,26 +71,36 @@ public class ProxyClientListener implements ClientListener {
             int ledger = log.getLedger();
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
-                logger.debug("Can not find sync channel of topic={} ledger={} , will ignore check", topic, ledger);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Can not find sync channel of topic={} ledger={} , will ignore check", topic, ledger);
+                }
                 continue;
             }
             MessageRouter router = client.fetchRouter(topic);
             if (router == null) {
-                logger.debug("Can not find message router of topic={} ledger={} , will ignore check", topic, ledger);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Can not find message router of topic={} ledger={} , will ignore check", topic, ledger);
+                }
                 continue;
             }
             MessageLedger messageLedger = router.ledger(ledger);
             if (messageLedger == null) {
-                logger.debug("Can not find message ledger of topic={} ledger={} , will ignore check", topic, ledger);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Can not find message ledger of topic={} ledger={} , will ignore check", topic, ledger);
+                }
                 continue;
             }
             List<SocketAddress> replicas = messageLedger.replicas();
             if (replicas == null || replicas.isEmpty()) {
-                logger.debug("Current lodger of topic={} ledger={} is not available for proxy, will ignore check", topic, ledger);
+                if (logger.isDebugEnabled()){
+                    logger.debug("Current lodger of topic={} ledger={} is not available for proxy, will ignore check", topic, ledger);
+                }
                 continue;
             }
             if (replicas.contains(syncChannel.address()) && syncChannel.isActive()) {
-                logger.debug("Can not find partition replicas of topic={} ledger={} , will ignore check", topic, ledger);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Can not find partition replicas of topic={} ledger={} , will ignore check", topic, ledger);
+                }
                 continue;
             }
             EventExecutor executor = fixedExecutor(topic);
@@ -161,7 +171,9 @@ public class ProxyClientListener implements ClientListener {
                try {
                    MessageRouter router = client.fetchRouter(topic);
                    if (router == null) {
-                       logger.warn("Can not fetch message router of {}, will ignore signal{}", topic, signal);
+                       if (logger.isDebugEnabled()) {
+                           logger.debug("Can not fetch message router of {}, will ignore signal{}", topic, signal);
+                       }
                        return;
                    }
                    MessageLedger messageLedger = router.ledger(ledger);
@@ -259,7 +271,9 @@ public class ProxyClientListener implements ClientListener {
                     }
                 }
             } catch (Exception e){
-                logger.error("resume sync topic={} failed", topic, e);
+                if (logger.isErrorEnabled()) {
+                    logger.error("resume sync topic={} failed", topic, e);
+                }
             }
         }
     }
@@ -267,7 +281,7 @@ public class ProxyClientListener implements ClientListener {
     private void resumeSync(ClientChannel channel, String topic, int ledger, boolean refreshRouter) {
         Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
-            if (!f.isSuccess()) {
+            if (!f.isSuccess() && logger.isErrorEnabled()) {
                 logger.error("resume sync topic={} failed", topic, f.cause());
             }
         });

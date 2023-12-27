@@ -66,7 +66,9 @@ public class DefaultSocketServer {
                     if (f.isSuccess() && logger.isInfoEnabled()) {
                         logger.info("Socket server is listening at {}", f.channel().localAddress());
                     } else {
-                        logger.error("Socket server start failed", f.cause());
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Socket server start failed", f.cause());
+                        }
                     }
                 }).sync();
 
@@ -76,11 +78,13 @@ public class DefaultSocketServer {
         if (future.isSuccess() && compatiblePort >= 0 && compatiblePort != commonConfiguration.getAdvertisedPort()) {
             Channel compatibleChannel = bootstrap.bind(commonConfiguration.getAdvertisedAddress(), compatiblePort)
                     .addListener((ChannelFutureListener) cf -> {
-                        if (cf.isSuccess()) {
+                        if (cf.isSuccess() && logger.isInfoEnabled()) {
                             SocketAddress address = cf.channel().localAddress();
                             logger.info("Socket compatible server is listening at {}", address);
                         } else {
-                            logger.error("Socket server start failed", cf.cause());
+                            if (logger.isErrorEnabled()) {
+                                logger.error("Socket server start failed", cf.cause());
+                            }
                         }
                     }).channel();
             closedFuture.addListener(f -> compatibleChannel.close());
@@ -112,7 +116,9 @@ public class DefaultSocketServer {
             try {
                 closedFuture.channel().close().sync();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                if (logger.isErrorEnabled()) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 
@@ -120,7 +126,9 @@ public class DefaultSocketServer {
             try {
                 bossGroup.shutdownGracefully().sync();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                if (logger.isErrorEnabled()) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 
@@ -128,7 +136,9 @@ public class DefaultSocketServer {
             try {
                 workGroup.shutdownGracefully().sync();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                if (logger.isErrorEnabled()) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
     }

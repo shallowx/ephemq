@@ -60,7 +60,7 @@ public class MessageLedger {
 
     @Override
     public String toString() {
-        return "MessageLedger{" +
+        return "message_ledger{" +
                 "id=" + id +
                 ", version=" + version +
                 ", leader=" + leader +

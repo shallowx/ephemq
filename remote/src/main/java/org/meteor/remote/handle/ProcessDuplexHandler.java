@@ -49,22 +49,26 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        logger.debug("Processor duplex handler active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
         processor.onActive(channel, ctx.executor());
         ctx.fireChannelActive();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Processor duplex handler active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+        }
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             try {
-                logger.debug("Read message packet - [{}] form remote address<{}>", packet, switchAddress(ctx.channel()));
-
                 final int command = packet.command();
                 if (command > 0) {
                     processRequest(ctx, packet);
                 } else {
                     processResponse(ctx, packet);
+                }
+                // if you need to debug, can move this code to the top
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Read message packet - [{}] form remote address<{}>", packet, switchAddress(ctx.channel()));
                 }
             } finally {
                 packet.release();
@@ -94,10 +98,12 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         try {
             processor.process(ctx.channel(), command, buf, rejoin);
         } catch (Throwable cause) {
-            logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
-                    ctx.channel().remoteAddress(), command, rejoin, length, cause);
             if (null != rejoin) {
                 rejoin.failure(cause);
+            }
+            if (logger.isErrorEnabled()) {
+                logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
+                        ctx.channel().remoteAddress(), command, rejoin, length, cause);
             }
         } finally {
             release(buf);
@@ -108,8 +114,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         var command = packet.command();
         var answer = packet.answer();
         if (answer == 0) {
-            logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),
-                    command, answer);
+            if (logger.isErrorEnabled()) {
+                logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),
+                        command, answer);
+            }
             return;
         }
 
@@ -124,16 +132,20 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 freed = holder.free(answer, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
-            logger.error("Chanel<{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(),
-                    command, answer);
+           if (logger.isErrorEnabled()) {
+               logger.error("Chanel<{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(),
+                       command, answer);
+           }
             return;
         } finally {
             release(buf);
         }
 
         if (!freed) {
-            logger.error("Channel<{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(),
-                    command, answer);
+           if (logger.isErrorEnabled()) {
+               logger.error("Channel<{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(),
+                       command, answer);
+           }
         }
     }
 
@@ -207,11 +219,14 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                     remnantInvoker += holder.size();
                 }
 
-                logger.debug("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker,
-                        remnantHolder, remnantInvoker);
-
                 if (!wholeHolders.isEmpty()) {
                     executor.schedule(this, 1, TimeUnit.SECONDS);
+                }
+
+                // if you need to debug, can move this code to the top
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker,
+                            remnantHolder, remnantInvoker);
                 }
             }
         }, 1, TimeUnit.SECONDS);
@@ -221,12 +236,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
                 String.format("Channel<%s> invoke timeout", ctx.channel().toString()))));
-        logger.debug("Free entire invoke, whole={}", whole);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Free entire invoke, whole={}", whole);
+        }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("Channel<{}> caught {}", ctx.channel().toString(), cause);
+        if (logger.isErrorEnabled()) {
+            logger.error("Channel<{}> caught {}", ctx.channel().toString(), cause);
+        }
         ctx.close();
     }
 }

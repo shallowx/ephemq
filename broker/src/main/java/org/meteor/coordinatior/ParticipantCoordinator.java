@@ -88,7 +88,9 @@ public class ParticipantCoordinator {
                 promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
                 return;
             }
-            logger.info("Synchronize data of {} from {} with epoch: {}, index:{}", ledger, channel, epoch, index);
+            if (logger.isInfoEnabled()) {
+                logger.info("Synchronize data of {} from {} with epoch: {}, index:{}", ledger, channel, epoch, index);
+            }
             SyncRequest request = SyncRequest.newBuilder()
                     .setEpoch(epoch)
                     .setIndex(index)

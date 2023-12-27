@@ -39,7 +39,7 @@ public class InternalClientListener implements ClientListener {
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> {
                 semaphore.release();
-                if (!future.isSuccess()) {
+                if (!future.isSuccess() && logger.isErrorEnabled()) {
                     logger.error("Channel<{}> sync message error", channel.toString());
                 }
             });

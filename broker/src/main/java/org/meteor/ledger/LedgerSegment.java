@@ -99,7 +99,10 @@ public class LedgerSegment {
             int length = theBuffer.getInt(position);
             return theBuffer.retainedSlice(position + 4, length);
         }
-        logger.warn("The record is empty, and ledger={}", ledger);
+
+        if (logger.isWarnEnabled()) {
+            logger.warn("The record is empty, and ledger={}", ledger);
+        }
         return null;
     }
 

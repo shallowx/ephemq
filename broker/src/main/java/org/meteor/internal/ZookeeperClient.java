@@ -21,7 +21,10 @@ public class ZookeeperClient {
             if (url == null) {
                 throw new IllegalStateException("Zookeeper address not found");
             }
-            logger.info("Using {} as zookeeper address", url);
+
+            if (logger.isInfoEnabled()) {
+                logger.info("Using {} as zookeeper address", url);
+            }
             CuratorFramework client = CuratorFrameworkFactory.builder()
                     .connectString(url)
                     .namespace(namespace)

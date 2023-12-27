@@ -58,7 +58,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
                     registerNode(PathConstants.BROKERS_ID);
                 } catch (Exception e) {
-                    logger.error("Re-register node failed", e);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Re-register node failed", e);
+                    }
                 }
             }
         };
@@ -74,7 +76,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
         latch.addListener(new LeaderLatchListener() {
             @Override
             public void isLeader() {
-                logger.info("Get the controller role");
+                if (logger.isInfoEnabled()) {
+                    logger.info("Get the controller role");
+                }
                 for (ClusterListener listener : listeners) {
                     listener.onGetControlRole(thisNode);
                 }
@@ -82,7 +86,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
             @Override
             public void notLeader() {
-                logger.info("Lost the controller role");
+                if (logger.isInfoEnabled()) {
+                    logger.info("Lost the controller role");
+                }
                 for (ClusterListener listener : listeners) {
                     listener.onLostControlRole(thisNode);
                 }

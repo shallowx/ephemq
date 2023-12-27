@@ -31,7 +31,9 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
     public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
         String topic = signal.getTopic();
         if (!producer.containsRouter(topic)) {
-            logger.debug("It's not contains the topic<{}> router", topic);
+            if (logger.isDebugEnabled()) {
+                logger.debug("It's not contains the topic<{}> router", topic);
+            }
             return;
         }
 
@@ -42,13 +44,17 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
                 if (producer.containsRouter(topic)) {
                     MessageRouter router = producer.fetchRouter(topic);
                     if (router == null) {
-                        logger.debug("the topic<{}> router is empty", topic);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("the topic<{}> router is empty", topic);
+                        }
                         return;
                     }
 
                     MessageLedger ledger = router.ledger(ledgerId);
                     if (ledger != null && version != 0 && ledger.version() >= version) {
-                        logger.debug("the topic<{}> router is not need to refresh", topic);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("the topic<{}> router is not need to refresh", topic);
+                        }
                         return;
                     }
                     producer.refreshRouter(topic, channel);

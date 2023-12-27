@@ -31,17 +31,19 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Channel channel = ctx.channel();
         channelCounts.decrement();
         super.channelInactive(ctx);
-        logger.debug("Statistics duplex inactive channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Statistics duplex inactive channel, and local_address={} remote_address={}", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
+        }
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Channel channel = ctx.channel();
         channelCounts.increment();
         super.channelActive(ctx);
-        logger.debug("Statistics duplex active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Statistics duplex active channel, and local_address={} remote_address={}", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
+        }
     }
 }

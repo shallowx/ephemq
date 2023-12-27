@@ -15,6 +15,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.*;
 import org.meteor.internal.CorrelationIdConstants;
@@ -26,10 +27,10 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.listener.TopicListener;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +38,8 @@ import java.util.regex.Pattern;
 public class ZookeeperTopicCoordinator implements TopicCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
+    private static final String TOPIC_PARTITION_REGEX = "^/brokers/topics/[\\w\\-#]+/partitions/\\d+$";
+    private static final String TOPIC_REGEX = "^/brokers/topics/[\\w\\-#]+$";
     protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
     protected final List<TopicListener> listeners = new LinkedList<>();
     protected CommonConfig commonConfiguration;
@@ -77,8 +80,9 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
         this.topicNamesCache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
+                    @Nonnull
                     @Override
-                    public @Nullable Set<String> load(String s) throws Exception {
+                    public Set<String> load(String s) throws Exception {
                         return getAllTopicsFromZookeeper();
                     }
                 });
@@ -105,6 +109,9 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             partitionInfos.add(partitionInfo);
             topicCache.put(topic, partitionInfos);
         } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Refresh partition error", e.getMessage(), e);
+            }
             topicCache.invalidate(topic);
         }
     }
@@ -146,8 +153,8 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         participantCoordinator.start();
         cache = CuratorCache.build(client, PathConstants.BROKERS_TOPICS);
         CuratorCacheListener listener = CuratorCacheListener.builder().forTreeCache(client, new TreeCacheListener() {
-            final Pattern TOPIC_PARTITION = Pattern.compile("^/brokers/topics/[\\w\\-#]+/partitions/\\d+$");
-            final Pattern TOPIC = Pattern.compile("^/brokers/topics/[\\w\\-#]+$");
+            final Pattern TOPIC_PARTITION = Pattern.compile(TOPIC_PARTITION_REGEX);
+            final Pattern TOPIC = Pattern.compile(TOPIC_REGEX);
 
             @Override
             public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent event) throws Exception {
@@ -370,10 +377,10 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         }
     }
 
-    private Future<?> initTopicPartitionAsync(org.meteor.common.message.TopicPartition topicPartition, int ledgerId, int epoch, org.meteor.common.message.TopicConfig topicConfig) {
+    private void initTopicPartitionAsync(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) {
         List<EventExecutor> auxEventExecutors = coordinator.getAuxEventExecutors();
         EventExecutor executor = auxEventExecutors.get((Objects.hashCode(topicPartition) & 0x7fffffff) % auxEventExecutors.size());
-        return executor.submit(() -> {
+        executor.submit(() -> {
             try {
                 initPartition(topicPartition, ledgerId, epoch, topicConfig);
             } catch (Exception e) {
@@ -482,10 +489,10 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         return topicNamesCache.get(ALL_TOPIC_KEY);
     }
 
-    private Future<?> destroyTopicPartitionAsync(org.meteor.common.message.TopicPartition topicPartition, int ledgerId) throws Exception {
+    private void destroyTopicPartitionAsync(TopicPartition topicPartition, int ledgerId) throws Exception {
         List<EventExecutor> auxEventExecutors = coordinator.getAuxEventExecutors();
         EventExecutor executor = auxEventExecutors.get((Objects.hashCode(topicPartition) & 0x7fffffff) % auxEventExecutors.size());
-        return executor.submit(() -> {
+        executor.submit(() -> {
             try {
                 destroyTopicPartition(topicPartition, ledgerId);
             } catch (Throwable t) {

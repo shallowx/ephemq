@@ -44,7 +44,9 @@ public class MessageHandler {
         } catch (Throwable t) {
             data.release();
             semaphore.release();
-            logger.error("Consumer<{}> handle message failed", id, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Consumer<{}> handle message failed", id, t);
+            }
         }
     }
 
@@ -63,7 +65,9 @@ public class MessageHandler {
             Extras extras = new Extras(metadata.getExtrasMap());
             listener.onMessage(topic, queue, messageId, data, extras);
         } catch (Throwable t) {
-            logger.error(" Consumer handle message failed, address={} marker={} messageId={} length={}", channel.address(), marker, messageId, length, t);
+            if (logger.isErrorEnabled()) {
+                logger.error(" Consumer handle message failed, address={} marker={} messageId={} length={}", channel.address(), marker, messageId, length, t);
+            }
         } finally {
             data.release();
             semaphore.release();

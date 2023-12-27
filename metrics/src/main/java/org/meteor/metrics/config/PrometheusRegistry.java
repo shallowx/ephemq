@@ -46,9 +46,13 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
                 }
             });
             new Thread(this.server::start).start();
-            logger.info("Prometheus http server is listening at {}, and scrape url={}", socketAddress, url);
+            if (logger.isInfoEnabled()) {
+                logger.info("Prometheus http server is listening at {}, and scrape url={}", socketAddress, url);
+            }
         } catch (Throwable t) {
-            logger.error("Start prometheus http server failed", t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Start prometheus http server failed", t);
+            }
             throw new RuntimeException(t);
         }
     }

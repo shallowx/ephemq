@@ -55,14 +55,17 @@ public class ZookeeperPartitionCoordinatorElector {
         latch.addListener(new LeaderLatchListener() {
             @Override
             public void isLeader() {
-                logger.info("Get leadership of {}, ledger={}", topicPartition, ledger);
-
+                if (logger.isInfoEnabled()) {
+                    logger.info("Get leadership of {}, ledger={}", topicPartition, ledger);
+                }
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
                     try {
                         updateTopicAssigment(path);
                     } catch (Exception e) {
-                        logger.error("Can't write leader info to zookeeper for {}", topicPartition, e);
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Can't write leader info to zookeeper for {}", topicPartition, e);
+                        }
                     }
 
                     for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
@@ -73,17 +76,23 @@ public class ZookeeperPartitionCoordinatorElector {
 
             @Override
             public void notLeader() {
-                logger.info("Lost leadership of {}, ledger={}", topicPartition);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Lost leadership of {}, ledger={}", topicPartition);
+                }
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
                     try {
                         Promise<Void> promise = participantCoordinator.stopChunkDispatch(ledger, null);
                         if (promise.cause() != null) {
-                            logger.error("Stop chunk dispatch failed", promise.cause());
+                            if (logger.isErrorEnabled()) {
+                                logger.error("Stop chunk dispatch failed", promise.cause());
+                            }
                         }
                         trySyncLeader();
                     } catch (Exception e) {
-                        logger.error("Switch to follower failed", e);
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Switch to follower failed", e);
+                        }
                     }
                     for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
                         listener.onPartitionLostLeader(topicPartition);
@@ -101,7 +110,9 @@ public class ZookeeperPartitionCoordinatorElector {
         try {
             poolExecutor.execute(() -> {
                 try {
-                    logger.info("Change leader of {} to {}", ledger, configuration.getServerId());
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Change leader of {} to {}", ledger, configuration.getServerId());
+                    }
 
                     byte[] bytes = client.getData().forPath(path);
                     TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
@@ -114,12 +125,16 @@ public class ZookeeperPartitionCoordinatorElector {
                         log.updateEpoch(topicAssignment.getEpoch());
                     }
                 } catch (Exception e) {
-                    logger.error("Can't write leader info to zookeeper for {}, try again later", topicPartition, e);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Can't write leader info to zookeeper for {}, try again later", topicPartition, e);
+                    }
                     poolExecutor.schedule(() -> updateTopicAssigment(path), 50, TimeUnit.MILLISECONDS);
                 }
             });
         } catch (Throwable t) {
-            logger.error("Update topic assignment task submission failed");
+            if (logger.isErrorEnabled()) {
+                logger.error("Update topic assignment task submission failed");
+            }
             poolExecutor.schedule(() -> updateTopicAssigment(path), 50, TimeUnit.MILLISECONDS);
         }
     }
@@ -139,7 +154,10 @@ public class ZookeeperPartitionCoordinatorElector {
                     poolExecutor.schedule(this::trySyncLeader, 50, TimeUnit.MILLISECONDS);
                     return;
                 }
-                logger.info("The leader of {} is {}", ledger, leader.getId());
+
+                if (logger.isInfoEnabled()) {
+                    logger.info("The leader of {} is {}", ledger, leader.getId());
+                }
 
                 if (!latch.hasLeadership() && !leader.getId().equals(configuration.getServerId())) {
                     byte[] bytes = client.getData().forPath(
@@ -148,17 +166,22 @@ public class ZookeeperPartitionCoordinatorElector {
 
                     TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
                     if (topicAssignment.getReplicas().contains(configuration.getServerId())) {
-                        logger.info("As the follower replica of {}, ledger={}", topicPartition, ledger);
+                        if (logger.isInfoEnabled()) {
+                            logger.info("As the follower replica of {}, ledger={}", topicPartition, ledger);
+                        }
                     }
                     syncLeader(ledger);
                 }
             } catch (Exception e) {
-                logger.error("Try to sync ledger failed", e);
-
+                if (logger.isErrorEnabled()) {
+                    logger.error("Try to sync ledger failed", e);
+                }
                 try {
                     poolExecutor.schedule(this::trySyncLeader, 50, TimeUnit.MILLISECONDS);
                 } catch (Exception e1) {
-                    logger.error("Retry sync ledger failed", e1);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Retry sync ledger failed", e1);
+                    }
                 }
             }
         });
@@ -171,7 +194,7 @@ public class ZookeeperPartitionCoordinatorElector {
         ClientChannel channel = innerClient.fetchChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);
         promise.addListener(future -> {
-            if (!future.isSuccess()) {
+            if (!future.isSuccess() && logger.isErrorEnabled()) {
                 logger.error("Failed to sync data as a follower", future.cause());
             }
         });

@@ -30,7 +30,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         if (msg instanceof final ByteBuf in) {
             if (invalidChannel) {
                 in.release();
-                logger.debug("Invalid channel<{}>", ctx.channel().toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Invalid channel<{}>", ctx.channel().toString());
+                }
                 return;
             }
 

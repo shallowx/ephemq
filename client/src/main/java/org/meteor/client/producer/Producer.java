@@ -40,7 +40,9 @@ public class Producer {
 
     public void start() {
         if (state != null) {
-            logger.warn("Producer<{}> is running, don't run it replay", name);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Producer<{}> is running, don't run it replay", name);
+            }
             return;
         }
         state = Boolean.TRUE;
@@ -53,7 +55,9 @@ public class Producer {
 
     public synchronized void close() {
         if (state != Boolean.TRUE) {
-            logger.warn("Producer<{}> was closed, don't execute it replay", name);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Producer<{}> was closed, don't execute it replay", name);
+            }
             return;
         }
 

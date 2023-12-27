@@ -9,7 +9,6 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
 public class LoggerStartupListener extends ContextAwareBase implements LoggerContextListener, LifeCycle {
-
     private static final String DEFAULT_LOG_DIR = "/tmp/meteor";
     private volatile boolean started = false;
 

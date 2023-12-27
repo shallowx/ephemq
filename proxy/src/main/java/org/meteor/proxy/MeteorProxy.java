@@ -30,7 +30,9 @@ public class MeteorProxy {
         try {
             server.start();
         } catch (Exception e) {
-            logger.error("Start meteor proxy server failed", e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Start meteor proxy server failed", e);
+            }
             System.exit(-1);
         }
     }

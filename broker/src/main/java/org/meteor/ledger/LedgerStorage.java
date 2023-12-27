@@ -185,7 +185,9 @@ public class LedgerStorage {
             try {
                 trigger.onRelease(ledger, oldHead, newHead);
             } catch (Throwable t) {
-                logger.warn("Trigger on release failed, and topic={} old_offset={} new_offset={}", topic, oldHead, newHead);
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Trigger on release failed, and topic={} old_offset={} new_offset={}", topic, oldHead, newHead);
+                }
             }
         }
     }
@@ -323,8 +325,8 @@ public class LedgerStorage {
             Offset lastOffset = currentOffset;
             int location = buf.readerIndex();
             final Offset startOffset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
-            if (logger.isWarnEnabled() && !MessageUtil.isContinuous(lastOffset, startOffset)) {
-                logger.warn("Received append chunk message from {} is discontinuous, ledger={} topic={} lastOffset={} startOffset={}",
+            if (logger.isDebugEnabled() && !MessageUtil.isContinuous(lastOffset, startOffset)) {
+                logger.debug("Received append chunk message from {} is discontinuous, ledger={} topic={} lastOffset={} startOffset={}",
                         channel, ledger, topic, lastOffset, startOffset);
             }
             if (!startOffset.after(lastOffset)) {
@@ -333,7 +335,9 @@ public class LedgerStorage {
                     int bytes = buf.getInt(location) + 8;
                     final Offset offset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
                     if (!offset.after(lastOffset)) {
-                        logger.warn("Ignore duplicate message, offset={} lastOffset={}", offset, lastOffset);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Ignore duplicate message, offset={} lastOffset={}", offset, lastOffset);
+                        }
                         buf.skipBytes(bytes);
                         continue;
                     }

@@ -56,7 +56,9 @@ public class Consumer {
 
     public synchronized void start() {
         if (state != null) {
-            logger.warn("The client[{}] war started", name);
+            if (logger.isWarnEnabled()) {
+                logger.warn("The client[{}] war started", name);
+            }
             return;
         }
 
@@ -174,7 +176,9 @@ public class Consumer {
             executor.execute(this::doChangeTask);
         } catch (Throwable t) {
             changeTaskTouched.set(false);
-            logger.error("Consumer<{}> touch changed task execute failed, and trg again later", name);
+            if (logger.isErrorEnabled()) {
+                logger.error("Consumer<{}> touch changed task execute failed, and trg again later", name);
+            }
         }
     }
 
@@ -558,8 +562,10 @@ public class Consumer {
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return false;
         } catch (Throwable t) {
-            logger.debug("Reset subscribe error, topic={} channel={} ledger_id={} epoch={} index={} markers={}",
-                    topic, channel, ledgerId, epoch, index, markers, t.getMessage(), t);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Reset subscribe error, topic={} channel={} ledger_id={} epoch={} index={} markers={}",
+                        topic, channel, ledgerId, epoch, index, markers, t.getMessage(), t);
+            }
             return true;
         }
     }
@@ -579,8 +585,10 @@ public class Consumer {
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return true;
         } catch (Throwable t) {
-            logger.debug("Alter subscribe error, topic={} channel={} ledger_id={} append_markers={} delete_markers={}",
-                    topic, channel, ledgerId, appendMarkers, deleteMarkers, t.getMessage(), t);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Alter subscribe error, topic={} channel={} ledger_id={} append_markers={} delete_markers={}",
+                        topic, channel, ledgerId, appendMarkers, deleteMarkers, t.getMessage(), t);
+            }
             return false;
         }
     }
@@ -627,7 +635,9 @@ public class Consumer {
         try {
             return client.fetchChannel(address);
         } catch (Throwable t) {
-            logger.debug("fetch channel error, address={}", address.toString(), t.getMessage(), t);
+            if (logger.isDebugEnabled()) {
+                logger.debug("fetch channel error, address={}", address.toString(), t.getMessage(), t);
+            }
             return null;
         }
     }
@@ -636,7 +646,9 @@ public class Consumer {
         try {
             return client.fetchRouter(topic);
         } catch (Throwable t) {
-            logger.debug("fetch router error, topic={}", topic, t.getMessage(), t);
+            if (logger.isDebugEnabled()) {
+                logger.debug("fetch router error, topic={}", topic, t.getMessage(), t);
+            }
             return null;
         }
     }
@@ -645,7 +657,9 @@ public class Consumer {
         try {
             return router.routeLedger(queue);
         } catch (Throwable t) {
-            logger.debug("calculate ledger error, topic={} queue={}",router.topic(), queue, t.getMessage(), t);
+            if (logger.isDebugEnabled()) {
+               logger.debug("calculate ledger error, topic={} queue={}",router.topic(), queue, t.getMessage(), t);
+            }
             return null;
         }
     }
@@ -664,7 +678,9 @@ public class Consumer {
 
             return UnsafeByteOperations.unsafeWrap(data);
         } catch (Throwable t) {
-            logger.debug("generate markers error, markers={}", markers, t.getMessage(), t);
+            if (logger.isDebugEnabled()) {
+              logger.debug("generate markers error, markers={}", markers, t.getMessage(), t);
+            }
             return null;
         }
     }
@@ -771,7 +787,9 @@ public class Consumer {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public synchronized void close() throws InterruptedException {
         if (state != Boolean.TRUE) {
-            logger.warn("This consumer<{}> was closed, don't execute it replay", name);
+            if (logger.isWarnEnabled()) {
+                logger.warn("This consumer<{}> was closed, don't execute it replay", name);
+            }
             return;
         }
         state = Boolean.FALSE;

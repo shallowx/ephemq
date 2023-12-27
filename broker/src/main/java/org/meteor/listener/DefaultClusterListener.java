@@ -37,17 +37,23 @@ public class DefaultClusterListener implements ClusterListener {
 
     @Override
     public void onNodeJoin(Node node) {
-        logger.info("Node {} join the cluster", node);
+        if (logger.isInfoEnabled()) {
+            logger.info("Node {} join the cluster", node);
+        }
     }
 
     @Override
     public void onNodeDown(Node node) {
-        logger.info("Node {} become down state", node);
+        if (logger.isInfoEnabled()) {
+            logger.info("Node {} become down state", node);
+        }
     }
 
     @Override
     public void onNodeLeave(Node node) {
-        logger.info("Node {} left the cluster", node);
+        if (logger.isInfoEnabled()) {
+            logger.info("Node {} left the cluster", node);
+        }
         processServerOffline(node);
     }
 
@@ -69,7 +75,9 @@ public class DefaultClusterListener implements ClusterListener {
             channel.writeAndFlush(awareInvocation);
         } catch (Exception e) {
             ByteBufUtil.release(buf);
-            logger.error("Send server offline failed, channel={}", channel, e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Send server offline failed, channel={}", channel, e);
+            }
         }
     }
 

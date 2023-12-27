@@ -79,17 +79,21 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 case SYNC_LEDGER -> processSyncLedger(channel, command, data, answer);
                 case UNSYNC_LEDGER -> processUnSyncLedger(channel, command, data,answer);
                 default -> {
-                    logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
                     if (answer != null) {
                         String error = "Command[" + command + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
+                    }
                 }
             }
         } catch (Throwable t) {
-            logger.error("<{}> process error, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
             if (answer != null) {
                 answer.failure(t);
+            }
+            if (logger.isErrorEnabled()) {
+                logger.error("<{}> process error, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
             }
         }
     }

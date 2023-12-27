@@ -17,15 +17,14 @@ package org.meteor.common.logging;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Log4JLoggerFactoryTest {
 
     @Test
     public void testCreation() {
         InternalLogger logger = Log4JLoggerFactory.INSTANCE.newLogger("foo");
-        assertTrue(logger instanceof Log4JLogger);
+        assertInstanceOf(Log4JLogger.class, logger);
         assertEquals("foo", logger.name());
     }
 }

@@ -39,7 +39,9 @@ public class ConsumerExample {
 
         Consumer consumer = new Consumer("default-consumer", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
-            logger.error("messageId={} topic={} queue={} message={} \n", messageId, topic, queue, msg);
+            if (logger.isInfoEnabled()) {
+                logger.info("messageId={} topic={} queue={} message={} \n", messageId, topic, queue, msg);
+            }
         });
         consumer.start();
         this.consumer = consumer;

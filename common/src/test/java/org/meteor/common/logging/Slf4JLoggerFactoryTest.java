@@ -26,7 +26,7 @@ public class Slf4JLoggerFactoryTest {
         Logger logger = mock(Logger.class);
         when(logger.getName()).thenReturn("testlogger");
         InternalLogger internalLogger = Slf4JLoggerFactory.wrapLogger(logger);
-        assertTrue(internalLogger instanceof Slf4JLogger);
+        assertInstanceOf(Slf4JLogger.class, internalLogger);
         assertEquals("testlogger", internalLogger.name());
     }
 
@@ -35,7 +35,7 @@ public class Slf4JLoggerFactoryTest {
         Logger logger = mock(LocationAwareLogger.class);
         when(logger.getName()).thenReturn("testlogger");
         InternalLogger internalLogger = Slf4JLoggerFactory.wrapLogger(logger);
-        assertTrue(internalLogger instanceof LocationAwareSlf4JLogger);
+        assertInstanceOf(LocationAwareSlf4JLogger.class, internalLogger);
         assertEquals("testlogger", internalLogger.name());
     }
 

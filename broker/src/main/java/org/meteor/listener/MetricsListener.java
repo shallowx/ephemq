@@ -137,7 +137,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                 drt.record(bytes);
             }
         } catch (Throwable t) {
-            logger.error("Metrics on command listener failed, code={}", code, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Metrics on command listener failed, code={}", code, t);
+            }
         }
     }
 
@@ -178,7 +180,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
             counter.increment(count);
         } catch (Throwable t) {
-            logger.error("Metrics on receive message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Metrics on receive message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+            }
         }
     }
 
@@ -199,7 +203,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
             counter.increment(count);
         } catch (Throwable t) {
-            logger.error("Metrics on sync message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Metrics on sync message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+            }
         }
     }
 
@@ -219,7 +225,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
             counter.increment(count);
         } catch (Throwable t) {
-            logger.error("Metrics on push message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Metrics on push message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+            }
         }
     }
 
@@ -243,7 +251,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .tag(NAME, StringUtil.EMPTY_STRING)
                         .tag(ID, se.threadProperties().name()).register(registry);
             } catch (Throwable t) {
-                logger.error("Storage metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Storage metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
+                }
             }
         }
 
@@ -258,7 +268,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .tag(NAME, StringUtil.EMPTY_STRING)
                         .tag(ID, se.threadProperties().name()).register(registry);
             } catch (Throwable t) {
-                logger.error("Dispatch metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Dispatch metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
+                }
             }
         }
 
@@ -273,7 +285,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .tag(NAME, StringUtil.EMPTY_STRING)
                         .tag(ID, se.threadProperties().name()).register(registry);
             } catch (Throwable t) {
-                logger.error("Command metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Command metrics started failed, cluster={} server_id={} executor={}", clusterName, serverId, executor.toString(), t);
+                }
             }
         }
     }
@@ -286,7 +300,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         try {
             partitionCounts.incrementAndGet();
         } catch (Throwable t) {
-            logger.error("Metrics on partition init listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Metrics on partition init listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
+            }
         }
     }
 
@@ -297,7 +313,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             Optional.ofNullable(topicReceiveCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
             Optional.ofNullable(topicPushCounters.remove(ledger)).ifPresent(Metrics.globalRegistry::remove);
         } catch (Throwable t) {
-            logger.error("Metrics on partition destroy listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Metrics on partition destroy listener failed, topic_partition={} ledger={}", topicPartition, ledger, t);
+            }
         }
     }
 
@@ -313,16 +331,22 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
 
     @Override
     public void onTopicCreated(String topic) {
-        logger.debug("The topic was created, and topic={}", topic);
+        if (logger.isDebugEnabled()) {
+            logger.debug("The topic was created, and topic={}", topic);
+        }
     }
 
     @Override
     public void onTopicDeleted(String topic) {
-        logger.debug("The topic was deleted, and topic={}", topic);
+        if (logger.isDebugEnabled()) {
+            logger.debug("The topic was deleted, and topic={}", topic);
+        }
     }
 
     @Override
     public void onPartitionChanged(TopicPartition topicPartition, TopicAssignment oldAssigment, TopicAssignment newAssigment) {
-        logger.debug("The topic partition was changed, and the old={} new={}", oldAssigment, newAssigment);
+        if (logger.isDebugEnabled()) {
+            logger.debug("The topic partition was changed, and the old={} new={}", oldAssigment, newAssigment);
+        }
     }
 }

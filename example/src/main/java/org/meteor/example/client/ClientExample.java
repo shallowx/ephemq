@@ -34,13 +34,17 @@ public class ClientExample {
     public void createTopic() throws Exception {
         // Supports multiple partitions, but only supports a single copy of a partition
         CreateTopicResponse response = client.createTopic(EXAMPLE_TOPIC, 10, 1);
-        logger.info("topic:{} topic_id:{} partition:{}", response.getTopic(), response.getTopicId(), response.getPartitions());
+        if (logger.isInfoEnabled()) {
+            logger.info("topic:{} topic_id:{} partition:{}", response.getTopic(), response.getTopicId(), response.getPartitions());
+        }
         // do something
     }
 
     public void delTopic() throws Exception {
         DeleteTopicResponse response = client.deleteTopic(EXAMPLE_TOPIC);
-        logger.info("response:{}", response.toString());
+        if (logger.isInfoEnabled()) {
+            logger.info("response:{}", response.toString());
+        }
     }
 
     static class DefaultClientListener implements ClientListener {

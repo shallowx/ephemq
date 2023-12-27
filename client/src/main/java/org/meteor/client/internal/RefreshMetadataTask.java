@@ -35,7 +35,10 @@ public class RefreshMetadataTask implements Runnable {
             if (message == null || message.isEmpty()) {
                 message = t.getClass().getName();
             }
-            logger.error("Refresh metadata failed, {}", message);
+
+            if (logger.isErrorEnabled()) {
+                logger.error("Refresh metadata failed, {}", message);
+            }
         }
 
         if (!client.taskExecutor.isShuttingDown()) {
@@ -86,7 +89,9 @@ public class RefreshMetadataTask implements Runnable {
         }
 
         if (queryRouters.isEmpty()) {
-            logger.debug("Message router is empty");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Message router is empty");
+            }
             return;
         }
 

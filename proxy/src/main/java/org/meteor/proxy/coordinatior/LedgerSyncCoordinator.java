@@ -99,29 +99,40 @@ public abstract class LedgerSyncCoordinator {
         }
         Promise<CancelSyncResponse> deSyncPromise = log.unSync(config.getProxyLeaderSyncUpstreamTimeoutMs());
         deSyncPromise.addListener(f -> {
-            logger.info("Log {} is de-synced successfully", log.getLedger());
+            if (logger.isInfoEnabled()) {
+                logger.info("Log {} is de-synced successfully", log.getLedger());
+            }
+
             if (f.isSuccess()) {
                 try {
                    Promise<SyncResponse> syncPromise = syncLedgerFromUpstream(log, messageLedger);
                    syncPromise.addListener(future -> {
                        if (future.isSuccess()) {
-                           logger.info("Log {} is sync successfully", log.getLedger());
+                           if (logger.isInfoEnabled()) {
+                               logger.info("Log {} is sync successfully", log.getLedger());
+                           }
                            ret.trySuccess(null);
                        } else {
-                           logger.error("Sync Log {} failed when resuming sync, will retry after {}ms", log.getLedger(),
-                                   config.getProxyResumeTaskScheduleDelayMs(), future.cause());
+                           if (logger.isErrorEnabled()) {
+                               logger.error("Sync Log {} failed when resuming sync, will retry after {}ms", log.getLedger(),
+                                       config.getProxyResumeTaskScheduleDelayMs(), future.cause());
+                           }
                            taskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMs(), TimeUnit.MILLISECONDS);
                            ret.tryFailure(future.cause());
                        }
                    });
                } catch (Exception e){
-                    logger.error("Sync Log {} failed when resuming sync, will retry after {}ms", log.getLedger(),
-                            config.getProxyResumeTaskScheduleDelayMs(), e);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Sync Log {} failed when resuming sync, will retry after {}ms", log.getLedger(),
+                                config.getProxyResumeTaskScheduleDelayMs(), e);
+                    }
                     taskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMs(), TimeUnit.MILLISECONDS);
                     ret.tryFailure(e);
                 }
             } else {
-                logger.error("De-sync log {} failed", log.getLedger(), f.cause());
+                if (logger.isErrorEnabled()) {
+                    logger.error("De-sync log {} failed", log.getLedger(), f.cause());
+                }
                 ret.tryFailure(f.cause());
             }
         });

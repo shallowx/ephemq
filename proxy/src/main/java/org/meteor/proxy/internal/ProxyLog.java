@@ -40,7 +40,9 @@ public class ProxyLog extends Log {
                    doDeSyncAndCloseIfNotSubscribe(promise);
                });
            } catch (Exception e){
-               logger.debug(e.getMessage(), e);
+               if (logger.isDebugEnabled()) {
+                   logger.debug(e.getMessage(), e);
+               }
                promise.tryFailure(e);
            }
         }
@@ -104,7 +106,9 @@ public class ProxyLog extends Log {
                   doSyncAndResetSubscribe(syncChannel, epoch, index, channel, markerSet, promise);
               });
           } catch (Exception e){
-              logger.debug(e.getMessage(), e);
+              if (logger.isDebugEnabled()) {
+                  logger.debug(e.getMessage(), e);
+              }
               ret.tryFailure(e);
           }
       }
@@ -154,7 +158,9 @@ public class ProxyLog extends Log {
                     doSyncAndChunkSubscribe(syncChannel, epoch, index, channel, promise);
                 });
             } catch (Exception e){
-                logger.debug(e.getMessage(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
+                }
                 ret.tryFailure(e);
             }
         }

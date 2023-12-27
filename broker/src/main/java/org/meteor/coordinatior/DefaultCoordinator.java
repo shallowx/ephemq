@@ -78,16 +78,24 @@ public class DefaultCoordinator implements Coordinator {
 
         if (clusterCoordinator != null) {
             clusterCoordinator.start();
-            logger.info("Cluster coordinator<{}> start successfully", clusterCoordinator.getThisNode().getCluster());
+            if (logger.isInfoEnabled()) {
+                logger.info("Cluster coordinator<{}> start successfully", clusterCoordinator.getThisNode().getCluster());
+            }
+
         }
 
         if (topicCoordinator != null) {
-            logger.info("Topic coordinator start successfully");
+            if (logger.isInfoEnabled()) {
+                logger.info("Topic coordinator start successfully");
+            }
+
             topicCoordinator.start();
         }
 
         if (logCoordinator != null) {
-            logger.info("Ledger log coordinator start successfully");
+            if (logger.isInfoEnabled()) {
+                logger.info("Ledger log coordinator start successfully");
+            }
             logCoordinator.start();
         }
     }
@@ -95,35 +103,51 @@ public class DefaultCoordinator implements Coordinator {
     @Override
     public void shutdown() throws Exception {
         if (clusterCoordinator != null) {
-            logger.info("Cluster coordinator<{}> will shutdown", clusterCoordinator.getThisNode().getCluster());
+            if (logger.isInfoEnabled()) {
+                logger.info("Cluster coordinator<{}> will shutdown", clusterCoordinator.getThisNode().getCluster());
+            }
+
             clusterCoordinator.shutdown();
         }
         if (topicCoordinator != null) {
-            logger.info("Topic coordinator will shutdown");
+            if (logger.isInfoEnabled()) {
+                logger.info("Topic coordinator will shutdown");
+            }
+
             topicCoordinator.shutdown();
         }
         if (logCoordinator != null) {
-            logger.info("Ledger log coordinator will shutdown");
+            if (logger.isInfoEnabled()) {
+                logger.info("Ledger log coordinator will shutdown");
+            }
             logCoordinator.shutdown();
         }
 
         if (handleGroup != null) {
-            logger.info("Message handle event executor group will shutdown");
+            if (logger.isInfoEnabled()) {
+                logger.info("Message handle event executor group will shutdown");
+            }
             handleGroup.shutdownGracefully();
         }
 
         if (dispatchGroup != null) {
-            logger.info("Message dispatch event executor group will shutdown");
+            if (logger.isInfoEnabled()) {
+                logger.info("Message dispatch event executor group will shutdown");
+            }
             dispatchGroup.shutdownGracefully();
         }
 
         if (storageGroup != null) {
-            logger.info("Storage event executor group will shutdown");
+            if (logger.isInfoEnabled()) {
+                logger.info("Storage event executor group will shutdown");
+            }
             storageGroup.shutdownGracefully();
         }
 
         if (innerClient != null) {
-            logger.info("Inner client will shutdown");
+            if (logger.isInfoEnabled()) {
+                logger.info("Inner client will shutdown");
+            }
             innerClient.close();
         }
 

@@ -53,7 +53,9 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
                 try {
                     promise.get();
                 } catch (Exception e) {
-                    logger.error("destroy log error error, ledger={} topic={}", ledger, log.getTopic(), e);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("destroy log error error, ledger={} topic={}", ledger, log.getTopic(), e);
+                    }
                 }
             }
         }

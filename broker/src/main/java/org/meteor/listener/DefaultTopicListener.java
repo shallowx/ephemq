@@ -71,7 +71,9 @@ public class DefaultTopicListener implements TopicListener {
                 }
             }
         } catch (Exception e) {
-            logger.error("Send partition change failed", e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Send partition change failed", e);
+            }
         }
     }
 
@@ -89,7 +91,9 @@ public class DefaultTopicListener implements TopicListener {
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtil.release(buf);
-                logger.error("Send topic change failed, channel={}", channel, e);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Send topic change failed, channel={}", channel, e);
+                }
             }
         }
     }
@@ -107,7 +111,9 @@ public class DefaultTopicListener implements TopicListener {
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtil.release(buf);
-                logger.error("Send partition change failed, channel={}", channel, e);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Send partition change failed, channel={}", channel, e);
+                }
             }
         }
     }

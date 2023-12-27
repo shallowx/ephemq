@@ -15,7 +15,6 @@ import org.meteor.thread.ShutdownHookThread;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
@@ -29,7 +28,9 @@ public class Meteor {
         try {
             server.start();
         } catch (Exception e) {
-            logger.error("Start meteor broker server failed", e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Start meteor broker server failed", e);
+            }
             System.exit(-1);
         }
     }

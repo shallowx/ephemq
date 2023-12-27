@@ -288,7 +288,9 @@ public class RecordEntryDispatcher {
             try {
                 handler.getDispatchExecutor().execute(() -> doDispatch(handler));
             } catch (Throwable t) {
-                logger.error("Dispatch submit failed: {}", handler, t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Dispatch submit failed: {}", handler, t);
+                }
             }
         }
     }
@@ -356,7 +358,9 @@ public class RecordEntryDispatcher {
                         }
                     }
                 } catch (Throwable t) {
-                    logger.error("Dispatch failed: {} lastOffset={}", handler, lastOffset, t);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Dispatch failed: {} lastOffset={}", handler, lastOffset, t);
+                    }
                 } finally {
                     ByteBufUtil.release(entry);
                     ByteBufUtil.release(payload);
@@ -366,7 +370,9 @@ public class RecordEntryDispatcher {
                 }
             }
         } catch (Throwable t) {
-            logger.error("Dispatch execute failed: {} lastOffset={}", handler, lastOffset, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Dispatch execute failed: {} lastOffset={}", handler, lastOffset, t);
+            }
         } finally {
             handler.getTriggered().set(false);
         }
@@ -383,7 +389,9 @@ public class RecordEntryDispatcher {
             try {
                 counter.accept(count);
             } catch (Throwable t) {
-                logger.error("Count failed, ledger={} topic={}", ledger, topic, t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Count failed, ledger={} topic={}", ledger, topic, t);
+                }
             }
         }
     }
@@ -405,7 +413,9 @@ public class RecordEntryDispatcher {
             });
         } catch (Throwable t) {
             task.getSubscription().setFollowed(true);
-            logger.error("Submit failed: {}", task);
+            if (logger.isErrorEnabled()) {
+                logger.error("Submit failed: {}", task);
+            }
         }
     }
 
@@ -419,7 +429,9 @@ public class RecordEntryDispatcher {
         }
 
         if (System.currentTimeMillis() - task.getPursueTime() > pursueTimeoutMs) {
-            logger.warn("Giving up pursue:{}", task);
+            if (logger.isErrorEnabled()) {
+                logger.warn("Giving up pursue:{}", task);
+            }
             submitFollow(task);
             return;
         }
@@ -466,7 +478,9 @@ public class RecordEntryDispatcher {
                         return;
                     }
                 } catch (Throwable t) {
-                    logger.error("Pursue failed:{} lastOffset={}", task, lastOffset, t);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Pursue failed:{} lastOffset={}", task, lastOffset, t);
+                    }
                 } finally {
                     ByteBufUtil.release(entry);
                     ByteBufUtil.release(payload);
@@ -478,7 +492,9 @@ public class RecordEntryDispatcher {
                 }
             }
         } catch (Throwable t) {
-            logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Pursue execute failed:{} lastOffset={}", task, lastOffset, t);
+            }
         }
 
         task.setPursueOffset(lastOffset);
@@ -499,7 +515,9 @@ public class RecordEntryDispatcher {
             });
         } catch (Throwable t) {
             subscription.setFollowed(true);
-            logger.error("Submit failed: {}", task);
+            if (logger.isErrorEnabled()) {
+                logger.error("Submit failed: {}", task);
+            }
         }
     }
 
@@ -511,14 +529,16 @@ public class RecordEntryDispatcher {
             });
         } catch (Throwable t) {
             subscription.setFollowed(true);
-            logger.error("Submit failed: {}", task);
+            if (logger.isErrorEnabled()) {
+                logger.error("Submit failed: {}", task);
+            }
         }
     }
 
     private void doAlign(PursueTask<RecordSynchronization> task) {
         RecordSynchronization subscription = task.getSubscription();
         Channel channel = subscription.getChannel();
-        AbstractHandler handler = subscription.getHandler();
+        AbstractHandler<RecordSynchronization, RecordHandler> handler = subscription.getHandler();
 
         if (!channel.isActive() || subscription != handler.getChannelSubscriptionMap().get(channel)) {
             return;
