@@ -21,7 +21,6 @@
 # Environment
 - Zookeeper Version: Zookeeper 3.5.x or higher
 - Java Version: Java 17 or higher
-- JVM Args: -c *.properties -Dio.prometheus.client.export-protobuf.use-direct-buffers=true -Dio.netty.noKeySetOptimization=true
 
 ## Metrics configuration
 - 0.0.0.0:9528/prometheus
