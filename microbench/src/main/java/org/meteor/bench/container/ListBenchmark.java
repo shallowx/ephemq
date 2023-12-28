@@ -18,10 +18,6 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class ListBenchmark {
-    private final List<Object> arrayList = new ArrayList<>();
-    private final List<Object> linkedList = new LinkedList<>();
-    private final ObjectList<Object> objectArrayList = new ObjectArrayList<>();
-
     @Setup
     public void setUp() {
         for (int i = 0; i < 1000; i++) {
@@ -57,4 +53,8 @@ public class ListBenchmark {
         }
         blackhole.consume(o);
     }
+
+    private final List<Object> arrayList = new ArrayList<>();
+    private final List<Object> linkedList = new LinkedList<>();
+    private final ObjectList<Object> objectArrayList = new ObjectArrayList<>();
 }

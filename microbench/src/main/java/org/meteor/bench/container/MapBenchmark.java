@@ -19,12 +19,6 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class MapBenchmark {
-    private final Map<Integer, Object> hashMap = new HashMap<>();
-    private final Map<Integer, Object> treeMap = new TreeMap<>();
-    private final Map<Integer, Object> concurrentHashMap = new ConcurrentHashMap<>();
-    private final Map<Integer, Object> concurrentSkipListMap = new ConcurrentSkipListMap<>();
-    private final Map<Integer, Object> int2ObjectArrayMap = new Int2ObjectArrayMap<>();
-
     @Setup
     public void setUp() {
         for (int i = 0; i < 1000; i++) {
@@ -80,4 +74,10 @@ public class MapBenchmark {
         }
         blackhole.consume(o);
     }
+
+    private final Map<Integer, Object> hashMap = new HashMap<>();
+    private final Map<Integer, Object> treeMap = new TreeMap<>();
+    private final Map<Integer, Object> concurrentHashMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Object> concurrentSkipListMap = new ConcurrentSkipListMap<>();
+    private final Map<Integer, Object> int2ObjectArrayMap = new Int2ObjectArrayMap<>();
 }
