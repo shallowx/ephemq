@@ -87,7 +87,7 @@ public abstract class LedgerSyncCoordinator {
         MessageLedger messageLedger = getMessageLedger(topic, ledger);
         List<SocketAddress> replicas = messageLedger.replicas();
         if (replicas == null || replicas.isEmpty()) {
-            IllegalStateException e = new IllegalStateException("No available replicas for ledger " + ledger);
+            IllegalStateException e = new IllegalStateException("No available replicas for ledger[" + ledger + "]");
             logger.error(e);
             ret.tryFailure(e);
             return ret;
@@ -100,7 +100,7 @@ public abstract class LedgerSyncCoordinator {
         Promise<CancelSyncResponse> deSyncPromise = log.unSync(config.getProxyLeaderSyncUpstreamTimeoutMs());
         deSyncPromise.addListener(f -> {
             if (logger.isInfoEnabled()) {
-                logger.info("Log {} is de-synced successfully", log.getLedger());
+                logger.info("Log[{}] is de-synced successfully", log.getLedger());
             }
 
             if (f.isSuccess()) {
@@ -109,12 +109,12 @@ public abstract class LedgerSyncCoordinator {
                    syncPromise.addListener(future -> {
                        if (future.isSuccess()) {
                            if (logger.isInfoEnabled()) {
-                               logger.info("Log {} is sync successfully", log.getLedger());
+                               logger.info("Log[{}] is sync successfully", log.getLedger());
                            }
                            ret.trySuccess(null);
                        } else {
                            if (logger.isErrorEnabled()) {
-                               logger.error("Sync Log {} failed when resuming sync, will retry after {}ms", log.getLedger(),
+                               logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
                                        config.getProxyResumeTaskScheduleDelayMs(), future.cause());
                            }
                            taskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMs(), TimeUnit.MILLISECONDS);
@@ -123,7 +123,7 @@ public abstract class LedgerSyncCoordinator {
                    });
                } catch (Exception e){
                     if (logger.isErrorEnabled()) {
-                        logger.error("Sync Log {} failed when resuming sync, will retry after {}ms", log.getLedger(),
+                        logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
                                 config.getProxyResumeTaskScheduleDelayMs(), e);
                     }
                     taskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMs(), TimeUnit.MILLISECONDS);
@@ -131,7 +131,7 @@ public abstract class LedgerSyncCoordinator {
                 }
             } else {
                 if (logger.isErrorEnabled()) {
-                    logger.error("De-sync log {} failed", log.getLedger(), f.cause());
+                    logger.error("De-sync log[{}] failed", log.getLedger(), f.cause());
                 }
                 ret.tryFailure(f.cause());
             }
@@ -143,11 +143,11 @@ public abstract class LedgerSyncCoordinator {
     public MessageLedger getMessageLedger(String topic, int ledger) {
         MessageRouter router = proxyClient.fetchRouter(topic);
         if (router == null) {
-            throw new IllegalStateException(String.format("Message router not found for %s", topic));
+            throw new IllegalStateException(String.format("The topic[%s] message router not found", topic));
         }
         MessageLedger messageLedger = router.ledger(ledger);
         if (messageLedger == null) {
-            throw new IllegalStateException(String.format("Message ledger not found for topic=%s ledger=%d", topic, ledger));
+            throw new IllegalStateException(String.format("The topic[%s] message ledger not found which ledger[%d]", topic, ledger));
         }
         return messageLedger;
     }
@@ -166,7 +166,7 @@ public abstract class LedgerSyncCoordinator {
         List<SocketAddress> replicas = messageLedger.replicas();
         if (replicas == null || replicas.isEmpty()) {
             throw new IllegalStateException(String.format(
-                    "No available replica for topic=%s ledger=%d", messageLedger.topic(), messageLedger.id()
+                    "No available replica which topic=%s ledger=%d", messageLedger.topic(), messageLedger.id()
             ));
         }
         int index = ThreadLocalRandom.current().nextInt(replicas.size());

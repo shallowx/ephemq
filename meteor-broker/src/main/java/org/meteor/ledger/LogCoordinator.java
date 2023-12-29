@@ -46,7 +46,7 @@ public class LogCoordinator {
     public void appendRecord(int ledger, int marker, ByteBuf payload, Promise<Offset> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d ot found", ledger)));
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -60,7 +60,7 @@ public class LogCoordinator {
     public void alterSubscribe(Channel channel, int ledger, IntCollection addMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d ot found", ledger)));
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -80,7 +80,7 @@ public class LogCoordinator {
     public void resetSubscribe(int ledger, int epoch, long index, Channel channel, IntCollection markers, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d ot found", ledger)));
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -136,7 +136,7 @@ public class LogCoordinator {
     public void saveSyncData(Channel channel, int ledger, int count, ByteBuf data, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] not found", ledger)));
             return;
         }
 

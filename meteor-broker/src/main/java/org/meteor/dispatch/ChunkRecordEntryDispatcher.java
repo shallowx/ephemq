@@ -179,7 +179,7 @@ public class ChunkRecordEntryDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug("Chunk met discontinuous message, {} baseOffset={} nextOffset={} runtimes={}",
+                        logger.debug("Chunk met discontinuous message, handler[{}], baseOffset[{}], nextOffset[{}], runtimes[{}]",
                                 handler, lastOffset, startOffset, runTimes);
                     }
 
@@ -212,7 +212,7 @@ public class ChunkRecordEntryDispatcher {
                     }
                 } catch (Exception e){
                     if (logger.isErrorEnabled()) {
-                        logger.error("chunk dispatch failed, {} lastOffset={}", handler, lastOffset, e);
+                        logger.error("chunk dispatch failed, handler[{}] lastOffset[{}]", handler, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -225,7 +225,7 @@ public class ChunkRecordEntryDispatcher {
             }
         } catch (Exception e){
             if (logger.isErrorEnabled()) {
-                logger.error("chunk dispatch failed, {} lastOffset={}", handler, lastOffset, e);
+                logger.error("chunk dispatch failed, handler[{}], lastOffset[{}]", handler, lastOffset, e);
             }
         } finally {
             handler.triggered.set(false);
@@ -259,7 +259,7 @@ public class ChunkRecordEntryDispatcher {
         } catch (Exception e) {
             ByteBufUtil.release(buf);
             throw new RuntimeException(String.format(
-                    "Build payload error, ledger=%d topic=%s startOffset=%s ednOffset=%s length=%d",
+                    "Build payload error, ledger[%d] topic[%s] startOffset[%s] ednOffset[%s] length[%d]",
                     ledger, topic, startOffset, endOffset, chunk.data().readableBytes()
             ));
         }
@@ -271,7 +271,7 @@ public class ChunkRecordEntryDispatcher {
                 counter.accept(count);
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("chunk count failed, ledger={} topic={}", ledger, topic, e);
+                    logger.error("chunk count failed, ledger[{}] topic[{}]", ledger, topic, e);
                 }
             }
         }
@@ -329,7 +329,7 @@ public class ChunkRecordEntryDispatcher {
                     }
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug("Chunk met discontinuous message, {} baseOffset={} nextOffset={} runtimes={}",
+                        logger.debug("Chunk met discontinuous message, pursueTask[{}] baseOffset[{}] nextOffset[{}] runtimes[{}]",
                                 pursueTask, lastOffset, startOffset, runtimes);
                     }
 
@@ -347,7 +347,7 @@ public class ChunkRecordEntryDispatcher {
                     }
                 }catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("chunk pursue failed, {} lastOffset={}", pursueTask, lastOffset, e);
+                        logger.error("chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -361,7 +361,7 @@ public class ChunkRecordEntryDispatcher {
             }
         } catch (Exception e){
             if (logger.isErrorEnabled()) {
-                logger.error("chunk pursue failed, {} lastOffset={}", pursueTask, lastOffset, e);
+                logger.error("chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
             }
         }
 
@@ -428,7 +428,7 @@ public class ChunkRecordEntryDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug("Chunk met discontinuous message, {} baseOffset={} nextOffset={} runtimes={}",
+                        logger.debug("Chunk met discontinuous message, pursueTask[{}] baseOffset[{}] nextOffset[{}] runtimes[{}]",
                                 pursueTask, lastOffset, startOffset, runtimes);
                     }
                     if (startOffset.after(alignOffset)) {
@@ -451,7 +451,7 @@ public class ChunkRecordEntryDispatcher {
                     }
                 } catch (Exception e){
                     if (logger.isErrorEnabled()) {
-                        logger.error("chunk align failed, {} lastOffset={}", pursueTask, lastOffset, e);
+                        logger.error("chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -465,7 +465,7 @@ public class ChunkRecordEntryDispatcher {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("chunk align failed, {} lastOffset={}", pursueTask, lastOffset, e);
+                logger.error("chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
             }
         }
 

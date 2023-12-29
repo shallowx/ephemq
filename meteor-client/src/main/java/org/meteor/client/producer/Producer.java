@@ -41,7 +41,7 @@ public class Producer {
     public void start() {
         if (state != null) {
             if (logger.isWarnEnabled()) {
-                logger.warn("Producer<{}> is running, don't run it replay", name);
+                logger.warn("Producer[{}] is running, don't run it replay", name);
             }
             return;
         }
@@ -56,7 +56,7 @@ public class Producer {
     public synchronized void close() {
         if (state != Boolean.TRUE) {
             if (logger.isWarnEnabled()) {
-                logger.warn("Producer<{}> was closed, don't execute it replay", name);
+                logger.warn("Producer[{}] was closed, don't execute it replay", name);
             }
             return;
         }
@@ -89,7 +89,7 @@ public class Producer {
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format("Message send failed, topic=%s queue=%s length=%s", topic, queue, length), t
+                    String.format("Message send failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
             );
         } finally {
             ByteBufUtil.release(message);
@@ -116,7 +116,7 @@ public class Producer {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), promise);
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format("Message async send failed, topic=%s queue=%s length=%s", topic, queue, length), t
+                    String.format("Message async send failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
             );
         } finally {
             ByteBufUtil.release(message);
@@ -129,7 +129,7 @@ public class Producer {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), null);
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format("Message send oneway failed, topic=%s queue=%s length=%s", topic, queue, length), t
+                    String.format("Message send oneway failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
             );
         } finally {
             ByteBufUtil.release(message);
@@ -170,7 +170,7 @@ public class Producer {
         }
 
         if (address == null) {
-            throw new IllegalStateException("Channel address not found, ledger=" + ledger);
+            throw new IllegalStateException("Channel address not found, ledger[" + ledger + "]");
         }
 
         synchronized (ledgerChannels) {

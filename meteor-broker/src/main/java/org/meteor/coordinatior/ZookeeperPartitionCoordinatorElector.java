@@ -56,7 +56,7 @@ public class ZookeeperPartitionCoordinatorElector {
             @Override
             public void isLeader() {
                 if (logger.isInfoEnabled()) {
-                    logger.info("Get leadership of {}, ledger={}", topicPartition, ledger);
+                    logger.info("Get leadership of topic_partition[{}] and ledger[{}]", topicPartition, ledger);
                 }
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
@@ -64,7 +64,7 @@ public class ZookeeperPartitionCoordinatorElector {
                         updateTopicAssigment(path);
                     } catch (Exception e) {
                         if (logger.isErrorEnabled()) {
-                            logger.error("Can't write leader info to zookeeper for {}", topicPartition, e);
+                            logger.error("Can't write leader info to zookeeper for topic_partition[{}]", topicPartition, e);
                         }
                     }
 
@@ -77,7 +77,7 @@ public class ZookeeperPartitionCoordinatorElector {
             @Override
             public void notLeader() {
                 if (logger.isInfoEnabled()) {
-                    logger.info("Lost leadership of {}, ledger={}", topicPartition);
+                    logger.info("Lost leadership of topic_partition[{}] and ledger[{}]", topicPartition);
                 }
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
@@ -111,7 +111,7 @@ public class ZookeeperPartitionCoordinatorElector {
             poolExecutor.execute(() -> {
                 try {
                     if (logger.isInfoEnabled()) {
-                        logger.info("Change leader of {} to {}", ledger, configuration.getServerId());
+                        logger.info("Change leader of ledger[{}] to server_id[{}]", ledger, configuration.getServerId());
                     }
 
                     byte[] bytes = client.getData().forPath(path);
@@ -126,7 +126,7 @@ public class ZookeeperPartitionCoordinatorElector {
                     }
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("Can't write leader info to zookeeper for {}, try again later", topicPartition, e);
+                        logger.error("Can't write leader info to zookeeper for topic_partition[{}], try again later", topicPartition, e);
                     }
                     poolExecutor.schedule(() -> updateTopicAssigment(path), 50, TimeUnit.MILLISECONDS);
                 }
@@ -156,7 +156,7 @@ public class ZookeeperPartitionCoordinatorElector {
                 }
 
                 if (logger.isInfoEnabled()) {
-                    logger.info("The leader of {} is {}", ledger, leader.getId());
+                    logger.info("The leader of ledger[{}] is ledger_id[{}]", ledger, leader.getId());
                 }
 
                 if (!latch.hasLeadership() && !leader.getId().equals(configuration.getServerId())) {
@@ -167,7 +167,7 @@ public class ZookeeperPartitionCoordinatorElector {
                     TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
                     if (topicAssignment.getReplicas().contains(configuration.getServerId())) {
                         if (logger.isInfoEnabled()) {
-                            logger.info("As the follower replica of {}, ledger={}", topicPartition, ledger);
+                            logger.info("As the follower replica of topic_partition[{}] and ledger[{}]", topicPartition, ledger);
                         }
                     }
                     syncLeader(ledger);

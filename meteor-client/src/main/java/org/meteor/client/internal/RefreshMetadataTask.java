@@ -37,7 +37,7 @@ public class RefreshMetadataTask implements Runnable {
             }
 
             if (logger.isErrorEnabled()) {
-                logger.error("Refresh metadata failed, {}", message);
+                logger.error("Refresh metadata failed", message);
             }
         }
 

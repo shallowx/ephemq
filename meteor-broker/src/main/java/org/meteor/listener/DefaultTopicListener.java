@@ -92,7 +92,7 @@ public class DefaultTopicListener implements TopicListener {
             } catch (Exception e) {
                 ByteBufUtil.release(buf);
                 if (logger.isErrorEnabled()) {
-                    logger.error("Send topic change failed, channel={}", channel, e);
+                    logger.error("Send topic change failed, channel[{}]", channel, e);
                 }
             }
         }
@@ -112,7 +112,7 @@ public class DefaultTopicListener implements TopicListener {
             } catch (Exception e) {
                 ByteBufUtil.release(buf);
                 if (logger.isErrorEnabled()) {
-                    logger.error("Send partition change failed, channel={}", channel, e);
+                    logger.error("Send partition change failed, channel[{}]", channel, e);
                 }
             }
         }

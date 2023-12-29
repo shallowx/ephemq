@@ -34,7 +34,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
         channelCounts.decrement();
         super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
-            logger.debug("Statistics duplex inactive channel, and local_address={} remote_address={}", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
+            logger.debug("Statistics duplex inactive channel, and local address[{}] and remote address[{}]", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
         }
     }
 
@@ -43,7 +43,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
         channelCounts.increment();
         super.channelActive(ctx);
         if (logger.isDebugEnabled()) {
-            logger.debug("Statistics duplex active channel, and local_address={} remote_address={}", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
+            logger.debug("Statistics duplex active channel, and local address[{}] and remote address[{}]", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
         }
     }
 }

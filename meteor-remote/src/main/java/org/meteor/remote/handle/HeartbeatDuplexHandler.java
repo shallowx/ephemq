@@ -56,7 +56,7 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
                         idleFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Channel<{}> is closed", ctx.channel().toString());
+                            logger.debug("Channel[{}] was closed", ctx.channel().toString());
                         }
                         ctx.close();
                     }

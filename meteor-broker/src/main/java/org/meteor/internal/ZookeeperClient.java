@@ -23,7 +23,7 @@ public class ZookeeperClient {
             }
 
             if (logger.isInfoEnabled()) {
-                logger.info("Using {} as zookeeper address", url);
+                logger.info("Using url[{}] as zookeeper address", url);
             }
             CuratorFramework client = CuratorFrameworkFactory.builder()
                     .connectString(url)

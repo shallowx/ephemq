@@ -52,7 +52,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         processor.onActive(channel, ctx.executor());
         ctx.fireChannelActive();
         if (logger.isDebugEnabled()) {
-            logger.debug("Processor duplex handler active channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+            logger.debug("Processor duplex handler active channel, and local_address[{}] remote_address[{}]", channel.localAddress().toString(), channel.remoteAddress().toString());
         }
     }
 
@@ -68,7 +68,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 }
                 // if you need to debug, can move this code to the top
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Read message packet - [{}] form remote address<{}>", packet, switchAddress(ctx.channel()));
+                    logger.debug("Read message packet[{}] form remote address[{}]", packet, switchAddress(ctx.channel()));
                 }
             } finally {
                 packet.release();
@@ -102,7 +102,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 rejoin.failure(cause);
             }
             if (logger.isErrorEnabled()) {
-                logger.error("Channel<{}> invoke processor error - command={}, rejoin={}, body length={}",
+                logger.error("Channel[{}] invoke processor error, command[{}]  rejoin[{}]  body_length[{}]",
                         ctx.channel().remoteAddress(), command, rejoin, length, cause);
             }
         } finally {
@@ -115,7 +115,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         var answer = packet.answer();
         if (answer == 0) {
             if (logger.isErrorEnabled()) {
-                logger.error("Chanel<{}> command is invalid: command={} answer={} ", switchAddress(ctx.channel()),
+                logger.error("Chanel[{}] command is invalid: command[{}] answer[{}] ", switchAddress(ctx.channel()),
                         command, answer);
             }
             return;
@@ -133,7 +133,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             }
         } catch (Throwable cause) {
            if (logger.isErrorEnabled()) {
-               logger.error("Chanel<{}> invoke not found: command={} answer={} ", ctx.channel().remoteAddress(),
+               logger.error("Chanel[{}] invoke not found: command[{}] answer[{}] ", ctx.channel().remoteAddress(),
                        command, answer);
            }
             return;
@@ -143,7 +143,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
         if (!freed) {
            if (logger.isErrorEnabled()) {
-               logger.error("Channel<{}> invoke not found: command={} answer={}", ctx.channel().remoteAddress(),
+               logger.error("Channel[{}] invoke not found: command[{}] answer[{}]", ctx.channel().remoteAddress(),
                        command, answer);
            }
         }
@@ -225,7 +225,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
                 // if you need to debug, can move this code to the top
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Handle expired schedule task: PH={} PI={} RH={} RI={}", processHolder, processInvoker,
+                    logger.debug("Handle expired schedule task: PH[{}] PI[{}] RH[{}] RI[{}]", processHolder, processInvoker,
                             remnantHolder, remnantInvoker);
                 }
             }
@@ -235,16 +235,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
-                String.format("Channel<%s> invoke timeout", ctx.channel().toString()))));
+                String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
         if (logger.isDebugEnabled()) {
-            logger.debug("Free entire invoke, whole={}", whole);
+            logger.debug("Free entire invoke, whole[{}]", whole);
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (logger.isErrorEnabled()) {
-            logger.error("Channel<{}> caught {}", ctx.channel().toString(), cause);
+            logger.error("Channel[{}] caught", ctx.channel().toString(), cause);
         }
         ctx.close();
     }

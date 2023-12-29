@@ -24,7 +24,7 @@ public class ShutdownHookThread {
     public void run() {
         synchronized (this) {
             if (logger.isWarnEnabled()) {
-                logger.warn("Shutdown hook was invoked, {}", this.shutdownTimes.incrementAndGet());
+                logger.warn("Shutdown hook was invoked, shutdown time(ms)[{}]", this.shutdownTimes.incrementAndGet());
             }
 
             if (!this.hasShutdown) {
@@ -38,7 +38,7 @@ public class ShutdownHookThread {
 
                 long consumingTime = System.currentTimeMillis() - begin;
                 if (logger.isWarnEnabled()) {
-                    logger.warn("Shutdown hook over, consuming time(ms):{}", consumingTime);
+                    logger.warn("Shutdown hook over, consuming time(ms)[{}]", consumingTime);
                 }
             }
         }

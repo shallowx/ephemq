@@ -35,7 +35,7 @@ public class ClientExample {
         // Supports multiple partitions, but only supports a single copy of a partition
         CreateTopicResponse response = client.createTopic(EXAMPLE_TOPIC, 10, 1);
         if (logger.isInfoEnabled()) {
-            logger.info("topic:{} topic_id:{} partition:{}", response.getTopic(), response.getTopicId(), response.getPartitions());
+            logger.info("topic[{}] topic_id[{}] partition[{}]", response.getTopic(), response.getTopicId(), response.getPartitions());
         }
         // do something
     }
@@ -43,7 +43,7 @@ public class ClientExample {
     public void delTopic() throws Exception {
         DeleteTopicResponse response = client.deleteTopic(EXAMPLE_TOPIC);
         if (logger.isInfoEnabled()) {
-            logger.info("response:{}", response.toString());
+            logger.info("response[{}]", response.toString());
         }
     }
 

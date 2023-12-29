@@ -47,7 +47,7 @@ public class PrometheusRegistry implements MetricsRegistrySetUp {
             });
             new Thread(this.server::start).start();
             if (logger.isInfoEnabled()) {
-                logger.info("Prometheus http server is listening at {}, and scrape url={}", socketAddress, url);
+                logger.info("Prometheus http server is listening at socket address[{}], and scrape url[{}]", socketAddress, url);
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {

@@ -32,7 +32,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
         String topic = signal.getTopic();
         if (!producer.containsRouter(topic)) {
             if (logger.isDebugEnabled()) {
-                logger.debug("It's not contains the topic<{}> router", topic);
+                logger.debug("It's not contains the topic[{}] router", topic);
             }
             return;
         }
@@ -45,7 +45,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
                     MessageRouter router = producer.fetchRouter(topic);
                     if (router == null) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("the topic<{}> router is empty", topic);
+                            logger.debug("The topic[{}] router is empty", topic);
                         }
                         return;
                     }
@@ -53,7 +53,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
                     MessageLedger ledger = router.ledger(ledgerId);
                     if (ledger != null && version != 0 && ledger.version() >= version) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("the topic<{}> router is not need to refresh", topic);
+                            logger.debug("The topic[{}] router is not need to refresh", topic);
                         }
                         return;
                     }

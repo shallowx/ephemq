@@ -58,7 +58,7 @@ public class InternalClient extends Client {
                         .register(meterRegistry);
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("Inner client bind failed, executor={}", eventExecutor.toString(), t);
+                    logger.error("Inner client bind failed, executor[{}]", eventExecutor.toString(), t);
                 }
             }
         }

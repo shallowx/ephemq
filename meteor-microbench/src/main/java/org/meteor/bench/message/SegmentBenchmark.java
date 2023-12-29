@@ -25,7 +25,7 @@ public class SegmentBenchmark {
         int location = theBuffer.writerIndex();
         try {
             // keep empty
-            // this is netty part not included in the meteor devople scope of performance testing
+            // this is netty part not included in the meteor dev scope of performance testing
         } catch (Throwable t) {
             theBuffer.writerIndex(location);
             throw new IllegalStateException(String.format("Segment write error, location:%d", location), t);
@@ -48,7 +48,7 @@ public class SegmentBenchmark {
             int location = theBuffer.writerIndex();
             try {
                 // keep empty
-                // this is netty part not included in the meteor devople scope of performance testing
+                // this is netty part not included in the meteor dev scope of performance testing
             } catch (Throwable t) {
                 theBuffer.writerIndex(location);
                 throw new IllegalStateException("Segment write error", t);

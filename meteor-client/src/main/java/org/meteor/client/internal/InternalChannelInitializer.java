@@ -83,12 +83,12 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                     case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
                     default -> {
                         if (answer != null) {
-                            answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code unsupported: " + command));
+                            answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code["+ command +"]" + " unsupported"));
                         }
                     }
                 }
             } catch (Throwable t) {
-                logger.error("<{}> processor is error, code={} length={}", NetworkUtil.switchAddress(clientChannel.channel()), command, length);
+                logger.error("Channel[{}] processor is error, code[{}] length[{}]", NetworkUtil.switchAddress(clientChannel.channel()), command, length);
                 if (answer != null) {
                     answer.failure(t);
                 }

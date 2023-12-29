@@ -11,7 +11,7 @@ public class TopicPatternUtil {
         }
 
         if (!TOPIC_PATTERN.matcher(topic).matches()) {
-            throw new IllegalStateException(String.format("Topic<%s> is invalid", topic));
+            throw new IllegalStateException(String.format("Topic[%s] is invalid", topic));
         }
     }
 

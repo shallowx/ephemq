@@ -68,7 +68,7 @@ public class MeteorThreadFactory implements ThreadFactory {
 
         if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
             throw new IllegalArgumentException(
-                    "priority: " + priority + " (expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)");
+                    "priority: " + priority + " [expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)]");
         }
 
         prefix = poolName + '-' + poolId.incrementAndGet() + '-';

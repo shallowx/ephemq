@@ -70,7 +70,7 @@ public class Client implements MeterBinder {
             if (address == null) {
                 throw new RuntimeException("Fetch random client channel failed", t);
             }
-            throw new RuntimeException(String.format("Fetch random client channel failed, address=%s", address), t);
+            throw new RuntimeException(String.format("Fetch random client channel failed, address[%s]", address), t);
         }
     }
 
@@ -147,7 +147,7 @@ public class Client implements MeterBinder {
         });
 
         channel.closeFuture().addListener(f -> {
-            assemblePromise.tryFailure(new IllegalArgumentException("Client channel is closed"));
+            assemblePromise.tryFailure(new IllegalArgumentException(String.format("Client channel[%s] is closed", channel)));
             assembleChannels.remove(channel.id().asLongText());
         });
 
@@ -206,7 +206,7 @@ public class Client implements MeterBinder {
     public synchronized void start() {
         if (isRunning()) {
             if (logger.isWarnEnabled()) {
-                logger.warn("Client<{}> is running, don't run it replay", name);
+                logger.warn("Client[{}] is running, don't run it replay", name);
             }
             return;
         }
@@ -245,7 +245,7 @@ public class Client implements MeterBinder {
     public synchronized void close() {
         if (!isRunning()) {
             if (logger.isWarnEnabled()) {
-                logger.warn("Client<{}> was closed, don't execute it replay", name);
+                logger.warn("Client[{}] was closed, don't execute it replay", name);
             }
             return;
         }
@@ -303,7 +303,7 @@ public class Client implements MeterBinder {
         } catch (Throwable t) {
             throw new RuntimeException(
                     String.format(
-                            "Fetch message router from given client channel %s failed, topic=%s",
+                            "Fetch message router from given client channel[%s] failed, topic[%s]",
                             channel == null ? null : channel.channel().remoteAddress(), topic
                     ), t
             );
@@ -319,7 +319,7 @@ public class Client implements MeterBinder {
         } catch (Throwable t) {
             throw new RuntimeException(
                     String.format(
-                            "Refresh message router from given client channel %s failed, topic=%s",
+                            "Refresh message router from given client channel[%s] failed, topic[%s]",
                             channel == null ? null : channel.channel().remoteAddress(), topic
                     ), t
             );
@@ -366,7 +366,7 @@ public class Client implements MeterBinder {
 
     private MessageRouter queryRouter(ClientChannel channel, String topic) throws Exception {
         if (!channel.isActive()) {
-            throw new IllegalStateException("Client channel is inactive");
+            throw new IllegalStateException(String.format("Client channel[%s] is inactive", channel));
         }
 
         ClusterInfo clusterInfo = queryClusterInfo(channel);
@@ -541,21 +541,21 @@ public class Client implements MeterBinder {
         Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
         NodeMetadata originalBroker = nodesMap.get(original);
         if (originalBroker == null) {
-            return response.setSuccess(false).setMessage(String.format("The original broker %s is not in cluster", original)).build();
+            return response.setSuccess(false).setMessage(String.format("The original broker[%s] is not in cluster", original)).build();
         }
 
         if (!nodesMap.containsKey(destination)) {
-            return response.setSuccess(false).setMessage(String.format("The destination broker %s is not in cluster", original)).build();
+            return response.setSuccess(false).setMessage(String.format("The destination broker[%s] is not in cluster", original)).build();
         }
 
         Map<String, TopicInfo> topicInfos = queryTopicInfos(clientChannel, topic);
         if (topicInfos == null || topicInfos.isEmpty()) {
-            return response.setSuccess(false).setMessage(String.format("The topic %s does not exist", original)).build();
+            return response.setSuccess(false).setMessage(String.format("The topic[%s] does not exist", original)).build();
         }
         TopicInfo topicInfo = topicInfos.get(topic);
         PartitionMetadata partitionMetadata = topicInfo.getPartitionsMap().get(partition);
         if (partitionMetadata == null) {
-            return response.setSuccess(false).setMessage(String.format("The topic %s partition %d does not exist", original, partition)).build();
+            return response.setSuccess(false).setMessage(String.format("The topic[%s] partition[%d] does not exist", original, partition)).build();
         }
 
         clientChannel = fetchChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));

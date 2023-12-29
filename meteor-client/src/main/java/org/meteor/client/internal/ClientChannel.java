@@ -82,7 +82,7 @@ public class ClientChannel implements MeterBinder {
 
     @Override
     public String toString() {
-        return "ClientChannel{" +
+        return "client_channel{" +
                 "address=" + address+
                 ", id='" + id + '\'' +
                 ", channel=" + channel +
@@ -120,7 +120,7 @@ public class ClientChannel implements MeterBinder {
             }
         } catch (Throwable t) {
             RuntimeException cause = new RuntimeException(
-                    String.format("Channel invoke failed, address=%s code=%d length=%d", address(), code, length), t
+                    String.format("Channel invoke failed, address[%s] code[%d] length[%d]", address(), code, length), t
             );
             if (callback != null) {
                 callback.operationCompleted(null, cause);

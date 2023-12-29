@@ -90,7 +90,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
                     if (logger.isErrorEnabled()) {
-                        logger.error("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
+                        logger.error("Channel[{}] command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
                     }
                 }
             }
@@ -600,7 +600,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             answer.failure(throwable);
         }
         if (logger.isErrorEnabled()) {
-            logger.error("{}: command={} address={}", err, code, NetworkUtil.switchAddress(channel), throwable);
+            logger.error("Channel{} process failed, command[{}] and address[{}]", err, code, NetworkUtil.switchAddress(channel), throwable);
         }
     }
 

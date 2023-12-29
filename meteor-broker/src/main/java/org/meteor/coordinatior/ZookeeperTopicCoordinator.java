@@ -144,7 +144,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             }
             return partitionInfos;
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Topic %s dose not exist", topic));
+            throw new IllegalStateException(String.format("Topic[%s] dose not exist", topic));
         }
     }
 
@@ -354,7 +354,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             createResult.put(CorrelationIdConstants.PARTITION_REPLICAS, partitionReplicas);
             return createResult;
         } catch (KeeperException.NodeExistsException e) {
-            throw new IllegalStateException(String.format("Topic %s already exists", topic));
+            throw new IllegalStateException(String.format("Topic[%s] already exists", topic));
         }
     }
 
@@ -373,7 +373,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         try {
             deleteBuilder.guaranteed().deletingChildrenIfNeeded().forPath(path);
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Topic %s does not exist", topic));
+            throw new IllegalStateException(String.format("Topic[%s] does not exist", topic));
         }
     }
 
@@ -431,7 +431,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             participantCoordinator.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
-                    "Partition[topic=%s partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
+                    "Partition[topic=%s, partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
             ));
         } catch (Exception e) {
             retirePartition(topicPartition);
@@ -453,7 +453,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
-                    "Partition[topic=%s partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
+                    "Partition[topic=%s, partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
             ));
         } catch (Exception e) {
             handoverPartition(heir, topicPartition);
@@ -472,7 +472,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             initPartition(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
-                    "Partition[topic=%s partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
+                    "Partition[topic=%s, partition=%d] does not exist", topicPartition.getTopic(), topicPartition.getPartition()
             ));
         } catch (Exception e) {
             takeoverPartition(topicPartition);

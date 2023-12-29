@@ -79,7 +79,7 @@ public class DefaultCoordinator implements Coordinator {
         if (clusterCoordinator != null) {
             clusterCoordinator.start();
             if (logger.isInfoEnabled()) {
-                logger.info("Cluster coordinator<{}> start successfully", clusterCoordinator.getThisNode().getCluster());
+                logger.info("Cluster coordinator[{}] start successfully", clusterCoordinator.getThisNode().getCluster());
             }
 
         }
@@ -104,7 +104,7 @@ public class DefaultCoordinator implements Coordinator {
     public void shutdown() throws Exception {
         if (clusterCoordinator != null) {
             if (logger.isInfoEnabled()) {
-                logger.info("Cluster coordinator<{}> will shutdown", clusterCoordinator.getThisNode().getCluster());
+                logger.info("Cluster coordinator[{}] will shutdown", clusterCoordinator.getThisNode().getCluster());
             }
 
             clusterCoordinator.shutdown();

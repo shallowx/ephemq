@@ -25,7 +25,7 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
         coordinator.getConnectionCoordinator().remove(channel);
         super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
-            logger.debug("Service duplex inactive channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+            logger.debug("Service duplex inactive channel, and local_address[{}] remote_address[{}]", channel.localAddress().toString(), channel.remoteAddress().toString());
         }
     }
 
@@ -35,7 +35,7 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
         coordinator.getConnectionCoordinator().remove(channel);
         ctx.close();
         if (logger.isDebugEnabled()) {
-            logger.debug("Service duplex caught channel, and local_address={} remote_address={}", channel.localAddress().toString(), channel.remoteAddress().toString());
+            logger.debug("Service duplex caught channel, and local address[{}] and remote address[{}]", channel.localAddress().toString(), channel.remoteAddress().toString());
         }
     }
 }

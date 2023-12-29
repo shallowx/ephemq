@@ -64,7 +64,7 @@ public class DefaultSocketServer {
         ChannelFuture future = bootstrap.bind(commonConfiguration.getAdvertisedAddress(), commonConfiguration.getAdvertisedPort())
                 .addListener((ChannelFutureListener) f -> {
                     if (f.isSuccess() && logger.isInfoEnabled()) {
-                        logger.info("Socket server is listening at {}", f.channel().localAddress());
+                        logger.info("Socket server is listening at socket address[{}]", f.channel().localAddress());
                     } else {
                         if (logger.isErrorEnabled()) {
                             logger.error("Socket server start failed", f.cause());
@@ -80,7 +80,7 @@ public class DefaultSocketServer {
                     .addListener((ChannelFutureListener) cf -> {
                         if (cf.isSuccess() && logger.isInfoEnabled()) {
                             SocketAddress address = cf.channel().localAddress();
-                            logger.info("Socket compatible server is listening at {}", address);
+                            logger.info("Socket compatible server is listening at socket address[{}]", address);
                         } else {
                             if (logger.isErrorEnabled()) {
                                 logger.error("Socket server start failed", cf.cause());

@@ -42,7 +42,7 @@ public class ParticipantCoordinator {
     public void subscribeLedger(int ledger, int epoch, long index, Channel channel, Promise<SyncResponse> promise) {
         Log log = coordinator.getLogCoordinator().getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
+            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The ledger[%d] not found", ledger)));
             return;
         }
 
@@ -85,11 +85,11 @@ public class ParticipantCoordinator {
         try {
             Log log = coordinator.getLogCoordinator().getLog(ledger);
             if (log == null) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("Ledger %d not found", ledger)));
+                promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The ledger [%d] not found", ledger)));
                 return;
             }
             if (logger.isInfoEnabled()) {
-                logger.info("Synchronize data of {} from {} with epoch: {}, index:{}", ledger, channel, epoch, index);
+                logger.info("Synchronize data of ledger[{}] from channel[{}] with epoch[{}] and index[{}]", ledger, channel, epoch, index);
             }
             SyncRequest request = SyncRequest.newBuilder()
                     .setEpoch(epoch)

@@ -31,7 +31,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
             if (invalidChannel) {
                 in.release();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Invalid channel<{}>", ctx.channel().toString());
+                    logger.debug("Invalid channel[{}]", ctx.channel().toString());
                 }
                 return;
             }
@@ -72,7 +72,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final byte magic = buf.getByte(buf.readerIndex());
                 if (magic != MessagePacket.MAGIC_NUMBER) {
-                    throw new DecoderException("Invalid magic number:" + magic);
+                    throw new DecoderException("Invalid magic number[" + magic + "]");
                 }
 
                 state = READ_MESSAGE_LENGTH;
@@ -84,7 +84,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final int frameLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
                 if (frameLength < MessagePacket.HEADER_LENGTH) {
-                    throw new DecoderException("Invalid frame length:" + frameLength);
+                    throw new DecoderException("Invalid frame length[" + frameLength +"]");
                 }
 
                 writeFrameBytes = frameLength;
@@ -105,7 +105,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 return MessagePacket.newPacket(answer, command, body);
             }
             default: {
-                throw new DecoderException("Invalid decode state:" + state);
+                throw new DecoderException("Invalid decode state[" + state +"]");
             }
         }
     }
