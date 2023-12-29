@@ -6,10 +6,10 @@
     <parent>
         <groupId>org.meteor</groupId>
         <artifactId>meteor</artifactId>
-        <version>${revision}</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>example</artifactId>
+    <artifactId>meteor-example</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.meteor</groupId>
-            <artifactId>client</artifactId>
+            <artifactId>meteor-client</artifactId>
             <version>${meteor.client.version}</version>
         </dependency>
     </dependencies>

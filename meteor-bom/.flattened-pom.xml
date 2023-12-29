@@ -3,11 +3,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.meteor</groupId>
-  <artifactId>bom</artifactId>
+  <artifactId>meteor-bom</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/</description>
-  <url>http://nexus.sonatype.org/oss-repository-hosting.html/bom</url>
+  <url>http://nexus.sonatype.org/oss-repository-hosting.html/meteor-bom</url>
   <organization>
     <name>shallowx</name>
     <url>https://github.com/shallowx</url>
@@ -22,7 +22,7 @@
   <scm>
     <connection>scm:git@github.com:shallowx/meteor.git</connection>
     <developerConnection>scm:git@github.com:shallowx/meteor.git</developerConnection>
-    <url>http://svn.sonatype.org/spice/tags/oss-parent-7/bom</url>
+    <url>http://svn.sonatype.org/spice/tags/oss-parent-7/meteor-bom</url>
   </scm>
   <issueManagement>
     <system>github</system>

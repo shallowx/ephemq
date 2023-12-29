@@ -8,11 +8,10 @@
 
     <groupId>org.meteor</groupId>
     <artifactId>meteor</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>17</maven.compiler.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -177,16 +176,16 @@
     </build>
 
     <modules>
-        <module>broker</module>
-        <module>bom</module>
-        <module>client</module>
-        <module>remote</module>
-        <module>common</module>
-        <module>metrics</module>
-        <module>cli</module>
-        <module>microbench</module>
-        <module>distribution</module>
-        <module>proxy</module>
-        <module>example</module>
+        <module>meteor-broker</module>
+        <module>meteor-bom</module>
+        <module>meteor-client</module>
+        <module>meteor-remote</module>
+        <module>meteor-common</module>
+        <module>meteor-metrics</module>
+        <module>meteor-cli</module>
+        <module>meteor-microbench</module>
+        <module>meteor-distribution</module>
+        <module>meteor-proxy</module>
+        <module>meteor-example</module>
     </modules>
 </project>
