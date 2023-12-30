@@ -27,17 +27,15 @@ public abstract class AbstractHandler<E, T> {
     abstract Function<EventExecutor, T> apply();
 
     protected T newHandler(WeakHashMap<T, Integer> handlers, EventExecutor[] executors) {
-        return createHandler(executors, handlers, apply());
+        return newHandler(executors, handlers, apply());
     }
 
-    private T createHandler(EventExecutor[] executors, WeakHashMap<T , Integer> handlers, Function<EventExecutor, T> f) {
-        synchronized (handlers) {
-            int[] countArray = getCounts(executors, handlers);
-            int index = index(countArray);
-            T result = f.apply(executors[index]);
-            handlers.put(result, index);
-            return result;
-        }
+    private T newHandler(EventExecutor[] executors, WeakHashMap<T , Integer> handlers, Function<EventExecutor, T> f) {
+        int[] countArray = getCounts(executors, handlers);
+        int index = index(countArray);
+        T result = f.apply(executors[index]);
+        handlers.put(result, index);
+        return result;
     }
 
     private int index(int[] countArray) {

@@ -19,6 +19,11 @@ public class RecordHandler extends AbstractHandler<RecordSynchronization, Record
         return counts;
     }
 
+    @Override
+    Function<EventExecutor, RecordHandler> apply() {
+        return RecordHandler::new;
+    }
+
     public RecordHandler() {
         super(null);
     }
@@ -32,15 +37,10 @@ public class RecordHandler extends AbstractHandler<RecordSynchronization, Record
     }
 
     @Override
-    Function<EventExecutor, RecordHandler> apply() {
-        return RecordHandler::new;
-    }
-
-    @Override
     public String toString() {
         return "record_handler{" +
                 "markerSubscriptionMap=" + markerSubscriptionMap +
-                ", id='" + id + '\'' +
+                ", id='" + id + 
                 ", channelSubscriptionMap=" + channelSubscriptionMap +
                 ", triggered=" + triggered +
                 ", dispatchExecutor=" + dispatchExecutor +

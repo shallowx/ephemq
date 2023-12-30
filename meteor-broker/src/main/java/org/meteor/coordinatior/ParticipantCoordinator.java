@@ -144,7 +144,7 @@ public class ParticipantCoordinator {
                 promise.trySuccess(null);
                 return promise;
             }
-            log.detachAllSynchronize(promise);
+            log.cancelAllSynchronize(promise);
         } catch (Exception e) {
             promise.tryFailure(e);
         }

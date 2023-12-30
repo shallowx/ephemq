@@ -206,13 +206,13 @@ public class Log {
         }
     }
 
-    public Promise<CancelSyncResponse> unSync(int timeoutMs) {
+    public Promise<CancelSyncResponse> cancelSync(int timeoutMs) {
         Promise<CancelSyncResponse> promise = storageExecutor.newPromise();
         if (storageExecutor.inEventLoop()) {
-            doUnSync(timeoutMs, promise);
+            doCancelSync(timeoutMs, promise);
         } else {
             try {
-                storageExecutor.submit(() -> doUnSync(timeoutMs, promise));
+                storageExecutor.submit(() -> doCancelSync(timeoutMs, promise));
             } catch (Exception e) {
                 promise.tryFailure(e);
                 logger.error(e.getMessage(), e);
@@ -221,14 +221,14 @@ public class Log {
         return promise;
     }
 
-    private void doUnSync(int timeoutMs, Promise<CancelSyncResponse> promise) {
+    private void doCancelSync(int timeoutMs, Promise<CancelSyncResponse> promise) {
         if (syncFuture != null && !syncFuture.isDone()) {
-            syncFuture.addListener(future -> doUnSync(timeoutMs, promise));
+            syncFuture.addListener(future -> doCancelSync(timeoutMs, promise));
             return;
         }
 
         if (unSyncFuture != null && !unSyncFuture.isDone()) {
-            unSyncFuture.addListener(future -> doUnSync(timeoutMs, promise));
+            unSyncFuture.addListener(future -> doCancelSync(timeoutMs, promise));
             return;
         }
 
@@ -330,9 +330,9 @@ public class Log {
         chunkEntryDispatcher.attach(channel, initOffset, promise);
     }
 
-    public void detachAllSynchronize(Promise<Void> promise) {
+    public void cancelAllSynchronize(Promise<Void> promise) {
         try {
-            chunkEntryDispatcher.deSubscribeAll();
+            chunkEntryDispatcher.cancelSubscribes();
             promise.trySuccess(null);
         } catch (Exception e) {
             promise.tryFailure(e);
@@ -659,7 +659,7 @@ public class Log {
     }
 
     private void doSubscribeSynchronize(Channel channel, Promise<Void> promise) {
-        chunkEntryDispatcher.deSubscribe(channel, promise);
+        chunkEntryDispatcher.cancelSubscribe(channel, promise);
     }
 
 

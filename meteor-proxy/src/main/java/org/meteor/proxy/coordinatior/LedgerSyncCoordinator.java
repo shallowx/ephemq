@@ -67,7 +67,7 @@ public abstract class LedgerSyncCoordinator {
                 coordinator.getLogCoordinator().destroyLog(log.getLedger());
             }
         });
-        log.deSyncAndCloseIfNotSubscribe(promise);
+        log.cancelSyncAndCloseIfNotSubscribe(promise);
         return promise;
     }
 
@@ -97,8 +97,8 @@ public abstract class LedgerSyncCoordinator {
             ret.trySuccess(null);
             return ret;
         }
-        Promise<CancelSyncResponse> deSyncPromise = log.unSync(config.getProxyLeaderSyncUpstreamTimeoutMs());
-        deSyncPromise.addListener(f -> {
+        Promise<CancelSyncResponse> cancelSyncPromise = log.cancelSync(config.getProxyLeaderSyncUpstreamTimeoutMs());
+        cancelSyncPromise.addListener(f -> {
             if (logger.isInfoEnabled()) {
                 logger.info("Log[{}] is de-synced successfully", log.getLedger());
             }

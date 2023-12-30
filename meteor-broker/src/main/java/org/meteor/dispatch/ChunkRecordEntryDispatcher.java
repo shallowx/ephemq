@@ -75,26 +75,26 @@ public class ChunkRecordEntryDispatcher {
         return executors[(channel.hashCode() & 0x7fffffff) % executors.length];
     }
 
-    public void deSubscribeAll() {
+    public void cancelSubscribes() {
         for (Channel channel : channelHandlerMap.keySet()) {
-            deSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
+            cancelSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
         }
     }
 
-    public void deSubscribe(Channel channel, Promise<Void> promise) {
+    public void cancelSubscribe(Channel channel, Promise<Void> promise) {
         try {
             EventExecutor executor = channelExecutor(channel);
             if (executor.inEventLoop()) {
-                doDeSubscribe(channel, promise);
+                doCancelSubscribe(channel, promise);
             } else {
-                executor.execute(() -> doDeSubscribe(channel, promise));
+                executor.execute(() -> doCancelSubscribe(channel, promise));
             }
         } catch (Exception e) {
             promise.tryFailure(e);
         }
     }
 
-    private void doDeSubscribe(Channel channel, Promise<Void> promise) {
+    private void doCancelSubscribe(Channel channel, Promise<Void> promise) {
         try {
             if (!state.get()) {
                 throw new IllegalStateException("Chunk dispatcher is inactive");
@@ -555,7 +555,7 @@ public class ChunkRecordEntryDispatcher {
                         for (Channel channel : channelHandlerMap.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
                                 channels.add(channel);
-                                doDeSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
+                                doCancelSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
                             }
                         }
 

@@ -31,13 +31,13 @@ public class ProxyLog extends Log {
         this.proxyConfiguration = config.getProxyConfiguration();
     }
 
-    public void deSyncAndCloseIfNotSubscribe(Promise<Boolean> promise) {
+    public void cancelSyncAndCloseIfNotSubscribe(Promise<Boolean> promise) {
         if (storageExecutor.inEventLoop()) {
-            doDeSyncAndCloseIfNotSubscribe(promise);
+            doCancelSyncAndCloseIfNotSubscribe(promise);
         } else {
            try {
                storageExecutor.execute(() -> {
-                   doDeSyncAndCloseIfNotSubscribe(promise);
+                   doCancelSyncAndCloseIfNotSubscribe(promise);
                });
            } catch (Exception e){
                if (logger.isDebugEnabled()) {
@@ -48,7 +48,7 @@ public class ProxyLog extends Log {
         }
     }
 
-    private void doDeSyncAndCloseIfNotSubscribe(Promise<Boolean> promise) {
+    private void doCancelSyncAndCloseIfNotSubscribe(Promise<Boolean> promise) {
         if (getSubscriberCount() > 0) {
             promise.trySuccess(false);
             return;
@@ -60,8 +60,8 @@ public class ProxyLog extends Log {
         }
 
         if (isSynchronizing(logState)) {
-            Promise<CancelSyncResponse> deSyncPromise = unSync(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs());
-            deSyncPromise.addListener(f -> {
+            Promise<CancelSyncResponse> cancelSyncPromise = cancelSync(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs());
+            cancelSyncPromise.addListener(f -> {
                 if (f.isSuccess()) {
                     Promise<Boolean> closePromise = storageExecutor.newPromise();
                     closePromise.addListener(future -> {
