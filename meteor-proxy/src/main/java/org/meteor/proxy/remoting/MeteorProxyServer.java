@@ -1,4 +1,4 @@
-package org.meteor.proxy.net;
+package org.meteor.proxy.remoting;
 
 import org.meteor.internal.MeteorServer;
 import org.meteor.coordinatior.Coordinator;

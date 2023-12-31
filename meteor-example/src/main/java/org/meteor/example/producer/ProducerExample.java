@@ -23,7 +23,6 @@ public class ProducerExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerExample.class);
     private static final String EXAMPLE_TOPIC = "example-topic";
     private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
-
     public static void main(String[] args) throws Exception {
         ProducerExample example = new ProducerExample();
         example.send();
@@ -87,6 +86,9 @@ public class ProducerExample {
         @Override
         public void onCompleted(MessageId messageId, Throwable t) {
             // what to do as needed
+            if (logger.isErrorEnabled()) {
+                logger.info("message_id - {}", messageId);
+            }
         }
     }
 }

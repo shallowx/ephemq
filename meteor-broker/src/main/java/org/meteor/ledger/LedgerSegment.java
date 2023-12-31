@@ -15,10 +15,10 @@ public class LedgerSegment {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSegment.class);
     private static final ReferenceQueue<BufferHolder> BUFFER_RECYCLE_QUEUE = new ReferenceQueue<>();
     private static final Thread BUFFER_RECYCLE_THREAD;
-    private static final Map<Reference<?>, ByteBuf> buffers = new ConcurrentHashMap<>();
+    private static final Map<Reference<?>, ByteBuf> BUFFERS = new ConcurrentHashMap<>();
 
     static {
-        BUFFER_RECYCLE_THREAD = new Thread(LedgerSegment::recycleBuffer, "segment-cycle");
+        BUFFER_RECYCLE_THREAD = new Thread(LedgerSegment::recycleBuffer, "segment-recycle");
         BUFFER_RECYCLE_THREAD.setDaemon(true);
         BUFFER_RECYCLE_THREAD.start();
     }
@@ -44,7 +44,7 @@ public class LedgerSegment {
         while (true) {
             try {
                 Reference<?> reference = BUFFER_RECYCLE_QUEUE.remove();
-                ByteBuf buf = buffers.remove(reference);
+                ByteBuf buf = BUFFERS.remove(reference);
                 if (buf != null) {
                     buf.release();
                 }
@@ -56,7 +56,7 @@ public class LedgerSegment {
 
     private static BufferHolder createBufferHolder(ByteBuf buf) {
         BufferHolder holder = new BufferHolder(buf);
-        buffers.put(new PhantomReference<>(holder, BUFFER_RECYCLE_QUEUE), buf);
+        BUFFERS.put(new PhantomReference<>(holder, BUFFER_RECYCLE_QUEUE), buf);
         return holder;
     }
 

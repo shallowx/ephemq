@@ -1,8 +1,7 @@
 package org.meteor.metrics.config;
 
 import java.util.Properties;
-
-import static org.meteor.common.util.TypeTransformUtil.*;
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
 public class MetricsConfig {
     private static final String METRICS_ENABLED = "metrics.prometheus.enable";

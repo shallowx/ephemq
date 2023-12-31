@@ -58,8 +58,8 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
         }
 
         try {
-            channel.invoker().queryTopicInfo(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs(), promise, builder.build());
-            QueryTopicInfoResponse response = promise.get(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs(), TimeUnit.MILLISECONDS);
+            channel.invoker().queryTopicInfo(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds(), promise, builder.build());
+            QueryTopicInfoResponse response = promise.get(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
             return response.getTopicInfosMap();
         } catch (Throwable t){
             logger.error(t.getMessage(), t);

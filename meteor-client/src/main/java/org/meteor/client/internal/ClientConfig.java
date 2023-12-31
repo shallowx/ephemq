@@ -10,34 +10,34 @@ public class ClientConfig {
     private boolean socketEpollPrefer = true;
     private int socketSendBufferSize = 65536;
     private int socketReceiveBufferSize = 65536;
-    private int channelConnectionTimeoutMs = 3000;
-    private int channelKeepPeriodMs = 20000;
-    private int channelIdleTimeoutMs = 30000;
+    private int channelConnectionTimeoutMilliseconds = 3000;
+    private int channelKeepPeriodMilliseconds = 20000;
+    private int channelIdleTimeoutMilliseconds = 30000;
     private int channelInvokePermits = 100;
-    private int workerThreadCount = NettyRuntime.availableProcessors();
-    private int metadataTimeoutMs = 5000;
-    private int metadataRefreshPeriodMs = 5000;
+    private int workerThreadLimit = NettyRuntime.availableProcessors();
+    private int metadataTimeoutMilliseconds = 5000;
+    private int metadataRefreshPeriodMilliseconds = 5000;
     private int connectionPoolCapacity = 1;
-    private int createTopicTimeoutMs = 2000;
-    private int deleteTopicTimeoutMs = 2000;
-    private int calculatePartitionsTimeoutMs = 5000;
+    private int createTopicTimeoutMilliseconds = 2000;
+    private int deleteTopicTimeoutMilliseconds = 2000;
+    private int calculatePartitionsTimeoutMilliseconds = 5000;
 
-    private int migrateLedgerTimeoutMs = 5000;
+    private int migrateLedgerTimeoutMilliseconds = 5000;
 
-    public int getMigrateLedgerTimeoutMs() {
-        return migrateLedgerTimeoutMs;
+    public int getMigrateLedgerTimeoutMilliseconds() {
+        return migrateLedgerTimeoutMilliseconds;
     }
 
-    public void setMigrateLedgerTimeoutMs(int migrateLedgerTimeoutMs) {
-        this.migrateLedgerTimeoutMs = migrateLedgerTimeoutMs;
+    public void setMigrateLedgerTimeoutMilliseconds(int migrateLedgerTimeoutMilliseconds) {
+        this.migrateLedgerTimeoutMilliseconds = migrateLedgerTimeoutMilliseconds;
     }
 
-    public int getCalculatePartitionsTimeoutMs() {
-        return calculatePartitionsTimeoutMs;
+    public int getCalculatePartitionsTimeoutMilliseconds() {
+        return calculatePartitionsTimeoutMilliseconds;
     }
 
-    public void setCalculatePartitionsTimeoutMs(int calculatePartitionsTimeoutMs) {
-        this.calculatePartitionsTimeoutMs = calculatePartitionsTimeoutMs;
+    public void setCalculatePartitionsTimeoutMilliseconds(int calculatePartitionsTimeoutMilliseconds) {
+        this.calculatePartitionsTimeoutMilliseconds = calculatePartitionsTimeoutMilliseconds;
     }
 
     public List<String> getBootstrapAddresses() {
@@ -72,28 +72,28 @@ public class ClientConfig {
         this.socketReceiveBufferSize = socketReceiveBufferSize;
     }
 
-    public int getChannelConnectionTimeoutMs() {
-        return channelConnectionTimeoutMs;
+    public int getChannelConnectionTimeoutMilliseconds() {
+        return channelConnectionTimeoutMilliseconds;
     }
 
-    public void setChannelConnectionTimeoutMs(int channelConnectionTimeoutMs) {
-        this.channelConnectionTimeoutMs = channelConnectionTimeoutMs;
+    public void setChannelConnectionTimeoutMilliseconds(int channelConnectionTimeoutMilliseconds) {
+        this.channelConnectionTimeoutMilliseconds = channelConnectionTimeoutMilliseconds;
     }
 
-    public int getChannelKeepPeriodMs() {
-        return channelKeepPeriodMs;
+    public int getChannelKeepPeriodMilliseconds() {
+        return channelKeepPeriodMilliseconds;
     }
 
-    public void setChannelKeepPeriodMs(int channelKeepPeriodMs) {
-        this.channelKeepPeriodMs = channelKeepPeriodMs;
+    public void setChannelKeepPeriodMilliseconds(int channelKeepPeriodMilliseconds) {
+        this.channelKeepPeriodMilliseconds = channelKeepPeriodMilliseconds;
     }
 
-    public int getChannelIdleTimeoutMs() {
-        return channelIdleTimeoutMs;
+    public int getChannelIdleTimeoutMilliseconds() {
+        return channelIdleTimeoutMilliseconds;
     }
 
-    public void setChannelIdleTimeoutMs(int channelIdleTimeoutMs) {
-        this.channelIdleTimeoutMs = channelIdleTimeoutMs;
+    public void setChannelIdleTimeoutMilliseconds(int channelIdleTimeoutMilliseconds) {
+        this.channelIdleTimeoutMilliseconds = channelIdleTimeoutMilliseconds;
     }
 
     public int getChannelInvokePermits() {
@@ -104,28 +104,28 @@ public class ClientConfig {
         this.channelInvokePermits = channelInvokePermits;
     }
 
-    public int getWorkerThreadCount() {
-        return workerThreadCount;
+    public int getWorkerThreadLimit() {
+        return workerThreadLimit;
     }
 
-    public void setWorkerThreadCount(int workerThreadCount) {
-        this.workerThreadCount = workerThreadCount;
+    public void setWorkerThreadLimit(int workerThreadLimit) {
+        this.workerThreadLimit = workerThreadLimit;
     }
 
-    public int getMetadataTimeoutMs() {
-        return metadataTimeoutMs;
+    public int getMetadataTimeoutMilliseconds() {
+        return metadataTimeoutMilliseconds;
     }
 
-    public void setMetadataTimeoutMs(int metadataTimeoutMs) {
-        this.metadataTimeoutMs = metadataTimeoutMs;
+    public void setMetadataTimeoutMilliseconds(int metadataTimeoutMilliseconds) {
+        this.metadataTimeoutMilliseconds = metadataTimeoutMilliseconds;
     }
 
-    public int getMetadataRefreshPeriodMs() {
-        return metadataRefreshPeriodMs;
+    public int getMetadataRefreshPeriodMilliseconds() {
+        return metadataRefreshPeriodMilliseconds;
     }
 
-    public void setMetadataRefreshPeriodMs(int metadataRefreshPeriodMs) {
-        this.metadataRefreshPeriodMs = metadataRefreshPeriodMs;
+    public void setMetadataRefreshPeriodMilliseconds(int metadataRefreshPeriodMilliseconds) {
+        this.metadataRefreshPeriodMilliseconds = metadataRefreshPeriodMilliseconds;
     }
 
     public int getConnectionPoolCapacity() {
@@ -136,19 +136,19 @@ public class ClientConfig {
         this.connectionPoolCapacity = connectionPoolCapacity;
     }
 
-    public int getCreateTopicTimeoutMs() {
-        return createTopicTimeoutMs;
+    public int getCreateTopicTimeoutMilliseconds() {
+        return createTopicTimeoutMilliseconds;
     }
 
-    public void setCreateTopicTimeoutMs(int createTopicTimeoutMs) {
-        this.createTopicTimeoutMs = createTopicTimeoutMs;
+    public void setCreateTopicTimeoutMilliseconds(int createTopicTimeoutMilliseconds) {
+        this.createTopicTimeoutMilliseconds = createTopicTimeoutMilliseconds;
     }
 
-    public int getDeleteTopicTimeoutMs() {
-        return deleteTopicTimeoutMs;
+    public int getDeleteTopicTimeoutMilliseconds() {
+        return deleteTopicTimeoutMilliseconds;
     }
 
-    public void setDeleteTopicTimeoutMs(int deleteTopicTimeoutMs) {
-        this.deleteTopicTimeoutMs = deleteTopicTimeoutMs;
+    public void setDeleteTopicTimeoutMilliseconds(int deleteTopicTimeoutMilliseconds) {
+        this.deleteTopicTimeoutMilliseconds = deleteTopicTimeoutMilliseconds;
     }
 }

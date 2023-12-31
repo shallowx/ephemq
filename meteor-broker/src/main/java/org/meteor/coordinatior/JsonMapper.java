@@ -10,7 +10,6 @@ import java.io.IOException;
 
 public class JsonMapper {
     private static final ObjectMapper MAPPER = new ObjectMapper();
-
     static {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);

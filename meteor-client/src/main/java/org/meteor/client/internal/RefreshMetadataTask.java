@@ -24,7 +24,7 @@ public class RefreshMetadataTask implements Runnable {
 
     @Override
     public void run() {
-        if (client.taskExecutor.isShuttingDown()) {
+        if (client.refreshMetadataExecutor.isShuttingDown()) {
             return;
         }
 
@@ -41,8 +41,8 @@ public class RefreshMetadataTask implements Runnable {
             }
         }
 
-        if (!client.taskExecutor.isShuttingDown()) {
-            client.taskExecutor.schedule(this, config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
+        if (!client.refreshMetadataExecutor.isShuttingDown()) {
+            client.refreshMetadataExecutor.schedule(this, config.getMetadataRefreshPeriodMilliseconds(), TimeUnit.MILLISECONDS);
         }
     }
 

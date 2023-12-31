@@ -36,7 +36,7 @@ public class InternalClient extends Client {
 
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         {
-            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) taskExecutor;
+            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) refreshMetadataExecutor;
             Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
                     .tag(CLUSTER_TAG, configuration.getClusterName())
                     .tag(BROKER_TAG, configuration.getServerId())

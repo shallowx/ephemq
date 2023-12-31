@@ -28,10 +28,10 @@ public class ZookeeperClient {
             CuratorFramework client = CuratorFrameworkFactory.builder()
                     .connectString(url)
                     .namespace(namespace)
-                    .sessionTimeoutMs(config.getZookeeperSessionTimeoutMs())
-                    .connectionTimeoutMs(config.getZookeeperConnectionTimeoutMs())
+                    .sessionTimeoutMs(config.getZookeeperSessionTimeoutMilliseconds())
+                    .connectionTimeoutMs(config.getZookeeperConnectionTimeoutMilliseconds())
                     .connectionStateErrorPolicy(new SessionConnectionStateErrorPolicy())
-                    .retryPolicy(new ExponentialBackoffRetry(config.getZookeeperConnectionRetrySleepMs(), config.getZookeeperConnectionRetries()))
+                    .retryPolicy(new ExponentialBackoffRetry(config.getZookeeperConnectionRetrySleepMilliseconds(), config.getZookeeperConnectionRetries()))
                     .build();
 
             client.start();

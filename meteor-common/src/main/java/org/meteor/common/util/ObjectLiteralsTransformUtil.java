@@ -2,9 +2,8 @@ package org.meteor.common.util;
 
 import javax.naming.OperationNotSupportedException;
 
-public class TypeTransformUtil {
-
-    private TypeTransformUtil() throws OperationNotSupportedException {
+public class ObjectLiteralsTransformUtil {
+    private ObjectLiteralsTransformUtil() throws OperationNotSupportedException {
         throw new OperationNotSupportedException();
     }
 

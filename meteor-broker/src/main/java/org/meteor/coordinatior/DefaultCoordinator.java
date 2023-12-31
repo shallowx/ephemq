@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DefaultCoordinator implements Coordinator {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultCoordinator.class);
     private final List<APIListener> apiListeners = new LinkedList<>();
     protected LogCoordinator logCoordinator;
@@ -34,7 +33,7 @@ public class DefaultCoordinator implements Coordinator {
     protected EventExecutorGroup syncGroup;
     protected EventExecutorGroup auxGroup;
     protected List<EventExecutor> auxEventExecutors;
-    protected Client innerClient;
+    protected Client internalClient;
 
     public DefaultCoordinator() {
     }
@@ -69,12 +68,12 @@ public class DefaultCoordinator implements Coordinator {
         List<String> clusterNodeAddress = Collections.singletonList(configuration.getCommonConfig().getAdvertisedAddress() + ":" + configuration.getCommonConfig().getAdvertisedPort());
 
         clientConfig.setBootstrapAddresses(clusterNodeAddress);
-        clientConfig.setChannelConnectionTimeoutMs(configuration.getNetworkConfig().getConnectionTimeoutMs());
+        clientConfig.setChannelConnectionTimeoutMilliseconds(configuration.getNetworkConfig().getConnectionTimeoutMs());
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);
-        innerClient = new InternalClient("inner-client", clientConfig, new InternalClientListener(this, configuration.getChunkRecordDispatchConfig().getChunkDispatchSyncSemaphore()), configuration.getCommonConfig(), this);
-        innerClient.start();
+        internalClient = new InternalClient("internal-client", clientConfig, new InternalClientListener(this, configuration.getChunkRecordDispatchConfig().getChunkDispatchSyncSemaphore()), configuration.getCommonConfig(), this);
+        internalClient.start();
 
         if (clusterCoordinator != null) {
             clusterCoordinator.start();
@@ -144,11 +143,11 @@ public class DefaultCoordinator implements Coordinator {
             storageGroup.shutdownGracefully();
         }
 
-        if (innerClient != null) {
+        if (internalClient != null) {
             if (logger.isInfoEnabled()) {
                 logger.info("Inner client will shutdown");
             }
-            innerClient.close();
+            internalClient.close();
         }
 
         for (APIListener apiListener : apiListeners) {
@@ -223,7 +222,7 @@ public class DefaultCoordinator implements Coordinator {
     }
 
     @Override
-    public Client getInnerClient() {
-        return innerClient;
+    public Client getInternalClient() {
+        return internalClient;
     }
 }

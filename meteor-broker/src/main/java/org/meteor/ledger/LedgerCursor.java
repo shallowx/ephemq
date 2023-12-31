@@ -7,17 +7,17 @@ import java.lang.ref.WeakReference;
 
 public class LedgerCursor {
     private final LedgerStorage storage;
-    private WeakReference<LedgerSegment> segmentHolder;
+    private WeakReference<LedgerSegment> segmentWeakReference;
     private int position;
 
     public LedgerCursor(LedgerStorage storage, LedgerSegment segment, int position) {
         this.storage = storage;
-        this.segmentHolder = new WeakReference<>(segment);
+        this.segmentWeakReference = new WeakReference<>(segment);
         this.position = position;
     }
 
     public LedgerCursor copy() {
-        return new LedgerCursor(storage, segmentHolder.get(), position);
+        return new LedgerCursor(storage, segmentWeakReference.get(), position);
     }
 
     public boolean hashNext() {
@@ -49,7 +49,7 @@ public class LedgerCursor {
 
             LedgerSegment next = present.next();
             if (next != null && offset.after(next.baseOffset())) {
-                segmentHolder = new WeakReference<>(next);
+                segmentWeakReference = new WeakReference<>(next);
                 position = next.basePosition();
                 continue;
             }
@@ -62,7 +62,7 @@ public class LedgerCursor {
 
     public LedgerCursor seekToTail() {
         LedgerSegment tail = storage.tailSegment();
-        segmentHolder = new WeakReference<>(tail);
+        segmentWeakReference = new WeakReference<>(tail);
         position = tail.lastPosition();
         return this;
     }
@@ -80,7 +80,7 @@ public class LedgerCursor {
                 return null;
             }
 
-            segmentHolder = new WeakReference<>(next);
+            segmentWeakReference = new WeakReference<>(next);
             position = next.basePosition();
         }
     }
@@ -90,13 +90,13 @@ public class LedgerCursor {
     }
 
     private LedgerSegment presentSegment() {
-        LedgerSegment segment = segmentHolder.get();
+        LedgerSegment segment = segmentWeakReference.get();
         if (segment != null) {
             return segment;
         }
 
         LedgerSegment head = storage.headSegment();
-        segmentHolder = new WeakReference<>(head);
+        segmentWeakReference = new WeakReference<>(head);
         position = head.basePosition();
         return head;
     }

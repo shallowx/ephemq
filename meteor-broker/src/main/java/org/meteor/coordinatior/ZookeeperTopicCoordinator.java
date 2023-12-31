@@ -306,7 +306,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         try {
             Collections.shuffle(clusterUpNodes);
             topicConfig = topicConfig == null
-                    ? new org.meteor.common.message.TopicConfig(segmentConfiguration.getSegmentRollingSize(), segmentConfiguration.getSegmentRetainLimit(), segmentConfiguration.getSegmentRetainTime(), false)
+                    ? new org.meteor.common.message.TopicConfig(segmentConfiguration.getSegmentRollingSize(), segmentConfiguration.getSegmentRetainLimit(), segmentConfiguration.getSegmentRetainTimeMilliseconds(), false)
                     : topicConfig;
 
             Map<String, Object> createResult = new HashMap<>(2);

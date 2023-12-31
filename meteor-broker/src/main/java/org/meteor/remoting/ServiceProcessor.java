@@ -1,4 +1,4 @@
-package org.meteor.net;
+package org.meteor.remoting;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
@@ -232,7 +232,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                         }
 
                         InetSocketAddress destinationAddr = new InetSocketAddress(destNode.getHost(), destNode.getPort());
-                        Client innerClient = coordinator.getInnerClient();
+                        Client innerClient = coordinator.getInternalClient();
                         ClientChannel clientChannel = innerClient.fetchChannel(destinationAddr);
                         Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
                         promise.addListener(future -> {
@@ -258,7 +258,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                                 processFailed("Process migrate ledger failed", code, channel, answer, future.cause());
                             }
                         });
-                        clientChannel.invoker().migrateLedger(networkConfiguration.getNotifyClientTimeoutMs(), promise, request);
+                        clientChannel.invoker().migrateLedger(networkConfiguration.getNotifyClientTimeoutMilliseconds(), promise, request);
                         recordCommand(code, bytes, System.nanoTime() - time, promise.isSuccess());
                         return;
                     }

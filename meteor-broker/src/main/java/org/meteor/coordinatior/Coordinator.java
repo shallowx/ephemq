@@ -37,5 +37,5 @@ public interface Coordinator {
 
     List<EventExecutor> getAuxEventExecutors();
 
-    Client getInnerClient();
+    Client getInternalClient();
 }

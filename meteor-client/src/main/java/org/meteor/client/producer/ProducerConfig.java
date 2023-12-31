@@ -4,9 +4,9 @@ import org.meteor.client.internal.ClientConfig;
 
 public class ProducerConfig {
     private ClientConfig clientConfig = new ClientConfig();
-    private int sendTimeoutMs = 2000;
-    private int sendAsyncTimeoutMs = 2000;
-    private int sendOnewayTimeoutMs = 2000;
+    private int sendTimeoutMilliseconds = 2000;
+    private int sendAsyncTimeoutMilliseconds = 2000;
+    private int sendOnewayTimeoutMilliseconds = 2000;
 
     public ClientConfig getClientConfig() {
         return clientConfig;
@@ -16,27 +16,27 @@ public class ProducerConfig {
         this.clientConfig = clientConfig;
     }
 
-    public int getSendTimeoutMs() {
-        return sendTimeoutMs;
+    public int getSendTimeoutMilliseconds() {
+        return sendTimeoutMilliseconds;
     }
 
-    public void setSendTimeoutMs(int sendTimeoutMs) {
-        this.sendTimeoutMs = sendTimeoutMs;
+    public void setSendTimeoutMilliseconds(int sendTimeoutMilliseconds) {
+        this.sendTimeoutMilliseconds = sendTimeoutMilliseconds;
     }
 
-    public int getSendAsyncTimeoutMs() {
-        return sendAsyncTimeoutMs;
+    public int getSendAsyncTimeoutMilliseconds() {
+        return sendAsyncTimeoutMilliseconds;
     }
 
-    public void setSendAsyncTimeoutMs(int sendAsyncTimeoutMs) {
-        this.sendAsyncTimeoutMs = sendAsyncTimeoutMs;
+    public void setSendAsyncTimeoutMilliseconds(int sendAsyncTimeoutMilliseconds) {
+        this.sendAsyncTimeoutMilliseconds = sendAsyncTimeoutMilliseconds;
     }
 
-    public int getSendOnewayTimeoutMs() {
-        return sendOnewayTimeoutMs;
+    public int getSendOnewayTimeoutMilliseconds() {
+        return sendOnewayTimeoutMilliseconds;
     }
 
-    public void setSendOnewayTimeoutMs(int sendOnewayTimeoutMs) {
-        this.sendOnewayTimeoutMs = sendOnewayTimeoutMs;
+    public void setSendOnewayTimeoutMilliseconds(int sendOnewayTimeoutMilliseconds) {
+        this.sendOnewayTimeoutMilliseconds = sendOnewayTimeoutMilliseconds;
     }
 }

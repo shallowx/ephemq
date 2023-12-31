@@ -20,11 +20,11 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
     private final Producer producer;
-    private final EventExecutor executor;
+    private final EventExecutor refreshRouterExecutor;
 
     public DefaultProducerListener(Producer producer) {
         this.producer = producer;
-        executor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
+        refreshRouterExecutor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
 
         int ledgerId = signal.getLedger();
         int version = signal.getLedgerVersion();
-        executor.schedule(() -> {
+        refreshRouterExecutor.schedule(() -> {
             try {
                 if (producer.containsRouter(topic)) {
                     MessageRouter router = producer.fetchRouter(topic);
@@ -67,7 +67,7 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
 
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-        SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) executor;
+        SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) refreshRouterExecutor;
         Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
                 .tag("type", "producer-task")
                 .tag("name", producer.getName())
@@ -78,10 +78,10 @@ public class DefaultProducerListener implements ClientListener, MeterBinder {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void listenerCompleted() {
-        executor.shutdownGracefully();
+        refreshRouterExecutor.shutdownGracefully();
         try {
-            while (!executor.isTerminated()) {
-                executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+            while (!refreshRouterExecutor.isTerminated()) {
+                refreshRouterExecutor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
             logger.debug(e.getMessage(), e);

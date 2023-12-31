@@ -28,7 +28,7 @@ public abstract class LedgerSyncCoordinator {
     protected final ProxyConfig config;
     protected final Coordinator coordinator;
     protected final Client proxyClient;
-    protected final EventExecutor taskExecutor;
+    protected final EventExecutor resumeSyncTaskExecutor;
 
     public LedgerSyncCoordinator(ProxyConfig config, Coordinator coordinator) {
         this.config = config;
@@ -37,15 +37,15 @@ public abstract class LedgerSyncCoordinator {
         final List<String> upstreamServers = Arrays.stream(config.getProxyUpstreamServers()
                 .split(",")).map(String::trim).toList();
         clientConfig.setBootstrapAddresses(upstreamServers);
-        clientConfig.setChannelConnectionTimeoutMs(config.getProxyChannelConnectionTimeoutMs());
+        clientConfig.setChannelConnectionTimeoutMilliseconds(config.getProxyChannelConnectionTimeoutMilliseconds());
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(1048576);
-        clientConfig.setWorkerThreadCount(config.getProxyClientWorkerThreadLimit());
+        clientConfig.setWorkerThreadLimit(config.getProxyClientWorkerThreadLimit());
         clientConfig.setConnectionPoolCapacity(config.getProxyClientPoolSize());
         ProxyClientListener listener = new ProxyClientListener(config, coordinator, this);
         this.proxyClient = new InternalClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), coordinator);
         listener.setClient(proxyClient);
-        this.taskExecutor = coordinator.getAuxEventExecutorGroup().next();
+        this.resumeSyncTaskExecutor = coordinator.getAuxEventExecutorGroup().next();
     }
 
     public void start() {
@@ -61,7 +61,7 @@ public abstract class LedgerSyncCoordinator {
     }
 
     public Promise<Boolean> deSyncAndCloseIfNotSubscribe(ProxyLog log) {
-        Promise<Boolean> promise = taskExecutor.newPromise();
+        Promise<Boolean> promise = resumeSyncTaskExecutor.newPromise();
         promise.addListener(f -> {
             if (f.isSuccess() && (Boolean)f.getNow()) {
                 coordinator.getLogCoordinator().destroyLog(log.getLedger());
@@ -72,7 +72,7 @@ public abstract class LedgerSyncCoordinator {
     }
 
     public Promise<Void> resumeSync(ClientChannel channel, String topic, int ledger, Promise<Void> promise) {
-        Promise<Void> ret = promise == null ? taskExecutor.newPromise() : promise;
+        Promise<Void> ret = promise == null ? resumeSyncTaskExecutor.newPromise() : promise;
         if (channel == null) {
             ret.setSuccess(null);
             return ret;
@@ -97,7 +97,7 @@ public abstract class LedgerSyncCoordinator {
             ret.trySuccess(null);
             return ret;
         }
-        Promise<CancelSyncResponse> cancelSyncPromise = log.cancelSync(config.getProxyLeaderSyncUpstreamTimeoutMs());
+        Promise<CancelSyncResponse> cancelSyncPromise = log.cancelSync(config.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
         cancelSyncPromise.addListener(f -> {
             if (logger.isInfoEnabled()) {
                 logger.info("Log[{}] is de-synced successfully", log.getLedger());
@@ -115,18 +115,18 @@ public abstract class LedgerSyncCoordinator {
                        } else {
                            if (logger.isErrorEnabled()) {
                                logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
-                                       config.getProxyResumeTaskScheduleDelayMs(), future.cause());
+                                       config.getProxyResumeTaskScheduleDelayMilliseconds(), future.cause());
                            }
-                           taskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMs(), TimeUnit.MILLISECONDS);
+                           resumeSyncTaskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMilliseconds(), TimeUnit.MILLISECONDS);
                            ret.tryFailure(future.cause());
                        }
                    });
                } catch (Exception e){
                     if (logger.isErrorEnabled()) {
                         logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
-                                config.getProxyResumeTaskScheduleDelayMs(), e);
+                                config.getProxyResumeTaskScheduleDelayMilliseconds(), e);
                     }
-                    taskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMs(), TimeUnit.MILLISECONDS);
+                    resumeSyncTaskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), config.getProxyResumeTaskScheduleDelayMilliseconds(), TimeUnit.MILLISECONDS);
                     ret.tryFailure(e);
                 }
             } else {
@@ -158,7 +158,7 @@ public abstract class LedgerSyncCoordinator {
             messageLedger = getMessageLedger(log.getTopic(), log.getLedger());
         }
         channel = getSyncChannel(messageLedger);
-        return log.syncFromTarget(channel, new Offset(0, 0), config.getProxyLeaderSyncUpstreamTimeoutMs());
+        return log.syncFromTarget(channel, new Offset(0, 0), config.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
     }
 
     @Nonnull

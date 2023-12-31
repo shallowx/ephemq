@@ -18,7 +18,7 @@ public class MessageHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageHandler.class);
     private final String id;
     private final Semaphore semaphore;
-    private final EventExecutor executor;
+    private final EventExecutor handleExecutor;
     private final Map<String, Map<String, Mode>> wholeQueueTopics;
     private final MessageListener listener;
 
@@ -26,13 +26,13 @@ public class MessageHandler {
             Map<String, Mode>> wholeQueueTopics, MessageListener listener) {
         this.id = id;
         this.semaphore = semaphore;
-        this.executor = executor;
+        this.handleExecutor = executor;
         this.wholeQueueTopics = wholeQueueTopics;
         this.listener = listener;
     }
 
     void handle(ClientChannel channel, int marker, MessageId messageId, ByteBuf data) {
-        if (executor.isShuttingDown()) {
+        if (handleExecutor.isShuttingDown()) {
             return;
         }
 
@@ -40,7 +40,7 @@ public class MessageHandler {
         data.retain();
 
         try {
-            executor.execute((AbstractEventExecutor.LazyRunnable) () -> doHandle(channel, marker, messageId, data));
+            handleExecutor.execute((AbstractEventExecutor.LazyRunnable) () -> doHandle(channel, marker, messageId, data));
         } catch (Throwable t) {
             data.release();
             semaphore.release();

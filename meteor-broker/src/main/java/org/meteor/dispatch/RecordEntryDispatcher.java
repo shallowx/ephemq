@@ -39,13 +39,13 @@ public class RecordEntryDispatcher {
     private final int followLimit;
     private final int pursueLimit;
     private final int alignLimit;
-    private final long pursueTimeoutMs;
+    private final long pursueTimeoutMilliseconds;
     private final int loadLimit;
     private final IntConsumer counter;
     private final EventExecutor[] executors;
     private final List<RecordHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
-    private final WeakHashMap<RecordHandler, Integer> allocateHandlers = new WeakHashMap<>();
-    private final ConcurrentMap<Channel, RecordHandler> channelHandlerMap = new ConcurrentHashMap<>();
+    private final WeakHashMap<RecordHandler, Integer> weakHandlers = new WeakHashMap<>();
+    private final ConcurrentMap<Channel, RecordHandler> channelHandlers = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
     public RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
@@ -56,7 +56,7 @@ public class RecordEntryDispatcher {
         this.followLimit = config.getDispatchEntryFollowLimit();
         this.pursueLimit = config.getDispatchEntryPursueLimit();
         this.alignLimit = config.getDispatchEntryAlignLimit();
-        this.pursueTimeoutMs = config.getDispatchEntryPursueTimeoutMs();
+        this.pursueTimeoutMilliseconds = config.getDispatchEntryPursueTimeoutMilliseconds();
         this.loadLimit = config.getDispatchEntryLoadLimit();
         this.counter = dispatchCounter;
 
@@ -67,7 +67,7 @@ public class RecordEntryDispatcher {
     }
 
     public int channelCount() {
-        return channelHandlerMap.size();
+        return channelHandlers.size();
     }
 
     private EventExecutor channelExecutor(Channel channel) {
@@ -75,20 +75,20 @@ public class RecordEntryDispatcher {
     }
 
     private RecordHandler allocateHandler(Channel channel) {
-        RecordHandler result = channelHandlerMap.get(channel);
+        RecordHandler result = channelHandlers.get(channel);
         if (result != null) {
             return result;
         }
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int middleLimit = loadLimit >> 1;
-        synchronized (allocateHandlers) {
-            if (allocateHandlers.isEmpty()) {
-                return RecordHandler.INSTANCE.newHandler(allocateHandlers, executors);
+        synchronized (weakHandlers) {
+            if (weakHandlers.isEmpty()) {
+                return RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
             Map<RecordHandler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
-            for (RecordHandler handler : allocateHandlers.keySet()) {
+            for (RecordHandler handler : weakHandlers.keySet()) {
                 int channelCount = handler.getChannelSubscriptionMap().size();
                 if (channelCount >= loadLimit) {
                     continue;
@@ -103,7 +103,7 @@ public class RecordEntryDispatcher {
             }
 
             if (selectHandlers.isEmpty() || randomBound == 0) {
-                return result != null ? result : RecordHandler.INSTANCE.newHandler(allocateHandlers, executors);
+                return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
             int index = random.nextInt(randomBound);
@@ -114,7 +114,7 @@ public class RecordEntryDispatcher {
                     return entry.getKey();
                 }
             }
-            return result != null ? result : RecordHandler.INSTANCE.newHandler(allocateHandlers, executors);
+            return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
         }
     }
 
@@ -184,7 +184,7 @@ public class RecordEntryDispatcher {
             });
 
             channelSubscriptionMap.put(channel, newSubscription);
-            channelHandlerMap.putIfAbsent(channel, handler);
+            channelHandlers.putIfAbsent(channel, handler);
             promise.trySuccess(newSubscription.getMarkers().size());
         } catch (Throwable t) {
             promise.tryFailure(t);
@@ -207,7 +207,7 @@ public class RecordEntryDispatcher {
     private void doAlter(Channel channel, IntCollection appendMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
         try {
             checkActive();
-            RecordHandler handler = channelHandlerMap.get(channel);
+            RecordHandler handler = channelHandlers.get(channel);
             ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
             RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
@@ -232,7 +232,7 @@ public class RecordEntryDispatcher {
             markers.addAll(appendMarkers);
             if (markers.isEmpty()) {
                 channelSubscriptionMap.remove(channel);
-                channelHandlerMap.remove(channel);
+                channelHandlers.remove(channel);
             }
             promise.trySuccess(markers.size());
         } catch (Throwable t) {
@@ -257,7 +257,7 @@ public class RecordEntryDispatcher {
         try {
             checkActive();
 
-            RecordHandler handler = channelHandlerMap.get(channel);
+            RecordHandler handler = channelHandlers.get(channel);
             ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
             RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
@@ -276,7 +276,7 @@ public class RecordEntryDispatcher {
             });
 
             channelSubscriptionMap.remove(channel);
-            channelHandlerMap.remove(channel);
+            channelHandlers.remove(channel);
             promise.trySuccess(true);
         } catch (Throwable t) {
             promise.tryFailure(t);
@@ -428,7 +428,7 @@ public class RecordEntryDispatcher {
             return;
         }
 
-        if (System.currentTimeMillis() - task.getPursueTime() > pursueTimeoutMs) {
+        if (System.currentTimeMillis() - task.getPursueTime() > pursueTimeoutMilliseconds) {
             if (logger.isErrorEnabled()) {
                 logger.warn("Giving up pursue task[{}]", task);
             }
@@ -699,9 +699,9 @@ public class RecordEntryDispatcher {
             for (EventExecutor executor : executors) {
                 try {
                     executor.submit(() -> {
-                        for (Channel channel : channelHandlerMap.keySet()) {
+                        for (Channel channel : channelHandlers.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
-                                AbstractHandler<RecordSynchronization, RecordHandler> handler = channelHandlerMap.get(channel);
+                                AbstractHandler<RecordSynchronization, RecordHandler> handler = channelHandlers.get(channel);
                                 ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getChannelSubscriptionMap();
                                 RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
                                 if (subscription != null) {

@@ -41,10 +41,10 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
         this.consumer = consumer;
         this.consumerConfig = consumerConfig;
 
-        int shardCount = Math.max(consumerConfig.getHandlerThreadCount(), consumerConfig.getHandlerShardCount());
+        int shardCount = Math.max(consumerConfig.getHandlerThreadLimit(), consumerConfig.getHandlerShardLimit());
         this.handlers = new MessageHandler[shardCount];
-        int handlerPendingCount = consumerConfig.getHandlerPendingCount();
-        this.group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadCount(), "consumer-message-group");
+        int handlerPendingCount = consumerConfig.getHandlerPendingLimit();
+        this.group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadLimit(), "consumer-message-group");
         for (int i = 0; i < shardCount; i++) {
             Semaphore semaphore = new Semaphore(handlerPendingCount);
             MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next(), consumer.getWholeQueueTopics(), listener);
@@ -110,7 +110,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
                             }
 
                             obsoleteFutures.remove(k);
-                        }, consumerConfig.getControlRetryDelayMs(), TimeUnit.MILLISECONDS));
+                        }, consumerConfig.getControlRetryDelayMilliseconds(), TimeUnit.MILLISECONDS));
             } catch (Throwable t) {
                 logger.error(t);
             }

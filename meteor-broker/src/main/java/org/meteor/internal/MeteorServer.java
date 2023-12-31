@@ -4,7 +4,7 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import org.meteor.listener.ServerListener;
 import org.meteor.coordinatior.ClusterCoordinator;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.net.DefaultSocketServer;
+import org.meteor.remoting.DefaultSocketServer;
 import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;

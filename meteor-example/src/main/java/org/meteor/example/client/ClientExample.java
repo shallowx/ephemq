@@ -17,7 +17,6 @@ import org.meteor.remote.proto.server.DeleteTopicResponse;
 
 public class ClientExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientExample.class);
-
     public static void main(String[] args) throws Exception {
         ClientExample example = new ClientExample();
         example.createTopic();

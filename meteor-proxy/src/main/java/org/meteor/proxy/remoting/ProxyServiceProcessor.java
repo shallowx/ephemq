@@ -1,4 +1,4 @@
-package org.meteor.proxy.net;
+package org.meteor.proxy.remoting;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -19,7 +19,7 @@ import org.meteor.ledger.Log;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.TopicListener;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.net.ServiceProcessor;
+import org.meteor.remoting.ServiceProcessor;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
 import org.meteor.proxy.coordinatior.ProxyClusterCoordinator;
@@ -148,7 +148,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             TopicConfig topicConfig = new TopicConfig(
                     serverConfiguration.getSegmentConfig().getSegmentRollingSize(),
                     serverConfiguration.getSegmentConfig().getSegmentRetainLimit(),
-                    serverConfiguration.getSegmentConfig().getSegmentRetainTime(),
+                    serverConfiguration.getSegmentConfig().getSegmentRetainTimeMilliseconds(),
                     true
             );
             TopicPartition topicPartition = new TopicPartition(messageLedger.topic(), messageLedger.partition());

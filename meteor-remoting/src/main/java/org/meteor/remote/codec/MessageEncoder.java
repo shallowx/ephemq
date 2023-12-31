@@ -17,10 +17,8 @@ import static org.meteor.remote.util.ByteBufUtil.release;
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageEncoder.class);
     private static final MessageEncoder ENCODER = new MessageEncoder();
-
     private MessageEncoder() {
     }
-
     public static MessageEncoder instance() {
         return ENCODER;
     }

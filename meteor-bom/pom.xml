@@ -83,32 +83,32 @@
     <dependencies>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>client</artifactId>
+        <artifactId>meteor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>broker</artifactId>
+        <artifactId>meteor-broker</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>common</artifactId>
+        <artifactId>meteor-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>remote</artifactId>
+        <artifactId>meteor-remoting</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>mertics</artifactId>
+        <artifactId>meteor-mertics</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.meteor</groupId>
-        <artifactId>proxy</artifactId>
+        <artifactId>meteor-proxy</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

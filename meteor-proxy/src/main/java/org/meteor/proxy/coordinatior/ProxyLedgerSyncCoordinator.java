@@ -36,7 +36,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-        }, config.getProxyLeaderSyncInitialDelayMs(), config.getProxyLeaderSyncPeriodMs(), TimeUnit.MILLISECONDS);
+        }, config.getProxyLeaderSyncInitialDelayMilliseconds(), config.getProxyLeaderSyncPeriodMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     private void commitLoad() throws Exception {

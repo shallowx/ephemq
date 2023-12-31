@@ -38,8 +38,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Log {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Log.class);
+
     protected final TopicPartition topicPartition;
     protected final int ledger;
     protected final String topic;
@@ -47,17 +47,17 @@ public class Log {
     protected final EventExecutor storageExecutor;
     protected final EventExecutor commandExecutor;
     protected final RecordEntryDispatcher entryDispatcher;
+    protected ChunkRecordEntryDispatcher chunkEntryDispatcher;
     protected final List<LogListener> listeners;
     protected final Coordinator coordinator;
-    protected final Meter segmentCountMeter;
-    protected final Meter segmentBytesMeter;
+    protected final Meter segmentCount;
+    protected final Meter segmentBytes;
     protected final int forwardTimeout;
     protected final AtomicReference<LogState> state = new AtomicReference<>(null);
     protected Migration migration;
     protected ClientChannel syncChannel;
-    protected Promise<SyncResponse> syncFuture;
-    protected Promise<CancelSyncResponse> unSyncFuture;
-    protected ChunkRecordEntryDispatcher chunkEntryDispatcher;
+    protected Promise<SyncResponse> syncPromise;
+    protected Promise<CancelSyncResponse> cancelSyncPromise;
 
     public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
@@ -76,7 +76,7 @@ public class Log {
             ledgerConfig = new LedgerConfig()
                     .segmentRetainCounts(config.getSegmentConfig().getSegmentRetainLimit())
                     .segmentBufferCapacity(config.getSegmentConfig().getSegmentRollingSize())
-                    .segmentRetainMs(config.getSegmentConfig().getSegmentRetainTime())
+                    .segmentRetainMs(config.getSegmentConfig().getSegmentRetainTimeMilliseconds())
                     .allocate(false);
         }
 
@@ -90,10 +90,10 @@ public class Log {
                 .and(MetricsConstants.CLUSTER_TAG, config.getCommonConfig().getClusterName())
                 .and(MetricsConstants.LEDGER_TAG, Integer.toString(ledger));
 
-        this.segmentCountMeter = Gauge.builder(MetricsConstants.LOG_SEGMENT_COUNT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentCount)
+        this.segmentCount = Gauge.builder(MetricsConstants.LOG_SEGMENT_COUNT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentCount)
                 .tags(tags).register(Metrics.globalRegistry);
 
-        this.segmentBytesMeter = Gauge.builder(MetricsConstants.LOG_SEGMENT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentBytes)
+        this.segmentBytes = Gauge.builder(MetricsConstants.LOG_SEGMENT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentBytes)
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
 
@@ -150,18 +150,18 @@ public class Log {
     }
 
     protected void doSyncFromTarget(ClientChannel clientChannel, Offset offset, int timeoutMs, Promise<SyncResponse> promise) {
-        if (syncFuture != null && !syncFuture.isDone()) {
-            syncFuture.addListener(f -> doSyncFromTarget(clientChannel, offset, timeoutMs, promise));
+        if (syncPromise != null && !syncPromise.isDone()) {
+            syncPromise.addListener(f -> doSyncFromTarget(clientChannel, offset, timeoutMs, promise));
             return;
         }
 
-        if (unSyncFuture != null && !unSyncFuture.isDone()) {
-            unSyncFuture.addListener(f -> doSyncFromTarget(clientChannel, offset, timeoutMs, promise));
+        if (cancelSyncPromise != null && !cancelSyncPromise.isDone()) {
+            cancelSyncPromise.addListener(f -> doSyncFromTarget(clientChannel, offset, timeoutMs, promise));
             return;
         }
 
-        syncFuture = promise;
-        promise.addListener(future -> syncFuture = null);
+        syncPromise = promise;
+        promise.addListener(future -> syncPromise = null);
         LogState logState = state.get();
         if (!isAppendable(logState) && !isMigrating(logState)) {
             promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION,
@@ -222,18 +222,18 @@ public class Log {
     }
 
     private void doCancelSync(int timeoutMs, Promise<CancelSyncResponse> promise) {
-        if (syncFuture != null && !syncFuture.isDone()) {
-            syncFuture.addListener(future -> doCancelSync(timeoutMs, promise));
+        if (syncPromise != null && !syncPromise.isDone()) {
+            syncPromise.addListener(future -> doCancelSync(timeoutMs, promise));
             return;
         }
 
-        if (unSyncFuture != null && !unSyncFuture.isDone()) {
-            unSyncFuture.addListener(future -> doCancelSync(timeoutMs, promise));
+        if (cancelSyncPromise != null && !cancelSyncPromise.isDone()) {
+            cancelSyncPromise.addListener(future -> doCancelSync(timeoutMs, promise));
             return;
         }
 
-        unSyncFuture = promise;
-        promise.addListener(future -> unSyncFuture = null);
+        cancelSyncPromise = promise;
+        promise.addListener(future -> cancelSyncPromise = null);
         LogState logState = state.get();
         if (!isSynchronizing(logState) && !isMigrating(logState)) {
             promise.trySuccess(null);
@@ -587,8 +587,8 @@ public class Log {
         storage.close(null);
         entryDispatcher.close(null);
         chunkEntryDispatcher.close(null);
-        Metrics.globalRegistry.remove(this.segmentBytesMeter);
-        Metrics.globalRegistry.remove(this.segmentCountMeter);
+        Metrics.globalRegistry.remove(this.segmentBytes);
+        Metrics.globalRegistry.remove(this.segmentCount);
         promise.trySuccess(true);
     }
 

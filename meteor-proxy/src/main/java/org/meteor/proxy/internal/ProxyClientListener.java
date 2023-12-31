@@ -57,7 +57,7 @@ public class ProxyClientListener implements ClientListener {
         this.coordinator = coordinator;
         this.syncCoordinator = syncCoordinator;
         EventExecutor taskExecutor = coordinator.getAuxEventExecutorGroup().next();
-        taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMs(), proxyConfiguration.getProxySyncCheckIntervalMs(), TimeUnit.MILLISECONDS);
+        taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     private void checkSync() {
@@ -165,7 +165,7 @@ public class ProxyClientListener implements ClientListener {
         }
         int ledger = signal.getLedger();
         int ledgerVersion = signal.getLedgerVersion();
-        int randomDelay = ThreadLocalRandom.current().nextInt(proxyConfiguration.getProxyTopicChangeDelayMs());
+        int randomDelay = ThreadLocalRandom.current().nextInt(proxyConfiguration.getProxyTopicChangeDelayMilliseconds());
         try {
             executor.schedule(()-> {
                try {

@@ -1,4 +1,4 @@
-package org.meteor.net;
+package org.meteor.remoting;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -13,7 +13,6 @@ import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
-
     protected final CommonConfig commonConfiguration;
     protected final NetworkConfig networkConfiguration;
     protected final Coordinator coordinator;

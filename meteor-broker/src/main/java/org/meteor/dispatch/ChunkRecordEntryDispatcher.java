@@ -37,15 +37,15 @@ public class ChunkRecordEntryDispatcher {
     private final int followLimit;
     private final int pursueLimit;
     private final int alignLimit;
-    private final long pursueTimeoutMs;
+    private final long pursueTimeoutMilliseconds;
     private final int loadLimit;
     private final int pursueBytesLimit;
     private final int bytesLimit;
     private final IntConsumer counter;
     private final EventExecutor[] executors;
     private final List<ChunkRecordHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
-    private final WeakHashMap<ChunkRecordHandler, Integer> allocateHandlers = new WeakHashMap<>();
-    private final ConcurrentMap<Channel, ChunkRecordHandler> channelHandlerMap = new ConcurrentHashMap<>();
+    private final WeakHashMap<ChunkRecordHandler, Integer> weakHandlers = new WeakHashMap<>();
+    private final ConcurrentMap<Channel, ChunkRecordHandler> channelHandlers = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
     public ChunkRecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, ChunkRecordDispatchConfig config, EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
@@ -55,7 +55,7 @@ public class ChunkRecordEntryDispatcher {
         this.followLimit = config.getChunkDispatchEntryFollowLimit();
         this.pursueLimit = config.getChunkDispatchEntryPursueLimit();
         this.alignLimit = config.getChunkDispatchEntryAlignLimit();
-        this.pursueTimeoutMs = config.getChunkDispatchEntryPursueTimeoutMs();
+        this.pursueTimeoutMilliseconds = config.getChunkDispatchEntryPursueTimeoutMilliseconds();
         this.loadLimit = config.getChunkDispatchEntryLoadLimit();
         this.bytesLimit = config.getChunkDispatchEntryBytesLimit();
         this.pursueBytesLimit = bytesLimit + config.getChunkDispatchEntryPursueLimit();
@@ -68,7 +68,7 @@ public class ChunkRecordEntryDispatcher {
     }
 
     public int channelCount() {
-        return channelHandlerMap.size();
+        return channelHandlers.size();
     }
 
     private EventExecutor channelExecutor(Channel channel) {
@@ -76,7 +76,7 @@ public class ChunkRecordEntryDispatcher {
     }
 
     public void cancelSubscribes() {
-        for (Channel channel : channelHandlerMap.keySet()) {
+        for (Channel channel : channelHandlers.keySet()) {
             cancelSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
         }
     }
@@ -99,7 +99,7 @@ public class ChunkRecordEntryDispatcher {
             if (!state.get()) {
                 throw new IllegalStateException("Chunk dispatcher is inactive");
             }
-            ChunkRecordHandler handler = channelHandlerMap.get(channel);
+            ChunkRecordHandler handler = channelHandlers.get(channel);
             if (handler == null) {
                 promise.trySuccess(null);
                 return;
@@ -122,7 +122,7 @@ public class ChunkRecordEntryDispatcher {
             });
 
             channelSynchronizationMap.remove(channel);
-            channelHandlerMap.remove(channel);
+            channelHandlers.remove(channel);
             promise.trySuccess(null);
         } catch (Exception e) {
             promise.tryFailure(e);
@@ -303,7 +303,7 @@ public class ChunkRecordEntryDispatcher {
             return;
         }
 
-        if (System.currentTimeMillis() - pursueTask.getPursueTime() > pursueTimeoutMs) {
+        if (System.currentTimeMillis() - pursueTask.getPursueTime() > pursueTimeoutMilliseconds) {
             submitFollow(pursueTask);
             return;
         }
@@ -538,7 +538,7 @@ public class ChunkRecordEntryDispatcher {
                 }
             });
             channelSynchronizationMap.put(channel, newSynchronization);
-            channelHandlerMap.putIfAbsent(channel, handler);
+            channelHandlers.putIfAbsent(channel, handler);
             promise.trySuccess(null);
         } catch (Exception e) {
             promise.tryFailure(e);
@@ -552,7 +552,7 @@ public class ChunkRecordEntryDispatcher {
             for (EventExecutor executor : executors) {
                 try {
                     executor.submit(() -> {
-                        for (Channel channel : channelHandlerMap.keySet()) {
+                        for (Channel channel : channelHandlers.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
                                 channels.add(channel);
                                 doCancelSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
@@ -573,20 +573,20 @@ public class ChunkRecordEntryDispatcher {
     }
 
     private ChunkRecordHandler allocateHandler(Channel channel) {
-        ChunkRecordHandler result = channelHandlerMap.get(channel);
+        ChunkRecordHandler result = channelHandlers.get(channel);
         if (result != null) {
             return result;
         }
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int middleLimit = loadLimit >> 1;
-        synchronized (allocateHandlers) {
-            if (allocateHandlers.isEmpty()) {
-                return ChunkRecordHandler.INSTANCE.newHandler(allocateHandlers, executors);
+        synchronized (weakHandlers) {
+            if (weakHandlers.isEmpty()) {
+                return ChunkRecordHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
             Map<ChunkRecordHandler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
-            for (ChunkRecordHandler handler : allocateHandlers.keySet()) {
+            for (ChunkRecordHandler handler : weakHandlers.keySet()) {
                 int channelCount = handler.getChannelSubscriptionMap().size();
                 if (channelCount >= loadLimit) {
                     continue;
@@ -601,7 +601,7 @@ public class ChunkRecordEntryDispatcher {
             }
 
             if (selectHandlers.isEmpty() || randomBound == 0) {
-                return result != null ? result : ChunkRecordHandler.INSTANCE.newHandler(allocateHandlers, executors);
+                return result != null ? result : ChunkRecordHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
             int index = random.nextInt(randomBound);
@@ -612,7 +612,7 @@ public class ChunkRecordEntryDispatcher {
                     return entry.getKey();
                 }
             }
-            return result != null ? result : ChunkRecordHandler.INSTANCE.newHandler(allocateHandlers, executors);
+            return result != null ? result : ChunkRecordHandler.INSTANCE.newHandler(weakHandlers, executors);
         }
     }
 }

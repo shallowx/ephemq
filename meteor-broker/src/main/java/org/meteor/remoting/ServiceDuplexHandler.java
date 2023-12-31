@@ -1,4 +1,4 @@
-package org.meteor.net;
+package org.meteor.remoting;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,9 +9,7 @@ import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.processor.Processor;
 
 public class ServiceDuplexHandler extends ProcessDuplexHandler {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceDuplexHandler.class);
-
     private final Coordinator coordinator;
 
     public ServiceDuplexHandler(Coordinator coordinator, Processor processor) {

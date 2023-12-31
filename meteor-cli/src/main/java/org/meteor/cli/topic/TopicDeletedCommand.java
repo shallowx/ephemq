@@ -21,7 +21,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class TopicDeletedCommand implements Command {
-
     private static String newDate() {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
         return format.format(new Date());

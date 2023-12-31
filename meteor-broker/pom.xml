@@ -52,17 +52,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>metrics</artifactId>
+            <artifactId>meteor-metrics</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>remote</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>client</artifactId>
+            <artifactId>meteor-client</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

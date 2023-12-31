@@ -222,7 +222,7 @@ public class Consumer {
         }
 
         if (existFailedRecords()) {
-            scheduleFailedRetryTask(consumerConfig.getControlRetryDelayMs());
+            scheduleFailedRetryTask(consumerConfig.getControlRetryDelayMilliseconds());
         }
     }
 
@@ -557,7 +557,7 @@ public class Consumer {
                     .setTopic(topic)
                     .build();
 
-            int timeoutMs = consumerConfig.getControlTimeoutMs();
+            int timeoutMs = consumerConfig.getControlTimeoutMilliseconds();
             channel.invoker().resetSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return false;
@@ -580,7 +580,7 @@ public class Consumer {
                     .build();
 
             Promise<AlterSubscribeResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            int timeoutMs = consumerConfig.getControlTimeoutMs();
+            int timeoutMs = consumerConfig.getControlTimeoutMilliseconds();
             channel.invoker().alterSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
             return true;
@@ -601,7 +601,7 @@ public class Consumer {
                     .setTopic(topic)
                     .build();
 
-            int timeoutMs = consumerConfig.getControlTimeoutMs();
+            int timeoutMs = consumerConfig.getControlTimeoutMilliseconds();
             channel.invoker().cleanSubscribe(timeoutMs, promise, request);
             promise.get(timeoutMs, TimeUnit.MILLISECONDS);
         } catch (Throwable t) {

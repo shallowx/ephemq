@@ -27,16 +27,16 @@ public class LogCoordinator {
     private final Coordinator coordinator;
     private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
     private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
-    private final ScheduledExecutorService scheduledExecutorService;
+    private final ScheduledExecutorService scheduledExecutorOfCleanStorage;
 
     public LogCoordinator(ServerConfig config, Coordinator coordinator) {
         this.config = config;
         this.coordinator = coordinator;
-        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));
+        this.scheduledExecutorOfCleanStorage = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));
     }
 
     public void start() {
-        this.scheduledExecutorService.scheduleAtFixedRate(() -> {
+        this.scheduledExecutorOfCleanStorage.scheduleAtFixedRate(() -> {
             for (Log log : ledgerId2LogMap.values()) {
                 log.cleanStorage();
             }

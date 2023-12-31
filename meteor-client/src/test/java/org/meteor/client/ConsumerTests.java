@@ -30,7 +30,7 @@ public class ConsumerTests {
 
         Consumer consumer = new Consumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
-            logger.info("messageId=%s topic=%s queue=%s message=%s%n", messageId, topic, queue, msg);
+            logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
         });
         consumer.start();
 

@@ -13,7 +13,6 @@ public class ConsumerExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerExample.class);
     private static final String EXAMPLE_TOPIC = "example-topic";
     private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
-
     public static void main(String[] args) throws Exception {
         ConsumerExample example = new ConsumerExample();
         example.subscribe();
@@ -40,7 +39,7 @@ public class ConsumerExample {
         Consumer consumer = new Consumer("default-consumer", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
             if (logger.isInfoEnabled()) {
-                logger.info("messageId[{}] topic[{}] queue[{}] message[{}] \n", messageId, topic, queue, msg);
+                logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
             }
         });
         consumer.start();

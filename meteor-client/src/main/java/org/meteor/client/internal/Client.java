@@ -39,7 +39,7 @@ public class Client implements MeterBinder {
     private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
     protected String name;
     protected EventLoopGroup workerGroup;
-    protected EventExecutor taskExecutor;
+    protected EventExecutor refreshMetadataExecutor;
     private Bootstrap bootstrap;
     private volatile Boolean state;
 
@@ -65,7 +65,7 @@ public class Client implements MeterBinder {
 
     public ClientChannel fetchChannel(SocketAddress address) {
         try {
-            return applyChannel(address).get(config.getChannelConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
+            return applyChannel(address).get(config.getChannelConnectionTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             if (address == null) {
                 throw new RuntimeException("Fetch random client channel failed", t);
@@ -212,7 +212,7 @@ public class Client implements MeterBinder {
         }
 
         state = Boolean.TRUE;
-        workerGroup = NetworkUtil.newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadCount(), "client-worker(" + name + ")");
+        workerGroup = NetworkUtil.newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(), "client-worker(" + name + ")");
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
         builder.negativeTtl(30);
@@ -229,7 +229,7 @@ public class Client implements MeterBinder {
                 .channel(NetworkUtil.preferChannelClass(config.isSocketEpollPrefer()))
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, false)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getChannelConnectionTimeoutMs())
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getChannelConnectionTimeoutMilliseconds())
                 .option(ChannelOption.SO_SNDBUF, config.getSocketSendBufferSize())
                 .option(ChannelOption.SO_RCVBUF, config.getSocketReceiveBufferSize())
                 .resolver(new RoundRobinDnsAddressResolverGroup(builder));
@@ -237,8 +237,8 @@ public class Client implements MeterBinder {
             applyChannel(address);
         }
 
-        taskExecutor = new DefaultEventExecutor(new DefaultThreadFactory("client(" + name + ")-task"));
-        taskExecutor.schedule(new RefreshMetadataTask(this, config), config.getMetadataRefreshPeriodMs(), TimeUnit.MILLISECONDS);
+        refreshMetadataExecutor = new DefaultEventExecutor(new DefaultThreadFactory("client(" + name + ")-task"));
+        refreshMetadataExecutor.schedule(new RefreshMetadataTask(this, config), config.getMetadataRefreshPeriodMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -251,8 +251,8 @@ public class Client implements MeterBinder {
         }
 
         state = Boolean.FALSE;
-        if (taskExecutor != null) {
-            Future<?> future = taskExecutor.shutdownGracefully();
+        if (refreshMetadataExecutor != null) {
+            Future<?> future = refreshMetadataExecutor.shutdownGracefully();
             future.addListener(f -> {
                 if (workerGroup != null) {
                     workerGroup.shutdownGracefully().sync();
@@ -264,8 +264,8 @@ public class Client implements MeterBinder {
                     future.wait(Integer.MAX_VALUE);
                 }
 
-                while (!taskExecutor.isTerminated()) {
-                    taskExecutor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+                while (!refreshMetadataExecutor.isTerminated()) {
+                    refreshMetadataExecutor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
                 }
             } catch (Exception e) {
                 // Let the caller handle the interruption.
@@ -277,7 +277,7 @@ public class Client implements MeterBinder {
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         {
-            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) taskExecutor;
+            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) refreshMetadataExecutor;
             Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
                     .tag("type", "client-task")
                     .tag("name", name)
@@ -458,9 +458,9 @@ public class Client implements MeterBinder {
         try {
             QueryClusterInfoRequest request = QueryClusterInfoRequest.newBuilder().build();
             Promise<QueryClusterResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            channel.invoker().queryClusterInfo(config.getMetadataTimeoutMs(), promise, request);
+            channel.invoker().queryClusterInfo(config.getMetadataTimeoutMilliseconds(), promise, request);
 
-            QueryClusterResponse response = promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS);
+            QueryClusterResponse response = promise.get(config.getMetadataTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
             return response.hasClusterInfo() ? response.getClusterInfo() : null;
         } catch (Exception e) {
             throw e;
@@ -474,9 +474,9 @@ public class Client implements MeterBinder {
                     .build();
 
             Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            channel.invoker().queryTopicInfo(config.getMetadataTimeoutMs(), promise, request);
+            channel.invoker().queryTopicInfo(config.getMetadataTimeoutMilliseconds(), promise, request);
 
-            return promise.get(config.getMetadataTimeoutMs(), TimeUnit.MILLISECONDS).getTopicInfosMap();
+            return promise.get(config.getMetadataTimeoutMilliseconds(), TimeUnit.MILLISECONDS).getTopicInfosMap();
         } catch (Exception e) {
             throw e;
         }
@@ -510,9 +510,9 @@ public class Client implements MeterBinder {
 
         Promise<CreateTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         ClientChannel channel = fetchChannel(null);
-        channel.invoker().createTopic(config.getCreateTopicTimeoutMs(), promise, request.build());
+        channel.invoker().createTopic(config.getCreateTopicTimeoutMilliseconds(), promise, request.build());
 
-        return promise.get(config.getCreateTopicTimeoutMs(), TimeUnit.MILLISECONDS);
+        return promise.get(config.getCreateTopicTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     public DeleteTopicResponse deleteTopic(String topic) throws Exception {
@@ -521,17 +521,17 @@ public class Client implements MeterBinder {
         DeleteTopicRequest request = DeleteTopicRequest.newBuilder().setTopic(topic).build();
         Promise<DeleteTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         ClientChannel channel = fetchChannel(null);
-        channel.invoker().deleteTopic(config.getDeleteTopicTimeoutMs(), promise, request);
+        channel.invoker().deleteTopic(config.getDeleteTopicTimeoutMilliseconds(), promise, request);
 
-        return promise.get(config.getDeleteTopicTimeoutMs(), TimeUnit.MILLISECONDS);
+        return promise.get(config.getDeleteTopicTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     public CalculatePartitionsResponse calculatePartitions() throws Exception {
         ClientChannel clientChannel = fetchChannel(null);
         Promise<CalculatePartitionsResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         CalculatePartitionsRequest request = CalculatePartitionsRequest.newBuilder().build();
-        clientChannel.invoker().calculatePartitions(config.getCalculatePartitionsTimeoutMs(), promise, request);
-        return promise.get(config.getCalculatePartitionsTimeoutMs(), TimeUnit.MILLISECONDS);
+        clientChannel.invoker().calculatePartitions(config.getCalculatePartitionsTimeoutMilliseconds(), promise, request);
+        return promise.get(config.getCalculatePartitionsTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     public MigrateLedgerResponse migrateLedger(String topic, int partition, String original, String destination) throws Exception {
@@ -567,7 +567,7 @@ public class Client implements MeterBinder {
                 .setDestination(destination)
                 .build();
 
-        clientChannel.invoker().migrateLedger(config.getMigrateLedgerTimeoutMs(), promise, request);
-        return promise.get(config.getMigrateLedgerTimeoutMs(), TimeUnit.MILLISECONDS);
+        clientChannel.invoker().migrateLedger(config.getMigrateLedgerTimeoutMilliseconds(), promise, request);
+        return promise.get(config.getMigrateLedgerTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 }

@@ -60,7 +60,7 @@ public class ProxyLog extends Log {
         }
 
         if (isSynchronizing(logState)) {
-            Promise<CancelSyncResponse> cancelSyncPromise = cancelSync(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs());
+            Promise<CancelSyncResponse> cancelSyncPromise = cancelSync(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
             cancelSyncPromise.addListener(f -> {
                 if (f.isSuccess()) {
                     Promise<Boolean> closePromise = storageExecutor.newPromise();
@@ -117,7 +117,7 @@ public class ProxyLog extends Log {
     private void doSyncAndResetSubscribe(ClientChannel syncChannel, int epoch, long index, Channel channel, IntList markerSet, Promise<Integer> promise) {
         LogState logState = state.get();
         if (!isSynchronizing(logState)) {
-            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs());
+            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
             syncPromise.addListener(f -> {
                if (f.isSuccess()) {
                   Offset locate = locate(Offset.of(epoch, index));
@@ -127,8 +127,8 @@ public class ProxyLog extends Log {
                }
             });
         } else {
-            if (syncFuture != null && !syncFuture.isDone()) {
-                syncFuture.addListener(future -> {
+            if (syncPromise != null && !syncPromise.isDone()) {
+                syncPromise.addListener(future -> {
                    if (storageExecutor.inEventLoop()) {
                        resetSubscribe(channel, locate(Offset.of(epoch, index)), markerSet, promise);
                    } else {
@@ -170,7 +170,7 @@ public class ProxyLog extends Log {
         Promise<Void> vp = getVoidPromise(promise);
         LogState logState = state.get();
         if (!isSynchronizing(logState)) {
-            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMs());
+            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
             syncPromise.addListener(future -> {
                 if (future.isSuccess()) {
                     attachSynchronize(channel, locate(Offset.of(epoch, index)), vp);
@@ -179,8 +179,8 @@ public class ProxyLog extends Log {
                 }
             });
         } else {
-            if (syncFuture != null && !syncFuture.isDone()) {
-                syncFuture.addListener(future -> {
+            if (syncPromise != null && !syncPromise.isDone()) {
+                syncPromise.addListener(future -> {
                     if (storageExecutor.inEventLoop()) {
                         attachSynchronize(channel, locate(Offset.of(epoch, index)), vp);
                     } else {

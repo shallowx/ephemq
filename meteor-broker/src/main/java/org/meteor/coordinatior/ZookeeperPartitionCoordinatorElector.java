@@ -190,7 +190,7 @@ public class ZookeeperPartitionCoordinatorElector {
     private void syncLeader(int ledger) throws Exception {
         Log log = coordinator.getLogCoordinator().getLog(ledger);
         Node leaderNode = coordinator.getClusterCoordinator().getClusterNode(latch.getLeader().getId());
-        Client innerClient = coordinator.getInnerClient();
+        Client innerClient = coordinator.getInternalClient();
         ClientChannel channel = innerClient.fetchChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);
         promise.addListener(future -> {

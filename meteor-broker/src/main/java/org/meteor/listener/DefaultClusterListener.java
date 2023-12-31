@@ -71,7 +71,7 @@ public class DefaultClusterListener implements ClusterListener {
         ByteBuf buf = null;
         try {
             buf = assembleServerOfflineData(channel, node);
-            AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.SERVER_OFFLINE, buf, config.getNotifyClientTimeoutMs(), null);
+            AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.SERVER_OFFLINE, buf, config.getNotifyClientTimeoutMilliseconds(), null);
             channel.writeAndFlush(awareInvocation);
         } catch (Exception e) {
             ByteBufUtil.release(buf);

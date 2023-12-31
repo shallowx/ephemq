@@ -1,12 +1,12 @@
-package org.meteor.proxy.net;
+package org.meteor.proxy.remoting;
 
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.net.ServiceChannelInitializer;
-import org.meteor.net.ServiceDuplexHandler;
+import org.meteor.remoting.ServiceChannelInitializer;
+import org.meteor.remoting.ServiceDuplexHandler;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;

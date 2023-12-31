@@ -179,7 +179,7 @@
         <module>meteor-broker</module>
         <module>meteor-bom</module>
         <module>meteor-client</module>
-        <module>meteor-remote</module>
+        <module>meteor-remoting</module>
         <module>meteor-common</module>
         <module>meteor-metrics</module>
         <module>meteor-cli</module>

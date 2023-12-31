@@ -47,6 +47,9 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
 
     @Override
     public void shutdown() throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Proxy default coordinator will closed");
+        }
         super.shutdown();
         this.syncCoordinator.shutDown();
     }

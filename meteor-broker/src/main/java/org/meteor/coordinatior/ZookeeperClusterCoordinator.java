@@ -187,8 +187,8 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
         client.setData().forPath(path, JsonMapper.serialize(downNode));
 
         activeNodes.put(downNode.getId(), downNode);
-        if (configuration.getShutdownMaxWaitTimeMs() > 0) {
-            TimeUnit.MILLISECONDS.sleep(configuration.getShutdownMaxWaitTimeMs());
+        if (configuration.getShutdownMaxWaitTimeMilliseconds() > 0) {
+            TimeUnit.MILLISECONDS.sleep(configuration.getShutdownMaxWaitTimeMilliseconds());
         }
     }
 

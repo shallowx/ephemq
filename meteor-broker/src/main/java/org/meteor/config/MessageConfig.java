@@ -1,9 +1,9 @@
 package org.meteor.config;
 
 import io.netty.util.NettyRuntime;
-import org.meteor.common.util.TypeTransformUtil;
-
 import java.util.Properties;
+
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 
 public class MessageConfig {
     private static final String MESSAGE_SYNC_THREAD_LIMIT = "message.sync.thread.limit";
@@ -16,14 +16,14 @@ public class MessageConfig {
     }
 
     public int getMessageSyncThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_SYNC_THREAD_LIMIT, NettyRuntime.availableProcessors()));
+        return object2Int(prop.getOrDefault(MESSAGE_SYNC_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 
     public int getMessageStorageThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_STORAGE_THREAD_LIMIT, NettyRuntime.availableProcessors()));
+        return object2Int(prop.getOrDefault(MESSAGE_STORAGE_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 
     public int getMessageDispatchThreadLimit() {
-        return TypeTransformUtil.object2Int(prop.getOrDefault(MESSAGE_DISPATCH_THREAD_LIMIT, NettyRuntime.availableProcessors()));
+        return object2Int(prop.getOrDefault(MESSAGE_DISPATCH_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
 }

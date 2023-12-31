@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>broker</artifactId>
+            <artifactId>meteor-broker</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -23,7 +23,6 @@ public class Producer {
     private final ProducerConfig config;
     private final Client client;
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
-
     private volatile Boolean state;
     private final ClientListener listener;
 
@@ -84,7 +83,7 @@ public class Producer {
         int length = ByteBufUtil.bufLength(message);
         try {
             Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            doSend(topic, queue, message, extras, config.getSendTimeoutMs(), promise);
+            doSend(topic, queue, message, extras, config.getSendTimeoutMilliseconds(), promise);
             SendMessageResponse response = promise.get();
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
         } catch (Throwable t) {
@@ -100,7 +99,7 @@ public class Producer {
         int length = ByteBufUtil.bufLength(message);
         try {
             if (callback == null) {
-                doSend(topic, queue, message, extras, config.getSendOnewayTimeoutMs(), null);
+                doSend(topic, queue, message, extras, config.getSendOnewayTimeoutMilliseconds(), null);
                 return;
             }
 
@@ -113,7 +112,7 @@ public class Producer {
                     callback.onCompleted(null, f.cause());
                 }
             });
-            doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), promise);
+            doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), promise);
         } catch (Throwable t) {
             throw new RuntimeException(
                     String.format("Message async send failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
@@ -126,7 +125,7 @@ public class Producer {
     public void sendOneway(String topic, String queue, ByteBuf message, Extras extras) {
         int length = ByteBufUtil.bufLength(message);
         try {
-            doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMs(), null);
+            doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), null);
         } catch (Throwable t) {
             throw new RuntimeException(
                     String.format("Message send oneway failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t

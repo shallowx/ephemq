@@ -5,11 +5,11 @@ import org.meteor.client.internal.ClientConfig;
 
 public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();
-    private int controlTimeoutMs = 5000;
-    private int controlRetryDelayMs = 2000;
-    private int handlerThreadCount = NettyRuntime.availableProcessors();
-    private int handlerShardCount = handlerThreadCount * 10;
-    private int handlerPendingCount = 100;
+    private int controlTimeoutMilliseconds = 5000;
+    private int controlRetryDelayMilliseconds = 2000;
+    private int handlerThreadLimit = NettyRuntime.availableProcessors();
+    private int handlerShardLimit = handlerThreadLimit * 10;
+    private int handlerPendingLimit = 100;
 
     public ClientConfig getClientConfig() {
         return clientConfig;
@@ -19,43 +19,43 @@ public class ConsumerConfig {
         this.clientConfig = clientConfig;
     }
 
-    public int getControlTimeoutMs() {
-        return controlTimeoutMs;
+    public int getControlTimeoutMilliseconds() {
+        return controlTimeoutMilliseconds;
     }
 
-    public void setControlTimeoutMs(int controlTimeoutMs) {
-        this.controlTimeoutMs = controlTimeoutMs;
+    public void setControlTimeoutMilliseconds(int controlTimeoutMilliseconds) {
+        this.controlTimeoutMilliseconds = controlTimeoutMilliseconds;
     }
 
-    public int getControlRetryDelayMs() {
-        return controlRetryDelayMs;
+    public int getControlRetryDelayMilliseconds() {
+        return controlRetryDelayMilliseconds;
     }
 
-    public void setControlRetryDelayMs(int controlRetryDelayMs) {
-        this.controlRetryDelayMs = controlRetryDelayMs;
+    public void setControlRetryDelayMilliseconds(int controlRetryDelayMilliseconds) {
+        this.controlRetryDelayMilliseconds = controlRetryDelayMilliseconds;
     }
 
-    public int getHandlerThreadCount() {
-        return handlerThreadCount;
+    public int getHandlerThreadLimit() {
+        return handlerThreadLimit;
     }
 
-    public void setHandlerThreadCount(int handlerThreadCount) {
-        this.handlerThreadCount = handlerThreadCount;
+    public void setHandlerThreadLimit(int handlerThreadLimit) {
+        this.handlerThreadLimit = handlerThreadLimit;
     }
 
-    public int getHandlerShardCount() {
-        return handlerShardCount;
+    public int getHandlerShardLimit() {
+        return handlerShardLimit;
     }
 
-    public void setHandlerShardCount(int handlerShardCount) {
-        this.handlerShardCount = handlerShardCount;
+    public void setHandlerShardLimit(int handlerShardLimit) {
+        this.handlerShardLimit = handlerShardLimit;
     }
 
-    public int getHandlerPendingCount() {
-        return handlerPendingCount;
+    public int getHandlerPendingLimit() {
+        return handlerPendingLimit;
     }
 
-    public void setHandlerPendingCount(int handlerPendingCount) {
-        this.handlerPendingCount = handlerPendingCount;
+    public void setHandlerPendingLimit(int handlerPendingLimit) {
+        this.handlerPendingLimit = handlerPendingLimit;
     }
 }

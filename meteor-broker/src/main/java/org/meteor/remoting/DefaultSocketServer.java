@@ -1,4 +1,4 @@
-package org.meteor.net;
+package org.meteor.remoting;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
@@ -27,7 +27,7 @@ public class DefaultSocketServer {
     protected ServiceChannelInitializer serviceChannelInitializer;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workGroup;
-    private ChannelFuture closedFuture;
+    private ChannelFuture channelClosedFuture;
 
     public DefaultSocketServer(ServerConfig serverConfiguration, Coordinator coordinator) {
         this.commonConfiguration = serverConfiguration.getCommonConfig();
@@ -72,7 +72,7 @@ public class DefaultSocketServer {
                     }
                 }).sync();
 
-        closedFuture = future.channel().closeFuture();
+        channelClosedFuture = future.channel().closeFuture();
 
         int compatiblePort = commonConfiguration.getCompatiblePort();
         if (future.isSuccess() && compatiblePort >= 0 && compatiblePort != commonConfiguration.getAdvertisedPort()) {
@@ -87,7 +87,7 @@ public class DefaultSocketServer {
                             }
                         }
                     }).channel();
-            closedFuture.addListener(f -> compatibleChannel.close());
+            channelClosedFuture.addListener(f -> compatibleChannel.close());
         }
     }
 
@@ -105,16 +105,16 @@ public class DefaultSocketServer {
 
     public void awaitShutdown() {
         try {
-            closedFuture.sync();
+            channelClosedFuture.sync();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
     }
 
     public void shutdown() throws Exception {
-        if (closedFuture != null) {
+        if (channelClosedFuture != null) {
             try {
-                closedFuture.channel().close().sync();
+                channelClosedFuture.channel().close().sync();
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
                     logger.error(e.getMessage(), e);

@@ -48,7 +48,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                 .addLast("packet-encoder", MessageEncoder.instance())
                 .addLast("packet-decoder", new MessageDecoder())
                 .addLast("connect-handler", new HeartbeatDuplexHandler(
-                        config.getChannelKeepPeriodMs(), config.getChannelIdleTimeoutMs()
+                        config.getChannelKeepPeriodMilliseconds(), config.getChannelIdleTimeoutMilliseconds()
                 ))
                 .addLast("service-handler", new ProcessDuplexHandler(new InternalServiceProcessor(clientChannel)));
     }

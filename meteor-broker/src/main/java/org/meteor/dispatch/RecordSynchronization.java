@@ -8,7 +8,6 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class RecordSynchronization extends AbstractSynchronization<RecordHandler> {
     private final IntSet markers;
-
     public RecordSynchronization(Channel channel, RecordHandler handler, IntSet markers) {
         super(channel, handler);
         this.markers = markers;

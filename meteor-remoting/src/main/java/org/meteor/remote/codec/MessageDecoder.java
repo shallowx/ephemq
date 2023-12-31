@@ -16,9 +16,9 @@ import static org.meteor.remote.codec.MessageDecoder.State.*;
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageDecoder.class);
     private static final int DISCARD_READ_BODY_THRESHOLD = 3;
-    private ByteBuf accumulation;
-    private boolean invalidChannel;
     private State state = READ_MAGIC_NUMBER;
+    private ByteBuf composite;
+    private boolean invalid;
     private int writeFrameBytes;
 
     private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
@@ -28,7 +28,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final ByteBuf in) {
-            if (invalidChannel) {
+            if (invalid) {
                 in.release();
                 if (logger.isDebugEnabled()) {
                     logger.debug("Invalid channel[{}]", ctx.channel().toString());
@@ -38,7 +38,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
             ByteBuf buf = null;
             try {
-                buf = accumulation(ctx.alloc(), in).retain();
+                buf = allocComposite(ctx.alloc(), in).retain();
                 while (!ctx.isRemoved() && buf.isReadable()) {
                     final MessagePacket packet = decode(buf);
                     if (null == packet) {
@@ -47,14 +47,14 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     ctx.fireChannelRead(packet);
                 }
             } catch (Throwable cause) {
-                invalidChannel = true;
+                invalid = true;
                 logger.debug(cause.getMessage(), cause);
                 throw cause;
             } finally {
                 ByteBufUtil.release(buf);
-                buf = accumulation;
-                if (null != buf && (!buf.isReadable() || invalidChannel)) {
-                    accumulation = null;
+                buf = composite;
+                if (null != buf && (!buf.isReadable() || invalid)) {
+                    composite = null;
                     ByteBufUtil.release(buf);
                 }
             }
@@ -110,10 +110,10 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private ByteBuf accumulation(ByteBufAllocator alloc, ByteBuf in) {
-        final ByteBuf buf = accumulation;
+    private ByteBuf allocComposite(ByteBufAllocator alloc, ByteBuf in) {
+        final ByteBuf buf = composite;
         if (null == buf) {
-            return accumulation = in;
+            return composite = in;
         }
 
         final CompositeByteBuf composite;
@@ -127,14 +127,14 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         }
 
         composite.addFlattenedComponents(true, in);
-        return accumulation = composite;
+        return this.composite = composite;
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        if (accumulation instanceof final CompositeByteBuf buf) {
+        if (composite instanceof final CompositeByteBuf buf) {
             if (buf.toComponentIndex(buf.readerIndex()) > DISCARD_READ_BODY_THRESHOLD) {
-                accumulation = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
+                composite = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
             }
         }
 
@@ -143,9 +143,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (null != accumulation) {
-            ByteBufUtil.release(accumulation);
-            accumulation = null;
+        if (null != composite) {
+            ByteBufUtil.release(composite);
+            composite = null;
         }
 
         ctx.fireChannelInactive();
@@ -153,9 +153,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        final ByteBuf buf = accumulation;
+        final ByteBuf buf = composite;
         if (null != buf) {
-            accumulation = null;
+            composite = null;
             if (buf.isReadable()) {
                 ctx.fireChannelRead(buf);
                 ctx.fireChannelReadComplete();
