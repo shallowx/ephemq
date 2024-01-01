@@ -6,36 +6,28 @@
     <parent>
         <groupId>org.meteor</groupId>
         <artifactId>meteor</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>meteor-microbench</artifactId>
-
-    <properties>
-        <jmh.version>1.35</jmh.version>
-        <commons.lang3.version>3.12.0</commons.lang3.version>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>meteor-broker</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>${jmh.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>${jmh.version}</version>
         </dependency>
 
         <dependency>

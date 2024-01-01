@@ -1,8 +1,6 @@
 package org.meteor.common.message;
 
-
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
-
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
@@ -30,7 +28,7 @@ public class Offset implements Comparable<Offset> {
     }
 
     @Override
-    public int compareTo(@NotNull Offset o) {
+    public int compareTo(@Nonnull Offset o) {
         if (this.epoch == o.epoch) {
             return (int) (this.index - o.index);
         }

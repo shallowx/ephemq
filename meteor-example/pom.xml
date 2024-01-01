@@ -6,7 +6,8 @@
     <parent>
         <groupId>org.meteor</groupId>
         <artifactId>meteor</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>meteor-example</artifactId>
@@ -15,14 +16,12 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <meteor.client.version>1.0.0-SNAPSHOT</meteor.client.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.meteor</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>meteor-client</artifactId>
-            <version>${meteor.client.version}</version>
         </dependency>
     </dependencies>
 </project>

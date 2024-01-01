@@ -6,30 +6,24 @@
     <parent>
         <groupId>org.meteor</groupId>
         <artifactId>meteor</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>meteor-proxy</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
-        <guice.version>5.1.0</guice.version>
-        <broker.version>1.0.0-SNAPSHOT</broker.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.meteor</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>meteor-broker</artifactId>
-            <version>${broker.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
         </dependency>
     </dependencies>
 
