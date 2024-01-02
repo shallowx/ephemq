@@ -55,6 +55,7 @@
     <common.cli.version>1.5.0</common.cli.version>
     <curator.version>5.2.1</curator.version>
     <commons.io.version>2.11.0</commons.io.version>
+    <bom.helper.version>0.4.0</bom.helper.version>
   </properties>
 
   <build>
@@ -62,7 +63,7 @@
       <plugin>
         <groupId>com.commsen.maven</groupId>
         <artifactId>bom-helper-maven-plugin</artifactId>
-        <version>0.4.0</version>
+        <version>${bom.helper.version}</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
