@@ -71,16 +71,16 @@ public class Log {
                     .segmentRetainCounts(topicConfig.getSegmentRetainCount())
                     .segmentBufferCapacity(topicConfig.getSegmentRollingSize())
                     .segmentRetainMs(topicConfig.getSegmentRetainMs())
-                    .allocate(topicConfig.isAllocate());
+                    .alloc(topicConfig.isAllocate());
         } else {
             ledgerConfig = new LedgerConfig()
                     .segmentRetainCounts(config.getSegmentConfig().getSegmentRetainLimit())
                     .segmentBufferCapacity(config.getSegmentConfig().getSegmentRollingSize())
                     .segmentRetainMs(config.getSegmentConfig().getSegmentRetainTimeMilliseconds())
-                    .allocate(false);
+                    .alloc(false);
         }
 
-        storageExecutor = coordinator.getMessageStorageEventExecutorGroup().next();
+        this.storageExecutor = coordinator.getMessageStorageEventExecutorGroup().next();
         this.storage = new LedgerStorage(ledger, topicPartition.getTopic(), epoch, ledgerConfig, storageExecutor, new InnerTrigger());
         this.coordinator = coordinator;
         this.listeners = coordinator.getLogCoordinator().getLogListeners();

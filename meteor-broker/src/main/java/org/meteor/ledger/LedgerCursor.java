@@ -21,12 +21,12 @@ public class LedgerCursor {
     }
 
     public boolean hashNext() {
-        return rollValidSegment() != null;
+        return trundle() != null;
     }
 
     public ByteBuf next() {
         LedgerSegment segment;
-        while ((segment = rollValidSegment()) != null) {
+        while ((segment = trundle()) != null) {
             ByteBuf record = segment.readRecord(position);
             if (record != null) {
                 position += 8 + record.readableBytes();
@@ -42,7 +42,7 @@ public class LedgerCursor {
         }
 
         while (true) {
-            LedgerSegment present = presentSegment();
+            LedgerSegment present = existingSegment();
             if (!offset.after(present.baseOffset())) {
                 return this;
             }
@@ -67,9 +67,9 @@ public class LedgerCursor {
         return this;
     }
 
-    private LedgerSegment rollValidSegment() {
+    private LedgerSegment trundle() {
         while (true) {
-            LedgerSegment present = presentSegment();
+            LedgerSegment present = existingSegment();
             LedgerSegment next = present.next();
 
             if (position < present.lastPosition() && present.isActive()) {
@@ -89,7 +89,7 @@ public class LedgerCursor {
         return position;
     }
 
-    private LedgerSegment presentSegment() {
+    private LedgerSegment existingSegment() {
         LedgerSegment segment = segmentWeakReference.get();
         if (segment != null) {
             return segment;
@@ -103,7 +103,7 @@ public class LedgerCursor {
 
     public ChunkRecord nextChunk(int bytesLimit) {
         LedgerSegment segment;
-        while ((segment = rollValidSegment()) != null) {
+        while ((segment = trundle()) != null) {
             ChunkRecord record = segment.readChunkRecord(position, bytesLimit);
             if (record != null) {
                 position += record.data().readableBytes();

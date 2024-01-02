@@ -61,7 +61,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void checkSync() {
-        Map<Integer, Log> map = coordinator.getLogCoordinator().getLedgerId2LogMap();
+        Map<Integer, Log> map = coordinator.getLogCoordinator().getLedgerIdOfLogs();
         if (map == null) {
             return;
         }
@@ -90,7 +90,7 @@ public class ProxyClientListener implements ClientListener {
                 }
                 continue;
             }
-            List<SocketAddress> replicas = messageLedger.replicas();
+            List<SocketAddress> replicas = messageLedger.participants();
             if (replicas == null || replicas.isEmpty()) {
                 if (logger.isDebugEnabled()){
                     logger.debug("Current lodger of topic[{}] ledger[{}] is not available for proxy, will ignore check", topic, ledger);
@@ -202,7 +202,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void noticeTopicChanged(TopicChangedSignal signal) {
-        Set<Channel> channels = coordinator.getConnectionCoordinator().getChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getActiveChannels();
         if (channels.isEmpty()) {
             return;
         }
@@ -248,7 +248,7 @@ public class ProxyClientListener implements ClientListener {
     }
 
     private void resumeChannelSync(ClientChannel channel, boolean refreshRouter) {
-        Collection<Log> logs = coordinator.getLogCoordinator().getLedgerId2LogMap().values();
+        Collection<Log> logs = coordinator.getLogCoordinator().getLedgerIdOfLogs().values();
         Map<String, List<Log>> groupedLogs = logs.stream().filter(log -> channel == log.getSyncChannel()).collect(Collectors.groupingBy(Log::getTopic));
         if (groupedLogs.isEmpty()) {
             return;

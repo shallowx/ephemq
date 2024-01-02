@@ -33,12 +33,12 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
     private final SocketAddress address;
     private final ClientConfig config;
     private final ClientListener listener;
-    private final ConcurrentMap<String, Promise<ClientChannel>> assembleChannels;
-     InternalChannelInitializer(SocketAddress address, ClientConfig config, ClientListener listener, ConcurrentMap<String, Promise<ClientChannel>> assembleChannels) {
+    private final ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise;
+     InternalChannelInitializer(SocketAddress address, ClientConfig config, ClientListener listener, ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise) {
         this.address = address;
         this.config = config;
         this.listener = listener;
-        this.assembleChannels = assembleChannels;
+        this.channelOfPromise = channelOfPromise;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         @Override
         public void onActive(Channel channel, EventExecutor executor) {
             try {
-                assembleChannels.computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise()).setSuccess(clientChannel);
+                channelOfPromise.computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise()).setSuccess(clientChannel);
                 channel.closeFuture().addListener((ChannelFutureListener) f -> listener.onChannelClosed(clientChannel));
                 listener.onChannelActive(clientChannel);
             } catch (Throwable t) {

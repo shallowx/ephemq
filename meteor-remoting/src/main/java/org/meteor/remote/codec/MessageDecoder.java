@@ -18,7 +18,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     private static final int DISCARD_READ_BODY_THRESHOLD = 3;
     private State state = READ_MAGIC_NUMBER;
     private ByteBuf composite;
-    private boolean invalid;
+    private boolean isValid;
     private int writeFrameBytes;
 
     private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
@@ -28,7 +28,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final ByteBuf in) {
-            if (invalid) {
+            if (isValid) {
                 in.release();
                 if (logger.isDebugEnabled()) {
                     logger.debug("Invalid channel[{}]", ctx.channel().toString());
@@ -47,13 +47,13 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     ctx.fireChannelRead(packet);
                 }
             } catch (Throwable cause) {
-                invalid = true;
+                isValid = true;
                 logger.debug(cause.getMessage(), cause);
                 throw cause;
             } finally {
                 ByteBufUtil.release(buf);
                 buf = composite;
-                if (null != buf && (!buf.isReadable() || invalid)) {
+                if (null != buf && (!buf.isReadable() || isValid)) {
                     composite = null;
                     ByteBufUtil.release(buf);
                 }

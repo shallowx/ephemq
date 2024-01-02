@@ -43,7 +43,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
     public ZookeeperClusterCoordinator(ServerConfig config) {
         this.configuration = config.getCommonConfig();
-        this.client = ZookeeperClient.getClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
+        this.client = ZookeeperClient.getActiveClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
     }
 
     @Override
@@ -76,21 +76,21 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
         latch.addListener(new LeaderLatchListener() {
             @Override
             public void isLeader() {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Get the controller role");
-                }
                 for (ClusterListener listener : listeners) {
                     listener.onGetControlRole(thisNode);
+                }
+                if (logger.isInfoEnabled()) {
+                    logger.info("Get the controller role");
                 }
             }
 
             @Override
             public void notLeader() {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Lost the controller role");
-                }
                 for (ClusterListener listener : listeners) {
                     listener.onLostControlRole(thisNode);
+                }
+                if (logger.isInfoEnabled()) {
+                    logger.info("Lost the controller role");
                 }
             }
         });

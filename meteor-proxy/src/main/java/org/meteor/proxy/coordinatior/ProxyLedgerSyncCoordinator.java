@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private final WeakHashMap<ProxyLog, Long> dispatchTotal = new WeakHashMap<>();
-    private long commitTime = System.currentTimeMillis();
+    private long commitTimeMillis = System.currentTimeMillis();
     private final ProxyConfig proxyConfiguration;
 
     public ProxyLedgerSyncCoordinator(ProxyConfig proxyConfiguration, Coordinator coordinator) {
@@ -41,7 +41,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
 
     private void commitLoad() throws Exception {
         long now = System.currentTimeMillis();
-        for (Log log : coordinator.getLogCoordinator().getLedgerId2LogMap().values()) {
+        for (Log log : coordinator.getLogCoordinator().getLedgerIdOfLogs().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
@@ -60,7 +60,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             }
         }
 
-        CuratorFramework client = ZookeeperClient.getClient(config.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        CuratorFramework client = ZookeeperClient.getActiveClient(config.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         String path = String.format(ZookeeperPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
         byte[] bytes = client.getData().forPath(path);
         Node proxyNode = JsonMapper.deserialize(bytes, Node.class);
@@ -70,8 +70,8 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
 
     private Map<Integer, Integer> calculateLedgerThroughput() {
         Map<Integer, Integer> ret = new HashMap<>();
-        long interval = (System.currentTimeMillis() - commitTime) / 1000;
-        for (Log log : coordinator.getLogCoordinator().getLedgerId2LogMap().values()) {
+        long interval = (System.currentTimeMillis() - commitTimeMillis) / 1000;
+        for (Log log : coordinator.getLogCoordinator().getLedgerIdOfLogs().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
             long newValue = proxyLog.getTotalDispatchedMessages();
             Long oldValue = dispatchTotal.put(proxyLog, newValue);
@@ -83,7 +83,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
                 ret.put(log.getLedger(), throughput);
             }
         }
-        commitTime = System.currentTimeMillis();
+        commitTimeMillis = System.currentTimeMillis();
         return ret;
     }
 }

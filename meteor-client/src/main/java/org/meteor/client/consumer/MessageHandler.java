@@ -19,15 +19,15 @@ public class MessageHandler {
     private final String id;
     private final Semaphore semaphore;
     private final EventExecutor handleExecutor;
-    private final Map<String, Map<String, Mode>> wholeQueueTopics;
+    private final Map<String, Map<String, Mode>> subscribeShips;
     private final MessageListener listener;
 
     public MessageHandler(String id, Semaphore semaphore, EventExecutor executor, Map<String,
-            Map<String, Mode>> wholeQueueTopics, MessageListener listener) {
+            Map<String, Mode>> subscribeShips, MessageListener listener) {
         this.id = id;
         this.semaphore = semaphore;
         this.handleExecutor = executor;
-        this.wholeQueueTopics = wholeQueueTopics;
+        this.subscribeShips = subscribeShips;
         this.listener = listener;
     }
 
@@ -56,7 +56,7 @@ public class MessageHandler {
             MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
             String topic = metadata.getTopic();
             String queue = metadata.getQueue();
-            Map<String, Mode> topicModes = wholeQueueTopics.get(queue);
+            Map<String, Mode> topicModes = subscribeShips.get(queue);
             Mode mode = topicModes == null ? null : topicModes.get(topic);
             if (mode == null || mode == Mode.DELETE) {
                 return;

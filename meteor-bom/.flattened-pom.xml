@@ -54,6 +54,7 @@
     <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/</sonatypeOssDistMgmtSnapshotsUrl>
     <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <micrometer.core.version>1.12.1</micrometer.core.version>
+    <bom.helper.version>0.4.0</bom.helper.version>
     <mockito.core.version>5.2.0</mockito.core.version>
     <commons.io.version>2.11.0</commons.io.version>
     <curator.version>5.2.1</curator.version>

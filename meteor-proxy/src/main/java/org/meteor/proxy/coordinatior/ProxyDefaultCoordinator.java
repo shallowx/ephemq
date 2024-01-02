@@ -16,7 +16,6 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
 
     public ProxyDefaultCoordinator(ProxyServerConfig configuration) {
         super(configuration);
-
         this.connectionCoordinator = new DefaultConnectionCoordinator();
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");

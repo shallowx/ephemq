@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 public final class NetworkUtil {
-
     private NetworkUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();

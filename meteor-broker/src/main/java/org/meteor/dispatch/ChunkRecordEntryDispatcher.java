@@ -104,7 +104,7 @@ public class ChunkRecordEntryDispatcher {
                 promise.trySuccess(null);
                 return;
             }
-            ConcurrentMap<Channel, ChunkRecordSynchronization> channelSynchronizationMap = handler.getChannelSubscriptionMap();
+            ConcurrentMap<Channel, ChunkRecordSynchronization> channelSynchronizationMap = handler.getSubscriptionChannels();
             ChunkRecordSynchronization synchronization = channelSynchronizationMap.get(channel);
             if (synchronization == null) {
                 promise.trySuccess(null);
@@ -299,11 +299,11 @@ public class ChunkRecordEntryDispatcher {
         ChunkRecordSynchronization synchronization = pursueTask.getSubscription();
         Channel channel = synchronization.channel;
         ChunkRecordHandler handler = synchronization.handler;
-        if (!channel.isActive() || synchronization != handler.getChannelSubscriptionMap().get(channel)) {
+        if (!channel.isActive() || synchronization != handler.getSubscriptionChannels().get(channel)) {
             return;
         }
 
-        if (System.currentTimeMillis() - pursueTask.getPursueTime() > pursueTimeoutMilliseconds) {
+        if (System.currentTimeMillis() - pursueTask.getPursueTimeMillis() > pursueTimeoutMilliseconds) {
             submitFollow(pursueTask);
             return;
         }
@@ -396,7 +396,7 @@ public class ChunkRecordEntryDispatcher {
         ChunkRecordSynchronization synchronization = pursueTask.getSubscription();
         Channel channel = synchronization.channel;
         ChunkRecordHandler handler = synchronization.handler;
-        if (!channel.isActive() || synchronization != handler.getChannelSubscriptionMap().get(channel)) {
+        if (!channel.isActive() || synchronization != handler.getSubscriptionChannels().get(channel)) {
             return;
         }
 
@@ -500,7 +500,7 @@ public class ChunkRecordEntryDispatcher {
             }
 
             ChunkRecordHandler handler = allocateHandler(channel);
-            ConcurrentMap<Channel, ChunkRecordSynchronization> channelSynchronizationMap = handler.getChannelSubscriptionMap();
+            ConcurrentMap<Channel, ChunkRecordSynchronization> channelSynchronizationMap = handler.getSubscriptionChannels();
             ChunkRecordSynchronization oldSynchronization = channelSynchronizationMap.get(channel);
             ChunkRecordSynchronization newSynchronization = new ChunkRecordSynchronization(channel, handler);
 
@@ -587,7 +587,7 @@ public class ChunkRecordEntryDispatcher {
             Map<ChunkRecordHandler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
             for (ChunkRecordHandler handler : weakHandlers.keySet()) {
-                int channelCount = handler.getChannelSubscriptionMap().size();
+                int channelCount = handler.getSubscriptionChannels().size();
                 if (channelCount >= loadLimit) {
                     continue;
                 }
@@ -595,7 +595,7 @@ public class ChunkRecordEntryDispatcher {
                 if (channelCount >= middleLimit) {
                     randomBound += loadLimit - channelCount;
                     selectHandlers.put(handler, channelCount);
-                } else if (result == null || result.getChannelSubscriptionMap().size() < channelCount) {
+                } else if (result == null || result.getSubscriptionChannels().size() < channelCount) {
                     result = handler;
                 }
             }

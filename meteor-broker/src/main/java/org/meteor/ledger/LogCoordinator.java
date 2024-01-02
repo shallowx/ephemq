@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class LogCoordinator {
     private final ServerConfig config;
     private final Coordinator coordinator;
-    private final Map<Integer, Log> ledgerId2LogMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Log> ledgerIdOfLogs = new ConcurrentHashMap<>();
     private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
     private final ScheduledExecutorService scheduledExecutorOfCleanStorage;
 
@@ -37,7 +37,7 @@ public class LogCoordinator {
 
     public void start() {
         this.scheduledExecutorOfCleanStorage.scheduleAtFixedRate(() -> {
-            for (Log log : ledgerId2LogMap.values()) {
+            for (Log log : ledgerIdOfLogs.values()) {
                 log.cleanStorage();
             }
         }, 30, 5, TimeUnit.SECONDS);
@@ -93,7 +93,7 @@ public class LogCoordinator {
 
     public Log initLog(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) {
         Log log = new Log(config, topicPartition, ledgerId, epoch, coordinator, topicConfig);
-        this.ledgerId2LogMap.putIfAbsent(ledgerId, log);
+        this.ledgerIdOfLogs.putIfAbsent(ledgerId, log);
         for (LogListener listener : listeners) {
             listener.onInitLog(log);
         }
@@ -101,32 +101,32 @@ public class LogCoordinator {
     }
 
     public Log getLog(int ledger) {
-        return ledgerId2LogMap.get(ledger);
+        return ledgerIdOfLogs.get(ledger);
     }
 
     public Log getOrInitLog(int ledger, Function<Integer, Log> f) {
-        return this.ledgerId2LogMap.computeIfAbsent(ledger, f);
+        return this.ledgerIdOfLogs.computeIfAbsent(ledger, f);
     }
 
-    public Map<Integer, Log> getLedgerId2LogMap() {
-        return ledgerId2LogMap;
+    public Map<Integer, Log> getLedgerIdOfLogs() {
+        return ledgerIdOfLogs;
     }
 
     public void shutdown() {
-        for (Integer ledgerId : this.ledgerId2LogMap.keySet()) {
+        for (Integer ledgerId : this.ledgerIdOfLogs.keySet()) {
             destroyLog(ledgerId);
         }
     }
 
     public void destroyLog(int ledgerId) {
-        Log log = this.ledgerId2LogMap.get(ledgerId);
+        Log log = this.ledgerIdOfLogs.get(ledgerId);
         if (log != null) {
             log.close(null);
         }
     }
 
     public boolean contains(int ledgerId) {
-        return ledgerId2LogMap.containsKey(ledgerId);
+        return ledgerIdOfLogs.containsKey(ledgerId);
     }
 
     public List<LogListener> getLogListeners() {

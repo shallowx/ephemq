@@ -34,8 +34,8 @@ public class Client implements MeterBinder {
     private final ClientConfig config;
     private final ClientListener listener;
     private final List<SocketAddress> bootstrapAddress;
-    private final Map<SocketAddress, List<Future<ClientChannel>>> channels = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, Promise<ClientChannel>> assembleChannels = new ConcurrentHashMap<>();
+    private final Map<SocketAddress, List<Future<ClientChannel>>> registerChannels = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Promise<ClientChannel>> ChannelOfPromise = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
     protected String name;
     protected EventLoopGroup workerGroup;
@@ -98,14 +98,14 @@ public class Client implements MeterBinder {
             return futures.get(ThreadLocalRandom.current().nextInt(futures.size()));
         }
 
-        synchronized (channels) {
+        synchronized (registerChannels) {
             futures = filter(address);
             if (futures != null && futures.size() >= config.getConnectionPoolCapacity()) {
                 return futures.get(ThreadLocalRandom.current().nextInt(futures.size()));
             }
 
             future = channelFuture(address);
-            channels.computeIfAbsent(address, k -> new CopyOnWriteArrayList<>()).add(future);
+            registerChannels.computeIfAbsent(address, k -> new CopyOnWriteArrayList<>()).add(future);
             final SocketAddress theAddress = address;
             future.addListener((GenericFutureListener<Future<ClientChannel>>) f -> {
                 if (!f.isSuccess()) {
@@ -120,42 +120,42 @@ public class Client implements MeterBinder {
     }
 
     private void removeChannel(SocketAddress address, Future<ClientChannel> future) {
-        synchronized (channels) {
-            List<Future<ClientChannel>> futures = channels.get(address);
+        synchronized (registerChannels) {
+            List<Future<ClientChannel>> futures = registerChannels.get(address);
             if (futures == null) {
                 return;
             }
 
             futures.remove(future);
             if (futures.isEmpty()) {
-                channels.remove(address);
+                registerChannels.remove(address);
             }
         }
     }
 
     public Future<ClientChannel> channelFuture(SocketAddress address) {
-        Bootstrap theBootstrap = bootstrap.clone().handler(new InternalChannelInitializer(address, config, listener, assembleChannels));
+        Bootstrap theBootstrap = bootstrap.clone().handler(new InternalChannelInitializer(address, config, listener, ChannelOfPromise));
         ChannelFuture channelFuture = theBootstrap.connect(address);
         Channel channel = channelFuture.channel();
-        Promise<ClientChannel> assemblePromise = assembleChannels
+        Promise<ClientChannel> assemblePromise = ChannelOfPromise
                 .computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise());
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {
                 assemblePromise.tryFailure(future.cause());
-                assembleChannels.remove(channel.id().asLongText());
+                ChannelOfPromise.remove(channel.id().asLongText());
             }
         });
 
         channel.closeFuture().addListener(f -> {
             assemblePromise.tryFailure(new IllegalArgumentException(String.format("Client channel[%s] is closed", channel)));
-            assembleChannels.remove(channel.id().asLongText());
+            ChannelOfPromise.remove(channel.id().asLongText());
         });
 
         return assemblePromise;
     }
 
     private List<Future<ClientChannel>> filter(SocketAddress address) {
-        List<Future<ClientChannel>> futures = channels.get(address);
+        List<Future<ClientChannel>> futures = registerChannels.get(address);
         return futures == null ? null : futures.stream().filter(this::isValid).collect(Collectors.toList());
     }
 
@@ -177,11 +177,11 @@ public class Client implements MeterBinder {
     }
 
     private Future<ClientChannel> randomAcquire() {
-        int size = channels.size();
+        int size = registerChannels.size();
         if (size == 0) {
             return null;
         }
-        List<Future<ClientChannel>> validChannels = channels.values().stream()
+        List<Future<ClientChannel>> validChannels = registerChannels.values().stream()
                 .flatMap(Collection::stream)
                 .filter(this::isValid).toList();
 

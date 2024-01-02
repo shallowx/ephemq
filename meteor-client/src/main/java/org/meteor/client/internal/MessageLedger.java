@@ -8,15 +8,15 @@ public class MessageLedger {
     private final int id;
     private final int version;
     private final SocketAddress leader;
-    private final List<SocketAddress> replicas;
+    private final List<SocketAddress> participants;
     private final String topic;
     private final int partition;
 
-    public MessageLedger(int id, int version, SocketAddress leader, List<SocketAddress> replicas, String topic, int partition) {
+    public MessageLedger(int id, int version, SocketAddress leader, List<SocketAddress> participants, String topic, int partition) {
         this.id = id;
         this.version = version;
         this.leader = leader;
-        this.replicas = replicas;
+        this.participants = participants;
         this.topic = topic;
         this.partition = partition;
     }
@@ -33,8 +33,8 @@ public class MessageLedger {
         return leader;
     }
 
-    public List<SocketAddress> replicas() {
-        return replicas;
+    public List<SocketAddress> participants() {
+        return participants;
     }
 
     public String topic() {
@@ -64,7 +64,7 @@ public class MessageLedger {
                 "id=" + id +
                 ", version=" + version +
                 ", leader=" + leader +
-                ", replicas=" + replicas +
+                ", participants=" + participants +
                 ", topic='" + topic + '\'' +
                 ", partition=" + partition +
                 '}';

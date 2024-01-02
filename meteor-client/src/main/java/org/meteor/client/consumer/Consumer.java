@@ -27,15 +27,14 @@ public class Consumer {
     private final String name;
     private final ConsumerConfig consumerConfig;
     private final Client client;
-    private final Map<String, Map<String, Mode>> wholeQueueTopics = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Mode>> subscribeShips = new ConcurrentHashMap<>();
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
     private final Map<Integer, AtomicReference<MessageId>> ledgerSequences = new ConcurrentHashMap<>();
     private final AtomicBoolean changeTaskTouched = new AtomicBoolean(false);
     private final Map<String, Long> topicTokens = new HashMap<>();
     private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
     private final Map<String, Map<Integer, Int2IntMap>> topicLedgerMarkers = new HashMap<>();
-    EventExecutor executor;
-
+    private EventExecutor executor;
     private volatile Boolean state;
     private Future<?> failedRetryFuture;
     private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
@@ -75,8 +74,8 @@ public class Consumer {
     public EventExecutor getExecutor() {
         return executor;
     }
-    public Map<String, Map<String, Mode>> getWholeQueueTopics() {
-        return wholeQueueTopics;
+    public Map<String, Map<String, Mode>> getSubscribeShips() {
+        return subscribeShips;
     }
     public Map<Integer, ClientChannel> getLedgerChannels() {
         return ledgerChannels;
@@ -96,8 +95,8 @@ public class Consumer {
         TopicPatternUtil.validateQueue(queue);
 
         topic = topic.intern();
-        synchronized (wholeQueueTopics) {
-            Map<String, Mode> topicModes = wholeQueueTopics.computeIfAbsent(queue, k -> new ConcurrentHashMap<>());
+        synchronized (subscribeShips) {
+            Map<String, Mode> topicModes = subscribeShips.computeIfAbsent(queue, k -> new ConcurrentHashMap<>());
             Mode mode = topicModes.get(topic);
             if (mode == null) {
                 topicModes.put(topic, Mode.APPEND);
@@ -116,8 +115,8 @@ public class Consumer {
         TopicPatternUtil.validateQueue(queue);
 
         topic = topic.intern();
-        synchronized (wholeQueueTopics) {
-            Map<String, Mode> topicModes = wholeQueueTopics.get(queue);
+        synchronized (subscribeShips) {
+            Map<String, Mode> topicModes = subscribeShips.get(queue);
             if (topicModes == null) {
                 return;
             }
@@ -131,7 +130,7 @@ public class Consumer {
                 return;
             }
             if (topicModes.isEmpty()) {
-                wholeQueueTopics.remove(queue);
+                subscribeShips.remove(queue);
             }
         }
         touchChangedTask();
@@ -142,8 +141,8 @@ public class Consumer {
 
         topic = topic.intern();
         boolean cleared = false;
-        synchronized (wholeQueueTopics) {
-            Iterator<Map.Entry<String, Map<String, Mode>>> iterator = wholeQueueTopics.entrySet().iterator();
+        synchronized (subscribeShips) {
+            Iterator<Map.Entry<String, Map<String, Mode>>> iterator = subscribeShips.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map<String, Mode> topicModes = iterator.next().getValue();
                 Mode mode = topicModes.get(topic);
@@ -400,7 +399,7 @@ public class Consumer {
 
         ClientChannel channel = ledgerChannels.get(ledgerId);
         if (channel == null || !channel.isActive() ||
-                (!ledger.replicas().isEmpty() && !ledger.replicas().contains(channel.address()))) {
+                (!ledger.participants().isEmpty() && !ledger.participants().contains(channel.address()))) {
             return resetLedgerSubscribe(router, ledger, topic, changedQueues, markerCounts);
         }
 
@@ -618,14 +617,14 @@ public class Consumer {
             }
         }
 
-        for (SocketAddress address : ledger.replicas()) {
+        for (SocketAddress address : ledger.participants()) {
             ClientChannel clientChannel = fetchChannel(address);
             if (clientChannel != null && clientChannel.isActive()) {
                 return clientChannel;
             }
         }
 
-        if (ledger.replicas().isEmpty() && (channel != null && channel.isActive())) {
+        if (ledger.participants().isEmpty() && (channel != null && channel.isActive())) {
             return channel;
         }
         return null;
@@ -687,8 +686,8 @@ public class Consumer {
 
     private Map<String, Integer> extractChangedRecords(Map<String, Map<String, Mode>> changedRecords) {
         Map<String, Integer> topicQueueCount = new HashMap<>();
-        synchronized (wholeQueueTopics) {
-            Iterator<Map.Entry<String, Map<String, Mode>>> queueIterator = wholeQueueTopics.entrySet().iterator();
+        synchronized (subscribeShips) {
+            Iterator<Map.Entry<String, Map<String, Mode>>> queueIterator = subscribeShips.entrySet().iterator();
             while (queueIterator.hasNext()) {
                 Map.Entry<String, Map<String, Mode>> queueEntry = queueIterator.next();
                 String queue = queueEntry.getKey();
@@ -731,8 +730,8 @@ public class Consumer {
 
     private Set<String> dumpPresentTopic(String topic) {
         Set<String> queues = new HashSet<>();
-        synchronized (wholeQueueTopics) {
-            Iterator<Map.Entry<String, Map<String, Mode>>> iterator = wholeQueueTopics.entrySet().iterator();
+        synchronized (subscribeShips) {
+            Iterator<Map.Entry<String, Map<String, Mode>>> iterator = subscribeShips.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, Map<String, Mode>> entry = iterator.next();
                 String queue = entry.getKey();

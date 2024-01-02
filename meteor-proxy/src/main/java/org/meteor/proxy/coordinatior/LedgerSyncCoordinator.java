@@ -85,7 +85,7 @@ public abstract class LedgerSyncCoordinator {
         }
 
         MessageLedger messageLedger = getMessageLedger(topic, ledger);
-        List<SocketAddress> replicas = messageLedger.replicas();
+        List<SocketAddress> replicas = messageLedger.participants();
         if (replicas == null || replicas.isEmpty()) {
             IllegalStateException e = new IllegalStateException("No available replicas for ledger[" + ledger + "]");
             logger.error(e);
@@ -163,7 +163,7 @@ public abstract class LedgerSyncCoordinator {
 
     @Nonnull
     public ClientChannel getSyncChannel(MessageLedger messageLedger) {
-        List<SocketAddress> replicas = messageLedger.replicas();
+        List<SocketAddress> replicas = messageLedger.participants();
         if (replicas == null || replicas.isEmpty()) {
             throw new IllegalStateException(String.format(
                     "No available replica which topic=%s ledger=%d", messageLedger.topic(), messageLedger.id()

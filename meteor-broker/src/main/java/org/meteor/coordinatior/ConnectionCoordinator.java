@@ -9,5 +9,5 @@ public interface ConnectionCoordinator {
 
     boolean remove(Channel channel);
 
-    Set<Channel> getChannels();
+    Set<Channel> getActiveChannels();
 }

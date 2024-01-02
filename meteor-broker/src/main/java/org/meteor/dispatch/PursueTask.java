@@ -9,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
 public class PursueTask<E> {
     private final E subscription;
     private final LedgerCursor cursor;
-    private final long pursueTime = System.currentTimeMillis();
+    private final long pursueTimeMillis = System.currentTimeMillis();
     private Offset pursueOffset;
 
     public PursueTask(E subscription, LedgerCursor cursor, Offset pursueOffset) {
@@ -30,8 +30,8 @@ public class PursueTask<E> {
         return cursor;
     }
 
-    public long getPursueTime() {
-        return pursueTime;
+    public long getPursueTimeMillis() {
+        return pursueTimeMillis;
     }
 
     public Offset getPursueOffset() {
@@ -43,7 +43,7 @@ public class PursueTask<E> {
         return "pursue_task{" +
                 "subscription=" + subscription +
                 ", cursor=" + cursor +
-                ", pursueTime=" + pursueTime +
+                ", pursueTimeMillis=" + pursueTimeMillis +
                 ", pursueOffset=" + pursueOffset +
                 '}';
     }

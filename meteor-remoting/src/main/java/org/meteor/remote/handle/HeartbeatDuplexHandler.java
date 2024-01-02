@@ -10,48 +10,47 @@ import org.meteor.remote.codec.MessagePacket;
 
 import java.util.concurrent.TimeUnit;
 
-
 public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(HeartbeatDuplexHandler.class);
-    private final long heartPeriodMs;
-    private final long idleTimeoutMs;
+    private final long heartPeriodMillis;
+    private final long idleTimeoutMillis;
     private Future<?> heartFuture;
     private Future<?> idleFuture;
-    private long lastWriteTime;
-    private long lastReadTime;
-    private long heartLastUpdateTime;
+    private long lastWriteTimeMillis;
+    private long lastReadTimeMillis;
+    private long heartLastUpdateTimeMillis;
 
-    public HeartbeatDuplexHandler(long heartPeriodMS, long idleTimeoutMs) {
-        this.heartPeriodMs = StrictMath.max(heartPeriodMS, 0);
-        this.idleTimeoutMs = StrictMath.max(idleTimeoutMs, 0);
+    public HeartbeatDuplexHandler(long heartPeriodMillis, long idleTimeoutMillis) {
+        this.heartPeriodMillis = StrictMath.max(heartPeriodMillis, 0);
+        this.idleTimeoutMillis = StrictMath.max(idleTimeoutMillis, 0);
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        heartLastUpdateTime = lastReadTime = lastWriteTime = System.currentTimeMillis();
-        if (heartPeriodMs > 0) {
+        heartLastUpdateTimeMillis = lastReadTimeMillis = lastWriteTimeMillis = System.currentTimeMillis();
+        if (heartPeriodMillis > 0) {
             heartFuture = ctx.executor().schedule(new Runnable() {
                 @Override
                 public void run() {
                     final long now = System.currentTimeMillis();
-                    final long delay = heartPeriodMs - (now - StrictMath.min(lastReadTime, lastWriteTime));
+                    final long delay = heartPeriodMillis - (now - StrictMath.min(lastReadTimeMillis, lastWriteTimeMillis));
                     if (delay > 0) {
                         heartFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
                         ctx.writeAndFlush(MessagePacket.newPacket(0, 0, null));
-                        heartLastUpdateTime = lastWriteTime = now;
-                        heartFuture = ctx.executor().schedule(this, heartPeriodMs, TimeUnit.MILLISECONDS);
+                        heartLastUpdateTimeMillis = lastWriteTimeMillis = now;
+                        heartFuture = ctx.executor().schedule(this, heartPeriodMillis, TimeUnit.MILLISECONDS);
                     }
                 }
-            }, heartPeriodMs, TimeUnit.MILLISECONDS);
+            }, heartPeriodMillis, TimeUnit.MILLISECONDS);
         }
 
-        if (idleTimeoutMs > 0) {
+        if (idleTimeoutMillis > 0) {
             idleFuture = ctx.executor().schedule(new Runnable() {
                 @Override
                 public void run() {
                     final long now = System.currentTimeMillis();
-                    final long delay = idleTimeoutMs - (now - StrictMath.min(lastReadTime, lastWriteTime));
+                    final long delay = idleTimeoutMillis - (now - StrictMath.min(lastReadTimeMillis, lastWriteTimeMillis));
                     if (delay > 0) {
                         idleFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
@@ -61,7 +60,7 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
                         ctx.close();
                     }
                 }
-            }, idleTimeoutMs, TimeUnit.MILLISECONDS);
+            }, idleTimeoutMillis, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -80,19 +79,19 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (idleTimeoutMs > 0 || heartPeriodMs > 0) {
-            lastReadTime = System.currentTimeMillis();
+        if (idleTimeoutMillis > 0 || heartPeriodMillis > 0) {
+            lastReadTimeMillis = System.currentTimeMillis();
         }
 
         if (msg instanceof final MessagePacket packet) {
             final int command = packet.command();
             final int answer = packet.answer();
             if (command <= 0 && answer == 0) {
-                if (command == 0 && heartPeriodMs == 0) {
+                if (command == 0 && heartPeriodMillis == 0) {
                     long now = System.currentTimeMillis();
-                    if (now - heartLastUpdateTime > 1000) {
+                    if (now - heartLastUpdateTimeMillis > 1000) {
                         ctx.writeAndFlush(MessagePacket.newPacket(0, 0, null));
-                        heartLastUpdateTime = lastWriteTime = now;
+                        heartLastUpdateTimeMillis = lastWriteTimeMillis = now;
                     }
                 }
                 packet.release();
@@ -104,8 +103,8 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (idleTimeoutMs > 0 || heartPeriodMs > 0) {
-            lastWriteTime = System.currentTimeMillis();
+        if (idleTimeoutMillis > 0 || heartPeriodMillis > 0) {
+            lastWriteTimeMillis = System.currentTimeMillis();
         }
         ctx.write(msg, promise);
     }

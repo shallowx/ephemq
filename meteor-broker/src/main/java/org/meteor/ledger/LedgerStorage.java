@@ -24,8 +24,8 @@ public class LedgerStorage {
     private final AtomicBoolean state = new AtomicBoolean(true);
     private volatile Offset currentOffset;
     private volatile int segmentCount;
-    private volatile LedgerSegment headSegment;
-    private volatile LedgerSegment tailSegment;
+    private volatile LedgerSegment head;
+    private volatile LedgerSegment tail;
 
     public LedgerStorage(int ledger, String topic, int epoch, LedgerConfig config, EventExecutor executor, LedgerTrigger trigger) {
         this.ledger = ledger;
@@ -34,11 +34,11 @@ public class LedgerStorage {
         this.currentOffset = new Offset(epoch, 0L);
         this.executor = executor;
         this.trigger = trigger;
-        if (config.isAllocate()) {
+        if (config.isAlloc()) {
             // For topics with a predictably high message volume, prioritize upfront memory allocation to prevent initial message spikes
-            this.headSegment = this.tailSegment = new LedgerSegment(ledger, allocateBuffer(config.segmentBufferCapacity()), currentOffset);
+            this.head = this.tail = new LedgerSegment(ledger, allocateBuffer(config.segmentBufferCapacity()), currentOffset);
         } else {
-            this.headSegment = this.tailSegment = new LedgerSegment(ledger, Unpooled.EMPTY_BUFFER, currentOffset);
+            this.head = this.tail = new LedgerSegment(ledger, Unpooled.EMPTY_BUFFER, currentOffset);
         }
     }
 
@@ -85,7 +85,7 @@ public class LedgerStorage {
     }
 
     public Offset headOffset() {
-        return headSegment.baseOffset();
+        return head.baseOffset();
     }
 
     public LedgerCursor cursor(Offset offset) {
@@ -93,17 +93,17 @@ public class LedgerStorage {
     }
 
     public LedgerCursor headCursor() {
-        LedgerSegment theHead = headSegment;
+        LedgerSegment theHead = head;
         return new LedgerCursor(this, theHead, theHead.basePosition());
     }
 
     public LedgerCursor tailCursor() {
-        LedgerSegment theTail = tailSegment;
+        LedgerSegment theTail = tail;
         return new LedgerCursor(this, theTail, theTail.lastPosition());
     }
 
     private LedgerSegment applySegment(int bytes) {
-        LedgerSegment segment = tailSegment;
+        LedgerSegment segment = tail;
         if (segment.freeBytes() < bytes) {
             if (segmentCount >= config.segmentRetainCounts()) {
                 decreaseSegment();
@@ -114,16 +114,16 @@ public class LedgerStorage {
     }
 
     private LedgerSegment increaseSegment(int capacity) {
-        LedgerSegment theTail = tailSegment;
+        LedgerSegment theTail = tail;
         ByteBuf buffer = allocateBuffer(capacity);
         LedgerSegment segment = new LedgerSegment(ledger, buffer, theTail.lastOffset());
 
         theTail.next(segment);
-        tailSegment = segment;
+        tail = segment;
 
         int count = segmentCount;
         if (count == 0) {
-            headSegment = segment;
+            head = segment;
         }
 
         segmentCount = count + 1;
@@ -147,7 +147,7 @@ public class LedgerStorage {
         }
 
         long timeMillis = System.currentTimeMillis() - config.segmentRetainMs();
-        LedgerSegment theBase = headSegment;
+        LedgerSegment theBase = head;
         while (true) {
             LedgerSegment theNext = theBase.next();
             if (theNext == null || (theNext.getCreationTime() > timeMillis)) {
@@ -165,19 +165,19 @@ public class LedgerStorage {
             return;
         }
 
-        LedgerSegment theHead = headSegment;
+        LedgerSegment theHead = head;
         if (count > 1) {
-            headSegment = theHead.next();
+            head = theHead.next();
         } else if (count == 1) {
             LedgerSegment empty = new LedgerSegment(ledger, Unpooled.EMPTY_BUFFER, theHead.lastOffset());
             theHead.next(empty);
-            headSegment = tailSegment = empty;
+            head = tail = empty;
         }
 
         segmentCount = count - 1;
         theHead.release();
 
-        triggerOnRelease(theHead.baseOffset(), headSegment.baseOffset());
+        triggerOnRelease(theHead.baseOffset(), head.baseOffset());
     }
 
     private void triggerOnRelease(Offset oldHead, Offset newHead) {
@@ -217,20 +217,20 @@ public class LedgerStorage {
     }
 
     public LedgerSegment headSegment() {
-        return headSegment;
+        return head;
     }
 
     public LedgerSegment tailSegment() {
-        return tailSegment;
+        return tail;
     }
 
     public Offset tailOffset() {
-        return tailSegment.lastOffset();
+        return tail.lastOffset();
     }
 
     public long segmentBytes() {
         long bytes = 0L;
-        LedgerSegment segment = headSegment;
+        LedgerSegment segment = head;
         while (segment != null) {
             bytes += segment.usedBytes();
             segment = segment.next();

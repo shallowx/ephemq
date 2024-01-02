@@ -20,7 +20,7 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
     public ZookeeperProxyClusterCoordinator(ProxyServerConfig configuration) {
         super(configuration);
         this.proxyConfiguration = configuration.getProxyConfiguration();
-        this.client = ZookeeperClient.getClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        this.client = ZookeeperClient.getActiveClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         this.hashingRing = new ConsistentHashingRing();
         this.listeners.add(this);
     }

@@ -7,7 +7,6 @@ import javax.naming.OperationNotSupportedException;
 import java.nio.charset.StandardCharsets;
 
 public final class ByteBufUtil {
-
     private ByteBufUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();

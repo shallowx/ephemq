@@ -27,14 +27,14 @@ public class LedgerSegment {
     private final Offset baseOffset;
     private final int basePosition;
     private final long creationTime;
-    private volatile BufferHolder holder;
+    private volatile BufferHolder phantomHolder;
     private volatile Offset lastOffset;
     private volatile int lastPosition;
     private volatile LedgerSegment next;
 
     public LedgerSegment(int ledger, ByteBuf buffer, Offset baseOffset) {
         this.ledger = ledger;
-        this.holder = createBufferHolder(buffer);
+        this.phantomHolder = createBufferHolder(buffer);
         this.lastOffset = this.baseOffset = baseOffset;
         this.lastPosition = this.basePosition = buffer.writerIndex();
         this.creationTime = System.currentTimeMillis();
@@ -65,7 +65,7 @@ public class LedgerSegment {
     }
 
     protected void writeRecord(int marker, Offset offset, ByteBuf payload) {
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         if (theHolder != null) {
             ByteBuf theBuffer = theHolder.buffer;
             int location = theBuffer.writerIndex();
@@ -93,7 +93,7 @@ public class LedgerSegment {
     }
 
     protected ByteBuf readRecord(int position) {
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         if (theHolder != null) {
             ByteBuf theBuffer = theHolder.buffer;
             int length = theBuffer.getInt(position);
@@ -113,7 +113,7 @@ public class LedgerSegment {
             return basePosition;
         }
 
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         if (theHolder == null) {
             return lastPosition;
         }
@@ -165,30 +165,30 @@ public class LedgerSegment {
     }
 
     protected boolean isActive() {
-        return holder != null;
+        return phantomHolder != null;
     }
 
     protected void release() {
-        holder = null;
+        phantomHolder = null;
     }
 
     protected int freeBytes() {
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         return theHolder == null ? 0 : theHolder.buffer.writableBytes();
     }
 
     protected int usedBytes() {
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         return theHolder == null ? 0 : theHolder.buffer.readableBytes();
     }
 
     protected int capacity() {
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         return theHolder == null ? 0 : theHolder.buffer.capacity();
     }
 
     public void writeChunkRecord(int bytes, Offset endOffset, ByteBuf buf) {
-        final BufferHolder theHolder = holder;
+        final BufferHolder theHolder = phantomHolder;
         if (theHolder != null) {
             ByteBuf theBuffer = theHolder.buffer;
             int location = theBuffer.writerIndex();
@@ -206,7 +206,7 @@ public class LedgerSegment {
     }
 
     public ChunkRecord readChunkRecord(int position, int bytesLimit) {
-        BufferHolder theHolder = holder;
+        BufferHolder theHolder = phantomHolder;
         if (theHolder != null) {
             ByteBuf theBuffer = theHolder.buffer;
             int limit = lastPosition;

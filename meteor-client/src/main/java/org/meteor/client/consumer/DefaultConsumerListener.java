@@ -47,7 +47,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
         this.group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadLimit(), "consumer-message-group");
         for (int i = 0; i < shardCount; i++) {
             Semaphore semaphore = new Semaphore(handlerPendingCount);
-            MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next(), consumer.getWholeQueueTopics(), listener);
+            MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next(), consumer.getSubscribeShips(), listener);
             this.handlers[i] = messageHandler;
         }
     }
@@ -69,7 +69,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
 
         int ledgerId = signal.getLedger();
         int ledgerVersion = signal.getLedgerVersion();
-        consumer.executor.schedule(() -> {
+        consumer.getExecutor().schedule(() -> {
             try {
                 if (consumer.containsRouter(topic)) {
                     MessageRouter router = consumer.fetchRouter(topic);
@@ -104,7 +104,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
                 MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
                 String topic = metadata.getTopic();
                 obsoleteFutures.computeIfAbsent(ledger + "@" + channel.id(),
-                        k -> consumer.executor.schedule(() -> {
+                        k -> consumer.getExecutor().schedule(() -> {
                             if (channel.isActive() && !channel.equals(consumer.getLedgerChannels().get(ledger))) {
                                 consumer.doCleanSubscribe(channel, topic, ledger);
                             }

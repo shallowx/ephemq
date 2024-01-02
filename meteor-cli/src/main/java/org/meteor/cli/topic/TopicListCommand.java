@@ -20,11 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 public class TopicListCommand implements Command {
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return format.format(new Date());
-    }
-
     @Override
     public String name() {
         return "topics";

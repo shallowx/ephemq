@@ -58,9 +58,9 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         this.serviceExecutor = executor;
-        coordinator.getConnectionCoordinator().add(channel);
+        this.coordinator.getConnectionCoordinator().add(channel);
         channel.closeFuture().addListener(future -> {
-            for (Log log : coordinator.getLogCoordinator().getLedgerId2LogMap().values()) {
+            for (Log log : coordinator.getLogCoordinator().getLedgerIdOfLogs().values()) {
                 log.cleanSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
                 log.subscribeSynchronize(channel, ImmediateEventExecutor.INSTANCE.newPromise());
             }

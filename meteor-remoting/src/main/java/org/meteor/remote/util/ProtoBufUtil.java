@@ -9,7 +9,6 @@ import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
 public class ProtoBufUtil {
-
     private ProtoBufUtil() throws OperationNotSupportedException {
         // Unused
         throw new OperationNotSupportedException();

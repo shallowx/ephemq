@@ -4,7 +4,7 @@ public class LedgerConfig {
     private int segmentRetainCounts = 3;
     private int segmentRetainMs = 30000;
     private int segmentBufferCapacity = 4194304;
-    private boolean allocate;
+    private boolean alloc;
 
     public int segmentRetainCounts() {
         return segmentRetainCounts;
@@ -28,8 +28,8 @@ public class LedgerConfig {
         return segmentBufferCapacity;
     }
 
-    public boolean isAllocate() {
-        return allocate;
+    public boolean isAlloc() {
+        return alloc;
     }
 
     public LedgerConfig segmentBufferCapacity(int segmentBufferCapacity) {
@@ -37,8 +37,8 @@ public class LedgerConfig {
         return this;
     }
 
-    public LedgerConfig allocate(boolean allocate) {
-        this.allocate = allocate;
+    public LedgerConfig alloc(boolean alloc) {
+        this.alloc = alloc;
         return this;
     }
 

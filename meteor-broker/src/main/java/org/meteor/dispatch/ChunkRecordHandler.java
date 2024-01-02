@@ -38,7 +38,7 @@ public class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronizati
         return "record_chunk_handler{" +
                 "synchronizations=" + synchronizations +
                 ", id='" + id +
-                ", channelSubscriptionMap=" + channelSubscriptionMap +
+                ", subscriptionChannels=" + subscriptionChannels +
                 ", triggered=" + triggered +
                 ", dispatchExecutor=" + dispatchExecutor +
                 ", followOffset=" + followOffset +

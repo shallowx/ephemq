@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public class RecordHandler extends AbstractHandler<RecordSynchronization, RecordHandler> {
     static final RecordHandler INSTANCE = new RecordHandler();
-    protected Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap = new Int2ObjectOpenHashMap<>();
+    protected Int2ObjectMap<Set<RecordSynchronization>> subscriptionMarkers = new Int2ObjectOpenHashMap<>();
 
     @Override
     int[] getCounts(EventExecutor[] executors, WeakHashMap<RecordHandler, Integer> handlers) {
@@ -32,16 +32,16 @@ public class RecordHandler extends AbstractHandler<RecordSynchronization, Record
         super(executor);
     }
 
-    public Int2ObjectMap<Set<RecordSynchronization>> getMarkerSubscriptionMap() {
-        return markerSubscriptionMap;
+    public Int2ObjectMap<Set<RecordSynchronization>> getSubscriptionMarkers() {
+        return subscriptionMarkers;
     }
 
     @Override
     public String toString() {
         return "record_handler{" +
-                "markerSubscriptionMap=" + markerSubscriptionMap +
+                "subscriptionMarkers=" + subscriptionMarkers +
                 ", id='" + id + 
-                ", channelSubscriptionMap=" + channelSubscriptionMap +
+                ", subscriptionChannels=" + subscriptionChannels +
                 ", triggered=" + triggered +
                 ", dispatchExecutor=" + dispatchExecutor +
                 ", followOffset=" + followOffset +

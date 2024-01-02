@@ -17,8 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 public class MeteorAdmin {
-    private static final List<Command> commands = new ArrayList<>();
-
     public static void main(String[] args) {
         main0(args);
     }
@@ -125,6 +123,7 @@ public class MeteorAdmin {
         return options;
     }
 
+    private static final List<Command> commands = new ArrayList<>();
     private static void initCommand() {
         Command clientCmd = new TopicListCommand();
         Command clusterCmd = new ClusterListCommand();

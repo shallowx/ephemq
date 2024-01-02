@@ -4,19 +4,17 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.message.Offset;
 import org.meteor.ledger.LedgerCursor;
-import javax.annotation.concurrent.Immutable;
+
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class AbstractHandler<E, T> {
-
     protected final String id = UUID.randomUUID().toString();
-    protected final ConcurrentMap<Channel, E> channelSubscriptionMap = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Channel, E> subscriptionChannels = new ConcurrentHashMap<>();
     protected final AtomicBoolean triggered = new AtomicBoolean(false);
     protected final EventExecutor dispatchExecutor;
     protected volatile Offset followOffset;
@@ -80,8 +78,8 @@ public abstract class AbstractHandler<E, T> {
         return followCursor;
     }
 
-    public ConcurrentMap<Channel, E> getChannelSubscriptionMap() {
-        return channelSubscriptionMap;
+    public ConcurrentMap<Channel, E> getSubscriptionChannels() {
+        return subscriptionChannels;
     }
 
     public EventExecutor getDispatchExecutor() {

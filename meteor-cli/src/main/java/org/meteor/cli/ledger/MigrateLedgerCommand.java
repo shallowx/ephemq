@@ -22,11 +22,6 @@ import java.util.concurrent.*;
 public class MigrateLedgerCommand implements Command {
     private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
 
-    private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return format.format(new Date());
-    }
-
     @Override
     public String name() {
         return "ml";
@@ -117,7 +112,6 @@ public class MigrateLedgerCommand implements Command {
 
         if (future.get() == Boolean.FALSE) {
             retry(client, topic, partition, original, destination);
-            return;
         }
     }
 }
