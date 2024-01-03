@@ -1,7 +1,6 @@
 package org.meteor.client.internal;
 
 import io.netty.util.NettyRuntime;
-
 import java.util.ArrayList;
 import java.util.List;
 

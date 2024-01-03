@@ -4,6 +4,8 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.buffer.ByteBuf;
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
@@ -31,14 +33,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public class DefaultConsumerListener implements ClientListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultConsumerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
-    private final Consumer consumer;
+    private final DefaultConsumer consumer;
     private final MessageHandler[] handlers;
+    private final IntObjectMap<MessageHandler> markerOfHandlers;
     private final ConsumerConfig consumerConfig;
     private final EventExecutorGroup group;
     private final Map<String, Future<?>> obsoleteFutures = new ConcurrentHashMap<>();
 
     public DefaultConsumerListener(Consumer consumer, ConsumerConfig consumerConfig, MessageListener listener) {
-        this.consumer = consumer;
+        this.consumer = (DefaultConsumer) consumer;
         this.consumerConfig = consumerConfig;
 
         int shardCount = Math.max(consumerConfig.getHandlerThreadLimit(), consumerConfig.getHandlerShardLimit());
@@ -47,9 +50,10 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
         this.group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadLimit(), "consumer-message-group");
         for (int i = 0; i < shardCount; i++) {
             Semaphore semaphore = new Semaphore(handlerPendingCount);
-            MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next(), consumer.getSubscribeShips(), listener);
+            MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next(), this.consumer.getSubscribeShips(), listener);
             this.handlers[i] = messageHandler;
         }
+        this.markerOfHandlers = new IntObjectHashMap<>(shardCount);
     }
 
     @Override
@@ -135,13 +139,17 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
         }
 
         try {
-            MessageHandler handler = handlers[consistentHash(marker, handlers.length)];
+            MessageHandler handler = getHandler(marker, handlers.length);
             handler.handle(channel, marker, id, data);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error("The handle message failure", t);
             }
         }
+    }
+
+    private MessageHandler getHandler(int marker, int length) {
+        return markerOfHandlers.computeIfAbsent(marker, v -> handlers[consistentHash(marker, length)]);
     }
 
     private int consistentHash(int input, int buckets) {
@@ -172,7 +180,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
             while (iterator.hasNext()) {
                 try {
                     EventExecutor next = iterator.next();
-                    while (! next.isTerminated()) {
+                    while (!next.isTerminated()) {
                         next.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
                     }
                 } catch (Exception e) {
@@ -184,25 +192,22 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
 
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-        {
-            SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) consumer.getExecutor();
-            Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
-                    .tag("type", "consumer-task")
-                    .tag("name", consumer.getName())
-                    .tag("id", singleThreadEventExecutor.threadProperties().name())
-                    .register(meterRegistry);
-        }
-
+        SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) consumer.getExecutor();
+        registerMetrics("consumer-task",meterRegistry, singleThreadEventExecutor);
         for (EventExecutor eventExecutor : group) {
             try {
                 SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
-                Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                        .tag("type", "consumer-handler")
-                        .tag("name", consumer.getName())
-                        .tag("id", executor.threadProperties().name())
-                        .register(meterRegistry);
+                registerMetrics("consumer-handler",meterRegistry, executor);
             } catch (Throwable ignored) {
             }
         }
+    }
+
+    private void registerMetrics(String type, MeterRegistry meterRegistry, SingleThreadEventExecutor singleThreadEventExecutor) {
+        Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
+                .tag("type", type)
+                .tag("name", consumer.getName())
+                .tag("id", singleThreadEventExecutor.threadProperties().name())
+                .register(meterRegistry);
     }
 }

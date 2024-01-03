@@ -7,7 +7,7 @@ public abstract class AbstractSynchronization<E> {
     protected final Channel channel;
     protected final E handler;
     protected Offset dispatchOffset;
-    protected boolean followed = false;
+    protected volatile boolean followed = false;
 
     public AbstractSynchronization(Channel channel, E handler) {
         this.channel = channel;

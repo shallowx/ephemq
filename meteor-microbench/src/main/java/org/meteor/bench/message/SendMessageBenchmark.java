@@ -11,7 +11,6 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
 import org.meteor.client.util.TopicPatternUtil;
-import org.meteor.common.message.Extras;
 import org.meteor.remote.invoke.Callback;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.SendMessageRequest;
@@ -19,7 +18,6 @@ import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.openjdk.jmh.annotations.*;
-
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
@@ -64,7 +62,7 @@ public class SendMessageBenchmark {
     private static final MessageRouter messageRouter = new MessageRouter(0, TOPIC, new HashMap<>(){{
         put(1, new MessageLedger(0,0,new InetSocketAddress("127.0.0.1", 8080), null, TOPIC, 1));
     }});
-    private static final Extras extras = new Extras();
+    private static final  Map<String, String> extras = new HashMap<>();
     private static final ByteBuf message = ByteBufUtil.string2Buf("test");
     private static final Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
     private static final ClientChannel clientChannel = new ClientChannel(new ClientConfig(), new EmbeddedChannel(), new InetSocketAddress("127.0.0.1", 8080));
@@ -115,7 +113,7 @@ public class SendMessageBenchmark {
 
     private MessageMetadata buildMetadata() {
         MessageMetadata.Builder builder = MessageMetadata.newBuilder().setTopic(SendMessageBenchmark.TOPIC).setQueue(SendMessageBenchmark.QUEUE);
-        for (Map.Entry<String, String> entry : SendMessageBenchmark.extras) {
+        for (Map.Entry<String, String> entry : SendMessageBenchmark.extras.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             if (key != null && value != null) {

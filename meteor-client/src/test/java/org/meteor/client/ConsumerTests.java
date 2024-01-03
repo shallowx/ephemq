@@ -1,8 +1,9 @@
 package org.meteor.client;
 
 import org.junit.Test;
-import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.consumer.Consumer;
+import org.meteor.client.consumer.ConsumerConfig;
+import org.meteor.client.consumer.DefaultConsumer;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -28,7 +29,7 @@ public class ConsumerTests {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        Consumer consumer = new Consumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
+        Consumer consumer = new DefaultConsumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
             logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
         });

@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShutdownHookThread {
-    private final AtomicInteger shutdownTimes = new AtomicInteger(0);
     private final InternalLogger logger;
     private final Callable<?> callable;
     private volatile boolean hasShutdown = false;
@@ -23,10 +22,6 @@ public class ShutdownHookThread {
 
     public void run() {
         synchronized (this) {
-            if (logger.isWarnEnabled()) {
-                logger.warn("Shutdown hook was invoked, shutdown time(ms)[{}]", this.shutdownTimes.incrementAndGet());
-            }
-
             if (!this.hasShutdown) {
                 this.hasShutdown = true;
                 long begin = System.currentTimeMillis();

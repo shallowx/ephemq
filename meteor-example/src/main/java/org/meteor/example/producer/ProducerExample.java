@@ -2,14 +2,13 @@ package org.meteor.example.producer;
 
 import io.netty.buffer.ByteBuf;
 import org.meteor.client.internal.ClientConfig;
+import org.meteor.client.producer.DefaultProducer;
 import org.meteor.client.producer.Producer;
 import org.meteor.client.producer.ProducerConfig;
 import org.meteor.client.producer.SendCallback;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
-import org.meteor.example.consumer.ConsumerExample;
 import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class ProducerExample {
         clientConfig.setConnectionPoolCapacity(2);
         ProducerConfig producerConfig = new ProducerConfig();
         producerConfig.setClientConfig(clientConfig);
-        Producer producer = new Producer("default-producer", producerConfig);
+        Producer producer = new DefaultProducer("default-producer", producerConfig);
         producer.start();
         this.producer = producer;
     }
@@ -57,7 +56,7 @@ public class ProducerExample {
                     String symbol = symbols[j % symbols.length];
                     ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
-                        producer.sendOneway(EXAMPLE_TOPIC, symbol, message, new Extras());
+                        producer.sendOneway(EXAMPLE_TOPIC, symbol, message, new HashMap<>());
                     } catch (Exception ignored) {}
                 }
 
@@ -72,14 +71,13 @@ public class ProducerExample {
     }
 
     public void send() {
-        Map<String, String> entries =  new HashMap<>();
-        entries.put("key", "v");
-        Extras extras = new Extras(entries);
+        Map<String, String> extras =  new HashMap<>();
+        extras.put("key", "v");
         producer.send(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras);
     }
 
     public void sendAsync() {
-        producer.sendAsync(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), new Extras(), new AsyncSendCallback());
+        producer.sendAsync(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), new HashMap<>(), new AsyncSendCallback());
     }
 
     static class AsyncSendCallback implements SendCallback {

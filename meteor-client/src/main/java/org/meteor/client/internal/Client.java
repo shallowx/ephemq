@@ -276,23 +276,21 @@ public class Client implements MeterBinder {
 
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-        {
-            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) refreshMetadataExecutor;
-            Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                    .tag("type", "client-task")
-                    .tag("name", name)
-                    .tag("id", executor.threadProperties().name())
-                    .register(meterRegistry);
-        }
+        SingleThreadEventExecutor refreshExecutor = (SingleThreadEventExecutor) refreshMetadataExecutor;
+        registerMetrics("client-refresh-task", meterRegistry, refreshExecutor);
 
         for (EventExecutor eventExecutor : workerGroup) {
-            SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
-            Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
-                    .tag("type", "client-worker")
-                    .tag("name", name)
-                    .tag("id", executor.threadProperties().name())
-                    .register(meterRegistry);
+            SingleThreadEventExecutor workerExecutor = (SingleThreadEventExecutor) eventExecutor;
+            registerMetrics("client-worker", meterRegistry, workerExecutor);
         }
+    }
+
+    private void registerMetrics(String type, MeterRegistry meterRegistry, SingleThreadEventExecutor executor) {
+        Gauge.builder(CLIENT_NETTY_PENDING_TASK_NAME, executor, SingleThreadEventExecutor::pendingTasks)
+                .tag("type", type)
+                .tag("name", name)
+                .tag("id", executor.threadProperties().name())
+                .register(meterRegistry);
     }
 
     public MessageRouter fetchRouter(String topic) {

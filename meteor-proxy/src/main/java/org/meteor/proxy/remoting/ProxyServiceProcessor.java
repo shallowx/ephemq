@@ -325,7 +325,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             return nodes;
         }
         NavigableMap<String, Integer> selectNodes = new TreeMap<>();
-        List<String> routeNodes = proxyClusterCoordinator.route2Nodes(token, replicaCount);
+        Set<String> routeNodes = proxyClusterCoordinator.route2Nodes(token, replicaCount);
         for (String node : routeNodes) {
             Integer throughput = nodes.get(node);
             selectNodes.put(node, throughput == null ? 0 : throughput);

@@ -112,28 +112,10 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             metricsSampleCount.set(sample + 1);
             if (sample > metricsSample) {
                 metricsSampleCount.set(0);
-                DistributionSummary drs = requestSizeSummary.computeIfAbsent(code,
-                        s -> DistributionSummary.builder(REQUEST_SIZE_SUMMARY_NAME)
-                                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
-                                        .and(BROKER_TAG, config.getServerId())
-                                        .and(CLUSTER_TAG, config.getClusterName()))
-                                .baseUnit("bytes")
-                                .distributionStatisticExpiry(Duration.ofSeconds(30))
-                                .publishPercentiles(0.99, 0.999, 0.9)
-                                .register(registry)
-                );
+                DistributionSummary drs = requestSizeSummary.computeIfAbsent(code, s -> buildSummary(REQUEST_SIZE_SUMMARY_NAME,code, "bytes"));
                 drs.record(bytes);
 
-                DistributionSummary drt = requestTimesSummary.computeIfAbsent(code,
-                        s -> DistributionSummary.builder(API_RESPONSE_TIME_NAME)
-                                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
-                                        .and(BROKER_TAG, config.getServerId())
-                                        .and(CLUSTER_TAG, config.getClusterName()))
-                                .baseUnit("ns")
-                                .distributionStatisticExpiry(Duration.ofSeconds(30))
-                                .publishPercentiles(0.99, 0.999, 0.9)
-                                .register(registry)
-                );
+                DistributionSummary drt = requestTimesSummary.computeIfAbsent(code, s -> buildSummary(API_RESPONSE_TIME_NAME,code, "ns"));
                 drt.record(bytes);
             }
         } catch (Throwable t) {
@@ -141,6 +123,17 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                 logger.error("Metrics on command listener failed, code={}", code, t);
             }
         }
+    }
+
+    private DistributionSummary buildSummary(String name, int code, String unit) {
+        return DistributionSummary.builder(name)
+                .tags(Tags.of(TYPE_TAG, String.valueOf(code))
+                        .and(BROKER_TAG, config.getServerId())
+                        .and(CLUSTER_TAG, config.getClusterName()))
+                .baseUnit(unit)
+                .distributionStatisticExpiry(Duration.ofSeconds(30))
+                .publishPercentiles(0.99, 0.999, 0.9)
+                .register(registry);
     }
 
     private Counter getCounter(int code, boolean ret) {

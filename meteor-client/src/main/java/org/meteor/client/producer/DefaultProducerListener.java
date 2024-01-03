@@ -19,10 +19,10 @@ import java.util.concurrent.TimeUnit;
 public class DefaultProducerListener implements ClientListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
-    private final Producer producer;
+    private final DefaultProducer producer;
     private final EventExecutor refreshRouterExecutor;
 
-    public DefaultProducerListener(Producer producer) {
+    public DefaultProducerListener(DefaultProducer producer) {
         this.producer = producer;
         refreshRouterExecutor = new FastEventExecutor(new DefaultThreadFactory("client-producer-task"));
     }

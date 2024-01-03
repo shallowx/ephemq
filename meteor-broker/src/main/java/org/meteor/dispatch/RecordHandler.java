@@ -40,7 +40,6 @@ public class RecordHandler extends AbstractHandler<RecordSynchronization, Record
     public String toString() {
         return "record_handler{" +
                 "subscriptionMarkers=" + subscriptionMarkers +
-                ", id='" + id + 
                 ", subscriptionChannels=" + subscriptionChannels +
                 ", triggered=" + triggered +
                 ", dispatchExecutor=" + dispatchExecutor +

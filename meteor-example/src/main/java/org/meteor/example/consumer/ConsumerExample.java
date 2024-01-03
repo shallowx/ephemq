@@ -1,6 +1,7 @@
 package org.meteor.example.consumer;
 
 import org.meteor.client.consumer.Consumer;
+import org.meteor.client.consumer.DefaultConsumer;
 import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
@@ -36,14 +37,14 @@ public class ConsumerExample {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClientConfig(clientConfig);
 
-        Consumer consumer = new Consumer("default-consumer", consumerConfig, (topic, queue, messageId, message, extras) -> {
+        Consumer consumer = new DefaultConsumer("default-consumer", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
             if (logger.isInfoEnabled()) {
                 logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
             }
         });
-        consumer.start();
         this.consumer = consumer;
+        consumer.start();
     }
 
     public void subscribe() throws Exception {

@@ -2,7 +2,6 @@ package org.meteor.bench.message;
 
 import io.netty.buffer.ByteBuf;
 import org.meteor.client.consumer.MessageListener;
-import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.util.ByteBufUtil;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class HandleMessageBenchMark {
     @Setup
     public void setUp() {
-        this.metadata = buildMetadata(new Extras());
+        this.metadata = buildMetadata(new HashMap<>());
         this.wholeQueueTopics.put(QUEUE, new HashMap<>() {{
             put(TOPIC, org.meteor.client.consumer.Mode.APPEND);
         }});
@@ -41,7 +40,7 @@ public class HandleMessageBenchMark {
             return;
         }
 
-        Extras extras = new Extras();
+        Map<String, String> extras = new HashMap<>();
         listener.onMessage(topic, queue, messageId, buf, extras);
     }
 
@@ -60,10 +59,10 @@ public class HandleMessageBenchMark {
     private static final String QUEUE = "test_queue";
     private Map<String, Map<String, org.meteor.client.consumer.Mode>> wholeQueueTopics = new HashMap<>();
 
-    private MessageMetadata buildMetadata(Extras extras) {
+    private MessageMetadata buildMetadata(Map<String, String> extras) {
         MessageMetadata.Builder builder = MessageMetadata.newBuilder().setTopic(HandleMessageBenchMark.TOPIC).setQueue(HandleMessageBenchMark.QUEUE);
         if (extras != null) {
-            for (Map.Entry<String, String> entry : extras) {
+            for (Map.Entry<String, String> entry : extras.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 if (key != null && value != null) {

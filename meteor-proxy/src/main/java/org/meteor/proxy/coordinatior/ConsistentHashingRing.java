@@ -71,12 +71,12 @@ public class ConsistentHashingRing {
         }
     }
 
-    public List<String> route2Nodes(String key, int size) {
+    public Set<String> route2Nodes(String key, int size) {
         Lock readLock = lock.readLock();
         readLock.lock();
         try {
             if (virtualNodes.isEmpty() || size < 1) {
-                return Collections.emptyList();
+                return Collections.emptySet();
             }
             size = Math.min(size, nodes.size());
             LinkedHashSet<String> selectNodes = Sets.newLinkedHashSetWithExpectedSize(size);
@@ -89,13 +89,13 @@ public class ConsistentHashingRing {
 
                 for (String node : tempEntry.getValue()) {
                     if (selectNodes.add(node) && selectNodes.size() >= size) {
-                        return new ArrayList<>(selectNodes);
+                        return selectNodes;
                     }
                 }
 
                 tempEntry = virtualNodes.higherEntry(tempEntry.getKey());
             }
-            return new ArrayList<>(selectNodes);
+            return selectNodes;
         } finally {
             readLock.unlock();
         }

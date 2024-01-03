@@ -663,10 +663,6 @@ public class Log {
     }
 
 
-    public enum LogState {
-        APPENDABLE, SYNCHRONIZING, MIGRATING, CLOSED
-    }
-
     public class InnerTrigger implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int recordCount, Offset lasetOffset) {

@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 public abstract class AbstractHandler<E, T> {
-    protected final String id = UUID.randomUUID().toString();
     protected final ConcurrentMap<Channel, E> subscriptionChannels = new ConcurrentHashMap<>();
     protected final AtomicBoolean triggered = new AtomicBoolean(false);
     protected final EventExecutor dispatchExecutor;

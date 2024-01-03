@@ -6,7 +6,6 @@ import io.netty.util.concurrent.EventExecutor;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Extras;
 import org.meteor.common.message.MessageId;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.util.ProtoBufUtil;
@@ -35,12 +34,10 @@ public class MessageHandler {
         if (handleExecutor.isShuttingDown()) {
             return;
         }
-
         semaphore.acquireUninterruptibly();
         data.retain();
-
         try {
-            handleExecutor.execute((AbstractEventExecutor.LazyRunnable) () -> doHandle(channel, marker, messageId, data));
+            handleExecutor.execute(() -> doHandle(channel, marker, messageId, data));
         } catch (Throwable t) {
             data.release();
             semaphore.release();
@@ -61,9 +58,7 @@ public class MessageHandler {
             if (mode == null || mode == Mode.DELETE) {
                 return;
             }
-
-            Extras extras = new Extras(metadata.getExtrasMap());
-            listener.onMessage(topic, queue, messageId, data, extras);
+            listener.onMessage(topic, queue, messageId, data, metadata.getExtrasMap());
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(" Consumer handle message failed, address[{}] marker[{}] messageId[{}] length[{}]", channel.address(), marker, messageId, length, t);

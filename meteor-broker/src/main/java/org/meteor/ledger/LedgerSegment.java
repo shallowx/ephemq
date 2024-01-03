@@ -71,7 +71,6 @@ public class LedgerSegment {
             int location = theBuffer.writerIndex();
             try {
                 int length = 16 + payload.readableBytes();
-
                 theBuffer.writeInt(length);
                 theBuffer.writeInt(marker);
                 theBuffer.writeInt(offset.getEpoch());

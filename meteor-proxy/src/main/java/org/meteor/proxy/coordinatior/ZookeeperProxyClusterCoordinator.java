@@ -12,6 +12,7 @@ import org.meteor.coordinatior.ZookeeperClusterCoordinator;
 import org.meteor.proxy.internal.ProxyServerConfig;
 
 import java.util.List;
+import java.util.Set;
 
 public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);
@@ -26,7 +27,7 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
     }
 
     @Override
-    public List<String> route2Nodes(String key, int size) {
+    public Set<String> route2Nodes(String key, int size) {
         return hashingRing.route2Nodes(key,size);
     }
 
