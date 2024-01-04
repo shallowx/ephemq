@@ -6,7 +6,7 @@ import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 
-public interface ClientListener {
+public interface CombineListener {
     default void onChannelActive(ClientChannel channel) {
     }
 

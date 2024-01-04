@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class DefaultConsumerListener implements ClientListener, MeterBinder {
+public class DefaultConsumerListener implements CombineListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultConsumerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
     private final DefaultConsumer consumer;
@@ -168,7 +168,7 @@ public class DefaultConsumerListener implements ClientListener, MeterBinder {
 
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-        ClientListener.super.onNodeOffline(channel, signal);
+        CombineListener.super.onNodeOffline(channel, signal);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

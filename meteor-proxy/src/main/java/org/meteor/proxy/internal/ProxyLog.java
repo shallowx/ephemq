@@ -10,6 +10,7 @@ import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.ledger.LogState;
 import org.meteor.listener.TopicListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.proxy.MeteorProxy;

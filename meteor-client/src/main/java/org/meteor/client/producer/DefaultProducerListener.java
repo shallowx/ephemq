@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class DefaultProducerListener implements ClientListener, MeterBinder {
+public class DefaultProducerListener implements CombineListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "producer_netty_pending_task";
     private final DefaultProducer producer;

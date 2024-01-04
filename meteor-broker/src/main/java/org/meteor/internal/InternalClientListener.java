@@ -6,14 +6,14 @@ import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.client.internal.ClientListener;
+import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 
 import java.util.concurrent.Semaphore;
 
-public class InternalClientListener implements ClientListener {
+public class InternalClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClientListener.class);
     private final Coordinator coordinator;
     private final int semaphore;
@@ -39,8 +39,10 @@ public class InternalClientListener implements ClientListener {
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(future -> {
                 semaphore.release();
-                if (!future.isSuccess() && logger.isErrorEnabled()) {
-                    logger.error("Channel[{}] sync message error", channel.toString());
+                if (!future.isSuccess()) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Channel[{}] sync message error", channel.toString());
+                    }
                 }
             });
             coordinator.getLogCoordinator().saveSyncData(channel.channel(), ledger, count, data, promise);

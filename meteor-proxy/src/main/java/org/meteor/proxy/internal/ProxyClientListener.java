@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import static org.meteor.metrics.config.MetricsConstants.*;
 
 
-public class ProxyClientListener implements ClientListener {
+public class ProxyClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private final Coordinator coordinator;
     private final LedgerSyncCoordinator syncCoordinator;
@@ -244,7 +244,7 @@ public class ProxyClientListener implements ClientListener {
 
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-        ClientListener.super.onNodeOffline(channel, signal);
+        CombineListener.super.onNodeOffline(channel, signal);
     }
 
     private void resumeChannelSync(ClientChannel channel, boolean refreshRouter) {

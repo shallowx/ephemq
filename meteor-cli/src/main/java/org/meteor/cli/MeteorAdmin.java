@@ -9,7 +9,7 @@ import org.meteor.cli.topic.TopicDeletedCommand;
 import org.meteor.cli.topic.TopicListCommand;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientConfig;
-import org.meteor.client.internal.ClientListener;
+import org.meteor.client.internal.CombineListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class MeteorAdmin {
                                 }
                             });
 
-                            Client client = new Client("cmdLine-client", config, new ClientListener() {
+                            Client client = new Client("cmdLine-client", config, new CombineListener() {
                             });
                             try {
                                 client.start();

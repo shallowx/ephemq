@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
-import org.meteor.client.internal.ClientListener;
+import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.ClusterInfo;
@@ -25,7 +25,7 @@ public class ClientTests {
             }
         });
 
-        Client client = new Client("default", clientConfig, new ClientListener() {
+        Client client = new Client("default", clientConfig, new CombineListener() {
         });
         client.start();
 
@@ -45,7 +45,7 @@ public class ClientTests {
             }
         });
 
-        Client client = new Client("default", clientConfig, new ClientListener() {
+        Client client = new Client("default", clientConfig, new CombineListener() {
         });
         client.start();
         ClientChannel clientChannel = client.fetchChannel(null);

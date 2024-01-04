@@ -100,7 +100,6 @@ public class ProxyServiceProcessor extends ServiceProcessor {
 
     @Override
     protected void processSyncLedger(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -129,7 +128,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     long index = request.getIndex();
                     String topic = request.getTopic();
                     MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
-                    ProxyLog log = getLog(logCoordinator, ledger, messageLedger);
+                    ProxyLog log = getLog(coordinator.getLogCoordinator(), ledger, messageLedger);
                     ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index,channel, promise);
                 } catch (Throwable t) {
@@ -388,7 +387,6 @@ public class ProxyServiceProcessor extends ServiceProcessor {
 
     @Override
     protected void processRestSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -413,7 +411,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                    });
                    MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
-                   ProxyLog log = getLog(logCoordinator, ledger, messageLedger);
+                   ProxyLog log = getLog(coordinator.getLogCoordinator(), ledger, messageLedger);
                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                    log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
                } catch (Exception e) {
@@ -429,7 +427,6 @@ public class ProxyServiceProcessor extends ServiceProcessor {
 
     @Override
     protected void processAlterSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -451,7 +448,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
-                    Log log = logCoordinator.getLog(ledger);
+                    Log log = coordinator.getLogCoordinator().getLog(ledger);
                     if (log == null) {
                         promise.tryFailure(new IllegalStateException("alter subscribe failed, since log does not exist"));
                         return;
@@ -469,7 +466,6 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
     @Override
     protected void processCleanSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
-        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -488,7 +484,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
-                    logCoordinator.cleanSubscribe(channel, request.getLedger(), promise);
+                    coordinator.getLogCoordinator().cleanSubscribe(channel, request.getLedger(), promise);
                 } catch (Exception e) {
                     processFailed("process clean subscribe failed", command, channel, answer, e);
                     recordCommand(command, bytes, System.nanoTime() - time,false);

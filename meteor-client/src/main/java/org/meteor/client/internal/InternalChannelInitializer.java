@@ -32,9 +32,9 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalChannelInitializer.class);
     private final SocketAddress address;
     private final ClientConfig config;
-    private final ClientListener listener;
+    private final CombineListener listener;
     private final ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise;
-     InternalChannelInitializer(SocketAddress address, ClientConfig config, ClientListener listener, ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise) {
+     InternalChannelInitializer(SocketAddress address, ClientConfig config, CombineListener listener, ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise) {
         this.address = address;
         this.config = config;
         this.listener = listener;

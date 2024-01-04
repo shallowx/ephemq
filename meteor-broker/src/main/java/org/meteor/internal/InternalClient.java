@@ -10,7 +10,7 @@ import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
-import org.meteor.client.internal.ClientListener;
+import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 
@@ -24,7 +24,7 @@ public class InternalClient extends Client {
     private final CommonConfig configuration;
     private final Coordinator coordinator;
 
-    public InternalClient(String name, ClientConfig clientConfig, ClientListener listener, CommonConfig configuration, Coordinator coordinator) {
+    public InternalClient(String name, ClientConfig clientConfig, CombineListener listener, CommonConfig configuration, Coordinator coordinator) {
         super(name, clientConfig, listener);
         this.configuration = configuration;
         this.coordinator = coordinator;

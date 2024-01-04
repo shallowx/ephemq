@@ -15,6 +15,7 @@ import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class DefaultProducer implements Producer{
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducer.class);
@@ -23,11 +24,11 @@ public class DefaultProducer implements Producer{
     private final Client client;
     private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
     private volatile Boolean state;
-    private final ClientListener listener;
+    private final CombineListener listener;
     public DefaultProducer(String name, ProducerConfig config) {
         this(name, config, null);
     }
-    public DefaultProducer(String name, ProducerConfig config, ClientListener clientListener) {
+    public DefaultProducer(String name, ProducerConfig config, CombineListener clientListener) {
         this.name = name;
         this.config = Objects.requireNonNull(config, "Producer config not found");
         this.listener = clientListener == null ? new DefaultProducerListener(this) : clientListener;
@@ -48,15 +49,19 @@ public class DefaultProducer implements Producer{
 
     @Override
     public MessageId send(String topic, String queue, ByteBuf message,  Map<String, String> extras) {
-        int length = ByteBufUtil.bufLength(message);
+        return send(topic, queue,message, extras, -1);
+    }
+
+    @Override
+    public MessageId send(String topic, String queue, ByteBuf message, Map<String, String> extras, long timeout) {
         try {
             Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             doSend(topic, queue, message, extras, config.getSendTimeoutMilliseconds(), promise);
-            SendMessageResponse response = promise.get();
+            SendMessageResponse response = timeout > 0 ? promise.get(Math.max(timeout, 3_000L), TimeUnit.MILLISECONDS) : promise.get();
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format("Message send failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
+                    String.format("Message send failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
             );
         } finally {
             ByteBufUtil.release(message);
@@ -65,7 +70,6 @@ public class DefaultProducer implements Producer{
 
     @Override
     public void sendAsync(String topic, String queue, ByteBuf message, Map<String, String> extras, SendCallback callback) {
-        int length = ByteBufUtil.bufLength(message);
         try {
             if (callback == null) {
                 doSend(topic, queue, message, extras, config.getSendOnewayTimeoutMilliseconds(), null);
@@ -84,7 +88,7 @@ public class DefaultProducer implements Producer{
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), promise);
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format("Message async send failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
+                    String.format("Message async send failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
             );
         } finally {
             ByteBufUtil.release(message);
@@ -93,12 +97,11 @@ public class DefaultProducer implements Producer{
 
     @Override
     public void sendOneway(String topic, String queue, ByteBuf message, Map<String, String> extras) {
-        int length = ByteBufUtil.bufLength(message);
         try {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), null);
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format("Message send oneway failed, topic[%s] queue[%s] length[%s]", topic, queue, length), t
+                    String.format("Message send oneway failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
             );
         } finally {
             ByteBufUtil.release(message);
@@ -127,7 +130,6 @@ public class DefaultProducer implements Producer{
         int marker = router.routeMarker(queue);
         SendMessageRequest request = SendMessageRequest.newBuilder().setLedger(ledger.id()).setMarker(marker).build();
         MessageMetadata metadata = buildMetadata(topic, queue, extras);
-
         ClientChannel channel = fetchChannel(leader, ledger.id());
         channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message);
     }

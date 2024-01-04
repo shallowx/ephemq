@@ -4,10 +4,9 @@ import io.netty.buffer.ByteBuf;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
-import org.meteor.client.internal.ClientListener;
+import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.TopicConfig;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
@@ -27,7 +26,7 @@ public class ClientExample {
     private final Client client;
 
     public ClientExample() {
-        this.client = new Client("default-client", new ClientConfig(), new DefaultClientListener());;
+        this.client = new Client("default-client", new ClientConfig(), new DefaultCombineListener());;
     }
 
     public void createTopic() throws Exception {
@@ -46,35 +45,35 @@ public class ClientExample {
         }
     }
 
-    static class DefaultClientListener implements ClientListener {
+    static class DefaultCombineListener implements CombineListener {
         @Override
         public void onChannelActive(ClientChannel channel) {
-            ClientListener.super.onChannelActive(channel);
+            CombineListener.super.onChannelActive(channel);
         }
 
         @Override
         public void onChannelClosed(ClientChannel channel) {
-            ClientListener.super.onChannelClosed(channel);
+            CombineListener.super.onChannelClosed(channel);
         }
 
         @Override
         public void onPushMessage(ClientChannel channel, MessagePushSignal signal, ByteBuf data) {
-            ClientListener.super.onPushMessage(channel, signal, data);
+            CombineListener.super.onPushMessage(channel, signal, data);
         }
 
         @Override
         public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
-            ClientListener.super.onTopicChanged(channel, signal);
+            CombineListener.super.onTopicChanged(channel, signal);
         }
 
         @Override
         public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
-            ClientListener.super.onNodeOffline(channel, signal);
+            CombineListener.super.onNodeOffline(channel, signal);
         }
 
         @Override
         public void onSyncMessage(ClientChannel channel, SyncMessageSignal signal, ByteBuf data) {
-            ClientListener.super.onSyncMessage(channel, signal, data);
+            CombineListener.super.onSyncMessage(channel, signal, data);
         }
     }
 }

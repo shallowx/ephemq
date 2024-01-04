@@ -429,7 +429,7 @@ public class RecordEntryDispatcher {
         }
 
         if (System.currentTimeMillis() - task.getPursueTimeMillis() > pursueTimeoutMilliseconds) {
-            if (logger.isErrorEnabled()) {
+            if (logger.isWarnEnabled()) {
                 logger.warn("Giving up pursue task[{}]", task);
             }
             submitFollow(task);
@@ -600,7 +600,9 @@ public class RecordEntryDispatcher {
                     }
 
                 } catch (Throwable t) {
-                    logger.error("Switch to pursue, channel is full, task[{}]", task);
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Switch to pursue, channel is full, task[{}]", task);
+                    }
                 } finally {
                     ByteBufUtil.release(entry);
                     ByteBufUtil.release(payload);
@@ -612,7 +614,9 @@ public class RecordEntryDispatcher {
                 }
             }
         } catch (Throwable t) {
-            logger.error("Pursue execute failed, task[{}] lastOffset[{}]", task, lastOffset, t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Pursue execute failed, task[{}] lastOffset[{}]", task, lastOffset, t);
+            }
         }
 
         if (finished) {

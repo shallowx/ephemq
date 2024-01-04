@@ -38,13 +38,13 @@ public class DefaultConsumer implements Consumer {
     private volatile Boolean state;
     private Future<?> failedRetryFuture;
     private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
-    private final ClientListener listener;
+    private final CombineListener listener;
 
     public DefaultConsumer(String name, ConsumerConfig consumerConfig, MessageListener messageListener) {
         this(name, consumerConfig, messageListener, null);
     }
 
-    public DefaultConsumer(String name, ConsumerConfig consumerConfig, MessageListener messageListener, ClientListener clientListener) {
+    public DefaultConsumer(String name, ConsumerConfig consumerConfig, MessageListener messageListener, CombineListener clientListener) {
         this.name = name;
         this.consumerConfig = Objects.requireNonNull(consumerConfig, "Consumer config not found");
         this.listener = clientListener == null
@@ -66,6 +66,22 @@ public class DefaultConsumer implements Consumer {
         client.start();
         executor = new FastEventExecutor(new DefaultThreadFactory("consumer-task"));
         executor.scheduleWithFixedDelay(this::touchChangedTask, 30, 30, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void subscribe(Map<String, String> ships) {
+        if (ships == null || ships.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, String> entry : ships.entrySet()) {
+            try {
+                this.subscribe(entry.getKey(), entry.getValue());
+            } catch (Throwable t) {
+                if (logger.isErrorEnabled()){
+                    logger.error(t.getMessage(), t);
+                }
+            }
+        }
     }
 
     @Override

@@ -48,18 +48,6 @@ public abstract class LedgerSyncCoordinator {
         this.resumeSyncTaskExecutor = coordinator.getAuxEventExecutorGroup().next();
     }
 
-    public void start() {
-        this.proxyClient.start();
-    }
-
-    public void shutDown() {
-        this.proxyClient.close();
-    }
-
-    public Client getProxyClient() {
-        return this.proxyClient;
-    }
-
     public Promise<Boolean> deSyncAndCloseIfNotSubscribe(ProxyLog log) {
         Promise<Boolean> promise = resumeSyncTaskExecutor.newPromise();
         promise.addListener(f -> {
@@ -170,6 +158,14 @@ public abstract class LedgerSyncCoordinator {
             ));
         }
         int index = ThreadLocalRandom.current().nextInt(replicas.size());
-        return getProxyClient().fetchChannel(replicas.get(index));
+        return proxyClient.fetchChannel(replicas.get(index));
+    }
+
+    Client getProxyClient() { return this.proxyClient;}
+    public void start() {
+        this.proxyClient.start();
+    }
+    public void shutDown() {
+        this.proxyClient.close();
     }
 }

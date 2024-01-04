@@ -32,7 +32,7 @@ public class Client implements MeterBinder {
     protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
     private final ClientConfig config;
-    private final ClientListener listener;
+    private final CombineListener listener;
     private final List<SocketAddress> bootstrapAddress;
     private final Map<SocketAddress, List<Future<ClientChannel>>> registerChannels = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Promise<ClientChannel>> ChannelOfPromise = new ConcurrentHashMap<>();
@@ -43,7 +43,7 @@ public class Client implements MeterBinder {
     private Bootstrap bootstrap;
     private volatile Boolean state;
 
-    public Client(String name, ClientConfig config, ClientListener listener) {
+    public Client(String name, ClientConfig config, CombineListener listener) {
         this.name = name;
         this.config = Objects.requireNonNull(config, "client config not found");
         this.listener = Objects.requireNonNull(listener, "client lister not found");
@@ -68,7 +68,7 @@ public class Client implements MeterBinder {
             return applyChannel(address).get(config.getChannelConnectionTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             if (address == null) {
-                throw new RuntimeException("Fetch random client channel failed", t);
+                throw new RuntimeException("Fetch random client channel failed, socket address must be not empty", t);
             }
             throw new RuntimeException(String.format("Fetch random client channel failed, address[%s]", address), t);
         }
@@ -500,16 +500,13 @@ public class Client implements MeterBinder {
             cr.setSegmentRollingSize(topicConfig.getSegmentRollingSize());
             cr.setSegmentRetainMs(topicConfig.getSegmentRetainMs());
             cr.setAllocate(topicConfig.isAllocate());
-
             cr.build();
-
             request.setConfigs(cr);
         }
 
         Promise<CreateTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         ClientChannel channel = fetchChannel(null);
         channel.invoker().createTopic(config.getCreateTopicTimeoutMilliseconds(), promise, request.build());
-
         return promise.get(config.getCreateTopicTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
@@ -520,7 +517,6 @@ public class Client implements MeterBinder {
         Promise<DeleteTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         ClientChannel channel = fetchChannel(null);
         channel.invoker().deleteTopic(config.getDeleteTopicTimeoutMilliseconds(), promise, request);
-
         return promise.get(config.getDeleteTopicTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
