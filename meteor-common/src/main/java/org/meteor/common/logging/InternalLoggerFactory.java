@@ -3,7 +3,6 @@ package org.meteor.common.logging;
 import org.meteor.common.util.ObjectUtil;
 
 public abstract class InternalLoggerFactory {
-
     private static volatile InternalLoggerFactory defaultFactory;
 
     @SuppressWarnings("UnusedCatchParameter")

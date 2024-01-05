@@ -2,11 +2,14 @@ package org.meteor.common.logging;
 
 import org.slf4j.spi.LocationAwareLogger;
 
+import java.io.Serial;
+
 import static org.slf4j.spi.LocationAwareLogger.*;
 
 final class LocationAwareSlf4JLogger extends AbstractInternalLogger {
 
     static final String FQCN = LocationAwareSlf4JLogger.class.getName();
+    @Serial
     private static final long serialVersionUID = -8292030083201538180L;
 
     private final transient LocationAwareLogger logger;

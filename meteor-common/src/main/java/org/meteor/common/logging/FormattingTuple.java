@@ -1,7 +1,6 @@
 package org.meteor.common.logging;
 
 public final class FormattingTuple {
-
     private final String message;
     private final Throwable throwable;
 

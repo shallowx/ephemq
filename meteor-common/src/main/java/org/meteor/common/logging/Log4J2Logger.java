@@ -5,11 +5,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 
+import java.io.Serial;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+@SuppressWarnings("removal")
 class Log4J2Logger extends ExtendedLoggerWrapper implements InternalLogger {
-
+    @Serial
     private static final long serialVersionUID = 5485418394879791397L;
     private static final boolean VARARGS_ONLY;
 
@@ -24,6 +26,7 @@ class Log4J2Logger extends ExtendedLoggerWrapper implements InternalLogger {
                 return false;
             }
         });
+
     }
 
     Log4J2Logger(Logger logger) {
