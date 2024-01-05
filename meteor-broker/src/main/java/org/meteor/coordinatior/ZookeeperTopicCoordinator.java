@@ -63,7 +63,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         this.zookeeperConfiguration = config.getZookeeperConfig();
         this.coordinator = coordinator;
         this.participantCoordinator = new ParticipantCoordinator(coordinator);
-        this.client = ZookeeperClient.getActiveClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
+        this.client = ZookeeperClient.getReadyClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
         this.ledgerIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.LEDGER_ID_COUNTER, new RetryOneTime(100));
         this.topicCache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
@@ -299,7 +299,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public Map<String, Object> createTopic(String topic, int partitions, int replicas, org.meteor.common.message.TopicConfig topicConfig) throws Exception {
-        List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterUpNodes();
+        List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
         if (clusterUpNodes.size() < replicas) {
             throw new IllegalStateException("The broker counts is not enough to assign replicas");
         }

@@ -28,7 +28,7 @@ public class DefaultConsumer implements Consumer {
     private final ConsumerConfig consumerConfig;
     private final Client client;
     private final Map<String, Map<String, Mode>> subscribeShips = new ConcurrentHashMap<>();
-    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
+    private final Map<Integer, ClientChannel> readyChannels = new ConcurrentHashMap<>();
     private final Map<Integer, AtomicReference<MessageId>> ledgerSequences = new ConcurrentHashMap<>();
     private final AtomicBoolean changeTaskTouched = new AtomicBoolean(false);
     private final Map<String, Long> topicTokens = new HashMap<>();
@@ -225,12 +225,12 @@ public class DefaultConsumer implements Consumer {
         Map<Integer, Int2IntMap> ledgerMarkers = topicLedgerMarkers.get(topic);
         if (ledgerMarkers != null) {
             for (int ledgerId : ledgerMarkers.keySet()) {
-                ClientChannel channel = ledgerChannels.get(ledgerId);
+                ClientChannel channel = readyChannels.get(ledgerId);
                 if (channel != null && channel.isActive()) {
                     doCleanSubscribe(channel, topic, ledgerId);
                 }
 
-                ledgerChannels.remove(ledgerId);
+                readyChannels.remove(ledgerId);
                 ledgerSequences.remove(ledgerId);
             }
         }
@@ -272,12 +272,12 @@ public class DefaultConsumer implements Consumer {
             int ledgerId = ledger.id();
             newLedgerMarkers.put(ledgerId, new Int2IntOpenHashMap(0));
 
-            ClientChannel channel = ledgerChannels.get(ledgerId);
+            ClientChannel channel = readyChannels.get(ledgerId);
             if (channel != null && channel.isActive()) {
                 doCleanSubscribe(channel, topic, ledgerId);
             }
 
-            ledgerChannels.remove(ledgerId);
+            readyChannels.remove(ledgerId);
             channel = newLedgerChannel(ledger, channel);
             if (channel == null || !channel.isActive()) {
                 queues.forEach(q -> failedQueues.put(q, Mode.APPEND));
@@ -309,10 +309,10 @@ public class DefaultConsumer implements Consumer {
                 ledgerSequences.put(ledgerId, new AtomicReference<>());
             }
 
-            ledgerChannels.put(ledgerId, channel);
+            readyChannels.put(ledgerId, channel);
             if (doResetSubscribe(channel, topic, ledger.id(), epoch, index, markers)) {
                 doCleanSubscribe(channel, topic, ledger.id());
-                ledgerChannels.remove(ledgerId);
+                readyChannels.remove(ledgerId);
                 queues.forEach(q -> failedQueues.put(q, Mode.APPEND));
                 continue;
             }
@@ -323,12 +323,12 @@ public class DefaultConsumer implements Consumer {
 
         for (int ledgerId : oldLedgerMarkers.keySet()) {
             if (!newLedgerMarkers.containsKey(ledgerId)) {
-                ClientChannel channel = ledgerChannels.get(ledgerId);
+                ClientChannel channel = readyChannels.get(ledgerId);
                 if (channel != null && channel.isActive()) {
                     doCleanSubscribe(channel, topic, ledgerId);
                 }
 
-                ledgerChannels.remove(ledgerId);
+                readyChannels.remove(ledgerId);
                 ledgerSequences.remove(ledgerId);
             }
         }
@@ -393,7 +393,7 @@ public class DefaultConsumer implements Consumer {
             return resetLedgerSubscribe(router, ledger, topic, changedQueues, markerCounts);
         }
 
-        ClientChannel channel = ledgerChannels.get(ledgerId);
+        ClientChannel channel = readyChannels.get(ledgerId);
         if (channel == null || !channel.isActive() ||
                 (!ledger.participants().isEmpty() && !ledger.participants().contains(channel.address()))) {
             return resetLedgerSubscribe(router, ledger, topic, changedQueues, markerCounts);
@@ -403,12 +403,12 @@ public class DefaultConsumer implements Consumer {
     }
 
     private void cleanLedgerSubscribe(String topic, int ledgerId) {
-        ClientChannel channel = ledgerChannels.get(ledgerId);
+        ClientChannel channel = readyChannels.get(ledgerId);
         if (channel != null && channel.isActive()) {
             doCleanSubscribe(channel, topic, ledgerId);
         }
 
-        ledgerChannels.remove(ledgerId);
+        readyChannels.remove(ledgerId);
         ledgerSequences.remove(ledgerId);
         Map<Integer, Int2IntMap> ledgerMarkers = topicLedgerMarkers.get(topic);
         if (ledgerMarkers != null) {
@@ -444,11 +444,11 @@ public class DefaultConsumer implements Consumer {
             return null;
         }
 
-        ClientChannel channel = ledgerChannels.get(ledgerId);
+        ClientChannel channel = readyChannels.get(ledgerId);
         if (channel != null && channel.isActive()) {
             doCleanSubscribe(channel, topic, ledgerId);
         }
-        ledgerChannels.remove(ledgerId);
+        readyChannels.remove(ledgerId);
         channel = newLedgerChannel(ledger, channel);
         if (channel == null || !channel.isActive()) {
             return changedQueues;
@@ -474,10 +474,10 @@ public class DefaultConsumer implements Consumer {
             ledgerSequences.put(ledgerId, new AtomicReference<>());
         }
 
-        ledgerChannels.put(ledgerId, channel);
+        readyChannels.put(ledgerId, channel);
         if (doResetSubscribe(channel, topic, ledgerId, epoch, index, markers)) {
             doCleanSubscribe(channel, topic, ledgerId);
-            ledgerChannels.remove(ledgerId);
+            readyChannels.remove(ledgerId);
             return changedQueues;
         }
 
@@ -510,7 +510,7 @@ public class DefaultConsumer implements Consumer {
             return null;
         }
 
-        ClientChannel channel = ledgerChannels.get(ledgerId);
+        ClientChannel channel = readyChannels.get(ledgerId);
         if (channel == null || !channel.isActive()) {
             return changedQueues;
         }
@@ -808,8 +808,8 @@ public class DefaultConsumer implements Consumer {
     Map<String, Map<String, Mode>> getSubscribeShips() {
         return subscribeShips;
     }
-    Map<Integer, ClientChannel> getLedgerChannels() {
-        return ledgerChannels;
+    Map<Integer, ClientChannel> getReadyChannels() {
+        return readyChannels;
     }
     Map<Integer, AtomicReference<MessageId>> getLedgerSequences() {
         return ledgerSequences;

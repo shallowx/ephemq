@@ -224,7 +224,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                             return;
                         }
 
-                        org.meteor.common.message.Node destNode = coordinator.getClusterCoordinator().getClusterNode(destination);
+                        org.meteor.common.message.Node destNode = coordinator.getClusterCoordinator().getClusterReadyNode(destination);
                         if (destNode == null) {
                             processFailed("Process migrate ledger failed", code, channel, answer,
                                     RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The destination broker %s is not in cluster", destination)));
@@ -330,7 +330,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             commandExecutor.execute(() -> {
                 try {
                     String clusterName = commonConfiguration.getClusterName();
-                    List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterUpNodes();
+                    List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
                     Map<String, NodeMetadata> nodeMetadataMap = clusterUpNodes.stream().collect(
                             Collectors.toMap(org.meteor.common.message.Node::getId, node ->
                                     NodeMetadata.newBuilder()

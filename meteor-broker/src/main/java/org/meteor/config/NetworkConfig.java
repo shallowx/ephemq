@@ -7,7 +7,7 @@ import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Boolean;
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 
 public class NetworkConfig {
-    private static final String CONNECTION_TIMEOUT_MS = "connection.timeout.ms";
+    private static final String CONNECTION_TIMEOUT_MILLISECONDS = "connection.timeout.milliseconds";
     private static final String NETWORK_LOG_DEBUG_ENABLED = "network.log.debug.enabled";
     private static final String WRITE_BUFFER_WATER_MARK = "socket.write.buffer.high.watermark";
     private static final String NETWORK_THREAD_LIMIT = "network.thread.limit";
@@ -27,8 +27,8 @@ public class NetworkConfig {
         return object2Int(prop.getOrDefault(WRITE_BUFFER_WATER_MARK, 30 * 1024 * 1024));
     }
 
-    public int getConnectionTimeoutMs() {
-        return object2Int(prop.getOrDefault(CONNECTION_TIMEOUT_MS, 30000));
+    public int getConnectionTimeoutMilliseconds() {
+        return object2Int(prop.getOrDefault(CONNECTION_TIMEOUT_MILLISECONDS, 30000));
     }
 
     public int getNetworkThreadLimit() {

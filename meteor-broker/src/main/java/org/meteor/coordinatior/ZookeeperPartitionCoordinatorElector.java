@@ -44,7 +44,7 @@ public class ZookeeperPartitionCoordinatorElector {
         this.coordinator = coordinator;
         this.participantCoordinator = participantCoordinator;
         this.ledger = ledger;
-        this.client = ZookeeperClient.getActiveClient(zookeeperConfiguration, configuration.getClusterName());
+        this.client = ZookeeperClient.getReadyClient(zookeeperConfiguration, configuration.getClusterName());
     }
 
     public void elect() throws Exception {
@@ -188,7 +188,7 @@ public class ZookeeperPartitionCoordinatorElector {
 
     private void syncLeader(int ledger) throws Exception {
         Log log = coordinator.getLogCoordinator().getLog(ledger);
-        Node leaderNode = coordinator.getClusterCoordinator().getClusterNode(latch.getLeader().getId());
+        Node leaderNode = coordinator.getClusterCoordinator().getClusterReadyNode(latch.getLeader().getId());
         Client innerClient = coordinator.getInternalClient();
         ClientChannel channel = innerClient.fetchChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);

@@ -202,7 +202,7 @@ public class ProxyClientListener implements CombineListener {
     }
 
     private void noticeTopicChanged(TopicChangedSignal signal) {
-        Set<Channel> channels = coordinator.getConnectionCoordinator().getActiveChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
         if (channels.isEmpty()) {
             return;
         }

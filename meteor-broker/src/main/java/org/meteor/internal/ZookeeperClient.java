@@ -13,9 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ZookeeperClient {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClient.class);
-    private static final Map<String, CuratorFramework> activeClients = new ConcurrentHashMap<>();
-    public static CuratorFramework getActiveClient(ZookeeperConfig config, String clusterName) {
-        return activeClients.computeIfAbsent(clusterName, namespace -> {
+    private static final Map<String, CuratorFramework> readyClients = new ConcurrentHashMap<>();
+    public static CuratorFramework getReadyClient(ZookeeperConfig config, String clusterName) {
+        return readyClients.computeIfAbsent(clusterName, namespace -> {
             String url = config.getZookeeperUrl();
             if (url == null) {
                 throw new IllegalStateException("Zookeeper address not found");
@@ -39,9 +39,9 @@ public class ZookeeperClient {
     }
 
     public static void closeClient() {
-        for (CuratorFramework client : activeClients.values()) {
+        for (CuratorFramework client : readyClients.values()) {
             client.close();
         }
-        activeClients.clear();
+        readyClients.clear();
     }
 }

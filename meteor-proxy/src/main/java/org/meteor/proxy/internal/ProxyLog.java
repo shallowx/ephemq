@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 public class ProxyLog extends Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
-    private volatile long lastSubscribeTimeMs = System.currentTimeMillis();
+    private volatile long lastSubscribeTimeMillis = System.currentTimeMillis();
     private volatile Offset tailLocation = new Offset(0, 0);
     private volatile Offset headLocation = new Offset(0, 0);
     private final LongAdder totalDispatchedMessages = new LongAdder();
@@ -238,7 +238,7 @@ public class ProxyLog extends Log {
     }
 
     private void setLastSubscribeTimeMs() {
-        this.lastSubscribeTimeMs = System.currentTimeMillis();
+        this.lastSubscribeTimeMillis = System.currentTimeMillis();
     }
 
     @Override
@@ -269,8 +269,8 @@ public class ProxyLog extends Log {
         }
     }
 
-    public long getLastSubscribeTimeMs() {
-        return lastSubscribeTimeMs;
+    public long getLastSubscribeTimeMillis() {
+        return lastSubscribeTimeMillis;
     }
 
     @Override

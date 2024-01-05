@@ -168,7 +168,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             QueryTopicInfoRequest request = ProtoBufUtil.readProto(data, QueryTopicInfoRequest.parser());
             commandExecutor.execute(() -> {
                 try {
-                    List<Node> clusterUpNodes = proxyClusterCoordinator.getClusterUpNodes();
+                    List<Node> clusterUpNodes = proxyClusterCoordinator.getClusterReadyNodes();
                     if (clusterUpNodes == null || clusterUpNodes.isEmpty()) {
                         throw new IllegalStateException("cluster node is empty");
                     }
@@ -254,7 +254,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     private NavigableMap<String, Integer> calculateReplicas(Channel channel, String topic, int ledger) {
         int allThroughput = 0;
         NavigableMap<String, Integer> nodes = new TreeMap<>();
-        for (Node node : proxyClusterCoordinator.getClusterUpNodes()) {
+        for (Node node : proxyClusterCoordinator.getClusterReadyNodes()) {
             if (node == null) {
                 continue;
             }

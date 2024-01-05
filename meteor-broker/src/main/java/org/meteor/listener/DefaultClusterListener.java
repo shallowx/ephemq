@@ -59,7 +59,7 @@ public class DefaultClusterListener implements ClusterListener {
 
     private void processServerOffline(Node node) {
         ConnectionCoordinator connectionCoordinator = coordinator.getConnectionCoordinator();
-        Set<Channel> channels = connectionCoordinator.getActiveChannels();
+        Set<Channel> channels = connectionCoordinator.getReadyChannels();
         if (channels != null && !channels.isEmpty()) {
             for (Channel channel : channels) {
                 sendServerOfflineData(channel, node);

@@ -22,7 +22,7 @@ public class DefaultProducer implements Producer{
     private final String name;
     private final ProducerConfig config;
     private final Client client;
-    private final Map<Integer, ClientChannel> ledgerChannels = new ConcurrentHashMap<>();
+    private final Map<Integer, ClientChannel> readyChannels = new ConcurrentHashMap<>();
     private volatile Boolean state;
     private final CombineListener listener;
     public DefaultProducer(String name, ProducerConfig config) {
@@ -130,12 +130,12 @@ public class DefaultProducer implements Producer{
         int marker = router.routeMarker(queue);
         SendMessageRequest request = SendMessageRequest.newBuilder().setLedger(ledger.id()).setMarker(marker).build();
         MessageMetadata metadata = buildMetadata(topic, queue, extras);
-        ClientChannel channel = fetchChannel(leader, ledger.id());
+        ClientChannel channel = getReadyChannel(leader, ledger.id());
         channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message);
     }
 
-    private ClientChannel fetchChannel(SocketAddress address, int ledger) {
-        ClientChannel channel = ledgerChannels.get(ledger);
+    private ClientChannel getReadyChannel(SocketAddress address, int ledger) {
+        ClientChannel channel = readyChannels.get(ledger);
         if (channel != null && channel.isActive() && (address == null || channel.address().equals(address))) {
             return channel;
         }
@@ -144,13 +144,13 @@ public class DefaultProducer implements Producer{
             throw new IllegalStateException("Channel address not found, ledger[" + ledger + "]");
         }
 
-        synchronized (ledgerChannels) {
-            channel = ledgerChannels.get(ledger);
+        synchronized (readyChannels) {
+            channel = readyChannels.get(ledger);
             if (channel != null && channel.isActive() && channel.address().equals(address)) {
                 return channel;
             }
             channel = client.fetchChannel(address);
-            ledgerChannels.put(ledger, channel);
+            readyChannels.put(ledger, channel);
             return channel;
         }
     }
@@ -183,7 +183,7 @@ public class DefaultProducer implements Producer{
     }
 
     @Override
-    public synchronized void close() {
+    public void close() {
         if (state != Boolean.TRUE) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Producer[{}] was closed, don't execute it replay", name);

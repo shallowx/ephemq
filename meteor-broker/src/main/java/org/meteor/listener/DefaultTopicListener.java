@@ -78,7 +78,7 @@ public class DefaultTopicListener implements TopicListener {
     }
 
     private void sendTopicChangedSignal(String topic, TopicChangedSignal.Type type) {
-        Set<Channel> channels = coordinator.getConnectionCoordinator().getActiveChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
         if (channels.isEmpty()) {
             return;
         }
@@ -99,7 +99,7 @@ public class DefaultTopicListener implements TopicListener {
     }
 
     private void sendPartitionChangedSignal(TopicPartition topicPartition, TopicAssignment assignment) {
-        Set<Channel> channels = coordinator.getConnectionCoordinator().getActiveChannels();
+        Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
         if (channels.isEmpty()) {
             return;
         }

@@ -156,10 +156,10 @@ public class Client implements MeterBinder {
 
     private List<Future<ClientChannel>> filter(SocketAddress address) {
         List<Future<ClientChannel>> futures = registerChannels.get(address);
-        return futures == null ? null : futures.stream().filter(this::isValid).collect(Collectors.toList());
+        return futures == null ? null : futures.stream().filter(this::isReady).collect(Collectors.toList());
     }
 
-    private boolean isValid(Future<ClientChannel> future) {
+    private boolean isReady(Future<ClientChannel> future) {
         if (future == null) {
             return false;
         }
@@ -183,7 +183,7 @@ public class Client implements MeterBinder {
         }
         List<Future<ClientChannel>> validChannels = registerChannels.values().stream()
                 .flatMap(Collection::stream)
-                .filter(this::isValid).toList();
+                .filter(this::isReady).toList();
 
         if (validChannels.isEmpty()) {
             if (logger.isDebugEnabled()) {

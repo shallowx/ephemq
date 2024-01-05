@@ -68,7 +68,7 @@ public class DefaultCoordinator implements Coordinator {
         List<String> clusterNodeAddress = Collections.singletonList(configuration.getCommonConfig().getAdvertisedAddress() + ":" + configuration.getCommonConfig().getAdvertisedPort());
 
         clientConfig.setBootstrapAddresses(clusterNodeAddress);
-        clientConfig.setChannelConnectionTimeoutMilliseconds(configuration.getNetworkConfig().getConnectionTimeoutMs());
+        clientConfig.setChannelConnectionTimeoutMilliseconds(configuration.getNetworkConfig().getConnectionTimeoutMilliseconds());
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);

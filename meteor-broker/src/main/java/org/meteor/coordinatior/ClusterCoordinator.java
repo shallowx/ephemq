@@ -10,9 +10,9 @@ public interface ClusterCoordinator {
 
     List<Node> getClusterNodes();
 
-    List<Node> getClusterUpNodes();
+    List<Node> getClusterReadyNodes();
 
-    Node getClusterNode(String id);
+    Node getClusterReadyNode(String id);
 
     Node getThisNode();
 

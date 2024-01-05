@@ -18,9 +18,9 @@ import static org.meteor.metrics.config.MetricsConstants.*;
 @ChannelHandler.Sharable
 public class StatisticsDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(StatisticsDuplexHandler.class);
-    private final LongAdder activeChannels = new LongAdder();
+    private final LongAdder activeChannelCount = new LongAdder();
     public StatisticsDuplexHandler(CommonConfig config) {
-        Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, activeChannels, LongAdder::doubleValue)
+        Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, activeChannelCount, LongAdder::doubleValue)
                 .tags(
                         Tags.of(
                                 Tag.of(BROKER_TAG, config.getServerId()),
@@ -30,7 +30,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        activeChannels.decrement();
+        activeChannelCount.decrement();
         super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
             logger.debug("Statistics duplex inactive channel, and local address[{}] and remote address[{}]", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
@@ -39,7 +39,7 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        activeChannels.increment();
+        activeChannelCount.increment();
         super.channelActive(ctx);
         if (logger.isDebugEnabled()) {
             logger.debug("Statistics duplex active channel, and local address[{}] and remote address[{}]", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());

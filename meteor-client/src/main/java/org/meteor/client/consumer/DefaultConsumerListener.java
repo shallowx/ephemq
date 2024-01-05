@@ -103,13 +103,13 @@ public class DefaultConsumerListener implements CombineListener, MeterBinder {
         int marker = signal.getMarker();
         int epoch = signal.getEpoch();
         long index = signal.getIndex();
-        if (!channel.equals(consumer.getLedgerChannels().get(ledger))) {
+        if (!channel.equals(consumer.getReadyChannels().get(ledger))) {
             try {
                 MessageMetadata metadata = ProtoBufUtil.readProto(data, MessageMetadata.parser());
                 String topic = metadata.getTopic();
                 obsoleteFutures.computeIfAbsent(ledger + "@" + channel.id(),
                         k -> consumer.getExecutor().schedule(() -> {
-                            if (channel.isActive() && !channel.equals(consumer.getLedgerChannels().get(ledger))) {
+                            if (channel.isActive() && !channel.equals(consumer.getReadyChannels().get(ledger))) {
                                 consumer.doCleanSubscribe(channel, topic, ledger);
                             }
 

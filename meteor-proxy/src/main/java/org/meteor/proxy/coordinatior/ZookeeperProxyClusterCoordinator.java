@@ -11,7 +11,6 @@ import org.meteor.internal.ZookeeperClient;
 import org.meteor.coordinatior.ZookeeperClusterCoordinator;
 import org.meteor.proxy.internal.ProxyServerConfig;
 
-import java.util.List;
 import java.util.Set;
 
 public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
@@ -21,7 +20,7 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
     public ZookeeperProxyClusterCoordinator(ProxyServerConfig configuration) {
         super(configuration);
         this.proxyConfiguration = configuration.getProxyConfiguration();
-        this.client = ZookeeperClient.getActiveClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        this.client = ZookeeperClient.getReadyClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         this.hashingRing = new ConsistentHashingRing();
         this.listeners.add(this);
     }

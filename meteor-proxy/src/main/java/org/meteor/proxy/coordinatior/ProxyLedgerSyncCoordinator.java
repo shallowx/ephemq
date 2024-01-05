@@ -47,7 +47,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             if (syncChannel == null) {
                 continue;
             }
-            if ((now - proxyLog.getLastSubscribeTimeMs()) > 60 * 1000 && log.getSubscriberCount() == 0) {
+            if ((now - proxyLog.getLastSubscribeTimeMillis()) > 60 * 1000 && log.getSubscriberCount() == 0) {
                 int ledger = log.getLedger();
                 Promise<Boolean> promise = deSyncAndCloseIfNotSubscribe(proxyLog);
                 try {
@@ -60,7 +60,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             }
         }
 
-        CuratorFramework client = ZookeeperClient.getActiveClient(config.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        CuratorFramework client = ZookeeperClient.getReadyClient(config.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         String path = String.format(ZookeeperPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
         byte[] bytes = client.getData().forPath(path);
         Node proxyNode = JsonMapper.deserialize(bytes, Node.class);

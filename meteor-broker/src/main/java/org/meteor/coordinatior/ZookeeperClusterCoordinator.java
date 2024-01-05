@@ -33,7 +33,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
     private final CommonConfig configuration;
     protected final List<ClusterListener> listeners = new LinkedList<>();
-    private final Map<String, Node> activeNodes = new ConcurrentHashMap<>();
+    private final Map<String, Node> readyNodes = new ConcurrentHashMap<>();
     protected CuratorFramework client;
     private volatile boolean registered = false;
     protected ConnectionStateListener connectionStateListener;
@@ -43,7 +43,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
     public ZookeeperClusterCoordinator(ServerConfig config) {
         this.configuration = config.getCommonConfig();
-        this.client = ZookeeperClient.getActiveClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
+        this.client = ZookeeperClient.getReadyClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
     }
 
     @Override
@@ -118,7 +118,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 
-                        activeNodes.put(node.getId(), node);
+                        readyNodes.put(node.getId(), node);
                         for (ClusterListener listener : listeners) {
                             listener.onNodeJoin(node);
                         }
@@ -128,7 +128,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 
-                        activeNodes.remove(node.getId());
+                        readyNodes.remove(node.getId());
                         for (ClusterListener listener : listeners) {
                             listener.onNodeLeave(node);
                         }
@@ -138,7 +138,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                         ChildData data = event.getData();
                         Node node = JsonMapper.deserialize(data.getData(), Node.class);
 
-                        activeNodes.put(node.getId(), node);
+                        readyNodes.put(node.getId(), node);
                         if (DOWN.equals(node.getState())) {
                             for (ClusterListener listener : listeners) {
                                 listener.onNodeDown(node);
@@ -186,7 +186,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
         downNode.setState(DOWN);
         client.setData().forPath(path, JsonMapper.serialize(downNode));
 
-        activeNodes.put(downNode.getId(), downNode);
+        readyNodes.put(downNode.getId(), downNode);
         if (configuration.getShutdownMaxWaitTimeMilliseconds() > 0) {
             TimeUnit.MILLISECONDS.sleep(configuration.getShutdownMaxWaitTimeMilliseconds());
         }
@@ -194,18 +194,18 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
     @Override
     public List<Node> getClusterNodes() {
-        return new ArrayList<>(activeNodes.values());
+        return new ArrayList<>(readyNodes.values());
     }
 
     @Override
-    public List<Node> getClusterUpNodes() {
-        return activeNodes.values().stream()
+    public List<Node> getClusterReadyNodes() {
+        return readyNodes.values().stream()
                 .filter(node -> UP.equals(node.getState())).collect(Collectors.toList());
     }
 
     @Override
-    public Node getClusterNode(String id) {
-        return activeNodes.get(id).getState().equals(UP) ? activeNodes.get(id) : null;
+    public Node getClusterReadyNode(String id) {
+        return readyNodes.get(id).getState().equals(UP) ? readyNodes.get(id) : null;
     }
 
     @Override
