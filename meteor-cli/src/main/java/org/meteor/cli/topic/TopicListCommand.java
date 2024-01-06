@@ -100,7 +100,6 @@ public class TopicListCommand implements Command {
                     topics = topics.stream().filter(t -> t.getPartition() == partition).toList();
                 }
 
-                Gson gson = new Gson();
                 System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), gson.toJson(topics));
             }
         } catch (Throwable t) {
@@ -176,7 +175,7 @@ public class TopicListCommand implements Command {
 
         @Override
         public String toString() {
-            return "{" +
+            return "topic_metadata{" +
                     "topic='" + topic + '\'' +
                     ", partition=" + partition +
                     ", ledger=" + ledger +

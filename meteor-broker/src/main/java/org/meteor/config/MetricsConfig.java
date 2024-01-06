@@ -5,7 +5,6 @@ import java.util.Properties;
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 
 public class MetricsConfig {
-
     private static final String METRICS_SAMPLE_LIMIT = "metrics.sample.limit";
     private final Properties prop;
 

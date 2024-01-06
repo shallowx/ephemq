@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ZookeeperPartitionCoordinatorElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionCoordinatorElector.class);
-
     private final CommonConfig configuration;
     private final TopicPartition topicPartition;
     private final Coordinator coordinator;

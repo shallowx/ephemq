@@ -77,7 +77,6 @@ public class TopicDeletedCommand implements Command {
                             ));
                         }
                     }
-                    Gson gson = new Gson();
                     System.out.printf("%s [%s] INFO %S - print topic[%s] metadata options: %s \n",
                             newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), topic, gson.toJson(infos));
                     TimeUnit.MILLISECONDS.sleep(1000);

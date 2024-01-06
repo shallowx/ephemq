@@ -15,9 +15,7 @@ import org.meteor.remote.proto.server.PartitionsReplicas;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -89,8 +87,7 @@ public class TopicCreatedCommand implements Command {
                 .collect(Collectors.toMap(
                         PartitionsReplicas::getPartition, t -> new ArrayList<>(t.getReplicasList()
                         )));
-        Gson gSon = new Gson();
-        return gSon.toJson(metadata);
+        return gson.toJson(metadata);
     }
 
     private static class TopicMetadata {
@@ -153,7 +150,7 @@ public class TopicCreatedCommand implements Command {
 
         @Override
         public String toString() {
-            return "{" +
+            return "topic_metadata{" +
                     "topic='" + topic + '\'' +
                     ", partition=" + partition +
                     ", replicas=" + replicas +

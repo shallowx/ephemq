@@ -1,5 +1,6 @@
 package org.meteor.coordinatior;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.CreateBuilder;
 import org.apache.curator.framework.recipes.cache.*;
@@ -20,7 +21,6 @@ import org.meteor.internal.ZookeeperClient;
 import org.meteor.listener.ClusterListener;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +32,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private static final String DOWN = "DOWN";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
     private final CommonConfig configuration;
-    protected final List<ClusterListener> listeners = new LinkedList<>();
+    protected final List<ClusterListener> listeners = new ObjectArrayList<>();
     private final Map<String, Node> readyNodes = new ConcurrentHashMap<>();
     protected CuratorFramework client;
     private volatile boolean registered = false;

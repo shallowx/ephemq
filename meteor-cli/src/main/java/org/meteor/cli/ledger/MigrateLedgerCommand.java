@@ -65,7 +65,7 @@ public class MigrateLedgerCommand implements Command {
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
-            String file = null;
+            String file;
             if (commandLine.hasOption('e')) {
                 file = commandLine.getOptionValue('e');
                 if (!StringUtil.isNullOrEmpty(file)) {

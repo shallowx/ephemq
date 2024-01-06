@@ -84,18 +84,17 @@ public class DefaultCoordinator implements Coordinator {
         }
 
         if (topicCoordinator != null) {
+            topicCoordinator.start();
             if (logger.isInfoEnabled()) {
                 logger.info("Topic coordinator start successfully");
             }
-
-            topicCoordinator.start();
         }
 
         if (logCoordinator != null) {
+            logCoordinator.start();
             if (logger.isInfoEnabled()) {
                 logger.info("Ledger log coordinator start successfully");
             }
-            logCoordinator.start();
         }
     }
 

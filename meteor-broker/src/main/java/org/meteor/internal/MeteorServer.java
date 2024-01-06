@@ -1,6 +1,7 @@
 package org.meteor.internal;
 
 import io.netty.util.concurrent.DefaultThreadFactory;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.meteor.listener.ServerListener;
 import org.meteor.coordinatior.ClusterCoordinator;
 import org.meteor.coordinatior.Coordinator;
@@ -9,6 +10,7 @@ import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.concurrent.Executors;
 
 public class MeteorServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorServer.class);
-    private final List<ServerListener> serverListeners = new LinkedList<>();
+    private final List<ServerListener> serverListeners = new ObjectArrayList<>();
     private final CountDownLatch countDownLatch;
     private final DefaultSocketServer defaultSocketServer;
     private final Coordinator coordinator;
@@ -31,7 +33,7 @@ public class MeteorServer {
         this.countDownLatch = new CountDownLatch(1);
     }
 
-    public void addListener(ServerListener listener) {
+    public void addListener(@Nonnull ServerListener listener) {
         serverListeners.add(listener);
     }
 

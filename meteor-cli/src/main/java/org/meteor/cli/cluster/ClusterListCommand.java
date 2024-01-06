@@ -72,7 +72,6 @@ public class ClusterListCommand implements Command {
                                     nodeMetadata.getClusterName(), "UP")
                     );
                 }
-                Gson gson = new Gson();
                 System.out.printf("%s [%s] INFO %S - %s \n",
                         newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), gson.toJson(nodes));
             }

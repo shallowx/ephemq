@@ -106,7 +106,7 @@ public class MigrateLedgerPlanCommand implements Command {
                             (int) topicInfo.getPartitionsMap().entrySet().stream()
                                     .filter(entry -> entry.getValue().getReplicaNodeIdsList().contains(finalOriginal)).count()).sum();
                     Scanner scanner = new Scanner(System.in);
-                    limit = Integer.parseInt(scanner.next());
+                    limit = Math.min(Integer.parseInt(scanner.next()), sum);
                 }
                 CalculatePartitionsResponse response = client.calculatePartitions();
                 Map<String, Integer> partitions = response.getPartitionsMap();
@@ -128,8 +128,6 @@ public class MigrateLedgerPlanCommand implements Command {
                         }
                     }
                 }
-
-                Gson gson = new Gson();
                 System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), gson.toJson(infos));
             }
         } catch (Throwable t) {
@@ -148,11 +146,11 @@ public class MigrateLedgerPlanCommand implements Command {
         }
     }
 
-    private String select(Map<String, Integer> partitions, List<String> relicaBrokres) {
+    private String select(Map<String, Integer> partitions, List<String> relicBrokers) {
         List<Map.Entry<String, Integer>> list = new ArrayList<>(partitions.entrySet());
-        Map.Entry<String, Integer> entries = list.stream().filter(entry -> !relicaBrokres.contains(entry.getKey()))
+        Map.Entry<String, Integer> entries = list.stream().filter(entry -> !relicBrokers.contains(entry.getKey()))
                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
-                .collect(Collectors.toList()).get(0);
+                .toList().get(0);
         String broker = entries.getKey();
         partitions.put(broker, entries.getValue() + 1);
 
