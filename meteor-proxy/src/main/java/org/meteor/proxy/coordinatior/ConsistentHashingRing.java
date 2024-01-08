@@ -58,10 +58,10 @@ public class ConsistentHashingRing {
 
             for (int i = 0; i < virtualNodeSize; i++) {
                 int hash = hashing(constructVirtualNodeName(node, i));
-                NavigableSet<String> navigables = virtualNodes.get(hash);
-                if (navigables != null) {
-                    navigables.remove(node);
-                    if (navigables.isEmpty()) {
+                NavigableSet<String> navigates = virtualNodes.get(hash);
+                if (navigates != null) {
+                    navigates.remove(node);
+                    if (navigates.isEmpty()) {
                         virtualNodes.remove(hash);
                     }
                 }
