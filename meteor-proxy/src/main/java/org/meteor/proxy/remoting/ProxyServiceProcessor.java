@@ -77,7 +77,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 case ALTER_SUBSCRIBE -> processAlterSubscription(channel, command, data, answer);
                 case CLEAN_SUBSCRIBE -> processCleanSubscription(channel, command, data, answer);
                 case SYNC_LEDGER -> processSyncLedger(channel, command, data, answer);
-                case UNSYNC_LEDGER -> processUnSyncLedger(channel, command, data,answer);
+                case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, command, data,answer);
                 default -> {
                     if (answer != null) {
                         String error = "Command[" + command + "] unsupported, length=" + length;

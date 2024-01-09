@@ -82,7 +82,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 case DELETE_TOPIC -> processDeleteTopic(channel, code, data, answer);
                 case MIGRATE_LEDGER -> processMigrateLedger(channel, code, data, answer);
                 case SYNC_LEDGER -> processSyncLedger(channel, code, data, answer);
-                case UNSYNC_LEDGER -> processUnSyncLedger(channel, code, data, answer);
+                case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, code, data, answer);
                 case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, answer);
                 default -> {
                     if (answer != null) {

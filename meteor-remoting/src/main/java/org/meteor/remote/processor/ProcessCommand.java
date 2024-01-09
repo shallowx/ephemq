@@ -12,7 +12,7 @@ public interface ProcessCommand {
         int CREATE_TOPIC = 7;
         int DELETE_TOPIC = 8;
         int SYNC_LEDGER = 9;
-        int UNSYNC_LEDGER = 10;
+        int CANCEL_SYNC_LEDGER = 10;
         int CALCULATE_PARTITIONS = 11;
 
         int MIGRATE_LEDGER = 12;
@@ -21,7 +21,7 @@ public interface ProcessCommand {
     interface Client {
         int PUSH_MESSAGE = 1;
         int SERVER_OFFLINE = 2;
-        int TOPIC_INFO_CHANGED = 3;
+        int TOPIC_CHANGED = 3;
         int SYNC_MESSAGE = 4;
     }
 

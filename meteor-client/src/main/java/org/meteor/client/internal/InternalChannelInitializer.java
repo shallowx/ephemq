@@ -79,7 +79,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                 switch (command) {
                     case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
                     case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
-                    case ProcessCommand.Client.TOPIC_INFO_CHANGED -> onTopicChanged(clientChannel, data, answer);
+                    case ProcessCommand.Client.TOPIC_CHANGED -> onTopicChanged(clientChannel, data, answer);
                     case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
                     default -> {
                         if (answer != null) {

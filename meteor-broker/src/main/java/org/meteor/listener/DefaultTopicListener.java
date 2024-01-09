@@ -87,7 +87,7 @@ public class DefaultTopicListener implements TopicListener {
             ByteBuf buf = null;
             try {
                 buf = assembleTopicChangedSignal(channel, topic, type);
-                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
+                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtil.release(buf);
@@ -107,7 +107,7 @@ public class DefaultTopicListener implements TopicListener {
             ByteBuf buf = null;
             try {
                 buf = assemblePartitionChangedSignal(channel, topicPartition.getTopic(), assignment);
-                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_INFO_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
+                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtil.release(buf);

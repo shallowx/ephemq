@@ -213,7 +213,7 @@ public class ProxyClientListener implements CombineListener {
                     continue;
                 }
                 if (payload == null) {
-                    payload = buildPayload(channel.alloc(), signal, ProcessCommand.Client.TOPIC_INFO_CHANGED);
+                    payload = buildPayload(channel.alloc(), signal, ProcessCommand.Client.TOPIC_CHANGED);
                 }
                 channel.writeAndFlush(payload.retainedDuplicate());
             }

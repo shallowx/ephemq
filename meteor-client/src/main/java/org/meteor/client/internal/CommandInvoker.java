@@ -112,7 +112,7 @@ public class CommandInvoker {
         try {
             Callback<ByteBuf> callback = assembleInvokeCallback(promise, CancelSyncResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.UNSYNC_LEDGER, buf, timeoutMs, callback);
+            channel.invoke(ProcessCommand.Server.CANCEL_SYNC_LEDGER, buf, timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
