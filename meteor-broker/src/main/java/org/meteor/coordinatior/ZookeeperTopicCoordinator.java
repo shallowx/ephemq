@@ -15,6 +15,8 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.meteor.common.message.Node;
+import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.*;
@@ -88,7 +90,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 });
     }
 
-    private void refreshPartitionInfo(String topic, Stat stat, org.meteor.common.message.TopicAssignment assignment) {
+    private void refreshPartitionInfo(String topic, Stat stat, TopicAssignment assignment) {
         String path = String.format(PathConstants.BROKER_TOPIC_ID, topic);
         try {
             byte[] bytes = client.getData().forPath(path);
@@ -299,7 +301,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public Map<String, Object> createTopic(String topic, int partitions, int replicas, org.meteor.common.message.TopicConfig topicConfig) throws Exception {
-        List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
+        List<Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
         if (clusterUpNodes.size() < replicas) {
             throw new IllegalStateException("The broker counts is not enough to assign replicas");
         }

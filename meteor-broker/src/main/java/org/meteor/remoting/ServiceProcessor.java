@@ -9,6 +9,8 @@ import io.netty.util.concurrent.*;
 import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import org.meteor.common.message.Node;
+import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
@@ -214,8 +216,8 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             commandExecutor.execute(() -> {
                 try {
                     TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
-                    org.meteor.common.message.TopicPartition topicPartition = new TopicPartition(topic, partition);
-                    org.meteor.common.message.PartitionInfo partitionInfo = topicCoordinator.getPartitionInfo(topicPartition);
+                    TopicPartition topicPartition = new TopicPartition(topic, partition);
+                    PartitionInfo partitionInfo = topicCoordinator.getPartitionInfo(topicPartition);
                     int ledger = partitionInfo.getLedger();
                     if (commonConfiguration.getServerId().equals(original)) {
                         if (!topicCoordinator.hasLeadership(ledger)) {
@@ -224,7 +226,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                             return;
                         }
 
-                        org.meteor.common.message.Node destNode = coordinator.getClusterCoordinator().getClusterReadyNode(destination);
+                        Node destNode = coordinator.getClusterCoordinator().getClusterReadyNode(destination);
                         if (destNode == null) {
                             processFailed("Process migrate ledger failed", code, channel, answer,
                                     RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The destination broker %s is not in cluster", destination)));

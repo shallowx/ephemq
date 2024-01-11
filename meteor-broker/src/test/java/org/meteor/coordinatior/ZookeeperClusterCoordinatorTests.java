@@ -1,0 +1,53 @@
+package org.meteor.coordinatior;
+
+import org.apache.curator.test.TestingServer;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.meteor.common.message.Node;
+import org.meteor.config.ServerConfig;
+
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+public class ZookeeperClusterCoordinatorTests {
+
+    private TestingServer server;
+    private ClusterCoordinator coordinator;
+
+    @Before
+    public void setUp() throws Exception {
+        server = new TestingServer();
+        Properties properties = new Properties();
+        properties.put("zookeeper.url", server.getConnectString());
+        properties.put("zookeeper.connection.retry.sleep.milliseconds", 3000);
+        properties.put("zookeeper.connection.retries", 3);
+        properties.put("zookeeper.connection.timeout.milliseconds", 3000);
+        properties.put("zookeeper.session.timeout.milliseconds", 30000);
+        ServerConfig config = new ServerConfig(properties);
+        DefaultCoordinator defaultCoordinator = new DefaultCoordinator(config);
+        coordinator = defaultCoordinator.getClusterCoordinator();
+    }
+
+    @Test
+    public void testGetReadyNode() throws Exception {
+        coordinator.start();
+        // only for unit test: wait to custer register node
+        TimeUnit.SECONDS.sleep(5);
+
+        List<Node> clusterReadyNodes = coordinator.getClusterReadyNodes();
+        Assertions.assertNotNull(clusterReadyNodes);
+        Assertions.assertEquals(clusterReadyNodes.size(), 1);
+        Assertions.assertEquals(clusterReadyNodes.get(0).getCluster(), "default");
+        Assertions.assertEquals(clusterReadyNodes.get(0).getId(), "default");
+        Assertions.assertEquals(clusterReadyNodes.get(0).getState(), "UP");
+    }
+
+    @After
+    public  void tearDown() throws Exception {
+        coordinator.shutdown();
+        server.close();
+    }
+}
