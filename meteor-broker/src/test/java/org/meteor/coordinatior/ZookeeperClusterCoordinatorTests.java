@@ -29,14 +29,13 @@ public class ZookeeperClusterCoordinatorTests {
         ServerConfig config = new ServerConfig(properties);
         DefaultCoordinator defaultCoordinator = new DefaultCoordinator(config);
         coordinator = defaultCoordinator.getClusterCoordinator();
+        coordinator.start();
+        // only for unit test: wait to custer register node
+        TimeUnit.SECONDS.sleep(5);
     }
 
     @Test
     public void testGetReadyNode() throws Exception {
-        coordinator.start();
-        // only for unit test: wait to custer register node
-        TimeUnit.SECONDS.sleep(5);
-
         List<Node> clusterReadyNodes = coordinator.getClusterReadyNodes();
         Assertions.assertNotNull(clusterReadyNodes);
         Assertions.assertEquals(clusterReadyNodes.size(), 1);
