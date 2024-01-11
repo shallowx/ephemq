@@ -7,18 +7,16 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.common.message.Node;
 import org.meteor.config.ServerConfig;
-
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class ZookeeperClusterCoordinatorTests {
-
     private TestingServer server;
     private ClusterCoordinator coordinator;
 
     @Before
-    public void setUp() throws Exception {
+   public void setUp() throws Exception {
         server = new TestingServer();
         Properties properties = new Properties();
         properties.put("zookeeper.url", server.getConnectString());
@@ -44,8 +42,27 @@ public class ZookeeperClusterCoordinatorTests {
         Assertions.assertEquals(clusterReadyNodes.get(0).getState(), "UP");
     }
 
+    @Test
+    public void testGetReadyNodes() throws Exception {
+        List<Node> clusterNodes = coordinator.getClusterNodes();
+        Assertions.assertNotNull(clusterNodes);
+        Assertions.assertEquals(clusterNodes.size(), 1);
+        Assertions.assertEquals(clusterNodes.get(0).getCluster(), "default");
+        Assertions.assertEquals(clusterNodes.get(0).getId(), "default");
+        Assertions.assertEquals(clusterNodes.get(0).getState(), "UP");
+    }
+
+    @Test
+    public void testGetThisNode() throws Exception {
+        Node thisNode = coordinator.getThisNode();
+        Assertions.assertNotNull(thisNode);
+        Assertions.assertEquals(thisNode.getCluster(), "default");
+        Assertions.assertEquals(thisNode.getId(), "default");
+        Assertions.assertEquals(thisNode.getState(), "UP");
+    }
+
     @After
-    public  void tearDown() throws Exception {
+    public void shutdown() throws Exception {
         coordinator.shutdown();
         server.close();
     }
