@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.config.CommonConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.Client;
@@ -13,6 +14,8 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.proto.server.CreateTopicResponse;
+import org.meteor.remote.proto.server.DeleteTopicResponse;
 
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;
@@ -32,6 +35,21 @@ public class InternalClient extends Client {
 
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
         return new InternalClientChannel(clientConfig, channel, address, configuration, coordinator);
+    }
+
+    @Override
+    public CreateTopicResponse createTopic(String topic, int partitions, int replicas) throws Exception {
+        throw new UnsupportedOperationException("Internal client not support operation[create topic]");
+    }
+
+    @Override
+    public CreateTopicResponse createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
+        throw new UnsupportedOperationException("Internal client not support operation[create topic]");
+    }
+
+    @Override
+    public DeleteTopicResponse deleteTopic(String topic) throws Exception {
+        throw new UnsupportedOperationException("Internal client not support operation[delete topic]");
     }
 
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
