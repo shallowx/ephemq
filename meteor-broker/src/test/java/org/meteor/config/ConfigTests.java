@@ -18,7 +18,6 @@ public class ConfigTests {
         properties.put("segment.rolling.size", 100);
         properties.put("zookeeper.url", "0.0.0.0:9527");
 
-
         ServerConfig config = new ServerConfig(properties);
         CommonConfig commonConfig = config.getCommonConfig();
         Assertions.assertNotNull(commonConfig);
