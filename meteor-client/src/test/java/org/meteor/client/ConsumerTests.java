@@ -31,7 +31,9 @@ public class ConsumerTests {
 
         Consumer consumer = new DefaultConsumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
             String msg = ByteBufUtil.buf2String(message, message.readableBytes());
-            logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
+            if (logger.isInfoEnabled()) {
+                logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
+            }
         });
         consumer.start();
 
@@ -43,5 +45,67 @@ public class ConsumerTests {
         // the duration setting only for testing
         new CountDownLatch(1).await(10, TimeUnit.MINUTES);
         consumer.close();
+    }
+
+    @Test
+    public void testClear() throws InterruptedException {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:19527");
+            }
+        });
+        clientConfig.setConnectionPoolCapacity(2);
+
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClientConfig(clientConfig);
+
+        Consumer consumer = new DefaultConsumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
+            String msg = ByteBufUtil.buf2String(message, message.readableBytes());
+            if (logger.isInfoEnabled()) {
+                logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
+            }
+        });
+        consumer.start();
+
+        String[] symbols = new String[]{"test-queue"};
+        for (String symbol : symbols) {
+            consumer.subscribe("#test#default", symbol);
+        }
+
+        TimeUnit.SECONDS.sleep(3);
+        consumer.clear("#test#default");
+    }
+
+    @Test
+    public void testClean() throws InterruptedException {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:19527");
+            }
+        });
+        clientConfig.setConnectionPoolCapacity(2);
+
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClientConfig(clientConfig);
+
+        Consumer consumer = new DefaultConsumer("default", consumerConfig, (topic, queue, messageId, message, extras) -> {
+            String msg = ByteBufUtil.buf2String(message, message.readableBytes());
+            logger.info("messageId[{}] topic[{}] queue[{}] message[{}]", messageId, topic, queue, msg);
+        });
+        consumer.start();
+
+        String[] symbols = new String[]{"test-queue"};
+        // receive message
+        for (String symbol : symbols) {
+            consumer.subscribe("#test#default", symbol);
+        }
+
+        TimeUnit.SECONDS.sleep(3);
+        // not receive message
+        for (String symbol : symbols) {
+            consumer.cancelSubscribe("#test#default", symbol);
+        }
     }
 }

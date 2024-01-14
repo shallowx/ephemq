@@ -51,7 +51,9 @@ public class ClientTests {
         ClientChannel clientChannel = client.fetchChannel(null);
 
         ClusterInfo info = client.queryClusterInfo(clientChannel);
-        logger.info("cluster information:{}", info);
+        if (logger.isInfoEnabled()) {
+            logger.info("cluster information:{}", info);
+        }
         // the duration setting only for testing
         new CountDownLatch(1).await(5000, TimeUnit.MILLISECONDS);
         client.close();

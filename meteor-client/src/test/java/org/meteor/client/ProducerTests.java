@@ -44,9 +44,13 @@ public class ProducerTests {
                     ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
                         MessageId messageId = producer.send("#test#default", symbol, message, new HashMap<>());
-                        logger.info("MessageId:[{}]", messageId);
+                        if (logger.isErrorEnabled()) {
+                            logger.info("MessageId:[{}]", messageId);
+                        }
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        if (logger.isErrorEnabled()) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                 }
 
@@ -54,7 +58,9 @@ public class ProducerTests {
                     // the duration setting only for testing
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable t) {
-                    logger.error(t.getMessage(), t);
+                    if (logger.isErrorEnabled()) {
+                        logger.error(t.getMessage(), t);
+                    }
                 }
                 producer.close();
                 continueSendLatch.countDown();
@@ -88,9 +94,13 @@ public class ProducerTests {
                     try {
                         producer.sendAsync("#test#default", symbol, message, new HashMap<>(), (messageId, t) -> {
                             if (t != null) {
-                                logger.error("Call back error:{}", t);
+                                if (logger.isErrorEnabled()) {
+                                    logger.error("Call back error:{}", t);
+                                }
                             } else {
-                                logger.info("MessageId:[{}]", messageId);
+                                if (logger.isInfoEnabled()) {
+                                    logger.info("MessageId:[{}]", messageId);
+                                }
                             }
                         });
                     } catch (Exception e) {
@@ -101,7 +111,9 @@ public class ProducerTests {
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable t) {
-                    logger.info("error:{}", t);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("error:{}", t);
+                    }
                 }
                 producer.close();
                 continueSendLatch.countDown();
@@ -143,7 +155,56 @@ public class ProducerTests {
                     // the duration setting only for testing
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable t) {
-                    logger.info("error:{}", t);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("error:{}", t);
+                    }
+                }
+                producer.close();
+                continueSendLatch.countDown();
+            }).start();
+        }
+        continueSendLatch.await();
+    }
+
+    @Test
+    public void testSendWithTimeout() throws InterruptedException {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:9527");
+            }
+        });
+
+        clientConfig.setConnectionPoolCapacity(2);
+        ProducerConfig producerConfig = new ProducerConfig();
+        producerConfig.setClientConfig(clientConfig);
+        CountDownLatch continueSendLatch = new CountDownLatch(2);
+        for (int i = 0; i < 1; i++) {
+            new Thread(() -> {
+                Producer producer = new DefaultProducer("default", producerConfig);
+                producer.start();
+
+                String[] symbols = new String[]{"test-queue"};
+                for (int j = 0; j < Integer.MAX_VALUE; j++) {
+                    String symbol = symbols[j % symbols.length];
+                    ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
+                    try {
+                        MessageId messageId = producer.send("#test#default", symbol, message, new HashMap<>(), 3000L);
+                        if (logger.isInfoEnabled()) {
+                            logger.info("messageId:{}", messageId);
+                        }
+                    } catch (Exception e) {
+                        logger.error(e);
+                    }
+                }
+
+                try {
+                    // the duration setting only for testing
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (Throwable t) {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("error:{}", t);
+                    }
                 }
                 producer.close();
                 continueSendLatch.countDown();
