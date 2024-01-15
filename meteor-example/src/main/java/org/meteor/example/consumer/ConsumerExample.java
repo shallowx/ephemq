@@ -8,6 +8,8 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class ConsumerExample {
@@ -53,6 +55,12 @@ public class ConsumerExample {
             consumer.subscribe(EXAMPLE_TOPIC, symbol);
         }
         new CountDownLatch(1).await();
+    }
+
+    public void subscribeShip() {
+        Map<String, String> ships = new HashMap<>();
+        ships.put(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE);
+        consumer.subscribe(ships);
     }
 
     public void cancelSubscribe() throws Exception {

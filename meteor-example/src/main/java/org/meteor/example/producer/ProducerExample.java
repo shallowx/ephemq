@@ -76,6 +76,15 @@ public class ProducerExample {
         producer.send(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras);
     }
 
+    public void sendWithTimeout() {
+        Map<String, String> extras =  new HashMap<>();
+        extras.put("key", "v");
+        MessageId messageId = producer.send(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras, 3000L);
+        if (logger.isInfoEnabled()) {
+            logger.info("messageId:{}", messageId);
+        }
+    }
+
     public void sendAsync() {
         producer.sendAsync(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), new HashMap<>(), new AsyncSendCallback());
     }
