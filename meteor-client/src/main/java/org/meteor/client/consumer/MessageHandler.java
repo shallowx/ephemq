@@ -1,7 +1,6 @@
 package org.meteor.client.consumer;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.concurrent.AbstractEventExecutor;
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
@@ -55,10 +54,9 @@ public class MessageHandler {
             String queue = metadata.getQueue();
             Map<String, Mode> topicModes = subscribeShips.get(queue);
             Mode mode = topicModes == null ? null : topicModes.get(topic);
-            if (mode == null || mode == Mode.DELETE) {
-                return;
+            if (mode != null && mode != Mode.DELETE) {
+                listener.onMessage(topic, queue, messageId, data, metadata.getExtrasMap());
             }
-            listener.onMessage(topic, queue, messageId, data, metadata.getExtrasMap());
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
                 logger.error(" Consumer handle message failed, address[{}] marker[{}] messageId[{}] length[{}]", channel.address(), marker, messageId, length, t);

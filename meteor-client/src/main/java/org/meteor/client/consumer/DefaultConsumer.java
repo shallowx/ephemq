@@ -10,11 +10,12 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.meteor.client.internal.*;
 import org.meteor.client.util.TopicPatternUtil;
-import org.meteor.remote.proto.server.*;
-import org.meteor.common.message.MessageId;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.MessageId;
 import org.meteor.common.thread.FastEventExecutor;
+import org.meteor.remote.proto.server.*;
+
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -738,12 +739,11 @@ public class DefaultConsumer implements Consumer {
                     queues.add(queue);
                 } else if (mode == Mode.DELETE) {
                     topicModes.remove(topic);
+                    if (topicModes.isEmpty()) {
+                        iterator.remove();
+                    }
                 } else if (mode == Mode.REMAIN) {
                     queues.add(queue);
-                }
-
-                if (topicModes.isEmpty()) {
-                    iterator.remove();
                 }
             }
         }

@@ -4,7 +4,10 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -14,9 +17,9 @@ import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.*;
 import org.meteor.client.util.TopicPatternUtil;
-import org.meteor.common.message.TopicConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.remote.proto.*;
 import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.NetworkUtil;
@@ -68,7 +71,7 @@ public class Client implements MeterBinder {
             return applyChannel(address).get(config.getChannelConnectionTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             if (address == null) {
-                throw new RuntimeException("Fetch random client channel failed, socket address must be not empty", t);
+                throw new RuntimeException("Fetch random client channel failed, socket address cannot be empty", t);
             }
             throw new RuntimeException(String.format("Fetch random client channel failed, address[%s]", address), t);
         }
@@ -141,6 +144,9 @@ public class Client implements MeterBinder {
                 .computeIfAbsent(channel.id().asLongText(), k -> ImmediateEventExecutor.INSTANCE.newPromise());
         channelFuture.addListener(future -> {
             if (!future.isSuccess()) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Remote channel[{}]", channel);
+                }
                 assemblePromise.tryFailure(future.cause());
                 ChannelOfPromise.remove(channel.id().asLongText());
             }
