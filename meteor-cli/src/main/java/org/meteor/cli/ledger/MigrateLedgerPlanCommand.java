@@ -1,6 +1,5 @@
 package org.meteor.cli.ledger;
 
-import com.google.gson.Gson;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
@@ -17,7 +16,6 @@ import org.meteor.remote.proto.server.CalculatePartitionsResponse;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

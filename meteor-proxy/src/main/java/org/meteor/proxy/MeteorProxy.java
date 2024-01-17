@@ -2,17 +2,18 @@ package org.meteor.proxy;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.meteor.internal.MeteorServer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.listener.MetricsListener;
 import org.meteor.coordinatior.Coordinator;
+import org.meteor.internal.MeteorServer;
+import org.meteor.listener.MetricsListener;
 import org.meteor.proxy.coordinatior.ProxyDefaultCoordinator;
 import org.meteor.proxy.internal.ProxyMetricsListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.proxy.remoting.MeteorProxyServer;
 import org.meteor.proxy.remoting.ProxySocketServer;
 import org.meteor.thread.ShutdownHookThread;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,10 +45,17 @@ public class MeteorProxy {
         return configureMeteorProxyServer(configuration, properties);
     }
 
-    private static CommandLine parseCommandLine(String... args) throws ParseException {
+    private static CommandLine parseCommandLine(String... args) throws Exception {
         Options options = constructCommandlineOptions();
         DefaultParser parser = new DefaultParser();
-        return parser.parse(options, args);
+        try {
+            return parser.parse(options, args);
+        } catch (Exception e) {
+            if (e instanceof MissingOptionException) {
+                throw new IllegalStateException("Please set the broker.properties path, use [-c]");
+            }
+            throw e;
+        }
     }
 
     private static Properties loadPropertiesFromFile(CommandLine commandLine) throws IOException {

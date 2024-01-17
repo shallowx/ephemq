@@ -10,9 +10,9 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
 import org.meteor.config.ChunkRecordDispatchConfig;
 import org.meteor.ledger.ChunkRecord;
@@ -23,6 +23,7 @@ import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -212,7 +213,7 @@ public class ChunkRecordEntryDispatcher {
                     }
                 } catch (Exception e){
                     if (logger.isErrorEnabled()) {
-                        logger.error("chunk dispatch failed, handler[{}] lastOffset[{}]", handler, lastOffset, e);
+                        logger.error("Chunk dispatch failed, handler[{}] lastOffset[{}]", handler, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -225,7 +226,7 @@ public class ChunkRecordEntryDispatcher {
             }
         } catch (Exception e){
             if (logger.isErrorEnabled()) {
-                logger.error("chunk dispatch failed, handler[{}], lastOffset[{}]", handler, lastOffset, e);
+                logger.error("Chunk dispatch failed, handler[{}], lastOffset[{}]", handler, lastOffset, e);
             }
         } finally {
             handler.triggered.set(false);
@@ -271,7 +272,7 @@ public class ChunkRecordEntryDispatcher {
                 counter.accept(count);
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("chunk count failed, ledger[{}] topic[{}]", ledger, topic, e);
+                    logger.error("Chunk count failed, ledger[{}] topic[{}]", ledger, topic, e);
                 }
             }
         }
@@ -451,7 +452,7 @@ public class ChunkRecordEntryDispatcher {
                     }
                 } catch (Exception e){
                     if (logger.isErrorEnabled()) {
-                        logger.error("chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
+                        logger.error("Chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -465,7 +466,7 @@ public class ChunkRecordEntryDispatcher {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
+                logger.error("Chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
             }
         }
 

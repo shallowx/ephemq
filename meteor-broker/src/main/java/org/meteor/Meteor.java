@@ -2,13 +2,13 @@ package org.meteor;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
-import org.meteor.config.ServerConfig;
-import org.meteor.listener.MetricsListener;
-import org.meteor.coordinatior.Coordinator;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.internal.MeteorServer;
+import org.meteor.config.ServerConfig;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.DefaultCoordinator;
+import org.meteor.internal.MeteorServer;
+import org.meteor.listener.MetricsListener;
 import org.meteor.remoting.DefaultSocketServer;
 import org.meteor.thread.ShutdownHookThread;
 
@@ -49,16 +49,24 @@ public class Meteor {
     private static Properties loadConfigurationProperties(String... args) throws Exception {
         Options options = constructCommandlineOptions();
         DefaultParser parser = new DefaultParser();
-        CommandLine commandLine = parser.parse(options, args);
         Properties properties = new Properties();
-        String file;
-        if (commandLine.hasOption('c')) {
-            file = commandLine.getOptionValue('c');
-            if (!StringUtil.isNullOrEmpty(file)) {
-                try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
-                    properties.load(in);
+
+        try {
+            CommandLine commandLine = parser.parse(options, args);
+            String file;
+            if (commandLine.hasOption('c')) {
+                file = commandLine.getOptionValue('c');
+                if (!StringUtil.isNullOrEmpty(file)) {
+                    try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
+                        properties.load(in);
+                    }
                 }
             }
+        } catch (Exception e) {
+            if (e instanceof MissingOptionException) {
+                throw new IllegalStateException("Please set the broker.properties path, use [-c]");
+            }
+            throw e;
         }
         return properties;
     }

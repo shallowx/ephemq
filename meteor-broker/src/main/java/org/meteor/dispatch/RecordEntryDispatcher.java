@@ -10,11 +10,14 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
-import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
 import org.meteor.config.RecordDispatchConfig;
 import org.meteor.ledger.LedgerCursor;
@@ -73,51 +76,6 @@ public class RecordEntryDispatcher {
     private EventExecutor channelExecutor(Channel channel) {
         return executors[(channel.hashCode() & 0x7fffffff) % executors.length];
     }
-
-    private RecordHandler allocateHandler(Channel channel) {
-        RecordHandler result = channelHandlers.get(channel);
-        if (result != null) {
-            return result;
-        }
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        int middleLimit = loadLimit >> 1;
-        synchronized (weakHandlers) {
-            if (weakHandlers.isEmpty()) {
-                return RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
-            }
-
-            Map<RecordHandler, Integer> selectHandlers = new HashMap<>();
-            int randomBound = 0;
-            for (RecordHandler handler : weakHandlers.keySet()) {
-                int channelCount = handler.getSubscriptionChannels().size();
-                if (channelCount >= loadLimit) {
-                    continue;
-                }
-
-                if (channelCount >= middleLimit) {
-                    randomBound += loadLimit - channelCount;
-                    selectHandlers.put(handler, channelCount);
-                } else if (result == null || result.getSubscriptionChannels().size() < channelCount) {
-                    result = handler;
-                }
-            }
-
-            if (selectHandlers.isEmpty() || randomBound == 0) {
-                return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
-            }
-
-            int index = random.nextInt(randomBound);
-            int count = 0;
-            for (Map.Entry<RecordHandler, Integer> entry : selectHandlers.entrySet()) {
-                count += loadLimit - entry.getValue();
-                if (index < count) {
-                    return entry.getKey();
-                }
-            }
-            return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
-        }
-    }
-
 
     public void reset(Channel channel, Offset resetOffset, IntCollection wholeMarkers, Promise<Integer> promise) {
         try {
@@ -390,7 +348,7 @@ public class RecordEntryDispatcher {
                 counter.accept(count);
             } catch (Throwable t) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("Count failed, ledger[{}] topic[{}]", ledger, topic, t);
+                    logger.error("Record count failed, ledger[{}] topic[{}]", ledger, topic, t);
                 }
             }
         }
@@ -663,7 +621,6 @@ public class RecordEntryDispatcher {
         if (dispatchHandlers.isEmpty()) {
             return;
         }
-
         for (RecordHandler handler : dispatchHandlers) {
             if (handler.getFollowCursor() != null) {
                 touchDispatch(handler);
@@ -728,5 +685,49 @@ public class RecordEntryDispatcher {
             result.trySuccess(null);
         }
         return result;
+    }
+
+    private RecordHandler allocateHandler(Channel channel) {
+        RecordHandler result = channelHandlers.get(channel);
+        if (result != null) {
+            return result;
+        }
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int middleLimit = loadLimit >> 1;
+        synchronized (weakHandlers) {
+            if (weakHandlers.isEmpty()) {
+                return RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+            }
+
+            Map<RecordHandler, Integer> selectHandlers = new HashMap<>();
+            int randomBound = 0;
+            for (RecordHandler handler : weakHandlers.keySet()) {
+                int channelCount = handler.getSubscriptionChannels().size();
+                if (channelCount >= loadLimit) {
+                    continue;
+                }
+
+                if (channelCount >= middleLimit) {
+                    randomBound += loadLimit - channelCount;
+                    selectHandlers.put(handler, channelCount);
+                } else if (result == null || result.getSubscriptionChannels().size() < channelCount) {
+                    result = handler;
+                }
+            }
+
+            if (selectHandlers.isEmpty() || randomBound == 0) {
+                return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+            }
+
+            int index = random.nextInt(randomBound);
+            int count = 0;
+            for (Map.Entry<RecordHandler, Integer> entry : selectHandlers.entrySet()) {
+                count += loadLimit - entry.getValue();
+                if (index < count) {
+                    return entry.getKey();
+                }
+            }
+            return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+        }
     }
 }

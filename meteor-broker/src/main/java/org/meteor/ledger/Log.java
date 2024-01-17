@@ -10,21 +10,21 @@ import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
 import org.meteor.client.internal.ClientChannel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ServerConfig;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinatior.TopicCoordinator;
 import org.meteor.dispatch.ChunkRecordEntryDispatcher;
 import org.meteor.dispatch.RecordEntryDispatcher;
 import org.meteor.listener.LogListener;
-import org.meteor.coordinatior.Coordinator;
-import org.meteor.coordinatior.TopicCoordinator;
 import org.meteor.metrics.config.MetricsConstants;
-import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.invoke.Callback;
 import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
@@ -79,7 +79,6 @@ public class Log {
                     .segmentRetainMs(config.getSegmentConfig().getSegmentRetainTimeMilliseconds())
                     .alloc(false);
         }
-
         this.storageExecutor = coordinator.getMessageStorageEventExecutorGroup().next();
         this.storage = new LedgerStorage(ledger, topicPartition.getTopic(), epoch, ledgerConfig, storageExecutor, new InnerTrigger());
         this.coordinator = coordinator;
@@ -89,14 +88,11 @@ public class Log {
                 .and(MetricsConstants.BROKER_TAG, config.getCommonConfig().getServerId())
                 .and(MetricsConstants.CLUSTER_TAG, config.getCommonConfig().getClusterName())
                 .and(MetricsConstants.LEDGER_TAG, Integer.toString(ledger));
-
         this.segmentCount = Gauge.builder(MetricsConstants.LOG_SEGMENT_COUNT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentCount)
                 .tags(tags).register(Metrics.globalRegistry);
-
         this.segmentBytes = Gauge.builder(MetricsConstants.LOG_SEGMENT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentBytes)
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
-
         this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
         this.chunkEntryDispatcher = new ChunkRecordEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
@@ -661,7 +657,6 @@ public class Log {
     private void doSubscribeSynchronize(Channel channel, Promise<Void> promise) {
         chunkEntryDispatcher.cancelSubscribe(channel, promise);
     }
-
 
     public class InnerTrigger implements LedgerTrigger {
         @Override
