@@ -5,28 +5,30 @@ import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.meteor.client.internal.ClientChannel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.ledger.Log;
 import org.meteor.ledger.LogState;
 import org.meteor.listener.TopicListener;
-import org.meteor.coordinatior.Coordinator;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
-import org.meteor.ledger.Log;
+
 import java.util.concurrent.atomic.LongAdder;
 
 public class ProxyLog extends Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private volatile long lastSubscribeTimeMillis = System.currentTimeMillis();
-    private volatile Offset tailLocation = new Offset(0, 0);
-    private volatile Offset headLocation = new Offset(0, 0);
+    private volatile Offset tailLocation = new Offset(0, 0L);
+    private volatile Offset headLocation = new Offset(0, 0L);
     private final LongAdder totalDispatchedMessages = new LongAdder();
     private final ProxyConfig proxyConfiguration;
+
     public ProxyLog(ProxyServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         super(config, topicPartition, ledger, epoch, coordinator, topicConfig);
         this.proxyConfiguration = config.getProxyConfiguration();
@@ -37,9 +39,7 @@ public class ProxyLog extends Log {
             doCancelSyncAndCloseIfNotSubscribe(promise);
         } else {
            try {
-               storageExecutor.execute(() -> {
-                   doCancelSyncAndCloseIfNotSubscribe(promise);
-               });
+               storageExecutor.execute(() -> doCancelSyncAndCloseIfNotSubscribe(promise));
            } catch (Exception e){
                if (logger.isDebugEnabled()) {
                    logger.debug(e.getMessage(), e);
@@ -118,7 +118,7 @@ public class ProxyLog extends Log {
     private void doSyncAndResetSubscribe(ClientChannel syncChannel, int epoch, long index, Channel channel, IntList markerSet, Promise<Integer> promise) {
         LogState logState = state.get();
         if (!isSynchronizing(logState)) {
-            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
+            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0L), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
             syncPromise.addListener(f -> {
                if (f.isSuccess()) {
                   Offset locate = locate(Offset.of(epoch, index));
@@ -171,7 +171,7 @@ public class ProxyLog extends Log {
         Promise<Void> vp = getVoidPromise(promise);
         LogState logState = state.get();
         if (!isSynchronizing(logState)) {
-            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
+            Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0L), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
             syncPromise.addListener(future -> {
                 if (future.isSuccess()) {
                     attachSynchronize(channel, locate(Offset.of(epoch, index)), vp);

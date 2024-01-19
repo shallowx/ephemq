@@ -4,15 +4,15 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.apache.curator.framework.CuratorFramework;
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.proxy.internal.ProxyConfig;
-import org.meteor.ledger.Log;
-import org.meteor.coordinatior.JsonMapper;
+import org.meteor.common.message.Node;
 import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinatior.JsonMapper;
 import org.meteor.internal.ZookeeperClient;
+import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
+import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyLog;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
-    private final WeakHashMap<ProxyLog, Long> dispatchTotal = new WeakHashMap<>();
+    private final WeakHashMap<ProxyLog, Long> weakDispatchTotal = new WeakHashMap<>();
     private long commitTimeMillis = System.currentTimeMillis();
     private final ProxyConfig proxyConfiguration;
 
@@ -36,7 +36,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-        }, config.getProxyLeaderSyncInitialDelayMilliseconds(), config.getProxyLeaderSyncPeriodMilliseconds(), TimeUnit.MILLISECONDS);
+        }, proxyConfig.getProxyLeaderSyncInitialDelayMilliseconds(), proxyConfig.getProxyLeaderSyncPeriodMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     private void commitLoad() throws Exception {
@@ -60,7 +60,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             }
         }
 
-        CuratorFramework client = ZookeeperClient.getReadyClient(config.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        CuratorFramework client = ZookeeperClient.getReadyClient(proxyConfig.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         String path = String.format(ZookeeperPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
         byte[] bytes = client.getData().forPath(path);
         Node proxyNode = JsonMapper.deserialize(bytes, Node.class);
@@ -74,7 +74,7 @@ public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
         for (Log log : coordinator.getLogCoordinator().getLedgerIdOfLogs().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
             long newValue = proxyLog.getTotalDispatchedMessages();
-            Long oldValue = dispatchTotal.put(proxyLog, newValue);
+            Long oldValue = weakDispatchTotal.put(proxyLog, newValue);
             if (oldValue == null || oldValue <= 0) {
                 continue;
             }

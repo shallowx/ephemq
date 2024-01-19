@@ -41,7 +41,7 @@ public class MessageHandler {
             data.release();
             semaphore.release();
             if (logger.isErrorEnabled()) {
-                logger.error("Consumer[{}] handle message failed", id, t);
+                logger.error("Consumer handle[{}] message failed", id, t);
             }
         }
     }
@@ -59,7 +59,7 @@ public class MessageHandler {
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error(" Consumer handle message failed, address[{}] marker[{}] messageId[{}] length[{}]", channel.address(), marker, messageId, length, t);
+                logger.error(" Consumer handle[{}] message failed, address[{}] marker[{}] messageId[{}] length[{}]", id, channel.address(), marker, messageId, length, t);
             }
         } finally {
             data.release();

@@ -10,7 +10,10 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.meteor.client.internal.*;
+import org.meteor.client.internal.ClientChannel;
+import org.meteor.client.internal.CombineListener;
+import org.meteor.client.internal.MessageLedger;
+import org.meteor.client.internal.MessageRouter;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
@@ -66,7 +69,7 @@ public class DefaultConsumerListener implements CombineListener, MeterBinder {
         String topic = signal.getTopic();
         if (!consumer.containsRouter(topic)) {
             if (logger.isDebugEnabled()) {
-                logger.debug("The doesn't contains topic[{}] message router", topic);
+                logger.debug("The consumer listener doesn't contains topic[{}] message router", topic);
             }
             return;
         }
@@ -79,7 +82,7 @@ public class DefaultConsumerListener implements CombineListener, MeterBinder {
                     MessageRouter router = consumer.fetchRouter(topic);
                     if (router == null) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("The topic[{}] message router is empty", topic);
+                            logger.debug("The consumer listener that topic[{}] message router is empty", topic);
                         }
                         return;
                     }
@@ -143,7 +146,7 @@ public class DefaultConsumerListener implements CombineListener, MeterBinder {
             handler.handle(channel, marker, id, data);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("The handle message failure", t);
+                logger.error("The consumer listener that handle message failure", t);
             }
         }
     }

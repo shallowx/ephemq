@@ -1,27 +1,6 @@
 package org.meteor.common.message;
 
-public class MessageId {
-    private final int ledger;
-    private final int epoch;
-    private final long index;
-
-    public MessageId(int ledger, int epoch, long index) {
-        this.ledger = ledger;
-        this.epoch = epoch;
-        this.index = index;
-    }
-
-    public int ledger() {
-        return ledger;
-    }
-
-    public int epoch() {
-        return epoch;
-    }
-
-    public long index() {
-        return index;
-    }
+public record MessageId(int ledger, int epoch, long index) {
 
     @Override
     public boolean equals(Object o) {

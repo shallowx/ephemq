@@ -3,10 +3,10 @@ package org.meteor.proxy.coordinatior;
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.ledger.LogCoordinator;
-import org.meteor.listener.DefaultClusterListener;
 import org.meteor.coordinatior.DefaultConnectionCoordinator;
 import org.meteor.coordinatior.DefaultCoordinator;
+import org.meteor.ledger.LogCoordinator;
+import org.meteor.listener.DefaultClusterListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtil;
 
@@ -34,14 +34,15 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
     }
 
     @Override
-    public LedgerSyncCoordinator getLedgerSyncCoordinator() {
-        return syncCoordinator;
-    }
-
-    @Override
     public void start() throws Exception {
         super.start();
         this.syncCoordinator.start();
+    }
+
+
+    @Override
+    public LedgerSyncCoordinator getLedgerSyncCoordinator() {
+        return syncCoordinator;
     }
 
     @Override

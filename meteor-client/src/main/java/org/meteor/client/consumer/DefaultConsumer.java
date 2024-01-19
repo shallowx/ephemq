@@ -58,7 +58,7 @@ public class DefaultConsumer implements Consumer {
     public synchronized void start() {
         if (state != null) {
             if (logger.isWarnEnabled()) {
-                logger.warn("The client[{}] war started", name);
+                logger.warn("The Consumer[{}] client[{}] war started", name, name);
             }
             return;
         }
@@ -559,8 +559,8 @@ public class DefaultConsumer implements Consumer {
             return false;
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Reset subscribe error, topic[{}] channel[{}] ledger_id[{}] epoch[{}] index[{}] markers[{}]",
-                        topic, channel, ledgerId, epoch, index, markers, t.getMessage(), t);
+                logger.debug("Consumer[{}] reset subscribe error, topic[{}] channel[{}] ledger_id[{}] epoch[{}] index[{}] markers[{}]",
+                        name, topic, channel, ledgerId, epoch, index, markers, t.getMessage(), t);
             }
             return true;
         }
@@ -582,8 +582,8 @@ public class DefaultConsumer implements Consumer {
             return true;
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Alter subscribe error, topic[{}] channel[{}] ledger_id[{}] append_markers[{}] delete_markers[{}]",
-                        topic, channel, ledgerId, appendMarkers, deleteMarkers, t.getMessage(), t);
+                logger.debug("Consumer[{}] alter subscribe error, topic[{}] channel[{}] ledger_id[{}] append_markers[{}] delete_markers[{}]",
+                        name, topic, channel, ledgerId, appendMarkers, deleteMarkers, t.getMessage(), t);
             }
             return false;
         }
@@ -632,7 +632,7 @@ public class DefaultConsumer implements Consumer {
             return client.fetchChannel(address);
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-                logger.debug("fetch channel error, address[{}]", address.toString(), t.getMessage(), t);
+                logger.debug("Consumer[{}] fetch channel error, address[{}]", name, address.toString(), t.getMessage(), t);
             }
             return null;
         }
@@ -643,7 +643,7 @@ public class DefaultConsumer implements Consumer {
             return client.fetchRouter(topic);
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-                logger.debug("fetch router error, topic[{}]", topic, t.getMessage(), t);
+                logger.debug("Consumer[{}] fetch router error, topic[{}]", name, topic, t.getMessage(), t);
             }
             return null;
         }
@@ -654,7 +654,7 @@ public class DefaultConsumer implements Consumer {
             return router.routeLedger(queue);
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-               logger.debug("calculate ledger error, topic[{}] queue[{}]",router.topic(), queue, t.getMessage(), t);
+                logger.debug("Consumer[{}] calculate ledger error, topic[{}] queue[{}]", name, router.topic(), queue, t.getMessage(), t);
             }
             return null;
         }
@@ -675,7 +675,7 @@ public class DefaultConsumer implements Consumer {
             return UnsafeByteOperations.unsafeWrap(data);
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-              logger.debug("generate markers error, markers[{}]", markers, t.getMessage(), t);
+                logger.debug("Consumer[{}] generate markers error, markers[{}]", name, markers, t.getMessage(), t);
             }
             return null;
         }
@@ -784,7 +784,7 @@ public class DefaultConsumer implements Consumer {
     public synchronized void close() throws InterruptedException {
         if (state != Boolean.TRUE) {
             if (logger.isWarnEnabled()) {
-                logger.warn("This consumer[{}] was closed, don't execute it replay", name);
+                logger.warn("The consumer[{}] was closed, don't execute it replay", name);
             }
             return;
         }

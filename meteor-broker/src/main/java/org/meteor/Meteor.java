@@ -85,7 +85,7 @@ public class Meteor {
 
     private static Options constructCommandlineOptions() {
         Options options = new Options();
-        Option option = new Option("c", "configFile", true, "Server config file");
+        Option option = new Option("c", "configFile", true, "Meteor broker server config file");
         option.setRequired(true);
         options.addOption(option);
 

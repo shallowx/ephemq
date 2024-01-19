@@ -62,7 +62,7 @@ public class Log {
     public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
-        this.topic = topicPartition.getTopic();
+        this.topic = topicPartition.topic();
         this.forwardTimeout = config.getRecordDispatchConfig().getDispatchEntryFollowLimit();
         this.commandExecutor = coordinator.getCommandHandleEventExecutorGroup().next();
         LedgerConfig ledgerConfig;
@@ -80,11 +80,11 @@ public class Log {
                     .alloc(false);
         }
         this.storageExecutor = coordinator.getMessageStorageEventExecutorGroup().next();
-        this.storage = new LedgerStorage(ledger, topicPartition.getTopic(), epoch, ledgerConfig, storageExecutor, new InnerTrigger());
+        this.storage = new LedgerStorage(ledger, topicPartition.topic(), epoch, ledgerConfig, storageExecutor, new InnerTrigger());
         this.coordinator = coordinator;
         this.listeners = coordinator.getLogCoordinator().getLogListeners();
-        Tags tags = Tags.of(MetricsConstants.TOPIC_TAG, topicPartition.getTopic())
-                .and(MetricsConstants.PARTITION_TAG, String.valueOf(topicPartition.getPartition()))
+        Tags tags = Tags.of(MetricsConstants.TOPIC_TAG, topicPartition.topic())
+                .and(MetricsConstants.PARTITION_TAG, String.valueOf(topicPartition.partition()))
                 .and(MetricsConstants.BROKER_TAG, config.getCommonConfig().getServerId())
                 .and(MetricsConstants.CLUSTER_TAG, config.getCommonConfig().getClusterName())
                 .and(MetricsConstants.LEDGER_TAG, Integer.toString(ledger));
@@ -630,7 +630,7 @@ public class Log {
                    int appends = future.getNow();
                    if (logger.isWarnEnabled() && appends < count) {
                        logger.warn("Chunk append missed topic={} ledger={} exceptCount={} appendCount={}",
-                               topicPartition.getTopic(), ledger, count, appends, future.cause());
+                               topicPartition.topic(), ledger, count, appends, future.cause());
                    }
                }
            });

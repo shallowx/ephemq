@@ -2,11 +2,11 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.coordinatior.Coordinator;
@@ -106,7 +106,7 @@ public class DefaultTopicListener implements TopicListener {
         for (Channel channel : channels) {
             ByteBuf buf = null;
             try {
-                buf = assemblePartitionChangedSignal(channel, topicPartition.getTopic(), assignment);
+                buf = assemblePartitionChangedSignal(channel, topicPartition.topic(), assignment);
                 AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {

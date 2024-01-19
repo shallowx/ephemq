@@ -11,20 +11,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.ParticipantCoordinator;
 import org.meteor.coordinatior.ZookeeperTopicCoordinator;
+import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.QueryTopicInfoRequest;
 import org.meteor.remote.proto.server.QueryTopicInfoResponse;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implements ProxyTopicCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);
-    private LoadingCache<String, TopicInfo> topicMetaCache;
+    private LoadingCache<String, TopicInfo> topicMetaLoadingCache;
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyConfig proxyConfiguration;
     public ZookeeperProxyTopicCoordinator(ProxyConfig config, Coordinator coordinator) {
@@ -36,7 +37,7 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
 
     @Override
     public void start() throws Exception {
-        this.topicMetaCache = Caffeine.newBuilder().refreshAfterWrite(30, TimeUnit.SECONDS)
+        this.topicMetaLoadingCache = Caffeine.newBuilder().refreshAfterWrite(30, TimeUnit.SECONDS)
                 .build(new CacheLoader<>() {
                     @Override
                     public @Nullable TopicInfo load(String key) throws Exception {
@@ -75,7 +76,7 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
         }
         Map<String, TopicInfo> ret = new Object2ObjectOpenHashMap<>();
         for (String topic : topics) {
-            TopicInfo info = topicMetaCache.get(topic);
+            TopicInfo info = topicMetaLoadingCache.get(topic);
             if (info == null) {
                 continue;
             }
@@ -100,12 +101,12 @@ public class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator im
             if(info == null) {
                 continue;
             }
-            topicMetaCache.put(topic, info);
+            topicMetaLoadingCache.put(topic, info);
         }
     }
 
     @Override
     public void invalidTopicMetadata(String topic) {
-        topicMetaCache.invalidate(topic);
+        topicMetaLoadingCache.invalidate(topic);
     }
 }

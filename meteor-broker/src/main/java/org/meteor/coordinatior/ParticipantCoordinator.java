@@ -5,14 +5,14 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.meteor.ledger.Log;
-import org.meteor.ledger.LogCoordinator;
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.common.message.Offset;
-import org.meteor.common.message.TopicPartition;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
+import org.meteor.common.message.TopicPartition;
 import org.meteor.common.thread.FastEventExecutor;
+import org.meteor.ledger.Log;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncRequest;
@@ -94,7 +94,7 @@ public class ParticipantCoordinator {
             SyncRequest request = SyncRequest.newBuilder()
                     .setEpoch(epoch)
                     .setIndex(index)
-                    .setTopic(topicPartition.getTopic())
+                    .setTopic(topicPartition.topic())
                     .setLedger(ledger)
                     .build();
 
@@ -113,7 +113,7 @@ public class ParticipantCoordinator {
         try {
             CancelSyncRequest request = CancelSyncRequest.newBuilder()
                     .setLedger(ledger)
-                    .setTopic(topicPartition.getTopic())
+                    .setTopic(topicPartition.topic())
                     .build();
 
             channel.invoker().cancelSyncMessage(timeoutMs, promise, request);

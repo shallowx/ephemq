@@ -6,19 +6,19 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.recipes.leader.Participant;
+import org.meteor.client.internal.Client;
+import org.meteor.client.internal.ClientChannel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Node;
+import org.meteor.common.message.Offset;
+import org.meteor.common.message.TopicAssignment;
+import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
 import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.ledger.Log;
-import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientChannel;
-import org.meteor.common.message.Node;
-import org.meteor.common.message.Offset;
-import org.meteor.common.message.TopicAssignment;
-import org.meteor.common.message.TopicPartition;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.listener.TopicListener;
 import org.meteor.remote.proto.server.SyncResponse;
 
@@ -48,7 +48,7 @@ public class ZookeeperPartitionCoordinatorElector {
 
     public void elect() throws Exception {
         String path = String.format(
-                PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition()
+                PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition()
         );
         latch = new LeaderLatch(client, path, configuration.getServerId(), LeaderLatch.CloseMode.NOTIFY_LEADER);
         latch.addListener(new LeaderLatchListener() {
@@ -155,7 +155,7 @@ public class ZookeeperPartitionCoordinatorElector {
 
                 if (!latch.hasLeadership() && !leader.getId().equals(configuration.getServerId())) {
                     byte[] bytes = client.getData().forPath(
-                            String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.getTopic(), topicPartition.getPartition())
+                            String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition())
                     );
 
                     TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);

@@ -10,30 +10,30 @@ import org.apache.curator.shaded.com.google.common.hash.HashFunction;
 import org.apache.curator.shaded.com.google.common.hash.Hashing;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.MessageLedger;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.TopicListener;
-import org.meteor.coordinatior.Coordinator;
-import org.meteor.remoting.ServiceProcessor;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
 import org.meteor.proxy.coordinatior.ProxyClusterCoordinator;
-import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.proxy.coordinatior.ProxyCoordinator;
+import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.proxy.internal.ProxyServerConfig;
-import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+import org.meteor.remoting.ServiceProcessor;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -84,7 +84,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
                     if (logger.isWarnEnabled()) {
-                        logger.warn("<{}> command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
+                        logger.warn("<{}> Command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
                     }
                 }
             }
@@ -93,7 +93,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 answer.failure(t);
             }
             if (logger.isErrorEnabled()) {
-                logger.error("<{}> process error, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
+                logger.error("<{}> Process error, code={}, length={}", NetworkUtil.switchAddress(channel), command, length);
             }
         }
     }
@@ -115,10 +115,10 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                                    answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                                }
                            } catch (Throwable t) {
-                               processFailed("process sync ledger failed", command, channel, answer, t);
+                               processFailed("Process sync ledger failed", command, channel, answer, t);
                            }
                        } else {
-                           processFailed("process sync ledger failed", command, channel, answer, f.cause());
+                           processFailed("Process sync ledger failed", command, channel, answer, f.cause());
                        }
                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
@@ -132,12 +132,12 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index,channel, promise);
                 } catch (Throwable t) {
-                    processFailed("process sync ledger failed", command, channel, answer, t);
+                    processFailed("Process sync ledger failed", command, channel, answer, t);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
         }catch (Throwable t) {
-            processFailed("process sync ledger failed", command, channel, answer, t);
+            processFailed("Process sync ledger failed", command, channel, answer, t);
             recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
@@ -170,7 +170,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 try {
                     List<Node> clusterUpNodes = proxyClusterCoordinator.getClusterReadyNodes();
                     if (clusterUpNodes == null || clusterUpNodes.isEmpty()) {
-                        throw new IllegalStateException("cluster node is empty");
+                        throw new IllegalStateException("Cluster node is empty");
                     }
 
                     QueryTopicInfoResponse.Builder newResponse = QueryTopicInfoResponse.newBuilder();
@@ -217,12 +217,12 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     }
                     recordCommand(command, bytes, System.nanoTime() -time, true);
                 }catch (Exception e) {
-                    processFailed("process sync ledger failed", command, channel, answer, e);
+                    processFailed("Process sync ledger failed", command, channel, answer, e);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
-            processFailed("process sync ledger failed", command, channel, answer, t);
+            processFailed("Process sync ledger failed", command, channel, answer, t);
             recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
@@ -365,10 +365,10 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                             answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                         }
                     } catch (Throwable t) {
-                        processFailed("process un-sync ledger failed", command, channel, answer, t);
+                        processFailed("Process un-sync ledger failed", command, channel, answer, t);
                     }
                 } else {
-                    processFailed("process un-sync ledger failed", command, channel, answer, f.cause());
+                    processFailed("Process un-sync ledger failed", command, channel, answer, f.cause());
                 }
                 recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
             });
@@ -380,8 +380,8 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             }
             log.subscribeSynchronize(channel, promise);
         } catch (Throwable t) {
-            processFailed("process un-sync ledger failed", command, channel, answer, t);
-            recordCommand(command, bytes, System.nanoTime() - time,false);
+            processFailed("Process un-sync ledger failed", command, channel, answer, t);
+            recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
 
@@ -406,7 +406,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                                answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                            }
                        } else {
-                           processFailed("process rest subscribe failed", command, channel, answer, f.cause());
+                           processFailed("Process rest subscribe failed", command, channel, answer, f.cause());
                        }
                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                    });
@@ -415,13 +415,13 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                    log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
                } catch (Exception e) {
-                   processFailed("process rest subscribe failed", command, channel, answer, e);
-                   recordCommand(command, bytes, System.nanoTime() - time,false);
+                   processFailed("Process rest subscribe failed", command, channel, answer, e);
+                   recordCommand(command, bytes, System.nanoTime() - time, false);
                }
             });
         } catch (Exception e) {
-            processFailed("process rest subscribe failed", command, channel, answer, e);
-            recordCommand(command, bytes, System.nanoTime() - time,false);
+            processFailed("Process rest subscribe failed", command, channel, answer, e);
+            recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
 
@@ -444,24 +444,24 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                                 answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                             }
                         } else {
-                            processFailed("process alter subscribe failed", command, channel, answer, f.cause());
+                            processFailed("Process alter subscribe failed", command, channel, answer, f.cause());
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
                     Log log = coordinator.getLogCoordinator().getLog(ledger);
                     if (log == null) {
-                        promise.tryFailure(new IllegalStateException("alter subscribe failed, since log does not exist"));
+                        promise.tryFailure(new IllegalStateException("Alter subscribe failed, since log does not exist"));
                         return;
                     }
                     log.alterSubscribe(channel, appendMarkers, deleteMarkers, promise);
                 } catch (Exception e) {
-                    processFailed("process alter subscribe failed", command, channel, answer, e);
-                    recordCommand(command, bytes, System.nanoTime() - time,false);
+                    processFailed("Process alter subscribe failed", command, channel, answer, e);
+                    recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Exception e) {
-            processFailed("process alter subscribe failed", command, channel, answer, e);
-            recordCommand(command, bytes, System.nanoTime() - time,false);
+            processFailed("Process alter subscribe failed", command, channel, answer, e);
+            recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
     @Override
@@ -480,19 +480,19 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                                 answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                             }
                         } else {
-                            processFailed("process clean subscribe failed", command, channel, answer, f.cause());
+                            processFailed("Process clean subscribe failed", command, channel, answer, f.cause());
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
                     coordinator.getLogCoordinator().cleanSubscribe(channel, request.getLedger(), promise);
                 } catch (Exception e) {
-                    processFailed("process clean subscribe failed", command, channel, answer, e);
-                    recordCommand(command, bytes, System.nanoTime() - time,false);
+                    processFailed("Process clean subscribe failed", command, channel, answer, e);
+                    recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Exception e) {
-            processFailed("process rest subscribe failed", command, channel, answer, e);
-            recordCommand(command, bytes, System.nanoTime() - time,false);
+            processFailed("Process rest subscribe failed", command, channel, answer, e);
+            recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
 }

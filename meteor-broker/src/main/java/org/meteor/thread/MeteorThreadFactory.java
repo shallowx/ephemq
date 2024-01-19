@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MeteorThreadFactory implements ThreadFactory {
-    private static final AtomicInteger poolId = new AtomicInteger();
+    private static final AtomicInteger POOL_ID = new AtomicInteger();
     private final AtomicInteger nextId = new AtomicInteger();
     private final String prefix;
     private final boolean daemon;
@@ -46,32 +46,34 @@ public class MeteorThreadFactory implements ThreadFactory {
     }
 
     public static String toPoolName(Class<?> poolType) {
-        ObjectUtil.checkNotNull(poolType, "poolType");
+        ObjectUtil.checkNotNull(poolType, "Meteor thread pool type cannot be empty");
 
         String poolName = StringUtil.simpleClassName(poolType);
         switch (poolName.length()) {
-            case 0:
+            case 0 -> {
                 return "unknown";
-            case 1:
+            }
+            case 1 -> {
                 return poolName.toLowerCase(Locale.US);
-            default:
+            }
+            default -> {
                 if (Character.isUpperCase(poolName.charAt(0)) && Character.isLowerCase(poolName.charAt(1))) {
                     return Character.toLowerCase(poolName.charAt(0)) + poolName.substring(1);
                 } else {
                     return poolName;
                 }
+            }
         }
     }
 
     public MeteorThreadFactory(String poolName, boolean daemon, int priority, ThreadGroup threadGroup) {
-        ObjectUtil.checkNotNull(poolName, "poolName");
-
+        ObjectUtil.checkNotNull(poolName, "Meteor thread pool name cannot be empty");
         if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
             throw new IllegalArgumentException(
-                    "priority: " + priority + " [expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)]");
+                    "Thread priority is actually [ " + priority + "], but the expectation in [1, 10]");
         }
 
-        prefix = poolName + '-' + poolId.incrementAndGet() + '-';
+        prefix = poolName + '-' + POOL_ID.incrementAndGet() + '-';
         this.daemon = daemon;
         this.priority = priority;
         this.threadGroup = threadGroup;

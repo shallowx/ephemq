@@ -14,6 +14,7 @@ import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.listener.LogListener;
 import org.meteor.remote.processor.RemoteException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,7 +53,7 @@ public class LogCoordinator {
 
         for (LogListener listener : listeners) {
             TopicPartition topicPartition = log.getTopicPartition();
-            listener.onReceiveMessage(topicPartition.getTopic(), ledger, 1);
+            listener.onReceiveMessage(topicPartition.topic(), ledger, 1);
         }
         log.append(marker, payload, promise);
     }
@@ -142,7 +143,7 @@ public class LogCoordinator {
 
         for (LogListener listener : listeners) {
             TopicPartition topicPartition = log.getTopicPartition();
-            listener.onSyncMessage(topicPartition.getTopic(), ledger, count);
+            listener.onSyncMessage(topicPartition.topic(), ledger, count);
         }
         log.appendChunk(channel, count, data, promise);
     }

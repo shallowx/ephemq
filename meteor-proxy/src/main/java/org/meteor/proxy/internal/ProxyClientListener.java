@@ -14,6 +14,7 @@ import org.meteor.client.internal.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.coordinatior.Coordinator;
+import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
 import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
@@ -24,7 +25,6 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-import org.meteor.ledger.Log;
 
 import java.net.SocketAddress;
 import java.util.*;
@@ -45,7 +45,7 @@ public class ProxyClientListener implements CombineListener {
     private final ProxyConfig proxyConfiguration;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
-        protected Semaphore initialValue() throws Exception {
+        protected Semaphore initialValue() {
             return new Semaphore(proxyConfiguration.getProxyLeaderSyncSemaphore());
         }
     };

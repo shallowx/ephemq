@@ -2,13 +2,13 @@ package org.meteor.proxy.coordinatior;
 
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.zookeeper.data.Stat;
-import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.proxy.internal.ProxyConfig;
-import org.meteor.listener.ClusterListener;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.common.message.Node;
 import org.meteor.coordinatior.ZookeeperClusterCoordinator;
+import org.meteor.internal.ZookeeperClient;
+import org.meteor.listener.ClusterListener;
+import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyServerConfig;
 
 import java.util.Set;
@@ -23,11 +23,6 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
         this.client = ZookeeperClient.getReadyClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         this.hashingRing = new ConsistentHashingRing();
         this.listeners.add(this);
-    }
-
-    @Override
-    public Set<String> route2Nodes(String key, int size) {
-        return hashingRing.route2Nodes(key,size);
     }
 
     @Override
@@ -51,13 +46,8 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
     }
 
     @Override
-    public void shutdown() throws Exception {
-        unregistered(ZookeeperPathConstants.PROXIES_ID);
-        if (cache != null) {
-            cache.close();
-        }
-
-        this.client.getConnectionStateListenable().removeListener(connectionStateListener);
+    public Set<String> route2Nodes(String key, int size) {
+        return hashingRing.route2Nodes(key, size);
     }
 
     @Override
@@ -92,5 +82,14 @@ public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinato
         if (node != null) {
             hashingRing.deleteNode(node.getId());
         }
+    }
+
+    @Override
+    public void shutdown() throws Exception {
+        unregistered(ZookeeperPathConstants.PROXIES_ID);
+        if (cache != null) {
+            cache.close();
+        }
+        this.client.getConnectionStateListenable().removeListener(connectionStateListener);
     }
 }

@@ -52,7 +52,7 @@ public class MeteorProxy {
             return parser.parse(options, args);
         } catch (Exception e) {
             if (e instanceof MissingOptionException) {
-                throw new IllegalStateException("Please set the broker.properties path, use [-c]");
+                throw new IllegalStateException("Please set the proxy.properties path, use [-c]");
             }
             throw e;
         }
@@ -90,7 +90,7 @@ public class MeteorProxy {
 
     private static Options constructCommandlineOptions() {
         Options options = new Options();
-        Option option = new Option("c", "configFile", true, "Server config file");
+        Option option = new Option("c", "configFile", true, "Meteor proxy server config file");
         option.setRequired(true);
         options.addOption(option);
 
