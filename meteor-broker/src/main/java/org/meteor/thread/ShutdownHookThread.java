@@ -3,7 +3,6 @@ package org.meteor.thread;
 import org.meteor.common.logging.InternalLogger;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShutdownHookThread {
     private final InternalLogger logger;
@@ -32,8 +31,8 @@ public class ShutdownHookThread {
                 }
 
                 long consumingTime = System.currentTimeMillis() - begin;
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Shutdown hook over, consuming time(ms)[{}]", consumingTime);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Shutdown hook over, consumed time(ms)[{}]", consumingTime);
                 }
             }
         }
