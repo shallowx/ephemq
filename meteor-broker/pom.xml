@@ -14,6 +14,7 @@
 
     <properties>
         <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
+        <curator.test.version>5.2.1</curator.test.version>
     </properties>
 
     <dependencies>
@@ -59,7 +60,7 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-test</artifactId>
-            <version>5.2.1</version>
+            <version>${curator.test.version}</version>
         </dependency>
     </dependencies>
     <build>
