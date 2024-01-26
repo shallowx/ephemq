@@ -1,4 +1,4 @@
-package org.meteor.client;
+package org.meteor.consumer;
 
 import org.junit.Test;
 import org.meteor.client.consumer.Consumer;
