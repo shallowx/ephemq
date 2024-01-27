@@ -72,34 +72,34 @@ public class ProxyClientListener implements CombineListener {
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Can not find sync channel of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not find sync channel of topic[{}] ledger[{}] , will ignore check", topic, ledger);
                 }
                 continue;
             }
             MessageRouter router = client.fetchRouter(topic);
             if (router == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Can not find message router of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not find message router of topic[{}] ledger[{}] , will ignore check", topic, ledger);
                 }
                 continue;
             }
             MessageLedger messageLedger = router.ledger(ledger);
             if (messageLedger == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Can not find message ledger of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not find message ledger of topic[{}] ledger[{}] , will ignore check", topic, ledger);
                 }
                 continue;
             }
             List<SocketAddress> replicas = messageLedger.participants();
             if (replicas == null || replicas.isEmpty()) {
                 if (logger.isDebugEnabled()){
-                    logger.debug("Current lodger of topic[{}] ledger[{}] is not available for proxy, will ignore check", topic, ledger);
+                    logger.debug("Current ledger of topic[{}] ledger[{}] is not available for proxy, will ignore check", topic, ledger);
                 }
                 continue;
             }
             if (replicas.contains(syncChannel.address()) && syncChannel.isActive()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Can not find partition replicas of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not find partition replicas of topic[{}] ledger[{}]  , will ignore check", topic, ledger);
                 }
                 continue;
             }
@@ -172,7 +172,7 @@ public class ProxyClientListener implements CombineListener {
                    MessageRouter router = client.fetchRouter(topic);
                    if (router == null) {
                        if (logger.isDebugEnabled()) {
-                           logger.debug("Can not fetch message router of topic[{}], will ignore signal[{}]", topic, signal);
+                           logger.debug("Proxy can not fetch message router of topic[{}], will ignore signal[{}]", topic, signal);
                        }
                        return;
                    }
@@ -203,7 +203,7 @@ public class ProxyClientListener implements CombineListener {
 
     private void noticeTopicChanged(TopicChangedSignal signal) {
         Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
-        if (channels.isEmpty()) {
+        if (channels == null || channels.isEmpty()) {
             return;
         }
         ByteBuf payload = null;
@@ -238,7 +238,7 @@ public class ProxyClientListener implements CombineListener {
             return buf;
         } catch (Exception e){
             ByteBufUtil.release(buf);
-            throw new RuntimeException(String.format("Build signal payload error, command[%d] signal[%s]", command, signal));
+            throw new RuntimeException(String.format("Proxy build signal payload error, command[%d] signal[%s]", command, signal));
         }
     }
 
@@ -272,7 +272,7 @@ public class ProxyClientListener implements CombineListener {
                 }
             } catch (Exception e){
                 if (logger.isErrorEnabled()) {
-                    logger.error("resume sync topic[{}] failed", topic, e);
+                    logger.error("Proxy resume sync topic[{}] failed", topic, e);
                 }
             }
         }
@@ -282,7 +282,7 @@ public class ProxyClientListener implements CombineListener {
         Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
             if (!f.isSuccess() && logger.isErrorEnabled()) {
-                logger.error("resume sync topic[{}] failed", topic, f.cause());
+                logger.error("Proxy resume sync topic[{}] failed", topic, f.cause());
             }
         });
         try {
