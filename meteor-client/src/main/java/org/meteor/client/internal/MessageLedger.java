@@ -22,7 +22,7 @@ public record MessageLedger(int id, int version, SocketAddress leader, List<Sock
 
     @Override
     public String toString() {
-        return "message_ledger{" +
+        return "MessageLedger{" +
                 "id=" + id +
                 ", version=" + version +
                 ", leader=" + leader +

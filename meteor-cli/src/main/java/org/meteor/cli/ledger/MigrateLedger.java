@@ -47,7 +47,7 @@ public class MigrateLedger {
 
     @Override
     public String toString() {
-        return "migrate_ledger{" +
+        return "MigrateLedger{" +
                 "topic='" + topic + '\'' +
                 ", partition=" + partition +
                 ", from='" + from + '\'' +

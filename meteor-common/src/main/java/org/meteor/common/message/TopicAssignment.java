@@ -87,7 +87,7 @@ public class TopicAssignment {
 
     @Override
     public String toString() {
-        return "topic_assignment {" +
+        return "TopicAssignment{" +
                 "topic='" + topic + '\'' +
                 ", ledgerId=" + ledgerId +
                 ", epoch=" + epoch +

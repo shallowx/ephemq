@@ -17,7 +17,7 @@ public record MessageId(int ledger, int epoch, long index) {
 
     @Override
     public String toString() {
-        return "message_id{" +
+        return "MessageId{" +
                 "ledger=" + ledger +
                 ", epoch=" + epoch +
                 ", index=" + index +

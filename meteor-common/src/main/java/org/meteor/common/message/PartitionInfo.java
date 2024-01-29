@@ -82,7 +82,7 @@ public class PartitionInfo {
 
     @Override
     public String toString() {
-        return "partition_info{" +
+        return "PartitionInfo{" +
                 "topic='" + topic + '\'' +
                 ", topicId=" + topicId +
                 ", partition=" + partition +

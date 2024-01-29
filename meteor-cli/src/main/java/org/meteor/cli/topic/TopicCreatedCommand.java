@@ -150,7 +150,7 @@ public class TopicCreatedCommand implements Command {
 
         @Override
         public String toString() {
-            return "topic_metadata{" +
+            return "TopicCreatedCommand{" +
                     "topic='" + topic + '\'' +
                     ", partition=" + partition +
                     ", replicas=" + replicas +

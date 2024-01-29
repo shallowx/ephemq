@@ -154,7 +154,7 @@ public abstract class LedgerSyncCoordinator {
         List<SocketAddress> replicas = messageLedger.participants();
         if (replicas == null || replicas.isEmpty()) {
             throw new IllegalStateException(String.format(
-                    "No available replica which topic=%s ledger=%d", messageLedger.topic(), messageLedger.id()
+                    "No available replica which topic[%s] and ledger[%d]", messageLedger.topic(), messageLedger.id()
             ));
         }
         int index = ThreadLocalRandom.current().nextInt(replicas.size());

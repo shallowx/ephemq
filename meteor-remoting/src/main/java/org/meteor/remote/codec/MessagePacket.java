@@ -91,7 +91,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     @Override
     public String toString() {
-        return "message_packet{" +
+        return "MessagePacket{" +
                 ", answer=" + answer +
                 ", command=" + command +
                 ", handle=" + handle +

@@ -11,7 +11,7 @@ public class ChunkRecordSynchronization extends AbstractSynchronization<ChunkRec
     }
     @Override
     public String toString() {
-        return "chunk_synchronization{" +
+        return "ChunkRecordSynchronization{" +
                 ", channel=" + channel +
                 ", handler=" + handler +
                 ", dispatchOffset=" + dispatchOffset +

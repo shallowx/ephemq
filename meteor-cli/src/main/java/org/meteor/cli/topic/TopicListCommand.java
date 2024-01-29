@@ -1,6 +1,5 @@
 package org.meteor.cli.topic;
 
-import com.google.gson.Gson;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
@@ -14,9 +13,7 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 public class TopicListCommand implements Command {
@@ -175,7 +172,7 @@ public class TopicListCommand implements Command {
 
         @Override
         public String toString() {
-            return "topic_metadata{" +
+            return "TopicMetadata{" +
                     "topic='" + topic + '\'' +
                     ", partition=" + partition +
                     ", ledger=" + ledger +

@@ -58,7 +58,7 @@ public class Offset implements Comparable<Offset> {
 
     @Override
     public String toString() {
-        return "offset{" +
+        return "Offset{" +
                 "epoch=" + epoch +
                 ", index=" + index +
                 '}';

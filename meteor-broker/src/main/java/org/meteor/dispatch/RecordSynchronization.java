@@ -19,7 +19,7 @@ public class RecordSynchronization extends AbstractSynchronization<RecordHandler
 
     @Override
     public String toString() {
-        return "synchronization{" +
+        return "RecordSynchronization{" +
                 "markers=" + markers +
                 ", channel=" + channel +
                 ", handler=" + handler +

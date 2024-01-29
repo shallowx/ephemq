@@ -38,7 +38,7 @@ public class RecordHandler extends AbstractHandler<RecordSynchronization, Record
 
     @Override
     public String toString() {
-        return "record_handler{" +
+        return "RecordHandler{" +
                 "subscriptionMarkers=" + subscriptionMarkers +
                 ", subscriptionChannels=" + subscriptionChannels +
                 ", triggered=" + triggered +

@@ -8,7 +8,6 @@ public interface PathConstants {
     String BROKER_TOPIC_ID = BROKER_TOPIC + "/id";
     String BROKER_TOPIC_PARTITIONS = BROKER_TOPIC + "/partitions";
     String BROKER_TOPIC_PARTITION = BROKER_TOPIC_PARTITIONS + "/%d";
-
     String BROKERS_IDS = "/brokers/ids";
     String BROKERS_ID = BROKERS_IDS + "/%s";
 }

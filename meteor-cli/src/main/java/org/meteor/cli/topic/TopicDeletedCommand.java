@@ -1,6 +1,5 @@
 package org.meteor.cli.topic;
 
-import com.google.gson.Gson;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
@@ -16,8 +15,10 @@ import org.meteor.remote.proto.TopicMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class TopicDeletedCommand implements Command {

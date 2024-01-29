@@ -35,7 +35,7 @@ public class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronizati
 
     @Override
     public String toString() {
-        return "record_chunk_handler{" +
+        return "ChunkRecordHandler{" +
                 "synchronizations=" + synchronizations +
                 ", subscriptionChannels=" + subscriptionChannels +
                 ", triggered=" + triggered +
