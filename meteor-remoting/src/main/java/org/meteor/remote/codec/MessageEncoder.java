@@ -35,7 +35,9 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
                 header = encodeHeader(ctx.alloc(), command, answer, body.readableBytes());
             } catch (Throwable cause) {
                 release(body);
-                logger.debug(cause.getMessage(), cause);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(cause.getMessage(), cause);
+                }
                 throw cause;
             } finally {
                 packet.release();

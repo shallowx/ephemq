@@ -48,14 +48,16 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 }
             } catch (Throwable cause) {
                 isValid = true;
-                logger.debug(cause.getMessage(), cause);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(cause.getMessage(), cause);
+                }
                 throw cause;
             } finally {
                 ByteBufUtil.release(buf);
                 buf = composite;
                 if (null != buf && (!buf.isReadable() || isValid)) {
                     composite = null;
-                    ByteBufUtil.release(buf);
+                    buf.release();
                 }
             }
         } else {
@@ -99,9 +101,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 final int command = buf.readInt();
                 final int answer = buf.readInt();
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
-
                 this.state = READ_MAGIC_NUMBER;
-
                 return MessagePacket.newPacket(answer, command, body);
             }
             default: {
@@ -144,7 +144,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (null != composite) {
-            ByteBufUtil.release(composite);
+            composite.release();
             composite = null;
         }
 
@@ -160,7 +160,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 ctx.fireChannelRead(buf);
                 ctx.fireChannelReadComplete();
             } else {
-                ByteBufUtil.release(buf);
+                buf.release();
             }
         }
     }

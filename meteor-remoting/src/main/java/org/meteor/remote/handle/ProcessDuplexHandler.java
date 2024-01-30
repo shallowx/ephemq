@@ -9,14 +9,14 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.invoke.GenericInvokeAnswer;
-import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.codec.MessagePacket;
+import org.meteor.remote.invoke.GenericInvokeAnswer;
 import org.meteor.remote.invoke.GenericInvokeHolder;
+import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.invoke.InvokeHolder;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.Processor;
+import org.meteor.remote.processor.RemoteException;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.HashSet;
@@ -234,9 +234,10 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
-                String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
+        // do nothing
         if (logger.isDebugEnabled()) {
+            int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
+                    String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
             logger.debug("Free entire invoke, whole[{}]", whole);
         }
     }
