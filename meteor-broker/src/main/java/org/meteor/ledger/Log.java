@@ -22,7 +22,7 @@ import org.meteor.dispatch.ChunkRecordEntryDispatcher;
 import org.meteor.dispatch.RecordEntryDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.metrics.config.MetricsConstants;
-import org.meteor.remote.invoke.Callback;
+import org.meteor.remote.invoke.InvokeCallback;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.server.CancelSyncResponse;
@@ -495,7 +495,7 @@ public class Log {
                     .setMarker(marker)
                     .build();
             ByteBuf data = ProtoBufUtil.protoPayloadBuf(channel.allocator(), request, payload);
-            Callback<ByteBuf> callback = (v, c) -> {
+            InvokeCallback<ByteBuf> callback = (v, c) -> {
                 if (c == null) {
                     try {
                         SendMessageResponse response = ProtoBufUtil.readProto(v, SendMessageResponse.parser());

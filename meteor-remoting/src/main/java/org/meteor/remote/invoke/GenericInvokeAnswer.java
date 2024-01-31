@@ -12,13 +12,13 @@ public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
     private static final AtomicIntegerFieldUpdater<GenericInvokeAnswer> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokeAnswer.class, "completed");
     private static final int EXPECT = 0;
     private static final int UPDATE = 1;
-    private final Callback<V> callback;
+    private final InvokeCallback<V> callback;
     private volatile int completed;
     public GenericInvokeAnswer() {
         this(null);
     }
 
-    public GenericInvokeAnswer(Callback<V> callback) {
+    public GenericInvokeAnswer(InvokeCallback<V> callback) {
         this.callback = callback;
     }
 

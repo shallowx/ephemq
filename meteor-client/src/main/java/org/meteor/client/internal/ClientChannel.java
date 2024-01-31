@@ -7,9 +7,9 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.meteor.remote.invoke.Callback;
 import org.meteor.remote.invoke.GenericInvokeAnswer;
 import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.invoke.InvokeCallback;
 import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.util.ByteBufUtil;
 
@@ -94,7 +94,7 @@ public class ClientChannel implements MeterBinder {
         return id.hashCode();
     }
 
-    public void invoke(int code, ByteBuf data, int timeoutMs, Callback<ByteBuf> callback) {
+    public void invoke(int code, ByteBuf data, int timeoutMs, InvokeCallback<ByteBuf> callback) {
         int length = ByteBufUtil.bufLength(data);
         try {
             long time = System.currentTimeMillis();

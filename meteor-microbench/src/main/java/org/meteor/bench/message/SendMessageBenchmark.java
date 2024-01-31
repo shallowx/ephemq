@@ -11,13 +11,14 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
 import org.meteor.client.util.TopicPatternUtil;
-import org.meteor.remote.invoke.Callback;
+import org.meteor.remote.invoke.InvokeCallback;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.openjdk.jmh.annotations.*;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class SendMessageBenchmark {
 
     public void sendMessage(int timeoutMs, Promise<SendMessageResponse> promise, SendMessageRequest request, MessageMetadata metadata, ByteBuf message) {
         try {
-            Callback<ByteBuf> callback = assembleInvokeCallback(promise, SendMessageResponse.parser());
+            InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, SendMessageResponse.parser());
             buf = assembleSendMessageData(clientChannel.allocator(), request, metadata, message);
         } catch (Throwable t) {
 
@@ -97,7 +98,7 @@ public class SendMessageBenchmark {
         }
     }
 
-    private <T> Callback<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
+    private <T> InvokeCallback<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
         return promise == null ? null : (v, c) -> {
             if (c == null) {
                 try {

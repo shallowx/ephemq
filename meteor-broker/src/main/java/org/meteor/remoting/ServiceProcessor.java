@@ -9,26 +9,26 @@ import io.netty.util.concurrent.*;
 import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import org.meteor.client.internal.Client;
+import org.meteor.client.internal.ClientChannel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
-import org.meteor.ledger.Log;
-import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientChannel;
-import org.meteor.remote.proto.*;
-import org.meteor.remote.proto.server.*;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.listener.APIListener;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.coordinatior.TopicCoordinator;
 import org.meteor.internal.CorrelationIdConstants;
-import org.meteor.remote.processor.RemoteException;
+import org.meteor.ledger.Log;
+import org.meteor.listener.APIListener;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.processor.ProcessCommand;
 import org.meteor.remote.processor.Processor;
+import org.meteor.remote.processor.RemoteException;
+import org.meteor.remote.proto.*;
+import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
@@ -91,17 +91,18 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                         String error = "Command[" + code + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Channel[{}] command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Channel[{}] command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
                     }
                 }
             }
         } catch (Throwable t) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(t.getMessage(), t);
+            }
+
             if (answer != null) {
                 answer.failure(t);
-            }
-            if (logger.isErrorEnabled()) {
-                logger.error(t.getMessage(), t);
             }
         }
     }

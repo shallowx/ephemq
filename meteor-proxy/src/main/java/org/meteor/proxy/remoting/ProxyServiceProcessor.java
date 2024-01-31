@@ -83,17 +83,18 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                         String error = "Proxy command[" + command + "] unsupported, length=" + length;
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
                     }
-                    if (logger.isWarnEnabled()) {
-                        logger.warn("Proxy command unsupported, channel={} code={} length={} ", NetworkUtil.switchAddress(channel), command, length);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Proxy command unsupported, channel={} code={} length={} ", NetworkUtil.switchAddress(channel), command, length);
                     }
                 }
             }
         } catch (Throwable t) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Proxy process error, channel={} code={} length={}", NetworkUtil.switchAddress(channel), command, length);
+            }
+
             if (answer != null) {
                 answer.failure(t);
-            }
-            if (logger.isErrorEnabled()) {
-                logger.error("Proxy process error, channel={} code={} length={}", NetworkUtil.switchAddress(channel), command, length);
             }
         }
     }
