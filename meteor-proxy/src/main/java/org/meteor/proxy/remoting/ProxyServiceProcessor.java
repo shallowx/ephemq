@@ -80,11 +80,10 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, command, data,answer);
                 default -> {
                     if (answer != null) {
-                        String error = "Proxy command[" + command + "] unsupported, length=" + length;
-                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
+                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Proxy command[" + command + "] unsupported, length=" + length));
                     }
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Proxy command unsupported, channel={} code={} length={} ", NetworkUtil.switchAddress(channel), command, length);
+                        logger.debug("Proxy command[{}] unsupported, channel={} length={} ", command, NetworkUtil.switchAddress(channel), length);
                     }
                 }
             }
@@ -116,10 +115,10 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                                    answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                                }
                            } catch (Throwable t) {
-                               processFailed("Proxy process sync ledger failed", command, channel, answer, t);
+                               processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, answer, t);
                            }
                        } else {
-                           processFailed("Proxy process sync ledger failed", command, channel, answer, f.cause());
+                           processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, answer, f.cause());
                        }
                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
@@ -133,7 +132,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                     ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index,channel, promise);
                 } catch (Throwable t) {
-                    processFailed("Proxy process sync ledger failed", command, channel, answer, t);
+                    processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, answer, t);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });

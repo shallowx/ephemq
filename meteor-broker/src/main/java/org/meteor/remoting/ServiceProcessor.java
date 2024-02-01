@@ -88,11 +88,10 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, answer);
                 default -> {
                     if (answer != null) {
-                        String error = "Command[" + code + "] unsupported, length=" + length;
-                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, error));
+                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Command[" + code + "] unsupported, length=" + length));
                     }
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Channel[{}] command unsupported, code={}, length={}", NetworkUtil.switchAddress(channel), code, length);
+                        logger.debug("Channel[{}] command[{}] unsupported, length={}", code, NetworkUtil.switchAddress(channel), length);
                     }
                 }
             }
@@ -125,10 +124,10 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                             answer.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("process sync ledger failed", code, channel, answer, e);
+                        processFailed("process sync ledger[" + ledger + "] failed", code, channel, answer, e);
                     }
                 } else {
-                    processFailed("process sync ledger failed", code, channel, answer, f.cause());
+                    processFailed("process sync ledger[" + ledger + "] failed", code, channel, answer, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
@@ -155,10 +154,10 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                             answer.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("process un-sync ledger failed", code, channel, answer, e);
+                        processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, answer, e);
                     }
                 } else {
-                    processFailed("process un-sync ledger failed", code, channel, answer, f.cause());
+                    processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, answer, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
