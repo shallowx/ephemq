@@ -550,7 +550,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Throwable t) {
-                    processFailed("Process create topic failed", code, channel, answer, t);
+                    processFailed("Process create topic[" + topic + "] failed", code, channel, answer, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
@@ -575,7 +575,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Throwable t) {
-                    processFailed("Process delete topic failed", code, channel, answer, t);
+                    processFailed("Process delete topic[" + topic + "] failed", code, channel, answer, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
@@ -602,7 +602,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             answer.failure(throwable);
         }
         if (logger.isErrorEnabled()) {
-            logger.error("Channel{} process failed, command[{}] and address[{}]", err, code, NetworkUtil.switchAddress(channel), throwable);
+            logger.error("Channel[{}] process failed, command[{}] and address[{}]", err, code, NetworkUtil.switchAddress(channel), throwable);
         }
     }
 
