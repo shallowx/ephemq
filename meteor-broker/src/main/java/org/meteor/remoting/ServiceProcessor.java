@@ -210,7 +210,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
             if (original.equals(destination)) {
                 processFailed("Process migrate ledger failed", code, channel, answer,
-                        RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, "The original and destination are same broker"));
+                        RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, "The original and destination are the same broker"));
                 return;
             }
 
@@ -223,7 +223,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                     if (commonConfiguration.getServerId().equals(original)) {
                         if (!topicCoordinator.hasLeadership(ledger)) {
                             processFailed("Process migrate ledger failed", code, channel, answer,
-                                    RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The original broker does not have leader role of %s", topicPartition)));
+                                    RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The original broker does not have a leader role of %s", topicPartition)));
                             return;
                         }
 
@@ -592,7 +592,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                 listener.onCommand(code, bytes, cost, ret);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
-                    logger.warn("Record process failed, listener={} code={}", listener == null ? null : listener.getClass().getSimpleName(), code, t);
+                    logger.warn("Record process failed, listener[{}] code[{}]", listener == null ? null : listener.getClass().getSimpleName(), code, t);
                 }
             }
         }
