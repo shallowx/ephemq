@@ -15,6 +15,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.common.message.PartitionInfo;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
@@ -385,7 +386,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
 
                     QueryTopicInfoResponse.Builder builder = QueryTopicInfoResponse.newBuilder();
                     for (String topicName : topicNames) {
-                        Set<org.meteor.common.message.PartitionInfo> partitionInfos = topicCoordinator.getTopicInfo(topicName);
+                        Set<PartitionInfo> partitionInfos = topicCoordinator.getTopicInfo(topicName);
                         if (partitionInfos == null || partitionInfos.isEmpty()) {
                             continue;
                         }
@@ -397,7 +398,7 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
                                 .build();
 
                         TopicInfo.Builder topicInfoBuilder = TopicInfo.newBuilder().setTopic(topicMetadata);
-                        for (org.meteor.common.message.PartitionInfo info : partitionInfos) {
+                        for (PartitionInfo info : partitionInfos) {
                             PartitionMetadata.Builder partitionMetadataBuilder = PartitionMetadata.newBuilder()
                                     .setTopicName(topicName)
                                     .setId(info.getPartition())
@@ -521,8 +522,8 @@ public class ServiceProcessor implements Processor, ProcessCommand.Server {
             int partition = request.getPartition();
             int replicas = request.getReplicas();
             CreateTopicConfigRequest configs = request.getConfigs();
-            org.meteor.common.message.TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
-                    ? null : new org.meteor.common.message.TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs(), configs.getAllocate());
+            TopicConfig topicConfig = (configs.getSegmentRetainCount() == 0 || configs.getSegmentRetainMs() == 0 || configs.getSegmentRollingSize() == 0)
+                    ? null : new TopicConfig(configs.getSegmentRollingSize(), configs.getSegmentRetainCount(), configs.getSegmentRetainMs(), configs.getAllocate());
 
             commandExecutor.execute(() -> {
                 try {
