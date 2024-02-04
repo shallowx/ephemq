@@ -38,9 +38,6 @@ public class SendMessageBenchmark {
         TopicPatternUtil.validateTopic(TOPIC);
 
         MessageRouter router = messageRouter;
-        if (router == null) {
-            throw new IllegalStateException("Message router not found");
-        }
 
         MessageLedger ledger = router.routeLedger(QUEUE);
         if (ledger == null) {
