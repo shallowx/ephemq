@@ -28,7 +28,7 @@ public class TopicPatternUtil {
 
     public static void validateQueue(String queue) {
         if (queue == null) {
-            throw new NegativeArraySizeException("Topic queue cannot be empty");
+            throw new NullPointerException("Topic queue cannot be empty");
         }
     }
 }
