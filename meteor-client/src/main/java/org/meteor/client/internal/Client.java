@@ -472,18 +472,14 @@ public class Client implements MeterBinder {
     }
 
     public Map<String, TopicInfo> queryTopicInfos(ClientChannel channel, String... topics) throws Exception {
-        try {
-            QueryTopicInfoRequest request = QueryTopicInfoRequest.newBuilder()
-                    .addAllTopicNames(Arrays.asList(topics))
-                    .build();
+        QueryTopicInfoRequest request = QueryTopicInfoRequest.newBuilder()
+                .addAllTopicNames(Arrays.asList(topics))
+                .build();
 
-            Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            channel.invoker().queryTopicInfo(config.getMetadataTimeoutMilliseconds(), promise, request);
+        Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        channel.invoker().queryTopicInfo(config.getMetadataTimeoutMilliseconds(), promise, request);
 
-            return promise.get(config.getMetadataTimeoutMilliseconds(), TimeUnit.MILLISECONDS).getTopicInfosMap();
-        } catch (Exception e) {
-            throw e;
-        }
+        return promise.get(config.getMetadataTimeoutMilliseconds(), TimeUnit.MILLISECONDS).getTopicInfosMap();
     }
 
     public CreateTopicResponse createTopic(String topic, int partitions, int replicas) throws Exception {
