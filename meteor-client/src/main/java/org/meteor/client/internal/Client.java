@@ -32,15 +32,15 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Client implements MeterBinder {
-    protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
-    private final ClientConfig config;
-    private final CombineListener listener;
-    private final List<SocketAddress> bootstrapAddress;
+    protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
     private final Map<SocketAddress, List<Future<ClientChannel>>> registerChannels = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Promise<ClientChannel>> ChannelOfPromise = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
     protected String name;
+    private final ClientConfig config;
+    private final CombineListener listener;
+    private final List<SocketAddress> bootstrapAddress;
     protected EventLoopGroup workerGroup;
     protected EventExecutor refreshMetadataExecutor;
     private Bootstrap bootstrap;
@@ -420,36 +420,36 @@ public class Client implements MeterBinder {
         return new MessageRouter(token, topic, ledgers);
     }
 
-    private MessageRouter mergeRouter(MessageRouter cacheRouter, MessageRouter queryRouter) {
+    private MessageRouter combineRouter(MessageRouter cacheRouter, MessageRouter router) {
         if (cacheRouter == null) {
-            return queryRouter;
+            return router;
         }
 
-        if (queryRouter == null) {
+        if (router == null) {
             return null;
         }
 
-        if (cacheRouter.token() != queryRouter.token()) {
-            return cacheRouter.token() > queryRouter.token() ? cacheRouter : queryRouter;
+        if (cacheRouter.token() != router.token()) {
+            return cacheRouter.token() > router.token() ? cacheRouter : router;
         }
         Map<Integer, MessageLedger> ledgers = new HashMap<>();
-        for (MessageLedger queryLedger : queryRouter.ledgers().values()) {
-            int ledgerId = queryLedger.id();
+        for (MessageLedger messageLedger : router.ledgers().values()) {
+            int ledgerId = messageLedger.id();
             MessageLedger cachedLedger = cacheRouter.ledger(ledgerId);
-            if (cachedLedger != null && cachedLedger.version() > queryLedger.version()) {
+            if (cachedLedger != null && cachedLedger.version() > messageLedger.version()) {
                 ledgers.put(ledgerId, cachedLedger);
             } else {
-                ledgers.put(ledgerId, queryLedger);
+                ledgers.put(ledgerId, messageLedger);
             }
         }
-        return new MessageRouter(queryRouter.token(), queryRouter.topic(), ledgers);
+        return new MessageRouter(router.token(), router.topic(), ledgers);
     }
 
     MessageRouter cachingRouter(String topic, MessageRouter router) {
         synchronized (routers) {
             Future<MessageRouter> future = routers.get(topic);
             if (future != null && future.isDone() && future.isSuccess()) {
-                router = mergeRouter(future.getNow(), router);
+                router = combineRouter(future.getNow(), router);
             }
 
             future = new SucceededFuture<>(ImmediateEventExecutor.INSTANCE, router);
@@ -459,16 +459,12 @@ public class Client implements MeterBinder {
     }
 
     public ClusterInfo queryClusterInfo(ClientChannel channel) throws Exception {
-        try {
-            QueryClusterInfoRequest request = QueryClusterInfoRequest.newBuilder().build();
-            Promise<QueryClusterResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-            channel.invoker().queryClusterInfo(config.getMetadataTimeoutMilliseconds(), promise, request);
+        QueryClusterInfoRequest request = QueryClusterInfoRequest.newBuilder().build();
+        Promise<QueryClusterResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        channel.invoker().queryClusterInfo(config.getMetadataTimeoutMilliseconds(), promise, request);
 
-            QueryClusterResponse response = promise.get(config.getMetadataTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
-            return response.hasClusterInfo() ? response.getClusterInfo() : null;
-        } catch (Exception e) {
-            throw e;
-        }
+        QueryClusterResponse response = promise.get(config.getMetadataTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
+        return response.hasClusterInfo() ? response.getClusterInfo() : null;
     }
 
     public Map<String, TopicInfo> queryTopicInfos(ClientChannel channel, String... topics) throws Exception {
