@@ -25,7 +25,7 @@ import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.ledger.Log;
 import org.meteor.listener.APIListener;
 import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.*;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import static org.meteor.remote.util.ProtoBufUtil.proto2Buf;
 import static org.meteor.remote.util.ProtoBufUtil.readProto;
 
-public class ServiceProcessor implements Processor, ProcessCommand.Server {
+public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     protected final CommonConfig commonConfiguration;
     private final NetworkConfig networkConfiguration;

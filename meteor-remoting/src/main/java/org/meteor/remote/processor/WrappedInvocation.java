@@ -13,31 +13,31 @@ import static org.meteor.common.util.ObjectUtil.checkPositive;
 import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
-public final class AwareInvocation extends AbstractReferenceCounted {
-    private static final Recycler<AwareInvocation> RECYCLER = new Recycler<>() {
+public final class WrappedInvocation extends AbstractReferenceCounted {
+    private static final Recycler<WrappedInvocation> RECYCLER = new Recycler<>() {
         @Override
-        protected AwareInvocation newObject(Handle<AwareInvocation> handle) {
-            return new AwareInvocation(handle);
+        protected WrappedInvocation newObject(Handle<WrappedInvocation> handle) {
+            return new WrappedInvocation(handle);
         }
     };
-    private final Recycler.Handle<AwareInvocation> handle;
+    private final Recycler.Handle<WrappedInvocation> handle;
     private int command;
     private ByteBuf data;
     private long expired;
     private InvokeAnswer<ByteBuf> answer;
 
-    public AwareInvocation(Recycler.Handle<AwareInvocation> handle) {
+    public WrappedInvocation(Recycler.Handle<WrappedInvocation> handle) {
         this.handle = handle;
     }
 
-    public static AwareInvocation newInvocation(int command, ByteBuf data) {
+    public static WrappedInvocation newInvocation(int command, ByteBuf data) {
         return newInvocation(command, data, 0, null);
     }
 
-    public static AwareInvocation newInvocation(int command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
+    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
         checkPositive(command, "Command");
 
-        final AwareInvocation invocation = RECYCLER.get();
+        final WrappedInvocation invocation = RECYCLER.get();
         invocation.setRefCnt(1);
         invocation.command = command;
         invocation.answer = answer;
@@ -74,7 +74,7 @@ public final class AwareInvocation extends AbstractReferenceCounted {
     }
 
     @Override
-    public AwareInvocation retain() {
+    public WrappedInvocation retain() {
         super.retain();
         return this;
     }
@@ -86,7 +86,7 @@ public final class AwareInvocation extends AbstractReferenceCounted {
     }
 
     @Override
-    public AwareInvocation touch(Object hint) {
+    public WrappedInvocation touch(Object hint) {
         if (null != data) {
             data.touch(hint);
         }
@@ -94,7 +94,7 @@ public final class AwareInvocation extends AbstractReferenceCounted {
     }
 
     @Override
-    public AwareInvocation touch() {
+    public WrappedInvocation touch() {
         super.touch();
         return this;
     }

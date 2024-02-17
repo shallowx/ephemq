@@ -23,7 +23,7 @@ import org.meteor.dispatch.RecordEntryDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.metrics.config.MetricsConstants;
 import org.meteor.remote.invoke.InvokeCallback;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SendMessageRequest;
@@ -318,7 +318,7 @@ public class Log {
     private void doAttachSynchronize(Channel channel, Offset initOffset, Promise<Void> promise) {
         LogState logState = state.get();
         if (!isActive(logState)) {
-            promise.tryFailure(RemoteException.of(ProcessCommand.Failure.PROCESS_EXCEPTION, String.format(
+            promise.tryFailure(RemoteException.of(Command.Failure.PROCESS_EXCEPTION, String.format(
                     "Log %d is not active now, the current state is %s", ledger, state
             )));
             return;
@@ -507,7 +507,7 @@ public class Log {
                     promise.tryFailure(c);
                 }
             };
-            channel.invoke(ProcessCommand.Server.SEND_MESSAGE, data, forwardTimeout, callback);
+            channel.invoke(Command.Server.SEND_MESSAGE, data, forwardTimeout, callback);
         } catch (Exception e) {
             promise.tryFailure(e);
             logger.error(e.getMessage(), e);

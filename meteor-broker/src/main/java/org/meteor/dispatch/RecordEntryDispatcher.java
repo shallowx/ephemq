@@ -23,7 +23,7 @@ import org.meteor.config.RecordDispatchConfig;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
@@ -604,7 +604,7 @@ public class RecordEntryDispatcher {
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + signalLength);
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + contentLength);
-            buf.writeInt(ProcessCommand.Client.PUSH_MESSAGE);
+            buf.writeInt(Command.Client.PUSH_MESSAGE);
             buf.writeInt(0);
 
             ProtoBufUtil.writeProto(buf, signal);

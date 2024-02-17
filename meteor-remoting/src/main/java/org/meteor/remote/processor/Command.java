@@ -1,7 +1,7 @@
 package org.meteor.remote.processor;
 
 
-public interface ProcessCommand {
+public interface Command {
     interface Server {
         int SEND_MESSAGE = 1;
         int QUERY_TOPIC_INFOS = 2;

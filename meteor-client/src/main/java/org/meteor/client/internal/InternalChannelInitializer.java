@@ -15,7 +15,7 @@ import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.client.MessagePushSignal;
@@ -53,7 +53,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                 .addLast("service-handler", new ProcessDuplexHandler(new InternalServiceProcessor(clientChannel)));
     }
 
-    private class InternalServiceProcessor implements Processor, ProcessCommand.Client {
+    private class InternalServiceProcessor implements Processor, Command.Client {
 
         private final ClientChannel clientChannel;
 
@@ -77,13 +77,13 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
             int length = data.readableBytes();
             try {
                 switch (command) {
-                    case ProcessCommand.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
-                    case ProcessCommand.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
-                    case ProcessCommand.Client.TOPIC_CHANGED -> onTopicChanged(clientChannel, data, answer);
-                    case ProcessCommand.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
+                    case Command.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
+                    case Command.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
+                    case Command.Client.TOPIC_CHANGED -> onTopicChanged(clientChannel, data, answer);
+                    case Command.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
                     default -> {
                         if (answer != null) {
-                            answer.failure(RemoteException.of(ProcessCommand.Failure.COMMAND_EXCEPTION, "code["+ command +"]" + " unsupported"));
+                            answer.failure(RemoteException.of(Command.Failure.COMMAND_EXCEPTION, "code[" + command + "]" + " unsupported"));
                         }
                     }
                 }

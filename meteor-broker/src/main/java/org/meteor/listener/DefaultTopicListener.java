@@ -10,8 +10,8 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.remote.processor.AwareInvocation;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
+import org.meteor.remote.processor.WrappedInvocation;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
@@ -87,7 +87,7 @@ public class DefaultTopicListener implements TopicListener {
             ByteBuf buf = null;
             try {
                 buf = assembleTopicChangedSignal(channel, topic, type);
-                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
+                WrappedInvocation awareInvocation = WrappedInvocation.newInvocation(Command.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtil.release(buf);
@@ -107,7 +107,7 @@ public class DefaultTopicListener implements TopicListener {
             ByteBuf buf = null;
             try {
                 buf = assemblePartitionChangedSignal(channel, topicPartition.topic(), assignment);
-                AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
+                WrappedInvocation awareInvocation = WrappedInvocation.newInvocation(Command.Client.TOPIC_CHANGED, buf, networkConfiguration.getNotifyClientTimeoutMilliseconds(), null);
                 channel.writeAndFlush(awareInvocation);
             } catch (Exception e) {
                 ByteBufUtil.release(buf);

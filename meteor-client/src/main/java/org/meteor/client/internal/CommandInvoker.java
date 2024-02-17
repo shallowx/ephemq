@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.concurrent.Promise;
 import org.meteor.remote.invoke.InvokeCallback;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.ByteBufUtil;
@@ -22,7 +22,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, SendMessageResponse.parser());
             ByteBuf buf = assembleSendMessageData(channel.allocator(), request, metadata, message);
-            channel.invoke(ProcessCommand.Server.SEND_MESSAGE, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.SEND_MESSAGE, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -32,7 +32,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, QueryClusterResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_CLUSTER_INFOS, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.QUERY_CLUSTER_INFOS, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -42,7 +42,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, QueryTopicInfoResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.QUERY_TOPIC_INFOS, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -52,7 +52,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, ResetSubscribeResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.REST_SUBSCRIBE, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.REST_SUBSCRIBE, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -62,7 +62,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, AlterSubscribeResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.ALTER_SUBSCRIBE, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.ALTER_SUBSCRIBE, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -72,7 +72,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, CleanSubscribeResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.CLEAN_SUBSCRIBE, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.CLEAN_SUBSCRIBE, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -82,7 +82,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, CreateTopicResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.CREATE_TOPIC, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.CREATE_TOPIC, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -92,7 +92,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, DeleteTopicResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.DELETE_TOPIC, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.DELETE_TOPIC, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
         }
@@ -102,7 +102,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, SyncResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.SYNC_LEDGER, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.SYNC_LEDGER, buf, timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
@@ -112,7 +112,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, CancelSyncResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.CANCEL_SYNC_LEDGER, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.CANCEL_SYNC_LEDGER, buf, timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
@@ -122,7 +122,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, CalculatePartitionsResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.CALCULATE_PARTITIONS, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.CALCULATE_PARTITIONS, buf, timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }
@@ -132,7 +132,7 @@ public class CommandInvoker {
         try {
             InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, MigrateLedgerResponse.parser());
             ByteBuf buf = assembleInvokeData(channel.allocator(), request);
-            channel.invoke(ProcessCommand.Server.MIGRATE_LEDGER, buf, timeoutMs, callback);
+            channel.invoke(Command.Server.MIGRATE_LEDGER, buf, timeoutMs, callback);
         } catch (Exception e) {
             tryFailure(promise, e);
         }

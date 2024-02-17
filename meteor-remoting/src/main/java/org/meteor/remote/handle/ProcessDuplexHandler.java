@@ -14,9 +14,9 @@ import org.meteor.remote.invoke.GenericInvokeAnswer;
 import org.meteor.remote.invoke.GenericInvokeHolder;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.invoke.InvokeHolder;
-import org.meteor.remote.processor.AwareInvocation;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.processor.RemoteException;
+import org.meteor.remote.processor.WrappedInvocation;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.HashSet;
@@ -151,7 +151,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (msg instanceof final AwareInvocation invocation) {
+        if (msg instanceof final WrappedInvocation invocation) {
             int answer = holder.hold(invocation.expired(), invocation.answer());
             MessagePacket packet;
             try {

@@ -19,7 +19,7 @@ import org.meteor.ledger.ChunkRecord;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
@@ -252,7 +252,7 @@ public class ChunkRecordEntryDispatcher {
             buf = alloc.ioBuffer(MessagePacket.HEADER_LENGTH + length);
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(MessagePacket.HEADER_LENGTH + length + contextLength);
-            buf.writeInt(ProcessCommand.Client.SYNC_MESSAGE);
+            buf.writeInt(Command.Client.SYNC_MESSAGE);
             buf.writeInt(0);
             ProtoBufUtil.writeProto(buf, signal);
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, data.retainedSlice());

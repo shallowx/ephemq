@@ -19,7 +19,7 @@ import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
 import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
@@ -213,7 +213,7 @@ public class ProxyClientListener implements CombineListener {
                     continue;
                 }
                 if (payload == null) {
-                    payload = buildPayload(channel.alloc(), signal, ProcessCommand.Client.TOPIC_CHANGED);
+                    payload = buildPayload(channel.alloc(), signal, Command.Client.TOPIC_CHANGED);
                 }
                 channel.writeAndFlush(payload.retainedDuplicate());
             }

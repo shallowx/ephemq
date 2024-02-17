@@ -2,14 +2,14 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Node;
 import org.meteor.config.NetworkConfig;
 import org.meteor.coordinatior.ConnectionCoordinator;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.common.message.Node;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.processor.AwareInvocation;
-import org.meteor.remote.processor.ProcessCommand;
+import org.meteor.remote.processor.Command;
+import org.meteor.remote.processor.WrappedInvocation;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.util.ByteBufUtil;
@@ -71,7 +71,7 @@ public class DefaultClusterListener implements ClusterListener {
         ByteBuf buf = null;
         try {
             buf = assembleServerOfflineData(channel, node);
-            AwareInvocation awareInvocation = AwareInvocation.newInvocation(ProcessCommand.Client.SERVER_OFFLINE, buf, config.getNotifyClientTimeoutMilliseconds(), null);
+            WrappedInvocation awareInvocation = WrappedInvocation.newInvocation(Command.Client.SERVER_OFFLINE, buf, config.getNotifyClientTimeoutMilliseconds(), null);
             channel.writeAndFlush(awareInvocation);
         } catch (Exception e) {
             ByteBufUtil.release(buf);

@@ -8,11 +8,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
-import org.meteor.remote.codec.MessageDecoder;
-import org.meteor.remote.processor.AwareInvocation;
+import org.meteor.remote.processor.WrappedInvocation;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -125,7 +125,7 @@ public class DemoClientBootstrap {
         long now = System.currentTimeMillis();
         if (semaphore.tryAcquire(timeout, TimeUnit.SECONDS)) {
             long expires = now + timeout + 1000L;
-            AwareInvocation awareInvocation = AwareInvocation.newInvocation(1, data.retainedSlice(), expires, null);
+            WrappedInvocation awareInvocation = WrappedInvocation.newInvocation(1, data.retainedSlice(), expires, null);
 
             ChannelPromise promise = channel.newPromise();
             CountDownLatch countDownLatch = new CountDownLatch(1);

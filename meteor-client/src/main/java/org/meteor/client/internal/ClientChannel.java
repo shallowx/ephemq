@@ -10,7 +10,7 @@ import io.netty.util.concurrent.EventExecutor;
 import org.meteor.remote.invoke.GenericInvokeAnswer;
 import org.meteor.remote.invoke.InvokeAnswer;
 import org.meteor.remote.invoke.InvokeCallback;
-import org.meteor.remote.processor.AwareInvocation;
+import org.meteor.remote.processor.WrappedInvocation;
 import org.meteor.remote.util.ByteBufUtil;
 
 import javax.annotation.Nonnull;
@@ -102,14 +102,14 @@ public class ClientChannel implements MeterBinder {
                 try {
                     if (callback == null) {
                         ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                        channel.writeAndFlush(AwareInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)), promise);
+                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)), promise);
                     } else {
                         long expires = timeoutMs + time;
                         InvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((v, c) -> {
                             semaphore.release();
                             callback.operationCompleted(v, c);
                         });
-                        channel.writeAndFlush(AwareInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, answer));
+                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, answer));
                     }
                 } catch (Throwable t) {
                     semaphore.release();
