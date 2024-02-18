@@ -303,7 +303,7 @@ public class RecordEntryDispatcher {
 
                         subscription.setDispatchOffset(offset);
                         if (payload == null) {
-                            payload = buildPayload(marker, offset, entry, channel.alloc());
+                            payload = constructPayload(marker, offset, entry, channel.alloc());
                         }
 
                         count++;
@@ -425,7 +425,7 @@ public class RecordEntryDispatcher {
                     }
 
                     subscription.setDispatchOffset(offset);
-                    payload = buildPayload(marker, offset, entry, channel.alloc());
+                    payload = constructPayload(marker, offset, entry, channel.alloc());
                     count++;
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
@@ -546,7 +546,7 @@ public class RecordEntryDispatcher {
                     }
 
                     subscription.setDispatchOffset(offset);
-                    payload = buildPayload(marker, offset, entry, channel.alloc());
+                    payload = constructPayload(marker, offset, entry, channel.alloc());
                     count++;
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
@@ -589,7 +589,7 @@ public class RecordEntryDispatcher {
     }
 
 
-    private ByteBuf buildPayload(int marker, Offset offset, ByteBuf entry, ByteBufAllocator alloc) {
+    private ByteBuf constructPayload(int marker, Offset offset, ByteBuf entry, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             MessagePushSignal signal = MessagePushSignal.newBuilder()
@@ -605,7 +605,7 @@ public class RecordEntryDispatcher {
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(MessagePacket.HEADER_LENGTH + signalLength + contentLength);
             buf.writeInt(Command.Client.PUSH_MESSAGE);
-            buf.writeInt(0);
+            buf.writeLong(0L);
 
             ProtoBufUtil.writeProto(buf, signal);
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, entry.retainedSlice(entry.readerIndex() + 16, contentLength));

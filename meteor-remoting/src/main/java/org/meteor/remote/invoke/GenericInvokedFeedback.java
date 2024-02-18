@@ -15,10 +15,6 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     private final Callable<V> callback;
     private volatile int completed;
 
-    public GenericInvokedFeedback() {
-        this(null);
-    }
-
     public GenericInvokedFeedback(Callable<V> callback) {
         this.callback = callback;
     }

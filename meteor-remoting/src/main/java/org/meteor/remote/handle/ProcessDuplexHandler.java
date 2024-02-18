@@ -79,18 +79,18 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     }
 
     private void processRequest(ChannelHandlerContext ctx, MessagePacket packet) {
-        var command = packet.command();
-        var answer = packet.answer();
-        var length = packet.body().readableBytes();
-        InvokedFeedback<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokedFeedback<>((byteBuf, cause) -> {
+        int command = packet.command();
+        long feedback = packet.feedback();
+        int length = packet.body().readableBytes();
+        InvokedFeedback<ByteBuf> rejoin = feedback == 0L ? null : new GenericInvokedFeedback<>((byteBuf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
                 return;
             }
 
             if (null == cause) {
-                ctx.writeAndFlush(newSuccessPacket(answer, byteBuf == null ? null : byteBuf.retain()));
+                ctx.writeAndFlush(newSuccessPacket(feedback, byteBuf == null ? null : byteBuf.retain()));
             } else {
-                ctx.writeAndFlush(newFailurePacket(answer, cause));
+                ctx.writeAndFlush(newFailurePacket(feedback, cause));
             }
         });
 
@@ -112,7 +112,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     private void processResponse(ChannelHandlerContext ctx, MessagePacket packet) {
         var command = packet.command();
-        var answer = packet.answer();
+        var answer = packet.feedback();
         if (answer == 0) {
             if (logger.isErrorEnabled()) {
                 logger.error("Chanel[{}] command is invalid: command[{}] answer[{}] ", switchAddress(ctx.channel()),
@@ -152,12 +152,12 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final WrappedInvocation invocation) {
-            int answer = initializer.get(invocation.expired(), invocation.answer());
+            long feedback = initializer.get(invocation.expired(), invocation.answer());
             MessagePacket packet;
             try {
-                packet = MessagePacket.newPacket(answer, invocation.command(), invocation.data().retain());
+                packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain());
             } catch (Throwable cause) {
-                initializer.free(answer, r -> r.failure(cause));
+                initializer.free(feedback, r -> r.failure(cause));
                 throw cause;
             } finally {
                 invocation.release();
@@ -166,16 +166,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             EventExecutor executor = ctx.executor();
             invokeIdleCheckTimerTask(executor);
 
-            if (answer != 0 && !promise.isVoid()) {
+            if (feedback != 0L && !promise.isVoid()) {
                 promise.addListener(f -> {
                     Throwable cause = f.cause();
                     if (null == cause) {
                         return;
                     }
                     if (executor.inEventLoop()) {
-                        initializer.free(answer, r -> r.failure(cause));
+                        initializer.free(feedback, r -> r.failure(cause));
                     } else {
-                        executor.execute(() -> initializer.free(answer, r -> r.failure(cause)));
+                        executor.execute(() -> initializer.free(feedback, r -> r.failure(cause)));
                     }
                 });
             }

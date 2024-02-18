@@ -1,14 +1,14 @@
 package org.meteor.remote.invoke;
 
 import io.netty.util.Recycler;
-import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.util.function.Consumer;
 
 public final class GenericCallableSafeInitializer<V> implements CallableSafeInitializer<V> {
-    private final Int2ObjectMap<Holder> holders;
+    private final Long2ObjectMap<Holder> holders;
     private int requestId;
 
     public GenericCallableSafeInitializer() {
@@ -16,7 +16,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
     }
 
     public GenericCallableSafeInitializer(int capacity) {
-        this.holders = new Int2ObjectLinkedOpenHashMap<>(capacity);
+        this.holders = new Long2ObjectLinkedOpenHashMap<>(capacity);
     }
 
     @Override
@@ -41,12 +41,12 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
     }
 
     @Override
-    public boolean free(int answer, Consumer<InvokedFeedback<V>> consumer) {
-        if (answer == 0) {
+    public boolean free(long feedback, Consumer<InvokedFeedback<V>> consumer) {
+        if (feedback == 0L) {
             return false;
         }
 
-        Holder holder = holders.remove(answer);
+        Holder holder = holders.remove(feedback);
         if (null == holder) {
             return false;
         }
@@ -65,7 +65,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
         }
 
         var whole = 0;
-        ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
+        ObjectIterator<Long2ObjectMap.Entry<Holder>> iterator = holders.long2ObjectEntrySet().iterator();
         while (iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
             if (holder.isValid() && null != consumer) {
@@ -89,7 +89,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
         long now = System.currentTimeMillis();
 
         var whole = 0;
-        ObjectIterator<Int2ObjectMap.Entry<Holder>> iterator = holders.int2ObjectEntrySet().iterator();
+        ObjectIterator<Long2ObjectMap.Entry<Holder>> iterator = holders.long2ObjectEntrySet().iterator();
         while (iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
             boolean valid = holder.isValid();

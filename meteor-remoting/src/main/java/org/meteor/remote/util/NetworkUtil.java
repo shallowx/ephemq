@@ -14,8 +14,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.*;
 import org.meteor.common.thread.FastEventExecutorGroup;
 import org.meteor.common.util.ObjectUtil;
-import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.codec.MessagePacket;
+import org.meteor.remote.processor.RemoteException;
 
 import javax.naming.OperationNotSupportedException;
 import java.net.InetSocketAddress;
@@ -31,16 +31,16 @@ public final class NetworkUtil {
         throw new OperationNotSupportedException();
     }
 
-    public static MessagePacket newSuccessPacket(int answer, ByteBuf body) {
-        return MessagePacket.newPacket(answer, 0, body);
+    public static MessagePacket newSuccessPacket(long feedback, ByteBuf body) {
+        return MessagePacket.newPacket(feedback, 0, body);
     }
 
-    public static MessagePacket newFailurePacket(int answer, Throwable cause) {
+    public static MessagePacket newFailurePacket(long feedback, Throwable cause) {
         if (cause instanceof RemoteException e) {
-            return MessagePacket.newPacket(answer, e.getCommand(), ByteBufUtil.string2Buf(e.getMessage()));
+            return MessagePacket.newPacket(feedback, e.getCommand(), ByteBufUtil.string2Buf(e.getMessage()));
         }
 
-        return MessagePacket.newPacket(answer, RemoteException.Failure.UNKNOWN_EXCEPTION,
+        return MessagePacket.newPacket(feedback, RemoteException.Failure.UNKNOWN_EXCEPTION,
                 ByteBufUtil.string2Buf(cause == null ? null : cause.getMessage()));
     }
 

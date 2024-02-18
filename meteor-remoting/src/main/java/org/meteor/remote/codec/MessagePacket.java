@@ -13,7 +13,7 @@ import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
-    public static final byte HEADER_LENGTH = 12;
+    public static final byte HEADER_LENGTH = 16;
     public static final int MAX_FRAME_LENGTH = 4194316;
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
 
@@ -24,7 +24,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
         }
     };
     private final Recycler.Handle<MessagePacket> handle;
-    private int answer;
+    private long feedback;
     private int command;
     private ByteBuf body;
 
@@ -32,18 +32,18 @@ public final class MessagePacket extends AbstractReferenceCounted {
         this.handle = handle;
     }
 
-    public static MessagePacket newPacket(int answer, int command, ByteBuf body) {
+    public static MessagePacket newPacket(long feedback, int command, ByteBuf body) {
         final MessagePacket packet = RECYCLER.get();
         packet.setRefCnt(1);
-        packet.answer = answer;
+        packet.feedback = feedback;
         packet.command = command;
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
 
         return packet;
     }
 
-    public int answer() {
-        return answer;
+    public long feedback() {
+        return feedback;
     }
 
     public ByteBuf body() {
@@ -92,7 +92,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
     @Override
     public String toString() {
         return "MessagePacket{" +
-                ", answer=" + answer +
+                ", feedback=" + feedback +
                 ", command=" + command +
                 ", handle=" + handle +
                 '}';

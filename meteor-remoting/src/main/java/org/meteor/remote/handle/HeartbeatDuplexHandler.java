@@ -37,7 +37,7 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
                     if (delay > 0) {
                         heartFuture = ctx.executor().schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else {
-                        ctx.writeAndFlush(MessagePacket.newPacket(0, 0, null));
+                        ctx.writeAndFlush(MessagePacket.newPacket(0L, 0, null));
                         heartLastUpdateTimeMillis = lastWriteTimeMillis = now;
                         heartFuture = ctx.executor().schedule(this, heartPeriodMillis, TimeUnit.MILLISECONDS);
                     }
@@ -85,12 +85,12 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
 
         if (msg instanceof final MessagePacket packet) {
             final int command = packet.command();
-            final int answer = packet.answer();
-            if (command <= 0 && answer == 0) {
+            final long feedback = packet.feedback();
+            if (command <= 0 && feedback == 0L) {
                 if (command == 0 && heartPeriodMillis == 0) {
                     long now = System.currentTimeMillis();
                     if (now - heartLastUpdateTimeMillis > 1000) {
-                        ctx.writeAndFlush(MessagePacket.newPacket(0, 0, null));
+                        ctx.writeAndFlush(MessagePacket.newPacket(0L, 0, null));
                         heartLastUpdateTimeMillis = lastWriteTimeMillis = now;
                     }
                 }

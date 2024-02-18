@@ -179,9 +179,8 @@ public class Log {
                 if (logState1 != logState) {
                     state.set(logState);
                 }
+                promise.tryFailure(f.cause());
             }
-
-            promise.tryFailure(f.cause());
         });
 
         try {

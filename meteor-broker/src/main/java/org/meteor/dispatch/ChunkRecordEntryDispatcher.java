@@ -253,7 +253,7 @@ public class ChunkRecordEntryDispatcher {
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(MessagePacket.HEADER_LENGTH + length + contextLength);
             buf.writeInt(Command.Client.SYNC_MESSAGE);
-            buf.writeInt(0);
+            buf.writeLong(0L);
             ProtoBufUtil.writeProto(buf, signal);
             buf = Unpooled.wrappedUnmodifiableBuffer(buf, data.retainedSlice());
             return buf;

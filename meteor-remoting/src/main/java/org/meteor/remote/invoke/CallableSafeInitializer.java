@@ -9,7 +9,7 @@ public interface CallableSafeInitializer<V> {
 
     int get(long expires, InvokedFeedback<V> rejoin);
 
-    boolean free(int rejoin, Consumer<InvokedFeedback<V>> consumer);
+    boolean free(long rejoin, Consumer<InvokedFeedback<V>> consumer);
 
     int freeExpired(Consumer<InvokedFeedback<V>> consumer);
 
