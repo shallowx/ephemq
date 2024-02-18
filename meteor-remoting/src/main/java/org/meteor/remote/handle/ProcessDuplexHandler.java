@@ -10,10 +10,10 @@ import io.netty.util.concurrent.FastThreadLocal;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.invoke.GenericInvokeAnswer;
-import org.meteor.remote.invoke.GenericInvokeHolder;
-import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.invoke.InvokeHolder;
+import org.meteor.remote.invoke.CallableSafeInitializer;
+import org.meteor.remote.invoke.GenericCallableSafeInitializer;
+import org.meteor.remote.invoke.GenericInvokedFeedback;
+import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.processor.WrappedInvocation;
@@ -34,13 +34,13 @@ import static org.meteor.remote.util.NetworkUtil.*;
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProcessDuplexHandler.class);
     private static final int FAILURE_CONTENT_LIMIT = 4 * 1024 * 1024;
-    private static final FastThreadLocal<Set<InvokeHolder<ByteBuf>>> WHOLE_INVOKE_HOLDER = new FastThreadLocal<>() {
+    private static final FastThreadLocal<Set<CallableSafeInitializer<ByteBuf>>> WHOLE_INVOKE_INITIALIZER = new FastThreadLocal<>() {
         @Override
-        protected Set<InvokeHolder<ByteBuf>> initialValue() throws Exception {
+        protected Set<CallableSafeInitializer<ByteBuf>> initialValue() throws Exception {
             return new HashSet<>();
         }
     };
-    private final InvokeHolder<ByteBuf> holder = new GenericInvokeHolder<>();
+    private final CallableSafeInitializer<ByteBuf> initializer = new GenericCallableSafeInitializer<>();
     private final Processor processor;
     public ProcessDuplexHandler(Processor processor) {
         this.processor = checkNotNull(processor, "Processor aware not found");
@@ -82,7 +82,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         var command = packet.command();
         var answer = packet.answer();
         var length = packet.body().readableBytes();
-        InvokeAnswer<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokeAnswer<>((byteBuf, cause) -> {
+        InvokedFeedback<ByteBuf> rejoin = answer == 0 ? null : new GenericInvokedFeedback<>((byteBuf, cause) -> {
             if (ctx.isRemoved() || !ctx.channel().isActive()) {
                 return;
             }
@@ -125,11 +125,11 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         boolean freed;
         try {
             if (command == 0) {
-                freed = holder.free(answer, r -> r.success(buf.retain()));
+                freed = initializer.free(answer, r -> r.success(buf.retain()));
             } else {
                 String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
                 RemoteException cause = of(command, message);
-                freed = holder.free(answer, r -> r.failure(cause));
+                freed = initializer.free(answer, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
            if (logger.isErrorEnabled()) {
@@ -152,19 +152,19 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final WrappedInvocation invocation) {
-            int answer = holder.hold(invocation.expired(), invocation.answer());
+            int answer = initializer.get(invocation.expired(), invocation.answer());
             MessagePacket packet;
             try {
                 packet = MessagePacket.newPacket(answer, invocation.command(), invocation.data().retain());
             } catch (Throwable cause) {
-                holder.free(answer, r -> r.failure(cause));
+                initializer.free(answer, r -> r.failure(cause));
                 throw cause;
             } finally {
                 invocation.release();
             }
 
             EventExecutor executor = ctx.executor();
-            scheduleExpiredTask(executor);
+            invokeIdleCheckTimerTask(executor);
 
             if (answer != 0 && !promise.isVoid()) {
                 promise.addListener(f -> {
@@ -173,9 +173,9 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                         return;
                     }
                     if (executor.inEventLoop()) {
-                        holder.free(answer, r -> r.failure(cause));
+                        initializer.free(answer, r -> r.failure(cause));
                     } else {
-                        executor.execute(() -> holder.free(answer, r -> r.failure(cause)));
+                        executor.execute(() -> initializer.free(answer, r -> r.failure(cause)));
                     }
                 });
             }
@@ -185,18 +185,18 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         }
     }
 
-    private void scheduleExpiredTask(EventExecutor executor) {
-        if (holder.isEmpty()) {
+    private void invokeIdleCheckTimerTask(EventExecutor executor) {
+        if (initializer.isEmpty()) {
             return;
         }
 
-        final Set<InvokeHolder<ByteBuf>> wholeHolders = WHOLE_INVOKE_HOLDER.get();
-        if (!wholeHolders.isEmpty()) {
-            wholeHolders.add(holder);
+        final Set<CallableSafeInitializer<ByteBuf>> initializers = WHOLE_INVOKE_INITIALIZER.get();
+        if (!initializers.isEmpty()) {
+            initializers.add(initializer);
             return;
         }
 
-        wholeHolders.add(holder);
+        initializers.add(initializer);
         executor.schedule(new Runnable() {
             @Override
             public void run() {
@@ -204,7 +204,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 var processInvoker = 0;
                 var remnantHolder = 0;
                 var remnantInvoker = 0;
-                final Iterator<InvokeHolder<ByteBuf>> iterator = wholeHolders.iterator();
+                final Iterator<CallableSafeInitializer<ByteBuf>> iterator = initializers.iterator();
                 while (iterator.hasNext()) {
                     var holder = iterator.next();
                     processHolder++;
@@ -219,7 +219,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                     remnantInvoker += holder.size();
                 }
 
-                if (!wholeHolders.isEmpty()) {
+                if (!initializers.isEmpty()) {
                     executor.schedule(this, 1, TimeUnit.SECONDS);
                 }
 
@@ -234,10 +234,9 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        // do nothing
+        int whole = initializer.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
+                String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
         if (logger.isDebugEnabled()) {
-            int whole = holder.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
-                    String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
             logger.debug("Free entire invoke, whole[{}]", whole);
         }
     }

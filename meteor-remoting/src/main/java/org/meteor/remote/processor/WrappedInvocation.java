@@ -5,7 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
-import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.invoke.InvokedFeedback;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -24,7 +24,7 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
     private int command;
     private ByteBuf data;
     private long expired;
-    private InvokeAnswer<ByteBuf> answer;
+    private InvokedFeedback<ByteBuf> answer;
 
     public WrappedInvocation(Recycler.Handle<WrappedInvocation> handle) {
         this.handle = handle;
@@ -34,7 +34,7 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         return newInvocation(command, data, 0, null);
     }
 
-    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires, InvokeAnswer<ByteBuf> answer) {
+    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires, InvokedFeedback<ByteBuf> answer) {
         checkPositive(command, "Command");
 
         final WrappedInvocation invocation = RECYCLER.get();
@@ -59,7 +59,7 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         return expired;
     }
 
-    public InvokeAnswer<ByteBuf> answer() {
+    public InvokedFeedback<ByteBuf> answer() {
         return answer;
     }
 

@@ -26,7 +26,7 @@ import org.meteor.proxy.coordinatior.ProxyCoordinator;
 import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.proxy.internal.ProxyServerConfig;
-import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.processor.RemoteException;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
@@ -67,7 +67,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
 
     @Override
-    public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         final int length = data.readableBytes();
         try {
             switch (command) {
@@ -77,7 +77,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 case ALTER_SUBSCRIBE -> processAlterSubscription(channel, command, data, answer);
                 case CLEAN_SUBSCRIBE -> processCleanSubscription(channel, command, data, answer);
                 case SYNC_LEDGER -> processSyncLedger(channel, command, data, answer);
-                case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, command, data,answer);
+                case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, command, data, answer);
                 default -> {
                     if (answer != null) {
                         answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Proxy command[" + command + "] unsupported, length=" + length));
@@ -99,7 +99,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
 
     @Override
-    protected void processSyncLedger(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processSyncLedger(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -108,8 +108,8 @@ public class ProxyServiceProcessor extends ServiceProcessor {
                 try {
                     Promise<SyncResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
                     promise.addListener((GenericFutureListener<Future<SyncResponse>>) f -> {
-                       if (f.isSuccess()) {
-                           try {
+                        if (f.isSuccess()) {
+                            try {
                                if (answer != null) {
                                    SyncResponse response = f.getNow();
                                    answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
@@ -161,7 +161,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
 
     @Override
-    protected void processQueryTopicInfos(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processQueryTopicInfos(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -350,7 +350,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
 
     @Override
-    protected void processUnSyncLedger(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processUnSyncLedger(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -386,17 +386,17 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
 
     @Override
-    protected void processRestSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processRestSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
             ResetSubscribeRequest request = ProtoBufUtil.readProto(data, ResetSubscribeRequest.parser());
             commandExecutor.execute(() -> {
-               try {
-                   String topic = request.getTopic();
-                   int ledger = request.getLedger();
-                   int epoch = request.getEpoch();
-                   long index = request.getIndex();
+                try {
+                    String topic = request.getTopic();
+                    int ledger = request.getLedger();
+                    int epoch = request.getEpoch();
+                    long index = request.getIndex();
                    IntList markers = convertMarkers(request.getMarkers());
                    Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
                    promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
@@ -426,7 +426,7 @@ public class ProxyServiceProcessor extends ServiceProcessor {
     }
 
     @Override
-    protected void processAlterSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processAlterSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -464,8 +464,9 @@ public class ProxyServiceProcessor extends ServiceProcessor {
             recordCommand(command, bytes, System.nanoTime() - time, false);
         }
     }
+
     @Override
-    protected void processCleanSubscription(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processCleanSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {

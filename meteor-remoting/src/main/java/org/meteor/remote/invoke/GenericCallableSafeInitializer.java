@@ -7,37 +7,41 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.util.function.Consumer;
 
-public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
+public final class GenericCallableSafeInitializer<V> implements CallableSafeInitializer<V> {
     private final Int2ObjectMap<Holder> holders;
-    private int offset;
-    public GenericInvokeHolder() {
+    private int requestId;
+
+    public GenericCallableSafeInitializer() {
         this(2048);
     }
-    public GenericInvokeHolder(int capacity) {
+
+    public GenericCallableSafeInitializer(int capacity) {
         this.holders = new Int2ObjectLinkedOpenHashMap<>(capacity);
     }
+
     @Override
     public int size() {
         return holders.size();
     }
+
     @Override
     public boolean isEmpty() {
         return holders.isEmpty();
     }
 
     @Override
-    public int hold(long expires, InvokeAnswer<V> answer) {
+    public int get(long expires, InvokedFeedback<V> answer) {
         if (null == answer) {
             return 0;
         }
 
-        var nextOffset = nextOffset();
-        holders.put(nextOffset, Holder.newHolder(expires, answer));
-        return nextOffset;
+        var nextRequestId = nextRequestId();
+        holders.put(nextRequestId, Holder.newHolder(expires, answer));
+        return nextRequestId;
     }
 
     @Override
-    public boolean free(int answer, Consumer<InvokeAnswer<V>> consumer) {
+    public boolean free(int answer, Consumer<InvokedFeedback<V>> consumer) {
         if (answer == 0) {
             return false;
         }
@@ -55,7 +59,7 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
     }
 
     @Override
-    public int freeEntire(Consumer<InvokeAnswer<V>> consumer) {
+    public int freeEntire(Consumer<InvokedFeedback<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }
@@ -77,7 +81,7 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
 
 
     @Override
-    public int freeExpired(Consumer<InvokeAnswer<V>> consumer) {
+    public int freeExpired(Consumer<InvokedFeedback<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }
@@ -90,7 +94,7 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
             Holder holder = iterator.next().getValue();
             boolean valid = holder.isValid();
 
-            if (valid && holder.expired > now) {
+            if (valid && holder.expires > now) {
                 continue;
             }
 
@@ -105,9 +109,9 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
         return whole;
     }
 
-    private void doConsume(Holder holder, Consumer<InvokeAnswer<V>> consumer) {
+    private void doConsume(Holder holder, Consumer<InvokedFeedback<V>> consumer) {
         @SuppressWarnings("unchecked")
-        InvokeAnswer<V> answer = (GenericInvokeAnswer<V>) holder.answer;
+        InvokedFeedback<V> answer = (GenericInvokedFeedback<V>) holder.feedback;
         try {
             consumer.accept(answer);
         } catch (Throwable cause) {
@@ -115,8 +119,8 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
         }
     }
 
-    private int nextOffset() {
-        return ++offset == 0 ? ++offset : offset;
+    private int nextRequestId() {
+        return ++requestId == 0 ? ++requestId : requestId;
     }
 
     private static final class Holder {
@@ -127,27 +131,27 @@ public final class GenericInvokeHolder<V> implements InvokeHolder<V> {
             }
         };
         private final Recycler.Handle<Holder> handle;
-        private long expired;
-        private InvokeAnswer<?> answer;
+        private long expires;
+        private InvokedFeedback<?> feedback;
 
         public Holder(Recycler.Handle<Holder> handle) {
             this.handle = handle;
         }
 
-        private static Holder newHolder(long expired, InvokeAnswer<?> answer) {
+        private static Holder newHolder(long expires, InvokedFeedback<?> feedback) {
             Holder instance = RECYCLER.get();
-            instance.expired = expired;
-            instance.answer = answer;
+            instance.expires = expires;
+            instance.feedback = feedback;
             return instance;
         }
 
         private void recycle() {
-            this.answer = null;
+            this.feedback = null;
             handle.recycle(this);
         }
 
         private boolean isValid() {
-            return null != answer && !answer.isCompleted();
+            return null != feedback && !feedback.isCompleted();
         }
     }
 }

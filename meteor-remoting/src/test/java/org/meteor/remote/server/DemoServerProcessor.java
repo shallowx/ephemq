@@ -7,7 +7,7 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
@@ -26,7 +26,7 @@ public class DemoServerProcessor implements Processor {
     }
 
     @Override
-    public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         switch (command) {
             case 1 -> echo(channel, data, answer);
             case 2 -> wait(data, answer);
@@ -39,7 +39,7 @@ public class DemoServerProcessor implements Processor {
         }
     }
 
-    private void echo(Channel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    private void echo(Channel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         ByteBuf echo = data.retainedSlice();
         ByteBuf retain = data.retain();
 
@@ -62,7 +62,7 @@ public class DemoServerProcessor implements Processor {
         }, 10, TimeUnit.MILLISECONDS);
     }
 
-    private void wait(ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    private void wait(ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         int bytes = data.readableBytes();
         long delay = bytes < 8 ? 0 : data.readLong();
         executors.next().schedule(() -> {

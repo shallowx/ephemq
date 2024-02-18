@@ -7,9 +7,9 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.meteor.remote.invoke.GenericInvokeAnswer;
-import org.meteor.remote.invoke.InvokeAnswer;
-import org.meteor.remote.invoke.InvokeCallback;
+import org.meteor.remote.invoke.Callable;
+import org.meteor.remote.invoke.GenericInvokedFeedback;
+import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.processor.WrappedInvocation;
 import org.meteor.remote.util.ByteBufUtil;
 
@@ -94,7 +94,7 @@ public class ClientChannel implements MeterBinder {
         return id.hashCode();
     }
 
-    public void invoke(int code, ByteBuf data, int timeoutMs, InvokeCallback<ByteBuf> callback) {
+    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback) {
         int length = ByteBufUtil.bufLength(data);
         try {
             long time = System.currentTimeMillis();
@@ -105,9 +105,9 @@ public class ClientChannel implements MeterBinder {
                         channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)), promise);
                     } else {
                         long expires = timeoutMs + time;
-                        InvokeAnswer<ByteBuf> answer = new GenericInvokeAnswer<>((v, c) -> {
+                        InvokedFeedback<ByteBuf> answer = new GenericInvokedFeedback<>((v, c) -> {
                             semaphore.release();
-                            callback.operationCompleted(v, c);
+                            callback.onCompleted(v, c);
                         });
                         channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, answer));
                     }
@@ -123,7 +123,7 @@ public class ClientChannel implements MeterBinder {
                     String.format("Channel invoke failed, address[%s] code[%d] length[%d]", address(), code, length), t
             );
             if (callback != null) {
-                callback.operationCompleted(null, cause);
+                callback.onCompleted(null, cause);
             } else {
                 throw cause;
             }

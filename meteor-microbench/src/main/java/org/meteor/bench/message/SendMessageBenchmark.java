@@ -11,7 +11,7 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
 import org.meteor.client.util.TopicPatternUtil;
-import org.meteor.remote.invoke.InvokeCallback;
+import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
@@ -68,7 +68,7 @@ public class SendMessageBenchmark {
 
     public void sendMessage(int timeoutMs, Promise<SendMessageResponse> promise, SendMessageRequest request, MessageMetadata metadata, ByteBuf message) {
         try {
-            InvokeCallback<ByteBuf> callback = assembleInvokeCallback(promise, SendMessageResponse.parser());
+            Callable<ByteBuf> callback = assembleInvokeCallback(promise, SendMessageResponse.parser());
             buf = assembleSendMessageData(clientChannel.allocator(), request, metadata, message);
         } catch (Throwable t) {
 
@@ -95,7 +95,7 @@ public class SendMessageBenchmark {
         }
     }
 
-    private <T> InvokeCallback<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
+    private <T> Callable<ByteBuf> assembleInvokeCallback(Promise<T> promise, Parser<T> parser) {
         return promise == null ? null : (v, c) -> {
             if (c == null) {
                 try {

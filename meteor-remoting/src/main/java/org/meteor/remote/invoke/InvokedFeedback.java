@@ -1,7 +1,7 @@
 package org.meteor.remote.invoke;
 
 @SuppressWarnings("all")
-public interface InvokeAnswer<V> {
+public interface InvokedFeedback<V> {
 
     boolean isCompleted();
 

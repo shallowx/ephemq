@@ -24,7 +24,7 @@ import org.meteor.coordinatior.TopicCoordinator;
 import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.ledger.Log;
 import org.meteor.listener.APIListener;
-import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.processor.Command;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.processor.RemoteException;
@@ -71,7 +71,7 @@ public class ServiceProcessor implements Processor, Command.Server {
     }
 
     @Override
-    public void process(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    public void process(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         int length = data.readableBytes();
         try {
             switch (code) {
@@ -107,7 +107,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processSyncLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -140,7 +140,7 @@ public class ServiceProcessor implements Processor, Command.Server {
 
     }
 
-    protected void processUnSyncLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processUnSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -170,7 +170,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processCalculatePartitions(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processCalculatePartitions(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -198,7 +198,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -290,7 +290,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processSendMessage(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processSendMessage(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -326,7 +326,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -368,7 +368,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -433,7 +433,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processRestSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processRestSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -461,7 +461,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -488,7 +488,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -513,7 +513,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processCreateTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processCreateTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -561,7 +561,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+    protected void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -598,7 +598,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processFailed(String err, int code, Channel channel, InvokeAnswer<ByteBuf> answer, Throwable throwable) {
+    protected void processFailed(String err, int code, Channel channel, InvokedFeedback<ByteBuf> answer, Throwable throwable) {
         if (answer != null) {
             answer.failure(throwable);
         }

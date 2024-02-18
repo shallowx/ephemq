@@ -7,18 +7,19 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import static io.netty.util.ReferenceCountUtil.release;
 import static org.meteor.common.util.ObjectUtil.checkNotNull;
 
-public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
+public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     @SuppressWarnings("rawtypes")
-    private static final AtomicIntegerFieldUpdater<GenericInvokeAnswer> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokeAnswer.class, "completed");
+    private static final AtomicIntegerFieldUpdater<GenericInvokedFeedback> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokedFeedback.class, "completed");
     private static final int EXPECT = 0;
     private static final int UPDATE = 1;
-    private final InvokeCallback<V> callback;
+    private final Callable<V> callback;
     private volatile int completed;
-    public GenericInvokeAnswer() {
+
+    public GenericInvokedFeedback() {
         this(null);
     }
 
-    public GenericInvokeAnswer(InvokeCallback<V> callback) {
+    public GenericInvokedFeedback(Callable<V> callback) {
         this.callback = callback;
     }
 
@@ -54,7 +55,7 @@ public final class GenericInvokeAnswer<V> implements InvokeAnswer<V> {
 
     private void onCompleted(V v, Throwable cause) {
         if (null != callback) {
-            callback.operationCompleted(v, cause);
+            callback.onCompleted(v, cause);
         }
     }
 }

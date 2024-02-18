@@ -14,7 +14,7 @@ import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
-import org.meteor.remote.invoke.InvokeAnswer;
+import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.processor.Command;
 import org.meteor.remote.processor.Processor;
 import org.meteor.remote.processor.RemoteException;
@@ -73,7 +73,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         }
 
         @Override
-        public void process(Channel channel, int command, ByteBuf data, InvokeAnswer<ByteBuf> answer) {
+        public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
             int length = data.readableBytes();
             try {
                 switch (command) {
@@ -100,7 +100,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         return new ClientChannel(clientConfig, channel, address);
     }
 
-    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
         SyncMessageSignal signal = ProtoBufUtil.readProto(data, SyncMessageSignal.parser());
         listener.onSyncMessage(channel, signal, data);
         if (answer != null) {
@@ -108,7 +108,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         }
     }
 
-    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
         TopicChangedSignal signal = ProtoBufUtil.readProto(data, TopicChangedSignal.parser());
         listener.onTopicChanged(channel, signal);
         if (answer != null) {
@@ -116,7 +116,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         }
     }
 
-    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
         NodeOfflineSignal signal = ProtoBufUtil.readProto(data, NodeOfflineSignal.parser());
         listener.onNodeOffline(channel, signal);
         if (answer != null) {
@@ -124,7 +124,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         }
     }
 
-    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokeAnswer<ByteBuf> answer) throws Exception {
+    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
         MessagePushSignal signal = ProtoBufUtil.readProto(data, MessagePushSignal.parser());
         listener.onPushMessage(channel, signal, data);
         if (answer != null) {
