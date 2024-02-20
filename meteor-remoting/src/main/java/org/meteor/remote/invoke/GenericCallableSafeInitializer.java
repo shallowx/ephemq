@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public final class GenericCallableSafeInitializer<V> implements CallableSafeInitializer<V> {
     private final Long2ObjectMap<Holder> holders;
-    private int requestId;
+    private long requestId;
 
     public GenericCallableSafeInitializer() {
         this(2048);
@@ -30,18 +30,18 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
     }
 
     @Override
-    public int get(long expires, InvokedFeedback<V> answer) {
+    public long get(long expires, InvokedFeedback<V> answer) {
         if (null == answer) {
             return 0;
         }
 
-        var nextRequestId = nextRequestId();
+        long nextRequestId = nextRequestId();
         holders.put(nextRequestId, Holder.newHolder(expires, answer));
         return nextRequestId;
     }
 
     @Override
-    public boolean free(long feedback, Consumer<InvokedFeedback<V>> consumer) {
+    public boolean release(long feedback, Consumer<InvokedFeedback<V>> consumer) {
         if (feedback == 0L) {
             return false;
         }
@@ -59,7 +59,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
     }
 
     @Override
-    public int freeEntire(Consumer<InvokedFeedback<V>> consumer) {
+    public int releaseAll(Consumer<InvokedFeedback<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }
@@ -81,7 +81,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
 
 
     @Override
-    public int freeExpired(Consumer<InvokedFeedback<V>> consumer) {
+    public int releaseExpired(Consumer<InvokedFeedback<V>> consumer) {
         if (isEmpty()) {
             return 0;
         }
@@ -119,7 +119,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
         }
     }
 
-    private int nextRequestId() {
+    private long nextRequestId() {
         return ++requestId == 0 ? ++requestId : requestId;
     }
 

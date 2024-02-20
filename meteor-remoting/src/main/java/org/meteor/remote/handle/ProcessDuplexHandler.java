@@ -125,11 +125,11 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         boolean freed;
         try {
             if (command == 0) {
-                freed = initializer.free(answer, r -> r.success(buf.retain()));
+                freed = initializer.release(answer, r -> r.success(buf.retain()));
             } else {
                 String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
                 RemoteException cause = of(command, message);
-                freed = initializer.free(answer, r -> r.failure(cause));
+                freed = initializer.release(answer, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
            if (logger.isErrorEnabled()) {
@@ -157,7 +157,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             try {
                 packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain());
             } catch (Throwable cause) {
-                initializer.free(feedback, r -> r.failure(cause));
+                initializer.release(feedback, r -> r.failure(cause));
                 throw cause;
             } finally {
                 invocation.release();
@@ -173,9 +173,9 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                         return;
                     }
                     if (executor.inEventLoop()) {
-                        initializer.free(feedback, r -> r.failure(cause));
+                        initializer.release(feedback, r -> r.failure(cause));
                     } else {
-                        executor.execute(() -> initializer.free(feedback, r -> r.failure(cause)));
+                        executor.execute(() -> initializer.release(feedback, r -> r.failure(cause)));
                     }
                 });
             }
@@ -208,7 +208,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 while (iterator.hasNext()) {
                     var holder = iterator.next();
                     processHolder++;
-                    processInvoker += holder.freeExpired(r -> r.failure(
+                    processInvoker += holder.releaseExpired(r -> r.failure(
                             of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke handle timeout")));
                     if (holder.isEmpty()) {
                         iterator.remove();
@@ -234,7 +234,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        int whole = initializer.freeEntire(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
+        int whole = initializer.releaseAll(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION,
                 String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
         if (logger.isDebugEnabled()) {
             logger.debug("Free entire invoke, whole[{}]", whole);
