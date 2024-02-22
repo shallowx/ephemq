@@ -32,7 +32,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
     @Override
     public long get(long expires, InvokedFeedback<V> answer) {
         if (null == answer) {
-            return 0;
+            return 0L;
         }
 
         long nextRequestId = nextRequestId();
@@ -64,7 +64,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
             return 0;
         }
 
-        var whole = 0;
+        var count = 0;
         ObjectIterator<Long2ObjectMap.Entry<Holder>> iterator = holders.long2ObjectEntrySet().iterator();
         while (iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
@@ -74,9 +74,9 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
 
             iterator.remove();
             holder.recycle();
-            whole++;
+            count++;
         }
-        return whole;
+        return count;
     }
 
 
@@ -88,7 +88,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
 
         long now = System.currentTimeMillis();
 
-        var whole = 0;
+        var count = 0;
         ObjectIterator<Long2ObjectMap.Entry<Holder>> iterator = holders.long2ObjectEntrySet().iterator();
         while (iterator.hasNext()) {
             Holder holder = iterator.next().getValue();
@@ -104,9 +104,9 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
 
             iterator.remove();
             holder.recycle();
-            whole++;
+            count++;
         }
-        return whole;
+        return count;
     }
 
     private void doConsume(Holder holder, Consumer<InvokedFeedback<V>> consumer) {
