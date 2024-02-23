@@ -13,7 +13,7 @@ public class DemoClientProcessor implements Processor {
     }
 
     @Override
-    public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         // do nothing
     }
 }

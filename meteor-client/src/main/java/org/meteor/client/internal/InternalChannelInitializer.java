@@ -73,24 +73,24 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         }
 
         @Override
-        public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+        public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
             int length = data.readableBytes();
             try {
                 switch (command) {
-                    case Command.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, answer);
-                    case Command.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, answer);
-                    case Command.Client.TOPIC_CHANGED -> onTopicChanged(clientChannel, data, answer);
-                    case Command.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, answer);
+                    case Command.Client.PUSH_MESSAGE -> onPushMessage(clientChannel, data, feedback);
+                    case Command.Client.SERVER_OFFLINE -> onNodeOffline(clientChannel, data, feedback);
+                    case Command.Client.TOPIC_CHANGED -> onTopicChanged(clientChannel, data, feedback);
+                    case Command.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, feedback);
                     default -> {
-                        if (answer != null) {
-                            answer.failure(RemoteException.of(Command.Failure.COMMAND_EXCEPTION, "code[" + command + "]" + " unsupported"));
+                        if (feedback != null) {
+                            feedback.failure(RemoteException.of(Command.Failure.COMMAND_EXCEPTION, "code[" + command + "]" + " unsupported"));
                         }
                     }
                 }
             } catch (Throwable t) {
                 logger.error("Channel[{}] processor is error, code[{}] length[{}]", NetworkUtil.switchAddress(clientChannel.channel()), command, length);
-                if (answer != null) {
-                    answer.failure(t);
+                if (feedback != null) {
+                    feedback.failure(t);
                 }
             }
         }
@@ -100,35 +100,35 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         return new ClientChannel(clientConfig, channel, address);
     }
 
-    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
+    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
         SyncMessageSignal signal = ProtoBufUtil.readProto(data, SyncMessageSignal.parser());
         listener.onSyncMessage(channel, signal, data);
-        if (answer != null) {
-            answer.success(null);
+        if (feedback != null) {
+            feedback.success(null);
         }
     }
 
-    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
+    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
         TopicChangedSignal signal = ProtoBufUtil.readProto(data, TopicChangedSignal.parser());
         listener.onTopicChanged(channel, signal);
-        if (answer != null) {
-            answer.success(null);
+        if (feedback != null) {
+            feedback.success(null);
         }
     }
 
-    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
+    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
         NodeOfflineSignal signal = ProtoBufUtil.readProto(data, NodeOfflineSignal.parser());
         listener.onNodeOffline(channel, signal);
-        if (answer != null) {
-            answer.success(null);
+        if (feedback != null) {
+            feedback.success(null);
         }
     }
 
-    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) throws Exception {
+    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
         MessagePushSignal signal = ProtoBufUtil.readProto(data, MessagePushSignal.parser());
         listener.onPushMessage(channel, signal, data);
-        if (answer != null) {
-            answer.success(null);
+        if (feedback != null) {
+            feedback.success(null);
         }
     }
 }

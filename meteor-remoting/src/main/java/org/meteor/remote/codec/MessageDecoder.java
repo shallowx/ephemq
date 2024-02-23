@@ -21,10 +21,6 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     private boolean isValid;
     private int writeFrameBytes;
 
-    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
-        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
-    }
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final ByteBuf in) {
@@ -139,6 +135,10 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
         }
 
         ctx.fireChannelReadComplete();
+    }
+
+    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
+        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
     }
 
     @Override

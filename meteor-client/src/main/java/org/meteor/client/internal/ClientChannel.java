@@ -105,11 +105,11 @@ public class ClientChannel implements MeterBinder {
                         channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)), promise);
                     } else {
                         long expires = timeoutMs + time;
-                        InvokedFeedback<ByteBuf> answer = new GenericInvokedFeedback<>((v, c) -> {
+                        InvokedFeedback<ByteBuf> feedback = new GenericInvokedFeedback<>((v, c) -> {
                             semaphore.release();
                             callback.onCompleted(v, c);
                         });
-                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, answer));
+                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback));
                     }
                 } catch (Throwable t) {
                     semaphore.release();

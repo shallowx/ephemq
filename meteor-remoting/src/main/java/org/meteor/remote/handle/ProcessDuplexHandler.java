@@ -112,11 +112,11 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     private void processResponse(ChannelHandlerContext ctx, MessagePacket packet) {
         var command = packet.command();
-        var answer = packet.feedback();
-        if (answer == 0) {
+        var feedback = packet.feedback();
+        if (feedback == 0) {
             if (logger.isErrorEnabled()) {
-                logger.error("Chanel[{}] command is invalid: command[{}] answer[{}] ", switchAddress(ctx.channel()),
-                        command, answer);
+                logger.error("Chanel[{}] command is invalid: command[{}] feedback[{}] ", switchAddress(ctx.channel()),
+                        command, feedback);
             }
             return;
         }
@@ -125,16 +125,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
         boolean freed;
         try {
             if (command == 0) {
-                freed = initializer.release(answer, r -> r.success(buf.retain()));
+                freed = initializer.release(feedback, r -> r.success(buf.retain()));
             } else {
                 String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
                 RemoteException cause = of(command, message);
-                freed = initializer.release(answer, r -> r.failure(cause));
+                freed = initializer.release(feedback, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
            if (logger.isErrorEnabled()) {
-               logger.error("Chanel[{}] invoke not found: command[{}] answer[{}] ", ctx.channel().remoteAddress(),
-                       command, answer);
+               logger.error("Chanel[{}] invoke not found: command[{}] feedback[{}] ", ctx.channel().remoteAddress(),
+                       command, feedback);
            }
             return;
         } finally {
@@ -143,8 +143,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
         if (!freed) {
            if (logger.isErrorEnabled()) {
-               logger.error("Channel[{}] invoke not found: command[{}] answer[{}]", ctx.channel().remoteAddress(),
-                       command, answer);
+               logger.error("Channel[{}] invoke not found: command[{}] feedback[{}]", ctx.channel().remoteAddress(),
+                       command, feedback);
            }
         }
     }
@@ -152,7 +152,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof final WrappedInvocation invocation) {
-            long feedback = initializer.get(invocation.expired(), invocation.answer());
+            long feedback = initializer.get(invocation.expired(), invocation.feedback());
             MessagePacket packet;
             try {
                 packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain());

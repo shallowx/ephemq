@@ -30,13 +30,13 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
     }
 
     @Override
-    public long get(long expires, InvokedFeedback<V> answer) {
-        if (null == answer) {
+    public long get(long expires, InvokedFeedback<V> feedback) {
+        if (null == feedback) {
             return 0L;
         }
 
         long nextRequestId = nextRequestId();
-        holders.put(nextRequestId, Holder.newHolder(expires, answer));
+        holders.put(nextRequestId, Holder.newHolder(expires, feedback));
         return nextRequestId;
     }
 
@@ -111,11 +111,11 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
 
     private void doConsume(Holder holder, Consumer<InvokedFeedback<V>> consumer) {
         @SuppressWarnings("unchecked")
-        InvokedFeedback<V> answer = (GenericInvokedFeedback<V>) holder.feedback;
+        InvokedFeedback<V> feedback = (GenericInvokedFeedback<V>) holder.feedback;
         try {
-            consumer.accept(answer);
+            consumer.accept(feedback);
         } catch (Throwable cause) {
-            answer.failure(cause);
+            feedback.failure(cause);
         }
     }
 

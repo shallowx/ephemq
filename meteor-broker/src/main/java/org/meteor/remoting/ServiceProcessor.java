@@ -71,25 +71,25 @@ public class ServiceProcessor implements Processor, Command.Server {
     }
 
     @Override
-    public void process(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    public void process(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         int length = data.readableBytes();
         try {
             switch (code) {
-                case SEND_MESSAGE -> processSendMessage(channel, code, data, answer);
-                case QUERY_CLUSTER_INFOS -> processQueryClusterInfo(channel, code, data, answer);
-                case QUERY_TOPIC_INFOS -> processQueryTopicInfos(channel, code, data, answer);
-                case REST_SUBSCRIBE -> processRestSubscription(channel, code, data, answer);
-                case ALTER_SUBSCRIBE -> processAlterSubscription(channel, code, data, answer);
-                case CLEAN_SUBSCRIBE -> processCleanSubscription(channel, code, data, answer);
-                case CREATE_TOPIC -> processCreateTopic(channel, code, data, answer);
-                case DELETE_TOPIC -> processDeleteTopic(channel, code, data, answer);
-                case MIGRATE_LEDGER -> processMigrateLedger(channel, code, data, answer);
-                case SYNC_LEDGER -> processSyncLedger(channel, code, data, answer);
-                case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, code, data, answer);
-                case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, answer);
+                case SEND_MESSAGE -> processSendMessage(channel, code, data, feedback);
+                case QUERY_CLUSTER_INFOS -> processQueryClusterInfo(channel, code, data, feedback);
+                case QUERY_TOPIC_INFOS -> processQueryTopicInfos(channel, code, data, feedback);
+                case REST_SUBSCRIBE -> processRestSubscription(channel, code, data, feedback);
+                case ALTER_SUBSCRIBE -> processAlterSubscription(channel, code, data, feedback);
+                case CLEAN_SUBSCRIBE -> processCleanSubscription(channel, code, data, feedback);
+                case CREATE_TOPIC -> processCreateTopic(channel, code, data, feedback);
+                case DELETE_TOPIC -> processDeleteTopic(channel, code, data, feedback);
+                case MIGRATE_LEDGER -> processMigrateLedger(channel, code, data, feedback);
+                case SYNC_LEDGER -> processSyncLedger(channel, code, data, feedback);
+                case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, code, data, feedback);
+                case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, feedback);
                 default -> {
-                    if (answer != null) {
-                        answer.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Command[" + code + "] unsupported, length=" + length));
+                    if (feedback != null) {
+                        feedback.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Command[" + code + "] unsupported, length=" + length));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel[{}] command[{}] unsupported, length={}", code, NetworkUtil.switchAddress(channel), length);
@@ -101,13 +101,13 @@ public class ServiceProcessor implements Processor, Command.Server {
                 logger.debug(t.getMessage(), t);
             }
 
-            if (answer != null) {
-                answer.failure(t);
+            if (feedback != null) {
+                feedback.failure(t);
             }
         }
     }
 
-    protected void processSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -120,27 +120,27 @@ public class ServiceProcessor implements Processor, Command.Server {
             promise.addListener((GenericFutureListener<Future<SyncResponse>>) f -> {
                 if (f.isSuccess()) {
                     try {
-                        if (answer != null) {
+                        if (feedback != null) {
                             SyncResponse response = f.getNow();
-                            answer.success(proto2Buf(channel.alloc(), response));
+                            feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("process sync ledger[" + ledger + "] failed", code, channel, answer, e);
+                        processFailed("process sync ledger[" + ledger + "] failed", code, channel, feedback, e);
                     }
                 } else {
-                    processFailed("process sync ledger[" + ledger + "] failed", code, channel, answer, f.cause());
+                    processFailed("process sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
             coordinator.getTopicCoordinator().getParticipantCoordinator().subscribeLedger(ledger, epoch, index, channel, promise);
         } catch (Exception e) {
-            processFailed("process sync ledger failed", code, channel, answer, e);
+            processFailed("process sync ledger failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time,false);
         }
 
     }
 
-    protected void processUnSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processUnSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -150,27 +150,27 @@ public class ServiceProcessor implements Processor, Command.Server {
             promise.addListener(f -> {
                 if (f.isSuccess()) {
                     try {
-                        if (answer != null) {
+                        if (feedback != null) {
                             CancelSyncResponse response = CancelSyncResponse.newBuilder().build();
-                            answer.success(proto2Buf(channel.alloc(), response));
+                            feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, answer, e);
+                        processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, feedback, e);
                     }
                 } else {
-                    processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, answer, f.cause());
+                    processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
 
             coordinator.getTopicCoordinator().getParticipantCoordinator().unSubscribeLedger(ledger, channel, promise);
         } catch (Exception e) {
-            processFailed("process un-sync ledger failed", code, channel, answer, e);
+            processFailed("process un-sync ledger failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time,false);
         }
     }
 
-    protected void processCalculatePartitions(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processCalculatePartitions(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -183,22 +183,22 @@ public class ServiceProcessor implements Processor, Command.Server {
                         response.putAllPartitions(partitions);
                     }
 
-                    if (answer != null) {
-                        answer.success(ProtoBufUtil.proto2Buf(channel.alloc(), response.build()));
+                    if (feedback != null) {
+                        feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), response.build()));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Exception e) {
-                    processFailed("Process calculate partition failed", code, channel, answer, e);
+                    processFailed("Process calculate partition failed", code, channel, feedback, e);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Exception e) {
-            processFailed("Process calculate partition failed", code, channel, answer, e);
+            processFailed("Process calculate partition failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -209,7 +209,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             String destination = request.getDestination();
 
             if (original.equals(destination)) {
-                processFailed("Process migrate ledger failed", code, channel, answer,
+                processFailed("Process migrate ledger failed", code, channel, feedback,
                         RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, "The original and destination are the same broker"));
                 return;
             }
@@ -222,14 +222,14 @@ public class ServiceProcessor implements Processor, Command.Server {
                     int ledger = partitionInfo.getLedger();
                     if (commonConfiguration.getServerId().equals(original)) {
                         if (!topicCoordinator.hasLeadership(ledger)) {
-                            processFailed("Process migrate ledger failed", code, channel, answer,
+                            processFailed("Process migrate ledger failed", code, channel, feedback,
                                     RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The original broker does not have a leader role of %s", topicPartition)));
                             return;
                         }
 
                         Node destNode = coordinator.getClusterCoordinator().getClusterReadyNode(destination);
                         if (destNode == null) {
-                            processFailed("Process migrate ledger failed", code, channel, answer,
+                            processFailed("Process migrate ledger failed", code, channel, feedback,
                                     RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The destination broker %s is not in cluster", destination)));
                             return;
                         }
@@ -243,22 +243,22 @@ public class ServiceProcessor implements Processor, Command.Server {
                                 MigrateLedgerResponse response = (MigrateLedgerResponse) future.get();
                                 Log log = coordinator.getLogCoordinator().getLog(ledger);
                                 Promise<Void> migratePromise = ImmediateEventExecutor.INSTANCE.newPromise();
-                                if (answer != null) {
+                                if (feedback != null) {
                                     migratePromise.addListener(f -> {
                                         if (f.isSuccess()) {
-                                            answer.success(proto2Buf(channel.alloc(), response));
+                                            feedback.success(proto2Buf(channel.alloc(), response));
                                         } else {
-                                            processFailed("Process migrate ledger failed", code, channel, answer, f.cause());
+                                            processFailed("Process migrate ledger failed", code, channel, feedback, f.cause());
                                         }
                                     });
                                     log.migrate(destination, clientChannel, migratePromise);
                                 } else {
-                                    processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
+                                    processFailed("Process migrate ledger failed", code, channel, feedback, RemoteException.of(
                                             RemoteException.Failure.PROCESS_EXCEPTION, response.getMessage()
                                     ));
                                 }
                             } else {
-                                processFailed("Process migrate ledger failed", code, channel, answer, future.cause());
+                                processFailed("Process migrate ledger failed", code, channel, feedback, future.cause());
                             }
                         });
                         clientChannel.invoker().migrateLedger(networkConfiguration.getNotifyClientTimeoutMilliseconds(), promise, request);
@@ -269,28 +269,28 @@ public class ServiceProcessor implements Processor, Command.Server {
                     if (commonConfiguration.getServerId().equals(destination)) {
                         topicCoordinator.takeoverPartition(topicPartition);
                         MigrateLedgerResponse response = MigrateLedgerResponse.newBuilder().setSuccess(true).build();
-                        if (answer != null) {
-                            answer.success(proto2Buf(channel.alloc(), response));
+                        if (feedback != null) {
+                            feedback.success(proto2Buf(channel.alloc(), response));
                         }
                         recordCommand(code, bytes, System.nanoTime() - time, true);
                         return;
                     }
-                    processFailed("Process migrate ledger failed", code, channel, answer, RemoteException.of(
+                    processFailed("Process migrate ledger failed", code, channel, feedback, RemoteException.of(
                             RemoteException.Failure.PROCESS_EXCEPTION, "The broker is neither original broker nor destination broker"
                     ));
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 } catch (Throwable t) {
-                    processFailed("Process migrate ledger failed", code, channel, answer, t);
+                    processFailed("Process migrate ledger failed", code, channel, feedback, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
-            processFailed("Process migrate ledger failed", code, channel, answer, t);
+            processFailed("Process migrate ledger failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processSendMessage(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processSendMessage(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -301,7 +301,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             promise.addListener((GenericFutureListener<Future<org.meteor.common.message.Offset>>) f -> {
                 if (f.isSuccess()) {
                     try {
-                        if (answer != null) {
+                        if (feedback != null) {
                             org.meteor.common.message.Offset offset = f.getNow();
                             SendMessageResponse response = SendMessageResponse.newBuilder()
                                     .setLedger(ledger)
@@ -309,24 +309,24 @@ public class ServiceProcessor implements Processor, Command.Server {
                                     .setIndex(offset.getIndex())
                                     .build();
 
-                            answer.success(proto2Buf(channel.alloc(), response));
+                            feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Throwable t) {
-                        processFailed("Process send message failed", code, channel, answer, t);
+                        processFailed("Process send message failed", code, channel, feedback, t);
                     }
                 } else {
-                    processFailed("Process send message failed", code, channel, answer, f.cause());
+                    processFailed("Process send message failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
             coordinator.getLogCoordinator().appendRecord(ledger, marker, data, promise);
         } catch (Throwable t) {
-            processFailed("Process send message failed", code, channel, answer, t);
+            processFailed("Process send message failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -353,22 +353,22 @@ public class ServiceProcessor implements Processor, Command.Server {
                     QueryClusterResponse response = QueryClusterResponse.newBuilder()
                             .setClusterInfo(info)
                             .build();
-                    if (answer != null) {
-                        answer.success(proto2Buf(channel.alloc(), response));
+                    if (feedback != null) {
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Throwable t) {
-                    processFailed("Process query cluster info failed", code, channel, answer, t);
+                    processFailed("Process query cluster info failed", code, channel, feedback, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
-            processFailed("Process query cluster info failed", code, channel, answer, t);
+            processFailed("Process query cluster info failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -418,22 +418,22 @@ public class ServiceProcessor implements Processor, Command.Server {
                     }
 
                     QueryTopicInfoResponse response = builder.build();
-                    if (answer != null) {
-                        answer.success(proto2Buf(channel.alloc(), response));
+                    if (feedback != null) {
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 } catch (Throwable t) {
-                    processFailed("Process query topic info failed", code, channel, answer, t);
+                    processFailed("Process query topic info failed", code, channel, feedback, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
-            processFailed("Process query topic info failed", code, channel, answer, t);
+            processFailed("Process query topic info failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processRestSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processRestSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -445,23 +445,23 @@ public class ServiceProcessor implements Processor, Command.Server {
             Promise<Integer> promise = serviceExecutor.newPromise();
             promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
                 if (f.isSuccess()) {
-                    if (answer != null) {
+                    if (feedback != null) {
                         ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
-                        answer.success(proto2Buf(channel.alloc(), response));
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                 } else {
-                    processFailed("Process reset subscription failed", code, channel, answer, f.cause());
+                    processFailed("Process reset subscription failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
             coordinator.getLogCoordinator().resetSubscribe(ledger, epoch, index, channel, markers, promise);
         } catch (Throwable t) {
-            processFailed("Process reset subscription failed", code, channel, answer, t);
+            processFailed("Process reset subscription failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -472,23 +472,23 @@ public class ServiceProcessor implements Processor, Command.Server {
             Promise<Integer> promise = serviceExecutor.newPromise();
             promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
                 if (f.isSuccess()) {
-                    if (answer != null) {
+                    if (feedback != null) {
                         AlterSubscribeResponse response = AlterSubscribeResponse.newBuilder().build();
-                        answer.success(proto2Buf(channel.alloc(), response));
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                 } else {
-                    processFailed("Process alter subscription failed", code, channel, answer, f.cause());
+                    processFailed("Process alter subscription failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
             coordinator.getLogCoordinator().alterSubscribe(channel, ledger, appendMarkers, deleteMarkers, promise);
         } catch (Throwable t) {
-            processFailed("Process alter subscription failed", code, channel, answer, t);
+            processFailed("Process alter subscription failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -497,23 +497,23 @@ public class ServiceProcessor implements Processor, Command.Server {
             Promise<Boolean> promise = serviceExecutor.newPromise();
             promise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
                 if (f.isSuccess()) {
-                    if (answer != null) {
+                    if (feedback != null) {
                         CleanSubscribeResponse response = CleanSubscribeResponse.newBuilder().build();
-                        answer.success(proto2Buf(channel.alloc(), response));
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                 } else {
-                    processFailed("Process clean subscription failed", code, channel, answer, f.cause());
+                    processFailed("Process clean subscription failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
             coordinator.getLogCoordinator().cleanSubscribe(channel, ledger, promise);
         } catch (Throwable t) {
-            processFailed("Process clean subscription failed", code, channel, answer, t);
+            processFailed("Process clean subscription failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processCreateTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processCreateTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -529,7 +529,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 try {
                     TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
                     Map<String, Object> createResult = topicCoordinator.createTopic(topic, partition, replicas, topicConfig);
-                    if (answer != null) {
+                    if (feedback != null) {
                         int topicId = (int) createResult.get(CorrelationIdConstants.TOPIC_ID);
                         @SuppressWarnings("unchecked")
                         Map<Integer, Set<String>> partitionReplicasMap = (Map<Integer, Set<String>>) createResult.get(CorrelationIdConstants.PARTITION_REPLICAS);
@@ -547,21 +547,21 @@ public class ServiceProcessor implements Processor, Command.Server {
                                 .setTopicId(topicId)
                                 .addAllPartitionsReplicas(partitionsReplicas)
                                 .build();
-                        answer.success(proto2Buf(channel.alloc(), response));
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Throwable t) {
-                    processFailed("Process create topic[" + topic + "] failed", code, channel, answer, t);
+                    processFailed("Process create topic[" + topic + "] failed", code, channel, feedback, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
-            processFailed("Process create topic failed", code, channel, answer, t);
+            processFailed("Process create topic failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 
-    protected void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    protected void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
         try {
@@ -570,18 +570,18 @@ public class ServiceProcessor implements Processor, Command.Server {
             commandExecutor.execute(() -> {
                 try {
                     coordinator.getTopicCoordinator().deleteTopic(topic);
-                    if (answer != null) {
+                    if (feedback != null) {
                         DeleteTopicResponse response = DeleteTopicResponse.newBuilder().build();
-                        answer.success(proto2Buf(channel.alloc(), response));
+                        feedback.success(proto2Buf(channel.alloc(), response));
                     }
                     recordCommand(code, bytes, System.nanoTime() - time, true);
                 } catch (Throwable t) {
-                    processFailed("Process delete topic[" + topic + "] failed", code, channel, answer, t);
+                    processFailed("Process delete topic[" + topic + "] failed", code, channel, feedback, t);
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 }
             });
         } catch (Throwable t) {
-            processFailed("Process delete topic failed", code, channel, answer, t);
+            processFailed("Process delete topic failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
@@ -598,9 +598,9 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
-    protected void processFailed(String err, int code, Channel channel, InvokedFeedback<ByteBuf> answer, Throwable throwable) {
-        if (answer != null) {
-            answer.failure(throwable);
+    protected void processFailed(String err, int code, Channel channel, InvokedFeedback<ByteBuf> feedback, Throwable throwable) {
+        if (feedback != null) {
+            feedback.failure(throwable);
         }
         if (logger.isErrorEnabled()) {
             logger.error("Channel[{}] process failed, command[{}] and address[{}]", err, code, NetworkUtil.switchAddress(channel), throwable);

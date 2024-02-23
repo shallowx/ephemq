@@ -47,14 +47,14 @@ public final class NetworkUtil {
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
         final int size = addresses == null ? 0 : addresses.size();
         if (ObjectUtil.checkPositive(size, "bootstrap address") > 0) {
-            List<SocketAddress> answers = new LinkedList<>();
+            List<SocketAddress> socketAddresses = new LinkedList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);
                 if (null != socketAddress) {
-                    answers.add(socketAddress);
+                    socketAddresses.add(socketAddress);
                 }
             }
-            return answers;
+            return socketAddresses;
         }
         return null;
     }

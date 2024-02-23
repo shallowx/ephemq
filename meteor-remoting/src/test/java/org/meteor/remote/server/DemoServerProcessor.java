@@ -26,20 +26,20 @@ public class DemoServerProcessor implements Processor {
     }
 
     @Override
-    public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         switch (command) {
-            case 1 -> echo(channel, data, answer);
-            case 2 -> wait(data, answer);
+            case 1 -> echo(channel, data, feedback);
+            case 2 -> wait(data, feedback);
             case 3 -> pass(data);
             default -> {
-                if (answer != null) {
-                    answer.failure(new UnsupportedOperationException("Code invalid-" + command));
+                if (feedback != null) {
+                    feedback.failure(new UnsupportedOperationException("Code invalid-" + command));
                 }
             }
         }
     }
 
-    private void echo(Channel channel, ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    private void echo(Channel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         ByteBuf echo = data.retainedSlice();
         ByteBuf retain = data.retain();
 
@@ -54,26 +54,26 @@ public class DemoServerProcessor implements Processor {
 
             temp.writeBytes(retain);
             retain.release();
-            if (answer != null) {
-                answer.success(echo);
+            if (feedback != null) {
+                feedback.success(echo);
             } else {
                 echo.release();
             }
         }, 10, TimeUnit.MILLISECONDS);
     }
 
-    private void wait(ByteBuf data, InvokedFeedback<ByteBuf> answer) {
+    private void wait(ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         int bytes = data.readableBytes();
         long delay = bytes < 8 ? 0 : data.readLong();
         executors.next().schedule(() -> {
-            if (answer != null) {
-                answer.success(ByteBufUtil.string2Buf("Server wait " + data + " ms"));
+            if (feedback != null) {
+                feedback.success(ByteBufUtil.string2Buf("Server wait " + data + " ms"));
             }
         }, delay, TimeUnit.MILLISECONDS);
     }
 
     private void pass(ByteBuf data) {
         logger.warn("Readable bytes:{}", data.readableBytes());
-        // not answer
+        // not feedback
     }
 }

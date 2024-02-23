@@ -10,5 +10,5 @@ public interface Processor {
     default void onActive(Channel channel, EventExecutor executor) {
     }
 
-    void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> answer);
+    void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback);
 }

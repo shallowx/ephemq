@@ -24,7 +24,7 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
     private int command;
     private ByteBuf data;
     private long expired;
-    private InvokedFeedback<ByteBuf> answer;
+    private InvokedFeedback<ByteBuf> feedback;
 
     public WrappedInvocation(Recycler.Handle<WrappedInvocation> handle) {
         this.handle = handle;
@@ -34,13 +34,13 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         return newInvocation(command, data, 0, null);
     }
 
-    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires, InvokedFeedback<ByteBuf> answer) {
+    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires, InvokedFeedback<ByteBuf> feedback) {
         checkPositive(command, "Command");
 
         final WrappedInvocation invocation = RECYCLER.get();
         invocation.setRefCnt(1);
         invocation.command = command;
-        invocation.answer = answer;
+        invocation.feedback = feedback;
         invocation.expired = expires;
         invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
@@ -59,8 +59,8 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         return expired;
     }
 
-    public InvokedFeedback<ByteBuf> answer() {
-        return answer;
+    public InvokedFeedback<ByteBuf> feedback() {
+        return feedback;
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
             data.release();
             data = null;
         }
-        answer = null;
+        feedback = null;
         handle.recycle(this);
     }
 
