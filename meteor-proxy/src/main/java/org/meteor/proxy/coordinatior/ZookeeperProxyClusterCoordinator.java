@@ -13,7 +13,7 @@ import org.meteor.proxy.internal.ProxyServerConfig;
 
 import java.util.Set;
 
-public class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
+class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);
     private final ConsistentHashingRing hashingRing;
     private final ProxyConfig proxyConfiguration;

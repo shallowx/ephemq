@@ -12,7 +12,7 @@ import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
-import org.meteor.remote.processor.WrappedInvocation;
+import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.nio.charset.StandardCharsets;

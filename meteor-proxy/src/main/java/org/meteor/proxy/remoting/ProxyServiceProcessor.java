@@ -27,7 +27,7 @@ import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.invoke.InvokedFeedback;
-import org.meteor.remote.processor.RemoteException;
+import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.*;
@@ -40,7 +40,7 @@ import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ProxyServiceProcessor extends ServiceProcessor {
+class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private static final int MIN_REPLICA_LIMIT = 2;
     private final LedgerSyncCoordinator syncCoordinator;

@@ -6,7 +6,7 @@ import org.meteor.ledger.LedgerCursor;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class PursueTask<E> {
+final class PursueTask<E> {
     private final E subscription;
     private final LedgerCursor cursor;
     private final long pursueTimeMillis = System.currentTimeMillis();

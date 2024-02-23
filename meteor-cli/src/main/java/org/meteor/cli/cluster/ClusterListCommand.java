@@ -1,6 +1,5 @@
 package org.meteor.cli.cluster;
 
-import com.google.gson.Gson;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -14,13 +13,10 @@ import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
 import java.net.SocketAddress;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("all")
 public class ClusterListCommand implements Command {
 
     @Override

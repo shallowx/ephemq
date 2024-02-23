@@ -9,11 +9,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
-import org.meteor.remote.codec.MessageDecoder;
-import org.meteor.remote.processor.Processor;
+import org.meteor.remote.invoke.Processor;
 import org.meteor.remote.util.NetworkUtil;
 
 public class DemoServerBootstrap {

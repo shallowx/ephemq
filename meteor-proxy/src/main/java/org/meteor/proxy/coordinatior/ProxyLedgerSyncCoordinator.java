@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
+final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private final WeakHashMap<ProxyLog, Long> weakDispatchTotal = new WeakHashMap<>();
     private long commitTimeMillis = System.currentTimeMillis();

@@ -11,12 +11,11 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
-import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Node;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.listener.ClusterListener;
 

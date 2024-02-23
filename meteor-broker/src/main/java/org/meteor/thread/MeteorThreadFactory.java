@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MeteorThreadFactory implements ThreadFactory {
+class MeteorThreadFactory implements ThreadFactory {
     private static final AtomicInteger POOL_ID = new AtomicInteger();
     private final AtomicInteger nextId = new AtomicInteger();
     private final String prefix;

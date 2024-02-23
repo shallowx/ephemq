@@ -1,4 +1,4 @@
-package org.meteor.client.util;
+package org.meteor.common.util;
 
 import java.util.regex.Pattern;
 

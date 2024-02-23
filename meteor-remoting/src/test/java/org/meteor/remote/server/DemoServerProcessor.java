@@ -8,7 +8,7 @@ import io.netty.util.concurrent.FastThreadLocal;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.invoke.InvokedFeedback;
-import org.meteor.remote.processor.Processor;
+import org.meteor.remote.invoke.Processor;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
 

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class RefreshMetadataTask implements Runnable {
+final class RefreshMetadataTask implements Runnable {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(RefreshMetadataTask.class);
     private final ClientConfig config;
     private final Client client;

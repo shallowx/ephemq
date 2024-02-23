@@ -16,7 +16,6 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
-import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.ledger.Log;
 import org.meteor.listener.TopicListener;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class ZookeeperPartitionCoordinatorElector {
+final class ZookeeperPartitionCoordinatorElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionCoordinatorElector.class);
     private final CommonConfig configuration;
     private final TopicPartition topicPartition;

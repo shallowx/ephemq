@@ -3,7 +3,6 @@ package org.meteor.common.message;
 import java.util.Objects;
 
 public record TopicPartition(String topic, int partition) {
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

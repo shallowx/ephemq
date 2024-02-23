@@ -1,6 +1,6 @@
-package org.meteor.internal;
+package org.meteor.coordinatior;
 
-public interface PathConstants {
+interface PathConstants {
     String CONTROLLER = "/controller";
     String BROKERS = "/brokers";
     String BROKERS_TOPICS = BROKERS + "/topics";

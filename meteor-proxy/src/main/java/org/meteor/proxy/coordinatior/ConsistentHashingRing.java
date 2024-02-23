@@ -9,7 +9,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ConsistentHashingRing {
+final class ConsistentHashingRing {
     private final NavigableMap<Integer, NavigableSet<String>> virtualNodes = new TreeMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final HashFunction function = Hashing.murmur3_32();

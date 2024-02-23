@@ -1,4 +1,4 @@
-package org.meteor.remote.processor;
+package org.meteor.remote.invoke;
 
 public final class RemoteException extends RuntimeException {
     private final int command;

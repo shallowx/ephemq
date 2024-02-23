@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class DefaultConsumerListener implements CombineListener, MeterBinder {
+final class DefaultConsumerListener implements CombineListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultConsumerListener.class);
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
     private final DefaultConsumer consumer;

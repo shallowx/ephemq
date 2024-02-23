@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class ChunkRecordSynchronization extends AbstractSynchronization<ChunkRecordHandler> {
+final class ChunkRecordSynchronization extends AbstractSynchronization<ChunkRecordHandler> {
     public ChunkRecordSynchronization(Channel channel, ChunkRecordHandler handler) {
         super(channel, handler);
     }

@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.concurrent.Promise;
 import org.meteor.remote.invoke.Callable;
-import org.meteor.remote.processor.Command;
+import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.ByteBufUtil;

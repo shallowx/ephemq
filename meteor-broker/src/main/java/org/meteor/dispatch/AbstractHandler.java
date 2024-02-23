@@ -5,14 +5,13 @@ import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.message.Offset;
 import org.meteor.ledger.LedgerCursor;
 
-import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-public abstract class AbstractHandler<E, T> {
+abstract class AbstractHandler<E, T> {
     protected final ConcurrentMap<Channel, E> subscriptionChannels = new ConcurrentHashMap<>();
     protected final AtomicBoolean triggered = new AtomicBoolean(false);
     protected final EventExecutor dispatchExecutor;

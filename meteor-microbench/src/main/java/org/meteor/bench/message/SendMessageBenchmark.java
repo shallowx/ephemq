@@ -10,7 +10,7 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
-import org.meteor.client.util.TopicPatternUtil;
+import org.meteor.common.util.TopicPatternUtil;
 import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.SendMessageRequest;

@@ -9,11 +9,11 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.meteor.client.internal.*;
-import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
 import org.meteor.common.thread.FastEventExecutor;
+import org.meteor.common.util.TopicPatternUtil;
 import org.meteor.remote.proto.server.*;
 
 import java.net.SocketAddress;

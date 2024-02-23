@@ -3,7 +3,6 @@ package org.meteor.common.util;
 import javax.naming.OperationNotSupportedException;
 import java.util.Arrays;
 
-@SuppressWarnings("all")
 public final class StringUtil {
 
     public static final char DOUBLE_QUOTE = '\"';

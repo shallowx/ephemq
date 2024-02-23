@@ -1,4 +1,4 @@
-package org.meteor.remote.processor;
+package org.meteor.remote.invoke;
 
 
 public interface Command {
@@ -14,7 +14,6 @@ public interface Command {
         int SYNC_LEDGER = 9;
         int CANCEL_SYNC_LEDGER = 10;
         int CALCULATE_PARTITIONS = 11;
-
         int MIGRATE_LEDGER = 12;
     }
 

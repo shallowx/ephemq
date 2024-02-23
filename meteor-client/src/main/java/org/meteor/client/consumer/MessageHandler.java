@@ -12,7 +12,7 @@ import org.meteor.remote.util.ProtoBufUtil;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-public class MessageHandler {
+final class MessageHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageHandler.class);
     private final String id;
     private final Semaphore semaphore;

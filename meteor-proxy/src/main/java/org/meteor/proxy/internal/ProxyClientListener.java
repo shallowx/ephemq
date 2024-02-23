@@ -19,7 +19,7 @@ import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
 import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.processor.Command;
+import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;

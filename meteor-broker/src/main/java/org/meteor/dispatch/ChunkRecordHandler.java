@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-public class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronization, ChunkRecordHandler> {
+final class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronization, ChunkRecordHandler> {
     static final ChunkRecordHandler INSTANCE = new ChunkRecordHandler();
     private final List<ChunkRecordSynchronization> synchronizations = new ArrayList<>();
     public ChunkRecordHandler() {

@@ -10,7 +10,7 @@ import io.netty.util.concurrent.EventExecutor;
 import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.invoke.GenericInvokedFeedback;
 import org.meteor.remote.invoke.InvokedFeedback;
-import org.meteor.remote.processor.WrappedInvocation;
+import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.util.ByteBufUtil;
 
 import javax.annotation.Nonnull;

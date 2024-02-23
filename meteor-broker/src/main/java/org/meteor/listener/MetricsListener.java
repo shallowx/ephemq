@@ -9,15 +9,15 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
-import org.meteor.config.CommonConfig;
-import org.meteor.config.MetricsConfig;
-import org.meteor.ledger.Log;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.config.CommonConfig;
+import org.meteor.config.MetricsConfig;
 import org.meteor.coordinatior.Coordinator;
+import org.meteor.ledger.Log;
 import org.meteor.metrics.config.MetricsRegistrySetUp;
 import org.meteor.metrics.config.PrometheusRegistry;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
@@ -68,7 +68,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         jmxMeterRegistrySetup.setUp(properties);
 
 
-        Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
+        io.micrometer.core.instrument.Tags tags = Tags.of(CLUSTER_TAG, config.getClusterName()).and(BROKER_TAG, config.getClusterName());
         new DefaultJVMInfoMetrics(tags).bindTo(registry);
         new UptimeMetrics(tags).bindTo(registry);
         new FileDescriptorMetrics(tags).bindTo(registry);

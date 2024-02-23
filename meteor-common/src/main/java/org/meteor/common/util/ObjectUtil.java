@@ -4,7 +4,6 @@ import javax.naming.OperationNotSupportedException;
 import java.util.Collection;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 public final class ObjectUtil {
 
     private static final float FLOAT_ZERO = 0.0F;

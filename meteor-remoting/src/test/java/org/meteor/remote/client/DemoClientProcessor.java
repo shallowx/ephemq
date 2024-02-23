@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.remote.invoke.InvokedFeedback;
-import org.meteor.remote.processor.Processor;
+import org.meteor.remote.invoke.Processor;
 
 public class DemoClientProcessor implements Processor {
     @Override

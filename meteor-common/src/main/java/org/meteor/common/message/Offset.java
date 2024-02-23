@@ -6,7 +6,6 @@ import java.util.Objects;
 
 @Immutable
 public class Offset implements Comparable<Offset> {
-
     private final int epoch;
     private final long index;
 

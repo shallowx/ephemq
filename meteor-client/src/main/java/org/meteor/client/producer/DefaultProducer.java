@@ -1,16 +1,20 @@
 package org.meteor.client.producer;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.concurrent.*;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.ImmediateEventExecutor;
+import io.netty.util.concurrent.Promise;
 import org.meteor.client.internal.*;
-import org.meteor.client.util.TopicPatternUtil;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
+import org.meteor.common.util.TopicPatternUtil;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.util.ByteBufUtil;
+
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Objects;

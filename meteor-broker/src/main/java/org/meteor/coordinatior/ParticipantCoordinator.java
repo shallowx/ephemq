@@ -13,7 +13,7 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogCoordinator;
-import org.meteor.remote.processor.RemoteException;
+import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncRequest;
 import org.meteor.remote.proto.server.CancelSyncResponse;

@@ -26,7 +26,6 @@ import org.meteor.config.SegmentConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.config.ZookeeperConfig;
 import org.meteor.internal.CorrelationIdConstants;
-import org.meteor.internal.PathConstants;
 import org.meteor.internal.ZookeeperClient;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogCoordinator;

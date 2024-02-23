@@ -15,7 +15,7 @@ import io.netty.util.concurrent.*;
 import org.meteor.common.thread.FastEventExecutorGroup;
 import org.meteor.common.util.ObjectUtil;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.processor.RemoteException;
+import org.meteor.remote.invoke.RemoteException;
 
 import javax.naming.OperationNotSupportedException;
 import java.net.InetSocketAddress;

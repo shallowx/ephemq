@@ -19,7 +19,7 @@ import org.meteor.ledger.ChunkRecord;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.processor.Command;
+import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
