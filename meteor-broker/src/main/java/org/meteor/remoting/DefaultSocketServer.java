@@ -15,7 +15,9 @@ import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.coordinatior.Coordinator;
+
 import java.net.SocketAddress;
+
 import static org.meteor.metrics.config.MetricsConstants.*;
 import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
 import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
@@ -87,7 +89,7 @@ public class DefaultSocketServer {
                             }
                         } else {
                             if (logger.isErrorEnabled()) {
-                                logger.error("Socket server start failed", cf.cause());
+                                logger.error("Socket compatible server start failed", cf.cause());
                             }
                         }
                     }).channel();

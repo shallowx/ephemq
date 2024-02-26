@@ -64,7 +64,7 @@ public class Meteor {
             }
         } catch (Exception e) {
             if (e instanceof MissingOptionException) {
-                throw new IllegalStateException("Please set the broker.properties path, use [-c]");
+                throw new MissingOptionException("Please set the broker.properties path, use [-c]");
             }
             throw e;
         }
@@ -74,12 +74,10 @@ public class Meteor {
     private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Coordinator coordinator) {
         MeteorServer server = new MeteorServer(socketServer, coordinator);
         server.addListener(listener);
-
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {
             server.shutdown();
             return null;
         }).newThread());
-
         return server;
     }
 
@@ -88,7 +86,6 @@ public class Meteor {
         Option option = new Option("c", "configFile", true, "Meteor broker server config file");
         option.setRequired(true);
         options.addOption(option);
-
         return options;
     }
 }
