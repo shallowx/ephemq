@@ -33,11 +33,11 @@ public class TopicCreatedCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "broker address", true, "which broker server");
+        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option explainOpt = new Option("e", "explain file", true, "topic to which file(JSON)");
+        Option explainOpt = new Option("ef", "explain-file", true, "topic to which file(JSON)");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
         return options;

@@ -14,8 +14,6 @@ import org.meteor.remote.proto.server.MigrateLedgerResponse;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -34,11 +32,11 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option bOpt = new Option("b", "broker address", true, "which broker server");
+        Option bOpt = new Option("ba", "broker-address", true, "which broker server");
         bOpt.setRequired(true);
         options.addOption(bOpt);
 
-        Option originalOpt = new Option("o", "original broker", true, "original broker");
+        Option originalOpt = new Option("ob", "original-broker", true, "original broker name");
         originalOpt.setRequired(true);
         options.addOption(originalOpt);
 
@@ -51,11 +49,11 @@ public class MigrateLedgerCommand implements Command {
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 
-        Option explainOpt = new Option("e", "explain file", true, "explain file");
+        Option explainOpt = new Option("ef", "explain-file", true, "explain file");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
 
-        Option destOpt = new Option("d", "destination broker", true, "destination broker");
+        Option destOpt = new Option("db", "destination-broker", true, "destination broker");
         destOpt.setRequired(true);
         options.addOption(destOpt);
 

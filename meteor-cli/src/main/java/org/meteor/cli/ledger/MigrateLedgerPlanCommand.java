@@ -34,19 +34,19 @@ public class MigrateLedgerPlanCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "broker address", true, "which broker server");
+        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option partitionOpt = new Option("o", "original broker", true, "original broker");
+        Option partitionOpt = new Option("ob", "original-broker", true, "original broker");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 
-        Option replicaOpt = new Option("e", "exclude broker", true, "exclude broker");
+        Option replicaOpt = new Option("eb", "exclude-broker", true, "exclude broker");
         replicaOpt.setRequired(true);
         options.addOption(replicaOpt);
 
-        Option configOpt = new Option("v", "verify completed", true, "verify completed");
+        Option configOpt = new Option("vc", "verify-completed", true, "verify completed");
         configOpt.setRequired(true);
         options.addOption(configOpt);
 

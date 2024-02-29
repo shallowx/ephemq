@@ -29,7 +29,7 @@ public class TopicListCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "broker address", true, "which broker server");
+        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
