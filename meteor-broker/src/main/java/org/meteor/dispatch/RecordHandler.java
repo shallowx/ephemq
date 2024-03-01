@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 final class RecordHandler extends AbstractHandler<RecordSynchronization, RecordHandler> {
     static final RecordHandler INSTANCE = new RecordHandler();
-    protected Int2ObjectMap<Set<RecordSynchronization>> subscriptionMarkers = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<Set<RecordSynchronization>> subscriptionMarkers = new Int2ObjectOpenHashMap<>();
 
     @Override
     int[] getCounts(EventExecutor[] executors, WeakHashMap<RecordHandler, Integer> handlers) {

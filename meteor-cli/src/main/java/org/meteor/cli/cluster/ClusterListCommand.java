@@ -31,13 +31,13 @@ public class ClusterListCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option option = new Option("c", "cluster", true, "cluster name");
-        option.setRequired(false);
-        options.addOption(option);
-
         Option brokerOpt = new Option("b", "broker", true, "cluster broker addr");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
+
+        Option option = new Option("c", "cluster", true, "cluster name");
+        option.setRequired(false);
+        options.addOption(option);
         return options;
     }
 

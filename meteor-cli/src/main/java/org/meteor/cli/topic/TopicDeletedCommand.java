@@ -34,6 +34,10 @@ public class TopicDeletedCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
+        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
+        brokerOpt.setRequired(true);
+        options.addOption(brokerOpt);
+
         Option option = new Option("t", "topic", true, "topic name");
         option.setRequired(true);
         options.addOption(option);
