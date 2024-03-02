@@ -3,13 +3,13 @@ package org.meteor.dispatch;
 import io.netty.channel.Channel;
 import org.meteor.common.message.Offset;
 
-abstract class AbstractSynchronization<E> {
+abstract class AbstractSynchronization<T> {
     protected final Channel channel;
-    protected final E handler;
+    protected final T handler;
     protected Offset dispatchOffset;
     protected volatile boolean followed = false;
 
-    public AbstractSynchronization(Channel channel, E handler) {
+    public AbstractSynchronization(Channel channel, T handler) {
         this.channel = channel;
         this.handler = handler;
     }
@@ -26,7 +26,7 @@ abstract class AbstractSynchronization<E> {
         return channel;
     }
 
-    public E getHandler() {
+    public T getHandler() {
         return handler;
     }
 
