@@ -11,7 +11,7 @@ import java.io.IOException;
 public class ProtoBufUtil {
     private ProtoBufUtil() throws OperationNotSupportedException {
         // Unused
-        throw new OperationNotSupportedException();
+        throw new AssertionError("No org.meteor.remote.util.ProtoBufUtil instances for you");
     }
 
     public static <T> T readProto(ByteBuf buf, Parser<T> parser) throws InvalidProtocolBufferException {

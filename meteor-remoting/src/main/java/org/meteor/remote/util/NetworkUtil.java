@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadFactory;
 public final class NetworkUtil {
     private NetworkUtil() throws OperationNotSupportedException {
         // Unused
-        throw new OperationNotSupportedException();
+        throw new AssertionError("No org.meteor.remote.util.NetworkUtil instances for you");
     }
 
     public static MessagePacket newSuccessPacket(long feedback, ByteBuf body) {

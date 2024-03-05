@@ -51,7 +51,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
     private ByteBuf encodeHeader(ByteBufAllocator alloc, int command, long feedback, int contentLength) {
         if (contentLength > MessagePacket.MAX_BODY_LENGTH) {
-            throw new EncoderException("Too large body[" + contentLength + "] bytes, limit[" + MessagePacket.MAX_BODY_LENGTH + "] bytes");
+            throw new EncoderException("The message body[" + contentLength + "] bytes too long, limit[" + MessagePacket.MAX_BODY_LENGTH + "] bytes");
         }
 
         final ByteBuf header = alloc.ioBuffer(MessagePacket.HEADER_LENGTH);

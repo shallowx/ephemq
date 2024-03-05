@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 public final class ByteBufUtil {
     private ByteBufUtil() throws OperationNotSupportedException {
         // Unused
-        throw new OperationNotSupportedException();
+        throw new AssertionError("No org.meteor.remote.util.ByteBufUtil instances for you");
     }
 
     public static String buf2String(ByteBuf buf, int maxLength) {

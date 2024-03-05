@@ -80,12 +80,12 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                     return null;
                 }
 
-                final int frameLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
-                if (frameLength < MessagePacket.HEADER_LENGTH) {
-                    throw new DecoderException("Invalid frame length[" + frameLength +"]");
+                final int messageLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
+                if (messageLength < MessagePacket.HEADER_LENGTH) {
+                    throw new DecoderException("Invalid message length[" + messageLength + "]");
                 }
 
-                writeFrameBytes = frameLength;
+                writeFrameBytes = messageLength;
                 state = READ_MESSAGE_COMPLETED;
             }
             case READ_MESSAGE_COMPLETED: {
