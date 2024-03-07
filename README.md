@@ -15,9 +15,6 @@
 ## Latency
 ![image](https://github.com/shallowx/meteor/blob/main/docs/image/partition.png)
 
-## Message Protocol
-![image](https://github.com/shallowx/meteor/blob/main/docs/image/message.png)
-
 # Environment
 - Zookeeper Version: Zookeeper 3.5.x or higher
 - Java Version: Java 17 or higher
