@@ -18,8 +18,8 @@ import org.meteor.config.CommonConfig;
 import org.meteor.config.MetricsConfig;
 import org.meteor.coordinatior.Coordinator;
 import org.meteor.ledger.Log;
+import org.meteor.metrics.config.MeteorPrometheusRegistry;
 import org.meteor.metrics.config.MetricsRegistrySetUp;
-import org.meteor.metrics.config.PrometheusRegistry;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
 import org.meteor.metrics.jvm.JmxMetricsRegistry;
 import org.meteor.metrics.netty.NettyMetrics;
@@ -61,7 +61,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         this.config = config;
         this.coordinator = coordinator;
         this.metricsSample = metricsConfiguration.getMetricsSampleLimit();
-        this.meterRegistrySetup = new PrometheusRegistry();
+        this.meterRegistrySetup = new MeteorPrometheusRegistry();
         this.meterRegistrySetup.setUp(properties);
 
         MetricsRegistrySetUp jmxMeterRegistrySetup = new JmxMetricsRegistry();

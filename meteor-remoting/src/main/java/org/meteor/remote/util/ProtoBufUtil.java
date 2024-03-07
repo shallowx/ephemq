@@ -5,13 +5,11 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
 import io.netty.buffer.*;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
 public class ProtoBufUtil {
-    private ProtoBufUtil() throws OperationNotSupportedException {
-        // Unused
-        throw new AssertionError("No org.meteor.remote.util.ProtoBufUtil instances for you");
+    private ProtoBufUtil() {
+        throw new AssertionError("No org.meteor.remote.util.ProtoBufUtil instance for you");
     }
 
     public static <T> T readProto(ByteBuf buf, Parser<T> parser) throws InvalidProtocolBufferException {

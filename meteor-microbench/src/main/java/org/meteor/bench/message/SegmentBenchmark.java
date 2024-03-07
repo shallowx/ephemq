@@ -5,6 +5,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.meteor.common.message.Offset;
 import org.meteor.remote.util.ByteBufUtil;
 import org.openjdk.jmh.annotations.*;
+
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -24,8 +25,7 @@ public class SegmentBenchmark {
         ByteBuf theBuffer = theHolder.buffer;
         int location = theBuffer.writerIndex();
         try {
-            // keep empty
-            // this is netty part not included in the meteor dev scope of performance testing
+            // keep empty, because this is about netty unittest, and not need included in the scope of performance testing
         } catch (Throwable t) {
             theBuffer.writerIndex(location);
             throw new IllegalStateException(String.format("Segment write error, location:%d", location), t);

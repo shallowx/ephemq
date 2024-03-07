@@ -1,7 +1,7 @@
 package org.meteor.coordinatior;
 
-import org.meteor.listener.ClusterListener;
 import org.meteor.common.message.Node;
+import org.meteor.listener.ClusterListener;
 
 import java.util.List;
 

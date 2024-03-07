@@ -17,7 +17,6 @@ import org.meteor.common.util.ObjectUtil;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.invoke.RemoteException;
 
-import javax.naming.OperationNotSupportedException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
@@ -26,9 +25,8 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 public final class NetworkUtil {
-    private NetworkUtil() throws OperationNotSupportedException {
-        // Unused
-        throw new AssertionError("No org.meteor.remote.util.NetworkUtil instances for you");
+    private NetworkUtil() {
+        throw new AssertionError("No org.meteor.remote.util.NetworkUtil instance for you");
     }
 
     public static MessagePacket newSuccessPacket(long feedback, ByteBuf body) {

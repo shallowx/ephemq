@@ -6,6 +6,7 @@ import org.meteor.common.message.MessageId;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.util.ByteBufUtil;
 import org.openjdk.jmh.annotations.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,8 +26,7 @@ public class ConsumeMessageBenchMark {
             put(TOPIC, org.meteor.client.consumer.Mode.APPEND);
         }});
         this.listener = (topic, queue, messageId, message, extras) -> {
-            // keep empty
-            // because this is user part that is not included in the scope of performance testing
+            // keep empty, because this is user unittest that not need included in the scope of performance testing
         };
     }
 

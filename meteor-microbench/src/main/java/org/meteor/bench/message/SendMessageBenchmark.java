@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class SendMessageBenchmark {
     @Benchmark
-    public void send() { //do-send part
+    public void send() {
         TopicPatternUtil.validateQueue(QUEUE);
         TopicPatternUtil.validateTopic(TOPIC);
 

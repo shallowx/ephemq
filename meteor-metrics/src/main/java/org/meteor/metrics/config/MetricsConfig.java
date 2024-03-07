@@ -1,6 +1,7 @@
 package org.meteor.metrics.config;
 
 import java.util.Properties;
+
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
 public class MetricsConfig {
@@ -8,6 +9,7 @@ public class MetricsConfig {
     private static final String METRICS_SCRAPE_URL = "metrics.prometheus.url";
     private static final String METRICS_PORT = "metrics.prometheus.exposed.port";
     private static final String METRICS_ADDRESS = "metrics.prometheus.exposed.host";
+
     private final Properties props;
 
     private MetricsConfig(Properties props) {

@@ -3,13 +3,11 @@ package org.meteor.remote.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import javax.naming.OperationNotSupportedException;
 import java.nio.charset.StandardCharsets;
 
 public final class ByteBufUtil {
-    private ByteBufUtil() throws OperationNotSupportedException {
-        // Unused
-        throw new AssertionError("No org.meteor.remote.util.ByteBufUtil instances for you");
+    private ByteBufUtil() {
+        throw new AssertionError("No org.meteor.remote.util.ByteBufUtil instance for you");
     }
 
     public static String buf2String(ByteBuf buf, int maxLength) {

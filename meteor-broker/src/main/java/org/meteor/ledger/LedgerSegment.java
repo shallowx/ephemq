@@ -1,9 +1,9 @@
 package org.meteor.ledger;
 
 import io.netty.buffer.ByteBuf;
-import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
 
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;

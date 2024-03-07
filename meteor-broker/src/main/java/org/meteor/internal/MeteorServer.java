@@ -2,17 +2,16 @@ package org.meteor.internal;
 
 import io.netty.util.concurrent.DefaultThreadFactory;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.meteor.listener.ServerListener;
-import org.meteor.coordinatior.ClusterCoordinator;
-import org.meteor.coordinatior.Coordinator;
-import org.meteor.remoting.DefaultSocketServer;
-import org.meteor.common.message.Node;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Node;
+import org.meteor.coordinatior.ClusterCoordinator;
+import org.meteor.coordinatior.Coordinator;
+import org.meteor.listener.ServerListener;
+import org.meteor.remoting.DefaultSocketServer;
 
 import javax.annotation.Nonnull;
 import java.io.Closeable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;

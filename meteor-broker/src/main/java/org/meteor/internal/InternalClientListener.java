@@ -4,11 +4,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 
 import java.util.concurrent.Semaphore;

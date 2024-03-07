@@ -4,10 +4,10 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.internal.StringUtil;
-import org.meteor.config.CommonConfig;
-import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
+import org.meteor.config.CommonConfig;
+import org.meteor.coordinatior.Coordinator;
 
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;

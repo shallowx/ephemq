@@ -1,6 +1,7 @@
 package org.meteor.config;
 
 import java.util.Properties;
+
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 
 public class SegmentConfig {

@@ -14,8 +14,8 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-public class PrometheusRegistry implements MetricsRegistrySetUp {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(PrometheusRegistry.class);
+public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorPrometheusRegistry.class);
     private HttpServer server;
     private MeterRegistry registry;
 

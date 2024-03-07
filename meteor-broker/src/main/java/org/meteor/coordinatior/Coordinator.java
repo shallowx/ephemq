@@ -3,10 +3,10 @@ package org.meteor.coordinatior;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.meteor.ledger.LogCoordinator;
-import org.meteor.listener.MetricsListener;
 import org.meteor.client.internal.Client;
+import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.APIListener;
+import org.meteor.listener.MetricsListener;
 
 import java.util.List;
 

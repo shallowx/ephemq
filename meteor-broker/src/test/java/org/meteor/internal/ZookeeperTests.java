@@ -2,7 +2,6 @@ package org.meteor.internal;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorOp;
-import org.apache.curator.framework.api.transaction.CuratorTransactionResult;
 import org.apache.curator.test.TestingServer;
 import org.apache.zookeeper.CreateMode;
 import org.junit.After;
@@ -11,7 +10,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.config.ZookeeperConfig;
 
-import java.util.List;
 import java.util.Properties;
 
 public class ZookeeperTests {

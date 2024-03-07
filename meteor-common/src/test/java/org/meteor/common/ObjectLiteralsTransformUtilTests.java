@@ -4,7 +4,9 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.util.Properties;
+
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
 public class ObjectLiteralsTransformUtilTests {

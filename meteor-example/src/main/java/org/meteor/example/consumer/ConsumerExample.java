@@ -1,12 +1,13 @@
 package org.meteor.example.consumer;
 
 import org.meteor.client.consumer.Consumer;
-import org.meteor.client.consumer.DefaultConsumer;
 import org.meteor.client.consumer.ConsumerConfig;
+import org.meteor.client.consumer.DefaultConsumer;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

@@ -17,6 +17,7 @@ import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
+
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Properties;

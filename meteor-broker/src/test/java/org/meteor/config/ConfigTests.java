@@ -3,6 +3,7 @@ package org.meteor.config;
 import io.netty.util.NettyRuntime;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+
 import java.util.Properties;
 
 public class ConfigTests {

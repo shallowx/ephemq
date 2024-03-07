@@ -5,9 +5,9 @@ import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import org.junit.Assert;
 import org.junit.Test;
-import org.meteor.common.message.Offset;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
 

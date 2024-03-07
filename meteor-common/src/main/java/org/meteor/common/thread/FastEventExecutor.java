@@ -5,8 +5,8 @@ import io.netty.util.concurrent.RejectedExecutionHandler;
 import io.netty.util.concurrent.RejectedExecutionHandlers;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import org.jctools.queues.MpscBlockingConsumerArrayQueue;
-import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.Executor;

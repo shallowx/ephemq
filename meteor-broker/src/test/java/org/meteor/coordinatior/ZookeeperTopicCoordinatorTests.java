@@ -6,15 +6,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.meteor.common.message.PartitionInfo;
-import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.CorrelationIdConstants;
-import org.mockito.Mock;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 

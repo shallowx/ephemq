@@ -5,15 +5,15 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.meteor.common.message.TopicConfig;
-import org.meteor.config.CommonConfig;
-import org.meteor.coordinatior.Coordinator;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.TopicConfig;
+import org.meteor.config.CommonConfig;
+import org.meteor.coordinatior.Coordinator;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.DeleteTopicResponse;
 

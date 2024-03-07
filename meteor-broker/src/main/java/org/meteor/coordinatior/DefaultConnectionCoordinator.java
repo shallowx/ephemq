@@ -2,7 +2,6 @@ package org.meteor.coordinatior;
 
 import io.netty.channel.Channel;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
