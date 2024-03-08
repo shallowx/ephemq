@@ -55,7 +55,7 @@ public class ProducerTests {
                 }
 
                 try {
-                    // the duration setting only for testing
+                    // the duration setting only for testing and demonstration purposes
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable t) {
                     if (logger.isErrorEnabled()) {

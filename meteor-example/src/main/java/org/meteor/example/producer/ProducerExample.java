@@ -61,6 +61,7 @@ public class ProducerExample {
                 }
 
                 try {
+                    // the duration setting only for testing and demonstration purposes
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Throwable ignored) {}
                 producer.close();

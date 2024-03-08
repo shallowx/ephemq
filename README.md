@@ -8,11 +8,14 @@
 ![image](https://github.com/shallowx/meteor/blob/main/docs/image/infra.png)
 
 # Example
-- For better demonstration of the running effect, set the time interval to 1 second for easy demo creation, but it actually supports high traffic and meets subtle-level latency
-- To demonstrate the effect, the setting of sending one message per second was implemented. However, this setting can be omitted when deploying it in practice.
+
+- For better demonstration of the running effect, set the time interval to 1 second [TimeUnit.MILLISECONDS.sleep(1000)]
+  for easy demo creation, but it actually supports high traffic and meets subtle-level latency
+- To demonstrate the effect, the setting of sending one message per second was implemented. However, this
+  setting[TimeUnit.MILLISECONDS.sleep(1000)] can be omitted when deploying it in practice
 ![image](https://github.com/shallowx/meteor/blob/main/docs/image/example.gif)
 
-## Latency
+## Store And Buffers
 ![image](https://github.com/shallowx/meteor/blob/main/docs/image/partition.png)
 
 # Environment
