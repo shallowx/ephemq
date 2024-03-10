@@ -31,6 +31,9 @@ final class MessageHandler {
 
     void handle(ClientChannel channel, int marker, MessageId messageId, ByteBuf data) {
         if (handleExecutor.isShuttingDown()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Message handler[{}] executor is shutting down", id);
+            }
             return;
         }
         semaphore.acquireUninterruptibly();

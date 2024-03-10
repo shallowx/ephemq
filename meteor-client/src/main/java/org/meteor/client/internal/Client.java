@@ -44,7 +44,7 @@ public class Client implements MeterBinder {
     protected EventLoopGroup workerGroup;
     protected EventExecutor refreshMetadataExecutor;
     private Bootstrap bootstrap;
-    private volatile Boolean state;
+    private volatile boolean state = false;
 
     public Client(String name, ClientConfig config, CombineListener listener) {
         this.name = name;
@@ -206,7 +206,7 @@ public class Client implements MeterBinder {
     }
 
     public boolean isRunning() {
-        return state != null && state;
+        return state;
     }
 
     public synchronized void start() {
@@ -217,7 +217,7 @@ public class Client implements MeterBinder {
             return;
         }
 
-        state = Boolean.TRUE;
+        state = true;
         workerGroup = NetworkUtil.newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(), "client-worker(" + name + ")");
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
@@ -256,7 +256,7 @@ public class Client implements MeterBinder {
             return;
         }
 
-        state = Boolean.FALSE;
+        state = false;
         if (refreshMetadataExecutor != null) {
             Future<?> future = refreshMetadataExecutor.shutdownGracefully();
             future.addListener(f -> {

@@ -27,7 +27,7 @@ public class DefaultProducer implements Producer{
     private final ProducerConfig config;
     private final Client client;
     private final Map<Integer, ClientChannel> readyChannels = new ConcurrentHashMap<>();
-    private volatile Boolean state;
+    private volatile boolean state = false;
     private final CombineListener listener;
     public DefaultProducer(String name, ProducerConfig config) {
         this(name, config, null);
@@ -41,14 +41,18 @@ public class DefaultProducer implements Producer{
 
     @Override
     public void start() {
-        if (state != null) {
+        if (isRunning()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Producer[{}] is running, don't run it replay", name);
             }
             return;
         }
-        state = Boolean.TRUE;
+        state = true;
         client.start();
+    }
+
+    private boolean isRunning() {
+        return state;
     }
 
     @Override
@@ -188,14 +192,14 @@ public class DefaultProducer implements Producer{
 
     @Override
     public void close() {
-        if (state != Boolean.TRUE) {
+        if (!isRunning()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("Producer[{}] was closed, don't execute it replay", name);
             }
             return;
         }
 
-        state = Boolean.FALSE;
+        state = false;
         try {
             listener.listenerCompleted();
         } catch (InterruptedException ignored) {

@@ -36,7 +36,7 @@ public class DefaultConsumer implements Consumer {
     private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
     private final Map<String, Map<Integer, Int2IntMap>> topicLedgerMarkers = new HashMap<>();
     private EventExecutor executor;
-    private volatile Boolean state;
+    private volatile boolean state = false;
     private Future<?> failedRetryFuture;
     private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
     private final CombineListener listener;
@@ -56,14 +56,14 @@ public class DefaultConsumer implements Consumer {
 
     @Override
     public synchronized void start() {
-        if (state != null) {
+        if (isRunning()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("The Consumer[{}] client[{}] war started", name, name);
             }
             return;
         }
 
-        state = Boolean.TRUE;
+        state = true;
         client.start();
         executor = new FastEventExecutor(new DefaultThreadFactory("consumer-task"));
         executor.scheduleWithFixedDelay(this::touchChangedTask, 30, 30, TimeUnit.SECONDS);
@@ -782,13 +782,13 @@ public class DefaultConsumer implements Consumer {
     @Override
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public synchronized void close() throws InterruptedException {
-        if (state != Boolean.TRUE) {
+        if (!isRunning()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("The consumer[{}] was closed, don't execute it replay", name);
             }
             return;
         }
-        state = Boolean.FALSE;
+        state = false;
         if (executor != null) {
             executor.shutdownGracefully();
            try {
@@ -801,6 +801,10 @@ public class DefaultConsumer implements Consumer {
         }
         listener.listenerCompleted();
         client.close();
+    }
+
+    private boolean isRunning() {
+        return state;
     }
 
     String getName() { return name;}
