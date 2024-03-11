@@ -53,6 +53,7 @@ public class CommonConfig {
     public int getAuxThreadLimit() {
         return object2Int(prop.getOrDefault(AUX_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }
+
     public int getCommandHandleThreadLimit() {
         return object2Int(prop.getOrDefault(COMMAND_HANDLE_THREAD_LIMIT, NettyRuntime.availableProcessors()));
     }

@@ -39,6 +39,7 @@ public class NetworkConfig {
     public int getIoThreadLimit() {
         return object2Int(prop.getOrDefault(IO_THREAD_LIMIT, 1));
     }
+
     public int getNotifyClientTimeoutMilliseconds() {
         return object2Int(prop.getOrDefault(NOTIFY_CLIENT_TIMEOUT_MILLISECONDS, 100));
     }

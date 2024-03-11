@@ -47,13 +47,13 @@ public class Log {
     protected final EventExecutor storageExecutor;
     protected final EventExecutor commandExecutor;
     protected final RecordEntryDispatcher entryDispatcher;
-    protected ChunkRecordEntryDispatcher chunkEntryDispatcher;
     protected final List<LogListener> listeners;
     protected final Coordinator coordinator;
     protected final Meter segmentCount;
     protected final Meter segmentBytes;
     protected final int forwardTimeout;
     protected final AtomicReference<LogState> state = new AtomicReference<>(null);
+    protected ChunkRecordEntryDispatcher chunkEntryDispatcher;
     protected Migration migration;
     protected ClientChannel syncChannel;
     protected Promise<SyncResponse> syncPromise;
@@ -624,16 +624,16 @@ public class Log {
 
     private void dpAppendChunk(Channel channel, int count, ByteBuf buf, Promise<Integer> promise) {
         try {
-           promise.addListener((GenericFutureListener<Future<Integer>>) future -> {
-               if (future.isSuccess()) {
-                   int appends = future.getNow();
-                   if (logger.isWarnEnabled() && appends < count) {
-                       logger.warn("Chunk append missed topic={} ledger={} exceptCount={} appendCount={}",
-                               topicPartition.topic(), ledger, count, appends, future.cause());
-                   }
-               }
-           });
-           storage.appendChunkRecord(channel, count, buf, promise);
+            promise.addListener((GenericFutureListener<Future<Integer>>) future -> {
+                if (future.isSuccess()) {
+                    int appends = future.getNow();
+                    if (logger.isWarnEnabled() && appends < count) {
+                        logger.warn("Chunk append missed topic={} ledger={} exceptCount={} appendCount={}",
+                                topicPartition.topic(), ledger, count, appends, future.cause());
+                    }
+                }
+            });
+            storage.appendChunkRecord(channel, count, buf, promise);
         } catch (Exception e) {
             promise.tryFailure(e);
         } finally {
@@ -647,7 +647,7 @@ public class Log {
         } else {
             try {
                 storageExecutor.execute(() -> doSubscribeSynchronize(channel, promise));
-            }catch (Exception e) {
+            } catch (Exception e) {
                 promise.tryFailure(e);
             }
         }

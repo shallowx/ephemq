@@ -19,6 +19,12 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class SetBenchmark {
+    private final Set<Object> hashset = new HashSet<>();
+    private final Set<Object> concurrentSkipListSet = new ConcurrentSkipListSet<>();
+    private final Set<Object> copyOnWriteArraySet = new CopyOnWriteArraySet<>();
+    private final Set<Object> objectSet = new ObjectArraySet<>();
+    private final Set<Object> objectObjectLinkedOpenHashSet = new ObjectLinkedOpenHashSet<>();
+
     @Setup
     public void setUp() {
         for (int i = 0; i < 1000; i++) {
@@ -74,10 +80,4 @@ public class SetBenchmark {
         }
         blackhole.consume(o);
     }
-
-    private final Set<Object> hashset = new HashSet<>();
-    private final Set<Object> concurrentSkipListSet = new ConcurrentSkipListSet<>();
-    private final Set<Object> copyOnWriteArraySet = new CopyOnWriteArraySet<>();
-    private final Set<Object> objectSet = new ObjectArraySet<>();
-    private final Set<Object> objectObjectLinkedOpenHashSet = new ObjectLinkedOpenHashSet<>();
 }

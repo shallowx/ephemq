@@ -7,860 +7,939 @@ package org.meteor.remote.proto;
  * Protobuf type {@code meteor.protobuf.ClusterInfo}
  */
 public final class ClusterInfo extends
-    com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:meteor.protobuf.ClusterInfo)
-    ClusterInfoOrBuilder {
-private static final long serialVersionUID = 0L;
-  // Use ClusterInfo.newBuilder() to construct.
-  private ClusterInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-    super(builder);
-  }
-  private ClusterInfo() {
-  }
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:meteor.protobuf.ClusterInfo)
+        ClusterInfoOrBuilder {
+    public static final int CLUSTER_FIELD_NUMBER = 1;
+    public static final int NODES_FIELD_NUMBER = 2;
+    private static final long serialVersionUID = 0L;
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.ClusterInfo)
+    private static final org.meteor.remote.proto.ClusterInfo DEFAULT_INSTANCE;
+    private static final com.google.protobuf.Parser<ClusterInfo>
+            PARSER = new com.google.protobuf.AbstractParser<ClusterInfo>() {
+        @java.lang.Override
+        public ClusterInfo parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
 
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new ClusterInfo();
-  }
-
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
-  public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-    return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_descriptor;
-  }
-
-  @SuppressWarnings({"rawtypes"})
-  @java.lang.Override
-  protected com.google.protobuf.MapField internalGetMapField(
-      int number) {
-    switch (number) {
-      case 2:
-        return internalGetNodes();
-      default:
-        throw new RuntimeException(
-            "Invalid map field number: " + number);
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.ClusterInfo();
     }
-  }
-  @java.lang.Override
-  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-    return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable
-        .ensureFieldAccessorsInitialized(
-            org.meteor.remote.proto.ClusterInfo.class, org.meteor.remote.proto.ClusterInfo.Builder.class);
-  }
-
-  public static final int CLUSTER_FIELD_NUMBER = 1;
-  private org.meteor.remote.proto.ClusterMetadata cluster_;
-  /**
-   * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-   * @return Whether the cluster field is set.
-   */
-  @java.lang.Override
-  public boolean hasCluster() {
-    return cluster_ != null;
-  }
-  /**
-   * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-   * @return The cluster.
-   */
-  @java.lang.Override
-  public org.meteor.remote.proto.ClusterMetadata getCluster() {
-    return cluster_ == null ? org.meteor.remote.proto.ClusterMetadata.getDefaultInstance() : cluster_;
-  }
-  /**
-   * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-   */
-  @java.lang.Override
-  public org.meteor.remote.proto.ClusterMetadataOrBuilder getClusterOrBuilder() {
-    return getCluster();
-  }
-
-  public static final int NODES_FIELD_NUMBER = 2;
-  private static final class NodesDefaultEntryHolder {
-    static final com.google.protobuf.MapEntry<
-        java.lang.String, org.meteor.remote.proto.NodeMetadata> defaultEntry =
-            com.google.protobuf.MapEntry
-            .<java.lang.String, org.meteor.remote.proto.NodeMetadata>newDefaultInstance(
-                org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor, 
-                com.google.protobuf.WireFormat.FieldType.STRING,
-                "",
-                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                org.meteor.remote.proto.NodeMetadata.getDefaultInstance());
-  }
-  private com.google.protobuf.MapField<
-      java.lang.String, org.meteor.remote.proto.NodeMetadata> nodes_;
-  private com.google.protobuf.MapField<java.lang.String, org.meteor.remote.proto.NodeMetadata>
-  internalGetNodes() {
-    if (nodes_ == null) {
-      return com.google.protobuf.MapField.emptyMapField(
-          NodesDefaultEntryHolder.defaultEntry);
-    }
-    return nodes_;
-  }
-
-  public int getNodesCount() {
-    return internalGetNodes().getMap().size();
-  }
-  /**
-   * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-   */
-
-  @java.lang.Override
-  public boolean containsNodes(
-      java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    return internalGetNodes().getMap().containsKey(key);
-  }
-  /**
-   * Use {@link #getNodesMap()} instead.
-   */
-  @java.lang.Override
-  @java.lang.Deprecated
-  public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> getNodes() {
-    return getNodesMap();
-  }
-  /**
-   * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-   */
-  @java.lang.Override
-
-  public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> getNodesMap() {
-    return internalGetNodes().getMap();
-  }
-  /**
-   * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-   */
-  @java.lang.Override
-
-  public org.meteor.remote.proto.NodeMetadata getNodesOrDefault(
-      java.lang.String key,
-      org.meteor.remote.proto.NodeMetadata defaultValue) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
-        internalGetNodes().getMap();
-    return map.containsKey(key) ? map.get(key) : defaultValue;
-  }
-  /**
-   * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-   */
-  @java.lang.Override
-
-  public org.meteor.remote.proto.NodeMetadata getNodesOrThrow(
-      java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
-        internalGetNodes().getMap();
-    if (!map.containsKey(key)) {
-      throw new java.lang.IllegalArgumentException();
-    }
-    return map.get(key);
-  }
-
-  private byte memoizedIsInitialized = -1;
-  @java.lang.Override
-  public final boolean isInitialized() {
-    byte isInitialized = memoizedIsInitialized;
-    if (isInitialized == 1) return true;
-    if (isInitialized == 0) return false;
-
-    memoizedIsInitialized = 1;
-    return true;
-  }
-
-  @java.lang.Override
-  public void writeTo(com.google.protobuf.CodedOutputStream output)
-                      throws java.io.IOException {
-    if (cluster_ != null) {
-      output.writeMessage(1, getCluster());
-    }
-    com.google.protobuf.GeneratedMessageV3
-      .serializeStringMapTo(
-        output,
-        internalGetNodes(),
-        NodesDefaultEntryHolder.defaultEntry,
-        2);
-    getUnknownFields().writeTo(output);
-  }
-
-  @java.lang.Override
-  public int getSerializedSize() {
-    int size = memoizedSize;
-    if (size != -1) return size;
-
-    size = 0;
-    if (cluster_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getCluster());
-    }
-    for (java.util.Map.Entry<java.lang.String, org.meteor.remote.proto.NodeMetadata> entry
-         : internalGetNodes().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, org.meteor.remote.proto.NodeMetadata>
-      nodes__ = NodesDefaultEntryHolder.defaultEntry.newBuilderForType()
-          .setKey(entry.getKey())
-          .setValue(entry.getValue())
-          .build();
-      size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, nodes__);
-    }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSize = size;
-    return size;
-  }
-
-  @java.lang.Override
-  public boolean equals(final java.lang.Object obj) {
-    if (obj == this) {
-     return true;
-    }
-    if (!(obj instanceof org.meteor.remote.proto.ClusterInfo)) {
-      return super.equals(obj);
-    }
-    org.meteor.remote.proto.ClusterInfo other = (org.meteor.remote.proto.ClusterInfo) obj;
-
-    if (hasCluster() != other.hasCluster()) return false;
-    if (hasCluster()) {
-      if (!getCluster()
-          .equals(other.getCluster())) return false;
-    }
-    if (!internalGetNodes().equals(
-        other.internalGetNodes())) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-    return true;
-  }
-
-  @java.lang.Override
-  public int hashCode() {
-    if (memoizedHashCode != 0) {
-      return memoizedHashCode;
-    }
-    int hash = 41;
-    hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasCluster()) {
-      hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
-      hash = (53 * hash) + getCluster().hashCode();
-    }
-    if (!internalGetNodes().getMap().isEmpty()) {
-      hash = (37 * hash) + NODES_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetNodes().hashCode();
-    }
-    hash = (29 * hash) + getUnknownFields().hashCode();
-    memoizedHashCode = hash;
-    return hash;
-  }
-
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      java.nio.ByteBuffer data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      java.nio.ByteBuffer data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      com.google.protobuf.ByteString data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      com.google.protobuf.ByteString data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(byte[] data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      byte[] data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(java.io.InputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      java.io.InputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseDelimitedFrom(java.io.InputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseDelimitedWithIOException(PARSER, input);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseDelimitedFrom(
-      java.io.InputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      com.google.protobuf.CodedInputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input);
-  }
-  public static org.meteor.remote.proto.ClusterInfo parseFrom(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input, extensionRegistry);
-  }
-
-  @java.lang.Override
-  public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder() {
-    return DEFAULT_INSTANCE.toBuilder();
-  }
-  public static Builder newBuilder(org.meteor.remote.proto.ClusterInfo prototype) {
-    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-  }
-  @java.lang.Override
-  public Builder toBuilder() {
-    return this == DEFAULT_INSTANCE
-        ? new Builder() : new Builder().mergeFrom(this);
-  }
-
-  @java.lang.Override
-  protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-    Builder builder = new Builder(parent);
-    return builder;
-  }
-  /**
-   * Protobuf type {@code meteor.protobuf.ClusterInfo}
-   */
-  public static final class Builder extends
-      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:meteor.protobuf.ClusterInfo)
-      org.meteor.remote.proto.ClusterInfoOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_descriptor;
-    }
-
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetNodes();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMutableMapField(
-        int number) {
-      switch (number) {
-        case 2:
-          return internalGetMutableNodes();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              org.meteor.remote.proto.ClusterInfo.class, org.meteor.remote.proto.ClusterInfo.Builder.class);
-    }
-
-    // Construct using org.meteor.remote.proto.ClusterInfo.newBuilder()
-    private Builder() {
-
-    }
-
-    private Builder(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      super(parent);
-
-    }
-    @java.lang.Override
-    public Builder clear() {
-      super.clear();
-      if (clusterBuilder_ == null) {
-        cluster_ = null;
-      } else {
-        cluster_ = null;
-        clusterBuilder_ = null;
-      }
-      internalGetMutableNodes().clear();
-      return this;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-      return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_descriptor;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.ClusterInfo getDefaultInstanceForType() {
-      return org.meteor.remote.proto.ClusterInfo.getDefaultInstance();
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.ClusterInfo build() {
-      org.meteor.remote.proto.ClusterInfo result = buildPartial();
-      if (!result.isInitialized()) {
-        throw newUninitializedMessageException(result);
-      }
-      return result;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.ClusterInfo buildPartial() {
-      org.meteor.remote.proto.ClusterInfo result = new org.meteor.remote.proto.ClusterInfo(this);
-      int from_bitField0_ = bitField0_;
-      if (clusterBuilder_ == null) {
-        result.cluster_ = cluster_;
-      } else {
-        result.cluster_ = clusterBuilder_.build();
-      }
-      result.nodes_ = internalGetNodes();
-      result.nodes_.makeImmutable();
-      onBuilt();
-      return result;
-    }
-
-    @java.lang.Override
-    public Builder clone() {
-      return super.clone();
-    }
-    @java.lang.Override
-    public Builder setField(
-        com.google.protobuf.Descriptors.FieldDescriptor field,
-        java.lang.Object value) {
-      return super.setField(field, value);
-    }
-    @java.lang.Override
-    public Builder clearField(
-        com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return super.clearField(field);
-    }
-    @java.lang.Override
-    public Builder clearOneof(
-        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return super.clearOneof(oneof);
-    }
-    @java.lang.Override
-    public Builder setRepeatedField(
-        com.google.protobuf.Descriptors.FieldDescriptor field,
-        int index, java.lang.Object value) {
-      return super.setRepeatedField(field, index, value);
-    }
-    @java.lang.Override
-    public Builder addRepeatedField(
-        com.google.protobuf.Descriptors.FieldDescriptor field,
-        java.lang.Object value) {
-      return super.addRepeatedField(field, value);
-    }
-    @java.lang.Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.ClusterInfo) {
-        return mergeFrom((org.meteor.remote.proto.ClusterInfo)other);
-      } else {
-        super.mergeFrom(other);
-        return this;
-      }
-    }
-
-    public Builder mergeFrom(org.meteor.remote.proto.ClusterInfo other) {
-      if (other == org.meteor.remote.proto.ClusterInfo.getDefaultInstance()) return this;
-      if (other.hasCluster()) {
-        mergeCluster(other.getCluster());
-      }
-      internalGetMutableNodes().mergeFrom(
-          other.internalGetNodes());
-      this.mergeUnknownFields(other.getUnknownFields());
-      onChanged();
-      return this;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-      return true;
-    }
-
-    @java.lang.Override
-    public Builder mergeFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              input.readMessage(
-                  getClusterFieldBuilder().getBuilder(),
-                  extensionRegistry);
-
-              break;
-            } // case 10
-            case 18: {
-              com.google.protobuf.MapEntry<java.lang.String, org.meteor.remote.proto.NodeMetadata>
-              nodes__ = input.readMessage(
-                  NodesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableNodes().getMutableMap().put(
-                  nodes__.getKey(), nodes__.getValue());
-              break;
-            } // case 18
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.unwrapIOException();
-      } finally {
-        onChanged();
-      } // finally
-      return this;
-    }
-    private int bitField0_;
 
     private org.meteor.remote.proto.ClusterMetadata cluster_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.meteor.remote.proto.ClusterMetadata, org.meteor.remote.proto.ClusterMetadata.Builder, org.meteor.remote.proto.ClusterMetadataOrBuilder> clusterBuilder_;
+    private com.google.protobuf.MapField<
+            java.lang.String, org.meteor.remote.proto.NodeMetadata> nodes_;
+    private byte memoizedIsInitialized = -1;
+
+    // Use ClusterInfo.newBuilder() to construct.
+    private ClusterInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+    }
+
+    private ClusterInfo() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_descriptor;
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(org.meteor.remote.proto.ClusterInfo prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public static org.meteor.remote.proto.ClusterInfo getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    public static com.google.protobuf.Parser<ClusterInfo> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new ClusterInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+        switch (number) {
+            case 2:
+                return internalGetNodes();
+            default:
+                throw new RuntimeException(
+                        "Invalid map field number: " + number);
+        }
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.ClusterInfo.class, org.meteor.remote.proto.ClusterInfo.Builder.class);
+    }
+
     /**
      * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+     *
      * @return Whether the cluster field is set.
      */
+    @java.lang.Override
     public boolean hasCluster() {
-      return clusterBuilder_ != null || cluster_ != null;
+        return cluster_ != null;
     }
+
     /**
      * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+     *
      * @return The cluster.
      */
+    @java.lang.Override
     public org.meteor.remote.proto.ClusterMetadata getCluster() {
-      if (clusterBuilder_ == null) {
         return cluster_ == null ? org.meteor.remote.proto.ClusterMetadata.getDefaultInstance() : cluster_;
-      } else {
-        return clusterBuilder_.getMessage();
-      }
     }
-    /**
-     * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-     */
-    public Builder setCluster(org.meteor.remote.proto.ClusterMetadata value) {
-      if (clusterBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        cluster_ = value;
-        onChanged();
-      } else {
-        clusterBuilder_.setMessage(value);
-      }
 
-      return this;
-    }
     /**
      * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
      */
-    public Builder setCluster(
-        org.meteor.remote.proto.ClusterMetadata.Builder builderForValue) {
-      if (clusterBuilder_ == null) {
-        cluster_ = builderForValue.build();
-        onChanged();
-      } else {
-        clusterBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-     */
-    public Builder mergeCluster(org.meteor.remote.proto.ClusterMetadata value) {
-      if (clusterBuilder_ == null) {
-        if (cluster_ != null) {
-          cluster_ =
-            org.meteor.remote.proto.ClusterMetadata.newBuilder(cluster_).mergeFrom(value).buildPartial();
-        } else {
-          cluster_ = value;
-        }
-        onChanged();
-      } else {
-        clusterBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-     */
-    public Builder clearCluster() {
-      if (clusterBuilder_ == null) {
-        cluster_ = null;
-        onChanged();
-      } else {
-        cluster_ = null;
-        clusterBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-     */
-    public org.meteor.remote.proto.ClusterMetadata.Builder getClusterBuilder() {
-      
-      onChanged();
-      return getClusterFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-     */
+    @java.lang.Override
     public org.meteor.remote.proto.ClusterMetadataOrBuilder getClusterOrBuilder() {
-      if (clusterBuilder_ != null) {
-        return clusterBuilder_.getMessageOrBuilder();
-      } else {
-        return cluster_ == null ?
-            org.meteor.remote.proto.ClusterMetadata.getDefaultInstance() : cluster_;
-      }
-    }
-    /**
-     * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.meteor.remote.proto.ClusterMetadata, org.meteor.remote.proto.ClusterMetadata.Builder, org.meteor.remote.proto.ClusterMetadataOrBuilder> 
-        getClusterFieldBuilder() {
-      if (clusterBuilder_ == null) {
-        clusterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            org.meteor.remote.proto.ClusterMetadata, org.meteor.remote.proto.ClusterMetadata.Builder, org.meteor.remote.proto.ClusterMetadataOrBuilder>(
-                getCluster(),
-                getParentForChildren(),
-                isClean());
-        cluster_ = null;
-      }
-      return clusterBuilder_;
+        return getCluster();
     }
 
-    private com.google.protobuf.MapField<
-        java.lang.String, org.meteor.remote.proto.NodeMetadata> nodes_;
     private com.google.protobuf.MapField<java.lang.String, org.meteor.remote.proto.NodeMetadata>
     internalGetNodes() {
-      if (nodes_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            NodesDefaultEntryHolder.defaultEntry);
-      }
-      return nodes_;
-    }
-    private com.google.protobuf.MapField<java.lang.String, org.meteor.remote.proto.NodeMetadata>
-    internalGetMutableNodes() {
-      onChanged();;
-      if (nodes_ == null) {
-        nodes_ = com.google.protobuf.MapField.newMapField(
-            NodesDefaultEntryHolder.defaultEntry);
-      }
-      if (!nodes_.isMutable()) {
-        nodes_ = nodes_.copy();
-      }
-      return nodes_;
+        if (nodes_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                    NodesDefaultEntryHolder.defaultEntry);
+        }
+        return nodes_;
     }
 
     public int getNodesCount() {
-      return internalGetNodes().getMap().size();
+        return internalGetNodes().getMap().size();
     }
+
     /**
      * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
      */
 
     @java.lang.Override
     public boolean containsNodes(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      return internalGetNodes().getMap().containsKey(key);
+            java.lang.String key) {
+        if (key == null) {
+            throw new NullPointerException("map key");
+        }
+        return internalGetNodes().getMap().containsKey(key);
     }
+
     /**
      * Use {@link #getNodesMap()} instead.
      */
     @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> getNodes() {
-      return getNodesMap();
+        return getNodesMap();
     }
+
     /**
      * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
      */
     @java.lang.Override
 
     public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> getNodesMap() {
-      return internalGetNodes().getMap();
+        return internalGetNodes().getMap();
     }
+
     /**
      * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
      */
     @java.lang.Override
 
     public org.meteor.remote.proto.NodeMetadata getNodesOrDefault(
-        java.lang.String key,
-        org.meteor.remote.proto.NodeMetadata defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
-          internalGetNodes().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
+            java.lang.String key,
+            org.meteor.remote.proto.NodeMetadata defaultValue) {
+        if (key == null) {
+            throw new NullPointerException("map key");
+        }
+        java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
+                internalGetNodes().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
     }
+
     /**
      * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
      */
     @java.lang.Override
 
     public org.meteor.remote.proto.NodeMetadata getNodesOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
-          internalGetNodes().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
-      }
-      return map.get(key);
-    }
-
-    public Builder clearNodes() {
-      internalGetMutableNodes().getMutableMap()
-          .clear();
-      return this;
-    }
-    /**
-     * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-     */
-
-    public Builder removeNodes(
-        java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      internalGetMutableNodes().getMutableMap()
-          .remove(key);
-      return this;
-    }
-    /**
-     * Use alternate mutation accessors instead.
-     */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata>
-    getMutableNodes() {
-      return internalGetMutableNodes().getMutableMap();
-    }
-    /**
-     * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-     */
-    public Builder putNodes(
-        java.lang.String key,
-        org.meteor.remote.proto.NodeMetadata value) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      if (value == null) {
-  throw new NullPointerException("map value");
-}
-
-      internalGetMutableNodes().getMutableMap()
-          .put(key, value);
-      return this;
-    }
-    /**
-     * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
-     */
-
-    public Builder putAllNodes(
-        java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> values) {
-      internalGetMutableNodes().getMutableMap()
-          .putAll(values);
-      return this;
-    }
-    @java.lang.Override
-    public final Builder setUnknownFields(
-        final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
+            java.lang.String key) {
+        if (key == null) {
+            throw new NullPointerException("map key");
+        }
+        java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
+                internalGetNodes().getMap();
+        if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
     }
 
     @java.lang.Override
-    public final Builder mergeUnknownFields(
-        final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.mergeUnknownFields(unknownFields);
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
     }
 
-
-    // @@protoc_insertion_point(builder_scope:meteor.protobuf.ClusterInfo)
-  }
-
-  // @@protoc_insertion_point(class_scope:meteor.protobuf.ClusterInfo)
-  private static final org.meteor.remote.proto.ClusterInfo DEFAULT_INSTANCE;
-  static {
-    DEFAULT_INSTANCE = new org.meteor.remote.proto.ClusterInfo();
-  }
-
-  public static org.meteor.remote.proto.ClusterInfo getDefaultInstance() {
-    return DEFAULT_INSTANCE;
-  }
-
-  private static final com.google.protobuf.Parser<ClusterInfo>
-      PARSER = new com.google.protobuf.AbstractParser<ClusterInfo>() {
     @java.lang.Override
-    public ClusterInfo parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (cluster_ != null) {
+            output.writeMessage(1, getCluster());
+        }
+        com.google.protobuf.GeneratedMessageV3
+                .serializeStringMapTo(
+                        output,
+                        internalGetNodes(),
+                        NodesDefaultEntryHolder.defaultEntry,
+                        2);
+        getUnknownFields().writeTo(output);
     }
-  };
 
-  public static com.google.protobuf.Parser<ClusterInfo> parser() {
-    return PARSER;
-  }
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
 
-  @java.lang.Override
-  public com.google.protobuf.Parser<ClusterInfo> getParserForType() {
-    return PARSER;
-  }
+        size = 0;
+        if (cluster_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(1, getCluster());
+        }
+        for (java.util.Map.Entry<java.lang.String, org.meteor.remote.proto.NodeMetadata> entry
+                : internalGetNodes().getMap().entrySet()) {
+            com.google.protobuf.MapEntry<java.lang.String, org.meteor.remote.proto.NodeMetadata>
+                    nodes__ = NodesDefaultEntryHolder.defaultEntry.newBuilderForType()
+                    .setKey(entry.getKey())
+                    .setValue(entry.getValue())
+                    .build();
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(2, nodes__);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
 
-  @java.lang.Override
-  public org.meteor.remote.proto.ClusterInfo getDefaultInstanceForType() {
-    return DEFAULT_INSTANCE;
-  }
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.ClusterInfo)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.ClusterInfo other = (org.meteor.remote.proto.ClusterInfo) obj;
+
+        if (hasCluster() != other.hasCluster()) return false;
+        if (hasCluster()) {
+            if (!getCluster()
+                    .equals(other.getCluster())) return false;
+        }
+        if (!internalGetNodes().equals(
+                other.internalGetNodes())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (hasCluster()) {
+            hash = (37 * hash) + CLUSTER_FIELD_NUMBER;
+            hash = (53 * hash) + getCluster().hashCode();
+        }
+        if (!internalGetNodes().getMap().isEmpty()) {
+            hash = (37 * hash) + NODES_FIELD_NUMBER;
+            hash = (53 * hash) + internalGetNodes().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
+    @java.lang.Override
+    public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+                ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ClusterInfo> getParserForType() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public org.meteor.remote.proto.ClusterInfo getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final class NodesDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+                java.lang.String, org.meteor.remote.proto.NodeMetadata> defaultEntry =
+                com.google.protobuf.MapEntry
+                        .<java.lang.String, org.meteor.remote.proto.NodeMetadata>newDefaultInstance(
+                                org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor,
+                                com.google.protobuf.WireFormat.FieldType.STRING,
+                                "",
+                                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                                org.meteor.remote.proto.NodeMetadata.getDefaultInstance());
+    }
+
+    /**
+     * Protobuf type {@code meteor.protobuf.ClusterInfo}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:meteor.protobuf.ClusterInfo)
+            org.meteor.remote.proto.ClusterInfoOrBuilder {
+        private int bitField0_;
+        private org.meteor.remote.proto.ClusterMetadata cluster_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.ClusterMetadata, org.meteor.remote.proto.ClusterMetadata.Builder, org.meteor.remote.proto.ClusterMetadataOrBuilder> clusterBuilder_;
+        private com.google.protobuf.MapField<
+                java.lang.String, org.meteor.remote.proto.NodeMetadata> nodes_;
+
+        // Construct using org.meteor.remote.proto.ClusterInfo.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_descriptor;
+        }
+
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMapField(
+                int number) {
+            switch (number) {
+                case 2:
+                    return internalGetNodes();
+                default:
+                    throw new RuntimeException(
+                            "Invalid map field number: " + number);
+            }
+        }
+
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMutableMapField(
+                int number) {
+            switch (number) {
+                case 2:
+                    return internalGetMutableNodes();
+                default:
+                    throw new RuntimeException(
+                            "Invalid map field number: " + number);
+            }
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.ClusterInfo.class, org.meteor.remote.proto.ClusterInfo.Builder.class);
+        }
+
+        @java.lang.Override
+        public Builder clear() {
+            super.clear();
+            if (clusterBuilder_ == null) {
+                cluster_ = null;
+            } else {
+                cluster_ = null;
+                clusterBuilder_ = null;
+            }
+            internalGetMutableNodes().clear();
+            return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_ClusterInfo_descriptor;
+        }
+
+        @java.lang.Override
+        public org.meteor.remote.proto.ClusterInfo getDefaultInstanceForType() {
+            return org.meteor.remote.proto.ClusterInfo.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public org.meteor.remote.proto.ClusterInfo build() {
+            org.meteor.remote.proto.ClusterInfo result = buildPartial();
+            if (!result.isInitialized()) {
+                throw newUninitializedMessageException(result);
+            }
+            return result;
+        }
+
+        @java.lang.Override
+        public org.meteor.remote.proto.ClusterInfo buildPartial() {
+            org.meteor.remote.proto.ClusterInfo result = new org.meteor.remote.proto.ClusterInfo(this);
+            int from_bitField0_ = bitField0_;
+            if (clusterBuilder_ == null) {
+                result.cluster_ = cluster_;
+            } else {
+                result.cluster_ = clusterBuilder_.build();
+            }
+            result.nodes_ = internalGetNodes();
+            result.nodes_.makeImmutable();
+            onBuilt();
+            return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+            return super.clone();
+        }
+
+        @java.lang.Override
+        public Builder setField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                java.lang.Object value) {
+            return super.setField(field, value);
+        }
+
+        @java.lang.Override
+        public Builder clearField(
+                com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+        }
+
+        @java.lang.Override
+        public Builder clearOneof(
+                com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+        }
+
+        @java.lang.Override
+        public Builder setRepeatedField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+        }
+
+        @java.lang.Override
+        public Builder addRepeatedField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof org.meteor.remote.proto.ClusterInfo) {
+                return mergeFrom((org.meteor.remote.proto.ClusterInfo) other);
+            } else {
+                super.mergeFrom(other);
+                return this;
+            }
+        }
+
+        public Builder mergeFrom(org.meteor.remote.proto.ClusterInfo other) {
+            if (other == org.meteor.remote.proto.ClusterInfo.getDefaultInstance()) return this;
+            if (other.hasCluster()) {
+                mergeCluster(other.getCluster());
+            }
+            internalGetMutableNodes().mergeFrom(
+                    other.internalGetNodes());
+            this.mergeUnknownFields(other.getUnknownFields());
+            onChanged();
+            return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+            return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            if (extensionRegistry == null) {
+                throw new java.lang.NullPointerException();
+            }
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        case 10: {
+                            input.readMessage(
+                                    getClusterFieldBuilder().getBuilder(),
+                                    extensionRegistry);
+
+                            break;
+                        } // case 10
+                        case 18: {
+                            com.google.protobuf.MapEntry<java.lang.String, org.meteor.remote.proto.NodeMetadata>
+                                    nodes__ = input.readMessage(
+                                    NodesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                            internalGetMutableNodes().getMutableMap().put(
+                                    nodes__.getKey(), nodes__.getValue());
+                            break;
+                        } // case 18
+                        default: {
+                            if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                                done = true; // was an endgroup tag
+                            }
+                            break;
+                        } // default:
+                    } // switch (tag)
+                } // while (!done)
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.unwrapIOException();
+            } finally {
+                onChanged();
+            } // finally
+            return this;
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         *
+         * @return Whether the cluster field is set.
+         */
+        public boolean hasCluster() {
+            return clusterBuilder_ != null || cluster_ != null;
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         *
+         * @return The cluster.
+         */
+        public org.meteor.remote.proto.ClusterMetadata getCluster() {
+            if (clusterBuilder_ == null) {
+                return cluster_ == null ? org.meteor.remote.proto.ClusterMetadata.getDefaultInstance() : cluster_;
+            } else {
+                return clusterBuilder_.getMessage();
+            }
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        public Builder setCluster(org.meteor.remote.proto.ClusterMetadata value) {
+            if (clusterBuilder_ == null) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                cluster_ = value;
+                onChanged();
+            } else {
+                clusterBuilder_.setMessage(value);
+            }
+
+            return this;
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        public Builder setCluster(
+                org.meteor.remote.proto.ClusterMetadata.Builder builderForValue) {
+            if (clusterBuilder_ == null) {
+                cluster_ = builderForValue.build();
+                onChanged();
+            } else {
+                clusterBuilder_.setMessage(builderForValue.build());
+            }
+
+            return this;
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        public Builder mergeCluster(org.meteor.remote.proto.ClusterMetadata value) {
+            if (clusterBuilder_ == null) {
+                if (cluster_ != null) {
+                    cluster_ =
+                            org.meteor.remote.proto.ClusterMetadata.newBuilder(cluster_).mergeFrom(value).buildPartial();
+                } else {
+                    cluster_ = value;
+                }
+                onChanged();
+            } else {
+                clusterBuilder_.mergeFrom(value);
+            }
+
+            return this;
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        public Builder clearCluster() {
+            if (clusterBuilder_ == null) {
+                cluster_ = null;
+                onChanged();
+            } else {
+                cluster_ = null;
+                clusterBuilder_ = null;
+            }
+
+            return this;
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        public org.meteor.remote.proto.ClusterMetadata.Builder getClusterBuilder() {
+
+            onChanged();
+            return getClusterFieldBuilder().getBuilder();
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        public org.meteor.remote.proto.ClusterMetadataOrBuilder getClusterOrBuilder() {
+            if (clusterBuilder_ != null) {
+                return clusterBuilder_.getMessageOrBuilder();
+            } else {
+                return cluster_ == null ?
+                        org.meteor.remote.proto.ClusterMetadata.getDefaultInstance() : cluster_;
+            }
+        }
+
+        /**
+         * <code>.meteor.protobuf.ClusterMetadata cluster = 1;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.ClusterMetadata, org.meteor.remote.proto.ClusterMetadata.Builder, org.meteor.remote.proto.ClusterMetadataOrBuilder>
+        getClusterFieldBuilder() {
+            if (clusterBuilder_ == null) {
+                clusterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                        org.meteor.remote.proto.ClusterMetadata, org.meteor.remote.proto.ClusterMetadata.Builder, org.meteor.remote.proto.ClusterMetadataOrBuilder>(
+                        getCluster(),
+                        getParentForChildren(),
+                        isClean());
+                cluster_ = null;
+            }
+            return clusterBuilder_;
+        }
+
+        private com.google.protobuf.MapField<java.lang.String, org.meteor.remote.proto.NodeMetadata>
+        internalGetNodes() {
+            if (nodes_ == null) {
+                return com.google.protobuf.MapField.emptyMapField(
+                        NodesDefaultEntryHolder.defaultEntry);
+            }
+            return nodes_;
+        }
+
+        private com.google.protobuf.MapField<java.lang.String, org.meteor.remote.proto.NodeMetadata>
+        internalGetMutableNodes() {
+            onChanged();
+            ;
+            if (nodes_ == null) {
+                nodes_ = com.google.protobuf.MapField.newMapField(
+                        NodesDefaultEntryHolder.defaultEntry);
+            }
+            if (!nodes_.isMutable()) {
+                nodes_ = nodes_.copy();
+            }
+            return nodes_;
+        }
+
+        public int getNodesCount() {
+            return internalGetNodes().getMap().size();
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+
+        @java.lang.Override
+        public boolean containsNodes(
+                java.lang.String key) {
+            if (key == null) {
+                throw new NullPointerException("map key");
+            }
+            return internalGetNodes().getMap().containsKey(key);
+        }
+
+        /**
+         * Use {@link #getNodesMap()} instead.
+         */
+        @java.lang.Override
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> getNodes() {
+            return getNodesMap();
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+        @java.lang.Override
+
+        public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> getNodesMap() {
+            return internalGetNodes().getMap();
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+        @java.lang.Override
+
+        public org.meteor.remote.proto.NodeMetadata getNodesOrDefault(
+                java.lang.String key,
+                org.meteor.remote.proto.NodeMetadata defaultValue) {
+            if (key == null) {
+                throw new NullPointerException("map key");
+            }
+            java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
+                    internalGetNodes().getMap();
+            return map.containsKey(key) ? map.get(key) : defaultValue;
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+        @java.lang.Override
+
+        public org.meteor.remote.proto.NodeMetadata getNodesOrThrow(
+                java.lang.String key) {
+            if (key == null) {
+                throw new NullPointerException("map key");
+            }
+            java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> map =
+                    internalGetNodes().getMap();
+            if (!map.containsKey(key)) {
+                throw new java.lang.IllegalArgumentException();
+            }
+            return map.get(key);
+        }
+
+        public Builder clearNodes() {
+            internalGetMutableNodes().getMutableMap()
+                    .clear();
+            return this;
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+
+        public Builder removeNodes(
+                java.lang.String key) {
+            if (key == null) {
+                throw new NullPointerException("map key");
+            }
+            internalGetMutableNodes().getMutableMap()
+                    .remove(key);
+            return this;
+        }
+
+        /**
+         * Use alternate mutation accessors instead.
+         */
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata>
+        getMutableNodes() {
+            return internalGetMutableNodes().getMutableMap();
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+        public Builder putNodes(
+                java.lang.String key,
+                org.meteor.remote.proto.NodeMetadata value) {
+            if (key == null) {
+                throw new NullPointerException("map key");
+            }
+            if (value == null) {
+                throw new NullPointerException("map value");
+            }
+
+            internalGetMutableNodes().getMutableMap()
+                    .put(key, value);
+            return this;
+        }
+
+        /**
+         * <code>map&lt;string, .meteor.protobuf.NodeMetadata&gt; nodes = 2;</code>
+         */
+
+        public Builder putAllNodes(
+                java.util.Map<java.lang.String, org.meteor.remote.proto.NodeMetadata> values) {
+            internalGetMutableNodes().getMutableMap()
+                    .putAll(values);
+            return this;
+        }
+
+        @java.lang.Override
+        public final Builder setUnknownFields(
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:meteor.protobuf.ClusterInfo)
+    }
 
 }
 

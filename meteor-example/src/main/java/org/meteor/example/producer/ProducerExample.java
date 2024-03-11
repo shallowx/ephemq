@@ -22,13 +22,6 @@ public class ProducerExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerExample.class);
     private static final String EXAMPLE_TOPIC = "example-topic";
     private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
-    public static void main(String[] args) throws Exception {
-        ProducerExample example = new ProducerExample();
-        example.send();
-        example.sendAsync();
-        example.sendOneway();
-    }
-
     private final Producer producer;
 
     public ProducerExample() {
@@ -47,6 +40,13 @@ public class ProducerExample {
         this.producer = producer;
     }
 
+    public static void main(String[] args) throws Exception {
+        ProducerExample example = new ProducerExample();
+        example.send();
+        example.sendAsync();
+        example.sendOneway();
+    }
+
     public void sendOneway() throws Exception {
         CountDownLatch continueSendLatch = new CountDownLatch(2);
         for (int i = 0; i < 1; i++) {
@@ -57,13 +57,15 @@ public class ProducerExample {
                     ByteBuf message = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
                     try {
                         producer.sendOneway(EXAMPLE_TOPIC, symbol, message, new HashMap<>());
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 try {
                     // the duration setting only for testing and demonstration purposes
                     TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
                 producer.close();
                 continueSendLatch.countDown();
             }).start();
@@ -72,13 +74,13 @@ public class ProducerExample {
     }
 
     public void send() {
-        Map<String, String> extras =  new HashMap<>();
+        Map<String, String> extras = new HashMap<>();
         extras.put("key", "v");
         producer.send(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras);
     }
 
     public void sendWithTimeout() {
-        Map<String, String> extras =  new HashMap<>();
+        Map<String, String> extras = new HashMap<>();
         extras.put("key", "v");
         MessageId messageId = producer.send(EXAMPLE_TOPIC, EXAMPLE_TOPIC_QUEUE, ByteBufUtil.string2Buf(UUID.randomUUID().toString()), extras, 3000L);
         if (logger.isInfoEnabled()) {

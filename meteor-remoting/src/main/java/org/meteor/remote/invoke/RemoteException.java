@@ -2,6 +2,7 @@ package org.meteor.remote.invoke;
 
 public final class RemoteException extends RuntimeException {
     private final int command;
+
     public RemoteException(int command, String error) {
         super(error);
         this.command = command;

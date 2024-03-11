@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientTests.class);
+
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testCreateTopic() throws Exception {

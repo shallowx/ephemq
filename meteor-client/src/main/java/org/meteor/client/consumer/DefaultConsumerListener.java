@@ -196,11 +196,11 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) consumer.getExecutor();
-        registerMetrics("consumer-task",meterRegistry, singleThreadEventExecutor);
+        registerMetrics("consumer-task", meterRegistry, singleThreadEventExecutor);
         for (EventExecutor eventExecutor : group) {
             try {
                 SingleThreadEventExecutor executor = (SingleThreadEventExecutor) eventExecutor;
-                registerMetrics("consumer-handler",meterRegistry, executor);
+                registerMetrics("consumer-handler", meterRegistry, executor);
             } catch (Throwable ignored) {
             }
         }

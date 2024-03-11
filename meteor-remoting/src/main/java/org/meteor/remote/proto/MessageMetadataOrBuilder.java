@@ -4,66 +4,77 @@
 package org.meteor.remote.proto;
 
 public interface MessageMetadataOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.MessageMetadata)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.MessageMetadata)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>string topic = 1;</code>
-   * @return The topic.
-   */
-  java.lang.String getTopic();
-  /**
-   * <code>string topic = 1;</code>
-   * @return The bytes for topic.
-   */
-  com.google.protobuf.ByteString
-      getTopicBytes();
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    java.lang.String getTopic();
 
-  /**
-   * <code>string queue = 2;</code>
-   * @return The queue.
-   */
-  java.lang.String getQueue();
-  /**
-   * <code>string queue = 2;</code>
-   * @return The bytes for queue.
-   */
-  com.google.protobuf.ByteString
-      getQueueBytes();
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+    getTopicBytes();
 
-  /**
-   * <code>map&lt;string, string&gt; extras = 3;</code>
-   */
-  int getExtrasCount();
-  /**
-   * <code>map&lt;string, string&gt; extras = 3;</code>
-   */
-  boolean containsExtras(
-      java.lang.String key);
-  /**
-   * Use {@link #getExtrasMap()} instead.
-   */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, java.lang.String>
-  getExtras();
-  /**
-   * <code>map&lt;string, string&gt; extras = 3;</code>
-   */
-  java.util.Map<java.lang.String, java.lang.String>
-  getExtrasMap();
-  /**
-   * <code>map&lt;string, string&gt; extras = 3;</code>
-   */
+    /**
+     * <code>string queue = 2;</code>
+     *
+     * @return The queue.
+     */
+    java.lang.String getQueue();
 
-  /* nullable */
-java.lang.String getExtrasOrDefault(
-      java.lang.String key,
-      /* nullable */
-java.lang.String defaultValue);
-  /**
-   * <code>map&lt;string, string&gt; extras = 3;</code>
-   */
+    /**
+     * <code>string queue = 2;</code>
+     *
+     * @return The bytes for queue.
+     */
+    com.google.protobuf.ByteString
+    getQueueBytes();
 
-  java.lang.String getExtrasOrThrow(
-      java.lang.String key);
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+    int getExtrasCount();
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+    boolean containsExtras(
+            java.lang.String key);
+
+    /**
+     * Use {@link #getExtrasMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getExtras();
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getExtrasMap();
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+
+    /* nullable */
+    java.lang.String getExtrasOrDefault(
+            java.lang.String key,
+            /* nullable */
+            java.lang.String defaultValue);
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+
+    java.lang.String getExtrasOrThrow(
+            java.lang.String key);
 }

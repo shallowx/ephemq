@@ -11,8 +11,8 @@ import org.meteor.config.ZookeeperConfig;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ZookeeperClient {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClient.class);
+public class ZookeeperClientFactory {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClientFactory.class);
     private static final Map<String, CuratorFramework> readyClients = new ConcurrentHashMap<>();
     public static CuratorFramework getReadyClient(ZookeeperConfig config, String clusterName) {
         return readyClients.computeIfAbsent(clusterName, namespace -> {

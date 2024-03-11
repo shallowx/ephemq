@@ -4,18 +4,20 @@
 package org.meteor.remote.proto.client;
 
 public interface SyncMessageSignalOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncMessageSignal)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncMessageSignal)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>int32 ledger = 1;</code>
-   * @return The ledger.
-   */
-  int getLedger();
+    /**
+     * <code>int32 ledger = 1;</code>
+     *
+     * @return The ledger.
+     */
+    int getLedger();
 
-  /**
-   * <code>int32 count = 2;</code>
-   * @return The count.
-   */
-  int getCount();
+    /**
+     * <code>int32 count = 2;</code>
+     *
+     * @return The count.
+     */
+    int getCount();
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class DefaultConnectionCoordinator implements ConnectionCoordinator {
     private final Set<Channel> readyChannels = new CopyOnWriteArraySet<>();
+
     @Override
     public void add(Channel channel) {
         if (!channel.isActive()) {
@@ -14,10 +15,12 @@ public class DefaultConnectionCoordinator implements ConnectionCoordinator {
         }
         readyChannels.add(channel);
     }
+
     @Override
     public boolean remove(Channel channel) {
         return readyChannels.remove(channel);
     }
+
     @Override
     public Set<Channel> getReadyChannels() {
         return readyChannels;

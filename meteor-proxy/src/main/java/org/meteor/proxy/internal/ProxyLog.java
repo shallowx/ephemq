@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.LongAdder;
 
 public class ProxyLog extends Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
+    private final LongAdder totalDispatchedMessages = new LongAdder();
+    private final ProxyConfig proxyConfiguration;
     private volatile long lastSubscribeTimeMillis = System.currentTimeMillis();
     private volatile Offset tailLocation = new Offset(0, 0L);
     private volatile Offset headLocation = new Offset(0, 0L);
-    private final LongAdder totalDispatchedMessages = new LongAdder();
-    private final ProxyConfig proxyConfiguration;
 
     public ProxyLog(ProxyServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
         super(config, topicPartition, ledger, epoch, coordinator, topicConfig);
@@ -38,14 +38,14 @@ public class ProxyLog extends Log {
         if (storageExecutor.inEventLoop()) {
             doCancelSyncAndCloseIfNotSubscribe(promise);
         } else {
-           try {
-               storageExecutor.execute(() -> doCancelSyncAndCloseIfNotSubscribe(promise));
-           } catch (Exception e){
-               if (logger.isDebugEnabled()) {
-                   logger.debug(e.getMessage(), e);
-               }
-               promise.tryFailure(e);
-           }
+            try {
+                storageExecutor.execute(() -> doCancelSyncAndCloseIfNotSubscribe(promise));
+            } catch (Exception e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
+                }
+                promise.tryFailure(e);
+            }
         }
     }
 
@@ -98,21 +98,21 @@ public class ProxyLog extends Log {
     }
 
     public void syncAndResetSubscribe(ClientChannel syncChannel, int epoch, long index, Channel channel, IntList markerSet, Promise<Integer> promise) {
-      Promise<Integer> ret = promise != null ? promise : ImmediateEventExecutor.INSTANCE.newPromise();
-      if (storageExecutor.inEventLoop()) {
-          doSyncAndResetSubscribe(syncChannel, epoch, index, channel, markerSet, promise);
-      } else {
-          try {
-              storageExecutor.execute(() -> {
-                  doSyncAndResetSubscribe(syncChannel, epoch, index, channel, markerSet, promise);
-              });
-          } catch (Exception e){
-              if (logger.isDebugEnabled()) {
-                  logger.debug(e.getMessage(), e);
-              }
-              ret.tryFailure(e);
-          }
-      }
+        Promise<Integer> ret = promise != null ? promise : ImmediateEventExecutor.INSTANCE.newPromise();
+        if (storageExecutor.inEventLoop()) {
+            doSyncAndResetSubscribe(syncChannel, epoch, index, channel, markerSet, promise);
+        } else {
+            try {
+                storageExecutor.execute(() -> {
+                    doSyncAndResetSubscribe(syncChannel, epoch, index, channel, markerSet, promise);
+                });
+            } catch (Exception e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
+                }
+                ret.tryFailure(e);
+            }
+        }
     }
 
     private void doSyncAndResetSubscribe(ClientChannel syncChannel, int epoch, long index, Channel channel, IntList markerSet, Promise<Integer> promise) {
@@ -120,27 +120,27 @@ public class ProxyLog extends Log {
         if (!isSynchronizing(logState)) {
             Promise<SyncResponse> syncPromise = syncFromTarget(syncChannel, new Offset(0, 0L), proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds());
             syncPromise.addListener(f -> {
-               if (f.isSuccess()) {
-                  Offset locate = locate(Offset.of(epoch, index));
-                  resetSubscribe(channel, locate, markerSet, promise);
-               } else {
-                   promise.tryFailure(f.cause());
-               }
+                if (f.isSuccess()) {
+                    Offset locate = locate(Offset.of(epoch, index));
+                    resetSubscribe(channel, locate, markerSet, promise);
+                } else {
+                    promise.tryFailure(f.cause());
+                }
             });
         } else {
             if (syncPromise != null && !syncPromise.isDone()) {
                 syncPromise.addListener(future -> {
-                   if (storageExecutor.inEventLoop()) {
-                       resetSubscribe(channel, locate(Offset.of(epoch, index)), markerSet, promise);
-                   } else {
-                       try {
-                           storageExecutor.execute(() -> {
-                               resetSubscribe(channel, locate(Offset.of(epoch, index)), markerSet, promise);
-                           });
-                       }catch (Exception e){
-                           promise.tryFailure(e);
-                       }
-                   }
+                    if (storageExecutor.inEventLoop()) {
+                        resetSubscribe(channel, locate(Offset.of(epoch, index)), markerSet, promise);
+                    } else {
+                        try {
+                            storageExecutor.execute(() -> {
+                                resetSubscribe(channel, locate(Offset.of(epoch, index)), markerSet, promise);
+                            });
+                        } catch (Exception e) {
+                            promise.tryFailure(e);
+                        }
+                    }
                 });
             } else {
                 resetSubscribe(channel, locate(Offset.of(epoch, index)), markerSet, promise);
@@ -158,7 +158,7 @@ public class ProxyLog extends Log {
                 storageExecutor.execute(() -> {
                     doSyncAndChunkSubscribe(syncChannel, epoch, index, channel, promise);
                 });
-            } catch (Exception e){
+            } catch (Exception e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug(e.getMessage(), e);
                 }
@@ -189,7 +189,7 @@ public class ProxyLog extends Log {
                             storageExecutor.execute(() -> {
                                 attachSynchronize(channel, locate(Offset.of(epoch, index)), vp);
                             });
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             promise.tryFailure(e);
                         }
                     }
@@ -244,9 +244,9 @@ public class ProxyLog extends Log {
     @Override
     protected void doSyncFromTarget(ClientChannel clientChannel, Offset offset, int timeoutMs, Promise<SyncResponse> promise) {
         promise.addListener(future -> {
-           if (future.isSuccess()) {
-               initLocation((SyncResponse)future.getNow());
-           }
+            if (future.isSuccess()) {
+                initLocation((SyncResponse) future.getNow());
+            }
         });
         super.doSyncFromTarget(clientChannel, offset, timeoutMs, promise);
     }

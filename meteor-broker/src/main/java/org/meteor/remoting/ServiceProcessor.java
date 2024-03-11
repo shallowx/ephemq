@@ -46,9 +46,9 @@ import static org.meteor.remote.util.ProtoBufUtil.readProto;
 public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     protected final CommonConfig commonConfiguration;
-    private final NetworkConfig networkConfiguration;
     protected final Coordinator coordinator;
     protected final EventExecutor commandExecutor;
+    private final NetworkConfig networkConfiguration;
     protected EventExecutor serviceExecutor;
 
     public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Coordinator coordinator) {
@@ -135,7 +135,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             coordinator.getTopicCoordinator().getParticipantCoordinator().subscribeLedger(ledger, epoch, index, channel, promise);
         } catch (Exception e) {
             processFailed("process sync ledger failed", code, channel, feedback, e);
-            recordCommand(code, bytes, System.nanoTime() - time,false);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
         }
 
     }
@@ -166,7 +166,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             coordinator.getTopicCoordinator().getParticipantCoordinator().unSubscribeLedger(ledger, channel, promise);
         } catch (Exception e) {
             processFailed("process un-sync ledger failed", code, channel, feedback, e);
-            recordCommand(code, bytes, System.nanoTime() - time,false);
+            recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
 

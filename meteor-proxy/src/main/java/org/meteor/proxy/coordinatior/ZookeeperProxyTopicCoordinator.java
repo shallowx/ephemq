@@ -25,10 +25,12 @@ import java.util.concurrent.TimeUnit;
 
 class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implements ProxyTopicCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);
-    private LoadingCache<String, TopicInfo> topicMetaLoadingCache;
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyConfig proxyConfiguration;
+    private LoadingCache<String, TopicInfo> topicMetaLoadingCache;
+
     public ZookeeperProxyTopicCoordinator(ProxyConfig config, Coordinator coordinator) {
+        super();
         this.proxyConfiguration = config;
         this.coordinator = coordinator;
         this.syncCoordinator = ((ProxyDefaultCoordinator) coordinator).getLedgerSyncCoordinator();
@@ -43,15 +45,19 @@ class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implement
                     public @Nullable TopicInfo load(String key) throws Exception {
                         try {
                             ClientChannel channel = syncCoordinator.getProxyClient().fetchChannel(null);
-                            Map<String, TopicInfo> ret = acquireFromUpstream(Lists.newArrayList(key), channel);
-                            return (ret == null || ret.isEmpty()) ? null : ret.get(key);
+                            Map<String, TopicInfo> topicInfos = getFromUpstream(Lists.newArrayList(key), channel);
+                            return (topicInfos == null || topicInfos.isEmpty()) ? null : topicInfos.get(key);
                         } catch (Exception e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Get topic[{}] info form upstream failed, ", key, e.getMessage(), e);
+                            }
                             return null;
                         }
                     }
                 });
     }
-    private Map<String, TopicInfo> acquireFromUpstream(List<String> topics, ClientChannel channel) {
+
+    private Map<String, TopicInfo> getFromUpstream(List<String> topics, ClientChannel channel) {
         Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         QueryTopicInfoRequest.Builder builder = QueryTopicInfoRequest.newBuilder();
         if (topics != null && !topics.isEmpty()) {
@@ -62,17 +68,16 @@ class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implement
             channel.invoker().queryTopicInfo(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds(), promise, builder.build());
             QueryTopicInfoResponse response = promise.get(proxyConfiguration.getProxyLeaderSyncUpstreamTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
             return response.getTopicInfosMap();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             return null;
         }
     }
 
-
     @Override
-    public Map<String, TopicInfo> acquireTopicMetadata(List<String> topics) {
+    public Map<String, TopicInfo> getTopicMetadata(List<String> topics) {
         if (topics.isEmpty()) {
-            return acquireFromUpstream(topics, null);
+            return getFromUpstream(topics, null);
         }
         Map<String, TopicInfo> ret = new Object2ObjectOpenHashMap<>();
         for (String topic : topics) {
@@ -87,18 +92,21 @@ class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implement
 
     @Override
     public void refreshTopicMetadata(List<String> topics, ClientChannel channel) {
-        Map<String, TopicInfo> ret = acquireFromUpstream(topics, channel);
-        if (ret == null) {
+        Map<String, TopicInfo> topicInfos = getFromUpstream(topics, channel);
+        if (topicInfos == null) {
             for (String topic : topics) {
                 invalidTopicMetadata(topic);
             }
             return;
         }
 
-        for (Map.Entry<String, TopicInfo> entry : ret.entrySet()) {
+        for (Map.Entry<String, TopicInfo> entry : topicInfos.entrySet()) {
             String topic = entry.getKey();
             TopicInfo info = entry.getValue();
-            if(info == null) {
+            if (info == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Topic[{}] info is NULL", topic);
+                }
                 continue;
             }
             topicMetaLoadingCache.put(topic, info);

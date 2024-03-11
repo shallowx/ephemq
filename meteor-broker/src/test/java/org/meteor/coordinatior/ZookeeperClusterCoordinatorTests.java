@@ -17,7 +17,7 @@ public class ZookeeperClusterCoordinatorTests {
     private ClusterCoordinator coordinator;
 
     @Before
-   public void setUp() throws Exception {
+    public void setUp() throws Exception {
         server = new TestingServer();
         Properties properties = new Properties();
         properties.put("zookeeper.url", server.getConnectString());

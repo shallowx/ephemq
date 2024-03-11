@@ -14,14 +14,6 @@ abstract class AbstractSynchronization<T> {
         this.handler = handler;
     }
 
-    public void setDispatchOffset(Offset dispatchOffset) {
-        this.dispatchOffset = dispatchOffset;
-    }
-
-    public void setFollowed(boolean followed) {
-        this.followed = followed;
-    }
-
     public Channel getChannel() {
         return channel;
     }
@@ -34,7 +26,15 @@ abstract class AbstractSynchronization<T> {
         return dispatchOffset;
     }
 
+    public void setDispatchOffset(Offset dispatchOffset) {
+        this.dispatchOffset = dispatchOffset;
+    }
+
     public boolean isFollowed() {
         return followed;
+    }
+
+    public void setFollowed(boolean followed) {
+        this.followed = followed;
     }
 }

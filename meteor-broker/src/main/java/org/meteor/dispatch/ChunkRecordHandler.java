@@ -10,9 +10,11 @@ import java.util.function.Function;
 final class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronization, ChunkRecordHandler> {
     static final ChunkRecordHandler INSTANCE = new ChunkRecordHandler();
     private final List<ChunkRecordSynchronization> synchronizations = new ArrayList<>();
+
     public ChunkRecordHandler() {
         super(null);
     }
+
     public ChunkRecordHandler(EventExecutor executor) {
         super(executor);
     }

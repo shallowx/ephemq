@@ -6,10 +6,12 @@ import java.util.Properties;
 
 public class ProxyServerConfig extends ServerConfig {
     private final ProxyConfig proxyConfiguration;
+
     public ProxyServerConfig(Properties properties) {
         super(properties);
-        this.proxyConfiguration =new ProxyConfig(properties, this.commonConfig, this.zookeeperConfig);
+        this.proxyConfiguration = new ProxyConfig(properties, this.commonConfig, this.zookeeperConfig);
     }
+
     public ProxyConfig getProxyConfiguration() {
         return proxyConfiguration;
     }

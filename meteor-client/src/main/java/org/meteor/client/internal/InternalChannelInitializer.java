@@ -34,7 +34,8 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
     private final ClientConfig config;
     private final CombineListener listener;
     private final ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise;
-     InternalChannelInitializer(SocketAddress address, ClientConfig config, CombineListener listener, ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise) {
+
+    InternalChannelInitializer(SocketAddress address, ClientConfig config, CombineListener listener, ConcurrentMap<String, Promise<ClientChannel>> channelOfPromise) {
         this.address = address;
         this.config = config;
         this.listener = listener;
@@ -51,6 +52,42 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                         config.getChannelKeepPeriodMilliseconds(), config.getChannelIdleTimeoutMilliseconds()
                 ))
                 .addLast("service-handler", new ProcessDuplexHandler(new InternalServiceProcessor(clientChannel)));
+    }
+
+    protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
+        return new ClientChannel(clientConfig, channel, address);
+    }
+
+    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
+        SyncMessageSignal signal = ProtoBufUtil.readProto(data, SyncMessageSignal.parser());
+        listener.onSyncMessage(channel, signal, data);
+        if (feedback != null) {
+            feedback.success(null);
+        }
+    }
+
+    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
+        TopicChangedSignal signal = ProtoBufUtil.readProto(data, TopicChangedSignal.parser());
+        listener.onTopicChanged(channel, signal);
+        if (feedback != null) {
+            feedback.success(null);
+        }
+    }
+
+    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
+        NodeOfflineSignal signal = ProtoBufUtil.readProto(data, NodeOfflineSignal.parser());
+        listener.onNodeOffline(channel, signal);
+        if (feedback != null) {
+            feedback.success(null);
+        }
+    }
+
+    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
+        MessagePushSignal signal = ProtoBufUtil.readProto(data, MessagePushSignal.parser());
+        listener.onPushMessage(channel, signal, data);
+        if (feedback != null) {
+            feedback.success(null);
+        }
     }
 
     private class InternalServiceProcessor implements Processor, Command.Client {
@@ -93,42 +130,6 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                     feedback.failure(t);
                 }
             }
-        }
-    }
-
-    protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
-        return new ClientChannel(clientConfig, channel, address);
-    }
-
-    private void onSyncMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
-        SyncMessageSignal signal = ProtoBufUtil.readProto(data, SyncMessageSignal.parser());
-        listener.onSyncMessage(channel, signal, data);
-        if (feedback != null) {
-            feedback.success(null);
-        }
-    }
-
-    private void onTopicChanged(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
-        TopicChangedSignal signal = ProtoBufUtil.readProto(data, TopicChangedSignal.parser());
-        listener.onTopicChanged(channel, signal);
-        if (feedback != null) {
-            feedback.success(null);
-        }
-    }
-
-    private void onNodeOffline(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
-        NodeOfflineSignal signal = ProtoBufUtil.readProto(data, NodeOfflineSignal.parser());
-        listener.onNodeOffline(channel, signal);
-        if (feedback != null) {
-            feedback.success(null);
-        }
-    }
-
-    private void onPushMessage(ClientChannel channel, ByteBuf data, InvokedFeedback<ByteBuf> feedback) throws Exception {
-        MessagePushSignal signal = ProtoBufUtil.readProto(data, MessagePushSignal.parser());
-        listener.onPushMessage(channel, signal, data);
-        if (feedback != null) {
-            feedback.success(null);
         }
     }
 }

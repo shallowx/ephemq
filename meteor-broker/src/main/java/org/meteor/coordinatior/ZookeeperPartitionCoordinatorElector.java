@@ -16,7 +16,7 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.listener.TopicListener;
 import org.meteor.remote.proto.server.SyncResponse;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-final class ZookeeperPartitionCoordinatorElector {
+public final class ZookeeperPartitionCoordinatorElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionCoordinatorElector.class);
     private final CommonConfig configuration;
     private final TopicPartition topicPartition;
@@ -42,7 +42,7 @@ final class ZookeeperPartitionCoordinatorElector {
         this.coordinator = coordinator;
         this.participantCoordinator = participantCoordinator;
         this.ledger = ledger;
-        this.client = ZookeeperClient.getReadyClient(zookeeperConfiguration, configuration.getClusterName());
+        this.client = ZookeeperClientFactory.getReadyClient(zookeeperConfiguration, configuration.getClusterName());
     }
 
     public void elect() throws Exception {
@@ -109,10 +109,10 @@ final class ZookeeperPartitionCoordinatorElector {
             poolExecutor.execute(() -> {
                 try {
                     byte[] bytes = client.getData().forPath(path);
-                    TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
+                    TopicAssignment topicAssignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
                     topicAssignment.setLeader(configuration.getServerId());
                     topicAssignment.setEpoch(topicAssignment.getEpoch() + 1);
-                    client.setData().forPath(path, JsonMapper.serialize(topicAssignment));
+                    client.setData().forPath(path, JsonFeatureMapper.serialize(topicAssignment));
 
                     Log log = coordinator.getLogCoordinator().getLog(topicAssignment.getLedgerId());
                     if (log != null) {
@@ -157,7 +157,7 @@ final class ZookeeperPartitionCoordinatorElector {
                             String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition())
                     );
 
-                    TopicAssignment topicAssignment = JsonMapper.deserialize(bytes, TopicAssignment.class);
+                    TopicAssignment topicAssignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
                     if (topicAssignment.getReplicas().contains(configuration.getServerId())) {
                         if (logger.isInfoEnabled()) {
                             logger.info("As the follower replica of topic_partition[{}] and ledger[{}]", topicPartition, ledger);

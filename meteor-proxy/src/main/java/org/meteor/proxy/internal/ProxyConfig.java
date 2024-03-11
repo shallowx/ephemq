@@ -51,9 +51,11 @@ public class ProxyConfig {
     public int getProxyLeaderSyncUpstreamTimeoutMilliseconds() {
         return object2Int(prop.getOrDefault(PROXY_LEDGER_SYNC_UPSTREAM_TIMEOUT_MILLISECONDS, 1900));
     }
+
     public int getProxyChannelConnectionTimeoutMilliseconds() {
         return object2Int(prop.getOrDefault(PROXY_CHANNEL_CONNECTION_TIMEOUT_MILLISECONDS, 3000));
     }
+
     public int getProxyResumeTaskScheduleDelayMilliseconds() {
         return object2Int(prop.getOrDefault(PROXY_RESUME_TASK_SCHEDULE_DELAY_MILLISECONDS, 3000));
     }

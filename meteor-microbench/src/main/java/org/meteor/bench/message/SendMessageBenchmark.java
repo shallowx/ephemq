@@ -32,6 +32,17 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class SendMessageBenchmark {
+    private static final String TOPIC = "test_topic";
+    private static final String QUEUE = "test_queue";
+    private static final MessageRouter messageRouter = new MessageRouter(0, TOPIC, new HashMap<>() {{
+        put(1, new MessageLedger(0, 0, new InetSocketAddress("127.0.0.1", 8080), null, TOPIC, 1));
+    }});
+    private static final Map<String, String> extras = new HashMap<>();
+    private static final ByteBuf message = ByteBufUtil.string2Buf("test");
+    private static final Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+    private static final ClientChannel clientChannel = new ClientChannel(new ClientConfig(), new EmbeddedChannel(), new InetSocketAddress("127.0.0.1", 8080));
+    private ByteBuf buf;
+
     @Benchmark
     public void send() {
         TopicPatternUtil.validateQueue(QUEUE);
@@ -54,17 +65,6 @@ public class SendMessageBenchmark {
         MessageMetadata metadata = buildMetadata();
         sendMessage(100, promise, request, metadata, message);
     }
-
-    private static final String TOPIC = "test_topic";
-    private static final String QUEUE = "test_queue";
-    private static final MessageRouter messageRouter = new MessageRouter(0, TOPIC, new HashMap<>(){{
-        put(1, new MessageLedger(0,0,new InetSocketAddress("127.0.0.1", 8080), null, TOPIC, 1));
-    }});
-    private static final  Map<String, String> extras = new HashMap<>();
-    private static final ByteBuf message = ByteBufUtil.string2Buf("test");
-    private static final Promise<SendMessageResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-    private static final ClientChannel clientChannel = new ClientChannel(new ClientConfig(), new EmbeddedChannel(), new InetSocketAddress("127.0.0.1", 8080));
-    private ByteBuf buf;
 
     public void sendMessage(int timeoutMs, Promise<SendMessageResponse> promise, SendMessageRequest request, MessageMetadata metadata, ByteBuf message) {
         try {

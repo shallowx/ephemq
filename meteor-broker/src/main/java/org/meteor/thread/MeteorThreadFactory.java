@@ -11,11 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class MeteorThreadFactory implements ThreadFactory {
     private static final AtomicInteger POOL_ID = new AtomicInteger();
+    protected final ThreadGroup threadGroup;
     private final AtomicInteger nextId = new AtomicInteger();
     private final String prefix;
     private final boolean daemon;
     private final int priority;
-    protected final ThreadGroup threadGroup;
 
     public MeteorThreadFactory(Class<?> poolType) {
         this(poolType, false, Thread.NORM_PRIORITY);
@@ -45,6 +45,23 @@ class MeteorThreadFactory implements ThreadFactory {
         this(toPoolName(poolType), daemon, priority);
     }
 
+    public MeteorThreadFactory(String poolName, boolean daemon, int priority, ThreadGroup threadGroup) {
+        ObjectUtil.checkNotNull(poolName, "Meteor thread pool name cannot be empty");
+        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+            throw new IllegalArgumentException(
+                    "Thread priority is actually [ " + priority + "], but the expectation in [1, 10]");
+        }
+
+        prefix = poolName + '-' + POOL_ID.incrementAndGet() + '-';
+        this.daemon = daemon;
+        this.priority = priority;
+        this.threadGroup = threadGroup;
+    }
+
+    public MeteorThreadFactory(String poolName, boolean daemon, int priority) {
+        this(poolName, daemon, priority, null);
+    }
+
     public static String toPoolName(Class<?> poolType) {
         ObjectUtil.checkNotNull(poolType, "Meteor thread pool type cannot be empty");
 
@@ -64,23 +81,6 @@ class MeteorThreadFactory implements ThreadFactory {
                 }
             }
         }
-    }
-
-    public MeteorThreadFactory(String poolName, boolean daemon, int priority, ThreadGroup threadGroup) {
-        ObjectUtil.checkNotNull(poolName, "Meteor thread pool name cannot be empty");
-        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
-            throw new IllegalArgumentException(
-                    "Thread priority is actually [ " + priority + "], but the expectation in [1, 10]");
-        }
-
-        prefix = poolName + '-' + POOL_ID.incrementAndGet() + '-';
-        this.daemon = daemon;
-        this.priority = priority;
-        this.threadGroup = threadGroup;
-    }
-
-    public MeteorThreadFactory(String poolName, boolean daemon, int priority) {
-        this(poolName, daemon, priority, null);
     }
 
     @Override

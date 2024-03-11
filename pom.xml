@@ -55,7 +55,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jctools</groupId>
                 <artifactId>jctools-core</artifactId>

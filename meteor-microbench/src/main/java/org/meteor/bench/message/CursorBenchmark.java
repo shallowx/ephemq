@@ -16,6 +16,17 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class CursorBenchmark {
+    private static final LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
+            NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerCursorTest());
+    private static final ByteBuf buf = allocateBuf();
+    private static final LedgerSegmentCursorTest segment = new LedgerSegmentCursorTest(1, buf, new Offset(0, 0L));
+    private static final LedgerCursor cursor = new LedgerCursor(storage, segment, 0);
+
+    private static ByteBuf allocateBuf() {
+        LedgerConfig config = new LedgerConfig();
+        return PooledByteBufAllocator.DEFAULT.directBuffer(config.segmentBufferCapacity(), config.segmentBufferCapacity());
+    }
+
     @Benchmark
     public void testCopy() {
         cursor.copy();
@@ -35,6 +46,7 @@ public class CursorBenchmark {
     public void testSeekTo() {
         cursor.seekTo(new Offset(0, 1L));
     }
+
     @Benchmark
     public void testSeekToTail() {
         cursor.seekToTail();
@@ -42,17 +54,6 @@ public class CursorBenchmark {
 
     @TearDown
     public void clear() {
-    }
-
-    private static final LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
-            NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(), new LedgerTriggerCursorTest());
-    private static final ByteBuf buf = allocateBuf();
-    private static final LedgerSegmentCursorTest segment = new LedgerSegmentCursorTest(1, buf, new Offset(0, 0L));
-    private static final LedgerCursor cursor = new LedgerCursor(storage, segment, 0);
-
-    private static ByteBuf allocateBuf() {
-        LedgerConfig config = new LedgerConfig();
-        return PooledByteBufAllocator.DEFAULT.directBuffer(config.segmentBufferCapacity(), config.segmentBufferCapacity());
     }
 
     static class LedgerTriggerCursorTest implements LedgerTrigger {

@@ -9,7 +9,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.InternalClient;
 import org.meteor.internal.InternalClientListener;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.*;
 import org.meteor.remote.util.NetworkUtil;
@@ -52,7 +52,7 @@ public class DefaultCoordinator implements Coordinator {
 
         logCoordinator = new LogCoordinator(configuration, this);
         topicCoordinator = new ZookeeperTopicCoordinator(configuration, this);
-        TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(),configuration.getNetworkConfig());
+        TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(), configuration.getNetworkConfig());
         topicCoordinator.addTopicListener(topicListener);
 
         auxGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "aux-group");
@@ -153,7 +153,7 @@ public class DefaultCoordinator implements Coordinator {
             if (apiListener instanceof AutoCloseable) {
                 ((AutoCloseable) apiListener).close();
             }
-            ZookeeperClient.closeClient();
+            ZookeeperClientFactory.closeClient();
         }
     }
 

@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 
 public class MeteorProxy {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
+
     public static void main(String[] args) throws Exception {
         start(createServer(args));
     }

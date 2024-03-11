@@ -36,6 +36,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     };
     private final CallableSafeInitializer<ByteBuf> initializer = new GenericCallableSafeInitializer<>();
     private final Processor processor;
+
     public ProcessDuplexHandler(Processor processor) {
         this.processor = checkNotNull(processor, "Processor handler cannot be null");
     }
@@ -125,19 +126,19 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 freed = initializer.release(feedback, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
-           if (logger.isErrorEnabled()) {
-               logger.error("Chanel[{}] invoke not found that command[{}] and feedback[{}] ", ctx.channel().remoteAddress(),
-                       command, feedback);
-           }
+            if (logger.isErrorEnabled()) {
+                logger.error("Chanel[{}] invoke not found that command[{}] and feedback[{}] ", ctx.channel().remoteAddress(),
+                        command, feedback);
+            }
             return;
         } finally {
             release(buf);
         }
 
         if (!freed) {
-           if (logger.isErrorEnabled()) {
-               logger.error("Channel[{}] invoke not found that command[{}] and feedback[{}]", ctx.channel().remoteAddress(), command, feedback);
-           }
+            if (logger.isErrorEnabled()) {
+                logger.error("Channel[{}] invoke not found that command[{}] and feedback[{}]", ctx.channel().remoteAddress(), command, feedback);
+            }
         }
     }
 

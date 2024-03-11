@@ -21,17 +21,19 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class DefaultProducer implements Producer{
+public class DefaultProducer implements Producer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducer.class);
     private final String name;
     private final ProducerConfig config;
     private final Client client;
     private final Map<Integer, ClientChannel> readyChannels = new ConcurrentHashMap<>();
-    private volatile boolean state = false;
     private final CombineListener listener;
+    private volatile boolean state = false;
+
     public DefaultProducer(String name, ProducerConfig config) {
         this(name, config, null);
     }
+
     public DefaultProducer(String name, ProducerConfig config, CombineListener clientListener) {
         this.name = name;
         this.config = Objects.requireNonNull(config, "Producer config not found");
@@ -56,8 +58,8 @@ public class DefaultProducer implements Producer{
     }
 
     @Override
-    public MessageId send(String topic, String queue, ByteBuf message,  Map<String, String> extras) {
-        return send(topic, queue,message, extras, -1);
+    public MessageId send(String topic, String queue, ByteBuf message, Map<String, String> extras) {
+        return send(topic, queue, message, extras, -1);
     }
 
     @Override
@@ -180,12 +182,15 @@ public class DefaultProducer implements Producer{
     boolean containsRouter(String topic) {
         return client.containsRouter(topic);
     }
+
     MessageRouter fetchRouter(String topic) {
         return client.fetchRouter(topic);
     }
+
     void refreshRouter(String topic, ClientChannel channel) {
         client.refreshRouter(topic, channel);
     }
+
     String getName() {
         return name;
     }

@@ -4,21 +4,25 @@
 package org.meteor.remote.proto.server;
 
 public interface QueryClusterResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.QueryClusterResponse)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.QueryClusterResponse)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>.meteor.protobuf.ClusterInfo cluster_info = 1;</code>
-   * @return Whether the clusterInfo field is set.
-   */
-  boolean hasClusterInfo();
-  /**
-   * <code>.meteor.protobuf.ClusterInfo cluster_info = 1;</code>
-   * @return The clusterInfo.
-   */
-  org.meteor.remote.proto.ClusterInfo getClusterInfo();
-  /**
-   * <code>.meteor.protobuf.ClusterInfo cluster_info = 1;</code>
-   */
-  org.meteor.remote.proto.ClusterInfoOrBuilder getClusterInfoOrBuilder();
+    /**
+     * <code>.meteor.protobuf.ClusterInfo cluster_info = 1;</code>
+     *
+     * @return Whether the clusterInfo field is set.
+     */
+    boolean hasClusterInfo();
+
+    /**
+     * <code>.meteor.protobuf.ClusterInfo cluster_info = 1;</code>
+     *
+     * @return The clusterInfo.
+     */
+    org.meteor.remote.proto.ClusterInfo getClusterInfo();
+
+    /**
+     * <code>.meteor.protobuf.ClusterInfo cluster_info = 1;</code>
+     */
+    org.meteor.remote.proto.ClusterInfoOrBuilder getClusterInfoOrBuilder();
 }

@@ -39,9 +39,9 @@ import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class ProxyClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
+    protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
     private final Coordinator coordinator;
     private final LedgerSyncCoordinator syncCoordinator;
-    private Client client;
     private final ProxyConfig proxyConfiguration;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
@@ -49,8 +49,7 @@ public class ProxyClientListener implements CombineListener {
             return new Semaphore(proxyConfiguration.getProxyLeaderSyncSemaphore());
         }
     };
-
-    protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
+    private Client client;
 
     public ProxyClientListener(ProxyConfig proxyConfiguration, Coordinator coordinator, LedgerSyncCoordinator syncCoordinator) {
         this.proxyConfiguration = proxyConfiguration;
@@ -92,7 +91,7 @@ public class ProxyClientListener implements CombineListener {
             }
             List<SocketAddress> replicas = messageLedger.participants();
             if (replicas == null || replicas.isEmpty()) {
-                if (logger.isDebugEnabled()){
+                if (logger.isDebugEnabled()) {
                     logger.debug("Current ledger of topic[{}] ledger[{}] is not available for proxy, will ignore check", topic, ledger);
                 }
                 continue;
@@ -106,9 +105,10 @@ public class ProxyClientListener implements CombineListener {
             EventExecutor executor = fixedExecutor(topic);
             try {
                 executor.execute(() -> {
-                   try {
-                       resumeSync(syncChannel, topic, ledger, false);
-                   } catch (Exception ignored){}
+                    try {
+                        resumeSync(syncChannel, topic, ledger, false);
+                    } catch (Exception ignored) {
+                    }
                 });
             } catch (Exception e) {
                 logger.debug(e.getMessage(), e);
@@ -127,10 +127,10 @@ public class ProxyClientListener implements CombineListener {
             if (summary == null) {
                 summary = chunkCountSummaries.computeIfAbsent(ledger,
                         s -> DistributionSummary.builder(PROXY_SYNC_CHUNK_COUNT_SUMMARY_NAME)
-                        .tags(Tags.of("ledger", String.valueOf(ledger))
-                                .and(BROKER_TAG, proxyConfiguration.getCommonConfiguration().getServerId())
-                                .and(CLUSTER_TAG, proxyConfiguration.getCommonConfiguration().getClusterName()))
-                        .register(Metrics.globalRegistry));
+                                .tags(Tags.of("ledger", String.valueOf(ledger))
+                                        .and(BROKER_TAG, proxyConfiguration.getCommonConfiguration().getServerId())
+                                        .and(CLUSTER_TAG, proxyConfiguration.getCommonConfiguration().getClusterName()))
+                                .register(Metrics.globalRegistry));
             }
             summary.record(count);
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
@@ -167,36 +167,36 @@ public class ProxyClientListener implements CombineListener {
         int ledgerVersion = signal.getLedgerVersion();
         int randomDelay = ThreadLocalRandom.current().nextInt(proxyConfiguration.getProxyTopicChangeDelayMilliseconds());
         try {
-            executor.schedule(()-> {
-               try {
-                   MessageRouter router = client.fetchRouter(topic);
-                   if (router == null) {
-                       if (logger.isDebugEnabled()) {
-                           logger.debug("Proxy can not fetch message router of topic[{}], will ignore signal[{}]", topic, signal);
-                       }
-                       return;
-                   }
-                   MessageLedger messageLedger = router.ledger(ledger);
-                   boolean refreshFailed = false;
-                   if (messageLedger == null || ledgerVersion == 0 || messageLedger.version() < ledgerVersion) {
-                       try {
-                           client.refreshRouter(topic, channel);
-                       } catch (Exception e) {
-                           refreshFailed = true;
-                           logger.error(e.getMessage(),e);
-                       }
-                       ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator)coordinator.getTopicCoordinator();
-                       topicCoordinator.refreshTopicMetadata(Collections.singletonList(topic), channel);
-                   }
+            executor.schedule(() -> {
+                try {
+                    MessageRouter router = client.fetchRouter(topic);
+                    if (router == null) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Proxy can not fetch message router of topic[{}], will ignore signal[{}]", topic, signal);
+                        }
+                        return;
+                    }
+                    MessageLedger messageLedger = router.ledger(ledger);
+                    boolean refreshFailed = false;
+                    if (messageLedger == null || ledgerVersion == 0 || messageLedger.version() < ledgerVersion) {
+                        try {
+                            client.refreshRouter(topic, channel);
+                        } catch (Exception e) {
+                            refreshFailed = true;
+                            logger.error(e.getMessage(), e);
+                        }
+                        ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) coordinator.getTopicCoordinator();
+                        topicCoordinator.refreshTopicMetadata(Collections.singletonList(topic), channel);
+                    }
                     resumeSync(channel, topic, ledger, refreshFailed);
-                   if (signal.getType() == TopicChangedSignal.Type.DELETE) {
-                       noticeTopicChanged(signal);
-                   }
-               } catch (Exception e) {
-                   logger.error(e.getMessage(), e);
-               }
+                    if (signal.getType() == TopicChangedSignal.Type.DELETE) {
+                        noticeTopicChanged(signal);
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
             }, randomDelay, TimeUnit.MILLISECONDS);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
@@ -236,7 +236,7 @@ public class ProxyClientListener implements CombineListener {
 
             ProtoBufUtil.writeProto(buf, signal);
             return buf;
-        } catch (Exception e){
+        } catch (Exception e) {
             ByteBufUtil.release(buf);
             throw new RuntimeException(String.format("Proxy build signal payload error, command[%d] signal[%s]", command, signal));
         }
@@ -270,7 +270,7 @@ public class ProxyClientListener implements CombineListener {
                         executor.execute(() -> resumeSync(channel, topic, log.getLedger(), false));
                     }
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
                     logger.error("Proxy resume sync topic[{}] failed", topic, e);
                 }

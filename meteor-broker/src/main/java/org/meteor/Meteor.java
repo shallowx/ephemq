@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 
 public class Meteor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Meteor.class);
+
     public static void main(String[] args) throws Exception {
         start(createServer(args));
     }

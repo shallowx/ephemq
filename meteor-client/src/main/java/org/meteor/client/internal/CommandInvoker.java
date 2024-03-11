@@ -14,6 +14,7 @@ import org.meteor.remote.util.ProtoBufUtil;
 
 public class CommandInvoker {
     private final ClientChannel channel;
+
     public CommandInvoker(ClientChannel channel) {
         this.channel = channel;
     }

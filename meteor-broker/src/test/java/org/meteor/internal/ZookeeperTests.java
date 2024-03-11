@@ -18,7 +18,7 @@ public class ZookeeperTests {
 
     @Before
     public void setUp() throws Exception {
-        server= new TestingServer();
+        server = new TestingServer();
     }
 
     @Test
@@ -30,7 +30,7 @@ public class ZookeeperTests {
         pro.put("zookeeper.connection.timeout.milliseconds", 3000);
         pro.put("zookeeper.session.timeout.milliseconds", 30000);
         ZookeeperConfig config = new ZookeeperConfig(pro);
-        CuratorFramework readyClient = ZookeeperClient.getReadyClient(config, "test-cluster-name");
+        CuratorFramework readyClient = ZookeeperClientFactory.getReadyClient(config, "test-cluster-name");
         Assertions.assertNotNull(readyClient);
 
         CuratorOp curatorOp = readyClient.transactionOp().create().withMode(CreateMode.EPHEMERAL).forPath("/test/cluster");

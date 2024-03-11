@@ -23,7 +23,7 @@ public class InternalClientChannelTests {
     @Before
     public void setUp() throws Exception {
         embeddedChannel = new EmbeddedChannel();
-        clientChannel = new InternalClientChannel(new ClientConfig(), embeddedChannel, new InetSocketAddress(9527), new CommonConfig(new Properties()),  new DefaultCoordinator(new ServerConfig(new Properties())));
+        clientChannel = new InternalClientChannel(new ClientConfig(), embeddedChannel, new InetSocketAddress(9527), new CommonConfig(new Properties()), new DefaultCoordinator(new ServerConfig(new Properties())));
     }
 
     @Test

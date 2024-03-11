@@ -13,6 +13,7 @@ import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 
 public class NettyMetrics implements MeterBinder {
     private final Iterable<Tag> tags;
+
     public NettyMetrics(Iterable<Tag> tags) {
         this.tags = tags;
     }

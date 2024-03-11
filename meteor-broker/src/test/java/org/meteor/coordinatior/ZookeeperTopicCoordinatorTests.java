@@ -19,11 +19,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class ZookeeperTopicCoordinatorTests {
-    private TopicCoordinator coordinator;
-    private TestingServer server;
     private final String topic = "test";
     private final int partitions = 1;
     private final int replicas = 1;
+    private TopicCoordinator coordinator;
+    private TestingServer server;
 
     @Before
     public void setUp() throws Exception {

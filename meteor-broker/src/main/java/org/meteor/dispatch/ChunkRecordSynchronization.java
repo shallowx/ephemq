@@ -9,6 +9,7 @@ final class ChunkRecordSynchronization extends AbstractSynchronization<ChunkReco
     public ChunkRecordSynchronization(Channel channel, ChunkRecordHandler handler) {
         super(channel, handler);
     }
+
     @Override
     public String toString() {
         return "ChunkRecordSynchronization{" +

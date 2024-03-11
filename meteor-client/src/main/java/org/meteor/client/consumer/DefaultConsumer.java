@@ -35,11 +35,11 @@ public class DefaultConsumer implements Consumer {
     private final Map<String, Long> topicTokens = new HashMap<>();
     private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
     private final Map<String, Map<Integer, Int2IntMap>> topicLedgerMarkers = new HashMap<>();
+    private final CombineListener listener;
     private EventExecutor executor;
     private volatile boolean state = false;
     private Future<?> failedRetryFuture;
     private Map<String, Map<String, Mode>> failedRecords = new HashMap<>();
-    private final CombineListener listener;
 
     public DefaultConsumer(String name, ConsumerConfig consumerConfig, MessageListener messageListener) {
         this(name, consumerConfig, messageListener, null);
@@ -78,7 +78,7 @@ public class DefaultConsumer implements Consumer {
             try {
                 this.subscribe(entry.getKey(), entry.getValue());
             } catch (Throwable t) {
-                if (logger.isErrorEnabled()){
+                if (logger.isErrorEnabled()) {
                     logger.error(t.getMessage(), t);
                 }
             }
@@ -791,13 +791,13 @@ public class DefaultConsumer implements Consumer {
         state = false;
         if (executor != null) {
             executor.shutdownGracefully();
-           try {
-               while (!executor.isTerminated()) {
-                   executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
-               }
-           } catch (Exception e) {
-               Thread.currentThread().interrupt();
-           }
+            try {
+                while (!executor.isTerminated()) {
+                    executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+                }
+            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+            }
         }
         listener.listenerCompleted();
         client.close();
@@ -807,20 +807,30 @@ public class DefaultConsumer implements Consumer {
         return state;
     }
 
-    String getName() { return name;}
-    EventExecutor getExecutor() { return executor;}
+    String getName() {
+        return name;
+    }
+
+    EventExecutor getExecutor() {
+        return executor;
+    }
+
     Map<String, Map<String, Mode>> getSubscribeShips() {
         return subscribeShips;
     }
+
     Map<Integer, ClientChannel> getReadyChannels() {
         return readyChannels;
     }
+
     Map<Integer, AtomicReference<MessageId>> getLedgerSequences() {
         return ledgerSequences;
     }
+
     boolean containsRouter(String topic) {
         return client.containsRouter(topic);
     }
+
     void refreshRouter(String topic, ClientChannel channel) {
         client.refreshRouter(topic, channel);
     }

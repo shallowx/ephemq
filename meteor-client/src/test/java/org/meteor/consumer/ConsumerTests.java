@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsumerTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTests.class);
+
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testSubscribeOfReset() throws Exception {

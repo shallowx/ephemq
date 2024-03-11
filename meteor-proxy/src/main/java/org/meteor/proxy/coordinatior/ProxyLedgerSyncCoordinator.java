@@ -8,8 +8,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.coordinatior.Coordinator;
-import org.meteor.coordinatior.JsonMapper;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.internal.ProxyConfig;
@@ -20,11 +19,14 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static org.meteor.coordinatior.JsonFeatureMapper.deserialize;
+import static org.meteor.coordinatior.JsonFeatureMapper.serialize;
+
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private final WeakHashMap<ProxyLog, Long> weakDispatchTotal = new WeakHashMap<>();
-    private long commitTimeMillis = System.currentTimeMillis();
     private final ProxyConfig proxyConfiguration;
+    private long commitTimeMillis = System.currentTimeMillis();
 
     public ProxyLedgerSyncCoordinator(ProxyConfig proxyConfiguration, Coordinator coordinator) {
         super(proxyConfiguration, coordinator);
@@ -60,16 +62,16 @@ final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             }
         }
 
-        CuratorFramework client = ZookeeperClient.getReadyClient(proxyConfig.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
-        String path = String.format(ZookeeperPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
+        CuratorFramework client = ZookeeperClientFactory.getReadyClient(proxyConfig.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        String path = String.format(ZookeeperProxyPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
         byte[] bytes = client.getData().forPath(path);
-        Node proxyNode = JsonMapper.deserialize(bytes, Node.class);
+        Node proxyNode = deserialize(bytes, Node.class);
         proxyNode.setLedgerThroughput(calculateLedgerThroughput());
-        client.setData().forPath(path, JsonMapper.serialize(proxyNode));
+        client.setData().forPath(path, serialize(proxyNode));
     }
 
     private Map<Integer, Integer> calculateLedgerThroughput() {
-        Map<Integer, Integer> ret = new HashMap<>();
+        Map<Integer, Integer> throughputCounts = new HashMap<>();
         long interval = (System.currentTimeMillis() - commitTimeMillis) / 1000;
         for (Log log : coordinator.getLogCoordinator().getLedgerIdOfLogs().values()) {
             ProxyLog proxyLog = (ProxyLog) log;
@@ -79,11 +81,11 @@ final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
                 continue;
             }
             int throughput = (int) ((newValue - oldValue) / interval);
-            if (throughput > 0 ) {
-                ret.put(log.getLedger(), throughput);
+            if (throughput > 0) {
+                throughputCounts.put(log.getLedger(), throughput);
             }
         }
         commitTimeMillis = System.currentTimeMillis();
-        return ret;
+        return throughputCounts;
     }
 }

@@ -4,205 +4,209 @@
 package org.meteor.remote.proto;
 
 public final class MessageMetadataProto {
-  private MessageMetadataProto() {}
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
-  }
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_MessageId_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_MessageId_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_MessageOffset_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_MessageMetadata_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_ClusterMetadata_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_ClusterMetadata_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_NodeMetadata_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_NodeMetadata_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_ClusterInfo_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_TopicMetadata_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_PartitionMetadata_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_TopicInfo_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_fieldAccessorTable;
+    static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_meteor_protobuf_TopicSegmentInfo_descriptor;
+    static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_meteor_protobuf_TopicSegmentInfo_fieldAccessorTable;
+    private static com.google.protobuf.Descriptors.FileDescriptor
+            descriptor;
 
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
-  }
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_MessageId_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_MessageId_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_MessageOffset_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_MessageMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_ClusterMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_ClusterMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_NodeMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_NodeMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_ClusterInfo_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_TopicMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_PartitionMetadata_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_TopicInfo_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_meteor_protobuf_TopicSegmentInfo_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_meteor_protobuf_TopicSegmentInfo_fieldAccessorTable;
+    static {
+        java.lang.String[] descriptorData = {
+                "\n\014meteor.proto\022\017meteor.protobuf\"9\n\tMessa" +
+                        "geId\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005i" +
+                        "ndex\030\003 \001(\005\"-\n\rMessageOffset\022\r\n\005epoch\030\001 \001" +
+                        "(\005\022\r\n\005index\030\002 \001(\003\"\234\001\n\017MessageMetadata\022\r\n" +
+                        "\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022<\n\006extras\030\003 " +
+                        "\003(\0132,.meteor.protobuf.MessageMetadata.Ex" +
+                        "trasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n" +
+                        "\005value\030\002 \001(\t:\0028\001\"\037\n\017ClusterMetadata\022\014\n\004n" +
+                        "ame\030\001 \001(\t\"L\n\014NodeMetadata\022\024\n\014cluster_nam" +
+                        "e\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004por" +
+                        "t\030\004 \001(\005\"\305\001\n\013ClusterInfo\0221\n\007cluster\030\001 \001(\013" +
+                        "2 .meteor.protobuf.ClusterMetadata\0226\n\005no" +
+                        "des\030\002 \003(\0132\'.meteor.protobuf.ClusterInfo." +
+                        "NodesEntry\032K\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022,\n" +
+                        "\005value\030\002 \001(\0132\035.meteor.protobuf.NodeMetad" +
+                        "ata:\0028\001\":\n\rTopicMetadata\022\014\n\004name\030\001 \001(\t\022\n" +
+                        "\n\002id\030\002 \001(\005\022\017\n\007version\030\003 \001(\005\"\225\001\n\021Partitio" +
+                        "nMetadata\022\022\n\ntopic_name\030\001 \001(\t\022\n\n\002id\030\002 \001(" +
+                        "\005\022\016\n\006ledger\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\026\n\016lead" +
+                        "er_node_id\030\005 \001(\t\022\030\n\020replica_node_ids\030\006 \003" +
+                        "(\t\022\017\n\007version\030\007 \001(\005\"\321\001\n\tTopicInfo\022-\n\005top" +
+                        "ic\030\001 \001(\0132\036.meteor.protobuf.TopicMetadata" +
+                        "\022>\n\npartitions\030\002 \003(\0132*.meteor.protobuf.T" +
+                        "opicInfo.PartitionsEntry\032U\n\017PartitionsEn" +
+                        "try\022\013\n\003key\030\001 \001(\005\0221\n\005value\030\002 \001(\0132\".meteor" +
+                        ".protobuf.PartitionMetadata:\0028\001\"u\n\020Topic" +
+                        "SegmentInfo\022\032\n\022segmentRollingSize\030\001 \001(\005\022" +
+                        "\032\n\022segmentRetainCount\030\002 \001(\005\022\027\n\017segmentRe" +
+                        "tainMs\030\003 \001(\005\022\020\n\010allocate\030\004 \001(\010B1\n\027org.me" +
+                        "teor.remote.protoB\024MessageMetadataProtoP" +
+                        "\001b\006proto3"
+        };
+        descriptor = com.google.protobuf.Descriptors.FileDescriptor
+                .internalBuildGeneratedFileFrom(descriptorData,
+                        new com.google.protobuf.Descriptors.FileDescriptor[]{
+                        });
+        internal_static_meteor_protobuf_MessageId_descriptor =
+                getDescriptor().getMessageTypes().get(0);
+        internal_static_meteor_protobuf_MessageId_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_MessageId_descriptor,
+                new java.lang.String[]{"Ledger", "Epoch", "Index",});
+        internal_static_meteor_protobuf_MessageOffset_descriptor =
+                getDescriptor().getMessageTypes().get(1);
+        internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_MessageOffset_descriptor,
+                new java.lang.String[]{"Epoch", "Index",});
+        internal_static_meteor_protobuf_MessageMetadata_descriptor =
+                getDescriptor().getMessageTypes().get(2);
+        internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_MessageMetadata_descriptor,
+                new java.lang.String[]{"Topic", "Queue", "Extras",});
+        internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor =
+                internal_static_meteor_protobuf_MessageMetadata_descriptor.getNestedTypes().get(0);
+        internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor,
+                new java.lang.String[]{"Key", "Value",});
+        internal_static_meteor_protobuf_ClusterMetadata_descriptor =
+                getDescriptor().getMessageTypes().get(3);
+        internal_static_meteor_protobuf_ClusterMetadata_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_ClusterMetadata_descriptor,
+                new java.lang.String[]{"Name",});
+        internal_static_meteor_protobuf_NodeMetadata_descriptor =
+                getDescriptor().getMessageTypes().get(4);
+        internal_static_meteor_protobuf_NodeMetadata_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_NodeMetadata_descriptor,
+                new java.lang.String[]{"ClusterName", "Id", "Host", "Port",});
+        internal_static_meteor_protobuf_ClusterInfo_descriptor =
+                getDescriptor().getMessageTypes().get(5);
+        internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_ClusterInfo_descriptor,
+                new java.lang.String[]{"Cluster", "Nodes",});
+        internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor =
+                internal_static_meteor_protobuf_ClusterInfo_descriptor.getNestedTypes().get(0);
+        internal_static_meteor_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor,
+                new java.lang.String[]{"Key", "Value",});
+        internal_static_meteor_protobuf_TopicMetadata_descriptor =
+                getDescriptor().getMessageTypes().get(6);
+        internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_TopicMetadata_descriptor,
+                new java.lang.String[]{"Name", "Id", "Version",});
+        internal_static_meteor_protobuf_PartitionMetadata_descriptor =
+                getDescriptor().getMessageTypes().get(7);
+        internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_PartitionMetadata_descriptor,
+                new java.lang.String[]{"TopicName", "Id", "Ledger", "Epoch", "LeaderNodeId", "ReplicaNodeIds", "Version",});
+        internal_static_meteor_protobuf_TopicInfo_descriptor =
+                getDescriptor().getMessageTypes().get(8);
+        internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_TopicInfo_descriptor,
+                new java.lang.String[]{"Topic", "Partitions",});
+        internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor =
+                internal_static_meteor_protobuf_TopicInfo_descriptor.getNestedTypes().get(0);
+        internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor,
+                new java.lang.String[]{"Key", "Value",});
+        internal_static_meteor_protobuf_TopicSegmentInfo_descriptor =
+                getDescriptor().getMessageTypes().get(9);
+        internal_static_meteor_protobuf_TopicSegmentInfo_fieldAccessorTable = new
+                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_meteor_protobuf_TopicSegmentInfo_descriptor,
+                new java.lang.String[]{"SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs", "Allocate",});
+    }
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-      getDescriptor() {
-    return descriptor;
-  }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
-      descriptor;
-  static {
-    java.lang.String[] descriptorData = {
-      "\n\014meteor.proto\022\017meteor.protobuf\"9\n\tMessa" +
-      "geId\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005i" +
-      "ndex\030\003 \001(\005\"-\n\rMessageOffset\022\r\n\005epoch\030\001 \001" +
-      "(\005\022\r\n\005index\030\002 \001(\003\"\234\001\n\017MessageMetadata\022\r\n" +
-      "\005topic\030\001 \001(\t\022\r\n\005queue\030\002 \001(\t\022<\n\006extras\030\003 " +
-      "\003(\0132,.meteor.protobuf.MessageMetadata.Ex" +
-      "trasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n" +
-      "\005value\030\002 \001(\t:\0028\001\"\037\n\017ClusterMetadata\022\014\n\004n" +
-      "ame\030\001 \001(\t\"L\n\014NodeMetadata\022\024\n\014cluster_nam" +
-      "e\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004por" +
-      "t\030\004 \001(\005\"\305\001\n\013ClusterInfo\0221\n\007cluster\030\001 \001(\013" +
-      "2 .meteor.protobuf.ClusterMetadata\0226\n\005no" +
-      "des\030\002 \003(\0132\'.meteor.protobuf.ClusterInfo." +
-      "NodesEntry\032K\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022,\n" +
-      "\005value\030\002 \001(\0132\035.meteor.protobuf.NodeMetad" +
-      "ata:\0028\001\":\n\rTopicMetadata\022\014\n\004name\030\001 \001(\t\022\n" +
-      "\n\002id\030\002 \001(\005\022\017\n\007version\030\003 \001(\005\"\225\001\n\021Partitio" +
-      "nMetadata\022\022\n\ntopic_name\030\001 \001(\t\022\n\n\002id\030\002 \001(" +
-      "\005\022\016\n\006ledger\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\026\n\016lead" +
-      "er_node_id\030\005 \001(\t\022\030\n\020replica_node_ids\030\006 \003" +
-      "(\t\022\017\n\007version\030\007 \001(\005\"\321\001\n\tTopicInfo\022-\n\005top" +
-      "ic\030\001 \001(\0132\036.meteor.protobuf.TopicMetadata" +
-      "\022>\n\npartitions\030\002 \003(\0132*.meteor.protobuf.T" +
-      "opicInfo.PartitionsEntry\032U\n\017PartitionsEn" +
-      "try\022\013\n\003key\030\001 \001(\005\0221\n\005value\030\002 \001(\0132\".meteor" +
-      ".protobuf.PartitionMetadata:\0028\001\"u\n\020Topic" +
-      "SegmentInfo\022\032\n\022segmentRollingSize\030\001 \001(\005\022" +
-      "\032\n\022segmentRetainCount\030\002 \001(\005\022\027\n\017segmentRe" +
-      "tainMs\030\003 \001(\005\022\020\n\010allocate\030\004 \001(\010B1\n\027org.me" +
-      "teor.remote.protoB\024MessageMetadataProtoP" +
-      "\001b\006proto3"
-    };
-    descriptor = com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new com.google.protobuf.Descriptors.FileDescriptor[] {
-        });
-    internal_static_meteor_protobuf_MessageId_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_meteor_protobuf_MessageId_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_MessageId_descriptor,
-        new java.lang.String[] { "Ledger", "Epoch", "Index", });
-    internal_static_meteor_protobuf_MessageOffset_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_MessageOffset_descriptor,
-        new java.lang.String[] { "Epoch", "Index", });
-    internal_static_meteor_protobuf_MessageMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_MessageMetadata_descriptor,
-        new java.lang.String[] { "Topic", "Queue", "Extras", });
-    internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor =
-      internal_static_meteor_protobuf_MessageMetadata_descriptor.getNestedTypes().get(0);
-    internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
-    internal_static_meteor_protobuf_ClusterMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_meteor_protobuf_ClusterMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_ClusterMetadata_descriptor,
-        new java.lang.String[] { "Name", });
-    internal_static_meteor_protobuf_NodeMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_meteor_protobuf_NodeMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_NodeMetadata_descriptor,
-        new java.lang.String[] { "ClusterName", "Id", "Host", "Port", });
-    internal_static_meteor_protobuf_ClusterInfo_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_meteor_protobuf_ClusterInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_ClusterInfo_descriptor,
-        new java.lang.String[] { "Cluster", "Nodes", });
-    internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor =
-      internal_static_meteor_protobuf_ClusterInfo_descriptor.getNestedTypes().get(0);
-    internal_static_meteor_protobuf_ClusterInfo_NodesEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_ClusterInfo_NodesEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
-    internal_static_meteor_protobuf_TopicMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_TopicMetadata_descriptor,
-        new java.lang.String[] { "Name", "Id", "Version", });
-    internal_static_meteor_protobuf_PartitionMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_PartitionMetadata_descriptor,
-        new java.lang.String[] { "TopicName", "Id", "Ledger", "Epoch", "LeaderNodeId", "ReplicaNodeIds", "Version", });
-    internal_static_meteor_protobuf_TopicInfo_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_TopicInfo_descriptor,
-        new java.lang.String[] { "Topic", "Partitions", });
-    internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor =
-      internal_static_meteor_protobuf_TopicInfo_descriptor.getNestedTypes().get(0);
-    internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor,
-        new java.lang.String[] { "Key", "Value", });
-    internal_static_meteor_protobuf_TopicSegmentInfo_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_meteor_protobuf_TopicSegmentInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_meteor_protobuf_TopicSegmentInfo_descriptor,
-        new java.lang.String[] { "SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs", "Allocate", });
-  }
+    private MessageMetadataProto() {
+    }
 
-  // @@protoc_insertion_point(outer_class_scope)
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistryLite registry) {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistry registry) {
+        registerAllExtensions(
+                (com.google.protobuf.ExtensionRegistryLite) registry);
+    }
+
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
+    }
+
+    // @@protoc_insertion_point(outer_class_scope)
 }

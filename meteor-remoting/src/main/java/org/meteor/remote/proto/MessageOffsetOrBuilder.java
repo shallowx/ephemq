@@ -4,18 +4,20 @@
 package org.meteor.remote.proto;
 
 public interface MessageOffsetOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.MessageOffset)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.MessageOffset)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>int32 epoch = 1;</code>
-   * @return The epoch.
-   */
-  int getEpoch();
+    /**
+     * <code>int32 epoch = 1;</code>
+     *
+     * @return The epoch.
+     */
+    int getEpoch();
 
-  /**
-   * <code>int64 index = 2;</code>
-   * @return The index.
-   */
-  long getIndex();
+    /**
+     * <code>int64 index = 2;</code>
+     *
+     * @return The index.
+     */
+    long getIndex();
 }

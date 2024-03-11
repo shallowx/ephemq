@@ -25,5 +25,6 @@ public interface CombineListener {
     default void onSyncMessage(ClientChannel channel, SyncMessageSignal signal, ByteBuf data) {
     }
 
-    default void listenerCompleted() throws InterruptedException {}
+    default void listenerCompleted() throws InterruptedException {
+    }
 }

@@ -19,6 +19,7 @@ import static org.meteor.metrics.config.MetricsConstants.*;
 public class StatisticsDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(StatisticsDuplexHandler.class);
     private final LongAdder activeChannelCount = new LongAdder();
+
     public StatisticsDuplexHandler(CommonConfig config) {
         Gauge.builder(ACTIVE_CHANNEL_GAUGE_NAME, activeChannelCount, LongAdder::doubleValue)
                 .tags(

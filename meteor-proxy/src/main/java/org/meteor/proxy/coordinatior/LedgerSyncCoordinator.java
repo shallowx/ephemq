@@ -51,7 +51,7 @@ public abstract class LedgerSyncCoordinator {
     public Promise<Boolean> deSyncAndCloseIfNotSubscribe(ProxyLog log) {
         Promise<Boolean> promise = resumeSyncTaskExecutor.newPromise();
         promise.addListener(f -> {
-            if (f.isSuccess() && (Boolean)f.getNow()) {
+            if (f.isSuccess() && (Boolean) f.getNow()) {
                 coordinator.getLogCoordinator().destroyLog(log.getLedger());
             }
         });
@@ -73,15 +73,15 @@ public abstract class LedgerSyncCoordinator {
         }
 
         MessageLedger messageLedger = getMessageLedger(topic, ledger);
-        List<SocketAddress> replicas = messageLedger.participants();
-        if (replicas == null || replicas.isEmpty()) {
-            IllegalStateException e = new IllegalStateException("No available replicas for ledger[" + ledger + "]");
+        List<SocketAddress> addresses = messageLedger.participants();
+        if (addresses == null || addresses.isEmpty()) {
+            IllegalStateException e = new IllegalStateException("No available participant's address for ledger[" + ledger + "]");
             logger.error(e);
             ret.tryFailure(e);
             return ret;
         }
 
-        if (replicas.contains(channel.address()) && channel.isActive()) {
+        if (addresses.contains(channel.address()) && channel.isActive()) {
             ret.trySuccess(null);
             return ret;
         }
@@ -93,23 +93,23 @@ public abstract class LedgerSyncCoordinator {
 
             if (f.isSuccess()) {
                 try {
-                   Promise<SyncResponse> syncPromise = syncLedgerFromUpstream(log, messageLedger);
-                   syncPromise.addListener(future -> {
-                       if (future.isSuccess()) {
-                           if (logger.isInfoEnabled()) {
-                               logger.info("Log[{}] is sync successfully", log.getLedger());
-                           }
-                           ret.trySuccess(null);
-                       } else {
-                           if (logger.isErrorEnabled()) {
-                               logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
-                                       proxyConfig.getProxyResumeTaskScheduleDelayMilliseconds(), future.cause());
-                           }
-                           resumeSyncTaskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), proxyConfig.getProxyResumeTaskScheduleDelayMilliseconds(), TimeUnit.MILLISECONDS);
-                           ret.tryFailure(future.cause());
-                       }
-                   });
-               } catch (Exception e){
+                    Promise<SyncResponse> syncPromise = syncLedgerFromUpstream(log, messageLedger);
+                    syncPromise.addListener(future -> {
+                        if (future.isSuccess()) {
+                            if (logger.isInfoEnabled()) {
+                                logger.info("Log[{}] is sync successfully", log.getLedger());
+                            }
+                            ret.trySuccess(null);
+                        } else {
+                            if (logger.isErrorEnabled()) {
+                                logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
+                                        proxyConfig.getProxyResumeTaskScheduleDelayMilliseconds(), future.cause());
+                            }
+                            resumeSyncTaskExecutor.schedule(() -> resumeSync(channel, topic, ledger, promise), proxyConfig.getProxyResumeTaskScheduleDelayMilliseconds(), TimeUnit.MILLISECONDS);
+                            ret.tryFailure(future.cause());
+                        }
+                    });
+                } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Sync Log[{}] failed when resuming sync, will retry after {} ms", log.getLedger(),
                                 proxyConfig.getProxyResumeTaskScheduleDelayMilliseconds(), e);
@@ -135,7 +135,7 @@ public abstract class LedgerSyncCoordinator {
         }
         MessageLedger messageLedger = router.ledger(ledger);
         if (messageLedger == null) {
-            throw new IllegalStateException(String.format("The topic[%s] message ledger not found which ledger[%d]", topic, ledger));
+            throw new IllegalStateException(String.format("The topic[%s] message ledger[%d not found", topic, ledger));
         }
         return messageLedger;
     }
@@ -151,20 +151,24 @@ public abstract class LedgerSyncCoordinator {
 
     @Nonnull
     public ClientChannel getSyncChannel(MessageLedger messageLedger) {
-        List<SocketAddress> replicas = messageLedger.participants();
-        if (replicas == null || replicas.isEmpty()) {
+        List<SocketAddress> addresses = messageLedger.participants();
+        if (addresses == null || addresses.isEmpty()) {
             throw new IllegalStateException(String.format(
-                    "No available replica which topic[%s] and ledger[%d]", messageLedger.topic(), messageLedger.id()
+                    "No available participants that it's the topic[%s] and the ledger[%d]", messageLedger.topic(), messageLedger.id()
             ));
         }
-        int index = ThreadLocalRandom.current().nextInt(replicas.size());
-        return proxyClient.fetchChannel(replicas.get(index));
+        int index = ThreadLocalRandom.current().nextInt(addresses.size());
+        return proxyClient.fetchChannel(addresses.get(index));
     }
 
-    Client getProxyClient() { return this.proxyClient;}
+    Client getProxyClient() {
+        return this.proxyClient;
+    }
+
     public void start() {
         this.proxyClient.start();
     }
+
     public void shutDown() {
         this.proxyClient.close();
     }

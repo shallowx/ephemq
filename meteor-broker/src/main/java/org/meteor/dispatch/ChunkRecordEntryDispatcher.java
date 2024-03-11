@@ -142,7 +142,7 @@ public class ChunkRecordEntryDispatcher {
     }
 
     private void touchDispatch(ChunkRecordHandler handler) {
-        if (handler.triggered.compareAndSet(false,true)) {
+        if (handler.triggered.compareAndSet(false, true)) {
             try {
                 handler.dispatchExecutor.execute(() -> doDispatch(handler));
             } catch (Exception e) {
@@ -211,7 +211,7 @@ public class ChunkRecordEntryDispatcher {
                             channel.writeAndFlush(payload.retainedDuplicate(), delayPursue(pursueTask));
                         }
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Chunk dispatch failed, handler[{}] lastOffset[{}]", handler, lastOffset, e);
                     }
@@ -220,11 +220,11 @@ public class ChunkRecordEntryDispatcher {
                     ByteBufUtil.release(payload);
                 }
 
-                if (runTimes > followLimit || chunk.count() <= 1){
+                if (runTimes > followLimit || chunk.count() <= 1) {
                     break;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Chunk dispatch failed, handler[{}], lastOffset[{}]", handler, lastOffset, e);
             }
@@ -291,7 +291,7 @@ public class ChunkRecordEntryDispatcher {
     private void submitPursue(PursueTask<ChunkRecordSynchronization> pursueTask) {
         try {
             channelExecutor(pursueTask.getSubscription().channel).execute(() -> doPursue(pursueTask));
-        } catch (Exception e){
+        } catch (Exception e) {
             submitFollow(pursueTask);
         }
     }
@@ -346,7 +346,7 @@ public class ChunkRecordEntryDispatcher {
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(pursueTask));
                         return;
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
                         logger.error("chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
                     }
@@ -360,7 +360,7 @@ public class ChunkRecordEntryDispatcher {
                     break;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
             }
@@ -387,7 +387,7 @@ public class ChunkRecordEntryDispatcher {
 
     private void submitAlign(PursueTask<ChunkRecordSynchronization> pursueTask) {
         try {
-           pursueTask.getSubscription().handler.dispatchExecutor.execute(() -> doAlign(pursueTask));
+            pursueTask.getSubscription().handler.dispatchExecutor.execute(() -> doAlign(pursueTask));
         } catch (Exception e) {
             pursueTask.getSubscription().followed = true;
         }
@@ -444,13 +444,13 @@ public class ChunkRecordEntryDispatcher {
                     count += chunk.count();
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
-                    }else {
+                    } else {
                         pursueTask.setPursueOffset(lastOffset);
                         countMessage(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(pursueTask));
                         return;
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
                         logger.error("Chunk align failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
                     }
@@ -545,6 +545,7 @@ public class ChunkRecordEntryDispatcher {
             promise.tryFailure(e);
         }
     }
+
     public void close(Promise<Set<Channel>> promise) {
         Promise<Set<Channel>> result = promise != null ? promise : ImmediateEventExecutor.INSTANCE.newPromise();
         if (state.compareAndSet(true, false)) {

@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 final class ConsistentHashingRing {
     private final NavigableMap<Integer, NavigableSet<String>> virtualNodes = new TreeMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final HashFunction function = Hashing.murmur3_32();
+    private final HashFunction function = Hashing.murmur3_32_fixed();
     private final int virtualNodeSize;
     private final Set<String> nodes = new HashSet<>();
 
@@ -32,7 +32,7 @@ final class ConsistentHashingRing {
                 return;
             }
             for (int i = 0; i < virtualNodeSize; i++) {
-                int hash = hashing(constructVirtualNodeName(node, i));
+                int hash = hashing(createVirtualNodeName(node, i));
                 virtualNodes.computeIfAbsent(hash, k -> new TreeSet<>()).add(node);
             }
         } finally {
@@ -44,7 +44,7 @@ final class ConsistentHashingRing {
         return function.hashUnencodedChars(key).asInt();
     }
 
-    private String constructVirtualNodeName(String node, int index) {
+    private String createVirtualNodeName(String node, int index) {
         return node + "#" + index;
     }
 
@@ -57,7 +57,7 @@ final class ConsistentHashingRing {
             }
 
             for (int i = 0; i < virtualNodeSize; i++) {
-                int hash = hashing(constructVirtualNodeName(node, i));
+                int hash = hashing(createVirtualNodeName(node, i));
                 NavigableSet<String> navigates = virtualNodes.get(hash);
                 if (navigates != null) {
                     navigates.remove(node);

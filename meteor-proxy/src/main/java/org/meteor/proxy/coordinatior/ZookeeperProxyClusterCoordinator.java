@@ -6,7 +6,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.coordinatior.ZookeeperClusterCoordinator;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyServerConfig;
@@ -17,10 +17,11 @@ class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator imple
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);
     private final ConsistentHashingRing hashingRing;
     private final ProxyConfig proxyConfiguration;
+
     public ZookeeperProxyClusterCoordinator(ProxyServerConfig configuration) {
         super(configuration);
         this.proxyConfiguration = configuration.getProxyConfiguration();
-        this.client = ZookeeperClient.getReadyClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
+        this.client = ZookeeperClientFactory.getReadyClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         this.hashingRing = new ConsistentHashingRing();
         this.listeners.add(this);
     }
@@ -28,21 +29,21 @@ class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator imple
     @Override
     public void start() throws Exception {
         connectionStateListener = (client, newState) -> {
-          if (newState == ConnectionState.RECONNECTED) {
-              try {
-                  Stat stat = client.checkExists().forPath(String.format(ZookeeperPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId()));
-                  if (stat != null) {
-                      return;
-                  }
-                 registerNode(ZookeeperPathConstants.PROXIES_ID);
-              } catch (Exception e) {
-                  logger.error(e.getMessage(), e);
-              }
-          }
+            if (newState == ConnectionState.RECONNECTED) {
+                try {
+                    Stat stat = client.checkExists().forPath(String.format(ZookeeperProxyPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId()));
+                    if (stat != null) {
+                        return;
+                    }
+                    registerNode(ZookeeperProxyPathConstants.PROXIES_ID);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
         };
         this.client.getConnectionStateListenable().addListener(connectionStateListener);
-        startBrokersListener(ZookeeperPathConstants.PROXIES_IDS);
-        registerNode(ZookeeperPathConstants.PROXIES_ID);
+        startBrokersListener(ZookeeperProxyPathConstants.PROXIES_IDS);
+        registerNode(ZookeeperProxyPathConstants.PROXIES_ID);
     }
 
     @Override
@@ -86,7 +87,7 @@ class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator imple
 
     @Override
     public void shutdown() throws Exception {
-        unregistered(ZookeeperPathConstants.PROXIES_ID);
+        unregistered(ZookeeperProxyPathConstants.PROXIES_ID);
         if (cache != null) {
             cache.close();
         }

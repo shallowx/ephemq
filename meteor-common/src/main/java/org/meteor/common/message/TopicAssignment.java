@@ -5,7 +5,7 @@ import java.util.Set;
 public class TopicAssignment {
     private String topic;
     private int ledgerId;
-    private int epoch;
+    private int epoch = -1;
     private int partition;
     private Set<String> replicas;
     private String leader;

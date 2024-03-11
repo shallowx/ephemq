@@ -16,7 +16,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 
 import java.util.ArrayList;
@@ -26,23 +26,25 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static org.meteor.coordinatior.JsonFeatureMapper.deserialize;
+
 public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private static final String UP = "UP";
     private static final String DOWN = "DOWN";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
-    private final CommonConfig configuration;
     protected final List<ClusterListener> listeners = new ObjectArrayList<>();
+    private final CommonConfig configuration;
     private final Map<String, Node> readyNodes = new ConcurrentHashMap<>();
     protected CuratorFramework client;
-    private volatile boolean registered = false;
     protected ConnectionStateListener connectionStateListener;
     protected CuratorCache cache;
+    private volatile boolean registered = false;
     private LeaderLatch latch;
     private Node thisNode;
 
     public ZookeeperClusterCoordinator(ServerConfig config) {
         this.configuration = config.getCommonConfig();
-        this.client = ZookeeperClient.getReadyClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
+        this.client = ZookeeperClientFactory.getReadyClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
     }
 
     @Override
@@ -108,14 +110,16 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                             case CHILD_REMOVED -> handleRemove(event);
                             case CHILD_UPDATED -> handlerUpdated(event);
                             default -> {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Unsupported child operation type[{}]", type);
+                                }
                             }
                         }
                     }
 
-
                     private void handleAdd(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = JsonMapper.deserialize(data.getData(), Node.class);
+                        Node node = deserialize(data.getData(), Node.class);
 
                         readyNodes.put(node.getId(), node);
                         for (ClusterListener listener : listeners) {
@@ -125,7 +129,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
                     private void handleRemove(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = JsonMapper.deserialize(data.getData(), Node.class);
+                        Node node = deserialize(data.getData(), Node.class);
 
                         readyNodes.remove(node.getId());
                         for (ClusterListener listener : listeners) {
@@ -135,7 +139,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
                     private void handlerUpdated(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = JsonMapper.deserialize(data.getData(), Node.class);
+                        Node node = deserialize(data.getData(), Node.class);
 
                         readyNodes.put(node.getId(), node);
                         if (DOWN.equals(node.getState())) {
@@ -158,7 +162,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
         try {
             createBuilder.creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL)
-                    .forPath(String.format(path, configuration.getServerId()), JsonMapper.serialize(thisNode));
+                    .forPath(String.format(path, configuration.getServerId()), JsonFeatureMapper.serialize(thisNode));
             registered = true;
         } catch (KeeperException.NodeExistsException e) {
             throw new RuntimeException(String.format("Server id[%s] should be unique", configuration.getServerId()));
@@ -181,9 +185,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
     private void updateNodeStateAndSleep(String path) throws Exception {
         byte[] bytes = client.getData().forPath(path);
-        Node downNode = JsonMapper.deserialize(bytes, Node.class);
+        Node downNode = deserialize(bytes, Node.class);
         downNode.setState(DOWN);
-        client.setData().forPath(path, JsonMapper.serialize(downNode));
+        client.setData().forPath(path, JsonFeatureMapper.serialize(downNode));
 
         readyNodes.put(downNode.getId(), downNode);
         if (configuration.getShutdownMaxWaitTimeMilliseconds() > 0) {

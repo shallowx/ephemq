@@ -20,7 +20,7 @@ public class ServerConfig {
         this.networkConfig = new NetworkConfig(properties);
         this.recordDispatchConfig = new RecordDispatchConfig(properties);
         this.zookeeperConfig = new ZookeeperConfig(properties);
-        this.segmentConfig =new SegmentConfig(properties);
+        this.segmentConfig = new SegmentConfig(properties);
     }
 
     public CommonConfig getCommonConfig() {

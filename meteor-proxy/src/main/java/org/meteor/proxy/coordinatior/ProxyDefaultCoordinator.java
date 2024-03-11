@@ -13,6 +13,7 @@ import org.meteor.remote.util.NetworkUtil;
 public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);
     private final LedgerSyncCoordinator syncCoordinator;
+    private volatile boolean state = false;
 
     public ProxyDefaultCoordinator(ProxyServerConfig configuration) {
         super(configuration);
@@ -35,10 +36,17 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
 
     @Override
     public void start() throws Exception {
-        super.start();
-        this.syncCoordinator.start();
+        if (!isRunning()) {
+            super.start();
+            this.syncCoordinator.start();
+        } else {
+            // keep empty
+        }
     }
 
+    private boolean isRunning() {
+        return state;
+    }
 
     @Override
     public LedgerSyncCoordinator getLedgerSyncCoordinator() {
@@ -47,10 +55,14 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
 
     @Override
     public void shutdown() throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Proxy default coordinator is closing");
+        if (isRunning()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Proxy default coordinator is closing");
+            }
+            super.shutdown();
+            this.syncCoordinator.shutDown();
+        } else {
+            // keep empty
         }
-        super.shutdown();
-        this.syncCoordinator.shutDown();
     }
 }

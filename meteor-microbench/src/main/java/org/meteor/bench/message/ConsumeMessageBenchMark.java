@@ -19,6 +19,14 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class ConsumeMessageBenchMark {
+    private static final String TOPIC = "test_topic";
+    private static final String QUEUE = "test_queue";
+    private final ByteBuf buf = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
+    private MessageMetadata metadata;
+    private MessageId messageId;
+    private MessageListener listener;
+    private Map<String, Map<String, org.meteor.client.consumer.Mode>> wholeQueueTopics = new HashMap<>();
+
     @Setup
     public void setUp() {
         this.metadata = buildMetadata(new HashMap<>());
@@ -50,14 +58,6 @@ public class ConsumeMessageBenchMark {
         this.wholeQueueTopics = null;
         this.metadata = null;
     }
-
-    private final ByteBuf buf = ByteBufUtil.string2Buf(UUID.randomUUID().toString());
-    private MessageMetadata metadata;
-    private MessageId messageId;
-    private MessageListener listener;
-    private static final String TOPIC = "test_topic";
-    private static final String QUEUE = "test_queue";
-    private Map<String, Map<String, org.meteor.client.consumer.Mode>> wholeQueueTopics = new HashMap<>();
 
     private MessageMetadata buildMetadata(Map<String, String> extras) {
         MessageMetadata.Builder builder = MessageMetadata.newBuilder().setTopic(ConsumeMessageBenchMark.TOPIC).setQueue(ConsumeMessageBenchMark.QUEUE);

@@ -112,10 +112,10 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             metricsSampleCount.set(sample + 1);
             if (sample > metricsSample) {
                 metricsSampleCount.set(0);
-                DistributionSummary drs = requestSizeSummary.computeIfAbsent(code, s -> buildSummary(REQUEST_SIZE_SUMMARY_NAME,code, "bytes"));
+                DistributionSummary drs = requestSizeSummary.computeIfAbsent(code, s -> buildSummary(REQUEST_SIZE_SUMMARY_NAME, code, "bytes"));
                 drs.record(bytes);
 
-                DistributionSummary drt = requestTimesSummary.computeIfAbsent(code, s -> buildSummary(API_RESPONSE_TIME_NAME,code, "ns"));
+                DistributionSummary drt = requestTimesSummary.computeIfAbsent(code, s -> buildSummary(API_RESPONSE_TIME_NAME, code, "ns"));
                 drt.record(bytes);
             }
         } catch (Throwable t) {
@@ -286,7 +286,8 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     }
 
     @Override
-    public void onShutdown(Node node) {}
+    public void onShutdown(Node node) {
+    }
 
     @Override
     public void onPartitionInit(TopicPartition topicPartition, int ledger) {

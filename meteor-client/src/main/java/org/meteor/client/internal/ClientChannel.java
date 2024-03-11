@@ -83,7 +83,7 @@ public class ClientChannel implements MeterBinder {
     @Override
     public String toString() {
         return "client_channel{" +
-                "address=" + address+
+                "address=" + address +
                 ", id='" + id + '\'' +
                 ", channel=" + channel +
                 '}';

@@ -17,6 +17,34 @@ class JdkLogger extends AbstractInternalLogger {
         this.logger = logger;
     }
 
+    private static void fillCallerData(LogRecord record) {
+        StackTraceElement[] steArray = new Throwable().getStackTrace();
+
+        int selfIndex = -1;
+        for (int i = 0; i < steArray.length; i++) {
+            final String className = steArray[i].getClassName();
+            if (className.equals(SELF) || className.equals(SUPER)) {
+                selfIndex = i;
+                break;
+            }
+        }
+
+        int found = -1;
+        for (int i = selfIndex + 1; i < steArray.length; i++) {
+            final String className = steArray[i].getClassName();
+            if (!(className.equals(SELF) || className.equals(SUPER))) {
+                found = i;
+                break;
+            }
+        }
+
+        if (found != -1) {
+            StackTraceElement ste = steArray[found];
+            record.setSourceClassName(ste.getClassName());
+            record.setSourceMethodName(ste.getMethodName());
+        }
+    }
+
     @Override
     public boolean isTraceEnabled() {
         return logger.isLoggable(Level.FINEST);
@@ -229,34 +257,6 @@ class JdkLogger extends AbstractInternalLogger {
     public void error(String msg, Throwable t) {
         if (logger.isLoggable(Level.SEVERE)) {
             log(Level.SEVERE, msg, t);
-        }
-    }
-    
-    private static void fillCallerData(LogRecord record) {
-        StackTraceElement[] steArray = new Throwable().getStackTrace();
-
-        int selfIndex = -1;
-        for (int i = 0; i < steArray.length; i++) {
-            final String className = steArray[i].getClassName();
-            if (className.equals(SELF) || className.equals(SUPER)) {
-                selfIndex = i;
-                break;
-            }
-        }
-
-        int found = -1;
-        for (int i = selfIndex + 1; i < steArray.length; i++) {
-            final String className = steArray[i].getClassName();
-            if (!(className.equals(SELF) || className.equals(SUPER))) {
-                found = i;
-                break;
-            }
-        }
-
-        if (found != -1) {
-            StackTraceElement ste = steArray[found];
-            record.setSourceClassName(ste.getClassName());
-            record.setSourceMethodName(ste.getMethodName());
         }
     }
 

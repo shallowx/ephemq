@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
+import it.unimi.dsi.fastutil.Arrays;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.DeleteBuilder;
@@ -17,16 +18,13 @@ import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Node;
-import org.meteor.common.message.TopicAssignment;
-import org.meteor.common.message.TopicConfig;
-import org.meteor.common.message.TopicPartition;
+import org.meteor.common.message.*;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.SegmentConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.config.ZookeeperConfig;
 import org.meteor.internal.CorrelationIdConstants;
-import org.meteor.internal.ZookeeperClient;
+import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogCoordinator;
 import org.meteor.listener.TopicListener;
@@ -40,23 +38,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ZookeeperTopicCoordinator implements TopicCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
     private static final String TOPIC_PARTITION_REGEX = "^/brokers/topics/[\\w\\-#]+/partitions/\\d+$";
     private static final String TOPIC_REGEX = "^/brokers/topics/[\\w\\-#]+$";
     protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
     protected final List<TopicListener> listeners = new LinkedList<>();
     protected CommonConfig commonConfiguration;
     protected SegmentConfig segmentConfiguration;
-    private ZookeeperConfig zookeeperConfiguration;
     protected CuratorFramework client;
     protected CuratorCache cache;
     protected ParticipantCoordinator participantCoordinator;
     protected DistributedAtomicInteger topicIdGenerator;
     protected DistributedAtomicInteger ledgerIdGenerator;
     protected Coordinator coordinator;
-    protected LoadingCache<String, Set<org.meteor.common.message.PartitionInfo>> topicCache;
+    protected LoadingCache<String, Set<PartitionInfo>> topicCache;
     protected LoadingCache<String, Set<String>> topicNamesCache;
+    private ZookeeperConfig zookeeperConfiguration;
 
     public ZookeeperTopicCoordinator() {
     }
@@ -67,16 +65,19 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         this.zookeeperConfiguration = config.getZookeeperConfig();
         this.coordinator = coordinator;
         this.participantCoordinator = new ParticipantCoordinator(coordinator);
-        this.client = ZookeeperClient.getReadyClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
+        this.client = ZookeeperClientFactory.getReadyClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
         this.ledgerIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.LEDGER_ID_COUNTER, new RetryOneTime(100));
         this.topicCache = Caffeine.newBuilder().refreshAfterWrite(1, TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public @Nullable Set<org.meteor.common.message.PartitionInfo> load(String topic) throws Exception {
+                    public @Nullable Set<PartitionInfo> load(String topic) throws Exception {
                         try {
                             return getTopicInfoFromZookeeper(topic);
                         } catch (IllegalArgumentException e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Get topic[{}] info from zookeeper failed", topic, e.getMessage(), e);
+                            }
                             return null;
                         }
                     }
@@ -102,9 +103,9 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             Set<String> replicas = assignment.getReplicas();
             int ledgerId = assignment.getLedgerId();
             int epoch = assignment.getEpoch();
-            org.meteor.common.message.TopicConfig topicConfig = assignment.getConfig();
-            org.meteor.common.message.PartitionInfo partitionInfo = new org.meteor.common.message.PartitionInfo(topic, topicId, partition, ledgerId, epoch, leader, replicas, topicConfig, stat.getVersion());
-            Set<org.meteor.common.message.PartitionInfo> partitionInfos = topicCache.get(topic);
+            TopicConfig topicConfig = assignment.getConfig();
+            PartitionInfo partitionInfo = new PartitionInfo(topic, topicId, partition, ledgerId, epoch, leader, replicas, topicConfig, stat.getVersion());
+            Set<PartitionInfo> partitionInfos = topicCache.get(topic);
             if (partitionInfos == null) {
                 partitionInfos = new HashSet<>();
             }
@@ -120,7 +121,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         }
     }
 
-    private Set<org.meteor.common.message.PartitionInfo> getTopicInfoFromZookeeper(String topic) throws Exception {
+    private Set<PartitionInfo> getTopicInfoFromZookeeper(String topic) throws Exception {
         String partitionsPath = String.format(PathConstants.BROKER_TOPIC_PARTITIONS, topic);
         String topicIdPath = String.format(PathConstants.BROKER_TOPIC_ID, topic);
         try {
@@ -131,19 +132,19 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 return null;
             }
 
-            Set<org.meteor.common.message.PartitionInfo> partitionInfos = new ObjectOpenHashSet<>();
+            Set<PartitionInfo> partitionInfos = new ObjectOpenHashSet<>();
             for (String nodeName : partitions) {
                 int partition = Integer.parseInt(nodeName);
                 String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, partition);
                 Stat stat = new Stat();
                 bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-                org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+                TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
                 String leader = assignment.getLeader();
                 Set<String> replicas = assignment.getReplicas();
                 int ledgerId = assignment.getLedgerId();
                 int epoch = assignment.getEpoch();
-                org.meteor.common.message.TopicConfig topicConfig = assignment.getConfig();
-                org.meteor.common.message.PartitionInfo partitionInfo = new org.meteor.common.message.PartitionInfo(topic, topicId, partition, ledgerId, epoch, leader, replicas, topicConfig, stat.getVersion());
+                TopicConfig topicConfig = assignment.getConfig();
+                PartitionInfo partitionInfo = new PartitionInfo(topic, topicId, partition, ledgerId, epoch, leader, replicas, topicConfig, stat.getVersion());
                 partitionInfos.add(partitionInfo);
             }
             return partitionInfos;
@@ -193,16 +194,16 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
                     int version = data.getStat().getVersion();
-                    org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
+                    TopicAssignment assignment = JsonFeatureMapper.deserialize(nodeData, TopicAssignment.class);
                     assignment.setVersion(version);
 
                     Set<String> replicas = assignment.getReplicas();
                     byte[] oldNodeData = oldData.getData();
                     int oldVersion = oldData.getStat().getVersion();
-                    org.meteor.common.message.TopicAssignment oldAssignment = JsonMapper.deserialize(oldNodeData, org.meteor.common.message.TopicAssignment.class);
+                    TopicAssignment oldAssignment = JsonFeatureMapper.deserialize(oldNodeData, TopicAssignment.class);
                     oldAssignment.setVersion(oldVersion);
 
-                    org.meteor.common.message.TopicPartition topicPartition = new org.meteor.common.message.TopicPartition(assignment.getTopic(), assignment.getPartition());
+                    TopicPartition topicPartition = new TopicPartition(assignment.getTopic(), assignment.getPartition());
                     refreshPartitionInfo(topicPartition.topic(), data.getStat(), assignment);
                     for (TopicListener topicListener : listeners) {
                         topicListener.onPartitionChanged(topicPartition, oldAssignment, assignment);
@@ -256,11 +257,11 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
-                    org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
+                    TopicAssignment assignment = JsonFeatureMapper.deserialize(nodeData, TopicAssignment.class);
                     String topic = assignment.getTopic();
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
-                    org.meteor.common.message.TopicPartition topicPartition = new org.meteor.common.message.TopicPartition(topic, partition);
+                    TopicPartition topicPartition = new TopicPartition(topic, partition);
                     if (replicas.contains(commonConfiguration.getServerId())) {
                         destroyTopicPartitionAsync(topicPartition, assignment.getLedgerId());
                     }
@@ -283,11 +284,11 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
-                    org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(nodeData, org.meteor.common.message.TopicAssignment.class);
+                    TopicAssignment assignment = JsonFeatureMapper.deserialize(nodeData, TopicAssignment.class);
                     String topic = assignment.getTopic();
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
-                    org.meteor.common.message.TopicPartition topicPartition = new org.meteor.common.message.TopicPartition(topic, partition);
+                    TopicPartition topicPartition = new TopicPartition(topic, partition);
                     if (replicas.contains(commonConfiguration.getServerId())) {
                         initTopicPartitionAsync(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
                     }
@@ -302,7 +303,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public Map<String, Object> createTopic(String topic, int partitions, int replicas, org.meteor.common.message.TopicConfig topicConfig) throws Exception {
+    public Map<String, Object> createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
         List<Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
         if (clusterUpNodes.size() < replicas) {
             throw new IllegalStateException("The broker counts is not enough to assign replicas");
@@ -310,7 +311,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         try {
             Collections.shuffle(clusterUpNodes);
             topicConfig = topicConfig == null
-                    ? new org.meteor.common.message.TopicConfig(segmentConfiguration.getSegmentRollingSize(), segmentConfiguration.getSegmentRetainLimit(), segmentConfiguration.getSegmentRetainTimeMilliseconds(), false)
+                    ? new TopicConfig(segmentConfiguration.getSegmentRollingSize(), segmentConfiguration.getSegmentRetainLimit(), segmentConfiguration.getSegmentRetainTimeMilliseconds(), false)
                     : topicConfig;
 
             Map<String, Object> createResult = new HashMap<>(2);
@@ -329,21 +330,20 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 Set<String> partitionReplicaSet = new TreeSet<>();
                 for (int j = 0; j < replicas; j++) {
                     int nodeIdx = (i + j) % clusterUpNodes.size();
-                    org.meteor.common.message.Node node = clusterUpNodes.get(nodeIdx);
+                    Node node = clusterUpNodes.get(nodeIdx);
                     partitionReplicaSet.add(node.getId());
                 }
 
                 partitionReplicas.put(i, partitionReplicaSet);
                 String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, i);
-                org.meteor.common.message.TopicAssignment assignment = new org.meteor.common.message.TopicAssignment();
+                TopicAssignment assignment = new TopicAssignment();
                 assignment.setPartition(i);
                 assignment.setTopic(topic);
-                assignment.setEpoch(-1);
                 assignment.setLedgerId(generateLedgerId());
                 assignment.setReplicas(partitionReplicaSet);
                 assignment.setConfig(topicConfig);
                 CuratorOp partitionOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT)
-                        .forPath(partitionPath, JsonMapper.serialize(assignment));
+                        .forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
                 ops.add(partitionOp);
             }
 
@@ -394,7 +394,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public void initPartition(org.meteor.common.message.TopicPartition topicPartition, int ledgerId, int epoch, org.meteor.common.message.TopicConfig topicConfig) throws Exception {
+    public void initPartition(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) throws Exception {
         LogCoordinator logCoordinator = coordinator.getLogCoordinator();
         if (logCoordinator.contains(ledgerId)) {
             return;
@@ -422,15 +422,15 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public void retirePartition(org.meteor.common.message.TopicPartition topicPartition) throws Exception {
+    public void retirePartition(TopicPartition topicPartition) throws Exception {
         try {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+            TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
             int ledgerId = assignment.getLedgerId();
             assignment.setTransitionalLeader(null);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
+            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
             Log log = coordinator.getLogCoordinator().getLog(ledgerId);
             participantCoordinator.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
         } catch (KeeperException.NoNodeException e) {
@@ -443,18 +443,18 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public void handoverPartition(String heir, org.meteor.common.message.TopicPartition topicPartition) throws Exception {
+    public void handoverPartition(String heir, TopicPartition topicPartition) throws Exception {
         try {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+            TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
             String leader = assignment.getLeader();
             assignment.setTransitionalLeader(leader);
             assignment.setLeader(heir);
             assignment.getReplicas().remove(leader);
             assignment.getReplicas().add(heir);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
+            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
                     "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
@@ -465,14 +465,14 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public void takeoverPartition(org.meteor.common.message.TopicPartition topicPartition) throws Exception {
+    public void takeoverPartition(TopicPartition topicPartition) throws Exception {
         try {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            org.meteor.common.message.TopicAssignment assignment = JsonMapper.deserialize(bytes, org.meteor.common.message.TopicAssignment.class);
+            TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
             assignment.setEpoch(assignment.getEpoch() + 1);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonMapper.serialize(assignment));
+            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
             initPartition(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
@@ -506,7 +506,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public void destroyTopicPartition(org.meteor.common.message.TopicPartition topicPartition, int ledgerId) throws Exception {
+    public void destroyTopicPartition(TopicPartition topicPartition, int ledgerId) throws Exception {
         ZookeeperPartitionCoordinatorElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
         partitionLeaderElector.shutdown();
         coordinator.getLogCoordinator().destroyLog(ledgerId);
@@ -516,13 +516,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public org.meteor.common.message.PartitionInfo getPartitionInfo(TopicPartition topicPartition) throws Exception {
-        Set<org.meteor.common.message.PartitionInfo> partitionInfos = topicCache.get(topicPartition.topic());
+    public PartitionInfo getPartitionInfo(TopicPartition topicPartition) throws Exception {
+        Set<PartitionInfo> partitionInfos = topicCache.get(topicPartition.topic());
         if (partitionInfos == null || partitionInfos.isEmpty()) {
             return null;
         }
 
-        for (org.meteor.common.message.PartitionInfo info : partitionInfos) {
+        for (PartitionInfo info : partitionInfos) {
             int partition = info.getPartition();
             if (partition == topicPartition.partition()) {
                 return info;
@@ -541,7 +541,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public Set<org.meteor.common.message.PartitionInfo> getTopicInfo(String topic) {
+    public Set<PartitionInfo> getTopicInfo(String topic) {
         return topicCache.get(topic);
     }
 

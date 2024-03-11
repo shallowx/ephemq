@@ -18,6 +18,10 @@ abstract class AbstractHandler<E, T> {
     protected volatile Offset followOffset;
     protected volatile LedgerCursor followCursor;
 
+    public AbstractHandler(EventExecutor executor) {
+        this.dispatchExecutor = executor;
+    }
+
     abstract int[] getCounts(EventExecutor[] executors, WeakHashMap<T, Integer> handlers);
 
     abstract Function<EventExecutor, T> apply();
@@ -26,7 +30,7 @@ abstract class AbstractHandler<E, T> {
         return newHandler(executors, handlers, apply());
     }
 
-    private T newHandler(EventExecutor[] executors, WeakHashMap<T , Integer> handlers, Function<EventExecutor, T> f) {
+    private T newHandler(EventExecutor[] executors, WeakHashMap<T, Integer> handlers, Function<EventExecutor, T> f) {
         int[] countArray = getCounts(executors, handlers);
         int index = index(countArray);
         T result = f.apply(executors[index]);
@@ -52,18 +56,6 @@ abstract class AbstractHandler<E, T> {
         return index;
     }
 
-    public AbstractHandler(EventExecutor executor) {
-        this.dispatchExecutor = executor;
-    }
-
-    public void setFollowOffset(Offset followOffset) {
-        this.followOffset = followOffset;
-    }
-
-    public void setFollowCursor(LedgerCursor followCursor) {
-        this.followCursor = followCursor;
-    }
-
     public AtomicBoolean getTriggered() {
         return triggered;
     }
@@ -72,8 +64,16 @@ abstract class AbstractHandler<E, T> {
         return followOffset;
     }
 
+    public void setFollowOffset(Offset followOffset) {
+        this.followOffset = followOffset;
+    }
+
     public LedgerCursor getFollowCursor() {
         return followCursor;
+    }
+
+    public void setFollowCursor(LedgerCursor followCursor) {
+        this.followCursor = followCursor;
     }
 
     public ConcurrentMap<Channel, E> getSubscriptionChannels() {

@@ -7,870 +7,941 @@ package org.meteor.remote.proto.server;
  * Protobuf type {@code meteor.protobuf.MigrateLedgerRequest}
  */
 public final class MigrateLedgerRequest extends
-    com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:meteor.protobuf.MigrateLedgerRequest)
-    MigrateLedgerRequestOrBuilder {
-private static final long serialVersionUID = 0L;
-  // Use MigrateLedgerRequest.newBuilder() to construct.
-  private MigrateLedgerRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-    super(builder);
-  }
-  private MigrateLedgerRequest() {
-    topic_ = "";
-    original_ = "";
-    destination_ = "";
-  }
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:meteor.protobuf.MigrateLedgerRequest)
+        MigrateLedgerRequestOrBuilder {
+    public static final int PARTITION_FIELD_NUMBER = 1;
+    public static final int TOPIC_FIELD_NUMBER = 2;
+    public static final int ORIGINAL_FIELD_NUMBER = 3;
+    public static final int DESTINATION_FIELD_NUMBER = 4;
+    private static final long serialVersionUID = 0L;
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.MigrateLedgerRequest)
+    private static final org.meteor.remote.proto.server.MigrateLedgerRequest DEFAULT_INSTANCE;
+    private static final com.google.protobuf.Parser<MigrateLedgerRequest>
+            PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerRequest>() {
+        @java.lang.Override
+        public MigrateLedgerRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
 
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new MigrateLedgerRequest();
-  }
-
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
-  public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-    return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
-  }
-
-  @java.lang.Override
-  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-    return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
-        .ensureFieldAccessorsInitialized(
-            org.meteor.remote.proto.server.MigrateLedgerRequest.class, org.meteor.remote.proto.server.MigrateLedgerRequest.Builder.class);
-  }
-
-  public static final int PARTITION_FIELD_NUMBER = 1;
-  private int partition_;
-  /**
-   * <code>int32 partition = 1;</code>
-   * @return The partition.
-   */
-  @java.lang.Override
-  public int getPartition() {
-    return partition_;
-  }
-
-  public static final int TOPIC_FIELD_NUMBER = 2;
-  private volatile java.lang.Object topic_;
-  /**
-   * <code>string topic = 2;</code>
-   * @return The topic.
-   */
-  @java.lang.Override
-  public java.lang.String getTopic() {
-    java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      topic_ = s;
-      return s;
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerRequest();
     }
-  }
-  /**
-   * <code>string topic = 2;</code>
-   * @return The bytes for topic.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTopicBytes() {
-    java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      topic_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
 
-  public static final int ORIGINAL_FIELD_NUMBER = 3;
-  private volatile java.lang.Object original_;
-  /**
-   * <code>string original = 3;</code>
-   * @return The original.
-   */
-  @java.lang.Override
-  public java.lang.String getOriginal() {
-    java.lang.Object ref = original_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      original_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string original = 3;</code>
-   * @return The bytes for original.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getOriginalBytes() {
-    java.lang.Object ref = original_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      original_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
+    private int partition_;
+    private volatile java.lang.Object topic_;
+    private volatile java.lang.Object original_;
+    private volatile java.lang.Object destination_;
+    private byte memoizedIsInitialized = -1;
 
-  public static final int DESTINATION_FIELD_NUMBER = 4;
-  private volatile java.lang.Object destination_;
-  /**
-   * <code>string destination = 4;</code>
-   * @return The destination.
-   */
-  @java.lang.Override
-  public java.lang.String getDestination() {
-    java.lang.Object ref = destination_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      destination_ = s;
-      return s;
+    // Use MigrateLedgerRequest.newBuilder() to construct.
+    private MigrateLedgerRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
     }
-  }
-  /**
-   * <code>string destination = 4;</code>
-   * @return The bytes for destination.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getDestinationBytes() {
-    java.lang.Object ref = destination_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      destination_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
 
-  private byte memoizedIsInitialized = -1;
-  @java.lang.Override
-  public final boolean isInitialized() {
-    byte isInitialized = memoizedIsInitialized;
-    if (isInitialized == 1) return true;
-    if (isInitialized == 0) return false;
+    private MigrateLedgerRequest() {
+        topic_ = "";
+        original_ = "";
+        destination_ = "";
+    }
 
-    memoizedIsInitialized = 1;
-    return true;
-  }
-
-  @java.lang.Override
-  public void writeTo(com.google.protobuf.CodedOutputStream output)
-                      throws java.io.IOException {
-    if (partition_ != 0) {
-      output.writeInt32(1, partition_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(original_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, original_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(destination_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, destination_);
-    }
-    getUnknownFields().writeTo(output);
-  }
-
-  @java.lang.Override
-  public int getSerializedSize() {
-    int size = memoizedSize;
-    if (size != -1) return size;
-
-    size = 0;
-    if (partition_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, partition_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(original_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, original_);
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(destination_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, destination_);
-    }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSize = size;
-    return size;
-  }
-
-  @java.lang.Override
-  public boolean equals(final java.lang.Object obj) {
-    if (obj == this) {
-     return true;
-    }
-    if (!(obj instanceof org.meteor.remote.proto.server.MigrateLedgerRequest)) {
-      return super.equals(obj);
-    }
-    org.meteor.remote.proto.server.MigrateLedgerRequest other = (org.meteor.remote.proto.server.MigrateLedgerRequest) obj;
-
-    if (getPartition()
-        != other.getPartition()) return false;
-    if (!getTopic()
-        .equals(other.getTopic())) return false;
-    if (!getOriginal()
-        .equals(other.getOriginal())) return false;
-    if (!getDestination()
-        .equals(other.getDestination())) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-    return true;
-  }
-
-  @java.lang.Override
-  public int hashCode() {
-    if (memoizedHashCode != 0) {
-      return memoizedHashCode;
-    }
-    int hash = 41;
-    hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + PARTITION_FIELD_NUMBER;
-    hash = (53 * hash) + getPartition();
-    hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-    hash = (53 * hash) + getTopic().hashCode();
-    hash = (37 * hash) + ORIGINAL_FIELD_NUMBER;
-    hash = (53 * hash) + getOriginal().hashCode();
-    hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
-    hash = (53 * hash) + getDestination().hashCode();
-    hash = (29 * hash) + getUnknownFields().hashCode();
-    memoizedHashCode = hash;
-    return hash;
-  }
-
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      java.nio.ByteBuffer data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      java.nio.ByteBuffer data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      com.google.protobuf.ByteString data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      com.google.protobuf.ByteString data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(byte[] data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      byte[] data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(java.io.InputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      java.io.InputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseDelimitedFrom(java.io.InputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseDelimitedWithIOException(PARSER, input);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseDelimitedFrom(
-      java.io.InputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      com.google.protobuf.CodedInputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input);
-  }
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input, extensionRegistry);
-  }
-
-  @java.lang.Override
-  public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder() {
-    return DEFAULT_INSTANCE.toBuilder();
-  }
-  public static Builder newBuilder(org.meteor.remote.proto.server.MigrateLedgerRequest prototype) {
-    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-  }
-  @java.lang.Override
-  public Builder toBuilder() {
-    return this == DEFAULT_INSTANCE
-        ? new Builder() : new Builder().mergeFrom(this);
-  }
-
-  @java.lang.Override
-  protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-    Builder builder = new Builder(parent);
-    return builder;
-  }
-  /**
-   * Protobuf type {@code meteor.protobuf.MigrateLedgerRequest}
-   */
-  public static final class Builder extends
-      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:meteor.protobuf.MigrateLedgerRequest)
-      org.meteor.remote.proto.server.MigrateLedgerRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+                .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(org.meteor.remote.proto.server.MigrateLedgerRequest prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public static org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    public static com.google.protobuf.Parser<MigrateLedgerRequest> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new MigrateLedgerRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              org.meteor.remote.proto.server.MigrateLedgerRequest.class, org.meteor.remote.proto.server.MigrateLedgerRequest.Builder.class);
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.MigrateLedgerRequest.class, org.meteor.remote.proto.server.MigrateLedgerRequest.Builder.class);
     }
 
-    // Construct using org.meteor.remote.proto.server.MigrateLedgerRequest.newBuilder()
-    private Builder() {
-
-    }
-
-    private Builder(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      super(parent);
-
-    }
-    @java.lang.Override
-    public Builder clear() {
-      super.clear();
-      partition_ = 0;
-
-      topic_ = "";
-
-      original_ = "";
-
-      destination_ = "";
-
-      return this;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-      return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstanceForType() {
-      return org.meteor.remote.proto.server.MigrateLedgerRequest.getDefaultInstance();
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.MigrateLedgerRequest build() {
-      org.meteor.remote.proto.server.MigrateLedgerRequest result = buildPartial();
-      if (!result.isInitialized()) {
-        throw newUninitializedMessageException(result);
-      }
-      return result;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.MigrateLedgerRequest buildPartial() {
-      org.meteor.remote.proto.server.MigrateLedgerRequest result = new org.meteor.remote.proto.server.MigrateLedgerRequest(this);
-      result.partition_ = partition_;
-      result.topic_ = topic_;
-      result.original_ = original_;
-      result.destination_ = destination_;
-      onBuilt();
-      return result;
-    }
-
-    @java.lang.Override
-    public Builder clone() {
-      return super.clone();
-    }
-    @java.lang.Override
-    public Builder setField(
-        com.google.protobuf.Descriptors.FieldDescriptor field,
-        java.lang.Object value) {
-      return super.setField(field, value);
-    }
-    @java.lang.Override
-    public Builder clearField(
-        com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return super.clearField(field);
-    }
-    @java.lang.Override
-    public Builder clearOneof(
-        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return super.clearOneof(oneof);
-    }
-    @java.lang.Override
-    public Builder setRepeatedField(
-        com.google.protobuf.Descriptors.FieldDescriptor field,
-        int index, java.lang.Object value) {
-      return super.setRepeatedField(field, index, value);
-    }
-    @java.lang.Override
-    public Builder addRepeatedField(
-        com.google.protobuf.Descriptors.FieldDescriptor field,
-        java.lang.Object value) {
-      return super.addRepeatedField(field, value);
-    }
-    @java.lang.Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.server.MigrateLedgerRequest) {
-        return mergeFrom((org.meteor.remote.proto.server.MigrateLedgerRequest)other);
-      } else {
-        super.mergeFrom(other);
-        return this;
-      }
-    }
-
-    public Builder mergeFrom(org.meteor.remote.proto.server.MigrateLedgerRequest other) {
-      if (other == org.meteor.remote.proto.server.MigrateLedgerRequest.getDefaultInstance()) return this;
-      if (other.getPartition() != 0) {
-        setPartition(other.getPartition());
-      }
-      if (!other.getTopic().isEmpty()) {
-        topic_ = other.topic_;
-        onChanged();
-      }
-      if (!other.getOriginal().isEmpty()) {
-        original_ = other.original_;
-        onChanged();
-      }
-      if (!other.getDestination().isEmpty()) {
-        destination_ = other.destination_;
-        onChanged();
-      }
-      this.mergeUnknownFields(other.getUnknownFields());
-      onChanged();
-      return this;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-      return true;
-    }
-
-    @java.lang.Override
-    public Builder mergeFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-              partition_ = input.readInt32();
-
-              break;
-            } // case 8
-            case 18: {
-              topic_ = input.readStringRequireUtf8();
-
-              break;
-            } // case 18
-            case 26: {
-              original_ = input.readStringRequireUtf8();
-
-              break;
-            } // case 26
-            case 34: {
-              destination_ = input.readStringRequireUtf8();
-
-              break;
-            } // case 34
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.unwrapIOException();
-      } finally {
-        onChanged();
-      } // finally
-      return this;
-    }
-
-    private int partition_ ;
     /**
      * <code>int32 partition = 1;</code>
+     *
      * @return The partition.
      */
     @java.lang.Override
     public int getPartition() {
-      return partition_;
-    }
-    /**
-     * <code>int32 partition = 1;</code>
-     * @param value The partition to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPartition(int value) {
-      
-      partition_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 partition = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPartition() {
-      
-      partition_ = 0;
-      onChanged();
-      return this;
+        return partition_;
     }
 
-    private java.lang.Object topic_ = "";
     /**
      * <code>string topic = 2;</code>
+     *
      * @return The topic.
      */
+    @java.lang.Override
     public java.lang.String getTopic() {
-      java.lang.Object ref = topic_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        topic_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+        }
     }
+
     /**
      * <code>string topic = 2;</code>
+     *
      * @return The bytes for topic.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
-        getTopicBytes() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        topic_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string topic = 2;</code>
-     * @param value The topic to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTopic(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      topic_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string topic = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTopic() {
-      
-      topic_ = getDefaultInstance().getTopic();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string topic = 2;</code>
-     * @param value The bytes for topic to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTopicBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      topic_ = value;
-      onChanged();
-      return this;
+    getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topic_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
     }
 
-    private java.lang.Object original_ = "";
     /**
      * <code>string original = 3;</code>
+     *
      * @return The original.
      */
+    @java.lang.Override
     public java.lang.String getOriginal() {
-      java.lang.Object ref = original_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        original_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+        java.lang.Object ref = original_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            original_ = s;
+            return s;
+        }
     }
+
     /**
      * <code>string original = 3;</code>
+     *
      * @return The bytes for original.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
-        getOriginalBytes() {
-      java.lang.Object ref = original_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        original_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string original = 3;</code>
-     * @param value The original to set.
-     * @return This builder for chaining.
-     */
-    public Builder setOriginal(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      original_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string original = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearOriginal() {
-      
-      original_ = getDefaultInstance().getOriginal();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string original = 3;</code>
-     * @param value The bytes for original to set.
-     * @return This builder for chaining.
-     */
-    public Builder setOriginalBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      original_ = value;
-      onChanged();
-      return this;
+    getOriginalBytes() {
+        java.lang.Object ref = original_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            original_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
     }
 
-    private java.lang.Object destination_ = "";
     /**
      * <code>string destination = 4;</code>
+     *
      * @return The destination.
      */
+    @java.lang.Override
     public java.lang.String getDestination() {
-      java.lang.Object ref = destination_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        destination_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+        java.lang.Object ref = destination_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            destination_ = s;
+            return s;
+        }
     }
+
     /**
      * <code>string destination = 4;</code>
+     *
      * @return The bytes for destination.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
+    getDestinationBytes() {
+        java.lang.Object ref = destination_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            destination_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (partition_ != 0) {
+            output.writeInt32(1, partition_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(original_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 3, original_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(destination_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 4, destination_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (partition_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(1, partition_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(original_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, original_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(destination_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, destination_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.MigrateLedgerRequest)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.MigrateLedgerRequest other = (org.meteor.remote.proto.server.MigrateLedgerRequest) obj;
+
+        if (getPartition()
+                != other.getPartition()) return false;
+        if (!getTopic()
+                .equals(other.getTopic())) return false;
+        if (!getOriginal()
+                .equals(other.getOriginal())) return false;
+        if (!getDestination()
+                .equals(other.getDestination())) return false;
+        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPartition();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + ORIGINAL_FIELD_NUMBER;
+        hash = (53 * hash) + getOriginal().hashCode();
+        hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
+        hash = (53 * hash) + getDestination().hashCode();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
+    @java.lang.Override
+    public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+                ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MigrateLedgerRequest> getParserForType() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+    }
+
+    /**
+     * Protobuf type {@code meteor.protobuf.MigrateLedgerRequest}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:meteor.protobuf.MigrateLedgerRequest)
+            org.meteor.remote.proto.server.MigrateLedgerRequestOrBuilder {
+        private int partition_;
+        private java.lang.Object topic_ = "";
+        private java.lang.Object original_ = "";
+        private java.lang.Object destination_ = "";
+
+        // Construct using org.meteor.remote.proto.server.MigrateLedgerRequest.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.server.MigrateLedgerRequest.class, org.meteor.remote.proto.server.MigrateLedgerRequest.Builder.class);
+        }
+
+        @java.lang.Override
+        public Builder clear() {
+            super.clear();
+            partition_ = 0;
+
+            topic_ = "";
+
+            original_ = "";
+
+            destination_ = "";
+
+            return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
+        }
+
+        @java.lang.Override
+        public org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstanceForType() {
+            return org.meteor.remote.proto.server.MigrateLedgerRequest.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public org.meteor.remote.proto.server.MigrateLedgerRequest build() {
+            org.meteor.remote.proto.server.MigrateLedgerRequest result = buildPartial();
+            if (!result.isInitialized()) {
+                throw newUninitializedMessageException(result);
+            }
+            return result;
+        }
+
+        @java.lang.Override
+        public org.meteor.remote.proto.server.MigrateLedgerRequest buildPartial() {
+            org.meteor.remote.proto.server.MigrateLedgerRequest result = new org.meteor.remote.proto.server.MigrateLedgerRequest(this);
+            result.partition_ = partition_;
+            result.topic_ = topic_;
+            result.original_ = original_;
+            result.destination_ = destination_;
+            onBuilt();
+            return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+            return super.clone();
+        }
+
+        @java.lang.Override
+        public Builder setField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                java.lang.Object value) {
+            return super.setField(field, value);
+        }
+
+        @java.lang.Override
+        public Builder clearField(
+                com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+        }
+
+        @java.lang.Override
+        public Builder clearOneof(
+                com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+        }
+
+        @java.lang.Override
+        public Builder setRepeatedField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+        }
+
+        @java.lang.Override
+        public Builder addRepeatedField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof org.meteor.remote.proto.server.MigrateLedgerRequest) {
+                return mergeFrom((org.meteor.remote.proto.server.MigrateLedgerRequest) other);
+            } else {
+                super.mergeFrom(other);
+                return this;
+            }
+        }
+
+        public Builder mergeFrom(org.meteor.remote.proto.server.MigrateLedgerRequest other) {
+            if (other == org.meteor.remote.proto.server.MigrateLedgerRequest.getDefaultInstance()) return this;
+            if (other.getPartition() != 0) {
+                setPartition(other.getPartition());
+            }
+            if (!other.getTopic().isEmpty()) {
+                topic_ = other.topic_;
+                onChanged();
+            }
+            if (!other.getOriginal().isEmpty()) {
+                original_ = other.original_;
+                onChanged();
+            }
+            if (!other.getDestination().isEmpty()) {
+                destination_ = other.destination_;
+                onChanged();
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            onChanged();
+            return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+            return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            if (extensionRegistry == null) {
+                throw new java.lang.NullPointerException();
+            }
+            try {
+                boolean done = false;
+                while (!done) {
+                    int tag = input.readTag();
+                    switch (tag) {
+                        case 0:
+                            done = true;
+                            break;
+                        case 8: {
+                            partition_ = input.readInt32();
+
+                            break;
+                        } // case 8
+                        case 18: {
+                            topic_ = input.readStringRequireUtf8();
+
+                            break;
+                        } // case 18
+                        case 26: {
+                            original_ = input.readStringRequireUtf8();
+
+                            break;
+                        } // case 26
+                        case 34: {
+                            destination_ = input.readStringRequireUtf8();
+
+                            break;
+                        } // case 34
+                        default: {
+                            if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                                done = true; // was an endgroup tag
+                            }
+                            break;
+                        } // default:
+                    } // switch (tag)
+                } // while (!done)
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.unwrapIOException();
+            } finally {
+                onChanged();
+            } // finally
+            return this;
+        }
+
+        /**
+         * <code>int32 partition = 1;</code>
+         *
+         * @return The partition.
+         */
+        @java.lang.Override
+        public int getPartition() {
+            return partition_;
+        }
+
+        /**
+         * <code>int32 partition = 1;</code>
+         *
+         * @param value The partition to set.
+         * @return This builder for chaining.
+         */
+        public Builder setPartition(int value) {
+
+            partition_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>int32 partition = 1;</code>
+         *
+         * @return This builder for chaining.
+         */
+        public Builder clearPartition() {
+
+            partition_ = 0;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string topic = 2;</code>
+         *
+         * @return The topic.
+         */
+        public java.lang.String getTopic() {
+            java.lang.Object ref = topic_;
+            if (!(ref instanceof java.lang.String)) {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                topic_ = s;
+                return s;
+            } else {
+                return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string topic = 2;</code>
+         *
+         * @param value The topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopic(
+                java.lang.String value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+
+            topic_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string topic = 2;</code>
+         *
+         * @return The bytes for topic.
+         */
+        public com.google.protobuf.ByteString
+        getTopicBytes() {
+            java.lang.Object ref = topic_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                topic_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        /**
+         * <code>string topic = 2;</code>
+         *
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            topic_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string topic = 2;</code>
+         *
+         * @return This builder for chaining.
+         */
+        public Builder clearTopic() {
+
+            topic_ = getDefaultInstance().getTopic();
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string original = 3;</code>
+         *
+         * @return The original.
+         */
+        public java.lang.String getOriginal() {
+            java.lang.Object ref = original_;
+            if (!(ref instanceof java.lang.String)) {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                original_ = s;
+                return s;
+            } else {
+                return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string original = 3;</code>
+         *
+         * @param value The original to set.
+         * @return This builder for chaining.
+         */
+        public Builder setOriginal(
+                java.lang.String value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+
+            original_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string original = 3;</code>
+         *
+         * @return The bytes for original.
+         */
+        public com.google.protobuf.ByteString
+        getOriginalBytes() {
+            java.lang.Object ref = original_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                original_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        /**
+         * <code>string original = 3;</code>
+         *
+         * @param value The bytes for original to set.
+         * @return This builder for chaining.
+         */
+        public Builder setOriginalBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            original_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string original = 3;</code>
+         *
+         * @return This builder for chaining.
+         */
+        public Builder clearOriginal() {
+
+            original_ = getDefaultInstance().getOriginal();
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string destination = 4;</code>
+         *
+         * @return The destination.
+         */
+        public java.lang.String getDestination() {
+            java.lang.Object ref = destination_;
+            if (!(ref instanceof java.lang.String)) {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                destination_ = s;
+                return s;
+            } else {
+                return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string destination = 4;</code>
+         *
+         * @param value The destination to set.
+         * @return This builder for chaining.
+         */
+        public Builder setDestination(
+                java.lang.String value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+
+            destination_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string destination = 4;</code>
+         *
+         * @return The bytes for destination.
+         */
+        public com.google.protobuf.ByteString
         getDestinationBytes() {
-      java.lang.Object ref = destination_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        destination_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+            java.lang.Object ref = destination_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                destination_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        /**
+         * <code>string destination = 4;</code>
+         *
+         * @param value The bytes for destination to set.
+         * @return This builder for chaining.
+         */
+        public Builder setDestinationBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            destination_ = value;
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string destination = 4;</code>
+         *
+         * @return This builder for chaining.
+         */
+        public Builder clearDestination() {
+
+            destination_ = getDefaultInstance().getDestination();
+            onChanged();
+            return this;
+        }
+
+        @java.lang.Override
+        public final Builder setUnknownFields(
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:meteor.protobuf.MigrateLedgerRequest)
     }
-    /**
-     * <code>string destination = 4;</code>
-     * @param value The destination to set.
-     * @return This builder for chaining.
-     */
-    public Builder setDestination(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      destination_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string destination = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearDestination() {
-      
-      destination_ = getDefaultInstance().getDestination();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string destination = 4;</code>
-     * @param value The bytes for destination to set.
-     * @return This builder for chaining.
-     */
-    public Builder setDestinationBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      destination_ = value;
-      onChanged();
-      return this;
-    }
-    @java.lang.Override
-    public final Builder setUnknownFields(
-        final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
-    }
-
-    @java.lang.Override
-    public final Builder mergeUnknownFields(
-        final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.mergeUnknownFields(unknownFields);
-    }
-
-
-    // @@protoc_insertion_point(builder_scope:meteor.protobuf.MigrateLedgerRequest)
-  }
-
-  // @@protoc_insertion_point(class_scope:meteor.protobuf.MigrateLedgerRequest)
-  private static final org.meteor.remote.proto.server.MigrateLedgerRequest DEFAULT_INSTANCE;
-  static {
-    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerRequest();
-  }
-
-  public static org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstance() {
-    return DEFAULT_INSTANCE;
-  }
-
-  private static final com.google.protobuf.Parser<MigrateLedgerRequest>
-      PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerRequest>() {
-    @java.lang.Override
-    public MigrateLedgerRequest parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
-    }
-  };
-
-  public static com.google.protobuf.Parser<MigrateLedgerRequest> parser() {
-    return PARSER;
-  }
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<MigrateLedgerRequest> getParserForType() {
-    return PARSER;
-  }
-
-  @java.lang.Override
-  public org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstanceForType() {
-    return DEFAULT_INSTANCE;
-  }
 
 }
 

@@ -20,11 +20,11 @@ import java.util.concurrent.Executors;
 
 public class MeteorServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorServer.class);
+    private static final ExecutorService socketServerExecutor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
     private final List<ServerListener> serverListeners = new ObjectArrayList<>();
     private final CountDownLatch countDownLatch;
     private final DefaultSocketServer defaultSocketServer;
     private final Coordinator coordinator;
-    private static final ExecutorService socketServerExecutor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
 
     public MeteorServer(DefaultSocketServer defaultSocketServer, Coordinator coordinator) {
         this.defaultSocketServer = defaultSocketServer;

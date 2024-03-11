@@ -12,6 +12,14 @@ final class RecordHandler extends AbstractHandler<RecordSynchronization, RecordH
     static final RecordHandler INSTANCE = new RecordHandler();
     private final Int2ObjectMap<Set<RecordSynchronization>> subscriptionMarkers = new Int2ObjectOpenHashMap<>();
 
+    public RecordHandler() {
+        super(null);
+    }
+
+    public RecordHandler(EventExecutor executor) {
+        super(executor);
+    }
+
     @Override
     int[] getCounts(EventExecutor[] executors, WeakHashMap<RecordHandler, Integer> handlers) {
         int[] counts = new int[executors.length];
@@ -22,14 +30,6 @@ final class RecordHandler extends AbstractHandler<RecordSynchronization, RecordH
     @Override
     Function<EventExecutor, RecordHandler> apply() {
         return RecordHandler::new;
-    }
-
-    public RecordHandler() {
-        super(null);
-    }
-
-    public RecordHandler(EventExecutor executor) {
-        super(executor);
     }
 
     public Int2ObjectMap<Set<RecordSynchronization>> getSubscriptionMarkers() {

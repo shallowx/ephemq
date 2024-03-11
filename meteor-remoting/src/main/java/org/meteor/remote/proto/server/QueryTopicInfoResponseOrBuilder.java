@@ -4,42 +4,47 @@
 package org.meteor.remote.proto.server;
 
 public interface QueryTopicInfoResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.QueryTopicInfoResponse)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.QueryTopicInfoResponse)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
-   */
-  int getTopicInfosCount();
-  /**
-   * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
-   */
-  boolean containsTopicInfos(
-      java.lang.String key);
-  /**
-   * Use {@link #getTopicInfosMap()} instead.
-   */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, org.meteor.remote.proto.TopicInfo>
-  getTopicInfos();
-  /**
-   * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
-   */
-  java.util.Map<java.lang.String, org.meteor.remote.proto.TopicInfo>
-  getTopicInfosMap();
-  /**
-   * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
-   */
+    /**
+     * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
+     */
+    int getTopicInfosCount();
 
-  /* nullable */
-org.meteor.remote.proto.TopicInfo getTopicInfosOrDefault(
-      java.lang.String key,
-      /* nullable */
-org.meteor.remote.proto.TopicInfo defaultValue);
-  /**
-   * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
-   */
+    /**
+     * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
+     */
+    boolean containsTopicInfos(
+            java.lang.String key);
 
-  org.meteor.remote.proto.TopicInfo getTopicInfosOrThrow(
-      java.lang.String key);
+    /**
+     * Use {@link #getTopicInfosMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, org.meteor.remote.proto.TopicInfo>
+    getTopicInfos();
+
+    /**
+     * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
+     */
+    java.util.Map<java.lang.String, org.meteor.remote.proto.TopicInfo>
+    getTopicInfosMap();
+
+    /**
+     * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
+     */
+
+    /* nullable */
+    org.meteor.remote.proto.TopicInfo getTopicInfosOrDefault(
+            java.lang.String key,
+            /* nullable */
+            org.meteor.remote.proto.TopicInfo defaultValue);
+
+    /**
+     * <code>map&lt;string, .meteor.protobuf.TopicInfo&gt; topic_infos = 1;</code>
+     */
+
+    org.meteor.remote.proto.TopicInfo getTopicInfosOrThrow(
+            java.lang.String key);
 }

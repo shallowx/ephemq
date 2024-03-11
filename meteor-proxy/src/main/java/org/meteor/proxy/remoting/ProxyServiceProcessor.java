@@ -52,7 +52,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
         super(config.getCommonConfig(), config.getNetworkConfig(), coordinator);
         if (coordinator instanceof ProxyCoordinator) {
             this.syncCoordinator = ((ProxyCoordinator) coordinator).getLedgerSyncCoordinator();
-            this.proxyClusterCoordinator = (ProxyClusterCoordinator)coordinator.getClusterCoordinator();
+            this.proxyClusterCoordinator = (ProxyClusterCoordinator) coordinator.getClusterCoordinator();
         } else {
             this.syncCoordinator = null;
             this.proxyClusterCoordinator = null;
@@ -111,16 +111,16 @@ class ProxyServiceProcessor extends ServiceProcessor {
                         if (f.isSuccess()) {
                             try {
                                 if (feedback != null) {
-                                   SyncResponse response = f.getNow();
+                                    SyncResponse response = f.getNow();
                                     feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
-                               }
-                           } catch (Throwable t) {
+                                }
+                            } catch (Throwable t) {
                                 processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, t);
-                           }
-                       } else {
+                            }
+                        } else {
                             processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, f.cause());
-                       }
-                       recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
+                        }
+                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
 
                     int ledger = request.getLedger();
@@ -130,13 +130,13 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
                     ProxyLog log = getLog(coordinator.getLogCoordinator(), ledger, messageLedger);
                     ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
-                    log.syncAndChunkSubscribe(syncChannel, epoch, index,channel, promise);
+                    log.syncAndChunkSubscribe(syncChannel, epoch, index, channel, promise);
                 } catch (Throwable t) {
                     processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, t);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
-        }catch (Throwable t) {
+        } catch (Throwable t) {
             processFailed("Proxy process sync ledger failed", command, channel, feedback, t);
             recordCommand(command, bytes, System.nanoTime() - time, false);
         }
@@ -175,7 +175,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
 
                     QueryTopicInfoResponse.Builder newResponse = QueryTopicInfoResponse.newBuilder();
                     ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) coordinator.getTopicCoordinator();
-                    Map<String, TopicInfo> topicInfoMap = topicCoordinator.acquireTopicMetadata(request.getTopicNamesList());
+                    Map<String, TopicInfo> topicInfoMap = topicCoordinator.getTopicMetadata(request.getTopicNamesList());
                     Map<String, TopicInfo> newTopicInfoMap = new Object2ObjectOpenHashMap<>();
                     if (topicInfoMap != null && !topicInfoMap.isEmpty()) {
                         for (Map.Entry<String, TopicInfo> entry : topicInfoMap.entrySet()) {
@@ -215,8 +215,8 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     if (feedback != null) {
                         feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), newResponse.build()));
                     }
-                    recordCommand(command, bytes, System.nanoTime() -time, true);
-                }catch (Exception e) {
+                    recordCommand(command, bytes, System.nanoTime() - time, true);
+                } catch (Exception e) {
                     processFailed("Proxy process sync ledger failed", command, channel, feedback, e);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
@@ -261,7 +261,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
             String nodeId = node.getId();
             Map<Integer, Integer> ledgerThroughput = node.getLedgerThroughput();
             Integer throughput = ledgerThroughput == null ? null : ledgerThroughput.get(ledger);
-            int throughputValue = throughput == null || throughput < 0 ? 0: throughput;
+            int throughputValue = throughput == null || throughput < 0 ? 0 : throughput;
             allThroughput += throughputValue;
             if (node.getState().equals("UP")) {
                 nodes.put(nodeId, throughputValue);
@@ -283,7 +283,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
             return nodes;
         }
 
-        String host = ((InetSocketAddress)socketAddress).getHostString();
+        String host = ((InetSocketAddress) socketAddress).getHostString();
         if (host == null) {
             return nodes;
         }
@@ -342,7 +342,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
             }
 
             selectNodes.put(nodeId, nodes.get(nodeId));
-            if (selectNodes.size() >= replicaCount){
+            if (selectNodes.size() >= replicaCount) {
                 return selectNodes;
             }
         }
@@ -397,27 +397,27 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     int ledger = request.getLedger();
                     int epoch = request.getEpoch();
                     long index = request.getIndex();
-                   IntList markers = convertMarkers(request.getMarkers());
-                   Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-                   promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
-                       if (f.isSuccess()) {
-                           if (feedback != null) {
-                               ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
-                               feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
-                           }
-                       } else {
-                           processFailed("Proxy process rest subscribe failed", command, channel, feedback, f.cause());
-                       }
-                       recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
-                   });
-                   MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
-                   ProxyLog log = getLog(coordinator.getLogCoordinator(), ledger, messageLedger);
-                   ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
-                   log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
-               } catch (Exception e) {
+                    IntList markers = convertMarkers(request.getMarkers());
+                    Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+                    promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
+                        if (f.isSuccess()) {
+                            if (feedback != null) {
+                                ResetSubscribeResponse response = ResetSubscribeResponse.newBuilder().build();
+                                feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
+                            }
+                        } else {
+                            processFailed("Proxy process rest subscribe failed", command, channel, feedback, f.cause());
+                        }
+                        recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
+                    });
+                    MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
+                    ProxyLog log = getLog(coordinator.getLogCoordinator(), ledger, messageLedger);
+                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
+                    log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
+                } catch (Exception e) {
                     processFailed("Proxy process rest subscribe failed", command, channel, feedback, e);
-                   recordCommand(command, bytes, System.nanoTime() - time, false);
-               }
+                    recordCommand(command, bytes, System.nanoTime() - time, false);
+                }
             });
         } catch (Exception e) {
             processFailed("Proxy process rest subscribe failed", command, channel, feedback, e);

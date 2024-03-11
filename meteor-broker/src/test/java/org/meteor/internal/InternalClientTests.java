@@ -31,11 +31,11 @@ public class InternalClientTests {
     @Before
     public void setUp() throws Exception {
         clientConfig = new ClientConfig();
-        clientConfig.setBootstrapAddresses(new LinkedList<>(){{
+        clientConfig.setBootstrapAddresses(new LinkedList<>() {{
             add("localhost:9527");
         }});
         embeddedChannel = new EmbeddedChannel();
-        clientChannel = new InternalClientChannel(clientConfig, embeddedChannel, new InetSocketAddress(9527), new CommonConfig(new Properties()),  new DefaultCoordinator(new ServerConfig(new Properties())));
+        clientChannel = new InternalClientChannel(clientConfig, embeddedChannel, new InetSocketAddress(9527), new CommonConfig(new Properties()), new DefaultCoordinator(new ServerConfig(new Properties())));
 
         client = new InternalClient("test-internal-client", clientConfig, new CombineListener() {
             @Override

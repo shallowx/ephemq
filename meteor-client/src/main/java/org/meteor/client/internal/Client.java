@@ -32,15 +32,15 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Client implements MeterBinder {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
     protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
     private final Map<SocketAddress, List<Future<ClientChannel>>> registerChannels = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Promise<ClientChannel>> ChannelOfPromise = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();
-    protected String name;
     private final ClientConfig config;
     private final CombineListener listener;
     private final List<SocketAddress> bootstrapAddress;
+    protected String name;
     protected EventLoopGroup workerGroup;
     protected EventExecutor refreshMetadataExecutor;
     private Bootstrap bootstrap;
@@ -385,7 +385,7 @@ public class Client implements MeterBinder {
         return buildRouter(topic, clusterInfo, topicInfo);
     }
 
-     MessageRouter buildRouter(String topic, ClusterInfo clusterInfo, TopicInfo topicInfo) {
+    MessageRouter buildRouter(String topic, ClusterInfo clusterInfo, TopicInfo topicInfo) {
         TopicMetadata topicMetadata = topicInfo.hasTopic() ? topicInfo.getTopic() : null;
         if (topicMetadata == null) {
             return null;

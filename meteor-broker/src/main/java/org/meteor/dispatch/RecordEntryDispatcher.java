@@ -52,7 +52,7 @@ public class RecordEntryDispatcher {
     private final AtomicBoolean state = new AtomicBoolean(true);
 
     public RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
-                          IntConsumer dispatchCounter) {
+                                 IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;
@@ -414,7 +414,7 @@ public class RecordEntryDispatcher {
                         }
                         continue;
                     }
-                    lastOffset= offset;
+                    lastOffset = offset;
                     int marker = MessageUtil.getMarker(entry);
                     if (!markers.contains(marker)) {
                         if (runTimes > pursueLimit) {

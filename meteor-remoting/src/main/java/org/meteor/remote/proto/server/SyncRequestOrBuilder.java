@@ -4,36 +4,42 @@
 package org.meteor.remote.proto.server;
 
 public interface SyncRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncRequest)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncRequest)
+        com.google.protobuf.MessageOrBuilder {
 
-  /**
-   * <code>int32 ledger = 1;</code>
-   * @return The ledger.
-   */
-  int getLedger();
+    /**
+     * <code>int32 ledger = 1;</code>
+     *
+     * @return The ledger.
+     */
+    int getLedger();
 
-  /**
-   * <code>int32 epoch = 2;</code>
-   * @return The epoch.
-   */
-  int getEpoch();
+    /**
+     * <code>int32 epoch = 2;</code>
+     *
+     * @return The epoch.
+     */
+    int getEpoch();
 
-  /**
-   * <code>int64 index = 3;</code>
-   * @return The index.
-   */
-  long getIndex();
+    /**
+     * <code>int64 index = 3;</code>
+     *
+     * @return The index.
+     */
+    long getIndex();
 
-  /**
-   * <code>string topic = 4;</code>
-   * @return The topic.
-   */
-  java.lang.String getTopic();
-  /**
-   * <code>string topic = 4;</code>
-   * @return The bytes for topic.
-   */
-  com.google.protobuf.ByteString
-      getTopicBytes();
+    /**
+     * <code>string topic = 4;</code>
+     *
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+
+    /**
+     * <code>string topic = 4;</code>
+     *
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+    getTopicBytes();
 }

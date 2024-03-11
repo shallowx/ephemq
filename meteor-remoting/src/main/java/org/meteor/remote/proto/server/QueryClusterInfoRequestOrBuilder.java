@@ -4,6 +4,6 @@
 package org.meteor.remote.proto.server;
 
 public interface QueryClusterInfoRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:meteor.protobuf.QueryClusterInfoRequest)
-    com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:meteor.protobuf.QueryClusterInfoRequest)
+        com.google.protobuf.MessageOrBuilder {
 }

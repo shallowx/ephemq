@@ -18,10 +18,6 @@ final class PursueTask<T> {
         this.pursueOffset = pursueOffset;
     }
 
-    public void setPursueOffset(Offset pursueOffset) {
-        this.pursueOffset = pursueOffset;
-    }
-
     public T getSubscription() {
         return subscription;
     }
@@ -36,6 +32,10 @@ final class PursueTask<T> {
 
     public Offset getPursueOffset() {
         return pursueOffset;
+    }
+
+    public void setPursueOffset(Offset pursueOffset) {
+        this.pursueOffset = pursueOffset;
     }
 
     @Override
