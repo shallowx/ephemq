@@ -15,9 +15,9 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
-import org.meteor.ledger.LogCoordinator;
+import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
@@ -142,7 +142,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
-    private ProxyLog getLog(LogCoordinator logCoordinator, int ledger, MessageLedger messageLedger) {
+    private ProxyLog getLog(LogHandler logCoordinator, int ledger, MessageLedger messageLedger) {
         return (ProxyLog) logCoordinator.getOrInitLog(ledger, _ledger -> {
             TopicConfig topicConfig = new TopicConfig(
                     serverConfiguration.getSegmentConfig().getSegmentRollingSize(),
@@ -372,7 +372,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
                 }
                 recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
             });
-            LogCoordinator logCoordinator = coordinator.getLogCoordinator();
+            LogHandler logCoordinator = coordinator.getLogCoordinator();
             Log log = logCoordinator.getLog(ledger);
             if (log == null) {
                 promise.trySuccess(null);

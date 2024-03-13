@@ -7,7 +7,7 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static org.meteor.coordinatior.JsonFeatureMapper.deserialize;
-import static org.meteor.coordinatior.JsonFeatureMapper.serialize;
+import static org.meteor.coordinator.JsonFeatureMapper.deserialize;
+import static org.meteor.coordinator.JsonFeatureMapper.serialize;
 
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);

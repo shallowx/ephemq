@@ -16,10 +16,10 @@ import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinatior.Coordinator;
-import org.meteor.coordinatior.TopicCoordinator;
-import org.meteor.dispatch.ChunkRecordEntryDispatcher;
-import org.meteor.dispatch.RecordEntryDispatcher;
+import org.meteor.coordinator.Coordinator;
+import org.meteor.coordinator.TopicCoordinator;
+import org.meteor.dispatch.ChunkRecordDispatcher;
+import org.meteor.dispatch.RecordDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.metrics.config.MetricsConstants;
 import org.meteor.remote.invoke.Callable;
@@ -46,14 +46,14 @@ public class Log {
     protected final LedgerStorage storage;
     protected final EventExecutor storageExecutor;
     protected final EventExecutor commandExecutor;
-    protected final RecordEntryDispatcher entryDispatcher;
+    protected final RecordDispatcher entryDispatcher;
     protected final List<LogListener> listeners;
     protected final Coordinator coordinator;
     protected final Meter segmentCount;
     protected final Meter segmentBytes;
     protected final int forwardTimeout;
     protected final AtomicReference<LogState> state = new AtomicReference<>(null);
-    protected ChunkRecordEntryDispatcher chunkEntryDispatcher;
+    protected ChunkRecordDispatcher chunkEntryDispatcher;
     protected Migration migration;
     protected ClientChannel syncChannel;
     protected Promise<SyncResponse> syncPromise;
@@ -93,8 +93,8 @@ public class Log {
         this.segmentBytes = Gauge.builder(MetricsConstants.LOG_SEGMENT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentBytes)
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
-        this.entryDispatcher = new RecordEntryDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
-        this.chunkEntryDispatcher = new ChunkRecordEntryDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
+        this.entryDispatcher = new RecordDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
+        this.chunkEntryDispatcher = new ChunkRecordDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {

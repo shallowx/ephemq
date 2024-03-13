@@ -1,7 +1,7 @@
 package org.meteor.proxy.coordinatior;
 
 import org.meteor.client.internal.ClientChannel;
-import org.meteor.coordinatior.TopicCoordinator;
+import org.meteor.coordinator.TopicCoordinator;
 import org.meteor.remote.proto.TopicInfo;
 
 import java.util.List;

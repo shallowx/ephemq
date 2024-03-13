@@ -4,7 +4,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;

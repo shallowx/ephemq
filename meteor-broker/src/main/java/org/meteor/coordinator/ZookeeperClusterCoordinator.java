@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.curator.framework.CuratorFramework;
@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static org.meteor.coordinatior.JsonFeatureMapper.deserialize;
 
 public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private static final String UP = "UP";
@@ -119,7 +117,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
                     private void handleAdd(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = deserialize(data.getData(), Node.class);
+                        Node node = JsonFeatureMapper.deserialize(data.getData(), Node.class);
 
                         readyNodes.put(node.getId(), node);
                         for (ClusterListener listener : listeners) {
@@ -129,7 +127,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
                     private void handleRemove(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = deserialize(data.getData(), Node.class);
+                        Node node = JsonFeatureMapper.deserialize(data.getData(), Node.class);
 
                         readyNodes.remove(node.getId());
                         for (ClusterListener listener : listeners) {
@@ -139,7 +137,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
                     private void handlerUpdated(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = deserialize(data.getData(), Node.class);
+                        Node node = JsonFeatureMapper.deserialize(data.getData(), Node.class);
 
                         readyNodes.put(node.getId(), node);
                         if (DOWN.equals(node.getState())) {
@@ -185,7 +183,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
 
     private void updateNodeStateAndSleep(String path) throws Exception {
         byte[] bytes = client.getData().forPath(path);
-        Node downNode = deserialize(bytes, Node.class);
+        Node downNode = JsonFeatureMapper.deserialize(bytes, Node.class);
         downNode.setState(DOWN);
         client.setData().forPath(path, JsonFeatureMapper.serialize(downNode));
 

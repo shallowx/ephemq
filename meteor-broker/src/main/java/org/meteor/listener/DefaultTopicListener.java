@@ -9,7 +9,7 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.proto.client.TopicChangedSignal;

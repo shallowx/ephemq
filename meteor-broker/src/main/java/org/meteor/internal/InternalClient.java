@@ -13,7 +13,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.config.CommonConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.DeleteTopicResponse;
 

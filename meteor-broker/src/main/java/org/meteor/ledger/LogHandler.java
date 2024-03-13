@@ -11,7 +11,7 @@ import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.listener.LogListener;
 import org.meteor.remote.invoke.RemoteException;
 
@@ -23,14 +23,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-public class LogCoordinator {
+public class LogHandler {
     private final ServerConfig config;
     private final Coordinator coordinator;
     private final Map<Integer, Log> ledgerIdOfLogs = new ConcurrentHashMap<>();
     private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
     private final ScheduledExecutorService scheduledExecutorOfCleanStorage;
 
-    public LogCoordinator(ServerConfig config, Coordinator coordinator) {
+    public LogHandler(ServerConfig config, Coordinator coordinator) {
         this.config = config;
         this.coordinator = coordinator;
         this.scheduledExecutorOfCleanStorage = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));

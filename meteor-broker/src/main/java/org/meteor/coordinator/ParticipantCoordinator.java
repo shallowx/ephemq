@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -12,7 +12,7 @@ import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.ledger.Log;
-import org.meteor.ledger.LogCoordinator;
+import org.meteor.ledger.LogHandler;
 import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncRequest;
@@ -125,7 +125,7 @@ public class ParticipantCoordinator {
     }
 
     public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {
-        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
+        LogHandler logCoordinator = coordinator.getLogCoordinator();
         Log log = logCoordinator.getLog(ledger);
         if (log == null) {
             promise.trySuccess(null);

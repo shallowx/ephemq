@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
@@ -10,7 +10,7 @@ import org.meteor.config.ServerConfig;
 import org.meteor.internal.InternalClient;
 import org.meteor.internal.InternalClientListener;
 import org.meteor.internal.ZookeeperClientFactory;
-import org.meteor.ledger.LogCoordinator;
+import org.meteor.ledger.LogHandler;
 import org.meteor.listener.*;
 import org.meteor.remote.util.NetworkUtil;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class DefaultCoordinator implements Coordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultCoordinator.class);
     private final List<APIListener> apiListeners = new LinkedList<>();
-    protected LogCoordinator logCoordinator;
+    protected LogHandler logCoordinator;
     protected TopicCoordinator topicCoordinator;
     protected ClusterCoordinator clusterCoordinator;
     protected ServerConfig configuration;
@@ -50,7 +50,7 @@ public class DefaultCoordinator implements Coordinator {
         ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfig());
         clusterCoordinator.addClusterListener(clusterListener);
 
-        logCoordinator = new LogCoordinator(configuration, this);
+        logCoordinator = new LogHandler(configuration, this);
         topicCoordinator = new ZookeeperTopicCoordinator(configuration, this);
         TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(), configuration.getNetworkConfig());
         topicCoordinator.addTopicListener(topicListener);
@@ -168,7 +168,7 @@ public class DefaultCoordinator implements Coordinator {
     }
 
     @Override
-    public LogCoordinator getLogCoordinator() {
+    public LogHandler getLogCoordinator() {
         return logCoordinator;
     }
 

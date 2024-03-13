@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;

@@ -8,7 +8,7 @@ import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 
 import java.util.concurrent.Semaphore;

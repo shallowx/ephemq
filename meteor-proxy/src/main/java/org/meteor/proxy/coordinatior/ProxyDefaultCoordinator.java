@@ -3,9 +3,9 @@ package org.meteor.proxy.coordinatior;
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinatior.DefaultConnectionCoordinator;
-import org.meteor.coordinatior.DefaultCoordinator;
-import org.meteor.ledger.LogCoordinator;
+import org.meteor.coordinator.DefaultConnectionCoordinator;
+import org.meteor.coordinator.DefaultCoordinator;
+import org.meteor.ledger.LogHandler;
 import org.meteor.listener.DefaultClusterListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtil;
@@ -31,7 +31,7 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
         this.topicCoordinator = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
         this.clusterCoordinator = new ZookeeperProxyClusterCoordinator(configuration);
         this.clusterCoordinator.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfig()));
-        this.logCoordinator = new LogCoordinator(configuration, this);
+        this.logCoordinator = new LogHandler(configuration, this);
     }
 
     @Override

@@ -6,7 +6,7 @@ import org.meteor.client.internal.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.InternalClient;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.internal.ProxyClientListener;

@@ -14,7 +14,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 
 import java.net.SocketAddress;
 

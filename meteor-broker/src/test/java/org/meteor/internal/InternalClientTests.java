@@ -12,7 +12,7 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinatior.DefaultCoordinator;
+import org.meteor.coordinator.DefaultCoordinator;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;

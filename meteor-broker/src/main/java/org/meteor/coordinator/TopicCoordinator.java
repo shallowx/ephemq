@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicConfig;

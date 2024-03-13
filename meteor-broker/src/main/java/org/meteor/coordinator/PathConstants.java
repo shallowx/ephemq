@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 interface PathConstants {
     String CONTROLLER = "/controller";

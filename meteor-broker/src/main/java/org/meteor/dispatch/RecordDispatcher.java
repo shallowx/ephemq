@@ -34,8 +34,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 
-public class RecordEntryDispatcher {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordEntryDispatcher.class);
+public class RecordDispatcher {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordDispatcher.class);
     private final int ledger;
     private final String topic;
     private final LedgerStorage storage;
@@ -51,8 +51,8 @@ public class RecordEntryDispatcher {
     private final ConcurrentMap<Channel, RecordHandler> channelHandlers = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    public RecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
-                                 IntConsumer dispatchCounter) {
+    public RecordDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
+                            IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;

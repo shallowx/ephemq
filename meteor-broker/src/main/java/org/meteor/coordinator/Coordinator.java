@@ -1,10 +1,10 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.meteor.client.internal.Client;
-import org.meteor.ledger.LogCoordinator;
+import org.meteor.ledger.LogHandler;
 import org.meteor.listener.APIListener;
 import org.meteor.listener.MetricsListener;
 
@@ -19,7 +19,7 @@ public interface Coordinator {
 
     ClusterCoordinator getClusterCoordinator();
 
-    LogCoordinator getLogCoordinator();
+    LogHandler getLogCoordinator();
 
     ConnectionCoordinator getConnectionCoordinator();
 

@@ -16,7 +16,7 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.MetricsConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.metrics.config.MeteorPrometheusRegistry;
 import org.meteor.metrics.config.MetricsRegistrySetUp;

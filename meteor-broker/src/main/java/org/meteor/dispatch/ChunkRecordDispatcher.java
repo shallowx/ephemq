@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 
-public class ChunkRecordEntryDispatcher {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordEntryDispatcher.class);
+public class ChunkRecordDispatcher {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordDispatcher.class);
     private final int ledger;
     private final String topic;
     private final LedgerStorage storage;
@@ -49,7 +49,7 @@ public class ChunkRecordEntryDispatcher {
     private final ConcurrentMap<Channel, ChunkRecordHandler> channelHandlers = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    public ChunkRecordEntryDispatcher(int ledger, String topic, LedgerStorage storage, ChunkRecordDispatchConfig config, EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
+    public ChunkRecordDispatcher(int ledger, String topic, LedgerStorage storage, ChunkRecordDispatchConfig config, EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;

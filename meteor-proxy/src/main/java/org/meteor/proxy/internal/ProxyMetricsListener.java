@@ -2,7 +2,7 @@ package org.meteor.proxy.internal;
 
 import org.meteor.config.CommonConfig;
 import org.meteor.config.MetricsConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.listener.MetricsListener;
 
 import java.util.Properties;

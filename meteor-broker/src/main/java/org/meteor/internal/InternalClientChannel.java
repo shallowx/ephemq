@@ -7,7 +7,7 @@ import io.netty.util.internal.StringUtil;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.config.CommonConfig;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;

@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.Assert;
@@ -6,14 +6,14 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-public class JsonCoordinatorTests {
+public class JsonFeatureMapperTests {
 
     @Test
     public void testSerialize() throws Exception {
-        JsonObjectTest o = new JsonObjectTest(1, "localhost:8080");
+        TestFeatureMapperObject o = new TestFeatureMapperObject(1, "localhost:8080");
         byte[] bytes = JsonFeatureMapper.serialize(o);
 
-        JsonObjectTest obj = JsonFeatureMapper.deserialize(bytes, JsonObjectTest.class);
+        TestFeatureMapperObject obj = JsonFeatureMapper.deserialize(bytes, TestFeatureMapperObject.class);
         Assert.assertEquals(o, obj);
         Assert.assertEquals(o.id, obj.id);
         Assert.assertEquals(o.addr, obj.addr);
@@ -22,21 +22,21 @@ public class JsonCoordinatorTests {
     @Test
     public void testTestDeserialize() throws Exception {
         byte[] data = "{\"addr\":\"localhost:8080\",\"id\":1}".getBytes();
-        TypeReference<JsonObjectTest> typeRef = new TypeReference<>() {
+        TypeReference<TestFeatureMapperObject> typeRef = new TypeReference<>() {
         };
-        JsonObjectTest o = JsonFeatureMapper.deserialize(data, typeRef);
+        TestFeatureMapperObject o = JsonFeatureMapper.deserialize(data, typeRef);
         Assert.assertEquals("localhost:8080", o.addr);
         Assert.assertEquals(1, o.id);
     }
 
-    static class JsonObjectTest {
+    static class TestFeatureMapperObject {
         private int id;
         private String addr;
 
-        public JsonObjectTest() {
+        public TestFeatureMapperObject() {
         }
 
-        public JsonObjectTest(int id, String addr) {
+        public TestFeatureMapperObject(int id, String addr) {
             this.id = id;
             this.addr = addr;
         }
@@ -61,7 +61,7 @@ public class JsonCoordinatorTests {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            JsonObjectTest that = (JsonObjectTest) o;
+            TestFeatureMapperObject that = (TestFeatureMapperObject) o;
             return id == that.id && Objects.equals(addr, that.addr);
         }
 

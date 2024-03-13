@@ -1,6 +1,6 @@
 package org.meteor.proxy.remoting;
 
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.MeteorServer;
 
 public class MeteorProxyServer extends MeteorServer {

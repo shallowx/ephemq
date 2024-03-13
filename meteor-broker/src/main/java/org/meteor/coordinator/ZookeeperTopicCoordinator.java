@@ -1,4 +1,4 @@
-package org.meteor.coordinatior;
+package org.meteor.coordinator;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -25,7 +25,7 @@ import org.meteor.config.ZookeeperConfig;
 import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
-import org.meteor.ledger.LogCoordinator;
+import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
 
 import javax.annotation.Nonnull;
@@ -394,7 +394,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public void initPartition(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) throws Exception {
-        LogCoordinator logCoordinator = coordinator.getLogCoordinator();
+        LogHandler logCoordinator = coordinator.getLogCoordinator();
         if (logCoordinator.contains(ledgerId)) {
             return;
         }

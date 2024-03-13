@@ -4,7 +4,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinatior.Coordinator;
+import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.MeteorServer;
 import org.meteor.listener.MetricsListener;
 import org.meteor.proxy.coordinatior.ProxyDefaultCoordinator;

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinatior.DefaultCoordinator;
+import org.meteor.coordinator.DefaultCoordinator;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;

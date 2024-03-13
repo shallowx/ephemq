@@ -12,7 +12,7 @@ import org.meteor.config.ZookeeperConfig;
 
 import java.util.Properties;
 
-public class ZookeeperTests {
+public class ZookeeperClientFactoryTests {
 
     private TestingServer server;
 

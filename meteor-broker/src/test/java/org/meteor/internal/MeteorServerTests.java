@@ -2,7 +2,7 @@ package org.meteor.internal;
 
 import org.junit.Test;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinatior.DefaultCoordinator;
+import org.meteor.coordinator.DefaultCoordinator;
 import org.meteor.remoting.DefaultSocketServer;
 
 import java.util.Properties;
