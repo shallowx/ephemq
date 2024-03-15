@@ -303,7 +303,7 @@ public class RecordDispatcher {
 
                         subscription.setDispatchOffset(offset);
                         if (payload == null) {
-                            payload = constructPayload(marker, offset, entry, channel.alloc());
+                            payload = createPayload(marker, offset, entry, channel.alloc());
                         }
 
                         count++;
@@ -336,13 +336,13 @@ public class RecordDispatcher {
         }
 
         handler.setFollowOffset(lastOffset);
-        count(count);
+        compute(count);
         if (cursor.hashNext()) {
             touchDispatch(handler);
         }
     }
 
-    private void count(int count) {
+    private void compute(int count) {
         if (count > 0) {
             try {
                 counter.accept(count);
@@ -425,13 +425,13 @@ public class RecordDispatcher {
                     }
 
                     subscription.setDispatchOffset(offset);
-                    payload = constructPayload(marker, offset, entry, channel.alloc());
+                    payload = createPayload(marker, offset, entry, channel.alloc());
                     count++;
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                     } else {
                         task.setPursueOffset(lastOffset);
-                        count(count);
+                        compute(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
                     }
@@ -456,7 +456,7 @@ public class RecordDispatcher {
         }
 
         task.setPursueOffset(lastOffset);
-        count(count);
+        compute(count);
         Offset alignOffset = handler.getFollowOffset();
         if (finished || (alignOffset != null && !lastOffset.before(alignOffset))) {
             submitAlign(task);
@@ -531,7 +531,7 @@ public class RecordDispatcher {
 
                     if (offset.after(alignOffset)) {
                         subscription.setFollowed(true);
-                        count(count);
+                        compute(count);
                         return;
                     }
 
@@ -546,13 +546,13 @@ public class RecordDispatcher {
                     }
 
                     subscription.setDispatchOffset(offset);
-                    payload = constructPayload(marker, offset, entry, channel.alloc());
+                    payload = createPayload(marker, offset, entry, channel.alloc());
                     count++;
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                     } else {
                         task.setPursueOffset(lastOffset);
-                        count(count);
+                        compute(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         return;
                     }
@@ -579,17 +579,16 @@ public class RecordDispatcher {
 
         if (finished) {
             subscription.setFollowed(true);
-            count(count);
+            compute(count);
             return;
         }
 
         task.setPursueOffset(lastOffset);
-        count(count);
+        compute(count);
         submitPursue(task);
     }
 
-
-    private ByteBuf constructPayload(int marker, Offset offset, ByteBuf entry, ByteBufAllocator alloc) {
+    private ByteBuf createPayload(int marker, Offset offset, ByteBuf entry, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             MessagePushSignal signal = MessagePushSignal.newBuilder()

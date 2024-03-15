@@ -199,7 +199,7 @@ public class ChunkRecordDispatcher {
                         }
                         synchronization.dispatchOffset = endOffset;
                         if (payload == null) {
-                            payload = constructPayload(startOffset, endOffset, chunk, channel.alloc());
+                            payload = createPayload(startOffset, endOffset, chunk, channel.alloc());
                         }
 
                         count += chunk.count();
@@ -233,13 +233,13 @@ public class ChunkRecordDispatcher {
         }
 
         handler.followOffset = lastOffset;
-        countMessage(count);
+        compute(count);
         if (cursor.hashNext()) {
             touchDispatch(handler);
         }
     }
 
-    private ByteBuf constructPayload(Offset startOffset, Offset endOffset, ChunkRecord chunk, ByteBufAllocator alloc) {
+    private ByteBuf createPayload(Offset startOffset, Offset endOffset, ChunkRecord chunk, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
             SyncMessageSignal signal = SyncMessageSignal.newBuilder()
@@ -266,7 +266,7 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void countMessage(int count) {
+    private void compute(int count) {
         if (count > 0) {
             try {
                 counter.accept(count);
@@ -336,13 +336,13 @@ public class ChunkRecordDispatcher {
 
                     lastOffset = endOffset;
                     synchronization.dispatchOffset = endOffset;
-                    payload = constructPayload(startOffset, endOffset, chunk, channel.alloc());
+                    payload = createPayload(startOffset, endOffset, chunk, channel.alloc());
                     count += chunk.count();
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                     } else {
                         pursueTask.setPursueOffset(lastOffset);
-                        countMessage(count);
+                        compute(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(pursueTask));
                         return;
                     }
@@ -367,7 +367,7 @@ public class ChunkRecordDispatcher {
         }
 
         pursueTask.setPursueOffset(lastOffset);
-        countMessage(count);
+        compute(count);
 
         Offset alignOffset = handler.followOffset;
         if (finished || (alignOffset != null && !lastOffset.before(alignOffset))) {
@@ -434,19 +434,19 @@ public class ChunkRecordDispatcher {
                     }
                     if (startOffset.after(alignOffset)) {
                         synchronization.followed = true;
-                        countMessage(count);
+                        compute(count);
                         return;
                     }
 
                     lastOffset = endOffset;
                     synchronization.dispatchOffset = endOffset;
-                    payload = constructPayload(startOffset, endOffset, chunk, channel.alloc());
+                    payload = createPayload(startOffset, endOffset, chunk, channel.alloc());
                     count += chunk.count();
                     if (channel.isWritable()) {
                         channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                     } else {
                         pursueTask.setPursueOffset(lastOffset);
-                        countMessage(count);
+                        compute(count);
                         channel.writeAndFlush(payload.retainedSlice(), delayPursue(pursueTask));
                         return;
                     }
@@ -472,12 +472,12 @@ public class ChunkRecordDispatcher {
 
         if (finished) {
             synchronization.followed = true;
-            countMessage(count);
+            compute(count);
             return;
         }
 
         pursueTask.setPursueOffset(lastOffset);
-        countMessage(count);
+        compute(count);
         submitPursue(pursueTask);
     }
 
