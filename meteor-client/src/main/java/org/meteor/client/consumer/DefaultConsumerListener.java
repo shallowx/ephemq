@@ -79,7 +79,7 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         consumer.getExecutor().schedule(() -> {
             try {
                 if (consumer.containsRouter(topic)) {
-                    MessageRouter router = consumer.fetchRouter(topic);
+                    MessageRouter router = consumer.getRouter(topic);
                     if (router == null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("The consumer listener that topic[{}] message router is empty", topic);

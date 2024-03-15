@@ -54,15 +54,18 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected LoadingCache<String, Set<PartitionInfo>> topicCache;
     protected LoadingCache<String, Set<String>> topicNamesCache;
     private ZookeeperConfig zookeeperConfiguration;
+    private final ConsistentHashingRing hashingRing;
 
     public ZookeeperTopicCoordinator() {
+        this.hashingRing = null;
     }
 
-    public ZookeeperTopicCoordinator(ServerConfig config, Coordinator coordinator) {
+    public ZookeeperTopicCoordinator(ServerConfig config, Coordinator coordinator, ConsistentHashingRing hashingRing) {
         this.commonConfiguration = config.getCommonConfig();
         this.segmentConfiguration = config.getSegmentConfig();
         this.zookeeperConfiguration = config.getZookeeperConfig();
         this.coordinator = coordinator;
+        this.hashingRing = hashingRing;
         this.participantCoordinator = new ParticipantCoordinator(coordinator);
         this.client = ZookeeperClientFactory.getReadyClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
@@ -307,6 +310,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         if (clusterUpNodes.size() < replicas) {
             throw new IllegalStateException("The broker counts is not enough to assign replicas");
         }
+
         try {
             Collections.shuffle(clusterUpNodes);
             topicConfig = topicConfig == null
@@ -326,20 +330,14 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             ops.add(partitionsOp);
 
             for (int i = 0; i < partitions; i++) {
-                Set<String> partitionReplicaSet = new TreeSet<>();
-                for (int j = 0; j < replicas; j++) {
-                    int nodeIdx = (i + j) % clusterUpNodes.size();
-                    Node node = clusterUpNodes.get(nodeIdx);
-                    partitionReplicaSet.add(node.getId());
-                }
-
-                partitionReplicas.put(i, partitionReplicaSet);
+                Set<String> replicaNodes = assignParticipantsToNode(topic + "#" + i, replicas);
+                partitionReplicas.put(i, replicaNodes);
                 String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, i);
                 TopicAssignment assignment = new TopicAssignment();
                 assignment.setPartition(i);
                 assignment.setTopic(topic);
                 assignment.setLedgerId(generateLedgerId());
-                assignment.setReplicas(partitionReplicaSet);
+                assignment.setReplicas(replicaNodes);
                 assignment.setConfig(topicConfig);
                 CuratorOp partitionOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT)
                         .forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
@@ -359,6 +357,10 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         } catch (KeeperException.NodeExistsException e) {
             throw new IllegalStateException(String.format("Topic[%s] already exists", topic));
         }
+    }
+
+    private Set<String> assignParticipantsToNode(String token, int participants) {
+        return hashingRing.route2Nodes(token, participants);
     }
 
     private int generateLedgerId() throws Exception {
@@ -387,7 +389,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             try {
                 initPartition(topicPartition, ledgerId, epoch, topicConfig);
             } catch (Exception e) {
-                throw new RuntimeException("Init log failed", e);
+                throw new RuntimeException(String.format("Async init ledger[%s] failed", ledgerId), e);
             }
         });
     }

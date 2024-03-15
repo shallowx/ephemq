@@ -49,7 +49,7 @@ public class ClientTests {
         Client client = new Client("default", clientConfig, new CombineListener() {
         });
         client.start();
-        ClientChannel clientChannel = client.fetchChannel(null);
+        ClientChannel clientChannel = client.getActiveChannel(null);
 
         ClusterInfo info = client.queryClusterInfo(clientChannel);
         if (logger.isInfoEnabled()) {

@@ -194,7 +194,7 @@ public class DefaultConsumer implements Consumer {
                 continue;
             }
 
-            MessageRouter router = fetchRouter(topic);
+            MessageRouter router = getRouter(topic);
             if (router == null) {
                 resetFailedRecords(topic, entry.getValue());
                 continue;
@@ -257,7 +257,7 @@ public class DefaultConsumer implements Consumer {
         oldLedgerMarkers = oldLedgerMarkers == null ? new HashMap<>() : oldLedgerMarkers;
         Map<MessageLedger, Set<String>> ledgerQueues = new HashMap<>();
         for (String queue : topicQueues) {
-            MessageLedger ledger = calculateLedger(router, queue);
+            MessageLedger ledger = computeMessageLedger(router, queue);
             if (ledger == null) {
                 failedQueues.put(queue, Mode.APPEND);
                 continue;
@@ -341,7 +341,7 @@ public class DefaultConsumer implements Consumer {
         Map<MessageLedger, Map<String, Mode>> ledgerRecords = new HashMap<>();
         for (Map.Entry<String, Mode> entry : changedQueues.entrySet()) {
             String queue = entry.getKey();
-            MessageLedger ledger = calculateLedger(router, queue);
+            MessageLedger ledger = computeMessageLedger(router, queue);
             if (ledger == null) {
                 failedQueues.put(queue, entry.getValue());
                 continue;
@@ -629,7 +629,7 @@ public class DefaultConsumer implements Consumer {
 
     private ClientChannel fetchChannel(SocketAddress address) {
         try {
-            return client.fetchChannel(address);
+            return client.getActiveChannel(address);
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Consumer[{}] fetch channel error, address[{}]", name, address.toString(), t.getMessage(), t);
@@ -638,7 +638,7 @@ public class DefaultConsumer implements Consumer {
         }
     }
 
-    MessageRouter fetchRouter(String topic) {
+    MessageRouter getRouter(String topic) {
         try {
             return client.fetchRouter(topic);
         } catch (Throwable t) {
@@ -649,7 +649,7 @@ public class DefaultConsumer implements Consumer {
         }
     }
 
-    private MessageLedger calculateLedger(MessageRouter router, String queue) {
+    private MessageLedger computeMessageLedger(MessageRouter router, String queue) {
         try {
             return router.routeLedger(queue);
         } catch (Throwable t) {

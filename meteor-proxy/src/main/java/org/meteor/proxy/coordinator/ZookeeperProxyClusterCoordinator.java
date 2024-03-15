@@ -19,7 +19,7 @@ class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator imple
     private final ProxyConfig proxyConfiguration;
 
     public ZookeeperProxyClusterCoordinator(ProxyServerConfig configuration) {
-        super(configuration);
+        super(configuration, null);
         this.proxyConfiguration = configuration.getProxyConfiguration();
         this.client = ZookeeperClientFactory.getReadyClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
         this.hashingRing = new ConsistentHashingRing();

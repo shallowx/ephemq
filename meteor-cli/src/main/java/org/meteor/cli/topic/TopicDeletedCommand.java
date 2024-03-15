@@ -54,7 +54,7 @@ public class TopicDeletedCommand implements Command {
                     throw new IllegalStateException();
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(address);
-                ClientChannel clientChannel = client.fetchChannel(socketAddress);
+                ClientChannel clientChannel = client.getActiveChannel(socketAddress);
                 if (commandLine.hasOption('t')) {
                     String topic = commandLine.getOptionValue('t');
                     finalTopic = topic;

@@ -236,7 +236,7 @@ public class ServiceProcessor implements Processor, Command.Server {
 
                         InetSocketAddress destinationAddr = new InetSocketAddress(destNode.getHost(), destNode.getPort());
                         Client innerClient = coordinator.getInternalClient();
-                        ClientChannel clientChannel = innerClient.fetchChannel(destinationAddr);
+                        ClientChannel clientChannel = innerClient.getActiveChannel(destinationAddr);
                         Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
                         promise.addListener(future -> {
                             if (future.isSuccess()) {

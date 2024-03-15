@@ -44,7 +44,7 @@ class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implement
                     @Override
                     public @Nullable TopicInfo load(String key) throws Exception {
                         try {
-                            ClientChannel channel = syncCoordinator.getProxyClient().fetchChannel(null);
+                            ClientChannel channel = syncCoordinator.getProxyClient().getActiveChannel(null);
                             Map<String, TopicInfo> topicInfos = getFromUpstream(Lists.newArrayList(key), channel);
                             return (topicInfos == null || topicInfos.isEmpty()) ? null : topicInfos.get(key);
                         } catch (Exception e) {

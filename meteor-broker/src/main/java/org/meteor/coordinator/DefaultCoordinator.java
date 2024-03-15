@@ -46,12 +46,13 @@ public class DefaultCoordinator implements Coordinator {
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
         this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "dispatch-group");
 
-        clusterCoordinator = new ZookeeperClusterCoordinator(configuration);
+        ConsistentHashingRing hashingRing = new ConsistentHashingRing();
+        clusterCoordinator = new ZookeeperClusterCoordinator(configuration, hashingRing);
         ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfig());
         clusterCoordinator.addClusterListener(clusterListener);
 
         logCoordinator = new LogHandler(configuration, this);
-        topicCoordinator = new ZookeeperTopicCoordinator(configuration, this);
+        topicCoordinator = new ZookeeperTopicCoordinator(configuration, this, hashingRing);
         TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(), configuration.getNetworkConfig());
         topicCoordinator.addTopicListener(topicListener);
 

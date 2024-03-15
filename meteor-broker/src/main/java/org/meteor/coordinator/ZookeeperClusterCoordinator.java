@@ -39,10 +39,12 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private volatile boolean registered = false;
     private LeaderLatch latch;
     private Node thisNode;
+    private final ConsistentHashingRing hashingRing;
 
-    public ZookeeperClusterCoordinator(ServerConfig config) {
+    public ZookeeperClusterCoordinator(ServerConfig config, ConsistentHashingRing hashingRing) {
         this.configuration = config.getCommonConfig();
         this.client = ZookeeperClientFactory.getReadyClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
+        this.hashingRing = hashingRing;
     }
 
     @Override
@@ -122,6 +124,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                         readyNodes.put(node.getId(), node);
                         for (ClusterListener listener : listeners) {
                             listener.onNodeJoin(node);
+                            if (hashingRing != null) {
+                                hashingRing.insertNode(node.getId());
+                            }
                         }
                     }
 
@@ -132,6 +137,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                         readyNodes.remove(node.getId());
                         for (ClusterListener listener : listeners) {
                             listener.onNodeLeave(node);
+                            if (hashingRing != null) {
+                                hashingRing.deleteNode(node.getId());
+                            }
                         }
                     }
 
@@ -143,6 +151,9 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
                         if (DOWN.equals(node.getState())) {
                             for (ClusterListener listener : listeners) {
                                 listener.onNodeDown(node);
+                                if (hashingRing != null) {
+                                    hashingRing.deleteNode(node.getId());
+                                }
                             }
                         }
                     }
@@ -217,6 +228,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     @Override
     public void shutdown() throws Exception {
         cache.close();
+        hashingRing.deleteNode(thisNode.getId());
     }
 
     @Override

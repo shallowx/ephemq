@@ -62,7 +62,7 @@ public class TopicListCommand implements Command {
                     throw new IllegalStateException();
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(address);
-                ClientChannel clientChannel = client.fetchChannel(socketAddress);
+                ClientChannel clientChannel = client.getActiveChannel(socketAddress);
                 List<TopicMetadata> topics = new ArrayList<>();
                 if (commandLine.hasOption("t")) {
                     String topic = commandLine.getOptionValue("t").trim();

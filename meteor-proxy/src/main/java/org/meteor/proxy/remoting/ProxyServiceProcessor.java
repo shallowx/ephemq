@@ -269,7 +269,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
 
         int replicaCount = Math.max(MIN_REPLICA_LIMIT, allThroughput / subscribeThreshold + 1);
-        String token = topic + "*" + ledger;
+        String token = topic + "#" + ledger;
         NavigableMap<String, Integer> ledgerNodes = selectLedgerNodes(replicaCount, token, nodes);
         return selectChannelNodes(channel, token, ledgerNodes);
     }

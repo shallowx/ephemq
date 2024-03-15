@@ -65,7 +65,7 @@ final class RefreshMetadataTask implements Runnable {
 
         Map<String, MessageRouter> queryRouters = new HashMap<>();
         try {
-            ClientChannel channel = client.fetchChannel(null);
+            ClientChannel channel = client.getActiveChannel(null);
             ClusterInfo clusterInfo = client.queryClusterInfo(channel);
             if (clusterInfo == null) {
                 throw new IllegalStateException("Cluster node not found");

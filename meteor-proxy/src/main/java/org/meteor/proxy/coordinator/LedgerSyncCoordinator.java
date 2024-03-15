@@ -158,7 +158,7 @@ public abstract class LedgerSyncCoordinator {
             ));
         }
         int index = ThreadLocalRandom.current().nextInt(addresses.size());
-        return proxyClient.fetchChannel(addresses.get(index));
+        return proxyClient.getActiveChannel(addresses.get(index));
     }
 
     Client getProxyClient() {

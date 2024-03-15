@@ -66,7 +66,7 @@ public class Client implements MeterBinder {
         return bootstrapAddress.get(ThreadLocalRandom.current().nextInt(size));
     }
 
-    public ClientChannel fetchChannel(SocketAddress address) {
+    public ClientChannel getActiveChannel(SocketAddress address) {
         try {
             return applyChannel(address).get(config.getChannelConnectionTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
@@ -302,7 +302,7 @@ public class Client implements MeterBinder {
     public MessageRouter fetchRouter(String topic) {
         ClientChannel channel = null;
         try {
-            channel = fetchChannel(null);
+            channel = getActiveChannel(null);
             return applyRouter(topic, channel, true).get();
         } catch (Throwable t) {
             throw new RuntimeException(
@@ -317,7 +317,7 @@ public class Client implements MeterBinder {
     public void refreshRouter(String topic, ClientChannel channel) {
         try {
             if (channel == null) {
-                channel = fetchChannel(null);
+                channel = getActiveChannel(null);
             }
             applyRouter(topic, channel, false).get();
         } catch (Throwable t) {
@@ -503,7 +503,7 @@ public class Client implements MeterBinder {
         }
 
         Promise<CreateTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-        ClientChannel channel = fetchChannel(null);
+        ClientChannel channel = getActiveChannel(null);
         channel.invoker().createTopic(config.getCreateTopicTimeoutMilliseconds(), promise, request.build());
         return promise.get(config.getCreateTopicTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
@@ -513,13 +513,13 @@ public class Client implements MeterBinder {
 
         DeleteTopicRequest request = DeleteTopicRequest.newBuilder().setTopic(topic).build();
         Promise<DeleteTopicResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
-        ClientChannel channel = fetchChannel(null);
+        ClientChannel channel = getActiveChannel(null);
         channel.invoker().deleteTopic(config.getDeleteTopicTimeoutMilliseconds(), promise, request);
         return promise.get(config.getDeleteTopicTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     public CalculatePartitionsResponse calculatePartitions() throws Exception {
-        ClientChannel clientChannel = fetchChannel(null);
+        ClientChannel clientChannel = getActiveChannel(null);
         Promise<CalculatePartitionsResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         CalculatePartitionsRequest request = CalculatePartitionsRequest.newBuilder().build();
         clientChannel.invoker().calculatePartitions(config.getCalculatePartitionsTimeoutMilliseconds(), promise, request);
@@ -528,7 +528,7 @@ public class Client implements MeterBinder {
 
     public MigrateLedgerResponse migrateLedger(String topic, int partition, String original, String destination) throws Exception {
         MigrateLedgerResponse.Builder response = MigrateLedgerResponse.newBuilder();
-        ClientChannel clientChannel = fetchChannel(null);
+        ClientChannel clientChannel = getActiveChannel(null);
         ClusterInfo clusterInfo = queryClusterInfo(clientChannel);
         Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
         NodeMetadata originalBroker = nodesMap.get(original);
@@ -550,7 +550,7 @@ public class Client implements MeterBinder {
             return response.setSuccess(false).setMessage(String.format("The client[%s] topic[%s] partition[%d] does not exist", name, original, partition)).build();
         }
 
-        clientChannel = fetchChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));
+        clientChannel = getActiveChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));
         Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         MigrateLedgerRequest request = MigrateLedgerRequest.newBuilder()
                 .setTopic(topic)

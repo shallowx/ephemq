@@ -159,7 +159,7 @@ public class DefaultProducer implements Producer {
             if (channel != null && channel.isActive() && channel.address().equals(address)) {
                 return channel;
             }
-            channel = client.fetchChannel(address);
+            channel = client.getActiveChannel(address);
             readyChannels.put(ledger, channel);
             return channel;
         }

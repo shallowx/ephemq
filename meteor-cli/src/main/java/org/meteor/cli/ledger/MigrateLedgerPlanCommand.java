@@ -75,7 +75,7 @@ public class MigrateLedgerPlanCommand implements Command {
                     throw new IllegalArgumentException();
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
-                ClientChannel clientChannel = client.fetchChannel(socketAddress);
+                ClientChannel clientChannel = client.getActiveChannel(socketAddress);
 
                 ClusterInfo clusterInfo = client.queryClusterInfo(clientChannel);
                 List<String> ids = clusterInfo.getNodesMap().values().stream().map(NodeMetadata::getId).collect(Collectors.toList());

@@ -50,7 +50,7 @@ public class ClusterListCommand implements Command {
                     throw new IllegalArgumentException();
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
-                ClientChannel clientChannel = client.fetchChannel(socketAddress);
+                ClientChannel clientChannel = client.getActiveChannel(socketAddress);
                 ClusterInfo clusterInfo = client.queryClusterInfo(clientChannel);
                 Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
                 List<NodeMetadata> metadata = new ArrayList<>(nodesMap.values());
