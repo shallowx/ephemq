@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatior;
+package org.meteor.proxy.coordinator;
 
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.coordinator.TopicCoordinator;

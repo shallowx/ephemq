@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatior;
+package org.meteor.proxy.coordinator;
 
 import com.google.common.collect.Sets;
 import com.google.common.hash.HashFunction;

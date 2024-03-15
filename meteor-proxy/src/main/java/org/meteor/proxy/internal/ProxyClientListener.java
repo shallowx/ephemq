@@ -16,8 +16,8 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.coordinatior.LedgerSyncCoordinator;
-import org.meteor.proxy.coordinatior.ProxyTopicCoordinator;
+import org.meteor.proxy.coordinator.LedgerSyncCoordinator;
+import org.meteor.proxy.coordinator.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
@@ -71,21 +71,21 @@ public class ProxyClientListener implements CombineListener {
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Proxy can not find sync channel of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not found sync channel of topic[{}] ledger[{}] , will ignore check", topic, ledger);
                 }
                 continue;
             }
             MessageRouter router = client.fetchRouter(topic);
             if (router == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Proxy can not find message router of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not found message router of topic[{}] ledger[{}] , will ignore check", topic, ledger);
                 }
                 continue;
             }
             MessageLedger messageLedger = router.ledger(ledger);
             if (messageLedger == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Proxy can not find message ledger of topic[{}] ledger[{}] , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not found message ledger of topic[{}] ledger[{}] , will ignore check", topic, ledger);
                 }
                 continue;
             }
@@ -98,7 +98,7 @@ public class ProxyClientListener implements CombineListener {
             }
             if (replicas.contains(syncChannel.address()) && syncChannel.isActive()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Proxy can not find partition replicas of topic[{}] ledger[{}]  , will ignore check", topic, ledger);
+                    logger.debug("Proxy can not found partition replicas of topic[{}] ledger[{}]  , will ignore check", topic, ledger);
                 }
                 continue;
             }
@@ -147,7 +147,7 @@ public class ProxyClientListener implements CombineListener {
         if (!client.isRunning()) {
             return;
         }
-        resumeChannelSync(channel, true);
+        resumeChannelSync(channel);
     }
 
     @Override
@@ -213,7 +213,7 @@ public class ProxyClientListener implements CombineListener {
                     continue;
                 }
                 if (payload == null) {
-                    payload = buildPayload(channel.alloc(), signal, Command.Client.TOPIC_CHANGED);
+                    payload = buildPayload(channel.alloc(), signal);
                 }
                 channel.writeAndFlush(payload.retainedDuplicate());
             }
@@ -224,21 +224,21 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
-    private ByteBuf buildPayload(ByteBufAllocator alloc, TopicChangedSignal signal, int command) {
+    private ByteBuf buildPayload(ByteBufAllocator alloc, TopicChangedSignal signal) {
         ByteBuf buf = null;
         try {
             int length = MessagePacket.HEADER_LENGTH + ProtoBufUtil.protoLength(signal);
             buf = alloc.ioBuffer(length);
             buf.writeByte(MessagePacket.MAGIC_NUMBER);
             buf.writeMedium(length);
-            buf.writeInt(command);
+            buf.writeInt(Command.Client.TOPIC_CHANGED);
             buf.writeInt(0);
 
             ProtoBufUtil.writeProto(buf, signal);
             return buf;
         } catch (Exception e) {
             ByteBufUtil.release(buf);
-            throw new RuntimeException(String.format("Proxy build signal payload error, command[%d] signal[%s]", command, signal));
+            throw new RuntimeException(String.format("Proxy build signal payload error, command[%d] signal[%s]", Command.Client.TOPIC_CHANGED, signal));
         }
     }
 
@@ -247,7 +247,7 @@ public class ProxyClientListener implements CombineListener {
         CombineListener.super.onNodeOffline(channel, signal);
     }
 
-    private void resumeChannelSync(ClientChannel channel, boolean refreshRouter) {
+    private void resumeChannelSync(ClientChannel channel) {
         Collection<Log> logs = coordinator.getLogCoordinator().getLedgerIdOfLogs().values();
         Map<String, List<Log>> groupedLogs = logs.stream().filter(log -> channel == log.getSyncChannel()).collect(Collectors.groupingBy(Log::getTopic));
         if (groupedLogs.isEmpty()) {
@@ -256,19 +256,17 @@ public class ProxyClientListener implements CombineListener {
         for (Map.Entry<String, List<Log>> entry : groupedLogs.entrySet()) {
             String topic = entry.getKey();
             try {
-                if (refreshRouter) {
-                    if (channel.isActive()) {
-                        client.refreshRouter(topic, channel);
-                    } else {
-                        client.refreshRouter(topic, null);
-                    }
-                    EventExecutor executor = fixedExecutor(topic);
-                    if (executor.isShuttingDown()) {
-                        continue;
-                    }
-                    for (Log log : entry.getValue()) {
-                        executor.execute(() -> resumeSync(channel, topic, log.getLedger(), false));
-                    }
+                if (channel.isActive()) {
+                    client.refreshRouter(topic, channel);
+                } else {
+                    client.refreshRouter(topic, null);
+                }
+                EventExecutor executor = fixedExecutor(topic);
+                if (executor.isShuttingDown()) {
+                    continue;
+                }
+                for (Log log : entry.getValue()) {
+                    executor.execute(() -> resumeSync(channel, topic, log.getLedger(), false));
                 }
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {

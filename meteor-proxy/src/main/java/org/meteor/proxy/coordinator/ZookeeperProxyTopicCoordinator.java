@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatior;
+package org.meteor.proxy.coordinator;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;

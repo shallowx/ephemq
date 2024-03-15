@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatior;
+package org.meteor.proxy.coordinator;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.logging.InternalLogger;

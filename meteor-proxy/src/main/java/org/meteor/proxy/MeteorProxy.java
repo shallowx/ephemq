@@ -7,7 +7,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.MeteorServer;
 import org.meteor.listener.MetricsListener;
-import org.meteor.proxy.coordinatior.ProxyDefaultCoordinator;
+import org.meteor.proxy.coordinator.ProxyDefaultCoordinator;
 import org.meteor.proxy.internal.ProxyMetricsListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.proxy.remoting.MeteorProxyServer;

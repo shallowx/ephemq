@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatior;
+package org.meteor.proxy.coordinator;
 
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.zookeeper.data.Stat;

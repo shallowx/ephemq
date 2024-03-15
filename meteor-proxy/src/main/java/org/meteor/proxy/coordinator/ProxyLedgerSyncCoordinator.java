@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinatior;
+package org.meteor.proxy.coordinator;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
@@ -47,6 +47,9 @@ final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
             ProxyLog proxyLog = (ProxyLog) log;
             ClientChannel syncChannel = log.getSyncChannel();
             if (syncChannel == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Sync channel is NULL");
+                }
                 continue;
             }
             if ((now - proxyLog.getLastSubscribeTimeMillis()) > 60 * 1000 && log.getSubscriberCount() == 0) {
