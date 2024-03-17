@@ -1,4 +1,4 @@
-package org.meteor.cli;
+package org.meteor.cli.core;
 
 import com.google.gson.Gson;
 import org.apache.commons.cli.CommandLine;

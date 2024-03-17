@@ -4,7 +4,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.meteor.cli.Command;
+import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.message.Node;
@@ -26,16 +26,16 @@ public class ClusterListCommand implements Command {
 
     @Override
     public String description() {
-        return "node list all of cluster";
+        return "Get cluster node info form broker cluster";
     }
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "broker", true, "cluster broker addr");
+        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option option = new Option("c", "cluster", true, "cluster name");
+        Option option = new Option("c", "--cluster", true, "The cluster name that is use to filter the cluster info");
         option.setRequired(false);
         options.addOption(option);
         return options;
@@ -44,6 +44,8 @@ public class ClusterListCommand implements Command {
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
+            List<Node> nodes = new ArrayList<>();
+
             if (commandLine.hasOption('b')) {
                 String addr = commandLine.getOptionValue('b');
                 if (StringUtil.isNullOrEmpty(addr)) {
@@ -57,8 +59,6 @@ public class ClusterListCommand implements Command {
 
                 System.out.printf("%s [%s] INFO %S - Print the cluster metadata options: \n",
                         newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName());
-
-                List<Node> nodes = new ArrayList<>();
                 for (NodeMetadata nodeMetadata : metadata) {
                     nodes.add(
                             new Node(nodeMetadata.getId(),
@@ -68,9 +68,15 @@ public class ClusterListCommand implements Command {
                                     nodeMetadata.getClusterName(), "UP")
                     );
                 }
-                System.out.printf("%s [%s] INFO %S - %s \n",
-                        newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), gson.toJson(nodes));
             }
+
+            if (commandLine.hasOption('c')) {
+                String clusterName = commandLine.getOptionValue('c');
+                if (StringUtil.isNullOrEmpty(clusterName)) {
+                    nodes = nodes.stream().filter(n -> n.getCluster().equals(clusterName)).toList();
+                }
+            }
+            System.out.printf("%s [%s] INFO %S - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), gson.toJson(nodes));
         } catch (Exception e) {
             System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), e.getCause().getMessage());
             throw new RuntimeException(e);

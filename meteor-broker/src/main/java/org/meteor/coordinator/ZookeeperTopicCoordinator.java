@@ -43,6 +43,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     private static final String TOPIC_REGEX = "^/brokers/topics/[\\w\\-#]+$";
     protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
     protected final List<TopicListener> listeners = new LinkedList<>();
+    private final ConsistentHashingRing hashingRing;
     protected CommonConfig commonConfiguration;
     protected SegmentConfig segmentConfiguration;
     protected CuratorFramework client;
@@ -54,7 +55,6 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected LoadingCache<String, Set<PartitionInfo>> topicCache;
     protected LoadingCache<String, Set<String>> topicNamesCache;
     private ZookeeperConfig zookeeperConfiguration;
-    private final ConsistentHashingRing hashingRing;
 
     public ZookeeperTopicCoordinator() {
         this.hashingRing = null;

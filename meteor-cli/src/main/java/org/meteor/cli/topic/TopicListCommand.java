@@ -5,7 +5,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.meteor.cli.Command;
+import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.remote.proto.PartitionMetadata;
@@ -25,28 +25,24 @@ public class TopicListCommand implements Command {
 
     @Override
     public String description() {
-        return "get topics from server";
+        return "Get topic info from the broker cluster";
     }
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
+        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option clusterOpt = new Option("c", "cluster", true, "which cluster name");
-        clusterOpt.setRequired(true);
-        options.addOption(clusterOpt);
-
-        Option topicOpt = new Option("t", "topic", true, "which topic name");
+        Option topicOpt = new Option("t", "--topic", true, "The name is used to query topic info");
         topicOpt.setRequired(true);
         options.addOption(topicOpt);
 
-        Option ledgerOpt = new Option("l", "ledger", true, "which ledger id");
+        Option ledgerOpt = new Option("l", "--ledger", true, "The ledger id that is use to filter the topic info");
         ledgerOpt.setRequired(true);
         options.addOption(ledgerOpt);
 
-        Option partitionOpt = new Option("p", "partition", true, "which partition id");
+        Option partitionOpt = new Option("p", "--partition", true, "The partition id that is use to filter the topic info");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 

@@ -5,7 +5,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.meteor.cli.Command;
+import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.common.message.PartitionInfo;
@@ -29,16 +29,16 @@ public class TopicDeletedCommand implements Command {
 
     @Override
     public String description() {
-        return "delete topic form broker";
+        return "Delete topic form the broker cluster";
     }
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
+        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option option = new Option("t", "topic", true, "topic name");
+        Option option = new Option("t", "--topic", true, "The name of the topic to be deleted");
         option.setRequired(true);
         options.addOption(option);
         return options;

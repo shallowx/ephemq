@@ -33,13 +33,13 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     protected final List<ClusterListener> listeners = new ObjectArrayList<>();
     private final CommonConfig configuration;
     private final Map<String, Node> readyNodes = new ConcurrentHashMap<>();
+    private final ConsistentHashingRing hashingRing;
     protected CuratorFramework client;
     protected ConnectionStateListener connectionStateListener;
     protected CuratorCache cache;
     private volatile boolean registered = false;
     private LeaderLatch latch;
     private Node thisNode;
-    private final ConsistentHashingRing hashingRing;
 
     public ZookeeperClusterCoordinator(ServerConfig config, ConsistentHashingRing hashingRing) {
         this.configuration = config.getCommonConfig();

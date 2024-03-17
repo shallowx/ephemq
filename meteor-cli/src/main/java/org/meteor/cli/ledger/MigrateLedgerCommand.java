@@ -7,7 +7,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
-import org.meteor.cli.Command;
+import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
@@ -27,33 +27,33 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public String description() {
-        return "migrate ledger";
+        return "The migrate ledger command is used to migrate any broker to other broker";
     }
 
     @Override
     public Options buildOptions(Options options) {
-        Option bOpt = new Option("ba", "broker-address", true, "which broker server");
+        Option bOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
         bOpt.setRequired(true);
         options.addOption(bOpt);
 
-        Option originalOpt = new Option("ob", "original-broker", true, "original broker name");
+        Option originalOpt = new Option("ob", "--original-broker", true, "The original broker is the broker name of migrated out");
         originalOpt.setRequired(true);
         options.addOption(originalOpt);
 
-        Option topicOpt = new Option("t", "topic", true, "which topic name");
+        Option topicOpt = new Option("t", "--topic", true, "The topic is the name of migrated out");
         topicOpt.setRequired(true);
         options.addOption(topicOpt);
 
 
-        Option partitionOpt = new Option("p", "partition", true, "which partition id");
+        Option partitionOpt = new Option("p", "--partition", true, "The partition is the id of migrated out");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 
-        Option explainOpt = new Option("ef", "explain-file", true, "explain file");
+        Option explainOpt = new Option("ef", "--explain-file", true, "The file is explain file that will over other commands");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
 
-        Option destOpt = new Option("db", "destination-broker", true, "destination broker");
+        Option destOpt = new Option("db", "--destination-broker", true, "The destination broker is the broker name of  the migration destination");
         destOpt.setRequired(true);
         options.addOption(destOpt);
 

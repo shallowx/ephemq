@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ZookeeperClientFactory {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClientFactory.class);
     private static final Map<String, CuratorFramework> readyClients = new ConcurrentHashMap<>();
+
     public static CuratorFramework getReadyClient(ZookeeperConfig config, String clusterName) {
         return readyClients.computeIfAbsent(clusterName, namespace -> {
             String url = config.getZookeeperUrl();

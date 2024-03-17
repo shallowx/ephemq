@@ -2,6 +2,7 @@ package org.meteor.cli;
 
 import org.apache.commons.cli.*;
 import org.meteor.cli.cluster.ClusterListCommand;
+import org.meteor.cli.core.Command;
 import org.meteor.cli.ledger.MigrateLedgerCommand;
 import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.topic.TopicCreatedCommand;
@@ -35,7 +36,7 @@ public class MeteorAdmin {
                             Options options = buildOptions();
                             options = cmd.buildOptions(options);
                             if (options != null) {
-                                printCmdHelp("smartAdmin" + cmd.name(), options);
+                                printCmdHelp("Smart admin" + cmd.name(), options);
                                 return;
                             }
                             System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
@@ -117,7 +118,7 @@ public class MeteorAdmin {
     }
 
     private static Options buildOptions() {
-        Option option = new Option("h", "help", false, "Print help");
+        Option option = new Option("h", "help", false, "Shows this help message");
         option.setRequired(false);
         Options options = new Options();
         options.addOption(option);
@@ -151,10 +152,10 @@ public class MeteorAdmin {
     }
 
     private static void printHelp() {
-        System.out.printf("the most commonly used commands are:%n");
+        System.out.printf("The most commonly used commands are:%n");
         for (Command cmd : commands) {
             System.out.printf("  %s-20s %s%n", cmd.name(), cmd.description());
         }
-        System.out.printf("%n see 'smartAdmin help <command>' for more information on a specific command.%n");
+        System.out.printf("%n See 'smart admin help <command>' for more information on a specific command.%n");
     }
 }

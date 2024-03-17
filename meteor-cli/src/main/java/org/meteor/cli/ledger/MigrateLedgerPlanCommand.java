@@ -5,7 +5,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.meteor.cli.Command;
+import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientChannel;
 import org.meteor.remote.proto.ClusterInfo;
@@ -29,26 +29,22 @@ public class MigrateLedgerPlanCommand implements Command {
 
     @Override
     public String description() {
-        return "create migrate plan";
+        return "Create migrate plan from the broker cluster";
     }
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
+        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option partitionOpt = new Option("ob", "original-broker", true, "original broker");
+        Option partitionOpt = new Option("ob", "--original-broker", true, "The original broker is the broker name of migrated out");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 
-        Option replicaOpt = new Option("eb", "exclude-broker", true, "exclude broker");
+        Option replicaOpt = new Option("eb", "--exclude-broker", true, "The broker is the excluded broker name");
         replicaOpt.setRequired(true);
         options.addOption(replicaOpt);
-
-        Option configOpt = new Option("vc", "verify-completed", true, "verify completed");
-        configOpt.setRequired(true);
-        options.addOption(configOpt);
 
         return options;
     }

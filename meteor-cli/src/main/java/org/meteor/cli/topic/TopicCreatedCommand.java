@@ -6,7 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
-import org.meteor.cli.Command;
+import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.util.StringUtil;
@@ -28,16 +28,16 @@ public class TopicCreatedCommand implements Command {
 
     @Override
     public String description() {
-        return "create topic";
+        return "Create topic to the broker cluster";
     }
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("ba", "broker-address", true, "which broker server");
+        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option explainOpt = new Option("ef", "explain-file", true, "topic to which file(JSON)");
+        Option explainOpt = new Option("ef", "--explain-file", true, "The file is explain file(JSON) that will over other commands");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
         return options;
