@@ -1,3 +1,5 @@
 ### broker
 
-- at least jvm args: -c broker.properties
+# Start
+
+- the minimum required jvm parameters: -c /path/broker.properties
