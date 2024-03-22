@@ -29,7 +29,7 @@
 - Zookeeper Version: Zookeeper 3.5.x or higher
 - Java Version: Java 17 or higher
 
-## Metrics configuration
+## Metrics
 
 - 0.0.0.0:9528/prometheus
 - Support metrics and monitoring, data collection uses prometheus components
