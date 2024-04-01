@@ -65,5 +65,5 @@ public interface ClusterInfoOrBuilder extends
      */
 
     org.meteor.remote.proto.NodeMetadata getNodesOrThrow(
-            java.lang.String key);
+      java.lang.String key);
 }

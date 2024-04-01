@@ -118,6 +118,28 @@ public class DefaultProducer implements Producer {
         }
     }
 
+    @Override
+    public MessageId send(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras) {
+        return null;
+    }
+
+    @Override
+    public MessageId send(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras,
+                          long timeout) {
+        return null;
+    }
+
+    @Override
+    public void sendAsync(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras,
+                          SendCallback callback) {
+
+    }
+
+    @Override
+    public void sendOneway(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras) {
+
+    }
+
     private void doSend(String topic, String queue, ByteBuf message, Map<String, String> extras, int timeoutMs, Promise<SendMessageResponse> promise) {
         TopicPatternUtil.validateQueue(queue);
         TopicPatternUtil.validateTopic(topic);

@@ -1,13 +1,13 @@
 package org.meteor.coordinator;
 
-interface PathConstants {
-    String CONTROLLER = "/controller";
-    String BROKERS = "/brokers";
-    String BROKERS_TOPICS = BROKERS + "/topics";
-    String BROKER_TOPIC = BROKERS_TOPICS + "/%s";
-    String BROKER_TOPIC_ID = BROKER_TOPIC + "/id";
-    String BROKER_TOPIC_PARTITIONS = BROKER_TOPIC + "/partitions";
-    String BROKER_TOPIC_PARTITION = BROKER_TOPIC_PARTITIONS + "/%d";
-    String BROKERS_IDS = "/brokers/ids";
-    String BROKERS_ID = BROKERS_IDS + "/%s";
+public final class PathConstants {
+    public static final String CONTROLLER = "/controller";
+    public static final String BROKERS = "/brokers";
+    public static final String BROKERS_TOPICS = BROKERS + "/topics";
+    public static final String BROKER_TOPIC = BROKERS_TOPICS + "/%s";
+    public static final String BROKER_TOPIC_ID = BROKER_TOPIC + "/id";
+    public static final String BROKER_TOPIC_PARTITIONS = BROKER_TOPIC + "/partitions";
+    public static final String BROKER_TOPIC_PARTITION = BROKER_TOPIC_PARTITIONS + "/%d";
+    public static final String BROKERS_IDS = "/brokers/ids";
+    public static final String BROKERS_ID = BROKERS_IDS + "/%s";
 }

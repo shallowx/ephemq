@@ -10,44 +10,7 @@ public final class CreateTopicRequest extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.CreateTopicRequest)
         CreateTopicRequestOrBuilder {
-    public static final int TOPIC_FIELD_NUMBER = 1;
-    public static final int PARTITION_FIELD_NUMBER = 2;
-    public static final int REPLICAS_FIELD_NUMBER = 3;
-    public static final int CONFIGS_FIELD_NUMBER = 4;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.CreateTopicRequest)
-    private static final org.meteor.remote.proto.server.CreateTopicRequest DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<CreateTopicRequest>
-            PARSER = new com.google.protobuf.AbstractParser<CreateTopicRequest>() {
-        @java.lang.Override
-        public CreateTopicRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CreateTopicRequest();
-    }
-
-    private volatile java.lang.Object topic_;
-    private int partition_;
-    private int replicas_;
-    private org.meteor.remote.proto.server.CreateTopicConfigRequest configs_;
-    private byte memoizedIsInitialized = -1;
 
     // Use CreateTopicRequest.newBuilder() to construct.
     private CreateTopicRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -58,9 +21,253 @@ public final class CreateTopicRequest extends
         topic_ = "";
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new CreateTopicRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.CreateTopicRequest.class,
+                        org.meteor.remote.proto.server.CreateTopicRequest.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topic_;
+
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topic_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int PARTITION_FIELD_NUMBER = 2;
+    private int partition_;
+
+    /**
+     * <code>int32 partition = 2;</code>
+     *
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+        return partition_;
+    }
+
+    public static final int REPLICAS_FIELD_NUMBER = 3;
+    private int replicas_;
+
+    /**
+     * <code>int32 replicas = 3;</code>
+     *
+     * @return The replicas.
+     */
+    @java.lang.Override
+    public int getReplicas() {
+        return replicas_;
+    }
+
+    public static final int CONFIGS_FIELD_NUMBER = 4;
+    private org.meteor.remote.proto.server.CreateTopicConfigRequest configs_;
+
+    /**
+     * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     *
+     * @return Whether the configs field is set.
+     */
+    @java.lang.Override
+    public boolean hasConfigs() {
+        return configs_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     *
+     * @return The configs.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.server.CreateTopicConfigRequest getConfigs() {
+        return configs_ == null ? org.meteor.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() :
+                configs_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder() {
+        return getConfigs();
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+        }
+        if (partition_ != 0) {
+            output.writeInt32(2, partition_);
+        }
+        if (replicas_ != 0) {
+            output.writeInt32(3, replicas_);
+        }
+        if (configs_ != null) {
+            output.writeMessage(4, getConfigs());
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+        }
+        if (partition_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, partition_);
+        }
+        if (replicas_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(3, replicas_);
+        }
+        if (configs_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(4, getConfigs());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.CreateTopicRequest)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.CreateTopicRequest other =
+                (org.meteor.remote.proto.server.CreateTopicRequest) obj;
+
+        if (!getTopic()
+                .equals(other.getTopic())) {
+            return false;
+        }
+        if (getPartition()
+                != other.getPartition()) {
+            return false;
+        }
+        if (getReplicas()
+                != other.getReplicas()) {
+            return false;
+        }
+        if (hasConfigs() != other.hasConfigs()) {
+            return false;
+        }
+        if (hasConfigs()) {
+            if (!getConfigs()
+                    .equals(other.getConfigs())) {
+                return false;
+            }
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPartition();
+        hash = (37 * hash) + REPLICAS_FIELD_NUMBER;
+        hash = (53 * hash) + getReplicas();
+        if (hasConfigs()) {
+            hash = (37 * hash) + CONFIGS_FIELD_NUMBER;
+            hash = (53 * hash) + getConfigs().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.server.CreateTopicRequest parseFrom(
@@ -144,234 +351,17 @@ public final class CreateTopicRequest extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.server.CreateTopicRequest prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<CreateTopicRequest> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new CreateTopicRequest();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.CreateTopicRequest.class, org.meteor.remote.proto.server.CreateTopicRequest.Builder.class);
-    }
-
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topic_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The bytes for topic.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicBytes() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topic_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>int32 partition = 2;</code>
-     *
-     * @return The partition.
-     */
-    @java.lang.Override
-    public int getPartition() {
-        return partition_;
-    }
-
-    /**
-     * <code>int32 replicas = 3;</code>
-     *
-     * @return The replicas.
-     */
-    @java.lang.Override
-    public int getReplicas() {
-        return replicas_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
-     *
-     * @return Whether the configs field is set.
-     */
-    @java.lang.Override
-    public boolean hasConfigs() {
-        return configs_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
-     *
-     * @return The configs.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.server.CreateTopicConfigRequest getConfigs() {
-        return configs_ == null ? org.meteor.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder() {
-        return getConfigs();
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
-        }
-        if (partition_ != 0) {
-            output.writeInt32(2, partition_);
-        }
-        if (replicas_ != 0) {
-            output.writeInt32(3, replicas_);
-        }
-        if (configs_ != null) {
-            output.writeMessage(4, getConfigs());
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
-        }
-        if (partition_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, partition_);
-        }
-        if (replicas_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(3, replicas_);
-        }
-        if (configs_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(4, getConfigs());
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.server.CreateTopicRequest)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.server.CreateTopicRequest other = (org.meteor.remote.proto.server.CreateTopicRequest) obj;
-
-        if (!getTopic()
-                .equals(other.getTopic())) return false;
-        if (getPartition()
-                != other.getPartition()) return false;
-        if (getReplicas()
-                != other.getReplicas()) return false;
-        if (hasConfigs() != other.hasConfigs()) return false;
-        if (hasConfigs()) {
-            if (!getConfigs()
-                    .equals(other.getConfigs())) return false;
-        }
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-        hash = (53 * hash) + getTopic().hashCode();
-        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
-        hash = (53 * hash) + getPartition();
-        hash = (37 * hash) + REPLICAS_FIELD_NUMBER;
-        hash = (53 * hash) + getReplicas();
-        if (hasConfigs()) {
-            hash = (37 * hash) + CONFIGS_FIELD_NUMBER;
-            hash = (53 * hash) + getConfigs().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -387,16 +377,6 @@ public final class CreateTopicRequest extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<CreateTopicRequest> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.CreateTopicRequest}
      */
@@ -404,12 +384,19 @@ public final class CreateTopicRequest extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CreateTopicRequest)
             org.meteor.remote.proto.server.CreateTopicRequestOrBuilder {
-        private java.lang.Object topic_ = "";
-        private int partition_;
-        private int replicas_;
-        private org.meteor.remote.proto.server.CreateTopicConfigRequest configs_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.server.CreateTopicConfigRequest, org.meteor.remote.proto.server.CreateTopicConfigRequest.Builder, org.meteor.remote.proto.server.CreateTopicConfigRequestOrBuilder> configsBuilder_;
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+    }
+
+        @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.server.CreateTopicRequest.class,
+                            org.meteor.remote.proto.server.CreateTopicRequest.Builder.class);
+        }
 
         // Construct using org.meteor.remote.proto.server.CreateTopicRequest.newBuilder()
         private Builder() {
@@ -420,19 +407,6 @@ public final class CreateTopicRequest extends
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             super(parent);
 
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.CreateTopicRequest.class, org.meteor.remote.proto.server.CreateTopicRequest.Builder.class);
         }
 
         @java.lang.Override
@@ -451,13 +425,13 @@ public final class CreateTopicRequest extends
                 configsBuilder_ = null;
             }
             return this;
-        }
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
@@ -475,7 +449,8 @@ public final class CreateTopicRequest extends
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicRequest buildPartial() {
-            org.meteor.remote.proto.server.CreateTopicRequest result = new org.meteor.remote.proto.server.CreateTopicRequest(this);
+            org.meteor.remote.proto.server.CreateTopicRequest result =
+                    new org.meteor.remote.proto.server.CreateTopicRequest(this);
             result.topic_ = topic_;
             result.partition_ = partition_;
             result.replicas_ = replicas_;
@@ -537,7 +512,9 @@ public final class CreateTopicRequest extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.server.CreateTopicRequest other) {
-            if (other == org.meteor.remote.proto.server.CreateTopicRequest.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.server.CreateTopicRequest.getDefaultInstance()) {
+                return this;
+            }
             if (!other.getTopic().isEmpty()) {
                 topic_ = other.topic_;
                 onChanged();
@@ -615,6 +592,8 @@ public final class CreateTopicRequest extends
             return this;
         }
 
+        private java.lang.Object topic_ = "";
+
         /**
          * <code>string topic = 1;</code>
          *
@@ -630,6 +609,24 @@ public final class CreateTopicRequest extends
                 return s;
             } else {
                 return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string topic = 1;</code>
+         * @return The bytes for topic.
+         */
+        public com.google.protobuf.ByteString
+        getTopicBytes() {
+            java.lang.Object ref = topic_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                topic_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
             }
         }
 
@@ -653,20 +650,13 @@ public final class CreateTopicRequest extends
         /**
          * <code>string topic = 1;</code>
          *
-         * @return The bytes for topic.
+         * @return This builder for chaining.
          */
-        public com.google.protobuf.ByteString
-        getTopicBytes() {
-            java.lang.Object ref = topic_;
-            if (ref instanceof String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                topic_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
+        public Builder clearTopic() {
+
+            topic_ = getDefaultInstance().getTopic();
+            onChanged();
+            return this;
         }
 
         /**
@@ -687,17 +677,7 @@ public final class CreateTopicRequest extends
             return this;
         }
 
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearTopic() {
-
-            topic_ = getDefaultInstance().getTopic();
-            onChanged();
-            return this;
-        }
+        private int partition_;
 
         /**
          * <code>int32 partition = 2;</code>
@@ -734,6 +714,8 @@ public final class CreateTopicRequest extends
             return this;
         }
 
+        private int replicas_;
+
         /**
          * <code>int32 replicas = 3;</code>
          *
@@ -769,6 +751,11 @@ public final class CreateTopicRequest extends
             return this;
         }
 
+        private org.meteor.remote.proto.server.CreateTopicConfigRequest configs_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.server.CreateTopicConfigRequest, org.meteor.remote.proto.server.CreateTopicConfigRequest.Builder, org.meteor.remote.proto.server.CreateTopicConfigRequestOrBuilder>
+                configsBuilder_;
+
         /**
          * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
          *
@@ -785,7 +772,8 @@ public final class CreateTopicRequest extends
          */
         public org.meteor.remote.proto.server.CreateTopicConfigRequest getConfigs() {
             if (configsBuilder_ == null) {
-                return configs_ == null ? org.meteor.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
+                return configs_ == null ? org.meteor.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() :
+                        configs_;
             } else {
                 return configsBuilder_.getMessage();
             }
@@ -830,7 +818,8 @@ public final class CreateTopicRequest extends
             if (configsBuilder_ == null) {
                 if (configs_ != null) {
                     configs_ =
-                            org.meteor.remote.proto.server.CreateTopicConfigRequest.newBuilder(configs_).mergeFrom(value).buildPartial();
+                            org.meteor.remote.proto.server.CreateTopicConfigRequest.newBuilder(configs_)
+                                    .mergeFrom(value).buildPartial();
                 } else {
                     configs_ = value;
                 }
@@ -910,6 +899,53 @@ public final class CreateTopicRequest extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.CreateTopicRequest)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.CreateTopicRequest)
+    private static final org.meteor.remote.proto.server.CreateTopicRequest DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CreateTopicRequest();
+    }
+
+    public static org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CreateTopicRequest>
+            PARSER = new com.google.protobuf.AbstractParser<CreateTopicRequest>() {
+        @java.lang.Override
+        public CreateTopicRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
+
+  public static com.google.protobuf.Parser<CreateTopicRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<CreateTopicRequest> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

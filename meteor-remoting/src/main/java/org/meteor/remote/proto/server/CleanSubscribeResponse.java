@@ -11,35 +11,6 @@ public final class CleanSubscribeResponse extends
         // @@protoc_insertion_point(message_implements:meteor.protobuf.CleanSubscribeResponse)
         CleanSubscribeResponseOrBuilder {
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.CleanSubscribeResponse)
-    private static final org.meteor.remote.proto.server.CleanSubscribeResponse DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<CleanSubscribeResponse>
-            PARSER = new com.google.protobuf.AbstractParser<CleanSubscribeResponse>() {
-        @java.lang.Override
-        public CleanSubscribeResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CleanSubscribeResponse();
-    }
-
-    private byte memoizedIsInitialized = -1;
 
     // Use CleanSubscribeResponse.newBuilder() to construct.
     private CleanSubscribeResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -49,9 +20,95 @@ public final class CleanSubscribeResponse extends
     private CleanSubscribeResponse() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new CleanSubscribeResponse();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CleanSubscribeResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CleanSubscribeResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.CleanSubscribeResponse.class,
+                        org.meteor.remote.proto.server.CleanSubscribeResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.CleanSubscribeResponse)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.CleanSubscribeResponse other =
+                (org.meteor.remote.proto.server.CleanSubscribeResponse) obj;
+
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.server.CleanSubscribeResponse parseFrom(
@@ -135,99 +192,17 @@ public final class CleanSubscribeResponse extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.server.CleanSubscribeResponse prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.server.CleanSubscribeResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<CleanSubscribeResponse> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new CleanSubscribeResponse();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CleanSubscribeResponse_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.CleanSubscribeResponse.class, org.meteor.remote.proto.server.CleanSubscribeResponse.Builder.class);
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.server.CleanSubscribeResponse)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.server.CleanSubscribeResponse other = (org.meteor.remote.proto.server.CleanSubscribeResponse) obj;
-
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -243,16 +218,6 @@ public final class CleanSubscribeResponse extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<CleanSubscribeResponse> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.CleanSubscribeResponse getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.CleanSubscribeResponse}
      */
@@ -260,17 +225,6 @@ public final class CleanSubscribeResponse extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CleanSubscribeResponse)
             org.meteor.remote.proto.server.CleanSubscribeResponseOrBuilder {
-        // Construct using org.meteor.remote.proto.server.CleanSubscribeResponse.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CleanSubscribeResponse_descriptor;
@@ -281,7 +235,19 @@ public final class CleanSubscribeResponse extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CleanSubscribeResponse_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.CleanSubscribeResponse.class, org.meteor.remote.proto.server.CleanSubscribeResponse.Builder.class);
+                            org.meteor.remote.proto.server.CleanSubscribeResponse.class,
+                            org.meteor.remote.proto.server.CleanSubscribeResponse.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.server.CleanSubscribeResponse.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -312,7 +278,8 @@ public final class CleanSubscribeResponse extends
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CleanSubscribeResponse buildPartial() {
-            org.meteor.remote.proto.server.CleanSubscribeResponse result = new org.meteor.remote.proto.server.CleanSubscribeResponse(this);
+            org.meteor.remote.proto.server.CleanSubscribeResponse result =
+                    new org.meteor.remote.proto.server.CleanSubscribeResponse(this);
             onBuilt();
             return result;
         }
@@ -366,7 +333,9 @@ public final class CleanSubscribeResponse extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.server.CleanSubscribeResponse other) {
-            if (other == org.meteor.remote.proto.server.CleanSubscribeResponse.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.server.CleanSubscribeResponse.getDefaultInstance()) {
+                return this;
+            }
             this.mergeUnknownFields(other.getUnknownFields());
             onChanged();
             return this;
@@ -424,6 +393,53 @@ public final class CleanSubscribeResponse extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.CleanSubscribeResponse)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.CleanSubscribeResponse)
+    private static final org.meteor.remote.proto.server.CleanSubscribeResponse DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CleanSubscribeResponse();
+    }
+
+    public static org.meteor.remote.proto.server.CleanSubscribeResponse getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CleanSubscribeResponse>
+            PARSER = new com.google.protobuf.AbstractParser<CleanSubscribeResponse>() {
+        @java.lang.Override
+        public CleanSubscribeResponse parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<CleanSubscribeResponse> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CleanSubscribeResponse> getParserForType() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public org.meteor.remote.proto.server.CleanSubscribeResponse getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+  }
 
 }
 

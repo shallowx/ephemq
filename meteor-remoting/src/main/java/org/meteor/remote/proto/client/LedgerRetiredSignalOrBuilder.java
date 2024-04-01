@@ -28,7 +28,6 @@ public interface LedgerRetiredSignalOrBuilder extends
 
     /**
      * <code>int32 ledger = 2;</code>
-     *
      * @return The ledger.
      */
     int getLedger();
@@ -50,7 +49,6 @@ public interface LedgerRetiredSignalOrBuilder extends
 
     /**
      * <code>int32 partition = 4;</code>
-     *
      * @return The partition.
      */
     int getPartition();

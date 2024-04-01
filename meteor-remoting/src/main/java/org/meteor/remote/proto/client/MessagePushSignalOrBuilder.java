@@ -23,15 +23,13 @@ public interface MessagePushSignalOrBuilder extends
 
     /**
      * <code>int32 epoch = 3;</code>
-     *
      * @return The epoch.
      */
     int getEpoch();
 
     /**
      * <code>int64 index = 4;</code>
-     *
      * @return The index.
-     */
-    long getIndex();
+   */
+  long getIndex();
 }

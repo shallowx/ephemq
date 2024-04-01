@@ -24,21 +24,18 @@ public interface PartitionMetadataOrBuilder extends
 
     /**
      * <code>int32 id = 2;</code>
-     *
      * @return The id.
      */
     int getId();
 
     /**
      * <code>int32 ledger = 3;</code>
-     *
      * @return The ledger.
      */
     int getLedger();
 
     /**
      * <code>int32 epoch = 4;</code>
-     *
      * @return The epoch.
      */
     int getEpoch();
@@ -90,10 +87,9 @@ public interface PartitionMetadataOrBuilder extends
     com.google.protobuf.ByteString
     getReplicaNodeIdsBytes(int index);
 
-    /**
-     * <code>int32 version = 7;</code>
-     *
-     * @return The version.
-     */
-    int getVersion();
+  /**
+   * <code>int32 version = 7;</code>
+   * @return The version.
+   */
+  int getVersion();
 }

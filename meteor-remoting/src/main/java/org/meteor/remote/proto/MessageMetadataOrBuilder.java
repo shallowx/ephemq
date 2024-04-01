@@ -75,6 +75,6 @@ public interface MessageMetadataOrBuilder extends
      * <code>map&lt;string, string&gt; extras = 3;</code>
      */
 
-    java.lang.String getExtrasOrThrow(
-            java.lang.String key);
+  java.lang.String getExtrasOrThrow(
+      java.lang.String key);
 }

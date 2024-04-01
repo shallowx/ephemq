@@ -10,41 +10,7 @@ public final class TopicInfo extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.TopicInfo)
         TopicInfoOrBuilder {
-    public static final int TOPIC_FIELD_NUMBER = 1;
-    public static final int PARTITIONS_FIELD_NUMBER = 2;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicInfo)
-    private static final org.meteor.remote.proto.TopicInfo DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<TopicInfo>
-            PARSER = new com.google.protobuf.AbstractParser<TopicInfo>() {
-        @java.lang.Override
-        public TopicInfo parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicInfo();
-    }
-
-    private org.meteor.remote.proto.TopicMetadata topic_;
-    private com.google.protobuf.MapField<
-            java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> partitions_;
-    private byte memoizedIsInitialized = -1;
 
     // Use TopicInfo.newBuilder() to construct.
     private TopicInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -54,9 +20,270 @@ public final class TopicInfo extends
     private TopicInfo() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new TopicInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+        switch (number) {
+            case 2:
+                return internalGetPartitions();
+            default:
+                throw new RuntimeException(
+                        "Invalid map field number: " + number);
+        }
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.TopicInfo.class, org.meteor.remote.proto.TopicInfo.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private org.meteor.remote.proto.TopicMetadata topic_;
+
+    /**
+     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
+     *
+     * @return Whether the topic field is set.
+     */
+    @java.lang.Override
+    public boolean hasTopic() {
+        return topic_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.TopicMetadata getTopic() {
+        return topic_ == null ? org.meteor.remote.proto.TopicMetadata.getDefaultInstance() : topic_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.TopicMetadataOrBuilder getTopicOrBuilder() {
+        return getTopic();
+    }
+
+    public static final int PARTITIONS_FIELD_NUMBER = 2;
+
+    private static final class PartitionsDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+                java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> defaultEntry =
+                com.google.protobuf.MapEntry
+                        .<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>newDefaultInstance(
+                                org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor,
+                                com.google.protobuf.WireFormat.FieldType.INT32,
+                                0,
+                                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                                org.meteor.remote.proto.PartitionMetadata.getDefaultInstance());
+    }
+
+    private com.google.protobuf.MapField<
+            java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> partitions_;
+
+    private com.google.protobuf.MapField<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
+    internalGetPartitions() {
+        if (partitions_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                    PartitionsDefaultEntryHolder.defaultEntry);
+        }
+        return partitions_;
+    }
+
+    public int getPartitionsCount() {
+        return internalGetPartitions().getMap().size();
+    }
+
+    /**
+     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsPartitions(
+            int key) {
+
+        return internalGetPartitions().getMap().containsKey(key);
+    }
+
+    /**
+     * Use {@link #getPartitionsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> getPartitions() {
+        return getPartitionsMap();
+    }
+
+    /**
+     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> getPartitionsMap() {
+        return internalGetPartitions().getMap();
+    }
+
+    /**
+     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+     */
+    @java.lang.Override
+
+    public org.meteor.remote.proto.PartitionMetadata getPartitionsOrDefault(
+            int key,
+            org.meteor.remote.proto.PartitionMetadata defaultValue) {
+
+        java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> map =
+                internalGetPartitions().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+
+    /**
+     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+     */
+    @java.lang.Override
+
+    public org.meteor.remote.proto.PartitionMetadata getPartitionsOrThrow(
+            int key) {
+
+        java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> map =
+                internalGetPartitions().getMap();
+        if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (topic_ != null) {
+            output.writeMessage(1, getTopic());
+        }
+        com.google.protobuf.GeneratedMessageV3
+                .serializeIntegerMapTo(
+                        output,
+                        internalGetPartitions(),
+                        PartitionsDefaultEntryHolder.defaultEntry,
+                        2);
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (topic_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(1, getTopic());
+        }
+        for (java.util.Map.Entry<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> entry
+                : internalGetPartitions().getMap().entrySet()) {
+            com.google.protobuf.MapEntry<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
+                    partitions__ = PartitionsDefaultEntryHolder.defaultEntry.newBuilderForType()
+                    .setKey(entry.getKey())
+                    .setValue(entry.getValue())
+                    .build();
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(2, partitions__);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.TopicInfo)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.TopicInfo other = (org.meteor.remote.proto.TopicInfo) obj;
+
+        if (hasTopic() != other.hasTopic()) {
+            return false;
+        }
+        if (hasTopic()) {
+            if (!getTopic()
+                    .equals(other.getTopic())) {
+                return false;
+            }
+        }
+        if (!internalGetPartitions().equals(
+                other.internalGetPartitions())) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (hasTopic()) {
+            hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+            hash = (53 * hash) + getTopic().hashCode();
+        }
+        if (!internalGetPartitions().getMap().isEmpty()) {
+            hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
+            hash = (53 * hash) + internalGetPartitions().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.TopicInfo parseFrom(
@@ -140,250 +367,17 @@ public final class TopicInfo extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.TopicInfo prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.TopicInfo getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<TopicInfo> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new TopicInfo();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @SuppressWarnings({"rawtypes"})
-    @java.lang.Override
-    protected com.google.protobuf.MapField internalGetMapField(
-            int number) {
-        switch (number) {
-            case 2:
-                return internalGetPartitions();
-            default:
-                throw new RuntimeException(
-                        "Invalid map field number: " + number);
-        }
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.TopicInfo.class, org.meteor.remote.proto.TopicInfo.Builder.class);
-    }
-
-    /**
-     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
-     *
-     * @return Whether the topic field is set.
-     */
-    @java.lang.Override
-    public boolean hasTopic() {
-        return topic_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.TopicMetadata getTopic() {
-        return topic_ == null ? org.meteor.remote.proto.TopicMetadata.getDefaultInstance() : topic_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.TopicMetadataOrBuilder getTopicOrBuilder() {
-        return getTopic();
-    }
-
-    private com.google.protobuf.MapField<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
-    internalGetPartitions() {
-        if (partitions_ == null) {
-            return com.google.protobuf.MapField.emptyMapField(
-                    PartitionsDefaultEntryHolder.defaultEntry);
-        }
-        return partitions_;
-    }
-
-    public int getPartitionsCount() {
-        return internalGetPartitions().getMap().size();
-    }
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-
-    @java.lang.Override
-    public boolean containsPartitions(
-            int key) {
-
-        return internalGetPartitions().getMap().containsKey(key);
-    }
-
-    /**
-     * Use {@link #getPartitionsMap()} instead.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> getPartitions() {
-        return getPartitionsMap();
-    }
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    @java.lang.Override
-
-    public java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> getPartitionsMap() {
-        return internalGetPartitions().getMap();
-    }
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    @java.lang.Override
-
-    public org.meteor.remote.proto.PartitionMetadata getPartitionsOrDefault(
-            int key,
-            org.meteor.remote.proto.PartitionMetadata defaultValue) {
-
-        java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> map =
-                internalGetPartitions().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    @java.lang.Override
-
-    public org.meteor.remote.proto.PartitionMetadata getPartitionsOrThrow(
-            int key) {
-
-        java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> map =
-                internalGetPartitions().getMap();
-        if (!map.containsKey(key)) {
-            throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (topic_ != null) {
-            output.writeMessage(1, getTopic());
-        }
-        com.google.protobuf.GeneratedMessageV3
-                .serializeIntegerMapTo(
-                        output,
-                        internalGetPartitions(),
-                        PartitionsDefaultEntryHolder.defaultEntry,
-                        2);
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (topic_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(1, getTopic());
-        }
-        for (java.util.Map.Entry<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> entry
-                : internalGetPartitions().getMap().entrySet()) {
-            com.google.protobuf.MapEntry<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
-                    partitions__ = PartitionsDefaultEntryHolder.defaultEntry.newBuilderForType()
-                    .setKey(entry.getKey())
-                    .setValue(entry.getValue())
-                    .build();
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(2, partitions__);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.TopicInfo)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.TopicInfo other = (org.meteor.remote.proto.TopicInfo) obj;
-
-        if (hasTopic() != other.hasTopic()) return false;
-        if (hasTopic()) {
-            if (!getTopic()
-                    .equals(other.getTopic())) return false;
-        }
-        if (!internalGetPartitions().equals(
-                other.internalGetPartitions())) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        if (hasTopic()) {
-            hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-            hash = (53 * hash) + getTopic().hashCode();
-        }
-        if (!internalGetPartitions().getMap().isEmpty()) {
-            hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
-            hash = (53 * hash) + internalGetPartitions().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -399,28 +393,6 @@ public final class TopicInfo extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<TopicInfo> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.TopicInfo getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
-    private static final class PartitionsDefaultEntryHolder {
-        static final com.google.protobuf.MapEntry<
-                java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> defaultEntry =
-                com.google.protobuf.MapEntry
-                        .<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>newDefaultInstance(
-                                org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_PartitionsEntry_descriptor,
-                                com.google.protobuf.WireFormat.FieldType.INT32,
-                                0,
-                                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                                org.meteor.remote.proto.PartitionMetadata.getDefaultInstance());
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.TopicInfo}
      */
@@ -428,24 +400,6 @@ public final class TopicInfo extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.TopicInfo)
             org.meteor.remote.proto.TopicInfoOrBuilder {
-        private int bitField0_;
-        private org.meteor.remote.proto.TopicMetadata topic_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.TopicMetadata, org.meteor.remote.proto.TopicMetadata.Builder, org.meteor.remote.proto.TopicMetadataOrBuilder> topicBuilder_;
-        private com.google.protobuf.MapField<
-                java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> partitions_;
-
-        // Construct using org.meteor.remote.proto.TopicInfo.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_descriptor;
@@ -481,6 +435,17 @@ public final class TopicInfo extends
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
                             org.meteor.remote.proto.TopicInfo.class, org.meteor.remote.proto.TopicInfo.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.TopicInfo.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -580,7 +545,9 @@ public final class TopicInfo extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.TopicInfo other) {
-            if (other == org.meteor.remote.proto.TopicInfo.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.TopicInfo.getDefaultInstance()) {
+                return this;
+            }
             if (other.hasTopic()) {
                 mergeTopic(other.getTopic());
             }
@@ -642,6 +609,13 @@ public final class TopicInfo extends
             } // finally
             return this;
         }
+
+        private int bitField0_;
+
+        private org.meteor.remote.proto.TopicMetadata topic_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.TopicMetadata, org.meteor.remote.proto.TopicMetadata.Builder, org.meteor.remote.proto.TopicMetadataOrBuilder>
+                topicBuilder_;
 
         /**
          * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
@@ -768,6 +742,9 @@ public final class TopicInfo extends
             }
             return topicBuilder_;
         }
+
+        private com.google.protobuf.MapField<
+                java.lang.Integer, org.meteor.remote.proto.PartitionMetadata> partitions_;
 
         private com.google.protobuf.MapField<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
         internalGetPartitions() {
@@ -924,6 +901,53 @@ public final class TopicInfo extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicInfo)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicInfo)
+    private static final org.meteor.remote.proto.TopicInfo DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicInfo();
+    }
+
+    public static org.meteor.remote.proto.TopicInfo getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TopicInfo>
+            PARSER = new com.google.protobuf.AbstractParser<TopicInfo>() {
+        @java.lang.Override
+        public TopicInfo parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<TopicInfo> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TopicInfo> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.TopicInfo getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

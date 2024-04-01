@@ -23,7 +23,6 @@ public interface SyncRequestOrBuilder extends
 
     /**
      * <code>int64 index = 3;</code>
-     *
      * @return The index.
      */
     long getIndex();
@@ -41,5 +40,5 @@ public interface SyncRequestOrBuilder extends
      * @return The bytes for topic.
      */
     com.google.protobuf.ByteString
-    getTopicBytes();
+      getTopicBytes();
 }

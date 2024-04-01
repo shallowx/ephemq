@@ -20,6 +20,7 @@ import org.meteor.remote.proto.server.DeleteTopicResponse;
 import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 
+import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
 import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class InternalClient extends Client {

@@ -1,5 +1,6 @@
 package org.meteor.client.internal;
 
+import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -32,7 +33,7 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Client implements MeterBinder {
-    protected static final String CLIENT_NETTY_PENDING_TASK_NAME = "client_netty_pending_task";
+
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
     private final Map<SocketAddress, List<Future<ClientChannel>>> registerChannels = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Promise<ClientChannel>> ChannelOfPromise = new ConcurrentHashMap<>();

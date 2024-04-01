@@ -54,8 +54,7 @@ public interface NodeMetadataOrBuilder extends
 
     /**
      * <code>int32 port = 4;</code>
-     *
-     * @return The port.
-     */
-    int getPort();
+   * @return The port.
+   */
+  int getPort();
 }

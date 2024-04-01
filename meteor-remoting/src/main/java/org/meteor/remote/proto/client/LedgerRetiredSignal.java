@@ -10,46 +10,7 @@ public final class LedgerRetiredSignal extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.LedgerRetiredSignal)
         LedgerRetiredSignalOrBuilder {
-    public static final int BROKER_FIELD_NUMBER = 1;
-    public static final int LEDGER_FIELD_NUMBER = 2;
-    public static final int TOPIC_FIELD_NUMBER = 3;
-    public static final int PARTITION_FIELD_NUMBER = 4;
-    public static final int HEIR_FIELD_NUMBER = 5;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.LedgerRetiredSignal)
-    private static final org.meteor.remote.proto.client.LedgerRetiredSignal DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<LedgerRetiredSignal>
-            PARSER = new com.google.protobuf.AbstractParser<LedgerRetiredSignal>() {
-        @java.lang.Override
-        public LedgerRetiredSignal parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.LedgerRetiredSignal();
-    }
-
-    private org.meteor.remote.proto.NodeMetadata broker_;
-    private int ledger_;
-    private volatile java.lang.Object topic_;
-    private int partition_;
-    private org.meteor.remote.proto.NodeMetadata heir_;
-    private byte memoizedIsInitialized = -1;
 
     // Use LedgerRetiredSignal.newBuilder() to construct.
     private LedgerRetiredSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -60,9 +21,303 @@ public final class LedgerRetiredSignal extends
         topic_ = "";
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new LedgerRetiredSignal();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.LedgerRetiredSignal.class,
+                        org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
+    }
+
+    public static final int BROKER_FIELD_NUMBER = 1;
+    private org.meteor.remote.proto.NodeMetadata broker_;
+
+    /**
+     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+     *
+     * @return Whether the broker field is set.
+     */
+    @java.lang.Override
+    public boolean hasBroker() {
+        return broker_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+     *
+     * @return The broker.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.NodeMetadata getBroker() {
+        return broker_ == null ? org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : broker_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.NodeMetadataOrBuilder getBrokerOrBuilder() {
+        return getBroker();
+    }
+
+    public static final int LEDGER_FIELD_NUMBER = 2;
+    private int ledger_;
+
+    /**
+     * <code>int32 ledger = 2;</code>
+     *
+     * @return The ledger.
+     */
+    @java.lang.Override
+    public int getLedger() {
+        return ledger_;
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 3;
+    private volatile java.lang.Object topic_;
+
+    /**
+     * <code>string topic = 3;</code>
+     *
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string topic = 3;</code>
+     *
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topic_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int PARTITION_FIELD_NUMBER = 4;
+    private int partition_;
+
+    /**
+     * <code>int32 partition = 4;</code>
+     *
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+        return partition_;
+    }
+
+    public static final int HEIR_FIELD_NUMBER = 5;
+    private org.meteor.remote.proto.NodeMetadata heir_;
+
+    /**
+     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+     *
+     * @return Whether the heir field is set.
+     */
+    @java.lang.Override
+    public boolean hasHeir() {
+        return heir_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+     *
+     * @return The heir.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.NodeMetadata getHeir() {
+        return heir_ == null ? org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : heir_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.NodeMetadataOrBuilder getHeirOrBuilder() {
+        return getHeir();
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (broker_ != null) {
+            output.writeMessage(1, getBroker());
+        }
+        if (ledger_ != 0) {
+            output.writeInt32(2, ledger_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
+        }
+        if (partition_ != 0) {
+            output.writeInt32(4, partition_);
+        }
+        if (heir_ != null) {
+            output.writeMessage(5, getHeir());
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (broker_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(1, getBroker());
+        }
+        if (ledger_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, ledger_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
+        }
+        if (partition_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(4, partition_);
+        }
+        if (heir_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(5, getHeir());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.client.LedgerRetiredSignal)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.client.LedgerRetiredSignal other =
+                (org.meteor.remote.proto.client.LedgerRetiredSignal) obj;
+
+        if (hasBroker() != other.hasBroker()) {
+            return false;
+        }
+        if (hasBroker()) {
+            if (!getBroker()
+                    .equals(other.getBroker())) {
+                return false;
+            }
+        }
+        if (getLedger()
+                != other.getLedger()) {
+            return false;
+        }
+        if (!getTopic()
+                .equals(other.getTopic())) {
+            return false;
+        }
+        if (getPartition()
+                != other.getPartition()) {
+            return false;
+        }
+        if (hasHeir() != other.hasHeir()) {
+            return false;
+        }
+        if (hasHeir()) {
+            if (!getHeir()
+                    .equals(other.getHeir())) {
+                return false;
+            }
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (hasBroker()) {
+            hash = (37 * hash) + BROKER_FIELD_NUMBER;
+            hash = (53 * hash) + getBroker().hashCode();
+        }
+        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+        hash = (53 * hash) + getLedger();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPartition();
+        if (hasHeir()) {
+            hash = (37 * hash) + HEIR_FIELD_NUMBER;
+            hash = (53 * hash) + getHeir().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.client.LedgerRetiredSignal parseFrom(
@@ -146,278 +401,17 @@ public final class LedgerRetiredSignal extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.client.LedgerRetiredSignal prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.client.LedgerRetiredSignal getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<LedgerRetiredSignal> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new LedgerRetiredSignal();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.client.LedgerRetiredSignal.class, org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
-    }
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-     *
-     * @return Whether the broker field is set.
-     */
-    @java.lang.Override
-    public boolean hasBroker() {
-        return broker_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-     *
-     * @return The broker.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.NodeMetadata getBroker() {
-        return broker_ == null ? org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : broker_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.NodeMetadataOrBuilder getBrokerOrBuilder() {
-        return getBroker();
-    }
-
-    /**
-     * <code>int32 ledger = 2;</code>
-     *
-     * @return The ledger.
-     */
-    @java.lang.Override
-    public int getLedger() {
-        return ledger_;
-    }
-
-    /**
-     * <code>string topic = 3;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topic_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string topic = 3;</code>
-     *
-     * @return The bytes for topic.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicBytes() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topic_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>int32 partition = 4;</code>
-     *
-     * @return The partition.
-     */
-    @java.lang.Override
-    public int getPartition() {
-        return partition_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-     *
-     * @return Whether the heir field is set.
-     */
-    @java.lang.Override
-    public boolean hasHeir() {
-        return heir_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-     *
-     * @return The heir.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.NodeMetadata getHeir() {
-        return heir_ == null ? org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : heir_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.NodeMetadataOrBuilder getHeirOrBuilder() {
-        return getHeir();
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (broker_ != null) {
-            output.writeMessage(1, getBroker());
-        }
-        if (ledger_ != 0) {
-            output.writeInt32(2, ledger_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
-        }
-        if (partition_ != 0) {
-            output.writeInt32(4, partition_);
-        }
-        if (heir_ != null) {
-            output.writeMessage(5, getHeir());
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (broker_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(1, getBroker());
-        }
-        if (ledger_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, ledger_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
-        }
-        if (partition_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(4, partition_);
-        }
-        if (heir_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(5, getHeir());
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.client.LedgerRetiredSignal)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.client.LedgerRetiredSignal other = (org.meteor.remote.proto.client.LedgerRetiredSignal) obj;
-
-        if (hasBroker() != other.hasBroker()) return false;
-        if (hasBroker()) {
-            if (!getBroker()
-                    .equals(other.getBroker())) return false;
-        }
-        if (getLedger()
-                != other.getLedger()) return false;
-        if (!getTopic()
-                .equals(other.getTopic())) return false;
-        if (getPartition()
-                != other.getPartition()) return false;
-        if (hasHeir() != other.hasHeir()) return false;
-        if (hasHeir()) {
-            if (!getHeir()
-                    .equals(other.getHeir())) return false;
-        }
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        if (hasBroker()) {
-            hash = (37 * hash) + BROKER_FIELD_NUMBER;
-            hash = (53 * hash) + getBroker().hashCode();
-        }
-        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
-        hash = (53 * hash) + getLedger();
-        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-        hash = (53 * hash) + getTopic().hashCode();
-        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
-        hash = (53 * hash) + getPartition();
-        if (hasHeir()) {
-            hash = (37 * hash) + HEIR_FIELD_NUMBER;
-            hash = (53 * hash) + getHeir().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -433,16 +427,6 @@ public final class LedgerRetiredSignal extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<LedgerRetiredSignal> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.client.LedgerRetiredSignal getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.LedgerRetiredSignal}
      */
@@ -450,15 +434,19 @@ public final class LedgerRetiredSignal extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.LedgerRetiredSignal)
             org.meteor.remote.proto.client.LedgerRetiredSignalOrBuilder {
-        private org.meteor.remote.proto.NodeMetadata broker_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder> brokerBuilder_;
-        private int ledger_;
-        private java.lang.Object topic_ = "";
-        private int partition_;
-        private org.meteor.remote.proto.NodeMetadata heir_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder> heirBuilder_;
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.LedgerRetiredSignal.class,
+                        org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.client.LedgerRetiredSignal.newBuilder()
         private Builder() {
@@ -469,19 +457,6 @@ public final class LedgerRetiredSignal extends
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             super(parent);
 
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.LedgerRetiredSignal.class, org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
         }
 
         @java.lang.Override
@@ -504,8 +479,8 @@ public final class LedgerRetiredSignal extends
             } else {
                 heir_ = null;
                 heirBuilder_ = null;
-            }
-            return this;
+      }
+      return this;
         }
 
         @java.lang.Override
@@ -530,7 +505,8 @@ public final class LedgerRetiredSignal extends
 
         @java.lang.Override
         public org.meteor.remote.proto.client.LedgerRetiredSignal buildPartial() {
-            org.meteor.remote.proto.client.LedgerRetiredSignal result = new org.meteor.remote.proto.client.LedgerRetiredSignal(this);
+            org.meteor.remote.proto.client.LedgerRetiredSignal result =
+                    new org.meteor.remote.proto.client.LedgerRetiredSignal(this);
             if (brokerBuilder_ == null) {
                 result.broker_ = broker_;
             } else {
@@ -597,7 +573,9 @@ public final class LedgerRetiredSignal extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.client.LedgerRetiredSignal other) {
-            if (other == org.meteor.remote.proto.client.LedgerRetiredSignal.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.client.LedgerRetiredSignal.getDefaultInstance()) {
+                return this;
+            }
             if (other.hasBroker()) {
                 mergeBroker(other.getBroker());
             }
@@ -684,6 +662,11 @@ public final class LedgerRetiredSignal extends
             } // finally
             return this;
         }
+
+        private org.meteor.remote.proto.NodeMetadata broker_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
+                brokerBuilder_;
 
         /**
          * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
@@ -797,19 +780,21 @@ public final class LedgerRetiredSignal extends
         /**
          * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
          */
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
-        getBrokerFieldBuilder() {
-            if (brokerBuilder_ == null) {
-                brokerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                        org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>(
-                        getBroker(),
-                        getParentForChildren(),
-                        isClean());
-                broker_ = null;
-            }
-            return brokerBuilder_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+            org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
+    getBrokerFieldBuilder() {
+        if (brokerBuilder_ == null) {
+            brokerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                    org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>(
+                    getBroker(),
+                    getParentForChildren(),
+                    isClean());
+            broker_ = null;
         }
+        return brokerBuilder_;
+    }
+
+        private int ledger_;
 
         /**
          * <code>int32 ledger = 2;</code>
@@ -846,6 +831,8 @@ public final class LedgerRetiredSignal extends
             return this;
         }
 
+        private java.lang.Object topic_ = "";
+
         /**
          * <code>string topic = 3;</code>
          *
@@ -862,23 +849,6 @@ public final class LedgerRetiredSignal extends
             } else {
                 return (java.lang.String) ref;
             }
-        }
-
-        /**
-         * <code>string topic = 3;</code>
-         *
-         * @param value The topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopic(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topic_ = value;
-            onChanged();
-            return this;
         }
 
         /**
@@ -903,15 +873,14 @@ public final class LedgerRetiredSignal extends
         /**
          * <code>string topic = 3;</code>
          *
-         * @param value The bytes for topic to set.
+         * @param value The topic to set.
          * @return This builder for chaining.
          */
-        public Builder setTopicBytes(
-                com.google.protobuf.ByteString value) {
+        public Builder setTopic(
+                java.lang.String value) {
             if (value == null) {
                 throw new NullPointerException();
             }
-            checkByteStringIsUtf8(value);
 
             topic_ = value;
             onChanged();
@@ -929,6 +898,26 @@ public final class LedgerRetiredSignal extends
             onChanged();
             return this;
         }
+
+        /**
+         * <code>string topic = 3;</code>
+         *
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            topic_ = value;
+            onChanged();
+            return this;
+        }
+
+        private int partition_;
 
         /**
          * <code>int32 partition = 4;</code>
@@ -964,6 +953,11 @@ public final class LedgerRetiredSignal extends
             onChanged();
             return this;
         }
+
+        private org.meteor.remote.proto.NodeMetadata heir_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
+                heirBuilder_;
 
         /**
          * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
@@ -1106,6 +1100,53 @@ public final class LedgerRetiredSignal extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.LedgerRetiredSignal)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.LedgerRetiredSignal)
+    private static final org.meteor.remote.proto.client.LedgerRetiredSignal DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.LedgerRetiredSignal();
+    }
+
+    public static org.meteor.remote.proto.client.LedgerRetiredSignal getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LedgerRetiredSignal>
+            PARSER = new com.google.protobuf.AbstractParser<LedgerRetiredSignal>() {
+        @java.lang.Override
+        public LedgerRetiredSignal parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
+
+  public static com.google.protobuf.Parser<LedgerRetiredSignal> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<LedgerRetiredSignal> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.client.LedgerRetiredSignal getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

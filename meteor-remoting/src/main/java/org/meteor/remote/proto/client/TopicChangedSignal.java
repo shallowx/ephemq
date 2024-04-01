@@ -10,44 +10,7 @@ public final class TopicChangedSignal extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.TopicChangedSignal)
         TopicChangedSignalOrBuilder {
-    public static final int TYPE_FIELD_NUMBER = 1;
-    public static final int TOPIC_FIELD_NUMBER = 2;
-    public static final int LEDGER_FIELD_NUMBER = 3;
-    public static final int LEDGER_VERSION_FIELD_NUMBER = 4;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicChangedSignal)
-    private static final org.meteor.remote.proto.client.TopicChangedSignal DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<TopicChangedSignal>
-            PARSER = new com.google.protobuf.AbstractParser<TopicChangedSignal>() {
-        @java.lang.Override
-        public TopicChangedSignal parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.TopicChangedSignal();
-    }
-
-    private int type_;
-    private volatile java.lang.Object topic_;
-    private int ledger_;
-    private int ledgerVersion_;
-    private byte memoizedIsInitialized = -1;
 
     // Use TopicChangedSignal.newBuilder() to construct.
     private TopicChangedSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -59,9 +22,361 @@ public final class TopicChangedSignal extends
         topic_ = "";
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new TopicChangedSignal();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.TopicChangedSignal.class,
+                        org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code meteor.protobuf.TopicChangedSignal.Type}
+     */
+    public enum Type
+            implements com.google.protobuf.ProtocolMessageEnum {
+        /**
+         * <code>CREATE = 0;</code>
+         */
+        CREATE(0),
+        /**
+         * <code>UPDATE = 1;</code>
+         */
+        UPDATE(1),
+        /**
+         * <code>DELETE = 3;</code>
+         */
+        DELETE(3),
+        UNRECOGNIZED(-1),
+        ;
+
+        /**
+         * <code>CREATE = 0;</code>
+         */
+        public static final int CREATE_VALUE = 0;
+        /**
+         * <code>UPDATE = 1;</code>
+         */
+        public static final int UPDATE_VALUE = 1;
+        /**
+         * <code>DELETE = 3;</code>
+         */
+        public static final int DELETE_VALUE = 3;
+
+
+        public final int getNumber() {
+            if (this == UNRECOGNIZED) {
+                throw new java.lang.IllegalArgumentException(
+                        "Can't get the number of an unknown enum value.");
+            }
+            return value;
+        }
+
+        /**
+         * @param value The numeric wire value of the corresponding enum entry.
+         * @return The enum associated with the given numeric wire value.
+         * @deprecated Use {@link #forNumber(int)} instead.
+         */
+        @java.lang.Deprecated
+        public static Type valueOf(int value) {
+            return forNumber(value);
+        }
+
+        /**
+         * @param value The numeric wire value of the corresponding enum entry.
+         * @return The enum associated with the given numeric wire value.
+         */
+        public static Type forNumber(int value) {
+            switch (value) {
+                case 0:
+                    return CREATE;
+                case 1:
+                    return UPDATE;
+                case 3:
+                    return DELETE;
+                default:
+                    return null;
+            }
+        }
+
+        public static com.google.protobuf.Internal.EnumLiteMap<Type>
+        internalGetValueMap() {
+            return internalValueMap;
+        }
+
+        private static final com.google.protobuf.Internal.EnumLiteMap<
+                Type> internalValueMap =
+                new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+                    public Type findValueByNumber(int number) {
+                        return Type.forNumber(number);
+                    }
+                };
+
+        public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+            if (this == UNRECOGNIZED) {
+                throw new java.lang.IllegalStateException(
+                        "Can't get the descriptor of an unrecognized enum value.");
+            }
+            return getDescriptor().getValues().get(ordinal());
+        }
+
+        public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+            return getDescriptor();
+        }
+
+        public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.client.TopicChangedSignal.getDescriptor().getEnumTypes().get(0);
+        }
+
+        private static final Type[] VALUES = values();
+
+        public static Type valueOf(
+                com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+            if (desc.getType() != getDescriptor()) {
+                throw new java.lang.IllegalArgumentException(
+                        "EnumValueDescriptor is not for this type.");
+            }
+            if (desc.getIndex() == -1) {
+                return UNRECOGNIZED;
+            }
+            return VALUES[desc.getIndex()];
+        }
+
+        private final int value;
+
+        private Type(int value) {
+            this.value = value;
+        }
+
+        // @@protoc_insertion_point(enum_scope:meteor.protobuf.TopicChangedSignal.Type)
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+
+    /**
+     * <code>.meteor.protobuf.TopicChangedSignal.Type type = 1;</code>
+     *
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override
+    public int getTypeValue() {
+        return type_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.TopicChangedSignal.Type type = 1;</code>
+     *
+     * @return The type.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.client.TopicChangedSignal.Type getType() {
+        @SuppressWarnings("deprecation")
+        org.meteor.remote.proto.client.TopicChangedSignal.Type result =
+                org.meteor.remote.proto.client.TopicChangedSignal.Type.valueOf(type_);
+        return result == null ? org.meteor.remote.proto.client.TopicChangedSignal.Type.UNRECOGNIZED : result;
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 2;
+    private volatile java.lang.Object topic_;
+
+    /**
+     * <code>string topic = 2;</code>
+     *
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string topic = 2;</code>
+     *
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topic_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int LEDGER_FIELD_NUMBER = 3;
+    private int ledger_;
+
+    /**
+     * <code>int32 ledger = 3;</code>
+     * @return The ledger.
+     */
+    @java.lang.Override
+    public int getLedger() {
+        return ledger_;
+    }
+
+    public static final int LEDGER_VERSION_FIELD_NUMBER = 4;
+    private int ledgerVersion_;
+
+    /**
+     * <code>int32 ledger_version = 4;</code>
+     * @return The ledgerVersion.
+     */
+    @java.lang.Override
+    public int getLedgerVersion() {
+        return ledgerVersion_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (type_ != org.meteor.remote.proto.client.TopicChangedSignal.Type.CREATE.getNumber()) {
+            output.writeEnum(1, type_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+        }
+        if (ledger_ != 0) {
+            output.writeInt32(3, ledger_);
+        }
+        if (ledgerVersion_ != 0) {
+            output.writeInt32(4, ledgerVersion_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (type_ != org.meteor.remote.proto.client.TopicChangedSignal.Type.CREATE.getNumber()) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeEnumSize(1, type_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+        }
+        if (ledger_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(3, ledger_);
+        }
+        if (ledgerVersion_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(4, ledgerVersion_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.client.TopicChangedSignal)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.client.TopicChangedSignal other =
+                (org.meteor.remote.proto.client.TopicChangedSignal) obj;
+
+        if (type_ != other.type_) {
+            return false;
+        }
+        if (!getTopic()
+                .equals(other.getTopic())) {
+            return false;
+        }
+        if (getLedger()
+                != other.getLedger()) {
+            return false;
+        }
+        if (getLedgerVersion()
+                != other.getLedgerVersion()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + type_;
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+        hash = (53 * hash) + getLedger();
+        hash = (37 * hash) + LEDGER_VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getLedgerVersion();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.client.TopicChangedSignal parseFrom(
@@ -145,222 +460,17 @@ public final class TopicChangedSignal extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.client.TopicChangedSignal prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.client.TopicChangedSignal getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<TopicChangedSignal> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new TopicChangedSignal();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.client.TopicChangedSignal.class, org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
-    }
-
-    /**
-     * <code>.meteor.protobuf.TopicChangedSignal.Type type = 1;</code>
-     *
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override
-    public int getTypeValue() {
-        return type_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.TopicChangedSignal.Type type = 1;</code>
-     *
-     * @return The type.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.client.TopicChangedSignal.Type getType() {
-        @SuppressWarnings("deprecation")
-        org.meteor.remote.proto.client.TopicChangedSignal.Type result = org.meteor.remote.proto.client.TopicChangedSignal.Type.valueOf(type_);
-        return result == null ? org.meteor.remote.proto.client.TopicChangedSignal.Type.UNRECOGNIZED : result;
-    }
-
-    /**
-     * <code>string topic = 2;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topic_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string topic = 2;</code>
-     *
-     * @return The bytes for topic.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicBytes() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topic_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>int32 ledger = 3;</code>
-     *
-     * @return The ledger.
-     */
-    @java.lang.Override
-    public int getLedger() {
-        return ledger_;
-    }
-
-    /**
-     * <code>int32 ledger_version = 4;</code>
-     *
-     * @return The ledgerVersion.
-     */
-    @java.lang.Override
-    public int getLedgerVersion() {
-        return ledgerVersion_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (type_ != org.meteor.remote.proto.client.TopicChangedSignal.Type.CREATE.getNumber()) {
-            output.writeEnum(1, type_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
-        }
-        if (ledger_ != 0) {
-            output.writeInt32(3, ledger_);
-        }
-        if (ledgerVersion_ != 0) {
-            output.writeInt32(4, ledgerVersion_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (type_ != org.meteor.remote.proto.client.TopicChangedSignal.Type.CREATE.getNumber()) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeEnumSize(1, type_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
-        }
-        if (ledger_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(3, ledger_);
-        }
-        if (ledgerVersion_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(4, ledgerVersion_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.client.TopicChangedSignal)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.client.TopicChangedSignal other = (org.meteor.remote.proto.client.TopicChangedSignal) obj;
-
-        if (type_ != other.type_) return false;
-        if (!getTopic()
-                .equals(other.getTopic())) return false;
-        if (getLedger()
-                != other.getLedger()) return false;
-        if (getLedgerVersion()
-                != other.getLedgerVersion()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + TYPE_FIELD_NUMBER;
-        hash = (53 * hash) + type_;
-        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-        hash = (53 * hash) + getTopic().hashCode();
-        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
-        hash = (53 * hash) + getLedger();
-        hash = (37 * hash) + LEDGER_VERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getLedgerVersion();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -376,136 +486,6 @@ public final class TopicChangedSignal extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<TopicChangedSignal> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.client.TopicChangedSignal getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
-    /**
-     * Protobuf enum {@code meteor.protobuf.TopicChangedSignal.Type}
-     */
-    public enum Type
-            implements com.google.protobuf.ProtocolMessageEnum {
-        /**
-         * <code>CREATE = 0;</code>
-         */
-        CREATE(0),
-        /**
-         * <code>UPDATE = 1;</code>
-         */
-        UPDATE(1),
-        /**
-         * <code>DELETE = 3;</code>
-         */
-        DELETE(3),
-        UNRECOGNIZED(-1),
-        ;
-
-        /**
-         * <code>CREATE = 0;</code>
-         */
-        public static final int CREATE_VALUE = 0;
-        /**
-         * <code>UPDATE = 1;</code>
-         */
-        public static final int UPDATE_VALUE = 1;
-        /**
-         * <code>DELETE = 3;</code>
-         */
-        public static final int DELETE_VALUE = 3;
-        private static final com.google.protobuf.Internal.EnumLiteMap<
-                Type> internalValueMap =
-                new com.google.protobuf.Internal.EnumLiteMap<Type>() {
-                    public Type findValueByNumber(int number) {
-                        return Type.forNumber(number);
-                    }
-                };
-        private static final Type[] VALUES = values();
-        private final int value;
-
-        private Type(int value) {
-            this.value = value;
-        }
-
-        /**
-         * @param value The numeric wire value of the corresponding enum entry.
-         * @return The enum associated with the given numeric wire value.
-         * @deprecated Use {@link #forNumber(int)} instead.
-         */
-        @java.lang.Deprecated
-        public static Type valueOf(int value) {
-            return forNumber(value);
-        }
-
-        /**
-         * @param value The numeric wire value of the corresponding enum entry.
-         * @return The enum associated with the given numeric wire value.
-         */
-        public static Type forNumber(int value) {
-            switch (value) {
-                case 0:
-                    return CREATE;
-                case 1:
-                    return UPDATE;
-                case 3:
-                    return DELETE;
-                default:
-                    return null;
-            }
-        }
-
-        public static com.google.protobuf.Internal.EnumLiteMap<Type>
-        internalGetValueMap() {
-            return internalValueMap;
-        }
-
-        public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.client.TopicChangedSignal.getDescriptor().getEnumTypes().get(0);
-        }
-
-        public static Type valueOf(
-                com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-            if (desc.getType() != getDescriptor()) {
-                throw new java.lang.IllegalArgumentException(
-                        "EnumValueDescriptor is not for this type.");
-            }
-            if (desc.getIndex() == -1) {
-                return UNRECOGNIZED;
-            }
-            return VALUES[desc.getIndex()];
-        }
-
-        public final int getNumber() {
-            if (this == UNRECOGNIZED) {
-                throw new java.lang.IllegalArgumentException(
-                        "Can't get the number of an unknown enum value.");
-            }
-            return value;
-        }
-
-        public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-            if (this == UNRECOGNIZED) {
-                throw new java.lang.IllegalStateException(
-                        "Can't get the descriptor of an unrecognized enum value.");
-            }
-            return getDescriptor().getValues().get(ordinal());
-        }
-
-        public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-            return getDescriptor();
-        }
-
-        // @@protoc_insertion_point(enum_scope:meteor.protobuf.TopicChangedSignal.Type)
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.TopicChangedSignal}
      */
@@ -513,10 +493,19 @@ public final class TopicChangedSignal extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.TopicChangedSignal)
             org.meteor.remote.proto.client.TopicChangedSignalOrBuilder {
-        private int type_ = 0;
-        private java.lang.Object topic_ = "";
-        private int ledger_;
-        private int ledgerVersion_;
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
+    }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.client.TopicChangedSignal.class,
+                            org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
+        }
 
         // Construct using org.meteor.remote.proto.client.TopicChangedSignal.newBuilder()
         private Builder() {
@@ -529,19 +518,6 @@ public final class TopicChangedSignal extends
 
         }
 
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.TopicChangedSignal.class, org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
-        }
-
         @java.lang.Override
         public Builder clear() {
             super.clear();
@@ -551,7 +527,7 @@ public final class TopicChangedSignal extends
 
             ledger_ = 0;
 
-            ledgerVersion_ = 0;
+      ledgerVersion_ = 0;
 
             return this;
         }
@@ -578,7 +554,8 @@ public final class TopicChangedSignal extends
 
         @java.lang.Override
         public org.meteor.remote.proto.client.TopicChangedSignal buildPartial() {
-            org.meteor.remote.proto.client.TopicChangedSignal result = new org.meteor.remote.proto.client.TopicChangedSignal(this);
+            org.meteor.remote.proto.client.TopicChangedSignal result =
+                    new org.meteor.remote.proto.client.TopicChangedSignal(this);
             result.type_ = type_;
             result.topic_ = topic_;
             result.ledger_ = ledger_;
@@ -636,7 +613,9 @@ public final class TopicChangedSignal extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.client.TopicChangedSignal other) {
-            if (other == org.meteor.remote.proto.client.TopicChangedSignal.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.client.TopicChangedSignal.getDefaultInstance()) {
+                return this;
+            }
             if (other.type_ != 0) {
                 setTypeValue(other.getTypeValue());
             }
@@ -712,6 +691,8 @@ public final class TopicChangedSignal extends
             return this;
         }
 
+        private int type_ = 0;
+
         /**
          * <code>.meteor.protobuf.TopicChangedSignal.Type type = 1;</code>
          *
@@ -743,7 +724,8 @@ public final class TopicChangedSignal extends
         @java.lang.Override
         public org.meteor.remote.proto.client.TopicChangedSignal.Type getType() {
             @SuppressWarnings("deprecation")
-            org.meteor.remote.proto.client.TopicChangedSignal.Type result = org.meteor.remote.proto.client.TopicChangedSignal.Type.valueOf(type_);
+            org.meteor.remote.proto.client.TopicChangedSignal.Type result =
+                    org.meteor.remote.proto.client.TopicChangedSignal.Type.valueOf(type_);
             return result == null ? org.meteor.remote.proto.client.TopicChangedSignal.Type.UNRECOGNIZED : result;
         }
 
@@ -775,6 +757,8 @@ public final class TopicChangedSignal extends
             return this;
         }
 
+        private java.lang.Object topic_ = "";
+
         /**
          * <code>string topic = 2;</code>
          *
@@ -791,23 +775,6 @@ public final class TopicChangedSignal extends
             } else {
                 return (java.lang.String) ref;
             }
-        }
-
-        /**
-         * <code>string topic = 2;</code>
-         *
-         * @param value The topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopic(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topic_ = value;
-            onChanged();
-            return this;
         }
 
         /**
@@ -832,15 +799,14 @@ public final class TopicChangedSignal extends
         /**
          * <code>string topic = 2;</code>
          *
-         * @param value The bytes for topic to set.
+         * @param value The topic to set.
          * @return This builder for chaining.
          */
-        public Builder setTopicBytes(
-                com.google.protobuf.ByteString value) {
+        public Builder setTopic(
+                java.lang.String value) {
             if (value == null) {
                 throw new NullPointerException();
             }
-            checkByteStringIsUtf8(value);
 
             topic_ = value;
             onChanged();
@@ -860,6 +826,25 @@ public final class TopicChangedSignal extends
         }
 
         /**
+         * <code>string topic = 2;</code>
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            topic_ = value;
+            onChanged();
+            return this;
+        }
+
+        private int ledger_;
+
+        /**
          * <code>int32 ledger = 3;</code>
          *
          * @return The ledger.
@@ -871,7 +856,6 @@ public final class TopicChangedSignal extends
 
         /**
          * <code>int32 ledger = 3;</code>
-         *
          * @param value The ledger to set.
          * @return This builder for chaining.
          */
@@ -893,6 +877,8 @@ public final class TopicChangedSignal extends
             onChanged();
             return this;
         }
+
+        private int ledgerVersion_;
 
         /**
          * <code>int32 ledger_version = 4;</code>
@@ -944,6 +930,53 @@ public final class TopicChangedSignal extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicChangedSignal)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicChangedSignal)
+    private static final org.meteor.remote.proto.client.TopicChangedSignal DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.TopicChangedSignal();
+    }
+
+    public static org.meteor.remote.proto.client.TopicChangedSignal getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TopicChangedSignal>
+            PARSER = new com.google.protobuf.AbstractParser<TopicChangedSignal>() {
+        @java.lang.Override
+        public TopicChangedSignal parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
+
+  public static com.google.protobuf.Parser<TopicChangedSignal> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<TopicChangedSignal> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.client.TopicChangedSignal getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

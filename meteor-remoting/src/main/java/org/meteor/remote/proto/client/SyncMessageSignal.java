@@ -10,40 +10,7 @@ public final class SyncMessageSignal extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.SyncMessageSignal)
         SyncMessageSignalOrBuilder {
-    public static final int LEDGER_FIELD_NUMBER = 1;
-    public static final int COUNT_FIELD_NUMBER = 2;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncMessageSignal)
-    private static final org.meteor.remote.proto.client.SyncMessageSignal DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<SyncMessageSignal>
-            PARSER = new com.google.protobuf.AbstractParser<SyncMessageSignal>() {
-        @java.lang.Override
-        public SyncMessageSignal parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.SyncMessageSignal();
-    }
-
-    private int ledger_;
-    private int count_;
-    private byte memoizedIsInitialized = -1;
 
     // Use SyncMessageSignal.newBuilder() to construct.
     private SyncMessageSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -53,9 +20,146 @@ public final class SyncMessageSignal extends
     private SyncMessageSignal() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new SyncMessageSignal();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_SyncMessageSignal_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_SyncMessageSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.SyncMessageSignal.class,
+                        org.meteor.remote.proto.client.SyncMessageSignal.Builder.class);
+    }
+
+    public static final int LEDGER_FIELD_NUMBER = 1;
+    private int ledger_;
+
+    /**
+     * <code>int32 ledger = 1;</code>
+     *
+     * @return The ledger.
+     */
+    @java.lang.Override
+    public int getLedger() {
+        return ledger_;
+    }
+
+    public static final int COUNT_FIELD_NUMBER = 2;
+    private int count_;
+
+    /**
+     * <code>int32 count = 2;</code>
+     *
+     * @return The count.
+     */
+    @java.lang.Override
+    public int getCount() {
+        return count_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (ledger_ != 0) {
+            output.writeInt32(1, ledger_);
+        }
+        if (count_ != 0) {
+            output.writeInt32(2, count_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (ledger_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(1, ledger_);
+        }
+        if (count_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, count_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.client.SyncMessageSignal)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.client.SyncMessageSignal other = (org.meteor.remote.proto.client.SyncMessageSignal) obj;
+
+        if (getLedger()
+                != other.getLedger()) {
+            return false;
+        }
+        if (getCount()
+                != other.getCount()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+        hash = (53 * hash) + getLedger();
+        hash = (37 * hash) + COUNT_FIELD_NUMBER;
+        hash = (53 * hash) + getCount();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.client.SyncMessageSignal parseFrom(
@@ -139,141 +243,17 @@ public final class SyncMessageSignal extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.client.SyncMessageSignal prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.client.SyncMessageSignal getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<SyncMessageSignal> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new SyncMessageSignal();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_SyncMessageSignal_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.client.SyncMessageSignal.class, org.meteor.remote.proto.client.SyncMessageSignal.Builder.class);
-    }
-
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    @java.lang.Override
-    public int getLedger() {
-        return ledger_;
-    }
-
-    /**
-     * <code>int32 count = 2;</code>
-     *
-     * @return The count.
-     */
-    @java.lang.Override
-    public int getCount() {
-        return count_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (ledger_ != 0) {
-            output.writeInt32(1, ledger_);
-        }
-        if (count_ != 0) {
-            output.writeInt32(2, count_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (ledger_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(1, ledger_);
-        }
-        if (count_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, count_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.client.SyncMessageSignal)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.client.SyncMessageSignal other = (org.meteor.remote.proto.client.SyncMessageSignal) obj;
-
-        if (getLedger()
-                != other.getLedger()) return false;
-        if (getCount()
-                != other.getCount()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
-        hash = (53 * hash) + getLedger();
-        hash = (37 * hash) + COUNT_FIELD_NUMBER;
-        hash = (53 * hash) + getCount();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -289,16 +269,6 @@ public final class SyncMessageSignal extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<SyncMessageSignal> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.client.SyncMessageSignal getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.SyncMessageSignal}
      */
@@ -306,20 +276,6 @@ public final class SyncMessageSignal extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.SyncMessageSignal)
             org.meteor.remote.proto.client.SyncMessageSignalOrBuilder {
-        private int ledger_;
-        private int count_;
-
-        // Construct using org.meteor.remote.proto.client.SyncMessageSignal.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_SyncMessageSignal_descriptor;
@@ -330,7 +286,19 @@ public final class SyncMessageSignal extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_SyncMessageSignal_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.SyncMessageSignal.class, org.meteor.remote.proto.client.SyncMessageSignal.Builder.class);
+                            org.meteor.remote.proto.client.SyncMessageSignal.class,
+                            org.meteor.remote.proto.client.SyncMessageSignal.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.client.SyncMessageSignal.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -365,7 +333,8 @@ public final class SyncMessageSignal extends
 
         @java.lang.Override
         public org.meteor.remote.proto.client.SyncMessageSignal buildPartial() {
-            org.meteor.remote.proto.client.SyncMessageSignal result = new org.meteor.remote.proto.client.SyncMessageSignal(this);
+            org.meteor.remote.proto.client.SyncMessageSignal result =
+                    new org.meteor.remote.proto.client.SyncMessageSignal(this);
             result.ledger_ = ledger_;
             result.count_ = count_;
             onBuilt();
@@ -421,7 +390,9 @@ public final class SyncMessageSignal extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.client.SyncMessageSignal other) {
-            if (other == org.meteor.remote.proto.client.SyncMessageSignal.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.client.SyncMessageSignal.getDefaultInstance()) {
+                return this;
+            }
             if (other.getLedger() != 0) {
                 setLedger(other.getLedger());
             }
@@ -480,6 +451,8 @@ public final class SyncMessageSignal extends
             return this;
         }
 
+        private int ledger_;
+
         /**
          * <code>int32 ledger = 1;</code>
          *
@@ -514,6 +487,8 @@ public final class SyncMessageSignal extends
             onChanged();
             return this;
         }
+
+        private int count_;
 
         /**
          * <code>int32 count = 2;</code>
@@ -565,6 +540,53 @@ public final class SyncMessageSignal extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.SyncMessageSignal)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncMessageSignal)
+    private static final org.meteor.remote.proto.client.SyncMessageSignal DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.SyncMessageSignal();
+    }
+
+    public static org.meteor.remote.proto.client.SyncMessageSignal getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SyncMessageSignal>
+            PARSER = new com.google.protobuf.AbstractParser<SyncMessageSignal>() {
+        @java.lang.Override
+        public SyncMessageSignal parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<SyncMessageSignal> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SyncMessageSignal> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.client.SyncMessageSignal getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 
