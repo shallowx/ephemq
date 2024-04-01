@@ -10,38 +10,7 @@ public final class DeleteTopicRequest extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.DeleteTopicRequest)
         DeleteTopicRequestOrBuilder {
-    public static final int TOPIC_FIELD_NUMBER = 1;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.DeleteTopicRequest)
-    private static final org.meteor.remote.proto.server.DeleteTopicRequest DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<DeleteTopicRequest>
-            PARSER = new com.google.protobuf.AbstractParser<DeleteTopicRequest>() {
-        @java.lang.Override
-        public DeleteTopicRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.DeleteTopicRequest();
-    }
-
-    private volatile java.lang.Object topic_;
-    private byte memoizedIsInitialized = -1;
 
     // Use DeleteTopicRequest.newBuilder() to construct.
     private DeleteTopicRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -52,9 +21,149 @@ public final class DeleteTopicRequest extends
         topic_ = "";
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new DeleteTopicRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_DeleteTopicRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_DeleteTopicRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.DeleteTopicRequest.class,
+                        org.meteor.remote.proto.server.DeleteTopicRequest.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topic_;
+
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topic_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.DeleteTopicRequest)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.DeleteTopicRequest other =
+                (org.meteor.remote.proto.server.DeleteTopicRequest) obj;
+
+        if (!getTopic()
+                .equals(other.getTopic())) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.server.DeleteTopicRequest parseFrom(
@@ -138,148 +247,17 @@ public final class DeleteTopicRequest extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.server.DeleteTopicRequest prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.server.DeleteTopicRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<DeleteTopicRequest> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new DeleteTopicRequest();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_DeleteTopicRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.DeleteTopicRequest.class, org.meteor.remote.proto.server.DeleteTopicRequest.Builder.class);
-    }
-
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topic_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The bytes for topic.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicBytes() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topic_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.server.DeleteTopicRequest)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.server.DeleteTopicRequest other = (org.meteor.remote.proto.server.DeleteTopicRequest) obj;
-
-        if (!getTopic()
-                .equals(other.getTopic())) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-        hash = (53 * hash) + getTopic().hashCode();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -295,16 +273,6 @@ public final class DeleteTopicRequest extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<DeleteTopicRequest> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.DeleteTopicRequest getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.DeleteTopicRequest}
      */
@@ -312,19 +280,6 @@ public final class DeleteTopicRequest extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.DeleteTopicRequest)
             org.meteor.remote.proto.server.DeleteTopicRequestOrBuilder {
-        private java.lang.Object topic_ = "";
-
-        // Construct using org.meteor.remote.proto.server.DeleteTopicRequest.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_DeleteTopicRequest_descriptor;
@@ -335,7 +290,19 @@ public final class DeleteTopicRequest extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_DeleteTopicRequest_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.DeleteTopicRequest.class, org.meteor.remote.proto.server.DeleteTopicRequest.Builder.class);
+                            org.meteor.remote.proto.server.DeleteTopicRequest.class,
+                            org.meteor.remote.proto.server.DeleteTopicRequest.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.server.DeleteTopicRequest.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -368,7 +335,8 @@ public final class DeleteTopicRequest extends
 
         @java.lang.Override
         public org.meteor.remote.proto.server.DeleteTopicRequest buildPartial() {
-            org.meteor.remote.proto.server.DeleteTopicRequest result = new org.meteor.remote.proto.server.DeleteTopicRequest(this);
+            org.meteor.remote.proto.server.DeleteTopicRequest result =
+                    new org.meteor.remote.proto.server.DeleteTopicRequest(this);
             result.topic_ = topic_;
             onBuilt();
             return result;
@@ -423,7 +391,9 @@ public final class DeleteTopicRequest extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.server.DeleteTopicRequest other) {
-            if (other == org.meteor.remote.proto.server.DeleteTopicRequest.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.server.DeleteTopicRequest.getDefaultInstance()) {
+                return this;
+            }
             if (!other.getTopic().isEmpty()) {
                 topic_ = other.topic_;
                 onChanged();
@@ -475,6 +445,8 @@ public final class DeleteTopicRequest extends
             return this;
         }
 
+        private java.lang.Object topic_ = "";
+
         /**
          * <code>string topic = 1;</code>
          *
@@ -491,23 +463,6 @@ public final class DeleteTopicRequest extends
             } else {
                 return (java.lang.String) ref;
             }
-        }
-
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @param value The topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopic(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topic_ = value;
-            onChanged();
-            return this;
         }
 
         /**
@@ -532,15 +487,14 @@ public final class DeleteTopicRequest extends
         /**
          * <code>string topic = 1;</code>
          *
-         * @param value The bytes for topic to set.
+         * @param value The topic to set.
          * @return This builder for chaining.
          */
-        public Builder setTopicBytes(
-                com.google.protobuf.ByteString value) {
+        public Builder setTopic(
+                java.lang.String value) {
             if (value == null) {
                 throw new NullPointerException();
             }
-            checkByteStringIsUtf8(value);
 
             topic_ = value;
             onChanged();
@@ -555,6 +509,24 @@ public final class DeleteTopicRequest extends
         public Builder clearTopic() {
 
             topic_ = getDefaultInstance().getTopic();
+            onChanged();
+            return this;
+        }
+
+        /**
+         * <code>string topic = 1;</code>
+         *
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            topic_ = value;
             onChanged();
             return this;
         }
@@ -574,6 +546,53 @@ public final class DeleteTopicRequest extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.DeleteTopicRequest)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.DeleteTopicRequest)
+    private static final org.meteor.remote.proto.server.DeleteTopicRequest DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.DeleteTopicRequest();
+    }
+
+    public static org.meteor.remote.proto.server.DeleteTopicRequest getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DeleteTopicRequest>
+            PARSER = new com.google.protobuf.AbstractParser<DeleteTopicRequest>() {
+        @java.lang.Override
+        public DeleteTopicRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<DeleteTopicRequest> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DeleteTopicRequest> getParserForType() {
+        return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.server.DeleteTopicRequest getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

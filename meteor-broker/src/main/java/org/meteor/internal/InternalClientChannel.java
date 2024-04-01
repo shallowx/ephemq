@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
 
+import static org.meteor.client.util.MessageConstants.CHANNEL_SEMAPHORE;
 import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class InternalClientChannel extends ClientChannel {

@@ -24,14 +24,12 @@ public interface CreateTopicRequestOrBuilder extends
 
     /**
      * <code>int32 partition = 2;</code>
-     *
      * @return The partition.
      */
     int getPartition();
 
     /**
      * <code>int32 replicas = 3;</code>
-     *
      * @return The replicas.
      */
     int getReplicas();

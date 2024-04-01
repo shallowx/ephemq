@@ -65,5 +65,5 @@ public interface TopicInfoOrBuilder extends
      */
 
     org.meteor.remote.proto.PartitionMetadata getPartitionsOrThrow(
-            int key);
+      int key);
 }

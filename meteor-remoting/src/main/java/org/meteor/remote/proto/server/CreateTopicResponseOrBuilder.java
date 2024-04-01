@@ -24,14 +24,12 @@ public interface CreateTopicResponseOrBuilder extends
 
     /**
      * <code>int32 partitions = 2;</code>
-     *
      * @return The partitions.
      */
     int getPartitions();
 
     /**
      * <code>int32 topicId = 3;</code>
-     *
      * @return The topicId.
      */
     int getTopicId();
@@ -62,5 +60,5 @@ public interface CreateTopicResponseOrBuilder extends
      * <code>repeated .meteor.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
      */
     org.meteor.remote.proto.server.PartitionsReplicasOrBuilder getPartitionsReplicasOrBuilder(
-            int index);
+      int index);
 }

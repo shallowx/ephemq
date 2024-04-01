@@ -24,15 +24,13 @@ public interface TopicMetadataOrBuilder extends
 
     /**
      * <code>int32 id = 2;</code>
-     *
      * @return The id.
      */
     int getId();
 
     /**
      * <code>int32 version = 3;</code>
-     *
      * @return The version.
-     */
-    int getVersion();
+   */
+  int getVersion();
 }

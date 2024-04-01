@@ -10,42 +10,7 @@ public final class SyncResponse extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.SyncResponse)
         SyncResponseOrBuilder {
-    public static final int CURRENTOFFSET_FIELD_NUMBER = 1;
-    public static final int HEADOFFSET_FIELD_NUMBER = 2;
-    public static final int TAILOFFSET_FIELD_NUMBER = 3;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncResponse)
-    private static final org.meteor.remote.proto.server.SyncResponse DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<SyncResponse>
-            PARSER = new com.google.protobuf.AbstractParser<SyncResponse>() {
-        @java.lang.Override
-        public SyncResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncResponse();
-    }
-
-    private org.meteor.remote.proto.MessageOffset currentOffset_;
-    private org.meteor.remote.proto.MessageOffset headOffset_;
-    private org.meteor.remote.proto.MessageOffset tailOffset_;
-    private byte memoizedIsInitialized = -1;
 
     // Use SyncResponse.newBuilder() to construct.
     private SyncResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -55,9 +20,247 @@ public final class SyncResponse extends
     private SyncResponse() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new SyncResponse();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.SyncResponse.class,
+                        org.meteor.remote.proto.server.SyncResponse.Builder.class);
+    }
+
+    public static final int CURRENTOFFSET_FIELD_NUMBER = 1;
+    private org.meteor.remote.proto.MessageOffset currentOffset_;
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
+     *
+     * @return Whether the currentOffset field is set.
+     */
+    @java.lang.Override
+    public boolean hasCurrentOffset() {
+        return currentOffset_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
+     *
+     * @return The currentOffset.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.MessageOffset getCurrentOffset() {
+        return currentOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : currentOffset_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.MessageOffsetOrBuilder getCurrentOffsetOrBuilder() {
+        return getCurrentOffset();
+    }
+
+    public static final int HEADOFFSET_FIELD_NUMBER = 2;
+    private org.meteor.remote.proto.MessageOffset headOffset_;
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
+     *
+     * @return Whether the headOffset field is set.
+     */
+    @java.lang.Override
+    public boolean hasHeadOffset() {
+        return headOffset_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
+     *
+     * @return The headOffset.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.MessageOffset getHeadOffset() {
+        return headOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : headOffset_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.MessageOffsetOrBuilder getHeadOffsetOrBuilder() {
+        return getHeadOffset();
+    }
+
+    public static final int TAILOFFSET_FIELD_NUMBER = 3;
+    private org.meteor.remote.proto.MessageOffset tailOffset_;
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
+     *
+     * @return Whether the tailOffset field is set.
+     */
+    @java.lang.Override
+    public boolean hasTailOffset() {
+        return tailOffset_ != null;
+    }
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
+     *
+     * @return The tailOffset.
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.MessageOffset getTailOffset() {
+        return tailOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : tailOffset_;
+    }
+
+    /**
+     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
+     */
+    @java.lang.Override
+    public org.meteor.remote.proto.MessageOffsetOrBuilder getTailOffsetOrBuilder() {
+        return getTailOffset();
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (currentOffset_ != null) {
+            output.writeMessage(1, getCurrentOffset());
+        }
+        if (headOffset_ != null) {
+            output.writeMessage(2, getHeadOffset());
+        }
+        if (tailOffset_ != null) {
+            output.writeMessage(3, getTailOffset());
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (currentOffset_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(1, getCurrentOffset());
+        }
+        if (headOffset_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(2, getHeadOffset());
+        }
+        if (tailOffset_ != null) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(3, getTailOffset());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.SyncResponse)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.SyncResponse other = (org.meteor.remote.proto.server.SyncResponse) obj;
+
+        if (hasCurrentOffset() != other.hasCurrentOffset()) {
+            return false;
+        }
+        if (hasCurrentOffset()) {
+            if (!getCurrentOffset()
+                    .equals(other.getCurrentOffset())) {
+                return false;
+            }
+        }
+        if (hasHeadOffset() != other.hasHeadOffset()) {
+            return false;
+        }
+        if (hasHeadOffset()) {
+            if (!getHeadOffset()
+                    .equals(other.getHeadOffset())) {
+                return false;
+            }
+        }
+        if (hasTailOffset() != other.hasTailOffset()) {
+            return false;
+        }
+        if (hasTailOffset()) {
+            if (!getTailOffset()
+                    .equals(other.getTailOffset())) {
+                return false;
+            }
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        if (hasCurrentOffset()) {
+            hash = (37 * hash) + CURRENTOFFSET_FIELD_NUMBER;
+            hash = (53 * hash) + getCurrentOffset().hashCode();
+        }
+        if (hasHeadOffset()) {
+            hash = (37 * hash) + HEADOFFSET_FIELD_NUMBER;
+            hash = (53 * hash) + getHeadOffset().hashCode();
+        }
+        if (hasTailOffset()) {
+            hash = (37 * hash) + TAILOFFSET_FIELD_NUMBER;
+            hash = (53 * hash) + getTailOffset().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.server.SyncResponse parseFrom(
@@ -141,231 +344,17 @@ public final class SyncResponse extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.server.SyncResponse prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.server.SyncResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<SyncResponse> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new SyncResponse();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.SyncResponse.class, org.meteor.remote.proto.server.SyncResponse.Builder.class);
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
-     *
-     * @return Whether the currentOffset field is set.
-     */
-    @java.lang.Override
-    public boolean hasCurrentOffset() {
-        return currentOffset_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
-     *
-     * @return The currentOffset.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffset getCurrentOffset() {
-        return currentOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : currentOffset_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffsetOrBuilder getCurrentOffsetOrBuilder() {
-        return getCurrentOffset();
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
-     *
-     * @return Whether the headOffset field is set.
-     */
-    @java.lang.Override
-    public boolean hasHeadOffset() {
-        return headOffset_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
-     *
-     * @return The headOffset.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffset getHeadOffset() {
-        return headOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : headOffset_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffsetOrBuilder getHeadOffsetOrBuilder() {
-        return getHeadOffset();
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
-     *
-     * @return Whether the tailOffset field is set.
-     */
-    @java.lang.Override
-    public boolean hasTailOffset() {
-        return tailOffset_ != null;
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
-     *
-     * @return The tailOffset.
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffset getTailOffset() {
-        return tailOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : tailOffset_;
-    }
-
-    /**
-     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
-     */
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffsetOrBuilder getTailOffsetOrBuilder() {
-        return getTailOffset();
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (currentOffset_ != null) {
-            output.writeMessage(1, getCurrentOffset());
-        }
-        if (headOffset_ != null) {
-            output.writeMessage(2, getHeadOffset());
-        }
-        if (tailOffset_ != null) {
-            output.writeMessage(3, getTailOffset());
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (currentOffset_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(1, getCurrentOffset());
-        }
-        if (headOffset_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(2, getHeadOffset());
-        }
-        if (tailOffset_ != null) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(3, getTailOffset());
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.server.SyncResponse)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.server.SyncResponse other = (org.meteor.remote.proto.server.SyncResponse) obj;
-
-        if (hasCurrentOffset() != other.hasCurrentOffset()) return false;
-        if (hasCurrentOffset()) {
-            if (!getCurrentOffset()
-                    .equals(other.getCurrentOffset())) return false;
-        }
-        if (hasHeadOffset() != other.hasHeadOffset()) return false;
-        if (hasHeadOffset()) {
-            if (!getHeadOffset()
-                    .equals(other.getHeadOffset())) return false;
-        }
-        if (hasTailOffset() != other.hasTailOffset()) return false;
-        if (hasTailOffset()) {
-            if (!getTailOffset()
-                    .equals(other.getTailOffset())) return false;
-        }
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        if (hasCurrentOffset()) {
-            hash = (37 * hash) + CURRENTOFFSET_FIELD_NUMBER;
-            hash = (53 * hash) + getCurrentOffset().hashCode();
-        }
-        if (hasHeadOffset()) {
-            hash = (37 * hash) + HEADOFFSET_FIELD_NUMBER;
-            hash = (53 * hash) + getHeadOffset().hashCode();
-        }
-        if (hasTailOffset()) {
-            hash = (37 * hash) + TAILOFFSET_FIELD_NUMBER;
-            hash = (53 * hash) + getTailOffset().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -381,16 +370,6 @@ public final class SyncResponse extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<SyncResponse> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.SyncResponse getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.SyncResponse}
      */
@@ -398,15 +377,19 @@ public final class SyncResponse extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.SyncResponse)
             org.meteor.remote.proto.server.SyncResponseOrBuilder {
-        private org.meteor.remote.proto.MessageOffset currentOffset_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder> currentOffsetBuilder_;
-        private org.meteor.remote.proto.MessageOffset headOffset_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder> headOffsetBuilder_;
-        private org.meteor.remote.proto.MessageOffset tailOffset_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder> tailOffsetBuilder_;
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
+        }
+
+        @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.server.SyncResponse.class,
+                            org.meteor.remote.proto.server.SyncResponse.Builder.class);
+        }
 
         // Construct using org.meteor.remote.proto.server.SyncResponse.newBuilder()
         private Builder() {
@@ -417,19 +400,6 @@ public final class SyncResponse extends
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             super(parent);
 
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.SyncResponse.class, org.meteor.remote.proto.server.SyncResponse.Builder.class);
         }
 
         @java.lang.Override
@@ -454,13 +424,13 @@ public final class SyncResponse extends
                 tailOffsetBuilder_ = null;
             }
             return this;
-        }
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.SyncResponse getDefaultInstanceForType() {
@@ -547,7 +517,9 @@ public final class SyncResponse extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.server.SyncResponse other) {
-            if (other == org.meteor.remote.proto.server.SyncResponse.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.server.SyncResponse.getDefaultInstance()) {
+                return this;
+            }
             if (other.hasCurrentOffset()) {
                 mergeCurrentOffset(other.getCurrentOffset());
             }
@@ -620,6 +592,11 @@ public final class SyncResponse extends
             return this;
         }
 
+        private org.meteor.remote.proto.MessageOffset currentOffset_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder>
+                currentOffsetBuilder_;
+
         /**
          * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
          *
@@ -636,7 +613,8 @@ public final class SyncResponse extends
          */
         public org.meteor.remote.proto.MessageOffset getCurrentOffset() {
             if (currentOffsetBuilder_ == null) {
-                return currentOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() : currentOffset_;
+                return currentOffset_ == null ? org.meteor.remote.proto.MessageOffset.getDefaultInstance() :
+                        currentOffset_;
             } else {
                 return currentOffsetBuilder_.getMessage();
             }
@@ -681,7 +659,8 @@ public final class SyncResponse extends
             if (currentOffsetBuilder_ == null) {
                 if (currentOffset_ != null) {
                     currentOffset_ =
-                            org.meteor.remote.proto.MessageOffset.newBuilder(currentOffset_).mergeFrom(value).buildPartial();
+                            org.meteor.remote.proto.MessageOffset.newBuilder(currentOffset_).mergeFrom(value)
+                                    .buildPartial();
                 } else {
                     currentOffset_ = value;
                 }
@@ -746,6 +725,11 @@ public final class SyncResponse extends
             return currentOffsetBuilder_;
         }
 
+        private org.meteor.remote.proto.MessageOffset headOffset_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder>
+                headOffsetBuilder_;
+
         /**
          * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
          *
@@ -807,7 +791,8 @@ public final class SyncResponse extends
             if (headOffsetBuilder_ == null) {
                 if (headOffset_ != null) {
                     headOffset_ =
-                            org.meteor.remote.proto.MessageOffset.newBuilder(headOffset_).mergeFrom(value).buildPartial();
+                            org.meteor.remote.proto.MessageOffset.newBuilder(headOffset_).mergeFrom(value)
+                                    .buildPartial();
                 } else {
                     headOffset_ = value;
                 }
@@ -872,6 +857,11 @@ public final class SyncResponse extends
             return headOffsetBuilder_;
         }
 
+        private org.meteor.remote.proto.MessageOffset tailOffset_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder>
+                tailOffsetBuilder_;
+
         /**
          * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
          *
@@ -933,7 +923,8 @@ public final class SyncResponse extends
             if (tailOffsetBuilder_ == null) {
                 if (tailOffset_ != null) {
                     tailOffset_ =
-                            org.meteor.remote.proto.MessageOffset.newBuilder(tailOffset_).mergeFrom(value).buildPartial();
+                            org.meteor.remote.proto.MessageOffset.newBuilder(tailOffset_).mergeFrom(value)
+                                    .buildPartial();
                 } else {
                     tailOffset_ = value;
                 }
@@ -1013,6 +1004,53 @@ public final class SyncResponse extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.SyncResponse)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncResponse)
+    private static final org.meteor.remote.proto.server.SyncResponse DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncResponse();
+    }
+
+    public static org.meteor.remote.proto.server.SyncResponse getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SyncResponse>
+            PARSER = new com.google.protobuf.AbstractParser<SyncResponse>() {
+        @java.lang.Override
+        public SyncResponse parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+    }
+  };
+
+  public static com.google.protobuf.Parser<SyncResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SyncResponse> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.server.SyncResponse getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

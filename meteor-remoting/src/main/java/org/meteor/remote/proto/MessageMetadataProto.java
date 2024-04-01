@@ -4,6 +4,19 @@
 package org.meteor.remote.proto;
 
 public final class MessageMetadataProto {
+    private MessageMetadataProto() {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistryLite registry) {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistry registry) {
+        registerAllExtensions(
+                (com.google.protobuf.ExtensionRegistryLite) registry);
+    }
+
     static final com.google.protobuf.Descriptors.Descriptor
             internal_static_meteor_protobuf_MessageId_descriptor;
     static final
@@ -69,6 +82,12 @@ public final class MessageMetadataProto {
     static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internal_static_meteor_protobuf_TopicSegmentInfo_fieldAccessorTable;
+
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
+    }
+
     private static com.google.protobuf.Descriptors.FileDescriptor
             descriptor;
 
@@ -83,7 +102,9 @@ public final class MessageMetadataProto {
                         "trasEntry\032-\n\013ExtrasEntry\022\013\n\003key\030\001 \001(\t\022\r\n" +
                         "\005value\030\002 \001(\t:\0028\001\"\037\n\017ClusterMetadata\022\014\n\004n" +
                         "ame\030\001 \001(\t\"L\n\014NodeMetadata\022\024\n\014cluster_nam" +
-                        "e\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\014\n\004host\030\003 \001(\t\022\014\n\004por" +
+                        "e\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\014\n\004host\030\003 \001"
+                        + "(\t\022\014\n\004por"
+                        +
                         "t\030\004 \001(\005\"\305\001\n\013ClusterInfo\0221\n\007cluster\030\001 \001(\013" +
                         "2 .meteor.protobuf.ClusterMetadata\0226\n\005no" +
                         "des\030\002 \003(\0132\'.meteor.protobuf.ClusterInfo." +
@@ -92,7 +113,9 @@ public final class MessageMetadataProto {
                         "ata:\0028\001\":\n\rTopicMetadata\022\014\n\004name\030\001 \001(\t\022\n" +
                         "\n\002id\030\002 \001(\005\022\017\n\007version\030\003 \001(\005\"\225\001\n\021Partitio" +
                         "nMetadata\022\022\n\ntopic_name\030\001 \001(\t\022\n\n\002id\030\002 \001(" +
-                        "\005\022\016\n\006ledger\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\026\n\016lead" +
+                        "\005\022\016\n\006ledger\030\003 \001(\005\022\r\n\005epoch\030\004 \001"
+                        + "(\005\022\026\n\016lead"
+                        +
                         "er_node_id\030\005 \001(\t\022\030\n\020replica_node_ids\030\006 \003" +
                         "(\t\022\017\n\007version\030\007 \001(\005\"\321\001\n\tTopicInfo\022-\n\005top" +
                         "ic\030\001 \001(\0132\036.meteor.protobuf.TopicMetadata" +
@@ -169,7 +192,8 @@ public final class MessageMetadataProto {
         internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_meteor_protobuf_PartitionMetadata_descriptor,
-                new java.lang.String[]{"TopicName", "Id", "Ledger", "Epoch", "LeaderNodeId", "ReplicaNodeIds", "Version",});
+                new java.lang.String[]{"TopicName", "Id", "Ledger", "Epoch", "LeaderNodeId", "ReplicaNodeIds",
+                        "Version",});
         internal_static_meteor_protobuf_TopicInfo_descriptor =
                 getDescriptor().getMessageTypes().get(8);
         internal_static_meteor_protobuf_TopicInfo_fieldAccessorTable = new
@@ -188,24 +212,6 @@ public final class MessageMetadataProto {
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_meteor_protobuf_TopicSegmentInfo_descriptor,
                 new java.lang.String[]{"SegmentRollingSize", "SegmentRetainCount", "SegmentRetainMs", "Allocate",});
-    }
-
-    private MessageMetadataProto() {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistryLite registry) {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistry registry) {
-        registerAllExtensions(
-                (com.google.protobuf.ExtensionRegistryLite) registry);
-    }
-
-    public static com.google.protobuf.Descriptors.FileDescriptor
-    getDescriptor() {
-        return descriptor;
     }
 
     // @@protoc_insertion_point(outer_class_scope)

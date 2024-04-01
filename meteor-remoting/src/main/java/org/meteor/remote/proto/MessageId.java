@@ -10,42 +10,7 @@ public final class MessageId extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.MessageId)
         MessageIdOrBuilder {
-    public static final int LEDGER_FIELD_NUMBER = 1;
-    public static final int EPOCH_FIELD_NUMBER = 2;
-    public static final int INDEX_FIELD_NUMBER = 3;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageId)
-    private static final org.meteor.remote.proto.MessageId DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<MessageId>
-            PARSER = new com.google.protobuf.AbstractParser<MessageId>() {
-        @java.lang.Override
-        public MessageId parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageId();
-    }
-
-    private int ledger_;
-    private int epoch_;
-    private int index_;
-    private byte memoizedIsInitialized = -1;
 
     // Use MessageId.newBuilder() to construct.
     private MessageId(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -55,9 +20,171 @@ public final class MessageId extends
     private MessageId() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new MessageId();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageId_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageId_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.MessageId.class, org.meteor.remote.proto.MessageId.Builder.class);
+    }
+
+    public static final int LEDGER_FIELD_NUMBER = 1;
+    private int ledger_;
+
+    /**
+     * <code>int32 ledger = 1;</code>
+     *
+     * @return The ledger.
+     */
+    @java.lang.Override
+    public int getLedger() {
+        return ledger_;
+    }
+
+    public static final int EPOCH_FIELD_NUMBER = 2;
+    private int epoch_;
+
+    /**
+     * <code>int32 epoch = 2;</code>
+     *
+     * @return The epoch.
+     */
+    @java.lang.Override
+    public int getEpoch() {
+        return epoch_;
+    }
+
+    public static final int INDEX_FIELD_NUMBER = 3;
+    private int index_;
+
+    /**
+     * <code>int32 index = 3;</code>
+     *
+     * @return The index.
+     */
+    @java.lang.Override
+    public int getIndex() {
+        return index_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (ledger_ != 0) {
+            output.writeInt32(1, ledger_);
+        }
+        if (epoch_ != 0) {
+            output.writeInt32(2, epoch_);
+        }
+        if (index_ != 0) {
+            output.writeInt32(3, index_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (ledger_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(1, ledger_);
+        }
+        if (epoch_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, epoch_);
+        }
+        if (index_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(3, index_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.MessageId)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.MessageId other = (org.meteor.remote.proto.MessageId) obj;
+
+        if (getLedger()
+                != other.getLedger()) {
+            return false;
+        }
+        if (getEpoch()
+                != other.getEpoch()) {
+            return false;
+        }
+        if (getIndex()
+                != other.getIndex()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+        hash = (53 * hash) + getLedger();
+        hash = (37 * hash) + EPOCH_FIELD_NUMBER;
+        hash = (53 * hash) + getEpoch();
+        hash = (37 * hash) + INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getIndex();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.MessageId parseFrom(
@@ -141,162 +268,17 @@ public final class MessageId extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.MessageId prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.MessageId getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<MessageId> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new MessageId();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageId_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.MessageId.class, org.meteor.remote.proto.MessageId.Builder.class);
-    }
-
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    @java.lang.Override
-    public int getLedger() {
-        return ledger_;
-    }
-
-    /**
-     * <code>int32 epoch = 2;</code>
-     *
-     * @return The epoch.
-     */
-    @java.lang.Override
-    public int getEpoch() {
-        return epoch_;
-    }
-
-    /**
-     * <code>int32 index = 3;</code>
-     *
-     * @return The index.
-     */
-    @java.lang.Override
-    public int getIndex() {
-        return index_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (ledger_ != 0) {
-            output.writeInt32(1, ledger_);
-        }
-        if (epoch_ != 0) {
-            output.writeInt32(2, epoch_);
-        }
-        if (index_ != 0) {
-            output.writeInt32(3, index_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (ledger_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(1, ledger_);
-        }
-        if (epoch_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, epoch_);
-        }
-        if (index_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(3, index_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.MessageId)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.MessageId other = (org.meteor.remote.proto.MessageId) obj;
-
-        if (getLedger()
-                != other.getLedger()) return false;
-        if (getEpoch()
-                != other.getEpoch()) return false;
-        if (getIndex()
-                != other.getIndex()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
-        hash = (53 * hash) + getLedger();
-        hash = (37 * hash) + EPOCH_FIELD_NUMBER;
-        hash = (53 * hash) + getEpoch();
-        hash = (37 * hash) + INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getIndex();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -312,16 +294,6 @@ public final class MessageId extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<MessageId> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageId getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.MessageId}
      */
@@ -329,21 +301,6 @@ public final class MessageId extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.MessageId)
             org.meteor.remote.proto.MessageIdOrBuilder {
-        private int ledger_;
-        private int epoch_;
-        private int index_;
-
-        // Construct using org.meteor.remote.proto.MessageId.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageId_descriptor;
@@ -355,6 +312,17 @@ public final class MessageId extends
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageId_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
                             org.meteor.remote.proto.MessageId.class, org.meteor.remote.proto.MessageId.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.MessageId.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -448,7 +416,9 @@ public final class MessageId extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.MessageId other) {
-            if (other == org.meteor.remote.proto.MessageId.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.MessageId.getDefaultInstance()) {
+                return this;
+            }
             if (other.getLedger() != 0) {
                 setLedger(other.getLedger());
             }
@@ -515,6 +485,8 @@ public final class MessageId extends
             return this;
         }
 
+        private int ledger_;
+
         /**
          * <code>int32 ledger = 1;</code>
          *
@@ -550,6 +522,8 @@ public final class MessageId extends
             return this;
         }
 
+        private int epoch_;
+
         /**
          * <code>int32 epoch = 2;</code>
          *
@@ -575,7 +549,6 @@ public final class MessageId extends
 
         /**
          * <code>int32 epoch = 2;</code>
-         *
          * @return This builder for chaining.
          */
         public Builder clearEpoch() {
@@ -584,6 +557,8 @@ public final class MessageId extends
             onChanged();
             return this;
         }
+
+        private int index_;
 
         /**
          * <code>int32 index = 3;</code>
@@ -635,6 +610,53 @@ public final class MessageId extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.MessageId)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageId)
+    private static final org.meteor.remote.proto.MessageId DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageId();
+    }
+
+    public static org.meteor.remote.proto.MessageId getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MessageId>
+            PARSER = new com.google.protobuf.AbstractParser<MessageId>() {
+        @java.lang.Override
+        public MessageId parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<MessageId> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+  public com.google.protobuf.Parser<MessageId> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.MessageId getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

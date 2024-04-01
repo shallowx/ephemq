@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ClientChannel implements MeterBinder {
-    protected static final String CHANNEL_SEMAPHORE = "channel_semaphore";
     private final SocketAddress address;
     private final CommandInvoker invoker;
     protected String id;

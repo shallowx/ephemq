@@ -30,8 +30,7 @@ public interface TopicSegmentInfoOrBuilder extends
 
     /**
      * <code>bool allocate = 4;</code>
-     *
      * @return The allocate.
-     */
-    boolean getAllocate();
+   */
+  boolean getAllocate();
 }

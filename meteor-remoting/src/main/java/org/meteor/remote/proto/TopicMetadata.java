@@ -10,42 +10,7 @@ public final class TopicMetadata extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.TopicMetadata)
         TopicMetadataOrBuilder {
-    public static final int NAME_FIELD_NUMBER = 1;
-    public static final int ID_FIELD_NUMBER = 2;
-    public static final int VERSION_FIELD_NUMBER = 3;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicMetadata)
-    private static final org.meteor.remote.proto.TopicMetadata DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<TopicMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<TopicMetadata>() {
-        @java.lang.Override
-        public TopicMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicMetadata();
-    }
-
-    private volatile java.lang.Object name_;
-    private int id_;
-    private int version_;
-    private byte memoizedIsInitialized = -1;
 
     // Use TopicMetadata.newBuilder() to construct.
     private TopicMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -56,9 +21,200 @@ public final class TopicMetadata extends
         name_ = "";
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new TopicMetadata();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.TopicMetadata.class,
+                        org.meteor.remote.proto.TopicMetadata.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+
+    /**
+     * <code>string name = 1;</code>
+     *
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            name_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string name = 1;</code>
+     *
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            name_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
+    private int id_;
+
+    /**
+     * <code>int32 id = 2;</code>
+     *
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+        return id_;
+    }
+
+    public static final int VERSION_FIELD_NUMBER = 3;
+    private int version_;
+
+    /**
+     * <code>int32 version = 3;</code>
+     *
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+        return version_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+        }
+        if (id_ != 0) {
+            output.writeInt32(2, id_);
+        }
+        if (version_ != 0) {
+            output.writeInt32(3, version_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+        }
+        if (id_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, id_);
+        }
+        if (version_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(3, version_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.TopicMetadata)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.TopicMetadata other = (org.meteor.remote.proto.TopicMetadata) obj;
+
+        if (!getName()
+                .equals(other.getName())) {
+            return false;
+        }
+        if (getId()
+                != other.getId()) {
+            return false;
+        }
+        if (getVersion()
+                != other.getVersion()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getName().hashCode();
+        hash = (37 * hash) + ID_FIELD_NUMBER;
+        hash = (53 * hash) + getId();
+        hash = (37 * hash) + VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getVersion();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.TopicMetadata parseFrom(
@@ -142,190 +298,17 @@ public final class TopicMetadata extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.TopicMetadata prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.TopicMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<TopicMetadata> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new TopicMetadata();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.TopicMetadata.class, org.meteor.remote.proto.TopicMetadata.Builder.class);
-    }
-
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The name.
-     */
-    @java.lang.Override
-    public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            name_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The bytes for name.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            name_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>int32 id = 2;</code>
-     *
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-        return id_;
-    }
-
-    /**
-     * <code>int32 version = 3;</code>
-     *
-     * @return The version.
-     */
-    @java.lang.Override
-    public int getVersion() {
-        return version_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-        }
-        if (id_ != 0) {
-            output.writeInt32(2, id_);
-        }
-        if (version_ != 0) {
-            output.writeInt32(3, version_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-        }
-        if (id_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, id_);
-        }
-        if (version_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(3, version_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.TopicMetadata)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.TopicMetadata other = (org.meteor.remote.proto.TopicMetadata) obj;
-
-        if (!getName()
-                .equals(other.getName())) return false;
-        if (getId()
-                != other.getId()) return false;
-        if (getVersion()
-                != other.getVersion()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getName().hashCode();
-        hash = (37 * hash) + ID_FIELD_NUMBER;
-        hash = (53 * hash) + getId();
-        hash = (37 * hash) + VERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getVersion();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -341,16 +324,6 @@ public final class TopicMetadata extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<TopicMetadata> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.TopicMetadata getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.TopicMetadata}
      */
@@ -358,21 +331,6 @@ public final class TopicMetadata extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.TopicMetadata)
             org.meteor.remote.proto.TopicMetadataOrBuilder {
-        private java.lang.Object name_ = "";
-        private int id_;
-        private int version_;
-
-        // Construct using org.meteor.remote.proto.TopicMetadata.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_descriptor;
@@ -383,7 +341,19 @@ public final class TopicMetadata extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.TopicMetadata.class, org.meteor.remote.proto.TopicMetadata.Builder.class);
+                            org.meteor.remote.proto.TopicMetadata.class,
+                            org.meteor.remote.proto.TopicMetadata.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.TopicMetadata.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -399,7 +369,7 @@ public final class TopicMetadata extends
         }
 
         @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
+    public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_descriptor;
         }
@@ -477,7 +447,9 @@ public final class TopicMetadata extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.TopicMetadata other) {
-            if (other == org.meteor.remote.proto.TopicMetadata.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.TopicMetadata.getDefaultInstance()) {
+                return this;
+            }
             if (!other.getName().isEmpty()) {
                 name_ = other.name_;
                 onChanged();
@@ -545,6 +517,8 @@ public final class TopicMetadata extends
             return this;
         }
 
+        private java.lang.Object name_ = "";
+
         /**
          * <code>string name = 1;</code>
          *
@@ -560,6 +534,24 @@ public final class TopicMetadata extends
                 return s;
             } else {
                 return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string name = 1;</code>
+         * @return The bytes for name.
+         */
+        public com.google.protobuf.ByteString
+        getNameBytes() {
+            java.lang.Object ref = name_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                name_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
             }
         }
 
@@ -583,20 +575,13 @@ public final class TopicMetadata extends
         /**
          * <code>string name = 1;</code>
          *
-         * @return The bytes for name.
+         * @return This builder for chaining.
          */
-        public com.google.protobuf.ByteString
-        getNameBytes() {
-            java.lang.Object ref = name_;
-            if (ref instanceof String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                name_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
+        public Builder clearName() {
+
+            name_ = getDefaultInstance().getName();
+            onChanged();
+            return this;
         }
 
         /**
@@ -617,17 +602,7 @@ public final class TopicMetadata extends
             return this;
         }
 
-        /**
-         * <code>string name = 1;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearName() {
-
-            name_ = getDefaultInstance().getName();
-            onChanged();
-            return this;
-        }
+        private int id_;
 
         /**
          * <code>int32 id = 2;</code>
@@ -663,6 +638,8 @@ public final class TopicMetadata extends
             onChanged();
             return this;
         }
+
+        private int version_;
 
         /**
          * <code>int32 version = 3;</code>
@@ -714,6 +691,53 @@ public final class TopicMetadata extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicMetadata)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicMetadata)
+    private static final org.meteor.remote.proto.TopicMetadata DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicMetadata();
+    }
+
+    public static org.meteor.remote.proto.TopicMetadata getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TopicMetadata>
+            PARSER = new com.google.protobuf.AbstractParser<TopicMetadata>() {
+        @java.lang.Override
+        public TopicMetadata parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<TopicMetadata> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<TopicMetadata> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.TopicMetadata getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

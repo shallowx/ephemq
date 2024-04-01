@@ -10,50 +10,7 @@ public final class PartitionMetadata extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.PartitionMetadata)
         PartitionMetadataOrBuilder {
-    public static final int TOPIC_NAME_FIELD_NUMBER = 1;
-    public static final int ID_FIELD_NUMBER = 2;
-    public static final int LEDGER_FIELD_NUMBER = 3;
-    public static final int EPOCH_FIELD_NUMBER = 4;
-    public static final int LEADER_NODE_ID_FIELD_NUMBER = 5;
-    public static final int REPLICA_NODE_IDS_FIELD_NUMBER = 6;
-    public static final int VERSION_FIELD_NUMBER = 7;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.PartitionMetadata)
-    private static final org.meteor.remote.proto.PartitionMetadata DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<PartitionMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<PartitionMetadata>() {
-        @java.lang.Override
-        public PartitionMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.PartitionMetadata();
-    }
-
-    private volatile java.lang.Object topicName_;
-    private int id_;
-    private int ledger_;
-    private int epoch_;
-    private volatile java.lang.Object leaderNodeId_;
-    private com.google.protobuf.LazyStringList replicaNodeIds_;
-    private int version_;
-    private byte memoizedIsInitialized = -1;
 
     // Use PartitionMetadata.newBuilder() to construct.
     private PartitionMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -66,9 +23,367 @@ public final class PartitionMetadata extends
         replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new PartitionMetadata();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_PartitionMetadata_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.PartitionMetadata.class,
+                        org.meteor.remote.proto.PartitionMetadata.Builder.class);
+    }
+
+    public static final int TOPIC_NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topicName_;
+
+    /**
+     * <code>string topic_name = 1;</code>
+     *
+     * @return The topicName.
+     */
+    @java.lang.Override
+    public java.lang.String getTopicName() {
+        java.lang.Object ref = topicName_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topicName_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string topic_name = 1;</code>
+     *
+     * @return The bytes for topicName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getTopicNameBytes() {
+        java.lang.Object ref = topicName_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topicName_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
+    private int id_;
+
+    /**
+     * <code>int32 id = 2;</code>
+     *
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+        return id_;
+    }
+
+    public static final int LEDGER_FIELD_NUMBER = 3;
+    private int ledger_;
+
+    /**
+     * <code>int32 ledger = 3;</code>
+     *
+     * @return The ledger.
+     */
+    @java.lang.Override
+    public int getLedger() {
+        return ledger_;
+    }
+
+    public static final int EPOCH_FIELD_NUMBER = 4;
+    private int epoch_;
+
+    /**
+     * <code>int32 epoch = 4;</code>
+     *
+     * @return The epoch.
+     */
+    @java.lang.Override
+    public int getEpoch() {
+        return epoch_;
+    }
+
+    public static final int LEADER_NODE_ID_FIELD_NUMBER = 5;
+    private volatile java.lang.Object leaderNodeId_;
+
+    /**
+     * <code>string leader_node_id = 5;</code>
+     *
+     * @return The leaderNodeId.
+     */
+    @java.lang.Override
+    public java.lang.String getLeaderNodeId() {
+        java.lang.Object ref = leaderNodeId_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            leaderNodeId_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string leader_node_id = 5;</code>
+     *
+     * @return The bytes for leaderNodeId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getLeaderNodeIdBytes() {
+        java.lang.Object ref = leaderNodeId_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            leaderNodeId_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int REPLICA_NODE_IDS_FIELD_NUMBER = 6;
+    private com.google.protobuf.LazyStringList replicaNodeIds_;
+
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     *
+     * @return A list containing the replicaNodeIds.
+     */
+    public com.google.protobuf.ProtocolStringList
+    getReplicaNodeIdsList() {
+        return replicaNodeIds_;
+    }
+
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     *
+     * @return The count of replicaNodeIds.
+     */
+    public int getReplicaNodeIdsCount() {
+        return replicaNodeIds_.size();
+    }
+
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     *
+     * @param index The index of the element to return.
+     * @return The replicaNodeIds at the given index.
+     */
+    public java.lang.String getReplicaNodeIds(int index) {
+        return replicaNodeIds_.get(index);
+    }
+
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     *
+     * @param index The index of the value to return.
+     * @return The bytes of the replicaNodeIds at the given index.
+     */
+    public com.google.protobuf.ByteString
+    getReplicaNodeIdsBytes(int index) {
+        return replicaNodeIds_.getByteString(index);
+    }
+
+    public static final int VERSION_FIELD_NUMBER = 7;
+    private int version_;
+
+    /**
+     * <code>int32 version = 7;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+        return version_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topicName_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topicName_);
+        }
+        if (id_ != 0) {
+            output.writeInt32(2, id_);
+        }
+        if (ledger_ != 0) {
+            output.writeInt32(3, ledger_);
+        }
+        if (epoch_ != 0) {
+            output.writeInt32(4, epoch_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leaderNodeId_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 5, leaderNodeId_);
+        }
+        for (int i = 0; i < replicaNodeIds_.size(); i++) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 6, replicaNodeIds_.getRaw(i));
+        }
+        if (version_ != 0) {
+            output.writeInt32(7, version_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topicName_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topicName_);
+        }
+        if (id_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, id_);
+        }
+        if (ledger_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(3, ledger_);
+        }
+        if (epoch_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(4, epoch_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leaderNodeId_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, leaderNodeId_);
+        }
+        {
+            int dataSize = 0;
+            for (int i = 0; i < replicaNodeIds_.size(); i++) {
+                dataSize += computeStringSizeNoTag(replicaNodeIds_.getRaw(i));
+            }
+            size += dataSize;
+            size += 1 * getReplicaNodeIdsList().size();
+        }
+        if (version_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(7, version_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.PartitionMetadata)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.PartitionMetadata other = (org.meteor.remote.proto.PartitionMetadata) obj;
+
+        if (!getTopicName()
+                .equals(other.getTopicName())) {
+            return false;
+        }
+        if (getId()
+                != other.getId()) {
+            return false;
+        }
+        if (getLedger()
+                != other.getLedger()) {
+            return false;
+        }
+        if (getEpoch()
+                != other.getEpoch()) {
+            return false;
+        }
+        if (!getLeaderNodeId()
+                .equals(other.getLeaderNodeId())) {
+            return false;
+        }
+        if (!getReplicaNodeIdsList()
+                .equals(other.getReplicaNodeIdsList())) {
+            return false;
+        }
+        if (getVersion()
+                != other.getVersion()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TOPIC_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getTopicName().hashCode();
+        hash = (37 * hash) + ID_FIELD_NUMBER;
+        hash = (53 * hash) + getId();
+        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+        hash = (53 * hash) + getLedger();
+        hash = (37 * hash) + EPOCH_FIELD_NUMBER;
+        hash = (53 * hash) + getEpoch();
+        hash = (37 * hash) + LEADER_NODE_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getLeaderNodeId().hashCode();
+        if (getReplicaNodeIdsCount() > 0) {
+            hash = (37 * hash) + REPLICA_NODE_IDS_FIELD_NUMBER;
+            hash = (53 * hash) + getReplicaNodeIdsList().hashCode();
+        }
+        hash = (37 * hash) + VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getVersion();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.PartitionMetadata parseFrom(
@@ -152,338 +467,17 @@ public final class PartitionMetadata extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.PartitionMetadata prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.PartitionMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<PartitionMetadata> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new PartitionMetadata();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.PartitionMetadata.class, org.meteor.remote.proto.PartitionMetadata.Builder.class);
-    }
-
-    /**
-     * <code>string topic_name = 1;</code>
-     *
-     * @return The topicName.
-     */
-    @java.lang.Override
-    public java.lang.String getTopicName() {
-        java.lang.Object ref = topicName_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topicName_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string topic_name = 1;</code>
-     *
-     * @return The bytes for topicName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicNameBytes() {
-        java.lang.Object ref = topicName_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topicName_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>int32 id = 2;</code>
-     *
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-        return id_;
-    }
-
-    /**
-     * <code>int32 ledger = 3;</code>
-     *
-     * @return The ledger.
-     */
-    @java.lang.Override
-    public int getLedger() {
-        return ledger_;
-    }
-
-    /**
-     * <code>int32 epoch = 4;</code>
-     *
-     * @return The epoch.
-     */
-    @java.lang.Override
-    public int getEpoch() {
-        return epoch_;
-    }
-
-    /**
-     * <code>string leader_node_id = 5;</code>
-     *
-     * @return The leaderNodeId.
-     */
-    @java.lang.Override
-    public java.lang.String getLeaderNodeId() {
-        java.lang.Object ref = leaderNodeId_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            leaderNodeId_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string leader_node_id = 5;</code>
-     *
-     * @return The bytes for leaderNodeId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getLeaderNodeIdBytes() {
-        java.lang.Object ref = leaderNodeId_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            leaderNodeId_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>repeated string replica_node_ids = 6;</code>
-     *
-     * @return A list containing the replicaNodeIds.
-     */
-    public com.google.protobuf.ProtocolStringList
-    getReplicaNodeIdsList() {
-        return replicaNodeIds_;
-    }
-
-    /**
-     * <code>repeated string replica_node_ids = 6;</code>
-     *
-     * @return The count of replicaNodeIds.
-     */
-    public int getReplicaNodeIdsCount() {
-        return replicaNodeIds_.size();
-    }
-
-    /**
-     * <code>repeated string replica_node_ids = 6;</code>
-     *
-     * @param index The index of the element to return.
-     * @return The replicaNodeIds at the given index.
-     */
-    public java.lang.String getReplicaNodeIds(int index) {
-        return replicaNodeIds_.get(index);
-    }
-
-    /**
-     * <code>repeated string replica_node_ids = 6;</code>
-     *
-     * @param index The index of the value to return.
-     * @return The bytes of the replicaNodeIds at the given index.
-     */
-    public com.google.protobuf.ByteString
-    getReplicaNodeIdsBytes(int index) {
-        return replicaNodeIds_.getByteString(index);
-    }
-
-    /**
-     * <code>int32 version = 7;</code>
-     *
-     * @return The version.
-     */
-    @java.lang.Override
-    public int getVersion() {
-        return version_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topicName_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topicName_);
-        }
-        if (id_ != 0) {
-            output.writeInt32(2, id_);
-        }
-        if (ledger_ != 0) {
-            output.writeInt32(3, ledger_);
-        }
-        if (epoch_ != 0) {
-            output.writeInt32(4, epoch_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leaderNodeId_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 5, leaderNodeId_);
-        }
-        for (int i = 0; i < replicaNodeIds_.size(); i++) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 6, replicaNodeIds_.getRaw(i));
-        }
-        if (version_ != 0) {
-            output.writeInt32(7, version_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topicName_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topicName_);
-        }
-        if (id_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, id_);
-        }
-        if (ledger_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(3, ledger_);
-        }
-        if (epoch_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(4, epoch_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(leaderNodeId_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, leaderNodeId_);
-        }
-        {
-            int dataSize = 0;
-            for (int i = 0; i < replicaNodeIds_.size(); i++) {
-                dataSize += computeStringSizeNoTag(replicaNodeIds_.getRaw(i));
-            }
-            size += dataSize;
-            size += 1 * getReplicaNodeIdsList().size();
-        }
-        if (version_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(7, version_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.PartitionMetadata)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.PartitionMetadata other = (org.meteor.remote.proto.PartitionMetadata) obj;
-
-        if (!getTopicName()
-                .equals(other.getTopicName())) return false;
-        if (getId()
-                != other.getId()) return false;
-        if (getLedger()
-                != other.getLedger()) return false;
-        if (getEpoch()
-                != other.getEpoch()) return false;
-        if (!getLeaderNodeId()
-                .equals(other.getLeaderNodeId())) return false;
-        if (!getReplicaNodeIdsList()
-                .equals(other.getReplicaNodeIdsList())) return false;
-        if (getVersion()
-                != other.getVersion()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + TOPIC_NAME_FIELD_NUMBER;
-        hash = (53 * hash) + getTopicName().hashCode();
-        hash = (37 * hash) + ID_FIELD_NUMBER;
-        hash = (53 * hash) + getId();
-        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
-        hash = (53 * hash) + getLedger();
-        hash = (37 * hash) + EPOCH_FIELD_NUMBER;
-        hash = (53 * hash) + getEpoch();
-        hash = (37 * hash) + LEADER_NODE_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getLeaderNodeId().hashCode();
-        if (getReplicaNodeIdsCount() > 0) {
-            hash = (37 * hash) + REPLICA_NODE_IDS_FIELD_NUMBER;
-            hash = (53 * hash) + getReplicaNodeIdsList().hashCode();
-        }
-        hash = (37 * hash) + VERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getVersion();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -499,16 +493,6 @@ public final class PartitionMetadata extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<PartitionMetadata> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.PartitionMetadata getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.PartitionMetadata}
      */
@@ -516,26 +500,6 @@ public final class PartitionMetadata extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.PartitionMetadata)
             org.meteor.remote.proto.PartitionMetadataOrBuilder {
-        private int bitField0_;
-        private java.lang.Object topicName_ = "";
-        private int id_;
-        private int ledger_;
-        private int epoch_;
-        private java.lang.Object leaderNodeId_ = "";
-        private com.google.protobuf.LazyStringList replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        private int version_;
-
-        // Construct using org.meteor.remote.proto.PartitionMetadata.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_PartitionMetadata_descriptor;
@@ -546,7 +510,19 @@ public final class PartitionMetadata extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_PartitionMetadata_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.PartitionMetadata.class, org.meteor.remote.proto.PartitionMetadata.Builder.class);
+                            org.meteor.remote.proto.PartitionMetadata.class,
+                            org.meteor.remote.proto.PartitionMetadata.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.PartitionMetadata.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -564,7 +540,7 @@ public final class PartitionMetadata extends
 
             replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
-            version_ = 0;
+      version_ = 0;
 
             return this;
         }
@@ -657,7 +633,9 @@ public final class PartitionMetadata extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.PartitionMetadata other) {
-            if (other == org.meteor.remote.proto.PartitionMetadata.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.PartitionMetadata.getDefaultInstance()) {
+                return this;
+            }
             if (!other.getTopicName().isEmpty()) {
                 topicName_ = other.topicName_;
                 onChanged();
@@ -766,6 +744,10 @@ public final class PartitionMetadata extends
             return this;
         }
 
+        private int bitField0_;
+
+        private java.lang.Object topicName_ = "";
+
         /**
          * <code>string topic_name = 1;</code>
          *
@@ -782,23 +764,6 @@ public final class PartitionMetadata extends
             } else {
                 return (java.lang.String) ref;
             }
-        }
-
-        /**
-         * <code>string topic_name = 1;</code>
-         *
-         * @param value The topicName to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopicName(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topicName_ = value;
-            onChanged();
-            return this;
         }
 
         /**
@@ -823,15 +788,14 @@ public final class PartitionMetadata extends
         /**
          * <code>string topic_name = 1;</code>
          *
-         * @param value The bytes for topicName to set.
+         * @param value The topicName to set.
          * @return This builder for chaining.
          */
-        public Builder setTopicNameBytes(
-                com.google.protobuf.ByteString value) {
+        public Builder setTopicName(
+                java.lang.String value) {
             if (value == null) {
                 throw new NullPointerException();
             }
-            checkByteStringIsUtf8(value);
 
             topicName_ = value;
             onChanged();
@@ -849,6 +813,26 @@ public final class PartitionMetadata extends
             onChanged();
             return this;
         }
+
+        /**
+         * <code>string topic_name = 1;</code>
+         *
+         * @param value The bytes for topicName to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicNameBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            topicName_ = value;
+            onChanged();
+            return this;
+        }
+
+        private int id_;
 
         /**
          * <code>int32 id = 2;</code>
@@ -885,6 +869,8 @@ public final class PartitionMetadata extends
             return this;
         }
 
+        private int ledger_;
+
         /**
          * <code>int32 ledger = 3;</code>
          *
@@ -897,7 +883,6 @@ public final class PartitionMetadata extends
 
         /**
          * <code>int32 ledger = 3;</code>
-         *
          * @param value The ledger to set.
          * @return This builder for chaining.
          */
@@ -920,6 +905,8 @@ public final class PartitionMetadata extends
             return this;
         }
 
+        private int epoch_;
+
         /**
          * <code>int32 epoch = 4;</code>
          *
@@ -932,7 +919,6 @@ public final class PartitionMetadata extends
 
         /**
          * <code>int32 epoch = 4;</code>
-         *
          * @param value The epoch to set.
          * @return This builder for chaining.
          */
@@ -955,6 +941,8 @@ public final class PartitionMetadata extends
             return this;
         }
 
+        private java.lang.Object leaderNodeId_ = "";
+
         /**
          * <code>string leader_node_id = 5;</code>
          *
@@ -971,23 +959,6 @@ public final class PartitionMetadata extends
             } else {
                 return (java.lang.String) ref;
             }
-        }
-
-        /**
-         * <code>string leader_node_id = 5;</code>
-         *
-         * @param value The leaderNodeId to set.
-         * @return This builder for chaining.
-         */
-        public Builder setLeaderNodeId(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            leaderNodeId_ = value;
-            onChanged();
-            return this;
         }
 
         /**
@@ -1012,15 +983,14 @@ public final class PartitionMetadata extends
         /**
          * <code>string leader_node_id = 5;</code>
          *
-         * @param value The bytes for leaderNodeId to set.
+         * @param value The leaderNodeId to set.
          * @return This builder for chaining.
          */
-        public Builder setLeaderNodeIdBytes(
-                com.google.protobuf.ByteString value) {
+        public Builder setLeaderNodeId(
+                java.lang.String value) {
             if (value == null) {
                 throw new NullPointerException();
             }
-            checkByteStringIsUtf8(value);
 
             leaderNodeId_ = value;
             onChanged();
@@ -1038,6 +1008,26 @@ public final class PartitionMetadata extends
             onChanged();
             return this;
         }
+
+        /**
+         * <code>string leader_node_id = 5;</code>
+         *
+         * @param value The bytes for leaderNodeId to set.
+         * @return This builder for chaining.
+         */
+        public Builder setLeaderNodeIdBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            leaderNodeId_ = value;
+            onChanged();
+            return this;
+        }
+
+        private com.google.protobuf.LazyStringList replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
 
         private void ensureReplicaNodeIdsIsMutable() {
             if (!((bitField0_ & 0x00000001) != 0)) {
@@ -1166,9 +1156,10 @@ public final class PartitionMetadata extends
             return this;
         }
 
+        private int version_;
+
         /**
          * <code>int32 version = 7;</code>
-         *
          * @return The version.
          */
         @java.lang.Override
@@ -1178,7 +1169,6 @@ public final class PartitionMetadata extends
 
         /**
          * <code>int32 version = 7;</code>
-         *
          * @param value The version to set.
          * @return This builder for chaining.
          */
@@ -1216,6 +1206,53 @@ public final class PartitionMetadata extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.PartitionMetadata)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.PartitionMetadata)
+    private static final org.meteor.remote.proto.PartitionMetadata DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.PartitionMetadata();
+    }
+
+    public static org.meteor.remote.proto.PartitionMetadata getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PartitionMetadata>
+            PARSER = new com.google.protobuf.AbstractParser<PartitionMetadata>() {
+        @java.lang.Override
+        public PartitionMetadata parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
+
+  public static com.google.protobuf.Parser<PartitionMetadata> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<PartitionMetadata> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.PartitionMetadata getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

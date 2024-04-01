@@ -10,40 +10,7 @@ public final class MessageOffset extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.MessageOffset)
         MessageOffsetOrBuilder {
-    public static final int EPOCH_FIELD_NUMBER = 1;
-    public static final int INDEX_FIELD_NUMBER = 2;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageOffset)
-    private static final org.meteor.remote.proto.MessageOffset DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<MessageOffset>
-            PARSER = new com.google.protobuf.AbstractParser<MessageOffset>() {
-        @java.lang.Override
-        public MessageOffset parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageOffset();
-    }
-
-    private int epoch_;
-    private long index_;
-    private byte memoizedIsInitialized = -1;
 
     // Use MessageOffset.newBuilder() to construct.
     private MessageOffset(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -53,9 +20,147 @@ public final class MessageOffset extends
     private MessageOffset() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new MessageOffset();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageOffset_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.MessageOffset.class,
+                        org.meteor.remote.proto.MessageOffset.Builder.class);
+    }
+
+    public static final int EPOCH_FIELD_NUMBER = 1;
+    private int epoch_;
+
+    /**
+     * <code>int32 epoch = 1;</code>
+     *
+     * @return The epoch.
+     */
+    @java.lang.Override
+    public int getEpoch() {
+        return epoch_;
+    }
+
+    public static final int INDEX_FIELD_NUMBER = 2;
+    private long index_;
+
+    /**
+     * <code>int64 index = 2;</code>
+     *
+     * @return The index.
+     */
+    @java.lang.Override
+    public long getIndex() {
+        return index_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (epoch_ != 0) {
+            output.writeInt32(1, epoch_);
+        }
+        if (index_ != 0L) {
+            output.writeInt64(2, index_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (epoch_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(1, epoch_);
+        }
+        if (index_ != 0L) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt64Size(2, index_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.MessageOffset)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.MessageOffset other = (org.meteor.remote.proto.MessageOffset) obj;
+
+        if (getEpoch()
+                != other.getEpoch()) {
+            return false;
+        }
+        if (getIndex()
+                != other.getIndex()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + EPOCH_FIELD_NUMBER;
+        hash = (53 * hash) + getEpoch();
+        hash = (37 * hash) + INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+                getIndex());
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.MessageOffset parseFrom(
@@ -139,142 +244,17 @@ public final class MessageOffset extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.MessageOffset prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.MessageOffset getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<MessageOffset> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new MessageOffset();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.MessageOffset.class, org.meteor.remote.proto.MessageOffset.Builder.class);
-    }
-
-    /**
-     * <code>int32 epoch = 1;</code>
-     *
-     * @return The epoch.
-     */
-    @java.lang.Override
-    public int getEpoch() {
-        return epoch_;
-    }
-
-    /**
-     * <code>int64 index = 2;</code>
-     *
-     * @return The index.
-     */
-    @java.lang.Override
-    public long getIndex() {
-        return index_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (epoch_ != 0) {
-            output.writeInt32(1, epoch_);
-        }
-        if (index_ != 0L) {
-            output.writeInt64(2, index_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (epoch_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(1, epoch_);
-        }
-        if (index_ != 0L) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt64Size(2, index_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.MessageOffset)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.MessageOffset other = (org.meteor.remote.proto.MessageOffset) obj;
-
-        if (getEpoch()
-                != other.getEpoch()) return false;
-        if (getIndex()
-                != other.getIndex()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + EPOCH_FIELD_NUMBER;
-        hash = (53 * hash) + getEpoch();
-        hash = (37 * hash) + INDEX_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                getIndex());
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -290,16 +270,6 @@ public final class MessageOffset extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<MessageOffset> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageOffset getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.MessageOffset}
      */
@@ -307,20 +277,6 @@ public final class MessageOffset extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.MessageOffset)
             org.meteor.remote.proto.MessageOffsetOrBuilder {
-        private int epoch_;
-        private long index_;
-
-        // Construct using org.meteor.remote.proto.MessageOffset.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageOffset_descriptor;
@@ -331,7 +287,19 @@ public final class MessageOffset extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageOffset_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.MessageOffset.class, org.meteor.remote.proto.MessageOffset.Builder.class);
+                            org.meteor.remote.proto.MessageOffset.class,
+                            org.meteor.remote.proto.MessageOffset.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.MessageOffset.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -422,7 +390,9 @@ public final class MessageOffset extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.MessageOffset other) {
-            if (other == org.meteor.remote.proto.MessageOffset.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.MessageOffset.getDefaultInstance()) {
+                return this;
+            }
             if (other.getEpoch() != 0) {
                 setEpoch(other.getEpoch());
             }
@@ -481,6 +451,8 @@ public final class MessageOffset extends
             return this;
         }
 
+        private int epoch_;
+
         /**
          * <code>int32 epoch = 1;</code>
          *
@@ -515,6 +487,8 @@ public final class MessageOffset extends
             onChanged();
             return this;
         }
+
+        private long index_;
 
         /**
          * <code>int64 index = 2;</code>
@@ -566,6 +540,53 @@ public final class MessageOffset extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.MessageOffset)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageOffset)
+    private static final org.meteor.remote.proto.MessageOffset DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageOffset();
+    }
+
+    public static org.meteor.remote.proto.MessageOffset getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MessageOffset>
+            PARSER = new com.google.protobuf.AbstractParser<MessageOffset>() {
+        @java.lang.Override
+        public MessageOffset parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<MessageOffset> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MessageOffset> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.MessageOffset getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

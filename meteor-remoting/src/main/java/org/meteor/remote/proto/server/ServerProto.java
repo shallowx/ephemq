@@ -4,6 +4,19 @@
 package org.meteor.remote.proto.server;
 
 public final class ServerProto {
+    private ServerProto() {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistryLite registry) {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistry registry) {
+        registerAllExtensions(
+                (com.google.protobuf.ExtensionRegistryLite) registry);
+    }
+
     static final com.google.protobuf.Descriptors.Descriptor
             internal_static_meteor_protobuf_SendMessageRequest_descriptor;
     static final
@@ -144,6 +157,12 @@ public final class ServerProto {
     static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internal_static_meteor_protobuf_MigrateLedgerResponse_fieldAccessorTable;
+
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
+    }
+
     private static com.google.protobuf.Descriptors.FileDescriptor
             descriptor;
 
@@ -377,24 +396,6 @@ public final class ServerProto {
                 internal_static_meteor_protobuf_MigrateLedgerResponse_descriptor,
                 new java.lang.String[]{"Success", "Message",});
         org.meteor.remote.proto.MessageMetadataProto.getDescriptor();
-    }
-
-    private ServerProto() {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistryLite registry) {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistry registry) {
-        registerAllExtensions(
-                (com.google.protobuf.ExtensionRegistryLite) registry);
-    }
-
-    public static com.google.protobuf.Descriptors.FileDescriptor
-    getDescriptor() {
-        return descriptor;
     }
 
     // @@protoc_insertion_point(outer_class_scope)

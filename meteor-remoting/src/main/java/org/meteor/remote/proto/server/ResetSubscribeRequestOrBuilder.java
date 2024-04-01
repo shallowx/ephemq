@@ -23,7 +23,6 @@ public interface ResetSubscribeRequestOrBuilder extends
 
     /**
      * <code>int64 index = 3;</code>
-     *
      * @return The index.
      */
     long getIndex();
@@ -48,5 +47,5 @@ public interface ResetSubscribeRequestOrBuilder extends
      * @return The bytes for topic.
      */
     com.google.protobuf.ByteString
-    getTopicBytes();
+      getTopicBytes();
 }

@@ -11,35 +11,6 @@ public final class CalculatePartitionsRequest extends
         // @@protoc_insertion_point(message_implements:meteor.protobuf.CalculatePartitionsRequest)
         CalculatePartitionsRequestOrBuilder {
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.CalculatePartitionsRequest)
-    private static final org.meteor.remote.proto.server.CalculatePartitionsRequest DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<CalculatePartitionsRequest>
-            PARSER = new com.google.protobuf.AbstractParser<CalculatePartitionsRequest>() {
-        @java.lang.Override
-        public CalculatePartitionsRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CalculatePartitionsRequest();
-    }
-
-    private byte memoizedIsInitialized = -1;
 
     // Use CalculatePartitionsRequest.newBuilder() to construct.
     private CalculatePartitionsRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -49,9 +20,95 @@ public final class CalculatePartitionsRequest extends
     private CalculatePartitionsRequest() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new CalculatePartitionsRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CalculatePartitionsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CalculatePartitionsRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.CalculatePartitionsRequest.class,
+                        org.meteor.remote.proto.server.CalculatePartitionsRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.CalculatePartitionsRequest)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.CalculatePartitionsRequest other =
+                (org.meteor.remote.proto.server.CalculatePartitionsRequest) obj;
+
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.server.CalculatePartitionsRequest parseFrom(
@@ -106,7 +163,8 @@ public final class CalculatePartitionsRequest extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.meteor.remote.proto.server.CalculatePartitionsRequest parseDelimitedFrom(java.io.InputStream input)
+    public static org.meteor.remote.proto.server.CalculatePartitionsRequest parseDelimitedFrom(
+            java.io.InputStream input)
             throws java.io.IOException {
         return com.google.protobuf.GeneratedMessageV3
                 .parseDelimitedWithIOException(PARSER, input);
@@ -135,99 +193,17 @@ public final class CalculatePartitionsRequest extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.server.CalculatePartitionsRequest prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.server.CalculatePartitionsRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<CalculatePartitionsRequest> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new CalculatePartitionsRequest();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CalculatePartitionsRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.CalculatePartitionsRequest.class, org.meteor.remote.proto.server.CalculatePartitionsRequest.Builder.class);
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.server.CalculatePartitionsRequest)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.server.CalculatePartitionsRequest other = (org.meteor.remote.proto.server.CalculatePartitionsRequest) obj;
-
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -243,16 +219,6 @@ public final class CalculatePartitionsRequest extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<CalculatePartitionsRequest> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.CalculatePartitionsRequest getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.CalculatePartitionsRequest}
      */
@@ -260,17 +226,6 @@ public final class CalculatePartitionsRequest extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CalculatePartitionsRequest)
             org.meteor.remote.proto.server.CalculatePartitionsRequestOrBuilder {
-        // Construct using org.meteor.remote.proto.server.CalculatePartitionsRequest.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CalculatePartitionsRequest_descriptor;
@@ -281,7 +236,19 @@ public final class CalculatePartitionsRequest extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CalculatePartitionsRequest_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.CalculatePartitionsRequest.class, org.meteor.remote.proto.server.CalculatePartitionsRequest.Builder.class);
+                            org.meteor.remote.proto.server.CalculatePartitionsRequest.class,
+                            org.meteor.remote.proto.server.CalculatePartitionsRequest.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.server.CalculatePartitionsRequest.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -312,7 +279,8 @@ public final class CalculatePartitionsRequest extends
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CalculatePartitionsRequest buildPartial() {
-            org.meteor.remote.proto.server.CalculatePartitionsRequest result = new org.meteor.remote.proto.server.CalculatePartitionsRequest(this);
+            org.meteor.remote.proto.server.CalculatePartitionsRequest result =
+                    new org.meteor.remote.proto.server.CalculatePartitionsRequest(this);
             onBuilt();
             return result;
         }
@@ -366,7 +334,9 @@ public final class CalculatePartitionsRequest extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.server.CalculatePartitionsRequest other) {
-            if (other == org.meteor.remote.proto.server.CalculatePartitionsRequest.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.server.CalculatePartitionsRequest.getDefaultInstance()) {
+                return this;
+            }
             this.mergeUnknownFields(other.getUnknownFields());
             onChanged();
             return this;
@@ -424,6 +394,53 @@ public final class CalculatePartitionsRequest extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.CalculatePartitionsRequest)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.CalculatePartitionsRequest)
+    private static final org.meteor.remote.proto.server.CalculatePartitionsRequest DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CalculatePartitionsRequest();
+    }
+
+    public static org.meteor.remote.proto.server.CalculatePartitionsRequest getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CalculatePartitionsRequest>
+            PARSER = new com.google.protobuf.AbstractParser<CalculatePartitionsRequest>() {
+        @java.lang.Override
+        public CalculatePartitionsRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<CalculatePartitionsRequest> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CalculatePartitionsRequest> getParserForType() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public org.meteor.remote.proto.server.CalculatePartitionsRequest getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+  }
 
 }
 

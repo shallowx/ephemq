@@ -10,43 +10,7 @@ public final class MessageMetadata extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.MessageMetadata)
         MessageMetadataOrBuilder {
-    public static final int TOPIC_FIELD_NUMBER = 1;
-    public static final int QUEUE_FIELD_NUMBER = 2;
-    public static final int EXTRAS_FIELD_NUMBER = 3;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageMetadata)
-    private static final org.meteor.remote.proto.MessageMetadata DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<MessageMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<MessageMetadata>() {
-        @java.lang.Override
-        public MessageMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageMetadata();
-    }
-
-    private volatile java.lang.Object topic_;
-    private volatile java.lang.Object queue_;
-    private com.google.protobuf.MapField<
-            java.lang.String, java.lang.String> extras_;
-    private byte memoizedIsInitialized = -1;
 
     // Use MessageMetadata.newBuilder() to construct.
     private MessageMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -58,9 +22,334 @@ public final class MessageMetadata extends
         queue_ = "";
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new MessageMetadata();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+        switch (number) {
+            case 3:
+                return internalGetExtras();
+            default:
+                throw new RuntimeException(
+                        "Invalid map field number: " + number);
+        }
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.MessageMetadata.class,
+                        org.meteor.remote.proto.MessageMetadata.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topic_;
+
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string topic = 1;</code>
+     *
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            topic_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int QUEUE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object queue_;
+
+    /**
+     * <code>string queue = 2;</code>
+     *
+     * @return The queue.
+     */
+    @java.lang.Override
+    public java.lang.String getQueue() {
+        java.lang.Object ref = queue_;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                    (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            queue_ = s;
+            return s;
+        }
+    }
+
+    /**
+     * <code>string queue = 2;</code>
+     *
+     * @return The bytes for queue.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+    getQueueBytes() {
+        java.lang.Object ref = queue_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
+            queue_ = b;
+            return b;
+        } else {
+            return (com.google.protobuf.ByteString) ref;
+        }
+    }
+
+    public static final int EXTRAS_FIELD_NUMBER = 3;
+
+    private static final class ExtrasDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+                java.lang.String, java.lang.String> defaultEntry =
+                com.google.protobuf.MapEntry
+                        .<java.lang.String, java.lang.String>newDefaultInstance(
+                                org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor,
+                                com.google.protobuf.WireFormat.FieldType.STRING,
+                                "",
+                                com.google.protobuf.WireFormat.FieldType.STRING,
+                                "");
+    }
+
+    private com.google.protobuf.MapField<
+            java.lang.String, java.lang.String> extras_;
+
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetExtras() {
+        if (extras_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                    ExtrasDefaultEntryHolder.defaultEntry);
+        }
+        return extras_;
+    }
+
+    public int getExtrasCount() {
+        return internalGetExtras().getMap().size();
+    }
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsExtras(
+            java.lang.String key) {
+        if (key == null) {
+            throw new NullPointerException("map key");
+        }
+        return internalGetExtras().getMap().containsKey(key);
+    }
+
+    /**
+     * Use {@link #getExtrasMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getExtras() {
+        return getExtrasMap();
+    }
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getExtrasMap() {
+        return internalGetExtras().getMap();
+    }
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getExtrasOrDefault(
+            java.lang.String key,
+            java.lang.String defaultValue) {
+        if (key == null) {
+            throw new NullPointerException("map key");
+        }
+        java.util.Map<java.lang.String, java.lang.String> map =
+                internalGetExtras().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getExtrasOrThrow(
+            java.lang.String key) {
+        if (key == null) {
+            throw new NullPointerException("map key");
+        }
+        java.util.Map<java.lang.String, java.lang.String> map =
+                internalGetExtras().getMap();
+        if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, queue_);
+        }
+        com.google.protobuf.GeneratedMessageV3
+                .serializeStringMapTo(
+                        output,
+                        internalGetExtras(),
+                        ExtrasDefaultEntryHolder.defaultEntry,
+                        3);
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, queue_);
+        }
+        for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+                : internalGetExtras().getMap().entrySet()) {
+            com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+                    extras__ = ExtrasDefaultEntryHolder.defaultEntry.newBuilderForType()
+                    .setKey(entry.getKey())
+                    .setValue(entry.getValue())
+                    .build();
+            size += com.google.protobuf.CodedOutputStream
+                    .computeMessageSize(3, extras__);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.MessageMetadata)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.MessageMetadata other = (org.meteor.remote.proto.MessageMetadata) obj;
+
+        if (!getTopic()
+                .equals(other.getTopic())) {
+            return false;
+        }
+        if (!getQueue()
+                .equals(other.getQueue())) {
+            return false;
+        }
+        if (!internalGetExtras().equals(
+                other.internalGetExtras())) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + QUEUE_FIELD_NUMBER;
+        hash = (53 * hash) + getQueue().hashCode();
+        if (!internalGetExtras().getMap().isEmpty()) {
+            hash = (37 * hash) + EXTRAS_FIELD_NUMBER;
+            hash = (53 * hash) + internalGetExtras().hashCode();
+        }
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.MessageMetadata parseFrom(
@@ -144,310 +433,17 @@ public final class MessageMetadata extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.MessageMetadata prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.MessageMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<MessageMetadata> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new MessageMetadata();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @SuppressWarnings({"rawtypes"})
-    @java.lang.Override
-    protected com.google.protobuf.MapField internalGetMapField(
-            int number) {
-        switch (number) {
-            case 3:
-                return internalGetExtras();
-            default:
-                throw new RuntimeException(
-                        "Invalid map field number: " + number);
-        }
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.MessageMetadata.class, org.meteor.remote.proto.MessageMetadata.Builder.class);
-    }
-
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The topic.
-     */
-    @java.lang.Override
-    public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            topic_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string topic = 1;</code>
-     *
-     * @return The bytes for topic.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getTopicBytes() {
-        java.lang.Object ref = topic_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            topic_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    /**
-     * <code>string queue = 2;</code>
-     *
-     * @return The queue.
-     */
-    @java.lang.Override
-    public java.lang.String getQueue() {
-        java.lang.Object ref = queue_;
-        if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-        } else {
-            com.google.protobuf.ByteString bs =
-                    (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            queue_ = s;
-            return s;
-        }
-    }
-
-    /**
-     * <code>string queue = 2;</code>
-     *
-     * @return The bytes for queue.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-    getQueueBytes() {
-        java.lang.Object ref = queue_;
-        if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b =
-                    com.google.protobuf.ByteString.copyFromUtf8(
-                            (java.lang.String) ref);
-            queue_ = b;
-            return b;
-        } else {
-            return (com.google.protobuf.ByteString) ref;
-        }
-    }
-
-    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
-    internalGetExtras() {
-        if (extras_ == null) {
-            return com.google.protobuf.MapField.emptyMapField(
-                    ExtrasDefaultEntryHolder.defaultEntry);
-        }
-        return extras_;
-    }
-
-    public int getExtrasCount() {
-        return internalGetExtras().getMap().size();
-    }
-
-    /**
-     * <code>map&lt;string, string&gt; extras = 3;</code>
-     */
-
-    @java.lang.Override
-    public boolean containsExtras(
-            java.lang.String key) {
-        if (key == null) {
-            throw new NullPointerException("map key");
-        }
-        return internalGetExtras().getMap().containsKey(key);
-    }
-
-    /**
-     * Use {@link #getExtrasMap()} instead.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, java.lang.String> getExtras() {
-        return getExtrasMap();
-    }
-
-    /**
-     * <code>map&lt;string, string&gt; extras = 3;</code>
-     */
-    @java.lang.Override
-
-    public java.util.Map<java.lang.String, java.lang.String> getExtrasMap() {
-        return internalGetExtras().getMap();
-    }
-
-    /**
-     * <code>map&lt;string, string&gt; extras = 3;</code>
-     */
-    @java.lang.Override
-
-    public java.lang.String getExtrasOrDefault(
-            java.lang.String key,
-            java.lang.String defaultValue) {
-        if (key == null) {
-            throw new NullPointerException("map key");
-        }
-        java.util.Map<java.lang.String, java.lang.String> map =
-                internalGetExtras().getMap();
-        return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-
-    /**
-     * <code>map&lt;string, string&gt; extras = 3;</code>
-     */
-    @java.lang.Override
-
-    public java.lang.String getExtrasOrThrow(
-            java.lang.String key) {
-        if (key == null) {
-            throw new NullPointerException("map key");
-        }
-        java.util.Map<java.lang.String, java.lang.String> map =
-                internalGetExtras().getMap();
-        if (!map.containsKey(key)) {
-            throw new java.lang.IllegalArgumentException();
-        }
-        return map.get(key);
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 2, queue_);
-        }
-        com.google.protobuf.GeneratedMessageV3
-                .serializeStringMapTo(
-                        output,
-                        internalGetExtras(),
-                        ExtrasDefaultEntryHolder.defaultEntry,
-                        3);
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
-        }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(queue_)) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, queue_);
-        }
-        for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
-                : internalGetExtras().getMap().entrySet()) {
-            com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
-                    extras__ = ExtrasDefaultEntryHolder.defaultEntry.newBuilderForType()
-                    .setKey(entry.getKey())
-                    .setValue(entry.getValue())
-                    .build();
-            size += com.google.protobuf.CodedOutputStream
-                    .computeMessageSize(3, extras__);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.MessageMetadata)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.MessageMetadata other = (org.meteor.remote.proto.MessageMetadata) obj;
-
-        if (!getTopic()
-                .equals(other.getTopic())) return false;
-        if (!getQueue()
-                .equals(other.getQueue())) return false;
-        if (!internalGetExtras().equals(
-                other.internalGetExtras())) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
-        hash = (53 * hash) + getTopic().hashCode();
-        hash = (37 * hash) + QUEUE_FIELD_NUMBER;
-        hash = (53 * hash) + getQueue().hashCode();
-        if (!internalGetExtras().getMap().isEmpty()) {
-            hash = (37 * hash) + EXTRAS_FIELD_NUMBER;
-            hash = (53 * hash) + internalGetExtras().hashCode();
-        }
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -463,28 +459,6 @@ public final class MessageMetadata extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<MessageMetadata> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.MessageMetadata getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
-    private static final class ExtrasDefaultEntryHolder {
-        static final com.google.protobuf.MapEntry<
-                java.lang.String, java.lang.String> defaultEntry =
-                com.google.protobuf.MapEntry
-                        .<java.lang.String, java.lang.String>newDefaultInstance(
-                                org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_ExtrasEntry_descriptor,
-                                com.google.protobuf.WireFormat.FieldType.STRING,
-                                "",
-                                com.google.protobuf.WireFormat.FieldType.STRING,
-                                "");
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.MessageMetadata}
      */
@@ -492,23 +466,6 @@ public final class MessageMetadata extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.MessageMetadata)
             org.meteor.remote.proto.MessageMetadataOrBuilder {
-        private int bitField0_;
-        private java.lang.Object topic_ = "";
-        private java.lang.Object queue_ = "";
-        private com.google.protobuf.MapField<
-                java.lang.String, java.lang.String> extras_;
-
-        // Construct using org.meteor.remote.proto.MessageMetadata.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_descriptor;
@@ -543,7 +500,19 @@ public final class MessageMetadata extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.MessageMetadata.class, org.meteor.remote.proto.MessageMetadata.Builder.class);
+                            org.meteor.remote.proto.MessageMetadata.class,
+                            org.meteor.remote.proto.MessageMetadata.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.MessageMetadata.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -558,7 +527,7 @@ public final class MessageMetadata extends
         }
 
         @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
+    public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
             return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_MessageMetadata_descriptor;
         }
@@ -638,7 +607,9 @@ public final class MessageMetadata extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.MessageMetadata other) {
-            if (other == org.meteor.remote.proto.MessageMetadata.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.MessageMetadata.getDefaultInstance()) {
+                return this;
+            }
             if (!other.getTopic().isEmpty()) {
                 topic_ = other.topic_;
                 onChanged();
@@ -709,6 +680,10 @@ public final class MessageMetadata extends
             return this;
         }
 
+        private int bitField0_;
+
+        private java.lang.Object topic_ = "";
+
         /**
          * <code>string topic = 1;</code>
          *
@@ -724,6 +699,24 @@ public final class MessageMetadata extends
                 return s;
             } else {
                 return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string topic = 1;</code>
+         * @return The bytes for topic.
+         */
+        public com.google.protobuf.ByteString
+        getTopicBytes() {
+            java.lang.Object ref = topic_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                topic_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
             }
         }
 
@@ -747,20 +740,13 @@ public final class MessageMetadata extends
         /**
          * <code>string topic = 1;</code>
          *
-         * @return The bytes for topic.
+         * @return This builder for chaining.
          */
-        public com.google.protobuf.ByteString
-        getTopicBytes() {
-            java.lang.Object ref = topic_;
-            if (ref instanceof String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                topic_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
+        public Builder clearTopic() {
+
+            topic_ = getDefaultInstance().getTopic();
+            onChanged();
+            return this;
         }
 
         /**
@@ -781,17 +767,7 @@ public final class MessageMetadata extends
             return this;
         }
 
-        /**
-         * <code>string topic = 1;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearTopic() {
-
-            topic_ = getDefaultInstance().getTopic();
-            onChanged();
-            return this;
-        }
+        private java.lang.Object queue_ = "";
 
         /**
          * <code>string queue = 2;</code>
@@ -809,23 +785,6 @@ public final class MessageMetadata extends
             } else {
                 return (java.lang.String) ref;
             }
-        }
-
-        /**
-         * <code>string queue = 2;</code>
-         *
-         * @param value The queue to set.
-         * @return This builder for chaining.
-         */
-        public Builder setQueue(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            queue_ = value;
-            onChanged();
-            return this;
         }
 
         /**
@@ -850,15 +809,14 @@ public final class MessageMetadata extends
         /**
          * <code>string queue = 2;</code>
          *
-         * @param value The bytes for queue to set.
+         * @param value The queue to set.
          * @return This builder for chaining.
          */
-        public Builder setQueueBytes(
-                com.google.protobuf.ByteString value) {
+        public Builder setQueue(
+                java.lang.String value) {
             if (value == null) {
                 throw new NullPointerException();
             }
-            checkByteStringIsUtf8(value);
 
             queue_ = value;
             onChanged();
@@ -876,6 +834,27 @@ public final class MessageMetadata extends
             onChanged();
             return this;
         }
+
+        /**
+         * <code>string queue = 2;</code>
+         *
+         * @param value The bytes for queue to set.
+         * @return This builder for chaining.
+         */
+        public Builder setQueueBytes(
+                com.google.protobuf.ByteString value) {
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            checkByteStringIsUtf8(value);
+
+            queue_ = value;
+            onChanged();
+            return this;
+        }
+
+        private com.google.protobuf.MapField<
+                java.lang.String, java.lang.String> extras_;
 
         private com.google.protobuf.MapField<java.lang.String, java.lang.String>
         internalGetExtras() {
@@ -1042,6 +1021,53 @@ public final class MessageMetadata extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.MessageMetadata)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageMetadata)
+    private static final org.meteor.remote.proto.MessageMetadata DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageMetadata();
+    }
+
+    public static org.meteor.remote.proto.MessageMetadata getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MessageMetadata>
+            PARSER = new com.google.protobuf.AbstractParser<MessageMetadata>() {
+        @java.lang.Override
+        public MessageMetadata parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<MessageMetadata> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<MessageMetadata> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.MessageMetadata getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

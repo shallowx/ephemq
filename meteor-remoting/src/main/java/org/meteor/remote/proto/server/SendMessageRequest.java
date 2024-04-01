@@ -10,40 +10,7 @@ public final class SendMessageRequest extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:meteor.protobuf.SendMessageRequest)
         SendMessageRequestOrBuilder {
-    public static final int LEDGER_FIELD_NUMBER = 1;
-    public static final int MARKER_FIELD_NUMBER = 2;
     private static final long serialVersionUID = 0L;
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.SendMessageRequest)
-    private static final org.meteor.remote.proto.server.SendMessageRequest DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<SendMessageRequest>
-            PARSER = new com.google.protobuf.AbstractParser<SendMessageRequest>() {
-        @java.lang.Override
-        public SendMessageRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SendMessageRequest();
-    }
-
-    private int ledger_;
-    private int marker_;
-    private byte memoizedIsInitialized = -1;
 
     // Use SendMessageRequest.newBuilder() to construct.
     private SendMessageRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -53,9 +20,147 @@ public final class SendMessageRequest extends
     private SendMessageRequest() {
     }
 
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new SendMessageRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
+    }
+
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
         return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SendMessageRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SendMessageRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.SendMessageRequest.class,
+                        org.meteor.remote.proto.server.SendMessageRequest.Builder.class);
+    }
+
+    public static final int LEDGER_FIELD_NUMBER = 1;
+    private int ledger_;
+
+    /**
+     * <code>int32 ledger = 1;</code>
+     *
+     * @return The ledger.
+     */
+    @java.lang.Override
+    public int getLedger() {
+        return ledger_;
+    }
+
+    public static final int MARKER_FIELD_NUMBER = 2;
+    private int marker_;
+
+    /**
+     * <code>int32 marker = 2;</code>
+     *
+     * @return The marker.
+     */
+    @java.lang.Override
+    public int getMarker() {
+        return marker_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    @java.lang.Override
+    public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) {
+            return true;
+        }
+        if (isInitialized == 0) {
+            return false;
+        }
+
+        memoizedIsInitialized = 1;
+        return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+        if (ledger_ != 0) {
+            output.writeInt32(1, ledger_);
+        }
+        if (marker_ != 0) {
+            output.writeInt32(2, marker_);
+        }
+        getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) {
+            return size;
+        }
+
+        size = 0;
+        if (ledger_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(1, ledger_);
+        }
+        if (marker_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+                    .computeInt32Size(2, marker_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSize = size;
+        return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof org.meteor.remote.proto.server.SendMessageRequest)) {
+            return super.equals(obj);
+        }
+        org.meteor.remote.proto.server.SendMessageRequest other =
+                (org.meteor.remote.proto.server.SendMessageRequest) obj;
+
+        if (getLedger()
+                != other.getLedger()) {
+            return false;
+        }
+        if (getMarker()
+                != other.getMarker()) {
+            return false;
+        }
+        if (!getUnknownFields().equals(other.getUnknownFields())) {
+            return false;
+        }
+        return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
+        hash = (53 * hash) + getLedger();
+        hash = (37 * hash) + MARKER_FIELD_NUMBER;
+        hash = (53 * hash) + getMarker();
+        hash = (29 * hash) + getUnknownFields().hashCode();
+        memoizedHashCode = hash;
+        return hash;
     }
 
     public static org.meteor.remote.proto.server.SendMessageRequest parseFrom(
@@ -139,141 +244,17 @@ public final class SendMessageRequest extends
                 .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() {
+        return newBuilder();
+    }
+
     public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
     }
 
     public static Builder newBuilder(org.meteor.remote.proto.server.SendMessageRequest prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    public static org.meteor.remote.proto.server.SendMessageRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<SendMessageRequest> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new SendMessageRequest();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SendMessageRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.SendMessageRequest.class, org.meteor.remote.proto.server.SendMessageRequest.Builder.class);
-    }
-
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    @java.lang.Override
-    public int getLedger() {
-        return ledger_;
-    }
-
-    /**
-     * <code>int32 marker = 2;</code>
-     *
-     * @return The marker.
-     */
-    @java.lang.Override
-    public int getMarker() {
-        return marker_;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-        if (ledger_ != 0) {
-            output.writeInt32(1, ledger_);
-        }
-        if (marker_ != 0) {
-            output.writeInt32(2, marker_);
-        }
-        getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (ledger_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(1, ledger_);
-        }
-        if (marker_ != 0) {
-            size += com.google.protobuf.CodedOutputStream
-                    .computeInt32Size(2, marker_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof org.meteor.remote.proto.server.SendMessageRequest)) {
-            return super.equals(obj);
-        }
-        org.meteor.remote.proto.server.SendMessageRequest other = (org.meteor.remote.proto.server.SendMessageRequest) obj;
-
-        if (getLedger()
-                != other.getLedger()) return false;
-        if (getMarker()
-                != other.getMarker()) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-        if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + LEDGER_FIELD_NUMBER;
-        hash = (53 * hash) + getLedger();
-        hash = (37 * hash) + MARKER_FIELD_NUMBER;
-        hash = (53 * hash) + getMarker();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() {
-        return newBuilder();
     }
 
     @java.lang.Override
@@ -289,16 +270,6 @@ public final class SendMessageRequest extends
         return builder;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<SendMessageRequest> getParserForType() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    public org.meteor.remote.proto.server.SendMessageRequest getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-    }
-
     /**
      * Protobuf type {@code meteor.protobuf.SendMessageRequest}
      */
@@ -306,20 +277,6 @@ public final class SendMessageRequest extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.SendMessageRequest)
             org.meteor.remote.proto.server.SendMessageRequestOrBuilder {
-        private int ledger_;
-        private int marker_;
-
-        // Construct using org.meteor.remote.proto.server.SendMessageRequest.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-
-        }
-
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SendMessageRequest_descriptor;
@@ -330,7 +287,19 @@ public final class SendMessageRequest extends
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SendMessageRequest_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.SendMessageRequest.class, org.meteor.remote.proto.server.SendMessageRequest.Builder.class);
+                            org.meteor.remote.proto.server.SendMessageRequest.class,
+                            org.meteor.remote.proto.server.SendMessageRequest.Builder.class);
+        }
+
+        // Construct using org.meteor.remote.proto.server.SendMessageRequest.newBuilder()
+        private Builder() {
+
+        }
+
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+
         }
 
         @java.lang.Override
@@ -365,7 +334,8 @@ public final class SendMessageRequest extends
 
         @java.lang.Override
         public org.meteor.remote.proto.server.SendMessageRequest buildPartial() {
-            org.meteor.remote.proto.server.SendMessageRequest result = new org.meteor.remote.proto.server.SendMessageRequest(this);
+            org.meteor.remote.proto.server.SendMessageRequest result =
+                    new org.meteor.remote.proto.server.SendMessageRequest(this);
             result.ledger_ = ledger_;
             result.marker_ = marker_;
             onBuilt();
@@ -421,7 +391,9 @@ public final class SendMessageRequest extends
         }
 
         public Builder mergeFrom(org.meteor.remote.proto.server.SendMessageRequest other) {
-            if (other == org.meteor.remote.proto.server.SendMessageRequest.getDefaultInstance()) return this;
+            if (other == org.meteor.remote.proto.server.SendMessageRequest.getDefaultInstance()) {
+                return this;
+            }
             if (other.getLedger() != 0) {
                 setLedger(other.getLedger());
             }
@@ -480,6 +452,8 @@ public final class SendMessageRequest extends
             return this;
         }
 
+        private int ledger_;
+
         /**
          * <code>int32 ledger = 1;</code>
          *
@@ -514,6 +488,8 @@ public final class SendMessageRequest extends
             onChanged();
             return this;
         }
+
+        private int marker_;
 
         /**
          * <code>int32 marker = 2;</code>
@@ -565,6 +541,53 @@ public final class SendMessageRequest extends
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.SendMessageRequest)
     }
+
+    // @@protoc_insertion_point(class_scope:meteor.protobuf.SendMessageRequest)
+    private static final org.meteor.remote.proto.server.SendMessageRequest DEFAULT_INSTANCE;
+
+    static {
+        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SendMessageRequest();
+    }
+
+    public static org.meteor.remote.proto.server.SendMessageRequest getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SendMessageRequest>
+            PARSER = new com.google.protobuf.AbstractParser<SendMessageRequest>() {
+        @java.lang.Override
+        public SendMessageRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+                builder.mergeFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (com.google.protobuf.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                        .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+        }
+    };
+
+    public static com.google.protobuf.Parser<SendMessageRequest> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SendMessageRequest> getParserForType() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public org.meteor.remote.proto.server.SendMessageRequest getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
 
 }
 

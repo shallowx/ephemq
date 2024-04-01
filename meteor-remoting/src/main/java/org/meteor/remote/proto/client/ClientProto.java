@@ -4,6 +4,19 @@
 package org.meteor.remote.proto.client;
 
 public final class ClientProto {
+    private ClientProto() {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistryLite registry) {
+    }
+
+    public static void registerAllExtensions(
+            com.google.protobuf.ExtensionRegistry registry) {
+        registerAllExtensions(
+                (com.google.protobuf.ExtensionRegistryLite) registry);
+    }
+
     static final com.google.protobuf.Descriptors.Descriptor
             internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
     static final
@@ -29,6 +42,12 @@ public final class ClientProto {
     static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internal_static_meteor_protobuf_SyncMessageSignal_fieldAccessorTable;
+
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
+    }
+
     private static com.google.protobuf.Descriptors.FileDescriptor
             descriptor;
 
@@ -42,7 +61,9 @@ public final class ClientProto {
                         "\n\n\006UPDATE\020\001\022\n\n\006DELETE\020\003\"@\n\021NodeOfflineSi" +
                         "gnal\022+\n\004node\030\001 \001(\0132\035.meteor.protobuf.Nod" +
                         "eMetadata\"Q\n\021MessagePushSignal\022\016\n\006ledger" +
-                        "\030\001 \001(\005\022\016\n\006marker\030\002 \001(\005\022\r\n\005epoch\030\003 \001(\005\022\r\n" +
+                        "\030\001 \001(\005\022\016\n\006marker\030\002 \001(\005\022\r\n\005epoch\030\003 \001"
+                        + "(\005\022\r\n"
+                        +
                         "\005index\030\004 \001(\003\"\243\001\n\023LedgerRetiredSignal\022-\n\006" +
                         "broker\030\001 \001(\0132\035.meteor.protobuf.NodeMetad" +
                         "ata\022\016\n\006ledger\030\002 \001(\005\022\r\n\005topic\030\003 \001(\t\022\021\n\tpa" +
@@ -88,24 +109,6 @@ public final class ClientProto {
                 internal_static_meteor_protobuf_SyncMessageSignal_descriptor,
                 new java.lang.String[]{"Ledger", "Count",});
         org.meteor.remote.proto.MessageMetadataProto.getDescriptor();
-    }
-
-    private ClientProto() {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistryLite registry) {
-    }
-
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistry registry) {
-        registerAllExtensions(
-                (com.google.protobuf.ExtensionRegistryLite) registry);
-    }
-
-    public static com.google.protobuf.Descriptors.FileDescriptor
-    getDescriptor() {
-        return descriptor;
     }
 
     // @@protoc_insertion_point(outer_class_scope)
