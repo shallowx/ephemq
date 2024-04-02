@@ -1,20 +1,20 @@
 package org.meteor.internal;
 
+import static org.meteor.client.util.MessageConstants.CHANNEL_SEMAPHORE;
+import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.ID;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.internal.StringUtil;
-import org.meteor.client.internal.ClientChannel;
+import java.net.SocketAddress;
+import java.util.concurrent.Semaphore;
+import javax.annotation.Nonnull;
+import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.config.CommonConfig;
 import org.meteor.coordinator.Coordinator;
-
-import javax.annotation.Nonnull;
-import java.net.SocketAddress;
-import java.util.concurrent.Semaphore;
-
-import static org.meteor.client.util.MessageConstants.CHANNEL_SEMAPHORE;
-import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class InternalClientChannel extends ClientChannel {
     private final CommonConfig configuration;

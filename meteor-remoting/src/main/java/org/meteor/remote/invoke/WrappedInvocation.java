@@ -1,15 +1,13 @@
 package org.meteor.remote.invoke;
 
+import static org.meteor.common.util.ObjectUtil.checkPositive;
+import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
-
 import javax.annotation.concurrent.Immutable;
-
-import static org.meteor.common.util.ObjectUtil.checkPositive;
-import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
 public final class WrappedInvocation extends AbstractReferenceCounted {
@@ -23,6 +21,8 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
     private int command;
     private ByteBuf data;
     private long expired;
+    private byte compressed;
+    private byte batch;
     private InvokedFeedback<ByteBuf> feedback;
 
     public WrappedInvocation(Recycler.Handle<WrappedInvocation> handle) {
@@ -30,10 +30,11 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
     }
 
     public static WrappedInvocation newInvocation(int command, ByteBuf data) {
-        return newInvocation(command, data, 0, null);
+        return newInvocation(command, data, 0, null, (byte) 0, (byte) 0);
     }
 
-    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires, InvokedFeedback<ByteBuf> feedback) {
+    public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires,
+                                                  InvokedFeedback<ByteBuf> feedback, byte compressed, byte batch) {
         checkPositive(command, "Command");
 
         final WrappedInvocation invocation = RECYCLER.get();
@@ -41,6 +42,8 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         invocation.command = command;
         invocation.feedback = feedback;
         invocation.expired = expires;
+        invocation.compressed = compressed;
+        invocation.batch = batch;
         invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
         return invocation;
@@ -56,6 +59,14 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
 
     public long expired() {
         return expired;
+    }
+
+    public byte isCompressed() {
+        return compressed;
+    }
+
+    public byte isBatch() {
+        return batch;
     }
 
     public InvokedFeedback<ByteBuf> feedback() {

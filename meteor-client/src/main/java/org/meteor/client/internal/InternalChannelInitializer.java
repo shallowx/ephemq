@@ -8,6 +8,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
+import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentMap;
+import org.meteor.client.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessageDecoder;
@@ -24,9 +27,6 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-
-import java.net.SocketAddress;
-import java.util.concurrent.ConcurrentMap;
 
 public class InternalChannelInitializer extends ChannelInitializer<SocketChannel> {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalChannelInitializer.class);

@@ -2,20 +2,19 @@ package org.meteor.cli.topic;
 
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.meteor.cli.core.Command;
-import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientChannel;
-import org.meteor.remote.proto.PartitionMetadata;
-import org.meteor.remote.proto.TopicInfo;
-import org.meteor.remote.util.NetworkUtil;
-
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.meteor.cli.core.Command;
+import org.meteor.client.ClientChannel;
+import org.meteor.client.internal.Client;
+import org.meteor.remote.proto.PartitionMetadata;
+import org.meteor.remote.proto.TopicInfo;
+import org.meteor.remote.util.NetworkUtil;
 
 public class TopicListCommand implements Command {
     @Override

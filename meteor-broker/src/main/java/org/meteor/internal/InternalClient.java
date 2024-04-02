@@ -1,12 +1,20 @@
 package org.meteor.internal;
 
+import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
+import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.ID;
+import static org.meteor.metrics.config.MetricsConstants.NAME;
+import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
+import java.net.SocketAddress;
+import javax.annotation.Nonnull;
+import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
@@ -16,12 +24,6 @@ import org.meteor.config.CommonConfig;
 import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.DeleteTopicResponse;
-
-import javax.annotation.Nonnull;
-import java.net.SocketAddress;
-
-import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
-import static org.meteor.metrics.config.MetricsConstants.*;
 
 public class InternalClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClient.class);

@@ -1,5 +1,9 @@
 package org.meteor.remote.codec;
 
+import static java.lang.Integer.MAX_VALUE;
+import static org.meteor.remote.codec.MessageDecoder.State.READ_MAGIC_NUMBER;
+import static org.meteor.remote.codec.MessageDecoder.State.READ_MESSAGE_COMPLETED;
+import static org.meteor.remote.codec.MessageDecoder.State.READ_MESSAGE_LENGTH;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
@@ -9,9 +13,6 @@ import io.netty.handler.codec.DecoderException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
-
-import static java.lang.Integer.MAX_VALUE;
-import static org.meteor.remote.codec.MessageDecoder.State.*;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageDecoder.class);
@@ -100,9 +101,11 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final int command = buf.readInt();
                 final long feedback = buf.readLong();
+                final byte compress = buf.readByte();
+                final byte batch = buf.readByte();
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
                 this.state = READ_MAGIC_NUMBER;
-                return MessagePacket.newPacket(feedback, command, body);
+                return MessagePacket.newPacket(feedback, command, body, compress, batch);
             }
             default: {
                 throw new DecoderException("Invalid decode state[" + state + "]");

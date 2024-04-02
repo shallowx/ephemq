@@ -3,11 +3,14 @@ package org.meteor.internal;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
+import java.net.InetSocketAddress;
+import java.util.LinkedList;
+import java.util.Properties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.meteor.client.internal.ClientChannel;
+import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.config.CommonConfig;
@@ -17,10 +20,6 @@ import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-
-import java.net.InetSocketAddress;
-import java.util.LinkedList;
-import java.util.Properties;
 
 public class InternalClientTests {
     private Channel embeddedChannel;

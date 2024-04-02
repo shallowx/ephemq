@@ -1,11 +1,10 @@
 package org.meteor.proxy.coordinator;
 
-import org.meteor.client.internal.ClientChannel;
-import org.meteor.coordinator.TopicCoordinator;
-import org.meteor.remote.proto.TopicInfo;
-
 import java.util.List;
 import java.util.Map;
+import org.meteor.client.ClientChannel;
+import org.meteor.coordinator.TopicCoordinator;
+import org.meteor.remote.proto.TopicInfo;
 
 public interface ProxyTopicCoordinator extends TopicCoordinator {
     Map<String, TopicInfo> getTopicMetadata(List<String> topics);

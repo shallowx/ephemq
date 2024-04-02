@@ -1,4 +1,4 @@
-package org.meteor.client.internal;
+package org.meteor.client;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -7,18 +7,18 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
-import org.meteor.remote.invoke.Callable;
-import org.meteor.remote.invoke.GenericInvokedFeedback;
-import org.meteor.remote.invoke.InvokedFeedback;
-import org.meteor.remote.invoke.WrappedInvocation;
-import org.meteor.remote.util.ByteBufUtil;
-
-import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import javax.annotation.Nonnull;
+import org.meteor.client.internal.ClientConfig;
+import org.meteor.remote.invoke.Callable;
+import org.meteor.remote.invoke.GenericInvokedFeedback;
+import org.meteor.remote.invoke.InvokedFeedback;
+import org.meteor.remote.invoke.WrappedInvocation;
+import org.meteor.remote.util.ByteBufUtil;
 
 public class ClientChannel implements MeterBinder {
     private final SocketAddress address;
@@ -93,7 +93,7 @@ public class ClientChannel implements MeterBinder {
         return id.hashCode();
     }
 
-    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback) {
+    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback, byte compress, byte batch) {
         int length = ByteBufUtil.bufLength(data);
         try {
             long time = System.currentTimeMillis();
@@ -108,7 +108,9 @@ public class ClientChannel implements MeterBinder {
                             semaphore.release();
                             callback.onCompleted(v, c);
                         });
-                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback));
+                        channel.writeAndFlush(
+                                WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback,
+                                        compress, batch));
                     }
                 } catch (Throwable t) {
                     semaphore.release();

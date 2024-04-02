@@ -1,17 +1,15 @@
 package org.meteor.client;
 
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.ClusterInfo;
-
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class ClientTests {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientTests.class);

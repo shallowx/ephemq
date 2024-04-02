@@ -1,5 +1,6 @@
 package org.meteor.remote.codec;
 
+import static org.meteor.remote.util.ByteBufUtil.release;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandler;
@@ -10,8 +11,6 @@ import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-
-import static org.meteor.remote.util.ByteBufUtil.release;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
@@ -30,11 +29,13 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         if (msg instanceof final MessagePacket packet) {
             final long feedback = packet.feedback();
             final int command = packet.command();
+            final byte compress = packet.isCompressed();
+            final byte batch = packet.isBatch();
             final ByteBuf body = packet.body().retain();
 
             final ByteBuf header;
             try {
-                header = encodeHeader(ctx.alloc(), command, feedback, body.readableBytes());
+                header = encodeHeader(ctx.alloc(), command, feedback, body.readableBytes(), compress, batch);
             } catch (Throwable cause) {
                 release(body);
                 if (logger.isDebugEnabled()) {
@@ -51,7 +52,8 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         }
     }
 
-    private ByteBuf encodeHeader(ByteBufAllocator alloc, int command, long feedback, int contentLength) {
+    private ByteBuf encodeHeader(ByteBufAllocator alloc, int command, long feedback, int contentLength, byte compress,
+                                 byte batch) {
         if (contentLength > MessagePacket.MAX_BODY_LENGTH) {
             throw new EncoderException("The message body[" + contentLength + "] bytes too long, limit[" + MessagePacket.MAX_BODY_LENGTH + "] bytes");
         }
@@ -61,6 +63,8 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
         header.writeMedium(contentLength + MessagePacket.HEADER_LENGTH);
         header.writeInt(command);
         header.writeLong(feedback);
+        header.writeByte(compress);
+        header.writeByte(batch);
         return header;
     }
 

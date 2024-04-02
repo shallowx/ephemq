@@ -1,5 +1,12 @@
 package org.meteor.remote.handle;
 
+import static org.meteor.common.util.ObjectUtil.checkNotNull;
+import static org.meteor.remote.invoke.RemoteException.of;
+import static org.meteor.remote.util.ByteBufUtil.buf2String;
+import static org.meteor.remote.util.ByteBufUtil.release;
+import static org.meteor.remote.util.NetworkUtil.newFailurePacket;
+import static org.meteor.remote.util.NetworkUtil.newSuccessPacket;
+import static org.meteor.remote.util.NetworkUtil.switchAddress;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -7,22 +14,21 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.invoke.*;
-
-import javax.annotation.concurrent.Immutable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import static org.meteor.common.util.ObjectUtil.checkNotNull;
-import static org.meteor.remote.invoke.RemoteException.of;
-import static org.meteor.remote.util.ByteBufUtil.buf2String;
-import static org.meteor.remote.util.ByteBufUtil.release;
-import static org.meteor.remote.util.NetworkUtil.*;
+import javax.annotation.concurrent.Immutable;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.codec.MessagePacket;
+import org.meteor.remote.invoke.CallableSafeInitializer;
+import org.meteor.remote.invoke.GenericCallableSafeInitializer;
+import org.meteor.remote.invoke.GenericInvokedFeedback;
+import org.meteor.remote.invoke.InvokedFeedback;
+import org.meteor.remote.invoke.Processor;
+import org.meteor.remote.invoke.RemoteException;
+import org.meteor.remote.invoke.WrappedInvocation;
 
 @Immutable
 public class ProcessDuplexHandler extends ChannelDuplexHandler {
@@ -148,7 +154,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             long feedback = initializer.get(invocation.expired(), invocation.feedback());
             MessagePacket packet;
             try {
-                packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain());
+                packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain(),
+                        invocation.isCompressed(), invocation.isBatch());
             } catch (Throwable cause) {
                 initializer.release(feedback, r -> r.failure(cause));
                 throw cause;

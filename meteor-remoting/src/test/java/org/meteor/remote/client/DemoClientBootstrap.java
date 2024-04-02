@@ -3,9 +3,20 @@ package org.meteor.remote.client;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.EventExecutorGroup;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessageDecoder;
@@ -14,14 +25,6 @@ import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.util.NetworkUtil;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("all")
 public class DemoClientBootstrap {
@@ -125,7 +128,8 @@ public class DemoClientBootstrap {
         long now = System.currentTimeMillis();
         if (semaphore.tryAcquire(timeout, TimeUnit.SECONDS)) {
             long expires = now + timeout + 1000L;
-            WrappedInvocation awareInvocation = WrappedInvocation.newInvocation(1, data.retainedSlice(), expires, null);
+            WrappedInvocation awareInvocation =
+                    WrappedInvocation.newInvocation(1, data.retainedSlice(), expires, null, (byte) 0, (byte) 0);
 
             ChannelPromise promise = channel.newPromise();
             CountDownLatch countDownLatch = new CountDownLatch(1);

@@ -1,4 +1,4 @@
-package org.meteor.client.internal;
+package org.meteor.client;
 
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
@@ -8,7 +8,30 @@ import io.netty.util.concurrent.Promise;
 import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.MessageMetadata;
-import org.meteor.remote.proto.server.*;
+import org.meteor.remote.proto.server.AlterSubscribeRequest;
+import org.meteor.remote.proto.server.AlterSubscribeResponse;
+import org.meteor.remote.proto.server.CalculatePartitionsRequest;
+import org.meteor.remote.proto.server.CalculatePartitionsResponse;
+import org.meteor.remote.proto.server.CancelSyncRequest;
+import org.meteor.remote.proto.server.CancelSyncResponse;
+import org.meteor.remote.proto.server.CleanSubscribeRequest;
+import org.meteor.remote.proto.server.CleanSubscribeResponse;
+import org.meteor.remote.proto.server.CreateTopicRequest;
+import org.meteor.remote.proto.server.CreateTopicResponse;
+import org.meteor.remote.proto.server.DeleteTopicRequest;
+import org.meteor.remote.proto.server.DeleteTopicResponse;
+import org.meteor.remote.proto.server.MigrateLedgerRequest;
+import org.meteor.remote.proto.server.MigrateLedgerResponse;
+import org.meteor.remote.proto.server.QueryClusterInfoRequest;
+import org.meteor.remote.proto.server.QueryClusterResponse;
+import org.meteor.remote.proto.server.QueryTopicInfoRequest;
+import org.meteor.remote.proto.server.QueryTopicInfoResponse;
+import org.meteor.remote.proto.server.ResetSubscribeRequest;
+import org.meteor.remote.proto.server.ResetSubscribeResponse;
+import org.meteor.remote.proto.server.SendMessageRequest;
+import org.meteor.remote.proto.server.SendMessageResponse;
+import org.meteor.remote.proto.server.SyncRequest;
+import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 

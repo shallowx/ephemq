@@ -1,9 +1,15 @@
 package org.meteor.proxy.coordinator;
 
+import static org.meteor.coordinator.JsonFeatureMapper.deserialize;
+import static org.meteor.coordinator.JsonFeatureMapper.serialize;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
 import org.apache.curator.framework.CuratorFramework;
-import org.meteor.client.internal.ClientChannel;
+import org.meteor.client.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
@@ -13,14 +19,6 @@ import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyLog;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.TimeUnit;
-
-import static org.meteor.coordinator.JsonFeatureMapper.deserialize;
-import static org.meteor.coordinator.JsonFeatureMapper.serialize;
 
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);

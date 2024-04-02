@@ -1,8 +1,8 @@
 package org.meteor.example.client;
 
 import io.netty.buffer.ByteBuf;
+import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;

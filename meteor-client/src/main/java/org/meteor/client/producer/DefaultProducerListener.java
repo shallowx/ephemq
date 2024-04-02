@@ -6,7 +6,10 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.meteor.client.internal.ClientChannel;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
+import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
@@ -14,10 +17,6 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-
-import javax.annotation.Nonnull;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 final class DefaultProducerListener implements CombineListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultProducerListener.class);

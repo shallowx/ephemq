@@ -1,6 +1,7 @@
 package org.meteor.client.internal;
 
 import io.netty.buffer.ByteBuf;
+import org.meteor.client.ClientChannel;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;

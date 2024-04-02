@@ -10,7 +10,15 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import org.meteor.client.internal.ClientChannel;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nonnull;
+import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
@@ -23,15 +31,6 @@ import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-
-import javax.annotation.Nonnull;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 final class DefaultConsumerListener implements CombineListener, MeterBinder {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultConsumerListener.class);

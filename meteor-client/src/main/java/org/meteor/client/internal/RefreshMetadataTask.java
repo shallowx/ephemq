@@ -1,16 +1,16 @@
 package org.meteor.client.internal;
 
 import io.netty.util.concurrent.Future;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.remote.proto.ClusterInfo;
-import org.meteor.remote.proto.TopicInfo;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.meteor.client.ClientChannel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.proto.ClusterInfo;
+import org.meteor.remote.proto.TopicInfo;
 
 final class RefreshMetadataTask implements Runnable {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(RefreshMetadataTask.class);
