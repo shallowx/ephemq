@@ -385,20 +385,20 @@ public final class ResetSubscribeRequest extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.ResetSubscribeRequest)
-            org.meteor.remote.proto.server.ResetSubscribeRequestOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
+      org.meteor.remote.proto.server.ResetSubscribeRequestOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
     }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.ResetSubscribeRequest.class,
-                            org.meteor.remote.proto.server.ResetSubscribeRequest.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.ResetSubscribeRequest.class,
+                        org.meteor.remote.proto.server.ResetSubscribeRequest.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.server.ResetSubscribeRequest.newBuilder()
         private Builder() {
@@ -422,16 +422,16 @@ public final class ResetSubscribeRequest extends
 
             markers_ = com.google.protobuf.ByteString.EMPTY;
 
-            topic_ = "";
+      topic_ = "";
 
-            return this;
+      return this;
         }
 
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
-    }
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.ResetSubscribeRequest getDefaultInstanceForType() {
@@ -867,14 +867,14 @@ public final class ResetSubscribeRequest extends
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
             .setUnfinishedMessage(builder.buildPartial());
       }
       return builder.buildPartial();

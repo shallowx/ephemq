@@ -41,7 +41,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
     private static final String TOPIC_PARTITION_REGEX = "^/brokers/topics/[\\w\\-#]+/partitions/\\d+$";
     private static final String TOPIC_REGEX = "^/brokers/topics/[\\w\\-#]+$";
-    protected final Map<Integer, ZookeeperPartitionCoordinatorElector> leaderElectorMap = new ConcurrentHashMap<>();
+    protected final Map<Integer, ZookeeperPartitionElector> leaderElectorMap = new ConcurrentHashMap<>();
     protected final List<TopicListener> listeners = new LinkedList<>();
     private final ConsistentHashingRing hashingRing;
     protected CommonConfig commonConfiguration;
@@ -402,7 +402,10 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         }
 
         Log log = logCoordinator.initLog(topicPartition, ledgerId, epoch, topicConfig);
-        ZookeeperPartitionCoordinatorElector partitionLeaderElector = new ZookeeperPartitionCoordinatorElector(commonConfiguration, zookeeperConfiguration, topicPartition, coordinator, participantCoordinator, ledgerId);
+        ZookeeperPartitionElector
+                partitionLeaderElector =
+                new ZookeeperPartitionElector(commonConfiguration, zookeeperConfiguration, topicPartition, coordinator,
+                        participantCoordinator, ledgerId);
         partitionLeaderElector.elect();
         leaderElectorMap.put(ledgerId, partitionLeaderElector);
 
@@ -415,7 +418,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public boolean hasLeadership(int ledger) {
-        ZookeeperPartitionCoordinatorElector partitionLeaderElector = leaderElectorMap.get(ledger);
+        ZookeeperPartitionElector partitionLeaderElector = leaderElectorMap.get(ledger);
         if (partitionLeaderElector == null) {
             return false;
         }
@@ -508,7 +511,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public void destroyTopicPartition(TopicPartition topicPartition, int ledgerId) throws Exception {
-        ZookeeperPartitionCoordinatorElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
+        ZookeeperPartitionElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
         partitionLeaderElector.shutdown();
         coordinator.getLogCoordinator().destroyLog(ledgerId);
         for (TopicListener topicListener : listeners) {

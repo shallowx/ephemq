@@ -85,7 +85,7 @@ public interface PartitionMetadataOrBuilder extends
      * @return The bytes of the replicaNodeIds at the given index.
      */
     com.google.protobuf.ByteString
-    getReplicaNodeIdsBytes(int index);
+      getReplicaNodeIdsBytes(int index);
 
   /**
    * <code>int32 version = 7;</code>

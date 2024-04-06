@@ -383,20 +383,20 @@ public final class CreateTopicRequest extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CreateTopicRequest)
-            org.meteor.remote.proto.server.CreateTopicRequestOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+      org.meteor.remote.proto.server.CreateTopicRequestOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
     }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.CreateTopicRequest.class,
-                            org.meteor.remote.proto.server.CreateTopicRequest.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.CreateTopicRequest.class,
+                        org.meteor.remote.proto.server.CreateTopicRequest.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.server.CreateTopicRequest.newBuilder()
         private Builder() {
@@ -421,17 +421,17 @@ public final class CreateTopicRequest extends
             if (configsBuilder_ == null) {
                 configs_ = null;
             } else {
-                configs_ = null;
-                configsBuilder_ = null;
-            }
-            return this;
-    }
+        configs_ = null;
+        configsBuilder_ = null;
+      }
+      return this;
+        }
 
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
-    }
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
@@ -922,12 +922,12 @@ public final class CreateTopicRequest extends
             try {
                 builder.mergeFrom(input, extensionRegistry);
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
       }
       return builder.buildPartial();
     }

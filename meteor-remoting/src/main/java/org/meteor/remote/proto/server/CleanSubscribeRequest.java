@@ -650,15 +650,15 @@ public final class CleanSubscribeRequest extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<CleanSubscribeRequest> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<CleanSubscribeRequest> getParserForType() {
+  public static com.google.protobuf.Parser<CleanSubscribeRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<CleanSubscribeRequest> getParserForType() {
     return PARSER;
   }
 

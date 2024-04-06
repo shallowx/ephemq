@@ -392,20 +392,20 @@ public final class CreateTopicResponse extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CreateTopicResponse)
-            org.meteor.remote.proto.server.CreateTopicResponseOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
+      org.meteor.remote.proto.server.CreateTopicResponseOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
     }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.CreateTopicResponse.class,
-                            org.meteor.remote.proto.server.CreateTopicResponse.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.CreateTopicResponse.class,
+                        org.meteor.remote.proto.server.CreateTopicResponse.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.server.CreateTopicResponse.newBuilder()
         private Builder() {
@@ -434,14 +434,14 @@ public final class CreateTopicResponse extends
                 partitionsReplicasBuilder_.clear();
             }
             bitField0_ = (bitField0_ & ~0x00000001);
-            return this;
-        }
+      return this;
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
-        }
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicResponse getDefaultInstanceForType() {
@@ -1097,12 +1097,12 @@ public final class CreateTopicResponse extends
             try {
                 builder.mergeFrom(input, extensionRegistry);
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
       }
       return builder.buildPartial();
     }

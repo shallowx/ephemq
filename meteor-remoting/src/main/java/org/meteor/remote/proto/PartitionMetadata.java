@@ -536,7 +536,7 @@ public final class PartitionMetadata extends
 
             epoch_ = 0;
 
-            leaderNodeId_ = "";
+      leaderNodeId_ = "";
 
             replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
@@ -1212,24 +1212,24 @@ public final class PartitionMetadata extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.PartitionMetadata();
-    }
+  }
 
-    public static org.meteor.remote.proto.PartitionMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.PartitionMetadata getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<PartitionMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<PartitionMetadata>() {
-        @java.lang.Override
-        public PartitionMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
+  private static final com.google.protobuf.Parser<PartitionMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<PartitionMetadata>() {
+    @java.lang.Override
+    public PartitionMetadata parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {
         throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
       } catch (java.io.IOException e) {

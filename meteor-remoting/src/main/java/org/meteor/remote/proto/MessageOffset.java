@@ -575,11 +575,11 @@ public final class MessageOffset extends
     };
 
     public static com.google.protobuf.Parser<MessageOffset> parser() {
-        return PARSER;
-    }
+    return PARSER;
+  }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<MessageOffset> getParserForType() {
+  @java.lang.Override
+  public com.google.protobuf.Parser<MessageOffset> getParserForType() {
     return PARSER;
   }
 

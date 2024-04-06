@@ -318,14 +318,14 @@ public final class QueryTopicInfoRequest extends
             super.clear();
             topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
-            return this;
-        }
+      return this;
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_QueryTopicInfoRequest_descriptor;
-        }
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_QueryTopicInfoRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.QueryTopicInfoRequest getDefaultInstanceForType() {
@@ -478,12 +478,12 @@ public final class QueryTopicInfoRequest extends
 
         /**
          * <code>repeated string topic_names = 1;</code>
-         * @return A list containing the topicNames.
-     */
-    public com.google.protobuf.ProtocolStringList
-    getTopicNamesList() {
-        return topicNames_.getUnmodifiableView();
-    }
+     * @return A list containing the topicNames.
+         */
+        public com.google.protobuf.ProtocolStringList
+        getTopicNamesList() {
+            return topicNames_.getUnmodifiableView();
+        }
 
         /**
          * <code>repeated string topic_names = 1;</code>
@@ -640,15 +640,15 @@ public final class QueryTopicInfoRequest extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<QueryTopicInfoRequest> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<QueryTopicInfoRequest> getParserForType() {
+  public static com.google.protobuf.Parser<QueryTopicInfoRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<QueryTopicInfoRequest> getParserForType() {
     return PARSER;
   }
 

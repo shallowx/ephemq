@@ -581,12 +581,12 @@ public final class DeleteTopicRequest extends
     };
 
     public static com.google.protobuf.Parser<DeleteTopicRequest> parser() {
-        return PARSER;
-    }
+    return PARSER;
+  }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<DeleteTopicRequest> getParserForType() {
-        return PARSER;
+  @java.lang.Override
+  public com.google.protobuf.Parser<DeleteTopicRequest> getParserForType() {
+    return PARSER;
   }
 
   @java.lang.Override

@@ -70,10 +70,9 @@ public interface MessageMetadataOrBuilder extends
             java.lang.String key,
             /* nullable */
             java.lang.String defaultValue);
-
-    /**
-     * <code>map&lt;string, string&gt; extras = 3;</code>
-     */
+  /**
+   * <code>map&lt;string, string&gt; extras = 3;</code>
+   */
 
   java.lang.String getExtrasOrThrow(
       java.lang.String key);

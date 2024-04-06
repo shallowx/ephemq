@@ -313,20 +313,20 @@ public final class PartitionsReplicas extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.PartitionsReplicas)
-            org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
+      org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
     }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.PartitionsReplicas.class,
-                            org.meteor.remote.proto.server.PartitionsReplicas.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.PartitionsReplicas.class,
+                        org.meteor.remote.proto.server.PartitionsReplicas.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.server.PartitionsReplicas.newBuilder()
         private Builder() {
@@ -346,14 +346,14 @@ public final class PartitionsReplicas extends
 
             replicas_ = com.google.protobuf.LazyStringArrayList.EMPTY;
             bitField0_ = (bitField0_ & ~0x00000001);
-            return this;
-        }
+      return this;
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
-        }
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.PartitionsReplicas getDefaultInstanceForType() {
@@ -709,15 +709,15 @@ public final class PartitionsReplicas extends
                 throw e.setUnfinishedMessage(builder.buildPartial());
             } catch (com.google.protobuf.UninitializedMessageException e) {
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
 
-    public static com.google.protobuf.Parser<PartitionsReplicas> parser() {
+  public static com.google.protobuf.Parser<PartitionsReplicas> parser() {
     return PARSER;
   }
 

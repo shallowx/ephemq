@@ -9,35 +9,29 @@ public interface AlterSubscribeRequestOrBuilder extends
 
   /**
    * <code>int32 ledger = 1;</code>
-   *
    * @return The ledger.
    */
   int getLedger();
 
   /**
    * <code>bytes append_markers = 2;</code>
-   *
    * @return The appendMarkers.
    */
   com.google.protobuf.ByteString getAppendMarkers();
 
   /**
    * <code>bytes delete_markers = 3;</code>
-   *
    * @return The deleteMarkers.
    */
   com.google.protobuf.ByteString getDeleteMarkers();
 
   /**
    * <code>string topic = 4;</code>
-   *
    * @return The topic.
    */
   java.lang.String getTopic();
-
   /**
    * <code>string topic = 4;</code>
-   *
    * @return The bytes for topic.
    */
   com.google.protobuf.ByteString

@@ -649,15 +649,15 @@ public final class CancelSyncRequest extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<CancelSyncRequest> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<CancelSyncRequest> getParserForType() {
+  public static com.google.protobuf.Parser<CancelSyncRequest> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<CancelSyncRequest> getParserForType() {
     return PARSER;
   }
 

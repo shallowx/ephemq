@@ -575,11 +575,11 @@ public final class SyncMessageSignal extends
     };
 
     public static com.google.protobuf.Parser<SyncMessageSignal> parser() {
-        return PARSER;
-    }
+    return PARSER;
+  }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<SyncMessageSignal> getParserForType() {
+  @java.lang.Override
+  public com.google.protobuf.Parser<SyncMessageSignal> getParserForType() {
     return PARSER;
   }
 

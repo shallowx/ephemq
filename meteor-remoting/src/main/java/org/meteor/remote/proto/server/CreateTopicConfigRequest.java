@@ -366,14 +366,14 @@ public final class CreateTopicConfigRequest extends
 
             allocate_ = false;
 
-            return this;
-        }
+      return this;
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicConfigRequest_descriptor;
-        }
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicConfigRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicConfigRequest getDefaultInstanceForType() {
@@ -716,15 +716,15 @@ public final class CreateTopicConfigRequest extends
                 throw e.setUnfinishedMessage(builder.buildPartial());
             } catch (com.google.protobuf.UninitializedMessageException e) {
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
 
-    public static com.google.protobuf.Parser<CreateTopicConfigRequest> parser() {
+  public static com.google.protobuf.Parser<CreateTopicConfigRequest> parser() {
     return PARSER;
   }
 

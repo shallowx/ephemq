@@ -636,11 +636,11 @@ public final class QueryClusterResponse extends
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<QueryClusterResponse> getParserForType() {
-        return PARSER;
-    }
+  public com.google.protobuf.Parser<QueryClusterResponse> getParserForType() {
+    return PARSER;
+  }
 
-    @java.lang.Override
+  @java.lang.Override
   public org.meteor.remote.proto.server.QueryClusterResponse getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }

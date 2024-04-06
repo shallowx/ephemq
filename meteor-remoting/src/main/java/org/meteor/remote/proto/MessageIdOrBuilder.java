@@ -23,7 +23,7 @@ public interface MessageIdOrBuilder extends
 
     /**
      * <code>int32 index = 3;</code>
-     * @return The index.
+   * @return The index.
    */
   int getIndex();
 }

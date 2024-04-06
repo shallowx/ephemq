@@ -576,11 +576,11 @@ public final class SendMessageRequest extends
     };
 
     public static com.google.protobuf.Parser<SendMessageRequest> parser() {
-        return PARSER;
-    }
+    return PARSER;
+  }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<SendMessageRequest> getParserForType() {
+  @java.lang.Override
+  public com.google.protobuf.Parser<SendMessageRequest> getParserForType() {
     return PARSER;
   }
 

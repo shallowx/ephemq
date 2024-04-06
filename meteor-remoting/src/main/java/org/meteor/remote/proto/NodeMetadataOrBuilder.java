@@ -50,10 +50,10 @@ public interface NodeMetadataOrBuilder extends
      * @return The bytes for host.
      */
     com.google.protobuf.ByteString
-    getHostBytes();
+      getHostBytes();
 
-    /**
-     * <code>int32 port = 4;</code>
+  /**
+   * <code>int32 port = 4;</code>
    * @return The port.
    */
   int getPort();

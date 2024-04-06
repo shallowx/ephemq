@@ -29,7 +29,7 @@ public interface MessagePushSignalOrBuilder extends
 
     /**
      * <code>int64 index = 4;</code>
-     * @return The index.
+   * @return The index.
    */
   long getIndex();
 }

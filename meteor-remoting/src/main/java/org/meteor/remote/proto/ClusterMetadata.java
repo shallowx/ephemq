@@ -579,12 +579,12 @@ public final class ClusterMetadata extends
     };
 
     public static com.google.protobuf.Parser<ClusterMetadata> parser() {
-        return PARSER;
-    }
+    return PARSER;
+  }
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<ClusterMetadata> getParserForType() {
-        return PARSER;
+  @java.lang.Override
+  public com.google.protobuf.Parser<ClusterMetadata> getParserForType() {
+    return PARSER;
   }
 
   @java.lang.Override

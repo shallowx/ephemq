@@ -365,14 +365,14 @@ public final class MessagePushSignal extends
 
             index_ = 0L;
 
-            return this;
-        }
+      return this;
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_MessagePushSignal_descriptor;
-        }
+    getDescriptorForType() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_MessagePushSignal_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.client.MessagePushSignal getDefaultInstanceForType() {
@@ -714,15 +714,15 @@ public final class MessagePushSignal extends
                 throw e.setUnfinishedMessage(builder.buildPartial());
             } catch (com.google.protobuf.UninitializedMessageException e) {
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
 
-    public static com.google.protobuf.Parser<MessagePushSignal> parser() {
+  public static com.google.protobuf.Parser<MessagePushSignal> parser() {
     return PARSER;
   }
 

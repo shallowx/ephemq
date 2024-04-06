@@ -651,15 +651,15 @@ public final class MigrateLedgerResponse extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<MigrateLedgerResponse> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<MigrateLedgerResponse> getParserForType() {
+  public static com.google.protobuf.Parser<MigrateLedgerResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<MigrateLedgerResponse> getParserForType() {
     return PARSER;
   }
 

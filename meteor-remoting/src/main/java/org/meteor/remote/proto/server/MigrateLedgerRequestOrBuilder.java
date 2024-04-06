@@ -53,8 +53,8 @@ public interface MigrateLedgerRequestOrBuilder extends
 
     /**
      * <code>string destination = 4;</code>
-     * @return The bytes for destination.
-     */
+   * @return The bytes for destination.
+   */
   com.google.protobuf.ByteString
       getDestinationBytes();
 }

@@ -638,17 +638,17 @@ public final class MessageId extends
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
             } catch (java.io.IOException e) {
                 throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<MessageId> parser() {
-        return PARSER;
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
+  };
 
-    @java.lang.Override
+  public static com.google.protobuf.Parser<MessageId> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
   public com.google.protobuf.Parser<MessageId> getParserForType() {
     return PARSER;
   }

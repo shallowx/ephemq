@@ -437,16 +437,16 @@ public final class LedgerRetiredSignal extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_descriptor;
-    }
+        }
 
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.client.LedgerRetiredSignal.class,
-                        org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
-    }
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.client.LedgerRetiredSignal.class,
+                            org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
+        }
 
         // Construct using org.meteor.remote.proto.client.LedgerRetiredSignal.newBuilder()
         private Builder() {
@@ -773,26 +773,26 @@ public final class LedgerRetiredSignal extends
                 return brokerBuilder_.getMessageOrBuilder();
             } else {
                 return broker_ == null ?
-                        org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : broker_;
+            org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : broker_;
             }
         }
 
         /**
          * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
          */
-    private com.google.protobuf.SingleFieldBuilderV3<
-            org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
-    getBrokerFieldBuilder() {
-        if (brokerBuilder_ == null) {
-            brokerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                    org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>(
-                    getBroker(),
-                    getParentForChildren(),
-                    isClean());
-            broker_ = null;
+        private com.google.protobuf.SingleFieldBuilderV3<
+                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
+        getBrokerFieldBuilder() {
+            if (brokerBuilder_ == null) {
+                brokerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                        org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>(
+                        getBroker(),
+                        getParentForChildren(),
+                        isClean());
+                broker_ = null;
+            }
+            return brokerBuilder_;
         }
-        return brokerBuilder_;
-    }
 
         private int ledger_;
 
@@ -901,7 +901,6 @@ public final class LedgerRetiredSignal extends
 
         /**
          * <code>string topic = 3;</code>
-         *
          * @param value The bytes for topic to set.
          * @return This builder for chaining.
          */
@@ -931,7 +930,6 @@ public final class LedgerRetiredSignal extends
 
         /**
          * <code>int32 partition = 4;</code>
-         *
          * @param value The partition to set.
          * @return This builder for chaining.
          */
@@ -1118,15 +1116,15 @@ public final class LedgerRetiredSignal extends
         public LedgerRetiredSignal parsePartialFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(e)
             .setUnfinishedMessage(builder.buildPartial());
       }

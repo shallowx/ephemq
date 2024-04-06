@@ -498,14 +498,14 @@ public final class TopicChangedSignal extends
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
     }
 
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.TopicChangedSignal.class,
-                            org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
-        }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.TopicChangedSignal.class,
+                        org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.client.TopicChangedSignal.newBuilder()
         private Builder() {
@@ -519,7 +519,7 @@ public final class TopicChangedSignal extends
         }
 
         @java.lang.Override
-        public Builder clear() {
+    public Builder clear() {
             super.clear();
             type_ = 0;
 
@@ -527,10 +527,10 @@ public final class TopicChangedSignal extends
 
             ledger_ = 0;
 
-      ledgerVersion_ = 0;
+            ledgerVersion_ = 0;
 
-            return this;
-        }
+      return this;
+    }
 
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
@@ -747,7 +747,6 @@ public final class TopicChangedSignal extends
 
         /**
          * <code>.meteor.protobuf.TopicChangedSignal.Type type = 1;</code>
-         *
          * @return This builder for chaining.
          */
         public Builder clearType() {
@@ -827,6 +826,7 @@ public final class TopicChangedSignal extends
 
         /**
          * <code>string topic = 2;</code>
+         *
          * @param value The bytes for topic to set.
          * @return This builder for chaining.
          */
@@ -953,12 +953,12 @@ public final class TopicChangedSignal extends
             try {
                 builder.mergeFrom(input, extensionRegistry);
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
       }
       return builder.buildPartial();
     }

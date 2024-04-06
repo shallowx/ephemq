@@ -23,7 +23,7 @@ public interface SendMessageResponseOrBuilder extends
 
     /**
      * <code>int64 index = 3;</code>
-     * @return The index.
+   * @return The index.
    */
   long getIndex();
 }

@@ -30,7 +30,7 @@ public interface CreateTopicConfigRequestOrBuilder extends
 
     /**
      * <code>bool allocate = 4;</code>
-     * @return The allocate.
+   * @return The allocate.
    */
   boolean getAllocate();
 }

@@ -646,15 +646,15 @@ public final class SendMessageResponse extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<SendMessageResponse> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<SendMessageResponse> getParserForType() {
+  public static com.google.protobuf.Parser<SendMessageResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SendMessageResponse> getParserForType() {
     return PARSER;
   }
 

@@ -932,15 +932,15 @@ public final class TopicInfo extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<TopicInfo> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<TopicInfo> getParserForType() {
+  public static com.google.protobuf.Parser<TopicInfo> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<TopicInfo> getParserForType() {
     return PARSER;
   }
 

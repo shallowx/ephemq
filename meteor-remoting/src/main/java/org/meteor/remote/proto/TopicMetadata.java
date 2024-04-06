@@ -365,14 +365,14 @@ public final class TopicMetadata extends
 
             version_ = 0;
 
-            return this;
-        }
+      return this;
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_descriptor;
-        }
+    getDescriptorForType() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_TopicMetadata_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.TopicMetadata getDefaultInstanceForType() {
@@ -717,15 +717,15 @@ public final class TopicMetadata extends
                 throw e.setUnfinishedMessage(builder.buildPartial());
             } catch (com.google.protobuf.UninitializedMessageException e) {
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
+    }
+  };
 
-    public static com.google.protobuf.Parser<TopicMetadata> parser() {
+  public static com.google.protobuf.Parser<TopicMetadata> parser() {
     return PARSER;
   }
 

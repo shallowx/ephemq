@@ -412,20 +412,19 @@ public final class NodeMetadata extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.NodeMetadata)
-            org.meteor.remote.proto.NodeMetadataOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+      org.meteor.remote.proto.NodeMetadataOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
     }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.NodeMetadata.class,
-                            org.meteor.remote.proto.NodeMetadata.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.NodeMetadata.class, org.meteor.remote.proto.NodeMetadata.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.NodeMetadata.newBuilder()
         private Builder() {
@@ -443,20 +442,20 @@ public final class NodeMetadata extends
             super.clear();
             clusterName_ = "";
 
-            id_ = "";
+      id_ = "";
 
-            host_ = "";
+      host_ = "";
 
-            port_ = 0;
+      port_ = 0;
 
-            return this;
+      return this;
         }
 
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
-    }
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.NodeMetadata getDefaultInstanceForType() {
@@ -941,14 +940,14 @@ public final class NodeMetadata extends
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
-                throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
             .setUnfinishedMessage(builder.buildPartial());
       }
       return builder.buildPartial();

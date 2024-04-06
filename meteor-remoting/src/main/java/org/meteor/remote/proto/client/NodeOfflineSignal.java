@@ -634,11 +634,11 @@ public final class NodeOfflineSignal extends
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<NodeOfflineSignal> getParserForType() {
-        return PARSER;
-    }
+  public com.google.protobuf.Parser<NodeOfflineSignal> getParserForType() {
+    return PARSER;
+  }
 
-    @java.lang.Override
+  @java.lang.Override
   public org.meteor.remote.proto.client.NodeOfflineSignal getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
