@@ -421,14 +421,14 @@ public final class MigrateLedgerRequest extends
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
     }
 
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.MigrateLedgerRequest.class,
-                        org.meteor.remote.proto.server.MigrateLedgerRequest.Builder.class);
-    }
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.server.MigrateLedgerRequest.class,
+                            org.meteor.remote.proto.server.MigrateLedgerRequest.Builder.class);
+        }
 
         // Construct using org.meteor.remote.proto.server.MigrateLedgerRequest.newBuilder()
         private Builder() {
@@ -442,24 +442,24 @@ public final class MigrateLedgerRequest extends
         }
 
         @java.lang.Override
-        public Builder clear() {
-            super.clear();
-            partition_ = 0;
+    public Builder clear() {
+      super.clear();
+      partition_ = 0;
 
-      topic_ = "";
+            topic_ = "";
 
-      original_ = "";
+            original_ = "";
 
-      destination_ = "";
+            destination_ = "";
 
-      return this;
-        }
+            return this;
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstanceForType() {
@@ -934,17 +934,17 @@ public final class MigrateLedgerRequest extends
     }
 
     public static org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<MigrateLedgerRequest>
-            PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerRequest>() {
-        @java.lang.Override
-        public MigrateLedgerRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
+  private static final com.google.protobuf.Parser<MigrateLedgerRequest>
+      PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerRequest>() {
+    @java.lang.Override
+    public MigrateLedgerRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
       try {
         builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {

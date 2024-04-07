@@ -628,14 +628,14 @@ public final class QueryClusterResponse extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<QueryClusterResponse> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
+  public static com.google.protobuf.Parser<QueryClusterResponse> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
   public com.google.protobuf.Parser<QueryClusterResponse> getParserForType() {
     return PARSER;
   }

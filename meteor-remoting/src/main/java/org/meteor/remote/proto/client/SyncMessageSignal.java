@@ -569,12 +569,12 @@ public final class SyncMessageSignal extends
             } catch (java.io.IOException e) {
                 throw new com.google.protobuf.InvalidProtocolBufferException(e)
                         .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+      }
+      return builder.buildPartial();
+    }
+  };
 
-    public static com.google.protobuf.Parser<SyncMessageSignal> parser() {
+  public static com.google.protobuf.Parser<SyncMessageSignal> parser() {
     return PARSER;
   }
 

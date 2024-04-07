@@ -385,10 +385,10 @@ public final class ResetSubscribeRequest extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.ResetSubscribeRequest)
-      org.meteor.remote.proto.server.ResetSubscribeRequestOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
+            org.meteor.remote.proto.server.ResetSubscribeRequestOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
     }
 
     @java.lang.Override
@@ -418,20 +418,20 @@ public final class ResetSubscribeRequest extends
 
             epoch_ = 0;
 
-            index_ = 0L;
+      index_ = 0L;
 
-            markers_ = com.google.protobuf.ByteString.EMPTY;
+      markers_ = com.google.protobuf.ByteString.EMPTY;
 
-      topic_ = "";
+            topic_ = "";
 
-      return this;
+            return this;
         }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.ResetSubscribeRequest getDefaultInstanceForType() {
@@ -856,17 +856,17 @@ public final class ResetSubscribeRequest extends
     }
 
     public static org.meteor.remote.proto.server.ResetSubscribeRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<ResetSubscribeRequest>
-            PARSER = new com.google.protobuf.AbstractParser<ResetSubscribeRequest>() {
-        @java.lang.Override
-        public ResetSubscribeRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
+  private static final com.google.protobuf.Parser<ResetSubscribeRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ResetSubscribeRequest>() {
+    @java.lang.Override
+    public ResetSubscribeRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
       try {
         builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {

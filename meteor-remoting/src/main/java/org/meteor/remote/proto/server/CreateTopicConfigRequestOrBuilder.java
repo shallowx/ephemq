@@ -29,7 +29,7 @@ public interface CreateTopicConfigRequestOrBuilder extends
     int getSegmentRetainMs();
 
     /**
-     * <code>bool allocate = 4;</code>
+   * <code>bool allocate = 4;</code>
    * @return The allocate.
    */
   boolean getAllocate();

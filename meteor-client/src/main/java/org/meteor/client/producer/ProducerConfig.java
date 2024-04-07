@@ -7,9 +7,18 @@ public class ProducerConfig {
     private int sendTimeoutMilliseconds = 2000;
     private int sendAsyncTimeoutMilliseconds = 2000;
     private int sendOnewayTimeoutMilliseconds = 2000;
+    private int compressLevel = 5;
 
     public ClientConfig getClientConfig() {
         return clientConfig;
+    }
+
+    public int getCompressLevel() {
+        return compressLevel;
+    }
+
+    public void setCompressLevel(int compressLevel) {
+        this.compressLevel = compressLevel;
     }
 
     public void setClientConfig(ClientConfig clientConfig) {

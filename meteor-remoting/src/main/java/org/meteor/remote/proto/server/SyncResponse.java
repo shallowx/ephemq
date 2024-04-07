@@ -382,14 +382,14 @@ public final class SyncResponse extends
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
     }
 
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.meteor.remote.proto.server.SyncResponse.class,
-                        org.meteor.remote.proto.server.SyncResponse.Builder.class);
-    }
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.meteor.remote.proto.server.SyncResponse.class,
+                            org.meteor.remote.proto.server.SyncResponse.Builder.class);
+        }
 
         // Construct using org.meteor.remote.proto.server.SyncResponse.newBuilder()
         private Builder() {
@@ -416,21 +416,21 @@ public final class SyncResponse extends
             } else {
                 headOffset_ = null;
                 headOffsetBuilder_ = null;
-            }
-            if (tailOffsetBuilder_ == null) {
-                tailOffset_ = null;
-            } else {
-        tailOffset_ = null;
-        tailOffsetBuilder_ = null;
       }
-      return this;
-        }
+      if (tailOffsetBuilder_ == null) {
+        tailOffset_ = null;
+      } else {
+          tailOffset_ = null;
+          tailOffsetBuilder_ = null;
+      }
+            return this;
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.SyncResponse getDefaultInstanceForType() {
@@ -1022,13 +1022,13 @@ public final class SyncResponse extends
         public SyncResponse parsePartialFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
-            } catch (com.google.protobuf.UninitializedMessageException e) {
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
         throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(e)

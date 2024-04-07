@@ -80,11 +80,10 @@ public interface PartitionMetadataOrBuilder extends
 
     /**
      * <code>repeated string replica_node_ids = 6;</code>
-     *
      * @param index The index of the value to return.
      * @return The bytes of the replicaNodeIds at the given index.
-     */
-    com.google.protobuf.ByteString
+   */
+  com.google.protobuf.ByteString
       getReplicaNodeIdsBytes(int index);
 
   /**

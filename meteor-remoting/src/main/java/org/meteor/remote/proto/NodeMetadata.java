@@ -412,10 +412,10 @@ public final class NodeMetadata extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.NodeMetadata)
-      org.meteor.remote.proto.NodeMetadataOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+            org.meteor.remote.proto.NodeMetadataOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
     }
 
     @java.lang.Override
@@ -438,24 +438,24 @@ public final class NodeMetadata extends
         }
 
         @java.lang.Override
-        public Builder clear() {
-            super.clear();
-            clusterName_ = "";
+    public Builder clear() {
+      super.clear();
+      clusterName_ = "";
 
-      id_ = "";
+            id_ = "";
 
-      host_ = "";
+            host_ = "";
 
-      port_ = 0;
+            port_ = 0;
 
-      return this;
+            return this;
         }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.NodeMetadata getDefaultInstanceForType() {
@@ -929,17 +929,17 @@ public final class NodeMetadata extends
     }
 
     public static org.meteor.remote.proto.NodeMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<NodeMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<NodeMetadata>() {
-        @java.lang.Override
-        public NodeMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
+  private static final com.google.protobuf.Parser<NodeMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<NodeMetadata>() {
+    @java.lang.Override
+    public NodeMetadata parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
       try {
         builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {

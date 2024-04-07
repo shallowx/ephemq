@@ -575,12 +575,12 @@ public final class DeleteTopicRequest extends
             } catch (java.io.IOException e) {
                 throw new com.google.protobuf.InvalidProtocolBufferException(e)
                         .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
-        }
-    };
+      }
+      return builder.buildPartial();
+    }
+  };
 
-    public static com.google.protobuf.Parser<DeleteTopicRequest> parser() {
+  public static com.google.protobuf.Parser<DeleteTopicRequest> parser() {
     return PARSER;
   }
 

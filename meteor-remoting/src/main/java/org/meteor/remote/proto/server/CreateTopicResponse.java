@@ -392,10 +392,10 @@ public final class CreateTopicResponse extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CreateTopicResponse)
-      org.meteor.remote.proto.server.CreateTopicResponseOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
+            org.meteor.remote.proto.server.CreateTopicResponseOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
     }
 
     @java.lang.Override
@@ -432,16 +432,16 @@ public final class CreateTopicResponse extends
             } else {
                 partitionsReplicas_ = null;
                 partitionsReplicasBuilder_.clear();
-            }
-            bitField0_ = (bitField0_ & ~0x00000001);
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
-    }
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicResponse getDefaultInstanceForType() {
@@ -1088,15 +1088,15 @@ public final class CreateTopicResponse extends
 
     private static final com.google.protobuf.Parser<CreateTopicResponse>
             PARSER = new com.google.protobuf.AbstractParser<CreateTopicResponse>() {
-        @java.lang.Override
-        public CreateTopicResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+    @java.lang.Override
+    public CreateTopicResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {
         throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());

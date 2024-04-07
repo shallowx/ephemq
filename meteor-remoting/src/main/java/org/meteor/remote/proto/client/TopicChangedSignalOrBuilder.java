@@ -42,8 +42,8 @@ public interface TopicChangedSignalOrBuilder extends
      */
     int getLedger();
 
-    /**
-     * <code>int32 ledger_version = 4;</code>
+  /**
+   * <code>int32 ledger_version = 4;</code>
    * @return The ledgerVersion.
    */
   int getLedgerVersion();

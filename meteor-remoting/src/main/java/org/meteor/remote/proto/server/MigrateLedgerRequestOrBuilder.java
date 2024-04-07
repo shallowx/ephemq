@@ -50,9 +50,8 @@ public interface MigrateLedgerRequestOrBuilder extends
      * @return The destination.
      */
     java.lang.String getDestination();
-
-    /**
-     * <code>string destination = 4;</code>
+  /**
+   * <code>string destination = 4;</code>
    * @return The bytes for destination.
    */
   com.google.protobuf.ByteString

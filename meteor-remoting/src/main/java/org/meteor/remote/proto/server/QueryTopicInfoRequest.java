@@ -317,7 +317,7 @@ public final class QueryTopicInfoRequest extends
         public Builder clear() {
             super.clear();
             topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-            bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -477,13 +477,13 @@ public final class QueryTopicInfoRequest extends
         }
 
         /**
-         * <code>repeated string topic_names = 1;</code>
-     * @return A list containing the topicNames.
-         */
-        public com.google.protobuf.ProtocolStringList
-        getTopicNamesList() {
-            return topicNames_.getUnmodifiableView();
-        }
+     * <code>repeated string topic_names = 1;</code>
+         * @return A list containing the topicNames.
+     */
+    public com.google.protobuf.ProtocolStringList
+    getTopicNamesList() {
+        return topicNames_.getUnmodifiableView();
+    }
 
         /**
          * <code>repeated string topic_names = 1;</code>
@@ -635,11 +635,11 @@ public final class QueryTopicInfoRequest extends
                 throw e.setUnfinishedMessage(builder.buildPartial());
             } catch (com.google.protobuf.UninitializedMessageException e) {
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

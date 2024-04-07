@@ -626,14 +626,14 @@ public final class NodeOfflineSignal extends
                         .setUnfinishedMessage(builder.buildPartial());
             }
             return builder.buildPartial();
-        }
-    };
-
-    public static com.google.protobuf.Parser<NodeOfflineSignal> parser() {
-        return PARSER;
     }
+  };
 
-    @java.lang.Override
+  public static com.google.protobuf.Parser<NodeOfflineSignal> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
   public com.google.protobuf.Parser<NodeOfflineSignal> getParserForType() {
     return PARSER;
   }

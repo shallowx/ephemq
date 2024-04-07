@@ -388,11 +388,11 @@ public final class SyncRequest extends
             super.clear();
             ledger_ = 0;
 
-            epoch_ = 0;
+      epoch_ = 0;
 
-            index_ = 0L;
+      index_ = 0L;
 
-            topic_ = "";
+      topic_ = "";
 
       return this;
     }
@@ -783,13 +783,13 @@ public final class SyncRequest extends
         @java.lang.Override
         public SyncRequest parsePartialFrom(
                 com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(builder.buildPartial());
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {
         throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
       } catch (java.io.IOException e) {

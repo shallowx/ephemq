@@ -526,7 +526,7 @@ public final class PartitionMetadata extends
         }
 
         @java.lang.Override
-        public Builder clear() {
+    public Builder clear() {
             super.clear();
             topicName_ = "";
 
@@ -1185,33 +1185,31 @@ public final class PartitionMetadata extends
          * @return This builder for chaining.
          */
         public Builder clearVersion() {
-
-            version_ = 0;
-            onChanged();
-            return this;
-        }
-
-        @java.lang.Override
-        public final Builder setUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.PartitionMetadata)
+      
+      version_ = 0;
+      onChanged();
+      return this;
+    }
+    @java.lang.Override
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.setUnknownFields(unknownFields);
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.PartitionMetadata)
-    private static final org.meteor.remote.proto.PartitionMetadata DEFAULT_INSTANCE;
+    @java.lang.Override
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.mergeUnknownFields(unknownFields);
+    }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.PartitionMetadata();
+
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.PartitionMetadata)
+  }
+
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.PartitionMetadata)
+  private static final org.meteor.remote.proto.PartitionMetadata DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.PartitionMetadata();
   }
 
   public static org.meteor.remote.proto.PartitionMetadata getDefaultInstance() {
