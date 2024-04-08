@@ -356,8 +356,8 @@ public final class TopicSegmentInfo extends
 
         @java.lang.Override
         public Builder clear() {
-            super.clear();
-            segmentRollingSize_ = 0;
+      super.clear();
+      segmentRollingSize_ = 0;
 
       segmentRetainCount_ = 0;
 
@@ -694,15 +694,15 @@ public final class TopicSegmentInfo extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicSegmentInfo();
-    }
+  }
 
-    public static org.meteor.remote.proto.TopicSegmentInfo getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.TopicSegmentInfo getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<TopicSegmentInfo>
-            PARSER = new com.google.protobuf.AbstractParser<TopicSegmentInfo>() {
-        @java.lang.Override
+  private static final com.google.protobuf.Parser<TopicSegmentInfo>
+      PARSER = new com.google.protobuf.AbstractParser<TopicSegmentInfo>() {
+    @java.lang.Override
     public TopicSegmentInfo parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

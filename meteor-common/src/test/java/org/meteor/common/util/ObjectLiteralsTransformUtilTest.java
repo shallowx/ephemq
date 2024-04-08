@@ -1,4 +1,4 @@
-package org.meteor.common;
+package org.meteor.common.util;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
-public class ObjectLiteralsTransformUtilTests {
+public class ObjectLiteralsTransformUtilTest {
 
     private static final Properties prop = new Properties();
 

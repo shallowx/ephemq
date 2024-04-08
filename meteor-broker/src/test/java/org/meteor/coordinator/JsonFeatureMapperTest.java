@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-public class JsonFeatureMapperTests {
+public class JsonFeatureMapperTest {
 
     @Test
     public void testSerialize() throws Exception {

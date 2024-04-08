@@ -11,8 +11,8 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.ClusterInfo;
 
-public class ClientTests {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientTests.class);
+public class ClientTest {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ClientTest.class);
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")

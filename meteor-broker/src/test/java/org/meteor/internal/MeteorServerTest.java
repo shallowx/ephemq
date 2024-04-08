@@ -8,7 +8,7 @@ import org.meteor.remoting.DefaultSocketServer;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class MeteorServerTests {
+public class MeteorServerTest {
     @Test
     public void testStartAndStop() throws Exception {
         ServerConfig config = new ServerConfig(new Properties());

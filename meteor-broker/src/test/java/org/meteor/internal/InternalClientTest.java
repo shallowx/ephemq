@@ -21,7 +21,7 @@ import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 
-public class InternalClientTests {
+public class InternalClientTest {
     private Channel embeddedChannel;
     private InternalClientChannel clientChannel;
     private InternalClient client;

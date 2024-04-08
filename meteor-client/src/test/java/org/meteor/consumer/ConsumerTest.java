@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ConsumerTests {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTests.class);
+public class ConsumerTest {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTest.class);
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")

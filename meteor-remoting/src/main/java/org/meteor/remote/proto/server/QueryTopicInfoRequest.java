@@ -472,18 +472,18 @@ public final class QueryTopicInfoRequest extends
         private void ensureTopicNamesIsMutable() {
             if (!((bitField0_ & 0x00000001) != 0)) {
                 topicNames_ = new com.google.protobuf.LazyStringArrayList(topicNames_);
-        bitField0_ |= 0x00000001;
-       }
-    }
+                bitField0_ |= 0x00000001;
+            }
+        }
 
         /**
-         * <code>repeated string topic_names = 1;</code>
-     * @return A list containing the topicNames.
-         */
-        public com.google.protobuf.ProtocolStringList
-        getTopicNamesList() {
-            return topicNames_.getUnmodifiableView();
-        }
+     * <code>repeated string topic_names = 1;</code>
+         * @return A list containing the topicNames.
+     */
+    public com.google.protobuf.ProtocolStringList
+    getTopicNamesList() {
+        return topicNames_.getUnmodifiableView();
+    }
 
         /**
          * <code>repeated string topic_names = 1;</code>
@@ -627,11 +627,11 @@ public final class QueryTopicInfoRequest extends
         public QueryTopicInfoRequest parsePartialFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {
         throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());

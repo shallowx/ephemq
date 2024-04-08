@@ -513,10 +513,9 @@ public final class MessageMetadata extends
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             super(parent);
 
-        }
-
-        @java.lang.Override
-        public Builder clear() {
+    }
+    @java.lang.Override
+    public Builder clear() {
       super.clear();
       topic_ = "";
 
@@ -1027,15 +1026,15 @@ public final class MessageMetadata extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageMetadata();
-    }
+  }
 
-    public static org.meteor.remote.proto.MessageMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.MessageMetadata getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<MessageMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<MessageMetadata>() {
-        @java.lang.Override
+  private static final com.google.protobuf.Parser<MessageMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<MessageMetadata>() {
+    @java.lang.Override
     public MessageMetadata parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

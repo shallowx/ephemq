@@ -1,4 +1,4 @@
-package org.meteor.common;
+package org.meteor.common.message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -7,12 +7,11 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
 
 import java.nio.charset.StandardCharsets;
 
-public class MessageUtilTests {
+public class MessageUtilTest {
 
     private static ByteBuf message;
 

@@ -1128,26 +1128,23 @@ public final class PartitionMetadata extends
 
         /**
          * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearReplicaNodeIds() {
-            replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @param value The bytes of the replicaNodeIds to add.
-         * @return This builder for chaining.
-         */
-        public Builder addReplicaNodeIdsBytes(
-                com.google.protobuf.ByteString value) {
-            if (value == null) {
-                throw new NullPointerException();
+     * @return This builder for chaining.
+     */
+    public Builder clearReplicaNodeIds() {
+      replicaNodeIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000001);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param value The bytes of the replicaNodeIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addReplicaNodeIdsBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       ensureReplicaNodeIdsIsMutable();

@@ -46,7 +46,7 @@ public interface MigrateLedgerRequestOrBuilder extends
 
     /**
      * <code>string destination = 4;</code>
-     * @return The destination.
+   * @return The destination.
    */
   java.lang.String getDestination();
   /**

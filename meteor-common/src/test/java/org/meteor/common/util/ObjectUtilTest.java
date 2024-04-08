@@ -1,11 +1,11 @@
-package org.meteor.common;
+package org.meteor.common.util;
 
 import io.netty.util.internal.ObjectUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ObjectUtilTests {
+public class ObjectUtilTest {
 
     private static final Object NULL_OBJECT = null;
 

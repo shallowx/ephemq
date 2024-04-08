@@ -10,7 +10,7 @@ import org.meteor.remote.util.ByteBufUtil;
 
 import java.util.UUID;
 
-public class LedgerSegmentTests {
+public class LedgerSegmentTest {
 
     @Test
     public void testWriteRecord() {

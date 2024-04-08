@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.Properties;
 
-public class ConfigTests {
+public class ConfigTest {
     @Test
     public void testConfig() {
         Properties properties = new Properties();

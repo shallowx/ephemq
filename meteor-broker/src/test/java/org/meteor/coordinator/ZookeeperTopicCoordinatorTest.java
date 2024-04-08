@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class ZookeeperTopicCoordinatorTests {
+public class ZookeeperTopicCoordinatorTest {
     private final String topic = "test";
     private final int partitions = 1;
     private final int replicas = 1;

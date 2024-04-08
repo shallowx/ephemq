@@ -1,4 +1,4 @@
-package org.meteor.common;
+package org.meteor.common.util;
 
 import io.netty.util.internal.EmptyArrays;
 import io.netty.util.internal.StringUtil;
@@ -13,7 +13,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StringUtilTests {
+public class StringUtilTest {
 
     private static void checkNotCommonSuffix(String s, String p, int len) {
         assertFalse(checkCommonSuffixSymmetric(s, p, len));

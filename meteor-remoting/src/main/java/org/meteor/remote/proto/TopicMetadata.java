@@ -352,11 +352,10 @@ public final class TopicMetadata extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
-        }
-
-        @java.lang.Override
+    }
+    @java.lang.Override
     public Builder clear() {
       super.clear();
       name_ = "";
@@ -700,13 +699,13 @@ public final class TopicMetadata extends
     }
 
     public static org.meteor.remote.proto.TopicMetadata getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<TopicMetadata>
-            PARSER = new com.google.protobuf.AbstractParser<TopicMetadata>() {
-        @java.lang.Override
-        public TopicMetadata parsePartialFrom(
+  private static final com.google.protobuf.Parser<TopicMetadata>
+      PARSER = new com.google.protobuf.AbstractParser<TopicMetadata>() {
+    @java.lang.Override
+    public TopicMetadata parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {

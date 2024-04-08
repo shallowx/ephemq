@@ -379,11 +379,10 @@ public final class SyncRequest extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
-        }
-
-        @java.lang.Override
+    }
+    @java.lang.Override
     public Builder clear() {
       super.clear();
       ledger_ = 0;
@@ -760,18 +759,17 @@ public final class SyncRequest extends
         @java.lang.Override
         public final Builder mergeUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.SyncRequest)
+      return super.mergeUnknownFields(unknownFields);
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncRequest)
-    private static final org.meteor.remote.proto.server.SyncRequest DEFAULT_INSTANCE;
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncRequest();
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.SyncRequest)
+  }
+
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncRequest)
+  private static final org.meteor.remote.proto.server.SyncRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncRequest();
   }
 
   public static org.meteor.remote.proto.server.SyncRequest getDefaultInstance() {

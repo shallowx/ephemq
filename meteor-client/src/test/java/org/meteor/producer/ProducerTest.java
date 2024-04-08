@@ -17,8 +17,8 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ProducerTests {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerTests.class);
+public class ProducerTest {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerTest.class);
 
     @Test
     public void testContinueSend() throws Exception {

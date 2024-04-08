@@ -13,9 +13,9 @@ import org.meteor.remote.util.NetworkUtil;
 
 import java.util.concurrent.CountDownLatch;
 
-public class LedgerStorageTests {
+public class LedgerStorageTest {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorageTests.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorageTest.class);
 
     @Test
     public void testAppendRecord() throws Exception {

@@ -63,9 +63,9 @@ public interface MessageMetadataOrBuilder extends
 
     /**
      * <code>map&lt;string, string&gt; extras = 3;</code>
-     */
+   */
 
-    /* nullable */
+  /* nullable */
 java.lang.String getExtrasOrDefault(
       java.lang.String key,
       /* nullable */

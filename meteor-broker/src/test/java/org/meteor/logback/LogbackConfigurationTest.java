@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class LogbackConfigurationTests {
+public class LogbackConfigurationTest {
     private static final String LOGGER = "Slf4jTestLogger";
     private static final String DIR = "src/test/resources";
 
@@ -26,7 +26,7 @@ public class LogbackConfigurationTests {
         JoranConfigurator configurator = new JoranConfigurator();
         configurator.setContext((Context) factory);
 
-        URL resource = LogbackConfigurationTests.class.getClassLoader().getResource("logback-test.xml");
+        URL resource = LogbackConfigurationTest.class.getClassLoader().getResource("logback-test.xml");
         if (resource == null) {
             throw new RuntimeException("The logback file not found");
         }

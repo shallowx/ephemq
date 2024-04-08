@@ -16,7 +16,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Properties;
 
-public class InternalClientChannelTests {
+public class InternalClientChannelTest {
     private Channel embeddedChannel;
     private InternalClientChannel clientChannel;
 

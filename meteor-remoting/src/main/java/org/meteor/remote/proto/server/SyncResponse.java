@@ -380,16 +380,16 @@ public final class SyncResponse extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-        }
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.SyncResponse.class,
-                            org.meteor.remote.proto.server.SyncResponse.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.SyncResponse.class,
+                        org.meteor.remote.proto.server.SyncResponse.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.server.SyncResponse.newBuilder()
         private Builder() {
@@ -410,27 +410,27 @@ public final class SyncResponse extends
             } else {
                 currentOffset_ = null;
                 currentOffsetBuilder_ = null;
-            }
-            if (headOffsetBuilder_ == null) {
-                headOffset_ = null;
-      } else {
-        headOffset_ = null;
-        headOffsetBuilder_ = null;
-            }
-            if (tailOffsetBuilder_ == null) {
-                tailOffset_ = null;
-            } else {
-        tailOffset_ = null;
-        tailOffsetBuilder_ = null;
       }
-      return this;
-        }
+      if (headOffsetBuilder_ == null) {
+        headOffset_ = null;
+      } else {
+          headOffset_ = null;
+          headOffsetBuilder_ = null;
+      }
+      if (tailOffsetBuilder_ == null) {
+        tailOffset_ = null;
+      } else {
+          tailOffset_ = null;
+          tailOffsetBuilder_ = null;
+      }
+            return this;
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.SyncResponse getDefaultInstanceForType() {
@@ -1003,16 +1003,15 @@ public final class SyncResponse extends
 
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.SyncResponse)
-    }
+  }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncResponse)
-    private static final org.meteor.remote.proto.server.SyncResponse DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.SyncResponse)
+  private static final org.meteor.remote.proto.server.SyncResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncResponse();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncResponse();
-    }
-
-    public static org.meteor.remote.proto.server.SyncResponse getDefaultInstance() {
+  public static org.meteor.remote.proto.server.SyncResponse getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
