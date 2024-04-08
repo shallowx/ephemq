@@ -123,57 +123,6 @@ public class DefaultProducer implements Producer {
         }
     }
 
-    @Override
-    public MessageId send(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras) {
-        try {
-            CompressUtil.compress(message.retain(), config.getCompressLevel(), batch);
-            return this.send(topic, queue, message, extras);
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Compress message failed, topic[%s] queue[%s]", topic, queue), e);
-        } finally {
-            ByteBufUtil.release(message);
-        }
-    }
-
-    @Override
-    public MessageId send(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras,
-                          long timeout) {
-
-        try {
-            CompressUtil.compress(message.retain(), config.getCompressLevel(), batch);
-            return this.send(topic, queue, message, extras, timeout);
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Compress message failed, topic[%s] queue[%s]", topic, queue), e);
-        } finally {
-            ByteBufUtil.release(message);
-        }
-    }
-
-    @Override
-    public void sendAsync(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras,
-                          SendCallback callback) {
-        try {
-            CompressUtil.compress(message.retain(), config.getCompressLevel(), batch);
-            this.sendAsync(topic, queue, message, extras, callback);
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Compress message failed, topic[%s] queue[%s]", topic, queue), e);
-        } finally {
-            ByteBufUtil.release(message);
-        }
-    }
-
-    @Override
-    public void sendOneway(String topic, String queue, ByteBuf message, boolean batch, Map<String, String> extras) {
-        try {
-            CompressUtil.compress(message.retain(), config.getCompressLevel(), batch);
-            this.sendOneway(topic, queue, message, extras);
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Compress message failed, topic[%s] queue[%s]", topic, queue), e);
-        } finally {
-            ByteBufUtil.release(message);
-        }
-    }
-
     private void doSend(String topic, String queue, ByteBuf message, Map<String, String> extras, int timeoutMs, Promise<SendMessageResponse> promise) {
         TopicPatternUtil.validateQueue(queue);
         TopicPatternUtil.validateTopic(topic);

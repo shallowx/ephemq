@@ -27,9 +27,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
     private long feedback;
     private int command;
     private ByteBuf body;
-    // if the message is a batch message that it's will not compress
-    private byte compressed;
-    private byte batch;
 
     private MessagePacket(Recycler.Handle<MessagePacket> handle) {
         this.handle = handle;
@@ -45,17 +42,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
         return packet;
     }
 
-    public static MessagePacket newPacket(long feedback, int command, ByteBuf body, byte compressed, byte batch) {
-        final MessagePacket packet = RECYCLER.get();
-        packet.setRefCnt(1);
-        packet.feedback = feedback;
-        packet.command = command;
-        packet.compressed = compressed;
-        packet.batch = batch;
-        packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
-
-        return packet;
-    }
 
     public long feedback() {
         return feedback;
@@ -67,14 +53,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
     public int command() {
         return command;
-    }
-
-    public byte isCompressed() {
-        return compressed;
-    }
-
-    public byte isBatch() {
-        return batch;
     }
 
     @Override
@@ -118,8 +96,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
                 ", feedback=" + feedback +
                 ", command=" + command +
                 ", body=" + body +
-                ", compressed=" + compressed +
-                ", batch=" + batch +
                 '}';
     }
 }

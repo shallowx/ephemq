@@ -625,9 +625,9 @@ public final class QueryClusterResponse extends
                 throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
             } catch (java.io.IOException e) {
                 throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                        .setUnfinishedMessage(builder.buildPartial());
-            }
-            return builder.buildPartial();
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

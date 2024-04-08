@@ -517,10 +517,10 @@ public final class MessageMetadata extends
 
         @java.lang.Override
         public Builder clear() {
-            super.clear();
-            topic_ = "";
+      super.clear();
+      topic_ = "";
 
-            queue_ = "";
+      queue_ = "";
 
       internalGetMutableExtras().clear();
       return this;
@@ -1036,13 +1036,13 @@ public final class MessageMetadata extends
     private static final com.google.protobuf.Parser<MessageMetadata>
             PARSER = new com.google.protobuf.AbstractParser<MessageMetadata>() {
         @java.lang.Override
-        public MessageMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
+    public MessageMetadata parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {

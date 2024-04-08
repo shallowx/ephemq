@@ -419,10 +419,10 @@ public final class MigrateLedgerRequest extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
-    }
+        }
 
         @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
@@ -437,29 +437,29 @@ public final class MigrateLedgerRequest extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
+    }
+
+        @java.lang.Override
+        public Builder clear() {
+            super.clear();
+            partition_ = 0;
+
+      topic_ = "";
+
+      original_ = "";
+
+      destination_ = "";
+
+      return this;
         }
 
         @java.lang.Override
-    public Builder clear() {
-      super.clear();
-      partition_ = 0;
-
-            topic_ = "";
-
-            original_ = "";
-
-            destination_ = "";
-
-            return this;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
-    }
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_MigrateLedgerRequest_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstanceForType() {
@@ -920,20 +920,19 @@ public final class MigrateLedgerRequest extends
         public final Builder mergeUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.MigrateLedgerRequest)
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.MigrateLedgerRequest)
-    private static final org.meteor.remote.proto.server.MigrateLedgerRequest DEFAULT_INSTANCE;
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerRequest();
-    }
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.MigrateLedgerRequest)
+  }
 
-    public static org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstance() {
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.MigrateLedgerRequest)
+  private static final org.meteor.remote.proto.server.MigrateLedgerRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerRequest();
+  }
+
+  public static org.meteor.remote.proto.server.MigrateLedgerRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 

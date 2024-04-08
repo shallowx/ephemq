@@ -154,8 +154,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
             long feedback = initializer.get(invocation.expired(), invocation.feedback());
             MessagePacket packet;
             try {
-                packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain(),
-                        invocation.isCompressed(), invocation.isBatch());
+                packet = MessagePacket.newPacket(feedback, invocation.command(), invocation.data().retain());
             } catch (Throwable cause) {
                 initializer.release(feedback, r -> r.failure(cause));
                 throw cause;

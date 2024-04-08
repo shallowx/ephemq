@@ -384,9 +384,9 @@ public final class SyncRequest extends
         }
 
         @java.lang.Override
-        public Builder clear() {
-            super.clear();
-            ledger_ = 0;
+    public Builder clear() {
+      super.clear();
+      ledger_ = 0;
 
       epoch_ = 0;
 
@@ -772,17 +772,17 @@ public final class SyncRequest extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SyncRequest();
-    }
+  }
 
-    public static org.meteor.remote.proto.server.SyncRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.server.SyncRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<SyncRequest>
-            PARSER = new com.google.protobuf.AbstractParser<SyncRequest>() {
-        @java.lang.Override
-        public SyncRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
+  private static final com.google.protobuf.Parser<SyncRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SyncRequest>() {
+    @java.lang.Override
+    public SyncRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();

@@ -360,7 +360,7 @@ public final class CreateTopicConfigRequest extends
             super.clear();
             segmentRollingSize_ = 0;
 
-            segmentRetainCount_ = 0;
+      segmentRetainCount_ = 0;
 
       segmentRetainMs_ = 0;
 
@@ -705,13 +705,13 @@ public final class CreateTopicConfigRequest extends
     private static final com.google.protobuf.Parser<CreateTopicConfigRequest>
             PARSER = new com.google.protobuf.AbstractParser<CreateTopicConfigRequest>() {
         @java.lang.Override
-        public CreateTopicConfigRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
+    public CreateTopicConfigRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {

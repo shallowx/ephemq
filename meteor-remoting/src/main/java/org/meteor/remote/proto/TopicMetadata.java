@@ -357,8 +357,8 @@ public final class TopicMetadata extends
         }
 
         @java.lang.Override
-        public Builder clear() {
-            super.clear();
+    public Builder clear() {
+      super.clear();
       name_ = "";
 
       id_ = 0;
@@ -707,12 +707,12 @@ public final class TopicMetadata extends
             PARSER = new com.google.protobuf.AbstractParser<TopicMetadata>() {
         @java.lang.Override
         public TopicMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
-            try {
-                builder.mergeFrom(input, extensionRegistry);
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(builder.buildPartial());
       } catch (com.google.protobuf.UninitializedMessageException e) {

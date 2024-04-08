@@ -496,16 +496,16 @@ public final class TopicChangedSignal extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
-        }
+    }
 
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.TopicChangedSignal.class,
-                            org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
-        }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.TopicChangedSignal.class,
+                        org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.client.TopicChangedSignal.newBuilder()
         private Builder() {
@@ -933,17 +933,16 @@ public final class TopicChangedSignal extends
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicChangedSignal)
     private static final org.meteor.remote.proto.client.TopicChangedSignal DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.client.TopicChangedSignal();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.TopicChangedSignal();
-    }
+  public static org.meteor.remote.proto.client.TopicChangedSignal getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    public static org.meteor.remote.proto.client.TopicChangedSignal getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<TopicChangedSignal>
-            PARSER = new com.google.protobuf.AbstractParser<TopicChangedSignal>() {
+  private static final com.google.protobuf.Parser<TopicChangedSignal>
+      PARSER = new com.google.protobuf.AbstractParser<TopicChangedSignal>() {
     @java.lang.Override
     public TopicChangedSignal parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

@@ -66,8 +66,8 @@ public interface MessageMetadataOrBuilder extends
      */
 
     /* nullable */
-    java.lang.String getExtrasOrDefault(
-            java.lang.String key,
+java.lang.String getExtrasOrDefault(
+      java.lang.String key,
       /* nullable */
 java.lang.String defaultValue);
   /**

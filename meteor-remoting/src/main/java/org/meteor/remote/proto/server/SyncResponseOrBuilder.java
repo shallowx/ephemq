@@ -7,60 +7,60 @@ public interface SyncResponseOrBuilder extends
         // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncResponse)
         com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
-     *
-     * @return Whether the currentOffset field is set.
-     */
-    boolean hasCurrentOffset();
+  /**
+   * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
+   *
+   * @return Whether the currentOffset field is set.
+   */
+  boolean hasCurrentOffset();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
-     *
-     * @return The currentOffset.
-     */
-    org.meteor.remote.proto.MessageOffset getCurrentOffset();
+  /**
+   * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
+   *
+   * @return The currentOffset.
+   */
+  org.meteor.remote.proto.MessageOffset getCurrentOffset();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
-     */
-    org.meteor.remote.proto.MessageOffsetOrBuilder getCurrentOffsetOrBuilder();
+  /**
+   * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>
+   */
+  org.meteor.remote.proto.MessageOffsetOrBuilder getCurrentOffsetOrBuilder();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
-     *
-     * @return Whether the headOffset field is set.
-     */
-    boolean hasHeadOffset();
+  /**
+   * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
+   *
+   * @return Whether the headOffset field is set.
+   */
+  boolean hasHeadOffset();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
-     *
-     * @return The headOffset.
-     */
-    org.meteor.remote.proto.MessageOffset getHeadOffset();
+  /**
+   * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
+   *
+   * @return The headOffset.
+   */
+  org.meteor.remote.proto.MessageOffset getHeadOffset();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
-     */
-    org.meteor.remote.proto.MessageOffsetOrBuilder getHeadOffsetOrBuilder();
+  /**
+   * <code>.meteor.protobuf.MessageOffset headOffset = 2;</code>
+   */
+  org.meteor.remote.proto.MessageOffsetOrBuilder getHeadOffsetOrBuilder();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
-     *
-     * @return Whether the tailOffset field is set.
-     */
-    boolean hasTailOffset();
+  /**
+   * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
+   *
+   * @return Whether the tailOffset field is set.
+   */
+  boolean hasTailOffset();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
-     *
-     * @return The tailOffset.
-     */
-    org.meteor.remote.proto.MessageOffset getTailOffset();
+  /**
+   * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
+   *
+   * @return The tailOffset.
+   */
+  org.meteor.remote.proto.MessageOffset getTailOffset();
 
-    /**
-     * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
-     */
-    org.meteor.remote.proto.MessageOffsetOrBuilder getTailOffsetOrBuilder();
+  /**
+   * <code>.meteor.protobuf.MessageOffset tailOffset = 3;</code>
+   */
+  org.meteor.remote.proto.MessageOffsetOrBuilder getTailOffsetOrBuilder();
 }

@@ -33,17 +33,16 @@ public final class NetworkUtil {
     }
 
     public static MessagePacket newSuccessPacket(long feedback, ByteBuf body) {
-        return MessagePacket.newPacket(feedback, 0, body, (byte) 0, (byte) 0);
+        return MessagePacket.newPacket(feedback, 0, body);
     }
 
     public static MessagePacket newFailurePacket(long feedback, Throwable cause) {
         if (cause instanceof RemoteException e) {
-            return MessagePacket.newPacket(feedback, e.getCommand(), ByteBufUtil.string2Buf(e.getMessage()), (byte) 0,
-                    (byte) 0);
+            return MessagePacket.newPacket(feedback, e.getCommand(), ByteBufUtil.string2Buf(e.getMessage()));
         }
 
         return MessagePacket.newPacket(feedback, RemoteException.Failure.UNKNOWN_EXCEPTION,
-                ByteBufUtil.string2Buf(cause == null ? null : cause.getMessage()), (byte) 0, (byte) 0);
+                ByteBufUtil.string2Buf(cause == null ? null : cause.getMessage()));
     }
 
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {

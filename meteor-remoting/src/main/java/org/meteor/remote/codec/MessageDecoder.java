@@ -101,11 +101,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final int command = buf.readInt();
                 final long feedback = buf.readLong();
-                final byte compress = buf.readByte();
-                final byte batch = buf.readByte();
                 final ByteBuf body = buf.readRetainedSlice(writeFrameBytes - MessagePacket.HEADER_LENGTH);
                 this.state = READ_MAGIC_NUMBER;
-                return MessagePacket.newPacket(feedback, command, body, compress, batch);
+                return MessagePacket.newPacket(feedback, command, body);
             }
             default: {
                 throw new DecoderException("Invalid decode state[" + state + "]");

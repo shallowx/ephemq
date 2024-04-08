@@ -42,7 +42,7 @@ public interface ResetSubscribeRequestOrBuilder extends
     java.lang.String getTopic();
 
     /**
-     * <code>string topic = 5;</code>
+   * <code>string topic = 5;</code>
    * @return The bytes for topic.
    */
   com.google.protobuf.ByteString

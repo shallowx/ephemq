@@ -129,7 +129,7 @@ public class DemoClientBootstrap {
         if (semaphore.tryAcquire(timeout, TimeUnit.SECONDS)) {
             long expires = now + timeout + 1000L;
             WrappedInvocation awareInvocation =
-                    WrappedInvocation.newInvocation(1, data.retainedSlice(), expires, null, (byte) 0, (byte) 0);
+                    WrappedInvocation.newInvocation(1, data.retainedSlice(), expires, null);
 
             ChannelPromise promise = channel.newPromise();
             CountDownLatch countDownLatch = new CountDownLatch(1);

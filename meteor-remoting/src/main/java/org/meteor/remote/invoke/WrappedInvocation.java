@@ -21,8 +21,6 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
     private int command;
     private ByteBuf data;
     private long expired;
-    private byte compressed;
-    private byte batch;
     private InvokedFeedback<ByteBuf> feedback;
 
     public WrappedInvocation(Recycler.Handle<WrappedInvocation> handle) {
@@ -30,11 +28,11 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
     }
 
     public static WrappedInvocation newInvocation(int command, ByteBuf data) {
-        return newInvocation(command, data, 0, null, (byte) 0, (byte) 0);
+        return newInvocation(command, data, 0, null);
     }
 
     public static WrappedInvocation newInvocation(int command, ByteBuf data, long expires,
-                                                  InvokedFeedback<ByteBuf> feedback, byte compressed, byte batch) {
+                                                  InvokedFeedback<ByteBuf> feedback) {
         checkPositive(command, "Command");
 
         final WrappedInvocation invocation = RECYCLER.get();
@@ -42,8 +40,6 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         invocation.command = command;
         invocation.feedback = feedback;
         invocation.expired = expires;
-        invocation.compressed = compressed;
-        invocation.batch = batch;
         invocation.data = defaultIfNull(data, Unpooled.EMPTY_BUFFER);
 
         return invocation;
@@ -59,14 +55,6 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
 
     public long expired() {
         return expired;
-    }
-
-    public byte isCompressed() {
-        return compressed;
-    }
-
-    public byte isBatch() {
-        return batch;
     }
 
     public InvokedFeedback<ByteBuf> feedback() {

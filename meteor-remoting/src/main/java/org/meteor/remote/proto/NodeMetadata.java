@@ -412,10 +412,10 @@ public final class NodeMetadata extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.NodeMetadata)
-            org.meteor.remote.proto.NodeMetadataOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+      org.meteor.remote.proto.NodeMetadataOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
     }
 
     @java.lang.Override
@@ -433,29 +433,28 @@ public final class NodeMetadata extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
-        }
+    }
+    @java.lang.Override
+    public Builder clear() {
+        super.clear();
+        clusterName_ = "";
+
+      id_ = "";
+
+      host_ = "";
+
+      port_ = 0;
+
+      return this;
+    }
 
         @java.lang.Override
-    public Builder clear() {
-      super.clear();
-      clusterName_ = "";
-
-            id_ = "";
-
-            host_ = "";
-
-            port_ = 0;
-
-            return this;
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
         }
-
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
-    }
 
         @java.lang.Override
         public org.meteor.remote.proto.NodeMetadata getDefaultInstanceForType() {
@@ -914,21 +913,20 @@ public final class NodeMetadata extends
         @java.lang.Override
         public final Builder mergeUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.NodeMetadata)
+      return super.mergeUnknownFields(unknownFields);
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.NodeMetadata)
-    private static final org.meteor.remote.proto.NodeMetadata DEFAULT_INSTANCE;
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.NodeMetadata();
-    }
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.NodeMetadata)
+  }
 
-    public static org.meteor.remote.proto.NodeMetadata getDefaultInstance() {
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.NodeMetadata)
+  private static final org.meteor.remote.proto.NodeMetadata DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.NodeMetadata();
+  }
+
+  public static org.meteor.remote.proto.NodeMetadata getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 

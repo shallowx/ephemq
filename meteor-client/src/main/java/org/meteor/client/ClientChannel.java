@@ -26,6 +26,7 @@ public class ClientChannel implements MeterBinder {
     protected String id;
     protected Channel channel;
     protected Semaphore semaphore;
+    private final int hashCode;
 
     public ClientChannel(ClientConfig config, Channel channel, SocketAddress address) {
         this.id = channel.id().asLongText();
@@ -33,6 +34,7 @@ public class ClientChannel implements MeterBinder {
         this.address = address;
         this.semaphore = new Semaphore(config.getChannelInvokePermits());
         this.invoker = new CommandInvoker(this);
+        this.hashCode = Objects.hashCode(id);
     }
 
     public String id() {
@@ -90,10 +92,10 @@ public class ClientChannel implements MeterBinder {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return hashCode;
     }
 
-    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback, byte compress, byte batch) {
+    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback) {
         int length = ByteBufUtil.bufLength(data);
         try {
             long time = System.currentTimeMillis();
@@ -109,8 +111,7 @@ public class ClientChannel implements MeterBinder {
                             callback.onCompleted(v, c);
                         });
                         channel.writeAndFlush(
-                                WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback,
-                                        compress, batch));
+                                WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback));
                     }
                 } catch (Throwable t) {
                     semaphore.release();

@@ -519,11 +519,11 @@ public final class PartitionMetadata extends
 
         }
 
-        private Builder(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+    private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
 
-        }
+    }
 
         @java.lang.Override
     public Builder clear() {
@@ -1148,43 +1148,39 @@ public final class PartitionMetadata extends
                 com.google.protobuf.ByteString value) {
             if (value == null) {
                 throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-            ensureReplicaNodeIdsIsMutable();
-            replicaNodeIds_.add(value);
-            onChanged();
-            return this;
-        }
+  }
+  checkByteStringIsUtf8(value);
+      ensureReplicaNodeIdsIsMutable();
+      replicaNodeIds_.add(value);
+      onChanged();
+      return this;
+    }
 
-        private int version_;
-
-        /**
-         * <code>int32 version = 7;</code>
-         * @return The version.
-         */
-        @java.lang.Override
-        public int getVersion() {
-            return version_;
-        }
-
-        /**
-         * <code>int32 version = 7;</code>
-         * @param value The version to set.
-         * @return This builder for chaining.
-         */
-        public Builder setVersion(int value) {
-
-            version_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>int32 version = 7;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearVersion() {
+    private int version_ ;
+    /**
+     * <code>int32 version = 7;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <code>int32 version = 7;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+      
+      version_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 version = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
       
       version_ = 0;
       onChanged();
