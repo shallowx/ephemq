@@ -2,21 +2,20 @@ package org.meteor.internal;
 
 import io.netty.util.concurrent.DefaultThreadFactory;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Node;
-import org.meteor.coordinator.ClusterCoordinator;
-import org.meteor.coordinator.Coordinator;
-import org.meteor.listener.ServerListener;
-import org.meteor.remoting.DefaultSocketServer;
-
-import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.annotation.Nonnull;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Node;
+import org.meteor.listener.ServerListener;
+import org.meteor.remoting.DefaultSocketServer;
+import org.meteor.support.ClusterCoordinator;
+import org.meteor.support.Coordinator;
 
 public class MeteorServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorServer.class);

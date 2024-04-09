@@ -31,15 +31,13 @@ import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
-import org.meteor.coordinator.Coordinator;
-import org.meteor.coordinator.TopicCoordinator;
 import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.ledger.Log;
 import org.meteor.listener.APIListener;
+import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.invoke.Processor;
-import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.ClusterMetadata;
 import org.meteor.remote.proto.NodeMetadata;
@@ -72,6 +70,8 @@ import org.meteor.remote.proto.server.SyncRequest;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+import org.meteor.support.Coordinator;
+import org.meteor.support.TopicCoordinator;
 
 public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
@@ -119,7 +119,8 @@ public class ServiceProcessor implements Processor, Command.Server {
                 case CALCULATE_PARTITIONS -> processCalculatePartitions(channel, code, data, feedback);
                 default -> {
                     if (feedback != null) {
-                        feedback.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Command[" + code + "] unsupported, length=" + length));
+                        feedback.failure(RemotingException.of(RemotingException.Failure.UNSUPPORTED_EXCEPTION,
+                                "Command[" + code + "] unsupported, length=" + length));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel[{}] command[{}] unsupported, length={}", code, NetworkUtil.switchAddress(channel), length);
@@ -240,7 +241,8 @@ public class ServiceProcessor implements Processor, Command.Server {
 
             if (original.equals(destination)) {
                 processFailed("Process migrate ledger failed", code, channel, feedback,
-                        RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, "The original and destination are the same broker"));
+                        RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
+                                "The original and destination are the same broker"));
                 return;
             }
 
@@ -253,14 +255,17 @@ public class ServiceProcessor implements Processor, Command.Server {
                     if (commonConfiguration.getServerId().equals(original)) {
                         if (!topicCoordinator.hasLeadership(ledger)) {
                             processFailed("Process migrate ledger failed", code, channel, feedback,
-                                    RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The original broker does not have a leader role of %s", topicPartition)));
+                                    RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
+                                            String.format("The original broker does not have a leader role of %s",
+                                                    topicPartition)));
                             return;
                         }
 
                         Node destNode = coordinator.getClusterCoordinator().getClusterReadyNode(destination);
                         if (destNode == null) {
                             processFailed("Process migrate ledger failed", code, channel, feedback,
-                                    RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The destination broker %s is not in cluster", destination)));
+                                    RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
+                                            String.format("The destination broker %s is not in cluster", destination)));
                             return;
                         }
 
@@ -283,8 +288,9 @@ public class ServiceProcessor implements Processor, Command.Server {
                                     });
                                     log.migrate(destination, clientChannel, migratePromise);
                                 } else {
-                                    processFailed("Process migrate ledger failed", code, channel, feedback, RemoteException.of(
-                                            RemoteException.Failure.PROCESS_EXCEPTION, response.getMessage()
+                                    processFailed("Process migrate ledger failed", code, channel, feedback,
+                                            RemotingException.of(
+                                                    RemotingException.Failure.PROCESS_EXCEPTION, response.getMessage()
                                     ));
                                 }
                             } else {
@@ -305,8 +311,9 @@ public class ServiceProcessor implements Processor, Command.Server {
                         recordCommand(code, bytes, System.nanoTime() - time, true);
                         return;
                     }
-                    processFailed("Process migrate ledger failed", code, channel, feedback, RemoteException.of(
-                            RemoteException.Failure.PROCESS_EXCEPTION, "The broker is neither original broker nor destination broker"
+                    processFailed("Process migrate ledger failed", code, channel, feedback, RemotingException.of(
+                            RemotingException.Failure.PROCESS_EXCEPTION,
+                            "The broker is neither original broker nor destination broker"
                     ));
                     recordCommand(code, bytes, System.nanoTime() - time, false);
                 } catch (Throwable t) {

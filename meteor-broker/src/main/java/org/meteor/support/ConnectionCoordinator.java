@@ -1,9 +1,8 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import io.netty.channel.Channel;
-
-import javax.annotation.Nullable;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 public interface ConnectionCoordinator {
     void add(Channel channel);

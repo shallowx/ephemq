@@ -7,10 +7,10 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.EncoderException;
 import io.netty.util.concurrent.PromiseCombiner;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.exception.RemotingEncoderException;
 
 @ChannelHandler.Sharable
 public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
@@ -52,7 +52,9 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
     private ByteBuf encodeHeader(ByteBufAllocator alloc, int command, long feedback, int contentLength) {
         if (contentLength > MessagePacket.MAX_BODY_LENGTH) {
-            throw new EncoderException("The message body[" + contentLength + "] bytes too long, limit[" + MessagePacket.MAX_BODY_LENGTH + "] bytes");
+            throw new RemotingEncoderException(
+                    "The message body[" + contentLength + "] bytes too long, limit[" + MessagePacket.MAX_BODY_LENGTH
+                            + "] bytes");
         }
 
         final ByteBuf header = alloc.ioBuffer(MessagePacket.HEADER_LENGTH);

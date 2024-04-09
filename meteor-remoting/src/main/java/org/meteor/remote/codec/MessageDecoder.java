@@ -9,9 +9,9 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.DecoderException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.remote.exception.RemotingDecoderException;
 import org.meteor.remote.util.ByteBufUtil;
 
 public final class MessageDecoder extends ChannelInboundHandlerAdapter {
@@ -75,7 +75,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final byte magic = buf.getByte(buf.readerIndex());
                 if (magic != MessagePacket.MAGIC_NUMBER) {
-                    throw new DecoderException("Invalid magic number[" + magic + "]");
+                    throw new RemotingDecoderException("Invalid magic number[" + magic + "]");
                 }
 
                 state = READ_MESSAGE_LENGTH;
@@ -87,7 +87,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final int messageLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
                 if (messageLength < MessagePacket.HEADER_LENGTH) {
-                    throw new DecoderException("Invalid message length[" + messageLength + "]");
+                    throw new RemotingDecoderException("Invalid message length[" + messageLength + "]");
                 }
 
                 writeFrameBytes = messageLength;
@@ -106,7 +106,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 return MessagePacket.newPacket(feedback, command, body);
             }
             default: {
-                throw new DecoderException("Invalid decode state[" + state + "]");
+                throw new RemotingDecoderException("Invalid decode state[" + state + "]");
             }
         }
     }

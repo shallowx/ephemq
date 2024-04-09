@@ -2,6 +2,9 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Set;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.PartitionInfo;
@@ -9,16 +12,12 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Set;
+import org.meteor.support.Coordinator;
 
 public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
@@ -79,7 +78,7 @@ public class DefaultTopicListener implements TopicListener {
 
     private void sendTopicChangedSignal(String topic, TopicChangedSignal.Type type) {
         Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
-        if (channels.isEmpty()) {
+        if (channels == null || channels.isEmpty()) {
             return;
         }
 
@@ -100,7 +99,7 @@ public class DefaultTopicListener implements TopicListener {
 
     private void sendPartitionChangedSignal(TopicPartition topicPartition, TopicAssignment assignment) {
         Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
-        if (channels.isEmpty()) {
+        if (channels == null || channels.isEmpty()) {
             return;
         }
         for (Channel channel : channels) {

@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.config.CommonConfig;
-import org.meteor.coordinator.Coordinator;
+import org.meteor.support.Coordinator;
 
 public class InternalClientChannel extends ClientChannel {
     private final CommonConfig configuration;

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.meteor.client.ClientChannel;
+import org.meteor.client.exception.ClientRefreshException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.ClusterInfo;
@@ -68,7 +69,7 @@ final class RefreshMetadataTask implements Runnable {
             ClientChannel channel = client.getActiveChannel(null);
             ClusterInfo clusterInfo = client.queryClusterInfo(channel);
             if (clusterInfo == null) {
-                throw new IllegalStateException("Cluster node not found");
+                throw new ClientRefreshException("Cluster node not found");
             }
 
             Map<String, TopicInfo> topicInfos = client.queryTopicInfos(channel, topics.toArray(new String[0]));

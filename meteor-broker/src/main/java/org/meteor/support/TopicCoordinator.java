@@ -1,14 +1,13 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nullable;
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.listener.TopicListener;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface TopicCoordinator {
     void start() throws Exception;

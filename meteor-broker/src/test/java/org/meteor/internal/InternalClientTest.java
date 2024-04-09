@@ -15,11 +15,11 @@ import org.meteor.client.internal.ClientConfig;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinator.DefaultCoordinator;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
+import org.meteor.support.DefaultCoordinator;
 
 public class InternalClientTest {
     private Channel embeddedChannel;

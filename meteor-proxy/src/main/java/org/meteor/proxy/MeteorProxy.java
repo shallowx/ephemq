@@ -1,25 +1,28 @@
 package org.meteor.proxy;
 
 import io.netty.util.internal.StringUtil;
-import org.apache.commons.cli.*;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinator.Coordinator;
-import org.meteor.internal.MeteorServer;
-import org.meteor.listener.MetricsListener;
-import org.meteor.proxy.coordinator.ProxyDefaultCoordinator;
-import org.meteor.proxy.internal.ProxyMetricsListener;
-import org.meteor.proxy.internal.ProxyServerConfig;
-import org.meteor.proxy.remoting.MeteorProxyServer;
-import org.meteor.proxy.remoting.ProxySocketServer;
-import org.meteor.thread.ShutdownHookThread;
-
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.MissingOptionException;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.internal.MeteorServer;
+import org.meteor.listener.MetricsListener;
+import org.meteor.proxy.internal.ProxyMetricsListener;
+import org.meteor.proxy.internal.ProxyServerConfig;
+import org.meteor.proxy.remoting.MeteorProxyServer;
+import org.meteor.proxy.remoting.ProxySocketServer;
+import org.meteor.proxy.support.ProxyDefaultCoordinator;
+import org.meteor.support.Coordinator;
+import org.meteor.thread.ShutdownHookThread;
 
 public class MeteorProxy {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);

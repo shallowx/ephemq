@@ -1,6 +1,6 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
-import org.meteor.coordinator.Coordinator;
+import org.meteor.support.Coordinator;
 
 public interface ProxyCoordinator extends Coordinator {
     LedgerSyncCoordinator getLedgerSyncCoordinator();

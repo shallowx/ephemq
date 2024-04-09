@@ -1,9 +1,8 @@
-package org.meteor.coordinator;
-
-import org.meteor.common.message.Node;
-import org.meteor.listener.ClusterListener;
+package org.meteor.support;
 
 import java.util.List;
+import org.meteor.common.message.Node;
+import org.meteor.listener.ClusterListener;
 
 public interface ClusterCoordinator {
     void start() throws Exception;

@@ -1,14 +1,14 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
 import io.netty.util.concurrent.EventExecutor;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinator.DefaultConnectionCoordinator;
-import org.meteor.coordinator.DefaultCoordinator;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.DefaultClusterListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtil;
+import org.meteor.support.DefaultConnectionCoordinator;
+import org.meteor.support.DefaultCoordinator;
 
 public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);

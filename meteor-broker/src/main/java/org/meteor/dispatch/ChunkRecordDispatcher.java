@@ -10,11 +10,27 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
 import org.meteor.config.ChunkRecordDispatchConfig;
+import org.meteor.exception.ChunkDispatchException;
 import org.meteor.ledger.ChunkRecord;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;
@@ -23,12 +39,6 @@ import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntConsumer;
 
 public class ChunkRecordDispatcher {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordDispatcher.class);
@@ -259,7 +269,7 @@ public class ChunkRecordDispatcher {
             return buf;
         } catch (Exception e) {
             ByteBufUtil.release(buf);
-            throw new RuntimeException(String.format(
+            throw new ChunkDispatchException(String.format(
                     "Build payload error, ledger[%d] topic[%s] startOffset[%s] ednOffset[%s] length[%d]",
                     ledger, topic, startOffset, endOffset, chunk.data().readableBytes()
             ));
@@ -494,10 +504,10 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void doAttach(Channel channel, Offset offset, Promise<Void> promise) {
+    private void doAttach(Channel channel, Offset offset, Promise<Void> promise) throws ChunkDispatchException {
         try {
             if (!state.get()) {
-                throw new IllegalStateException("Chunk dispatcher is inactive");
+                throw new ChunkDispatchException("Chunk dispatcher is inactive");
             }
 
             ChunkRecordHandler handler = allocateHandler(channel);

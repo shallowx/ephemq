@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.meteor.client.ClientChannel;
+import org.meteor.client.exception.RemotingSendRequestException;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.client.internal.MessageLedger;
@@ -73,7 +74,7 @@ public class DefaultProducer implements Producer {
             SendMessageResponse response = timeout > 0 ? promise.get(Math.max(timeout, 3_000L), TimeUnit.MILLISECONDS) : promise.get();
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
         } catch (Throwable t) {
-            throw new RuntimeException(
+            throw new RemotingSendRequestException(
                     String.format("Message send failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
             );
         } finally {
@@ -100,7 +101,7 @@ public class DefaultProducer implements Producer {
             });
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), promise);
         } catch (Throwable t) {
-            throw new RuntimeException(
+            throw new RemotingSendRequestException(
                     String.format("Message async send failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
             );
         } finally {
@@ -113,7 +114,7 @@ public class DefaultProducer implements Producer {
         try {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), null);
         } catch (Throwable t) {
-            throw new RuntimeException(
+            throw new RemotingSendRequestException(
                     String.format("Message send oneway failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
             );
         } finally {

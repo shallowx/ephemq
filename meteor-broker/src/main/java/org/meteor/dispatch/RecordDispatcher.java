@@ -15,11 +15,27 @@ import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
 import org.meteor.config.RecordDispatchConfig;
+import org.meteor.exception.DispatchException;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
@@ -27,12 +43,6 @@ import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntConsumer;
 
 public class RecordDispatcher {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordDispatcher.class);
@@ -169,7 +179,7 @@ public class RecordDispatcher {
             ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getSubscriptionChannels();
             RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
-                promise.tryFailure(new IllegalArgumentException("Alter is invalid"));
+                promise.tryFailure(new DispatchException("Alter is invalid"));
                 return;
             }
 
@@ -612,7 +622,9 @@ public class RecordDispatcher {
             return buf;
         } catch (Throwable t) {
             ByteBufUtil.release(buf);
-            throw new RuntimeException(String.format("Build payload error, ledger[%d] topic[%s] offset[%s] length[%d]", ledger, t, offset, entry.readableBytes()));
+            throw new DispatchException(
+                    String.format("Build payload error, ledger[%d] topic[%s] offset[%s] length[%d]", ledger, t, offset,
+                            entry.readableBytes()));
         }
     }
 
@@ -643,7 +655,7 @@ public class RecordDispatcher {
 
     private void checkActive() {
         if (!isActive()) {
-            throw new IllegalArgumentException("Dispatch handler is inactive");
+            throw new DispatchException("Dispatch handler is inactive");
         }
     }
 

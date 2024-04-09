@@ -31,19 +31,18 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.coordinator.LedgerSyncCoordinator;
-import org.meteor.proxy.coordinator.ProxyClusterCoordinator;
-import org.meteor.proxy.coordinator.ProxyCoordinator;
-import org.meteor.proxy.coordinator.ProxyTopicCoordinator;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.proxy.internal.ProxyServerConfig;
+import org.meteor.proxy.support.LedgerSyncCoordinator;
+import org.meteor.proxy.support.ProxyClusterCoordinator;
+import org.meteor.proxy.support.ProxyCoordinator;
+import org.meteor.proxy.support.ProxyTopicCoordinator;
+import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.invoke.InvokedFeedback;
-import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.AlterSubscribeRequest;
@@ -61,6 +60,7 @@ import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.remoting.ServiceProcessor;
+import org.meteor.support.Coordinator;
 
 class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
@@ -102,7 +102,8 @@ class ProxyServiceProcessor extends ServiceProcessor {
                 case CANCEL_SYNC_LEDGER -> processUnSyncLedger(channel, command, data, feedback);
                 default -> {
                     if (feedback != null) {
-                        feedback.failure(RemoteException.of(RemoteException.Failure.UNSUPPORTED_EXCEPTION, "Proxy command[" + command + "] unsupported, length=" + length));
+                        feedback.failure(RemotingException.of(RemotingException.Failure.UNSUPPORTED_EXCEPTION,
+                                "Proxy command[" + command + "] unsupported, length=" + length));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Proxy command[{}] unsupported, channel={} length={} ", command, NetworkUtil.switchAddress(channel), length);

@@ -1,15 +1,34 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.DeleteBuilder;
 import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.recipes.atomic.DistributedAtomicInteger;
-import org.apache.curator.framework.recipes.cache.*;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -17,24 +36,16 @@ import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.*;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.SegmentConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.config.ZookeeperConfig;
+import org.meteor.exception.TopicException;
 import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
-
-import javax.annotation.Nonnull;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
@@ -151,7 +162,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             }
             return partitionInfos;
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Topic[%s] dose not exist", topic));
+            throw new TopicException(String.format("Topic[%s] dose not exist", topic));
         }
     }
 
@@ -308,7 +319,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     public Map<String, Object> createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
         List<Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
         if (clusterUpNodes.size() < replicas) {
-            throw new IllegalStateException("The broker counts is not enough to assign replicas");
+            throw new TopicException("The broker counts is not enough to assign replicas");
         }
 
         try {
@@ -355,7 +366,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             createResult.put(CorrelationIdConstants.PARTITION_REPLICAS, partitionReplicas);
             return createResult;
         } catch (KeeperException.NodeExistsException e) {
-            throw new IllegalStateException(String.format("Topic[%s] already exists", topic));
+            throw new TopicException(String.format("Topic[%s] already exists", topic));
         }
     }
 
@@ -378,7 +389,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         try {
             deleteBuilder.guaranteed().deletingChildrenIfNeeded().forPath(path);
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Topic[%s] does not exist", topic));
+            throw new TopicException(String.format("Topic[%s] does not exist", topic));
         }
     }
 
@@ -389,7 +400,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             try {
                 initPartition(topicPartition, ledgerId, epoch, topicConfig);
             } catch (Exception e) {
-                throw new RuntimeException(String.format("Async init ledger[%s] failed", ledgerId), e);
+                throw new TopicException(String.format("Async init ledger[%s] failed", ledgerId), e);
             }
         });
     }
@@ -460,7 +471,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             assignment.getReplicas().add(heir);
             client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
         } catch (KeeperException.NoNodeException e) {
-            throw new RuntimeException(String.format(
+            throw new TopicException(String.format(
                     "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
@@ -479,7 +490,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
             initPartition(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
         } catch (KeeperException.NoNodeException e) {
-            throw new RuntimeException(String.format(
+            throw new TopicException(String.format(
                     "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
@@ -504,7 +515,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             try {
                 destroyTopicPartition(topicPartition, ledgerId);
             } catch (Throwable t) {
-                throw new RuntimeException("Destroy partition failed", t);
+                throw new TopicException("Destroy partition failed", t);
             }
         });
     }

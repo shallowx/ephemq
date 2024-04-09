@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
@@ -16,7 +16,6 @@ import org.meteor.client.internal.MessageRouter;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.InternalClient;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.internal.ProxyClientListener;
@@ -24,6 +23,7 @@ import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
+import org.meteor.support.Coordinator;
 
 public abstract class LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncCoordinator.class);

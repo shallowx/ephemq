@@ -1,4 +1,4 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -13,7 +13,7 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogHandler;
-import org.meteor.remote.invoke.RemoteException;
+import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncRequest;
 import org.meteor.remote.proto.server.CancelSyncResponse;
@@ -42,7 +42,8 @@ public class ParticipantCoordinator {
     public void subscribeLedger(int ledger, int epoch, long index, Channel channel, Promise<SyncResponse> promise) {
         Log log = coordinator.getLogCoordinator().getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The ledger[%d] not found", ledger)));
+            promise.tryFailure(RemotingException.of(
+                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("The ledger[%d] not found", ledger)));
             return;
         }
 
@@ -85,7 +86,9 @@ public class ParticipantCoordinator {
         try {
             Log log = coordinator.getLogCoordinator().getLog(ledger);
             if (log == null) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION, String.format("The ledger [%d] not found", ledger)));
+                promise.tryFailure(RemotingException.of(
+                        RemotingException.Failure.PROCESS_EXCEPTION,
+                        String.format("The ledger [%d] not found", ledger)));
                 return;
             }
             if (logger.isInfoEnabled()) {

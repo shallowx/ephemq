@@ -1,7 +1,18 @@
 package org.meteor.listener;
 
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.binder.jvm.*;
+import static org.meteor.metrics.config.MetricsConstants.*;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmCompilationMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
@@ -9,6 +20,12 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
@@ -16,22 +33,13 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.MetricsConfig;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.metrics.config.MeteorPrometheusRegistry;
 import org.meteor.metrics.config.MetricsRegistrySetUp;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
 import org.meteor.metrics.jvm.JmxMetricsRegistry;
 import org.meteor.metrics.netty.NettyMetrics;
-
-import java.time.Duration;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.meteor.metrics.config.MetricsConstants.*;
+import org.meteor.support.Coordinator;
 
 public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);

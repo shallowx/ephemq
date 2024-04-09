@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -14,13 +14,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.client.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinator.Coordinator;
-import org.meteor.coordinator.ParticipantCoordinator;
-import org.meteor.coordinator.ZookeeperTopicCoordinator;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.QueryTopicInfoRequest;
 import org.meteor.remote.proto.server.QueryTopicInfoResponse;
+import org.meteor.support.Coordinator;
+import org.meteor.support.ParticipantCoordinator;
+import org.meteor.support.ZookeeperTopicCoordinator;
 
 class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implements ProxyTopicCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);

@@ -1,7 +1,6 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import io.netty.channel.Channel;
-
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 

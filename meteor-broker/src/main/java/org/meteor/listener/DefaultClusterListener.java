@@ -2,20 +2,19 @@ package org.meteor.listener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import java.util.Set;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.config.NetworkConfig;
-import org.meteor.coordinator.ConnectionCoordinator;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-
-import java.util.Set;
+import org.meteor.support.ConnectionCoordinator;
+import org.meteor.support.Coordinator;
 
 public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);

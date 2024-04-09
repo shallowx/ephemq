@@ -1,14 +1,13 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
+import java.util.List;
 import org.meteor.client.internal.Client;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.APIListener;
 import org.meteor.listener.MetricsListener;
-
-import java.util.List;
 
 public interface Coordinator {
     void start() throws Exception;

@@ -1,7 +1,6 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
-import static org.meteor.coordinator.JsonFeatureMapper.deserialize;
-import static org.meteor.coordinator.JsonFeatureMapper.serialize;
+import static org.meteor.support.JsonFeatureMapper.serialize;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
 import java.util.HashMap;
@@ -13,12 +12,12 @@ import org.meteor.client.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyLog;
+import org.meteor.support.Coordinator;
 
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);

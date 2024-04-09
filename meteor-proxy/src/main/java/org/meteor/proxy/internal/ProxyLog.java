@@ -11,7 +11,6 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogState;
 import org.meteor.listener.TopicListener;
@@ -19,6 +18,7 @@ import org.meteor.proxy.MeteorProxy;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
+import org.meteor.support.Coordinator;
 
 public class ProxyLog extends Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);

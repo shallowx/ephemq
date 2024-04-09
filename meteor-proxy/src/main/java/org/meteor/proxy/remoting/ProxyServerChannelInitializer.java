@@ -4,13 +4,13 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remoting.ServiceChannelInitializer;
 import org.meteor.remoting.ServiceDuplexHandler;
+import org.meteor.support.Coordinator;
 
 public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
     private final ProxyServerConfig serverConfiguration;

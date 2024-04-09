@@ -24,21 +24,21 @@ import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
-import org.meteor.coordinator.Coordinator;
-import org.meteor.coordinator.TopicCoordinator;
 import org.meteor.dispatch.ChunkRecordDispatcher;
 import org.meteor.dispatch.RecordDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.metrics.config.MetricsConstants;
+import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.invoke.Command;
-import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+import org.meteor.support.Coordinator;
+import org.meteor.support.TopicCoordinator;
 
 public class Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Log.class);
@@ -163,7 +163,7 @@ public class Log {
         promise.addListener(future -> syncPromise = null);
         LogState logState = state.get();
         if (!isAppendable(logState) && !isMigrating(logState)) {
-            promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION,
+            promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
                     String.format("The log can't begin to sync data,the current state is %s", logState)));
             return;
         }
@@ -320,7 +320,7 @@ public class Log {
     private void doAttachSynchronize(Channel channel, Offset initOffset, Promise<Void> promise) {
         LogState logState = state.get();
         if (!isActive(logState)) {
-            promise.tryFailure(RemoteException.of(Command.Failure.PROCESS_EXCEPTION, String.format(
+            promise.tryFailure(RemotingException.of(Command.Failure.PROCESS_EXCEPTION, String.format(
                     "Log %d is not active now, the current state is %s", ledger, state
             )));
             return;
@@ -471,7 +471,7 @@ public class Log {
             if (!isMigrating(logState)) {
                 forwardAppendingTraffic(marker, payload, promise);
             } else if (isSynchronizing(logState)) {
-                promise.tryFailure(RemoteException.of(RemoteException.Failure.PROCESS_EXCEPTION,
+                promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
                         String.format("The log %d can't accept appending record, current state is %s", ledger, logState)));
             } else {
                 storage.appendRecord(marker, payload, promise);

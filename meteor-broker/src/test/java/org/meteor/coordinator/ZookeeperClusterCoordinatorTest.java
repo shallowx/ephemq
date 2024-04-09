@@ -1,5 +1,8 @@
 package org.meteor.coordinator;
 
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.Before;
@@ -7,10 +10,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.common.message.Node;
 import org.meteor.config.ServerConfig;
-
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
+import org.meteor.support.ClusterCoordinator;
+import org.meteor.support.DefaultCoordinator;
 
 public class ZookeeperClusterCoordinatorTests {
     private TestingServer server;

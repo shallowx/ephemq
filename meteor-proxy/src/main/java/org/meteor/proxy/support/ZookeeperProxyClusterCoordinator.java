@@ -1,17 +1,16 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
+import java.util.Set;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.zookeeper.data.Stat;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
-import org.meteor.coordinator.ZookeeperClusterCoordinator;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyServerConfig;
-
-import java.util.Set;
+import org.meteor.support.ZookeeperClusterCoordinator;
 
 class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);

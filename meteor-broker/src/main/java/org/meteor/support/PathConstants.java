@@ -1,4 +1,4 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 public final class PathConstants {
     public static final String CONTROLLER = "/controller";

@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.meteor.client.ClientChannel;
+import org.meteor.client.exception.MeteorClientException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.TopicConfig;
@@ -106,9 +107,12 @@ public class Client implements MeterBinder {
             return applyChannel(address).get(config.getChannelConnectionTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             if (address == null) {
-                throw new RuntimeException(String.format("Client[%s] fetch random channel failed, socket address cannot be empty", name), t);
+                throw new MeteorClientException(
+                        String.format("Client[%s] fetch random channel failed, socket address cannot be empty", name),
+                        t);
             }
-            throw new RuntimeException(String.format(String.format("Client[%s] fetch random client channel failed, address[%s]", name, address)), t);
+            throw new MeteorClientException(String.format(
+                    String.format("Client[%s] fetch random client channel failed, address[%s]", name, address)), t);
         }
     }
 
@@ -356,7 +360,7 @@ public class Client implements MeterBinder {
             }
             applyRouter(topic, channel, false).get();
         } catch (Throwable t) {
-            throw new RuntimeException(
+            throw new MeteorClientException(
                     String.format(
                             "Client[%s] refresh message router from given client channel[%s] failed, topic[%s]", name,
                             channel == null ? null : channel.channel().remoteAddress(), topic

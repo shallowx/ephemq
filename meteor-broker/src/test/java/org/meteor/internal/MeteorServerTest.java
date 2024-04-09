@@ -1,12 +1,11 @@
 package org.meteor.internal;
 
-import org.junit.Test;
-import org.meteor.config.ServerConfig;
-import org.meteor.coordinator.DefaultCoordinator;
-import org.meteor.remoting.DefaultSocketServer;
-
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import org.junit.Test;
+import org.meteor.config.ServerConfig;
+import org.meteor.remoting.DefaultSocketServer;
+import org.meteor.support.DefaultCoordinator;
 
 public class MeteorServerTest {
     @Test

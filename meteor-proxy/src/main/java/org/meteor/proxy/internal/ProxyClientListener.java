@@ -32,11 +32,10 @@ import org.meteor.client.internal.MessageLedger;
 import org.meteor.client.internal.MessageRouter;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.coordinator.LedgerSyncCoordinator;
-import org.meteor.proxy.coordinator.ProxyTopicCoordinator;
+import org.meteor.proxy.support.LedgerSyncCoordinator;
+import org.meteor.proxy.support.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
@@ -44,6 +43,7 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+import org.meteor.support.Coordinator;
 
 
 public class ProxyClientListener implements CombineListener {

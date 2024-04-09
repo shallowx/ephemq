@@ -21,9 +21,9 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.config.CommonConfig;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.DeleteTopicResponse;
+import org.meteor.support.Coordinator;
 
 public class InternalClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClient.class);

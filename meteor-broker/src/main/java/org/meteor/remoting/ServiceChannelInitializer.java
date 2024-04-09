@@ -7,10 +7,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
+import org.meteor.support.Coordinator;
 
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected final CommonConfig commonConfiguration;

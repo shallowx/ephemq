@@ -9,8 +9,8 @@ import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.coordinator.Coordinator;
 import org.meteor.remote.proto.client.SyncMessageSignal;
+import org.meteor.support.Coordinator;
 
 public class InternalClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClientListener.class);

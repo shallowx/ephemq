@@ -1,7 +1,7 @@
 package org.meteor.remote.handle;
 
 import static org.meteor.common.util.ObjectUtil.checkNotNull;
-import static org.meteor.remote.invoke.RemoteException.of;
+import static org.meteor.remote.exception.RemotingException.of;
 import static org.meteor.remote.util.ByteBufUtil.buf2String;
 import static org.meteor.remote.util.ByteBufUtil.release;
 import static org.meteor.remote.util.NetworkUtil.newFailurePacket;
@@ -22,12 +22,13 @@ import javax.annotation.concurrent.Immutable;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessagePacket;
+import org.meteor.remote.exception.RemotingException;
+import org.meteor.remote.exception.RemotingTimeoutException;
 import org.meteor.remote.invoke.CallableSafeInitializer;
 import org.meteor.remote.invoke.GenericCallableSafeInitializer;
 import org.meteor.remote.invoke.GenericInvokedFeedback;
 import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.invoke.Processor;
-import org.meteor.remote.invoke.RemoteException;
 import org.meteor.remote.invoke.WrappedInvocation;
 
 @Immutable
@@ -128,7 +129,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 freed = initializer.release(feedback, r -> r.success(buf.retain()));
             } else {
                 String message = buf2String(buf, FAILURE_CONTENT_LIMIT);
-                RemoteException cause = of(command, message);
+                RemotingException cause = of(command, message);
                 freed = initializer.release(feedback, r -> r.failure(cause));
             }
         } catch (Throwable cause) {
@@ -207,7 +208,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                 while (iterator.hasNext()) {
                     var holder = iterator.next();
                     processHolder++;
-                    processInvoker += holder.releaseExpired(r -> r.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, "invoke handle timeout")));
+                    processInvoker += holder.releaseExpired(
+                            r -> r.failure(new RemotingTimeoutException("invoke handle timeout")));
                     if (holder.isEmpty()) {
                         iterator.remove();
                         continue;
@@ -231,7 +233,8 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        int count = initializer.releaseAll(c -> c.failure(of(RemoteException.Failure.INVOKE_TIMEOUT_EXCEPTION, String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
+        int count = initializer.releaseAll(c -> c.failure(
+                new RemotingTimeoutException(String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
         if (logger.isDebugEnabled()) {
             logger.debug("Release entire invoke, handle count[{}]", count);
         }

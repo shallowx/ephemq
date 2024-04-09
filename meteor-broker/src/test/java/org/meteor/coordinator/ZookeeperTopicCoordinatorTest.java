@@ -1,5 +1,11 @@
 package org.meteor.coordinator;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.Assert;
@@ -10,13 +16,8 @@ import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.CorrelationIdConstants;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
+import org.meteor.support.DefaultCoordinator;
+import org.meteor.support.TopicCoordinator;
 
 public class ZookeeperTopicCoordinatorTest {
     private final String topic = "test";

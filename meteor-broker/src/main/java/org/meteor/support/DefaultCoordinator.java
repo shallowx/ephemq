@@ -1,7 +1,11 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import org.meteor.client.internal.Client;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
@@ -11,13 +15,8 @@ import org.meteor.internal.InternalClient;
 import org.meteor.internal.InternalClientListener;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.LogHandler;
-import org.meteor.listener.*;
+import org.meteor.listener.DefaultClusterListener;
 import org.meteor.remote.util.NetworkUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class DefaultCoordinator implements Coordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultCoordinator.class);

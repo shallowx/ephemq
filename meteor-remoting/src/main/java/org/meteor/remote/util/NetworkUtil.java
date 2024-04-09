@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadFactory;
 import org.meteor.common.thread.FastEventExecutorGroup;
 import org.meteor.common.util.ObjectUtil;
 import org.meteor.remote.codec.MessagePacket;
-import org.meteor.remote.invoke.RemoteException;
+import org.meteor.remote.exception.RemotingException;
 
 public final class NetworkUtil {
     private NetworkUtil() {
@@ -37,11 +37,11 @@ public final class NetworkUtil {
     }
 
     public static MessagePacket newFailurePacket(long feedback, Throwable cause) {
-        if (cause instanceof RemoteException e) {
+        if (cause instanceof RemotingException e) {
             return MessagePacket.newPacket(feedback, e.getCommand(), ByteBufUtil.string2Buf(e.getMessage()));
         }
 
-        return MessagePacket.newPacket(feedback, RemoteException.Failure.UNKNOWN_EXCEPTION,
+        return MessagePacket.newPacket(feedback, RemotingException.Failure.UNKNOWN_EXCEPTION,
                 ByteBufUtil.string2Buf(cause == null ? null : cause.getMessage()));
     }
 

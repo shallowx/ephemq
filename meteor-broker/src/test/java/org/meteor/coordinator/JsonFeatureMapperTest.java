@@ -1,10 +1,10 @@
 package org.meteor.coordinator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Objects;
+import org.meteor.support.JsonFeatureMapper;
 
 public class JsonFeatureMapperTest {
 

@@ -1,4 +1,4 @@
-package org.meteor.proxy.coordinator;
+package org.meteor.proxy.support;
 
 public final class ZookeeperProxyPathConstants {
     private static final String PROXIES = "/proxies";
