@@ -44,8 +44,8 @@ public interface MigrateLedgerRequestOrBuilder extends
     com.google.protobuf.ByteString
     getOriginalBytes();
 
-    /**
-     * <code>string destination = 4;</code>
+  /**
+   * <code>string destination = 4;</code>
    * @return The destination.
    */
   java.lang.String getDestination();

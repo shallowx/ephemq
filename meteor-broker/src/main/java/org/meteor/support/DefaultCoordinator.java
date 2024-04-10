@@ -15,7 +15,12 @@ import org.meteor.internal.InternalClient;
 import org.meteor.internal.InternalClientListener;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.LogHandler;
+import org.meteor.listener.APIListener;
+import org.meteor.listener.ClusterListener;
 import org.meteor.listener.DefaultClusterListener;
+import org.meteor.listener.DefaultTopicListener;
+import org.meteor.listener.MetricsListener;
+import org.meteor.listener.TopicListener;
 import org.meteor.remote.util.NetworkUtil;
 
 public class DefaultCoordinator implements Coordinator {

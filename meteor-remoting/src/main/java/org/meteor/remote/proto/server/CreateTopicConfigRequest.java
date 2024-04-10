@@ -354,9 +354,8 @@ public final class CreateTopicConfigRequest extends
             super(parent);
 
         }
-
-        @java.lang.Override
-        public Builder clear() {
+    @java.lang.Override
+    public Builder clear() {
       super.clear();
       segmentRollingSize_ = 0;
 
@@ -689,13 +688,12 @@ public final class CreateTopicConfigRequest extends
 
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.CreateTopicConfigRequest)
-    }
+  }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.CreateTopicConfigRequest)
-    private static final org.meteor.remote.proto.server.CreateTopicConfigRequest DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CreateTopicConfigRequest();
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.CreateTopicConfigRequest)
+  private static final org.meteor.remote.proto.server.CreateTopicConfigRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CreateTopicConfigRequest();
   }
 
   public static org.meteor.remote.proto.server.CreateTopicConfigRequest getDefaultInstance() {

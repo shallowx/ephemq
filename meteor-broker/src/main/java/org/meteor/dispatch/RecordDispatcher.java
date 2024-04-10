@@ -179,7 +179,8 @@ public class RecordDispatcher {
             ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getSubscriptionChannels();
             RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
-                promise.tryFailure(new DispatchException("Alter is invalid"));
+                promise.tryFailure(
+                        new DispatchException(String.format("Channel<%s> alter is invalid", channel.toString())));
                 return;
             }
 

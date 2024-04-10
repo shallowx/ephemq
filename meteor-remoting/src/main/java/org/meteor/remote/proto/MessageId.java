@@ -624,10 +624,10 @@ public final class MessageId extends
 
     private static final com.google.protobuf.Parser<MessageId>
             PARSER = new com.google.protobuf.AbstractParser<MessageId>() {
-        @java.lang.Override
-        public MessageId parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+    @java.lang.Override
+    public MessageId parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {

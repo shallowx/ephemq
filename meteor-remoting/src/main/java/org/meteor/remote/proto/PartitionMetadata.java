@@ -1106,28 +1106,25 @@ public final class PartitionMetadata extends
                 throw new NullPointerException();
             }
             ensureReplicaNodeIdsIsMutable();
-            replicaNodeIds_.add(value);
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @param values The replicaNodeIds to add.
-         * @return This builder for chaining.
-         */
-        public Builder addAllReplicaNodeIds(
-                java.lang.Iterable<java.lang.String> values) {
-            ensureReplicaNodeIdsIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                    values, replicaNodeIds_);
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
+      replicaNodeIds_.add(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param values The replicaNodeIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllReplicaNodeIds(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureReplicaNodeIdsIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, replicaNodeIds_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearReplicaNodeIds() {

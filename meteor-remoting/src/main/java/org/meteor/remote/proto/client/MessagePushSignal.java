@@ -350,11 +350,10 @@ public final class MessagePushSignal extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
-        }
-
-        @java.lang.Override
+    }
+    @java.lang.Override
     public Builder clear() {
       super.clear();
       ledger_ = 0;
@@ -690,13 +689,12 @@ public final class MessagePushSignal extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.MessagePushSignal)
-    private static final org.meteor.remote.proto.client.MessagePushSignal DEFAULT_INSTANCE;
+  private static final org.meteor.remote.proto.client.MessagePushSignal DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.client.MessagePushSignal();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.client.MessagePushSignal();
-    }
-
-    public static org.meteor.remote.proto.client.MessagePushSignal getDefaultInstance() {
+  public static org.meteor.remote.proto.client.MessagePushSignal getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 

@@ -36,8 +36,8 @@ public interface ResetSubscribeRequestOrBuilder extends
 
     /**
      * <code>string topic = 5;</code>
-     * @return The topic.
-     */
+   * @return The topic.
+   */
   java.lang.String getTopic();
   /**
    * <code>string topic = 5;</code>

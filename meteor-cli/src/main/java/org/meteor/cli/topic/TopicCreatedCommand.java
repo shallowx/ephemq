@@ -2,6 +2,12 @@ package org.meteor.cli.topic;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -12,13 +18,6 @@ import org.meteor.common.message.TopicConfig;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.PartitionsReplicas;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TopicCreatedCommand implements Command {
     @Override
@@ -33,11 +32,13 @@ public class TopicCreatedCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
+        Option brokerOpt =
+                new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option explainOpt = new Option("ef", "--explain-file", true, "The file is explain file(JSON) that will over other commands");
+        Option explainOpt =
+                new Option("ef", "-explain-file", true, "The file is explain file(JSON) that will over other commands");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
         return options;

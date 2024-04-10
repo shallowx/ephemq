@@ -13,7 +13,7 @@ import org.meteor.config.ServerConfig;
 import org.meteor.support.ClusterCoordinator;
 import org.meteor.support.DefaultCoordinator;
 
-public class ZookeeperClusterCoordinatorTests {
+public class ZookeeperClusterCoordinatorTest {
     private TestingServer server;
     private ClusterCoordinator coordinator;
 

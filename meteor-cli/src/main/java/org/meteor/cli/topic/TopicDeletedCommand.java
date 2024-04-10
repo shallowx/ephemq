@@ -33,11 +33,12 @@ public class TopicDeletedCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
+        Option brokerOpt =
+                new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option option = new Option("t", "--topic", true, "The name of the topic to be deleted");
+        Option option = new Option("t", "-topic", true, "The name of the topic to be deleted");
         option.setRequired(true);
         options.addOption(option);
         return options;

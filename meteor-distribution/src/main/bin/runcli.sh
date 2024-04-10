@@ -4,27 +4,28 @@
 base_dir=$(dirname $0)
 set -e
 
-if [[ -z ${JAVA_OPTS}]]; then
-  JAVA_OPTS = "-XX:MinHeapSize=4g -XX:InitialHeapSize=4g -XX:MaxHeapSize=4g -XX:-UseLargePage -XX:+UseZGC -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:+MaxDirectMemorySize=8g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -Dio.netty.tryReflectionSetAccessible=true -XX:+HeapDumpPath=/tmp/heapdump.hprof -Dio.netty.maxDirectMemory=-1 --add-exports java.base/jdk.internal.misc=ALL-UNNAMED -add-opens java.base/java.nio=ALL-UNNAMED"
+if [[ -z ${JAVA_OPTS} ]]; then
+  JAVA_OPTS="-XX:MinHeapSize=4g -XX:InitialHeapSize=4g -XX:MaxHeapSize=4g -XX:-UseLargePages -XX:+UseZGC -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:MaxDirectMemorySize=8g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -Dio.netty.tryReflectionSetAccessible=true -XX:HeapDumpPath=/tmp/heapdump.hprof -Dio.netty.maxDirectMemory=-1 --add-exports java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED"
 fi
 
-if [[ -n ${JAVA_HOME}]]; then
-    if [[-z ${JAVA_EXE}]]; then
-        JAVA_EXE = ${JAVA_HOME}/bin/java
+if [[ -n ${JAVA_HOME} ]]; then
+    if [[ -z ${JAVA_EXE} ]]; then
+        JAVA_EXE=${JAVA_HOME}/bin/java
     fi
 fi
 
-if [[-z ${JAVA_EXE}]]; then
-    JAVA_EXE = java
+if [[ -z ${JAVA_EXE} ]]; then
+    JAVA_EXE=java
 fi
 
-if [[! -d ${LOG_DIR}]]; then
-    mkdir -p "${LOG_DIR}"
-fi
+echo "JAVA_OPTS=${JAVA_OPTS}"
+echo "JAVA_HOME=${JAVA_HOME}"
+echo "JAVA_EXE=${JAVA_EXE}"
 
 for file in "$base_dir"/../libs/meteor-cli-*.jar
 do
-  METEOR_JAR_FILE = ${file}
+  METEOR_JAR_FILE=${file}
 done
 
-$JAVA -server ${JAVA_OPTS} -jar ${METEOR_JAR_FILE} "$@"
+echo "METEOR_JAR_FILE=${METEOR_JAR_FILE}"
+$JAVA_EXE -server ${JAVA_OPTS} -jar ${METEOR_JAR_FILE} "$@"

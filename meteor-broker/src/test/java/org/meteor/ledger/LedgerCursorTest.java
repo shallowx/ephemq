@@ -19,8 +19,8 @@ public class LedgerCursorTest {
                 NetworkUtil.newEventExecutorGroup(1, "append-record-group").next(),
                 new LedgerCursorTest.LedgerTriggerCursorTest());
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest.LedgerSegmentTest segment =
-                new LedgerSegmentTest.LedgerSegmentTest(1, buf, new Offset(0, 0L));
+        LedgerSegmentTest.InnerLedgerSegmentTest segment =
+                new LedgerSegmentTest.InnerLedgerSegmentTest(1, buf, new Offset(0, 0L));
 
         LedgerCursor cursor = new LedgerCursor(storage, segment, 0);
         LedgerCursor copy = cursor.copy();
@@ -61,7 +61,7 @@ public class LedgerCursorTest {
 
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest.LedgerSegmentTest segment = new LedgerSegmentTest.LedgerSegmentTest(1, buf, offset);
+        LedgerSegmentTest.InnerLedgerSegmentTest segment = new LedgerSegmentTest.InnerLedgerSegmentTest(1, buf, offset);
         segment.writeRecord(1, offset, data);
         segment.writeRecord(1, new Offset(0, 1L), data);
 
@@ -86,7 +86,7 @@ public class LedgerCursorTest {
         ByteBuf data = ByteBufUtil.string2Buf(content);
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest.LedgerSegmentTest segment = new LedgerSegmentTest.LedgerSegmentTest(1, buf, offset);
+        LedgerSegmentTest.InnerLedgerSegmentTest segment = new LedgerSegmentTest.InnerLedgerSegmentTest(1, buf, offset);
         segment.writeRecord(1, offset, data);
         segment.writeRecord(1, new Offset(0, 1L), data);
         segment.writeRecord(1, new Offset(0, 2L), data);
@@ -108,7 +108,7 @@ public class LedgerCursorTest {
         ByteBuf data = ByteBufUtil.string2Buf(content);
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest.LedgerSegmentTest segment = new LedgerSegmentTest.LedgerSegmentTest(1, buf, offset);
+        LedgerSegmentTest.InnerLedgerSegmentTest segment = new LedgerSegmentTest.InnerLedgerSegmentTest(1, buf, offset);
         segment.writeRecord(1, offset, data);
         segment.writeRecord(1, new Offset(0, 1L), data);
         segment.writeRecord(1, new Offset(0, 2L), data);

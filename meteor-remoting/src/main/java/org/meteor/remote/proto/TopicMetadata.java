@@ -692,13 +692,12 @@ public final class TopicMetadata extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicMetadata)
-    private static final org.meteor.remote.proto.TopicMetadata DEFAULT_INSTANCE;
+  private static final org.meteor.remote.proto.TopicMetadata DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicMetadata();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicMetadata();
-    }
-
-    public static org.meteor.remote.proto.TopicMetadata getDefaultInstance() {
+  public static org.meteor.remote.proto.TopicMetadata getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 

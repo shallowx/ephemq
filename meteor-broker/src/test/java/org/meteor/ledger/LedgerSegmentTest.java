@@ -16,7 +16,7 @@ public class LedgerSegmentTest {
     public void testWriteRecord() {
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, buf, offset);
         segment.writeRecord(1, offset, buildPayload());
         buf.release();
     }
@@ -25,7 +25,7 @@ public class LedgerSegmentTest {
     public void testBaseOffset() {
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, buf, offset);
         ByteBuf payload = buildPayload();
         segment.writeRecord(1, offset, payload);
 
@@ -39,7 +39,7 @@ public class LedgerSegmentTest {
     public void testLastOffset() {
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, buf, offset);
         ByteBuf payload = buildPayload();
         segment.writeRecord(1, offset, payload);
 
@@ -53,7 +53,7 @@ public class LedgerSegmentTest {
     public void testReadRecord() {
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, buf, offset);
         String content = UUID.randomUUID().toString();
         ByteBuf data = ByteBufUtil.string2Buf(content);
 
@@ -74,7 +74,7 @@ public class LedgerSegmentTest {
     public void testNext() {
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, buf, offset);
         ByteBuf payload = buildPayload();
         segment.writeRecord(1, offset, payload);
 
@@ -88,7 +88,7 @@ public class LedgerSegmentTest {
     public void testActive() {
         Offset offset = new Offset(0, 0L);
         ByteBuf buf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, buf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, buf, offset);
 
         boolean active = segment.isActive();
         buf.release();
@@ -99,7 +99,7 @@ public class LedgerSegmentTest {
     public void testFreeBytes() {
         Offset offset = new Offset(0, 0L);
         ByteBuf initBuf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, initBuf, offset);
         String message = UUID.randomUUID().toString();
         ByteBuf buf = ByteBufUtil.string2Buf(message);
         segment.writeRecord(1, offset, buf);
@@ -115,7 +115,7 @@ public class LedgerSegmentTest {
     public void testUsedBytes() {
         Offset offset = new Offset(0, 0L);
         ByteBuf initBuf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, initBuf, offset);
         String message = UUID.randomUUID().toString();
         ByteBuf buf = ByteBufUtil.string2Buf(message);
         segment.writeRecord(1, offset, buf);
@@ -131,7 +131,7 @@ public class LedgerSegmentTest {
     public void testCapacity() {
         Offset offset = new Offset(0, 0L);
         ByteBuf initBuf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, initBuf, offset);
         LedgerConfig config = new LedgerConfig();
         Assert.assertEquals(segment.capacity(), config.segmentBufferCapacity());
         initBuf.release();
@@ -141,7 +141,7 @@ public class LedgerSegmentTest {
     public void testLocateIfNull() {
         Offset offset = new Offset(0, 0L);
         ByteBuf initBuf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, initBuf, offset);
         int locate = segment.locate(null);
         Assert.assertEquals(locate, segment.basePosition());
         initBuf.release();
@@ -151,7 +151,7 @@ public class LedgerSegmentTest {
     public void testLocateIfNotNull() {
         Offset offset = new Offset(0, 0L);
         ByteBuf initBuf = allocateBuf();
-        LedgerSegmentTest segment = new LedgerSegmentTest(1, initBuf, offset);
+        InnerLedgerSegmentTest segment = new InnerLedgerSegmentTest(1, initBuf, offset);
         int locate = segment.locate(new Offset(0, 2L));
         Assert.assertEquals(locate, segment.basePosition());
         initBuf.release();
@@ -166,8 +166,8 @@ public class LedgerSegmentTest {
         return PooledByteBufAllocator.DEFAULT.directBuffer(config.segmentBufferCapacity(), config.segmentBufferCapacity());
     }
 
-    static class LedgerSegmentTest extends LedgerSegment {
-        public LedgerSegmentTest(int ledger, ByteBuf buffer, Offset baseOffset) {
+    static class InnerLedgerSegmentTest extends LedgerSegment {
+        public InnerLedgerSegmentTest(int ledger, ByteBuf buffer, Offset baseOffset) {
             super(ledger, buffer, baseOffset);
         }
 

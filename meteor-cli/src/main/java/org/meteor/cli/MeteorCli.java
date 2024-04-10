@@ -58,7 +58,7 @@ public class MeteorCli {
                             return;
                         }
 
-                        if (cmdLine.hasOption('c')) {
+                        if (cmdLine.hasOption('b')) {
                             String address = cmdLine.getOptionValue('b');
                             ClientConfig config = new ClientConfig();
                             config.setBootstrapAddresses(new ArrayList<>() {
@@ -77,9 +77,10 @@ public class MeteorCli {
                                 throw e;
                             }
                         }
+                    } else {
+                        System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
+                                newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), args[0]);
                     }
-                    System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
-                            newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), args[0]);
                 }
             }
         } catch (Throwable t) {
@@ -100,7 +101,7 @@ public class MeteorCli {
         int length = args.length;
         if (length > 1) {
             String[] ret = new String[length - 1];
-            System.arraycopy(args, 1, ret, 0, length);
+            System.arraycopy(args, 1, ret, 0, length - 1);
             return ret;
         }
         return null;
@@ -154,7 +155,7 @@ public class MeteorCli {
     private static void printHelp() {
         System.out.printf("The most commonly used commands are:%n");
         for (Command cmd : commands) {
-            System.out.printf("  %s-20s %s%n", cmd.name(), cmd.description());
+            System.out.printf(" %-20s %s%n", cmd.name(), cmd.description());
         }
         System.out.printf("%n See 'smart admin help <command>' for more information on a specific command.%n");
     }

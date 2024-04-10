@@ -629,10 +629,10 @@ public final class SendMessageResponse extends
 
     private static final com.google.protobuf.Parser<SendMessageResponse>
             PARSER = new com.google.protobuf.AbstractParser<SendMessageResponse>() {
-        @java.lang.Override
-        public SendMessageResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+    @java.lang.Override
+    public SendMessageResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {

@@ -34,7 +34,7 @@ public interface TopicChangedSignalOrBuilder extends
      * @return The bytes for topic.
      */
     com.google.protobuf.ByteString
-    getTopicBytes();
+      getTopicBytes();
 
   /**
    * <code>int32 ledger = 3;</code>

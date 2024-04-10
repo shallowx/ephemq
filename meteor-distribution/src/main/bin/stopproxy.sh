@@ -3,13 +3,13 @@ set -e
 
 for file in "$base_dir"/../libs/meteor-proxy-*.jar
 do
-  METEOR_JAR_FILE = ${file}
+  METEOR_JAR_FILE=${file}
 done
 
 SIGNAL=${SIGNAL:-TERM}
 PID=$(ps ax | grep -i "${METEOR_JAR_FILE}" | grep java | grep -v grep | awk '{print $1}')
 
-if [-z "${PID}"]; then
+if [ -z "${PID}" ]; then
     echo "ERROR: No server to stop"
     exit 1
 else

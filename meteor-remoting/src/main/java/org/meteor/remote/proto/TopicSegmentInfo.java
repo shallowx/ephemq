@@ -353,9 +353,8 @@ public final class TopicSegmentInfo extends
             super(parent);
 
         }
-
-        @java.lang.Override
-        public Builder clear() {
+    @java.lang.Override
+    public Builder clear() {
       super.clear();
       segmentRollingSize_ = 0;
 
@@ -683,17 +682,16 @@ public final class TopicSegmentInfo extends
         public final Builder mergeUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicSegmentInfo)
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicSegmentInfo)
-    private static final org.meteor.remote.proto.TopicSegmentInfo DEFAULT_INSTANCE;
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicSegmentInfo();
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicSegmentInfo)
+  }
+
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicSegmentInfo)
+  private static final org.meteor.remote.proto.TopicSegmentInfo DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicSegmentInfo();
   }
 
   public static org.meteor.remote.proto.TopicSegmentInfo getDefaultInstance() {

@@ -511,7 +511,7 @@ public final class MessageMetadata extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
     }
     @java.lang.Override
@@ -1015,17 +1015,16 @@ public final class MessageMetadata extends
         public final Builder mergeUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.MessageMetadata)
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageMetadata)
-    private static final org.meteor.remote.proto.MessageMetadata DEFAULT_INSTANCE;
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageMetadata();
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.MessageMetadata)
+  }
+
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageMetadata)
+  private static final org.meteor.remote.proto.MessageMetadata DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageMetadata();
   }
 
   public static org.meteor.remote.proto.MessageMetadata getDefaultInstance() {

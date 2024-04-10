@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
@@ -17,7 +18,6 @@ import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
 public class ClusterListCommand implements Command {
-
     @Override
     public String name() {
         return "clusters";
@@ -30,11 +30,12 @@ public class ClusterListCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
+        Option brokerOpt =
+                new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option option = new Option("c", "--cluster", true, "The cluster name that is use to filter the cluster info");
+        Option option = new Option("c", "-cluster", true, "The cluster name that is use to filter the cluster info");
         option.setRequired(false);
         options.addOption(option);
         return options;
@@ -80,5 +81,9 @@ public class ClusterListCommand implements Command {
             System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), e.getCause().getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    private void formatPrint(List<Node> nodes) {
+
     }
 }

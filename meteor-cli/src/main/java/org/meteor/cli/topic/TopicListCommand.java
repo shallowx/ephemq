@@ -29,19 +29,21 @@ public class TopicListCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
+        Option brokerOpt =
+                new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option topicOpt = new Option("t", "--topic", true, "The name is used to query topic info");
+        Option topicOpt = new Option("t", "-topic", true, "The name is used to query topic info");
         topicOpt.setRequired(true);
         options.addOption(topicOpt);
 
-        Option ledgerOpt = new Option("l", "--ledger", true, "The ledger id that is use to filter the topic info");
+        Option ledgerOpt = new Option("l", "-ledger", true, "The ledger id that is use to filter the topic info");
         ledgerOpt.setRequired(true);
         options.addOption(ledgerOpt);
 
-        Option partitionOpt = new Option("p", "--partition", true, "The partition id that is use to filter the topic info");
+        Option partitionOpt =
+                new Option("p", "-partition", true, "The partition id that is use to filter the topic info");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 

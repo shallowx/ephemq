@@ -313,10 +313,10 @@ public final class PartitionsReplicas extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.PartitionsReplicas)
-            org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
+      org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
     }
 
     @java.lang.Override
@@ -335,11 +335,10 @@ public final class PartitionsReplicas extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
-        }
-
-        @java.lang.Override
+    }
+    @java.lang.Override
     public Builder clear() {
       super.clear();
       partition_ = 0;
@@ -685,13 +684,12 @@ public final class PartitionsReplicas extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.PartitionsReplicas)
-    private static final org.meteor.remote.proto.server.PartitionsReplicas DEFAULT_INSTANCE;
+  private static final org.meteor.remote.proto.server.PartitionsReplicas DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.PartitionsReplicas();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.PartitionsReplicas();
-    }
-
-    public static org.meteor.remote.proto.server.PartitionsReplicas getDefaultInstance() {
+  public static org.meteor.remote.proto.server.PartitionsReplicas getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 

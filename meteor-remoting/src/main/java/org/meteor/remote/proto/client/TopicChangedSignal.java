@@ -496,16 +496,16 @@ public final class TopicChangedSignal extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_descriptor;
-        }
+    }
 
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.TopicChangedSignal.class,
-                            org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
-        }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_TopicChangedSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.TopicChangedSignal.class,
+                        org.meteor.remote.proto.client.TopicChangedSignal.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.client.TopicChangedSignal.newBuilder()
         private Builder() {
@@ -905,23 +905,21 @@ public final class TopicChangedSignal extends
 
         /**
          * <code>int32 ledger_version = 4;</code>
-         *
          * @return This builder for chaining.
-         */
-        public Builder clearLedgerVersion() {
+     */
+    public Builder clearLedgerVersion() {
+      
+      ledgerVersion_ = 0;
+      onChanged();
+      return this;
+    }
+    @java.lang.Override
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.setUnknownFields(unknownFields);
+    }
 
-            ledgerVersion_ = 0;
-            onChanged();
-            return this;
-        }
-
-        @java.lang.Override
-        public final Builder setUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
+    @java.lang.Override
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.mergeUnknownFields(unknownFields);

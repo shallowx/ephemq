@@ -3,6 +3,14 @@ package org.meteor.cli.ledger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -11,11 +19,6 @@ import org.meteor.cli.core.Command;
 import org.meteor.client.internal.Client;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.concurrent.*;
 
 public class MigrateLedgerCommand implements Command {
     private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
@@ -32,28 +35,31 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option bOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
+        Option bOpt = new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
         bOpt.setRequired(true);
         options.addOption(bOpt);
 
-        Option originalOpt = new Option("ob", "--original-broker", true, "The original broker is the broker name of migrated out");
+        Option originalOpt =
+                new Option("ob", "-original-broker", true, "The original broker is the broker name of migrated out");
         originalOpt.setRequired(true);
         options.addOption(originalOpt);
 
-        Option topicOpt = new Option("t", "--topic", true, "The topic is the name of migrated out");
+        Option topicOpt = new Option("t", "-topic", true, "The topic is the name of migrated out");
         topicOpt.setRequired(true);
         options.addOption(topicOpt);
 
 
-        Option partitionOpt = new Option("p", "--partition", true, "The partition is the id of migrated out");
+        Option partitionOpt = new Option("p", "-partition", true, "The partition is the id of migrated out");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 
-        Option explainOpt = new Option("ef", "--explain-file", true, "The file is explain file that will over other commands");
+        Option explainOpt =
+                new Option("ef", "-explain-file", true, "The file is explain file that will over other commands");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
 
-        Option destOpt = new Option("db", "--destination-broker", true, "The destination broker is the broker name of  the migration destination");
+        Option destOpt = new Option("db", "-destination-broker", true,
+                "The destination broker is the broker name of  the migration destination");
         destOpt.setRequired(true);
         options.addOption(destOpt);
 

@@ -40,15 +40,17 @@ public class MigrateLedgerPlanCommand implements Command {
 
     @Override
     public Options buildOptions(Options options) {
-        Option brokerOpt = new Option("b", "--broker", true, "The broker address that is can connect to the broker cluster");
+        Option brokerOpt =
+                new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
         brokerOpt.setRequired(true);
         options.addOption(brokerOpt);
 
-        Option partitionOpt = new Option("ob", "--original-broker", true, "The original broker is the broker name of migrated out");
+        Option partitionOpt =
+                new Option("ob", "-original-broker", true, "The original broker is the broker name of migrated out");
         partitionOpt.setRequired(true);
         options.addOption(partitionOpt);
 
-        Option replicaOpt = new Option("eb", "--exclude-broker", true, "The broker is the excluded broker name");
+        Option replicaOpt = new Option("eb", "-exclude-broker", true, "The broker is the excluded broker name");
         replicaOpt.setRequired(true);
         options.addOption(replicaOpt);
 

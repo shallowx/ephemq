@@ -1,5 +1,6 @@
 package org.meteor.proxy.support;
 
+import static org.meteor.support.JsonFeatureMapper.deserialize;
 import static org.meteor.support.JsonFeatureMapper.serialize;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
