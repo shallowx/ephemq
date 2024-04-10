@@ -84,10 +84,11 @@ public class MeteorCli {
                 }
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
-                    newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), args[0]);
+            System.out.printf("%s [%s] INFO %s - ERROR: %s\n",
+                    newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), t.getMessage());
             System.exit(-1);
         }
+        System.exit(0);
     }
 
     private static CommandLine parseCommandLine(String[] args, Options options) throws Exception {

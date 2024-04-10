@@ -27,6 +27,7 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.CalculatePartitionsResponse;
 import org.meteor.remote.util.NetworkUtil;
 
+// keep print json to easy copy
 public class MigrateLedgerPlanCommand implements Command {
     @Override
     public String name() {

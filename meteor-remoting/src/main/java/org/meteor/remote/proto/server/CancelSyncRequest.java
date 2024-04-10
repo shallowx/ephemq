@@ -631,10 +631,10 @@ public final class CancelSyncRequest extends
     }
 
     private static final com.google.protobuf.Parser<CancelSyncRequest>
-            PARSER = new com.google.protobuf.AbstractParser<CancelSyncRequest>() {
-        @java.lang.Override
-        public CancelSyncRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
+      PARSER = new com.google.protobuf.AbstractParser<CancelSyncRequest>() {
+    @java.lang.Override
+    public CancelSyncRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();

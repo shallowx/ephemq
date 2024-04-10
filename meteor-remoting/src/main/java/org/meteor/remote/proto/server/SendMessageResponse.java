@@ -624,11 +624,11 @@ public final class SendMessageResponse extends
     }
 
     public static org.meteor.remote.proto.server.SendMessageResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<SendMessageResponse>
-            PARSER = new com.google.protobuf.AbstractParser<SendMessageResponse>() {
+  private static final com.google.protobuf.Parser<SendMessageResponse>
+      PARSER = new com.google.protobuf.AbstractParser<SendMessageResponse>() {
     @java.lang.Override
     public SendMessageResponse parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

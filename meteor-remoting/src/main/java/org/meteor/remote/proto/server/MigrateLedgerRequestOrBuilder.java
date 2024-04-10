@@ -42,7 +42,7 @@ public interface MigrateLedgerRequestOrBuilder extends
      * @return The bytes for original.
      */
     com.google.protobuf.ByteString
-    getOriginalBytes();
+      getOriginalBytes();
 
   /**
    * <code>string destination = 4;</code>

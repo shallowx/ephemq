@@ -2,14 +2,17 @@ package org.meteor.cli.cluster;
 
 import io.netty.util.internal.StringUtil;
 import java.net.SocketAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.FormatPrint;
+import org.meteor.cli.core.TextTable;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.Node;
@@ -17,6 +20,15 @@ import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
+/**
+ * for example:
+ *
+ * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
+ * | id     | host      | port | registrationTimestamp | cluster | state | auxData | ledgerThroughput |
+ * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
+ * | meteor | 127.0.0.1 | 9527 | 07:59:59.999          | meteor  | UP    | {}      | {}               |
+ * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
+ */
 public class ClusterListCommand implements Command {
     @Override
     public String name() {
@@ -45,7 +57,6 @@ public class ClusterListCommand implements Command {
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
             List<Node> nodes = new ArrayList<>();
-
             if (commandLine.hasOption('b')) {
                 String addr = commandLine.getOptionValue('b');
                 if (StringUtil.isNullOrEmpty(addr)) {
@@ -76,14 +87,19 @@ public class ClusterListCommand implements Command {
                     nodes = nodes.stream().filter(n -> n.getCluster().equals(clusterName)).toList();
                 }
             }
-            System.out.printf("%s [%s] INFO %S - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), gson.toJson(nodes));
+            formatPrint(nodes);
         } catch (Exception e) {
-            System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), ClusterListCommand.class.getName(), e.getCause().getMessage());
+            System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
+                    ClusterListCommand.class.getName(), e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    private void formatPrint(List<Node> nodes) {
+    SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 
+    private void formatPrint(List<Node> nodes) {
+        String[] title =
+                {"id", "host", "port", "registrationTimestamp", "cluster", "state", "auxData", "ledgerThroughput"};
+        FormatPrint.formatPrint(nodes, title);
     }
 }

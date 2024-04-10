@@ -385,10 +385,10 @@ public final class ResetSubscribeRequest extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.ResetSubscribeRequest)
-      org.meteor.remote.proto.server.ResetSubscribeRequestOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
+            org.meteor.remote.proto.server.ResetSubscribeRequestOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
     }
 
     @java.lang.Override
@@ -401,37 +401,36 @@ public final class ResetSubscribeRequest extends
     }
 
         // Construct using org.meteor.remote.proto.server.ResetSubscribeRequest.newBuilder()
-        private Builder() {
+    private Builder() {
 
-        }
+    }
 
-        private Builder(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+    private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      super(parent);
 
-        }
+    }
+    @java.lang.Override
+    public Builder clear() {
+        super.clear();
+        ledger_ = 0;
 
-        @java.lang.Override
-        public Builder clear() {
-      super.clear();
-      ledger_ = 0;
+        epoch_ = 0;
 
-      epoch_ = 0;
+      index_ = 0L;
 
-            index_ = 0L;
+      markers_ = com.google.protobuf.ByteString.EMPTY;
 
-            markers_ = com.google.protobuf.ByteString.EMPTY;
+        topic_ = "";
 
-      topic_ = "";
+        return this;
+    }
 
-      return this;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_ResetSubscribeRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.ResetSubscribeRequest getDefaultInstanceForType() {
@@ -787,27 +786,24 @@ public final class ResetSubscribeRequest extends
 
         /**
          * <code>string topic = 5;</code>
-         *
          * @param value The topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopic(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topic_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string topic = 5;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearTopic() {
+     * @return This builder for chaining.
+     */
+    public Builder setTopic(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      topic_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTopic() {
       
       topic_ = getDefaultInstance().getTopic();
       onChanged();

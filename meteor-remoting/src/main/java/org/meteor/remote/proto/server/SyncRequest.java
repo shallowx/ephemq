@@ -734,18 +734,17 @@ public final class SyncRequest extends
 
         /**
          * <code>string topic = 4;</code>
-         *
          * @param value The bytes for topic to set.
-         * @return This builder for chaining.
-         */
-        public Builder setTopicBytes(
-                com.google.protobuf.ByteString value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-
-            topic_ = value;
+     * @return This builder for chaining.
+     */
+    public Builder setTopicBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      topic_ = value;
       onChanged();
       return this;
     }

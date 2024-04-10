@@ -13,12 +13,45 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.FormatPrint;
+import org.meteor.cli.core.TextTable;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.PartitionsReplicas;
 
+/**
+ * for example:
+ *
+ * +------------------+-----------+----------+----------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
+ * | topic            | partition | replicas | partitions
+ *                          | config
+ * |
+ * +------------------+-----------+----------+----------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
+ * | test_topic_00000 | 10        | 1        | TopicConfig{segment_rolling_size=0, segment_retain_count=0,
+ * segment_retainMs=30000, allocate=true} | {0=[meteor], 1=[meteor], 2=[meteor], 3=[meteor], 4=[meteor], 5=[meteor],
+ * 6=[meteor], 7=[meteor], 8=[meteor], 9=[meteor]} |
+ * +------------------+-----------+----------+----------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
+ *
+ * +------------------+-----------+----------+------------+--------------------------------------------------------------------------------------------------------------------------+
+ * | topic            | partition | replicas | partitions | config
+ * |
+ * +------------------+-----------+----------+------------+--------------------------------------------------------------------------------------------------------------------------+
+ * | test_topic_00001 | 10        | 1        |            | {0=[meteor], 1=[meteor], 2=[meteor], 3=[meteor], 4=[meteor],
+ * 5=[meteor], 6=[meteor], 7=[meteor], 8=[meteor], 9=[meteor]} |
+ * +------------------+-----------+----------+------------+--------------------------------------------------------------------------------------------------------------------------+
+ *
+ * +------------------+-----------+----------+-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
+ * | topic            | partition | replicas | partitions
+ *                       | config
+ * |
+ * +------------------+-----------+----------+-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
+ * | test_topic_00002 | 10        | 1        | TopicConfig{segment_rolling_size=0, segment_retain_count=0,
+ * segment_retainMs=0, allocate=false} | {0=[meteor], 1=[meteor], 2=[meteor], 3=[meteor], 4=[meteor], 5=[meteor],
+ * 6=[meteor], 7=[meteor], 8=[meteor], 9=[meteor]} |
+ * +------------------+-----------+----------+-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
+ */
 public class TopicCreatedCommand implements Command {
     @Override
     public String name() {
@@ -38,7 +71,7 @@ public class TopicCreatedCommand implements Command {
         options.addOption(brokerOpt);
 
         Option explainOpt =
-                new Option("ef", "-explain-file", true, "The file is explain file(JSON) that will over other commands");
+                new Option("e", "-explain-file", true, "The file is explain file(JSON) that will over other commands");
         explainOpt.setRequired(true);
         options.addOption(explainOpt);
         return options;
@@ -48,7 +81,7 @@ public class TopicCreatedCommand implements Command {
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
             if (commandLine.hasOption('b')) {
-                if (commandLine.hasOption('e')) {
+                if (commandLine.hasOption("e")) {
                     String explainFile = commandLine.getOptionValue('e');
                     if (!StringUtil.isNullOrEmpty(explainFile)) {
                         String content = FileUtils.readFileToString(new File(explainFile), StandardCharsets.UTF_8);
@@ -64,19 +97,19 @@ public class TopicCreatedCommand implements Command {
                             int replicas = metadata.replicas;
                             TopicConfig config = metadata.config;
                             CreateTopicResponse response = client.createTopic(topic, partition, replicas, config);
-                            String print = print(response, topic, partition, replicas, config);
-                            System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicCreatedCommand.class.getName(), print);
+                            print(response, topic, partition, replicas, config);
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), e.getCause().getMessage());
+            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
+                    TopicCreatedCommand.class.getName(), e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    private String print(CreateTopicResponse response, String topic, int partition, int replica, TopicConfig config) {
+    private void print(CreateTopicResponse response, String topic, int partition, int replica, TopicConfig config) {
         TopicMetadata metadata = new TopicMetadata();
         metadata.topic = topic;
         metadata.config = config;
@@ -88,7 +121,11 @@ public class TopicCreatedCommand implements Command {
                 .collect(Collectors.toMap(
                         PartitionsReplicas::getPartition, t -> new ArrayList<>(t.getReplicasList()
                         )));
-        return gson.toJson(metadata);
+
+        String[] title = {"topic", "partition", "replicas", "partitions", "config"};
+        List<TopicMetadata> metadatas = new ArrayList<>();
+        metadatas.add(metadata);
+        FormatPrint.formatPrint(metadatas, title);
     }
 
     private static class TopicMetadata {
@@ -101,7 +138,8 @@ public class TopicCreatedCommand implements Command {
         public TopicMetadata() {
         }
 
-        public TopicMetadata(String topic, int partition, int replicas, TopicConfig config, Map<Integer, List<String>> partitions) {
+        public TopicMetadata(String topic, int partition, int replicas, TopicConfig config,
+                             Map<Integer, List<String>> partitions) {
             this.topic = topic;
             this.partition = partition;
             this.replicas = replicas;

@@ -351,9 +351,9 @@ public final class CreateTopicConfigRequest extends
 
         private Builder(
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+      super(parent);
 
-        }
+    }
     @java.lang.Override
     public Builder clear() {
       super.clear();
@@ -677,17 +677,17 @@ public final class CreateTopicConfigRequest extends
         @java.lang.Override
         public final Builder setUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-        }
+      return super.setUnknownFields(unknownFields);
+    }
 
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
+    @java.lang.Override
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.mergeUnknownFields(unknownFields);
+    }
 
 
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.CreateTopicConfigRequest)
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.CreateTopicConfigRequest)
   }
 
   // @@protoc_insertion_point(class_scope:meteor.protobuf.CreateTopicConfigRequest)

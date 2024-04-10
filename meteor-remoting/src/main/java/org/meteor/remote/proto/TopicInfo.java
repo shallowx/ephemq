@@ -914,10 +914,10 @@ public final class TopicInfo extends
     }
 
     private static final com.google.protobuf.Parser<TopicInfo>
-            PARSER = new com.google.protobuf.AbstractParser<TopicInfo>() {
-        @java.lang.Override
-        public TopicInfo parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
+      PARSER = new com.google.protobuf.AbstractParser<TopicInfo>() {
+    @java.lang.Override
+    public TopicInfo parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();

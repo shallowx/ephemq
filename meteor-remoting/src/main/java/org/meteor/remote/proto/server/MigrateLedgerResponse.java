@@ -633,10 +633,10 @@ public final class MigrateLedgerResponse extends
     }
 
     private static final com.google.protobuf.Parser<MigrateLedgerResponse>
-            PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerResponse>() {
-        @java.lang.Override
-        public MigrateLedgerResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
+      PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerResponse>() {
+    @java.lang.Override
+    public MigrateLedgerResponse parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();

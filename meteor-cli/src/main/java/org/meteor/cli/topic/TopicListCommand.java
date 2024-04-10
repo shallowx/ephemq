@@ -10,6 +10,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.FormatPrint;
+import org.meteor.cli.core.TextTable;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.remote.proto.PartitionMetadata;
@@ -39,12 +41,12 @@ public class TopicListCommand implements Command {
         options.addOption(topicOpt);
 
         Option ledgerOpt = new Option("l", "-ledger", true, "The ledger id that is use to filter the topic info");
-        ledgerOpt.setRequired(true);
+        ledgerOpt.setRequired(false);
         options.addOption(ledgerOpt);
 
         Option partitionOpt =
                 new Option("p", "-partition", true, "The partition id that is use to filter the topic info");
-        partitionOpt.setRequired(true);
+        partitionOpt.setRequired(false);
         options.addOption(partitionOpt);
 
         return options;
@@ -64,8 +66,8 @@ public class TopicListCommand implements Command {
                 if (commandLine.hasOption("t")) {
                     String topic = commandLine.getOptionValue("t").trim();
                     Map<String, TopicInfo> topicInfos = StringUtil.isNullOrEmpty(topic)
-                            ? client.queryTopicInfos(clientChannel, topic)
-                            : client.queryTopicInfos(clientChannel);
+                            ? client.queryTopicInfos(clientChannel)
+                            : client.queryTopicInfos(clientChannel, topic);
 
                     if (topicInfos == null || topicInfos.isEmpty()) {
                         System.out.printf("%s [%s] INFO %s - Topic info is empty \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName());
@@ -94,13 +96,18 @@ public class TopicListCommand implements Command {
                     int partition = Integer.parseInt(commandLine.getOptionValue('p'));
                     topics = topics.stream().filter(t -> t.getPartition() == partition).toList();
                 }
-
-                System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), gson.toJson(topics));
+                formatPrint(topics);
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName(), t.getCause().getMessage());
+            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
+                    TopicListCommand.class.getName(), t.getMessage());
             throw new RuntimeException(t);
         }
+    }
+
+    private void formatPrint(List<TopicMetadata> topics) {
+        String[] title = {"topic", "partition", "ledger", "epoch", "leader", "replicas"};
+        FormatPrint.formatPrint(topics, title);
     }
 
     private static class TopicMetadata {

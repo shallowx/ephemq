@@ -39,7 +39,7 @@ public interface NodeMetadataOrBuilder extends
 
     /**
      * <code>string host = 3;</code>
-     * @return The host.
+   * @return The host.
    */
   java.lang.String getHost();
   /**

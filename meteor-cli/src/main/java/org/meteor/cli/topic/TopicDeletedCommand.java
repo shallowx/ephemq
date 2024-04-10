@@ -7,19 +7,50 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.FormatPrint;
+import org.meteor.cli.core.TextTable;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.PartitionInfo;
+import org.meteor.common.message.TopicConfig;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.TopicMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
+/**
+ * for example:
+ *
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | topic            | partition | ledger | epoch | leader | replicas | topicConfig | version | topicId |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 9         | 320    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 7         | 318    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 5         | 316    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 4         | 315    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 2         | 313    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 0         | 311    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 8         | 319    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 6         | 317    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 3         | 314    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ * | test_topic_00002 | 1         | 312    | 0     | meteor | [meteor] | [meteor]    |         | 32      |
+ * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
+ */
 public class TopicDeletedCommand implements Command {
     @Override
     public String name() {
@@ -82,12 +113,9 @@ public class TopicDeletedCommand implements Command {
                             ));
                         }
                     }
-                    System.out.printf("%s [%s] INFO %S - print topic[%s] metadata options: %s \n",
-                            newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), topic, gson.toJson(infos));
                     TimeUnit.MILLISECONDS.sleep(1000);
                     client.deleteTopic(topic);
-                    System.out.printf("%s [%s] INFO %S - delete topic[%s] from cluster successfully \n",
-                            newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), topic);
+                    formatPrint(infos);
                 }
             }
         } catch (Exception e) {
@@ -95,5 +123,11 @@ public class TopicDeletedCommand implements Command {
                     newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
             throw new RuntimeException(e);
         }
+    }
+
+    private void formatPrint(List<PartitionInfo> infos) {
+        String[] title =
+                {"topic", "partition", "ledger", "epoch", "leader", "replicas", "topicConfig", "version", "topicId"};
+        FormatPrint.formatPrint(infos, title);
     }
 }

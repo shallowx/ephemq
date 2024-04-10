@@ -472,18 +472,18 @@ public final class QueryTopicInfoRequest extends
         private void ensureTopicNamesIsMutable() {
             if (!((bitField0_ & 0x00000001) != 0)) {
                 topicNames_ = new com.google.protobuf.LazyStringArrayList(topicNames_);
-        bitField0_ |= 0x00000001;
-       }
-    }
+                bitField0_ |= 0x00000001;
+            }
+        }
 
         /**
-         * <code>repeated string topic_names = 1;</code>
-     * @return A list containing the topicNames.
-         */
-        public com.google.protobuf.ProtocolStringList
-        getTopicNamesList() {
-            return topicNames_.getUnmodifiableView();
-        }
+     * <code>repeated string topic_names = 1;</code>
+         * @return A list containing the topicNames.
+     */
+    public com.google.protobuf.ProtocolStringList
+    getTopicNamesList() {
+        return topicNames_.getUnmodifiableView();
+    }
 
         /**
          * <code>repeated string topic_names = 1;</code>
@@ -618,11 +618,11 @@ public final class QueryTopicInfoRequest extends
     }
 
     public static org.meteor.remote.proto.server.QueryTopicInfoRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<QueryTopicInfoRequest>
-            PARSER = new com.google.protobuf.AbstractParser<QueryTopicInfoRequest>() {
+  private static final com.google.protobuf.Parser<QueryTopicInfoRequest>
+      PARSER = new com.google.protobuf.AbstractParser<QueryTopicInfoRequest>() {
     @java.lang.Override
     public QueryTopicInfoRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

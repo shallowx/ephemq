@@ -34,6 +34,27 @@ public class ClientTest {
         client.close();
     }
 
+    @Test
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void testDeleteTopic() throws Exception {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setBootstrapAddresses(new ArrayList<>() {
+            {
+                add("127.0.0.1:9527");
+            }
+        });
+
+        Client client = new Client("default", clientConfig, new CombineListener() {
+        });
+        client.start();
+
+        client.deleteTopic("#test#default");
+        // the duration setting only for testing
+        new CountDownLatch(1).await(5000, TimeUnit.MILLISECONDS);
+        client.close();
+    }
+
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testClusterInfo() throws Exception {

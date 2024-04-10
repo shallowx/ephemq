@@ -437,16 +437,16 @@ public final class LedgerRetiredSignal extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_descriptor;
-        }
+    }
 
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.client.LedgerRetiredSignal.class,
-                            org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
-        }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.client.ClientProto.internal_static_meteor_protobuf_LedgerRetiredSignal_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.client.LedgerRetiredSignal.class,
+                        org.meteor.remote.proto.client.LedgerRetiredSignal.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.client.LedgerRetiredSignal.newBuilder()
         private Builder() {
@@ -751,48 +751,47 @@ public final class LedgerRetiredSignal extends
             } else {
                 broker_ = null;
                 brokerBuilder_ = null;
-            }
+      }
 
-            return this;
-        }
+      return this;
+    }
+    /**
+     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+     */
+    public org.meteor.remote.proto.NodeMetadata.Builder getBrokerBuilder() {
+
+        onChanged();
+        return getBrokerFieldBuilder().getBuilder();
+    }
+
+        /**
+         * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+     */
+    public org.meteor.remote.proto.NodeMetadataOrBuilder getBrokerOrBuilder() {
+      if (brokerBuilder_ != null) {
+          return brokerBuilder_.getMessageOrBuilder();
+      } else {
+          return broker_ == null ?
+                  org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : broker_;
+      }
+    }
 
         /**
          * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
          */
-        public org.meteor.remote.proto.NodeMetadata.Builder getBrokerBuilder() {
-      
-      onChanged();
-      return getBrokerFieldBuilder().getBuilder();
+    private com.google.protobuf.SingleFieldBuilderV3<
+            org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
+    getBrokerFieldBuilder() {
+        if (brokerBuilder_ == null) {
+            brokerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                    org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>(
+                    getBroker(),
+                    getParentForChildren(),
+                    isClean());
+            broker_ = null;
         }
-
-        /**
-         * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-         */
-        public org.meteor.remote.proto.NodeMetadataOrBuilder getBrokerOrBuilder() {
-            if (brokerBuilder_ != null) {
-                return brokerBuilder_.getMessageOrBuilder();
-            } else {
-        return broker_ == null ?
-            org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : broker_;
-            }
-        }
-
-        /**
-         * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-         */
-        private com.google.protobuf.SingleFieldBuilderV3<
-                org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>
-        getBrokerFieldBuilder() {
-            if (brokerBuilder_ == null) {
-                brokerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                        org.meteor.remote.proto.NodeMetadata, org.meteor.remote.proto.NodeMetadata.Builder, org.meteor.remote.proto.NodeMetadataOrBuilder>(
-                        getBroker(),
-                        getParentForChildren(),
-                        isClean());
-                broker_ = null;
-            }
-            return brokerBuilder_;
-        }
+        return brokerBuilder_;
+    }
 
         private int ledger_;
 
@@ -1037,31 +1036,30 @@ public final class LedgerRetiredSignal extends
             if (heirBuilder_ == null) {
                 heir_ = null;
                 onChanged();
-      } else {
-                heir_ = null;
+            } else {
+        heir_ = null;
                 heirBuilder_ = null;
             }
 
-      return this;
-        }
+            return this;
+    }
 
         /**
          * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-         */
-        public org.meteor.remote.proto.NodeMetadata.Builder getHeirBuilder() {
-
-            onChanged();
-            return getHeirFieldBuilder().getBuilder();
-        }
-
-        /**
-         * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-         */
-        public org.meteor.remote.proto.NodeMetadataOrBuilder getHeirOrBuilder() {
+     */
+    public org.meteor.remote.proto.NodeMetadata.Builder getHeirBuilder() {
+      
+      onChanged();
+      return getHeirFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+     */
+    public org.meteor.remote.proto.NodeMetadataOrBuilder getHeirOrBuilder() {
       if (heirBuilder_ != null) {
-          return heirBuilder_.getMessageOrBuilder();
+        return heirBuilder_.getMessageOrBuilder();
       } else {
-          return heir_ == null ?
+        return heir_ == null ?
             org.meteor.remote.proto.NodeMetadata.getDefaultInstance() : heir_;
       }
     }

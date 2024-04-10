@@ -683,15 +683,15 @@ public final class TopicMetadata extends
 
         @java.lang.Override
         public final Builder mergeUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicMetadata)
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.mergeUnknownFields(unknownFields);
     }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicMetadata)
+
+    // @@protoc_insertion_point(builder_scope:meteor.protobuf.TopicMetadata)
+  }
+
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicMetadata)
   private static final org.meteor.remote.proto.TopicMetadata DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicMetadata();

@@ -632,10 +632,10 @@ public final class CleanSubscribeRequest extends
     }
 
     private static final com.google.protobuf.Parser<CleanSubscribeRequest>
-            PARSER = new com.google.protobuf.AbstractParser<CleanSubscribeRequest>() {
-        @java.lang.Override
-        public CleanSubscribeRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
+      PARSER = new com.google.protobuf.AbstractParser<CleanSubscribeRequest>() {
+    @java.lang.Override
+    public CleanSubscribeRequest parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();

@@ -618,12 +618,12 @@ public final class MessageId extends
         DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageId();
     }
 
-    public static org.meteor.remote.proto.MessageId getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.MessageId getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<MessageId>
-            PARSER = new com.google.protobuf.AbstractParser<MessageId>() {
+  private static final com.google.protobuf.Parser<MessageId>
+      PARSER = new com.google.protobuf.AbstractParser<MessageId>() {
     @java.lang.Override
     public MessageId parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

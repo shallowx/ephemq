@@ -3,8 +3,10 @@ package org.meteor.cli.ledger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import java.awt.Frame;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -16,6 +18,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.FormatPrint;
+import org.meteor.cli.core.TextTable;
 import org.meteor.client.internal.Client;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
@@ -86,7 +90,10 @@ public class MigrateLedgerCommand implements Command {
                         try {
                             MigrateLedgerResponse response = client.migrateLedger(info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
                             if (response.getSuccess()) {
-                                System.out.printf("%s [%s] INFO %s - Migrate ledger successfully, topic=%s partition=%s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerCommand.class.getName(), info.getTopic(), info.getPartition());
+                                String[] title = {"topic", "partition", "from", "to"};
+                                List<MigrateLedger> migrateLedgers = new ArrayList<>();
+                                migrateLedgers.add(info);
+                                FormatPrint.formatPrint(migrateLedgers, title);
                                 continue;
                             }
                             throw new IllegalStateException(String.format("Migrate ledger failure, and try again later, topic=%s partition=%s", info.getTopic(), info.getPartition()));

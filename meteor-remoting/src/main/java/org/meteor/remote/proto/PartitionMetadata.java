@@ -1084,28 +1084,26 @@ public final class PartitionMetadata extends
          * @return This builder for chaining.
          */
         public Builder setReplicaNodeIds(
-                int index, java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            ensureReplicaNodeIdsIsMutable();
-            replicaNodeIds_.set(index, value);
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @param value The replicaNodeIds to add.
-         * @return This builder for chaining.
-         */
-        public Builder addReplicaNodeIds(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-            ensureReplicaNodeIdsIsMutable();
+        int index, java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureReplicaNodeIdsIsMutable();
+      replicaNodeIds_.set(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param value The replicaNodeIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addReplicaNodeIds(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureReplicaNodeIdsIsMutable();
       replicaNodeIds_.add(value);
       onChanged();
       return this;
