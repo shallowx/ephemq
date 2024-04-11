@@ -20,8 +20,8 @@ import org.meteor.proxy.internal.ProxyMetricsListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.proxy.remoting.MeteorProxyServer;
 import org.meteor.proxy.remoting.ProxySocketServer;
-import org.meteor.proxy.support.ProxyDefaultCoordinator;
-import org.meteor.support.Coordinator;
+import org.meteor.proxy.support.ProxyDefaultManager;
+import org.meteor.support.Manager;
 import org.meteor.thread.ShutdownHookThread;
 
 public class MeteorProxy {
@@ -77,7 +77,7 @@ public class MeteorProxy {
     }
 
     private static MeteorProxyServer configureMeteorProxyServer(ProxyServerConfig configuration, Properties properties) {
-        Coordinator coordinator = new ProxyDefaultCoordinator(configuration);
+        Manager coordinator = new ProxyDefaultManager(configuration);
         MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(), coordinator);
         coordinator.addMetricsListener(metricsListener);
 

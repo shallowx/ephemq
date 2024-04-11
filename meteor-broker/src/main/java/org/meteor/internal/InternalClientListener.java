@@ -10,11 +10,11 @@ import org.meteor.client.internal.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.client.SyncMessageSignal;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class InternalClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClientListener.class);
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final int semaphore;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
@@ -23,7 +23,7 @@ public class InternalClientListener implements CombineListener {
         }
     };
 
-    public InternalClientListener(Coordinator coordinator, int semaphore) {
+    public InternalClientListener(Manager coordinator, int semaphore) {
         this.coordinator = coordinator;
         this.semaphore = semaphore;
     }

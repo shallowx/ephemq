@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class DefaultConnectionCoordinator implements ConnectionCoordinator {
+public class DefaultConnectionArraySet implements Connection {
     private final Set<Channel> readyChannels = new CopyOnWriteArraySet<>();
 
     @Override

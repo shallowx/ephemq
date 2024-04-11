@@ -7,6 +7,7 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.support.TopicCoordinator;
 
 public interface ProxyTopicCoordinator extends TopicCoordinator {
+
     Map<String, TopicInfo> getTopicMetadata(List<String> topics);
 
     void refreshTopicMetadata(List<String> topics, ClientChannel channel);

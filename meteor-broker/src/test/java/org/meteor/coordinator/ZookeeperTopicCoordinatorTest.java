@@ -16,7 +16,7 @@ import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.CorrelationIdConstants;
-import org.meteor.support.DefaultCoordinator;
+import org.meteor.support.DefaultMeteorManager;
 import org.meteor.support.TopicCoordinator;
 
 public class ZookeeperTopicCoordinatorTest {
@@ -36,7 +36,7 @@ public class ZookeeperTopicCoordinatorTest {
         properties.put("zookeeper.connection.timeout.milliseconds", 3000);
         properties.put("zookeeper.session.timeout.milliseconds", 30000);
         ServerConfig config = new ServerConfig(properties);
-        DefaultCoordinator defaultCoordinator = new DefaultCoordinator(config);
+        DefaultMeteorManager defaultCoordinator = new DefaultMeteorManager(config);
         defaultCoordinator.start();
         coordinator = defaultCoordinator.getTopicCoordinator();
         //only fot unit test: wait to cluster register test node

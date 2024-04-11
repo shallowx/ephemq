@@ -4,7 +4,7 @@ import java.util.List;
 import org.meteor.common.message.Node;
 import org.meteor.listener.ClusterListener;
 
-public interface ClusterCoordinator {
+public interface ClusterManager {
     void start() throws Exception;
 
     List<Node> getClusterNodes();

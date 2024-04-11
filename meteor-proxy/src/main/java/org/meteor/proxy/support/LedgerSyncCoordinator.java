@@ -23,17 +23,17 @@ import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public abstract class LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncCoordinator.class);
 
     protected final ProxyConfig proxyConfig;
-    protected final Coordinator coordinator;
+    protected final Manager coordinator;
     protected final Client proxyClient;
     protected final EventExecutor resumeSyncTaskExecutor;
 
-    public LedgerSyncCoordinator(ProxyConfig config, Coordinator coordinator) {
+    public LedgerSyncCoordinator(ProxyConfig config, Manager coordinator) {
         this.proxyConfig = config;
         this.coordinator = coordinator;
         ClientConfig clientConfig = new ClientConfig();

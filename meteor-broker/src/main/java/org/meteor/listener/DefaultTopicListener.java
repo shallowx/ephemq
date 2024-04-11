@@ -17,15 +17,16 @@ import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final CommonConfig commonConfiguration;
     private final NetworkConfig networkConfiguration;
 
-    public DefaultTopicListener(Coordinator coordinator, CommonConfig commonConfiguration, NetworkConfig networkConfiguration) {
+    public DefaultTopicListener(Manager coordinator, CommonConfig commonConfiguration,
+                                NetworkConfig networkConfiguration) {
         this.coordinator = coordinator;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;

@@ -20,16 +20,16 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.listener.LogListener;
 import org.meteor.remote.exception.RemotingException;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class LogHandler {
     private final ServerConfig config;
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final Map<Integer, Log> ledgerIdOfLogs = new ConcurrentHashMap<>();
     private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
     private final ScheduledExecutorService scheduledExecutorOfCleanStorage;
 
-    public LogHandler(ServerConfig config, Coordinator coordinator) {
+    public LogHandler(ServerConfig config, Manager coordinator) {
         this.config = config;
         this.coordinator = coordinator;
         this.scheduledExecutorOfCleanStorage = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));

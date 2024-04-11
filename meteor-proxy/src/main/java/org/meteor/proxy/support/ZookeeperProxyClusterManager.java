@@ -10,14 +10,15 @@ import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyServerConfig;
-import org.meteor.support.ZookeeperClusterCoordinator;
+import org.meteor.support.ZookeeperClusterManager;
 
-class ZookeeperProxyClusterCoordinator extends ZookeeperClusterCoordinator implements ClusterListener, ProxyClusterCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterCoordinator.class);
+class ZookeeperProxyClusterManager extends ZookeeperClusterManager
+        implements ClusterListener, ProxyClusterManager {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterManager.class);
     private final ConsistentHashingRing hashingRing;
     private final ProxyConfig proxyConfiguration;
 
-    public ZookeeperProxyClusterCoordinator(ProxyServerConfig configuration) {
+    public ZookeeperProxyClusterManager(ProxyServerConfig configuration) {
         super(configuration, null);
         this.proxyConfiguration = configuration.getProxyConfiguration();
         this.client = ZookeeperClientFactory.getReadyClient(proxyConfiguration.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());

@@ -70,18 +70,18 @@ import org.meteor.remote.proto.server.SyncRequest;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 import org.meteor.support.TopicCoordinator;
 
 public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     protected final CommonConfig commonConfiguration;
-    protected final Coordinator coordinator;
+    protected final Manager coordinator;
     protected final EventExecutor commandExecutor;
     private final NetworkConfig networkConfiguration;
     protected EventExecutor serviceExecutor;
 
-    public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Coordinator coordinator) {
+    public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Manager coordinator) {
         this.coordinator = coordinator;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;

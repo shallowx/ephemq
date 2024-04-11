@@ -29,10 +29,10 @@ import org.meteor.config.ServerConfig;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 
-public class ZookeeperClusterCoordinator implements ClusterCoordinator {
+public class ZookeeperClusterManager implements ClusterManager {
     private static final String UP = "UP";
     private static final String DOWN = "DOWN";
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     protected final List<ClusterListener> listeners = new ObjectArrayList<>();
     private final CommonConfig configuration;
     private final Map<String, Node> readyNodes = new ConcurrentHashMap<>();
@@ -44,7 +44,7 @@ public class ZookeeperClusterCoordinator implements ClusterCoordinator {
     private LeaderLatch latch;
     private Node thisNode;
 
-    public ZookeeperClusterCoordinator(ServerConfig config, ConsistentHashingRing hashingRing) {
+    public ZookeeperClusterManager(ServerConfig config, ConsistentHashingRing hashingRing) {
         this.configuration = config.getCommonConfig();
         this.client = ZookeeperClientFactory.getReadyClient(config.getZookeeperConfig(), config.getCommonConfig().getClusterName());
         this.hashingRing = hashingRing;

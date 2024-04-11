@@ -9,18 +9,18 @@ import org.meteor.ledger.LogHandler;
 import org.meteor.listener.APIListener;
 import org.meteor.listener.MetricsListener;
 
-public interface Coordinator {
+public interface Manager {
     void start() throws Exception;
 
     void shutdown() throws Exception;
 
     TopicCoordinator getTopicCoordinator();
 
-    ClusterCoordinator getClusterCoordinator();
+    ClusterManager getClusterCoordinator();
 
     LogHandler getLogCoordinator();
 
-    ConnectionCoordinator getConnectionCoordinator();
+    Connection getConnectionCoordinator();
 
     void addMetricsListener(MetricsListener listener);
 

@@ -13,15 +13,15 @@ import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-import org.meteor.support.ConnectionCoordinator;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Connection;
+import org.meteor.support.Manager;
 
 public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final NetworkConfig config;
 
-    public DefaultClusterListener(Coordinator coordinator, NetworkConfig config) {
+    public DefaultClusterListener(Manager coordinator, NetworkConfig config) {
         this.coordinator = coordinator;
         this.config = config;
     }
@@ -57,7 +57,7 @@ public class DefaultClusterListener implements ClusterListener {
     }
 
     private void processServerOffline(Node node) {
-        ConnectionCoordinator connectionCoordinator = coordinator.getConnectionCoordinator();
+        Connection connectionCoordinator = coordinator.getConnectionCoordinator();
         Set<Channel> channels = connectionCoordinator.getReadyChannels();
         if (channels != null && !channels.isEmpty()) {
             for (Channel channel : channels) {

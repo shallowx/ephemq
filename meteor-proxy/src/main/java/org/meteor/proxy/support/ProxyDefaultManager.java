@@ -7,17 +7,17 @@ import org.meteor.ledger.LogHandler;
 import org.meteor.listener.DefaultClusterListener;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtil;
-import org.meteor.support.DefaultConnectionCoordinator;
-import org.meteor.support.DefaultCoordinator;
+import org.meteor.support.DefaultConnectionArraySet;
+import org.meteor.support.DefaultMeteorManager;
 
-public class ProxyDefaultCoordinator extends DefaultCoordinator implements ProxyCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyCoordinator.class);
+public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyManager {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyManager.class);
     private final LedgerSyncCoordinator syncCoordinator;
     private volatile boolean state = false;
 
-    public ProxyDefaultCoordinator(ProxyServerConfig configuration) {
+    public ProxyDefaultManager(ProxyServerConfig configuration) {
         super(configuration);
-        this.connectionCoordinator = new DefaultConnectionCoordinator();
+        this.connectionCoordinator = new DefaultConnectionArraySet();
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");
         this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "proxy-dispatch");
@@ -29,7 +29,7 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
 
         this.syncCoordinator = new ProxyLedgerSyncCoordinator(configuration.getProxyConfiguration(), this);
         this.topicCoordinator = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
-        this.clusterCoordinator = new ZookeeperProxyClusterCoordinator(configuration);
+        this.clusterCoordinator = new ZookeeperProxyClusterManager(configuration);
         this.clusterCoordinator.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfig()));
         this.logCoordinator = new LogHandler(configuration, this);
     }
@@ -39,6 +39,7 @@ public class ProxyDefaultCoordinator extends DefaultCoordinator implements Proxy
         if (!isRunning()) {
             super.start();
             this.syncCoordinator.start();
+            this.state = true;
         } else {
             // keep empty
         }

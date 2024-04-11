@@ -22,10 +22,10 @@ import org.meteor.remote.proto.server.SyncResponse;
 
 public class ParticipantCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ParticipantCoordinator.class);
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private EventExecutor fetchExecutor;
 
-    public ParticipantCoordinator(Coordinator coordinator) {
+    public ParticipantCoordinator(Manager coordinator) {
         this.coordinator = coordinator;
     }
 

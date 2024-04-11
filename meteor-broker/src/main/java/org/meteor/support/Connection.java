@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import java.util.Set;
 import javax.annotation.Nullable;
 
-public interface ConnectionCoordinator {
+public interface Connection {
     void add(Channel channel);
 
     boolean remove(Channel channel);

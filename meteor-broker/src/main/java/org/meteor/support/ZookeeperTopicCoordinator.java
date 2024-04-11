@@ -54,7 +54,7 @@ import org.meteor.listener.TopicListener;
 
 public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterCoordinator.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     private static final String TOPIC_PARTITION_REGEX = "^/brokers/topics/[\\w\\-#]+/partitions/\\d+$";
     private static final String TOPIC_REGEX = "^/brokers/topics/[\\w\\-#]+$";
     protected final Map<Integer, ZookeeperPartitionElector> leaderElectorMap = new ConcurrentHashMap<>();
@@ -67,7 +67,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected ParticipantCoordinator participantCoordinator;
     protected DistributedAtomicInteger topicIdGenerator;
     protected DistributedAtomicInteger ledgerIdGenerator;
-    protected Coordinator coordinator;
+    protected Manager coordinator;
     protected LoadingCache<String, Set<PartitionInfo>> topicCache;
     protected LoadingCache<String, Set<String>> topicNamesCache;
     private ZookeeperConfig zookeeperConfiguration;
@@ -76,7 +76,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         this.hashingRing = null;
     }
 
-    public ZookeeperTopicCoordinator(ServerConfig config, Coordinator coordinator, ConsistentHashingRing hashingRing) {
+    public ZookeeperTopicCoordinator(ServerConfig config, Manager coordinator, ConsistentHashingRing hashingRing) {
         this.commonConfiguration = config.getCommonConfig();
         this.segmentConfiguration = config.getSegmentConfig();
         this.zookeeperConfiguration = config.getZookeeperConfig();

@@ -1,6 +1,21 @@
 package org.meteor.listener;
 
-import static org.meteor.metrics.config.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.API_RESPONSE_TIME_NAME;
+import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.ID;
+import static org.meteor.metrics.config.MetricsConstants.LEDGER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.NAME;
+import static org.meteor.metrics.config.MetricsConstants.NETTY_PENDING_TASK_NAME;
+import static org.meteor.metrics.config.MetricsConstants.REQUEST_SIZE_SUMMARY_NAME;
+import static org.meteor.metrics.config.MetricsConstants.REQUEST_STATE_COUNTER_NAME;
+import static org.meteor.metrics.config.MetricsConstants.RESULT_TAG;
+import static org.meteor.metrics.config.MetricsConstants.TOPIC_MSG_PUSH_COUNTER_NAME;
+import static org.meteor.metrics.config.MetricsConstants.TOPIC_MSG_RECEIVE_COUNTER_NAME;
+import static org.meteor.metrics.config.MetricsConstants.TOPIC_PARTITION_COUNT_GAUGE_NAME;
+import static org.meteor.metrics.config.MetricsConstants.TOPIC_PARTITION_LEADER_COUNT_GAUGE_NAME;
+import static org.meteor.metrics.config.MetricsConstants.TOPIC_TAG;
+import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Gauge;
@@ -39,13 +54,13 @@ import org.meteor.metrics.config.MetricsRegistrySetUp;
 import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
 import org.meteor.metrics.jvm.JmxMetricsRegistry;
 import org.meteor.metrics.netty.NettyMetrics;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class MetricsListener implements APIListener, ServerListener, LogListener, TopicListener, AutoCloseable {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
     private final CommonConfig config;
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestSuccesses = new ConcurrentHashMap<>();
@@ -65,7 +80,8 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
     };
 
-    public MetricsListener(Properties properties, CommonConfig config, MetricsConfig metricsConfiguration, Coordinator coordinator) {
+    public MetricsListener(Properties properties, CommonConfig config, MetricsConfig metricsConfiguration,
+                           Manager coordinator) {
         this.config = config;
         this.coordinator = coordinator;
         this.metricsSample = metricsConfiguration.getMetricsSampleLimit();

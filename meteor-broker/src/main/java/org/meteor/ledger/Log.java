@@ -37,7 +37,7 @@ import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 import org.meteor.support.TopicCoordinator;
 
 public class Log {
@@ -51,7 +51,7 @@ public class Log {
     protected final EventExecutor commandExecutor;
     protected final RecordDispatcher entryDispatcher;
     protected final List<LogListener> listeners;
-    protected final Coordinator coordinator;
+    protected final Manager coordinator;
     protected final Meter segmentCount;
     protected final Meter segmentBytes;
     protected final int forwardTimeout;
@@ -62,7 +62,8 @@ public class Log {
     protected Promise<SyncResponse> syncPromise;
     protected Promise<CancelSyncResponse> cancelSyncPromise;
 
-    public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
+    public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager coordinator,
+               TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.topic();

@@ -10,15 +10,16 @@ import org.meteor.config.NetworkConfig;
 import org.meteor.remote.codec.MessageDecoder;
 import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected final CommonConfig commonConfiguration;
     protected final NetworkConfig networkConfiguration;
-    protected final Coordinator coordinator;
+    protected final Manager coordinator;
     protected final StatisticsDuplexHandler statisticsDuplexHandler;
 
-    public ServiceChannelInitializer(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Coordinator coordinator) {
+    public ServiceChannelInitializer(CommonConfig commonConfiguration, NetworkConfig networkConfiguration,
+                                     Manager coordinator) {
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
         this.coordinator = coordinator;

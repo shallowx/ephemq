@@ -18,7 +18,7 @@ import org.meteor.proxy.MeteorProxy;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class ProxyLog extends Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
@@ -28,7 +28,8 @@ public class ProxyLog extends Log {
     private volatile Offset tailLocation = new Offset(0, 0L);
     private volatile Offset headLocation = new Offset(0, 0L);
 
-    public ProxyLog(ProxyServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Coordinator coordinator, TopicConfig topicConfig) {
+    public ProxyLog(ProxyServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager coordinator,
+                    TopicConfig topicConfig) {
         super(config, topicPartition, ledger, epoch, coordinator, topicConfig);
         this.proxyConfiguration = config.getProxyConfiguration();
     }

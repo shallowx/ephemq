@@ -14,8 +14,8 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.listener.ServerListener;
 import org.meteor.remoting.DefaultSocketServer;
-import org.meteor.support.ClusterCoordinator;
-import org.meteor.support.Coordinator;
+import org.meteor.support.ClusterManager;
+import org.meteor.support.Manager;
 
 public class MeteorServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorServer.class);
@@ -23,9 +23,9 @@ public class MeteorServer {
     private final List<ServerListener> serverListeners = new ObjectArrayList<>();
     private final CountDownLatch countDownLatch;
     private final DefaultSocketServer defaultSocketServer;
-    private final Coordinator coordinator;
+    private final Manager coordinator;
 
-    public MeteorServer(DefaultSocketServer defaultSocketServer, Coordinator coordinator) {
+    public MeteorServer(DefaultSocketServer defaultSocketServer, Manager coordinator) {
         this.defaultSocketServer = defaultSocketServer;
         this.coordinator = coordinator;
         this.countDownLatch = new CountDownLatch(1);
@@ -55,7 +55,7 @@ public class MeteorServer {
 
         coordinator.start();
         for (ServerListener listener : serverListeners) {
-            ClusterCoordinator clusterCoordinator = coordinator.getClusterCoordinator();
+            ClusterManager clusterCoordinator = coordinator.getClusterCoordinator();
             if (clusterCoordinator != null) {
                 Node thisNode = clusterCoordinator.getThisNode();
                 listener.onStartup(thisNode);
@@ -65,7 +65,7 @@ public class MeteorServer {
     }
 
     public void shutdown() throws Exception {
-        ClusterCoordinator clusterCoordinator = coordinator.getClusterCoordinator();
+        ClusterManager clusterCoordinator = coordinator.getClusterCoordinator();
         if (clusterCoordinator != null) {
             Node thisNode = clusterCoordinator.getThisNode();
             for (ServerListener listener : serverListeners) {

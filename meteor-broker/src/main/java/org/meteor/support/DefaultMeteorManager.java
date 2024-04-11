@@ -23,14 +23,14 @@ import org.meteor.listener.MetricsListener;
 import org.meteor.listener.TopicListener;
 import org.meteor.remote.util.NetworkUtil;
 
-public class DefaultCoordinator implements Coordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultCoordinator.class);
+public class DefaultMeteorManager implements Manager {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultMeteorManager.class);
     private final List<APIListener> apiListeners = new LinkedList<>();
     protected LogHandler logCoordinator;
     protected TopicCoordinator topicCoordinator;
-    protected ClusterCoordinator clusterCoordinator;
+    protected ClusterManager clusterCoordinator;
     protected ServerConfig configuration;
-    protected ConnectionCoordinator connectionCoordinator;
+    protected Connection connectionCoordinator;
     protected EventExecutorGroup handleGroup;
     protected EventExecutorGroup storageGroup;
     protected EventExecutorGroup dispatchGroup;
@@ -39,19 +39,19 @@ public class DefaultCoordinator implements Coordinator {
     protected List<EventExecutor> auxEventExecutors;
     protected Client internalClient;
 
-    public DefaultCoordinator() {
+    public DefaultMeteorManager() {
     }
 
-    public DefaultCoordinator(ServerConfig configuration) {
+    public DefaultMeteorManager(ServerConfig configuration) {
         this.configuration = configuration;
-        this.connectionCoordinator = new DefaultConnectionCoordinator();
+        this.connectionCoordinator = new DefaultConnectionArraySet();
         this.syncGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "sync-group");
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "command-handle-group");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
         this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "dispatch-group");
 
         ConsistentHashingRing hashingRing = new ConsistentHashingRing();
-        clusterCoordinator = new ZookeeperClusterCoordinator(configuration, hashingRing);
+        clusterCoordinator = new ZookeeperClusterManager(configuration, hashingRing);
         ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfig());
         clusterCoordinator.addClusterListener(clusterListener);
 
@@ -168,7 +168,7 @@ public class DefaultCoordinator implements Coordinator {
     }
 
     @Override
-    public ClusterCoordinator getClusterCoordinator() {
+    public ClusterManager getClusterCoordinator() {
         return clusterCoordinator;
     }
 
@@ -178,7 +178,7 @@ public class DefaultCoordinator implements Coordinator {
     }
 
     @Override
-    public ConnectionCoordinator getConnectionCoordinator() {
+    public Connection getConnectionCoordinator() {
         return connectionCoordinator;
     }
 

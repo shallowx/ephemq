@@ -18,7 +18,7 @@ import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.QueryTopicInfoRequest;
 import org.meteor.remote.proto.server.QueryTopicInfoResponse;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 import org.meteor.support.ParticipantCoordinator;
 import org.meteor.support.ZookeeperTopicCoordinator;
 
@@ -28,11 +28,11 @@ class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implement
     private final ProxyConfig proxyConfiguration;
     private LoadingCache<String, TopicInfo> topicMetaLoadingCache;
 
-    public ZookeeperProxyTopicCoordinator(ProxyConfig config, Coordinator coordinator) {
+    public ZookeeperProxyTopicCoordinator(ProxyConfig config, Manager coordinator) {
         super();
         this.proxyConfiguration = config;
         this.coordinator = coordinator;
-        this.syncCoordinator = ((ProxyDefaultCoordinator) coordinator).getLedgerSyncCoordinator();
+        this.syncCoordinator = ((ProxyDefaultManager) coordinator).getLedgerSyncCoordinator();
         this.participantCoordinator = new ParticipantCoordinator(coordinator);
     }
 

@@ -6,13 +6,13 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.Processor;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class ServiceDuplexHandler extends ProcessDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceDuplexHandler.class);
-    private final Coordinator coordinator;
+    private final Manager coordinator;
 
-    public ServiceDuplexHandler(Coordinator coordinator, Processor processor) {
+    public ServiceDuplexHandler(Manager coordinator, Processor processor) {
         super(processor);
         this.coordinator = coordinator;
     }

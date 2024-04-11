@@ -43,24 +43,25 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 
 public class ProxyClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyConfig proxyConfiguration;
+    private Client client;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() {
             return new Semaphore(proxyConfiguration.getProxyLeaderSyncSemaphore());
         }
     };
-    private Client client;
 
-    public ProxyClientListener(ProxyConfig proxyConfiguration, Coordinator coordinator, LedgerSyncCoordinator syncCoordinator) {
+    public ProxyClientListener(ProxyConfig proxyConfiguration, Manager coordinator,
+                               LedgerSyncCoordinator syncCoordinator) {
         this.proxyConfiguration = proxyConfiguration;
         this.coordinator = coordinator;
         this.syncCoordinator = syncCoordinator;

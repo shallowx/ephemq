@@ -18,7 +18,7 @@ import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.internal.ProxyConfig;
 import org.meteor.proxy.internal.ProxyLog;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
@@ -26,7 +26,7 @@ final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
     private final ProxyConfig proxyConfiguration;
     private long commitTimeMillis = System.currentTimeMillis();
 
-    public ProxyLedgerSyncCoordinator(ProxyConfig proxyConfiguration, Coordinator coordinator) {
+    public ProxyLedgerSyncCoordinator(ProxyConfig proxyConfiguration, Manager coordinator) {
         super(proxyConfiguration, coordinator);
         this.proxyConfiguration = proxyConfiguration;
         EventExecutor executor = coordinator.getAuxEventExecutorGroup().next();

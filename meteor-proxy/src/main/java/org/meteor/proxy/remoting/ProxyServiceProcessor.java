@@ -38,8 +38,8 @@ import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.internal.ProxyLog;
 import org.meteor.proxy.internal.ProxyServerConfig;
 import org.meteor.proxy.support.LedgerSyncCoordinator;
-import org.meteor.proxy.support.ProxyClusterCoordinator;
-import org.meteor.proxy.support.ProxyCoordinator;
+import org.meteor.proxy.support.ProxyClusterManager;
+import org.meteor.proxy.support.ProxyManager;
 import org.meteor.proxy.support.ProxyTopicCoordinator;
 import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.invoke.InvokedFeedback;
@@ -60,21 +60,21 @@ import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.remoting.ServiceProcessor;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     private static final int MIN_REPLICA_LIMIT = 2;
     private final LedgerSyncCoordinator syncCoordinator;
-    private final ProxyClusterCoordinator proxyClusterCoordinator;
+    private final ProxyClusterManager proxyClusterCoordinator;
     private final int subscribeThreshold;
     private final ProxyServerConfig serverConfiguration;
 
-    public ProxyServiceProcessor(ProxyServerConfig config, Coordinator coordinator) {
+    public ProxyServiceProcessor(ProxyServerConfig config, Manager coordinator) {
         super(config.getCommonConfig(), config.getNetworkConfig(), coordinator);
-        if (coordinator instanceof ProxyCoordinator) {
-            this.syncCoordinator = ((ProxyCoordinator) coordinator).getLedgerSyncCoordinator();
-            this.proxyClusterCoordinator = (ProxyClusterCoordinator) coordinator.getClusterCoordinator();
+        if (coordinator instanceof ProxyManager) {
+            this.syncCoordinator = ((ProxyManager) coordinator).getLedgerSyncCoordinator();
+            this.proxyClusterCoordinator = (ProxyClusterManager) coordinator.getClusterCoordinator();
         } else {
             this.syncCoordinator = null;
             this.proxyClusterCoordinator = null;

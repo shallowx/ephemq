@@ -17,8 +17,8 @@ import org.meteor.config.ServerConfig;
 import org.meteor.internal.MeteorServer;
 import org.meteor.listener.MetricsListener;
 import org.meteor.remoting.DefaultSocketServer;
-import org.meteor.support.Coordinator;
-import org.meteor.support.DefaultCoordinator;
+import org.meteor.support.DefaultMeteorManager;
+import org.meteor.support.Manager;
 import org.meteor.thread.ShutdownHookThread;
 
 public class Meteor {
@@ -43,7 +43,7 @@ public class Meteor {
         Properties properties = loadConfigurationProperties(args);
         ServerConfig configuration = new ServerConfig(properties);
 
-        Coordinator coordinator = new DefaultCoordinator(configuration);
+        Manager coordinator = new DefaultMeteorManager(configuration);
         MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(), coordinator);
         coordinator.addMetricsListener(metricsListener);
         DefaultSocketServer socketServer = new DefaultSocketServer(configuration, coordinator);
@@ -75,7 +75,8 @@ public class Meteor {
         return properties;
     }
 
-    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer, Coordinator coordinator) {
+    private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer,
+                                                 Manager coordinator) {
         MeteorServer server = new MeteorServer(socketServer, coordinator);
         server.addListener(listener);
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {

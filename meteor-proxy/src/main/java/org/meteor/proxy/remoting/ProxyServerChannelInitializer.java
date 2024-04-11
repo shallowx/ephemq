@@ -10,12 +10,12 @@ import org.meteor.remote.codec.MessageEncoder;
 import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remoting.ServiceChannelInitializer;
 import org.meteor.remoting.ServiceDuplexHandler;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
     private final ProxyServerConfig serverConfiguration;
 
-    public ProxyServerChannelInitializer(ProxyServerConfig serverConfiguration, Coordinator coordinator) {
+    public ProxyServerChannelInitializer(ProxyServerConfig serverConfiguration, Manager coordinator) {
         super(serverConfiguration.getCommonConfig(), serverConfiguration.getNetworkConfig(), coordinator);
         this.serverConfiguration = serverConfiguration;
     }

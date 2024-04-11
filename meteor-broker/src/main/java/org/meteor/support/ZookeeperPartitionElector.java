@@ -30,14 +30,14 @@ public final class ZookeeperPartitionElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionElector.class);
     private final CommonConfig configuration;
     private final TopicPartition topicPartition;
-    private final Coordinator coordinator;
+    private final Manager coordinator;
     private final ParticipantCoordinator participantCoordinator;
     private final int ledger;
     private final CuratorFramework client;
     private LeaderLatch latch;
 
     public ZookeeperPartitionElector(CommonConfig brokerConfiguration, ZookeeperConfig zookeeperConfiguration,
-                                     TopicPartition topicPartition, Coordinator coordinator,
+                                     TopicPartition topicPartition, Manager coordinator,
                                      ParticipantCoordinator participantCoordinator, int ledger) {
         this.configuration = brokerConfiguration;
         this.topicPartition = topicPartition;

@@ -1,6 +1,9 @@
 package org.meteor.remoting;
 
-import static org.meteor.metrics.config.MetricsConstants.*;
+import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.NETTY_PENDING_TASK_NAME;
+import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
 import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
 import io.micrometer.core.instrument.Gauge;
@@ -23,7 +26,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class DefaultSocketServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultSocketServer.class);
@@ -34,7 +37,7 @@ public class DefaultSocketServer {
     private EventLoopGroup workGroup;
     private ChannelFuture channelClosedFuture;
 
-    public DefaultSocketServer(ServerConfig serverConfiguration, Coordinator coordinator) {
+    public DefaultSocketServer(ServerConfig serverConfiguration, Manager coordinator) {
         this.commonConfiguration = serverConfiguration.getCommonConfig();
         this.networkConfiguration = serverConfiguration.getNetworkConfig();
         this.serviceChannelInitializer = new ServiceChannelInitializer(commonConfiguration, networkConfiguration, coordinator);

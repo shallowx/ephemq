@@ -10,12 +10,12 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.common.message.Node;
 import org.meteor.config.ServerConfig;
-import org.meteor.support.ClusterCoordinator;
-import org.meteor.support.DefaultCoordinator;
+import org.meteor.support.ClusterManager;
+import org.meteor.support.DefaultMeteorManager;
 
 public class ZookeeperClusterCoordinatorTest {
     private TestingServer server;
-    private ClusterCoordinator coordinator;
+    private ClusterManager coordinator;
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +27,7 @@ public class ZookeeperClusterCoordinatorTest {
         properties.put("zookeeper.connection.timeout.milliseconds", 3000);
         properties.put("zookeeper.session.timeout.milliseconds", 30000);
         ServerConfig config = new ServerConfig(properties);
-        DefaultCoordinator defaultCoordinator = new DefaultCoordinator(config);
+        DefaultMeteorManager defaultCoordinator = new DefaultMeteorManager(config);
         coordinator = defaultCoordinator.getClusterCoordinator();
         coordinator.start();
         // only for unit test: wait to custer register node

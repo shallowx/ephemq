@@ -14,12 +14,13 @@ import javax.annotation.Nonnull;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.ClientConfig;
 import org.meteor.config.CommonConfig;
-import org.meteor.support.Coordinator;
+import org.meteor.support.Manager;
 
 public class InternalClientChannel extends ClientChannel {
     private final CommonConfig configuration;
 
-    public InternalClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address, CommonConfig configuration, Coordinator coordinator) {
+    public InternalClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address,
+                                 CommonConfig configuration, Manager coordinator) {
         super(clientConfig, channel, address);
         this.configuration = configuration;
     }
