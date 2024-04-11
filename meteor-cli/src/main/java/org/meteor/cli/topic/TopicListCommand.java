@@ -11,13 +11,21 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
 import org.meteor.cli.core.FormatPrint;
-import org.meteor.cli.core.TextTable;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.util.NetworkUtil;
 
+/**
+ * for example:
+ *
+ * +---------------+-----------+--------+-------+--------+----------+
+ * | topic         | partition | ledger | epoch | leader | replicas |
+ * +---------------+-----------+--------+-------+--------+----------+
+ * | #test#default | 0         | 1      | 0     | meteor | [meteor] |
+ * +---------------+-----------+--------+-------+--------+----------+
+ */
 public class TopicListCommand implements Command {
     @Override
     public String name() {
@@ -37,7 +45,7 @@ public class TopicListCommand implements Command {
         options.addOption(brokerOpt);
 
         Option topicOpt = new Option("t", "-topic", true, "The name is used to query topic info");
-        topicOpt.setRequired(true);
+        topicOpt.setRequired(false);
         options.addOption(topicOpt);
 
         Option ledgerOpt = new Option("l", "-ledger", true, "The ledger id that is use to filter the topic info");

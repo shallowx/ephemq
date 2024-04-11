@@ -28,7 +28,7 @@ public class ClientTest {
         });
         client.start();
 
-        client.createTopic("#test#default", 10, 1);
+        client.createTopic("#test#default", 1, 1);
         // the duration setting only for testing
         new CountDownLatch(1).await(5000, TimeUnit.MILLISECONDS);
         client.close();

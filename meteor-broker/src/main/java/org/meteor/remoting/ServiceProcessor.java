@@ -442,8 +442,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                                     .setLedger(info.getLedger())
                                     .setEpoch(info.getEpoch())
                                     .setVersion(info.getVersion())
-                                    // TODO set leader
-                                    //     .setLeaderNodeId(info.getLeader())
+                                    .setLeaderNodeId(info.getLeader())
                                     .addAllReplicaNodeIds(info.getReplicas());
                             String leader = info.getLeader();
                             if (!StringUtil.isNullOrEmpty(leader)) {
