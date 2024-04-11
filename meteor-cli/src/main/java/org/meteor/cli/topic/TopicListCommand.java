@@ -10,6 +10,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.CommandException;
 import org.meteor.cli.core.FormatPrint;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
@@ -70,30 +71,34 @@ public class TopicListCommand implements Command {
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(address);
                 ClientChannel clientChannel = client.getActiveChannel(socketAddress);
-                List<TopicMetadata> topics = new ArrayList<>();
+                List<TopicMetadata> topics;
+                Map<String, TopicInfo> topicInfos;
                 if (commandLine.hasOption("t")) {
                     String topic = commandLine.getOptionValue("t").trim();
-                    Map<String, TopicInfo> topicInfos = StringUtil.isNullOrEmpty(topic)
-                            ? client.queryTopicInfos(clientChannel)
-                            : client.queryTopicInfos(clientChannel, topic);
+                    topicInfos = client.queryTopicInfos(clientChannel, topic);
 
-                    if (topicInfos == null || topicInfos.isEmpty()) {
-                        System.out.printf("%s [%s] INFO %s - Topic info is empty \n", newDate(), Thread.currentThread().getName(), TopicListCommand.class.getName());
-                        return;
-                    }
-                    topics = topicInfos.values().stream().map(topicInfo -> {
-                        Map<Integer, PartitionMetadata> partitionsMap = topicInfo.getPartitionsMap();
-                        if (!partitionsMap.isEmpty()) {
-                            return partitionsMap.values().stream().map(pm -> {
-                                ProtocolStringList replicaNodeIdsList = pm.getReplicaNodeIdsList();
-                                List<String> replicaNodeIds = new ArrayList<>(replicaNodeIdsList);
-
-                                return new TopicMetadata(topicInfo.getTopic().getName(), pm.getId(), pm.getLedger(), pm.getEpoch(), pm.getLeaderNodeId(), replicaNodeIds);
-                            }).findAny().get();
-                        }
-                        return null;
-                    }).toList();
+                } else {
+                    topicInfos = client.queryTopicInfos(clientChannel);
                 }
+                if (topicInfos == null || topicInfos.isEmpty()) {
+                    System.out.printf("%s [%s] INFO %s - Topic info is empty \n", newDate(),
+                            Thread.currentThread().getName(), TopicListCommand.class.getName());
+                    return;
+                }
+
+                topics = topicInfos.values().stream().map(topicInfo -> {
+                    Map<Integer, PartitionMetadata> partitionsMap = topicInfo.getPartitionsMap();
+                    if (!partitionsMap.isEmpty()) {
+                        return partitionsMap.values().stream().map(pm -> {
+                            ProtocolStringList replicaNodeIdsList = pm.getReplicaNodeIdsList();
+                            List<String> replicaNodeIds = new ArrayList<>(replicaNodeIdsList);
+
+                            return new TopicMetadata(topicInfo.getTopic().getName(), pm.getId(), pm.getLedger(),
+                                    pm.getEpoch(), pm.getLeaderNodeId(), replicaNodeIds);
+                        }).findAny().get();
+                    }
+                    return null;
+                }).toList();
 
                 if (commandLine.hasOption('l')) {
                     int ledger = Integer.parseInt(commandLine.getOptionValue('l'));
@@ -109,7 +114,7 @@ public class TopicListCommand implements Command {
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
                     TopicListCommand.class.getName(), t.getMessage());
-            throw new RuntimeException(t);
+            throw new CommandException("Execution query topic infos command[topics] failed", t);
         }
     }
 

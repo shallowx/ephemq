@@ -2,17 +2,15 @@ package org.meteor.cli.cluster;
 
 import io.netty.util.internal.StringUtil;
 import java.net.SocketAddress;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.CommandException;
 import org.meteor.cli.core.FormatPrint;
-import org.meteor.cli.core.TextTable;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.Node;
@@ -91,11 +89,9 @@ public class ClusterListCommand implements Command {
         } catch (Exception e) {
             System.out.printf("%s [%S] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
                     ClusterListCommand.class.getName(), e.getMessage());
-            throw new RuntimeException(e);
+            throw new CommandException("Execute cluster command[clusters] error", e);
         }
     }
-
-    SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 
     private void formatPrint(List<Node> nodes) {
         String[] title =

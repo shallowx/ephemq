@@ -13,8 +13,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.CommandException;
 import org.meteor.cli.core.FormatPrint;
-import org.meteor.cli.core.TextTable;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.util.StringUtil;
@@ -105,7 +105,7 @@ public class TopicCreatedCommand implements Command {
         } catch (Exception e) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
                     TopicCreatedCommand.class.getName(), e.getMessage());
-            throw new RuntimeException(e);
+            throw new CommandException("Execution create topic command[ct] failed", e);
         }
     }
 

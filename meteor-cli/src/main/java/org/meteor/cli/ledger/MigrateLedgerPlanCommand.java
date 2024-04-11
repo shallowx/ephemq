@@ -18,6 +18,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.CommandException;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.remote.proto.ClusterInfo;
@@ -135,7 +136,7 @@ public class MigrateLedgerPlanCommand implements Command {
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getCause().getMessage());
-            throw new RuntimeException(t);
+            throw new CommandException("Execution migrate ledger plan command[mlp] failed", t);
         }
     }
 

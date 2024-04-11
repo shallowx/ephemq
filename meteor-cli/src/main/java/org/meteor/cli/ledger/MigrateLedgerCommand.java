@@ -3,7 +3,6 @@ package org.meteor.cli.ledger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import java.awt.Frame;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -18,8 +17,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.CommandException;
 import org.meteor.cli.core.FormatPrint;
-import org.meteor.cli.core.TextTable;
 import org.meteor.client.internal.Client;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
@@ -96,7 +95,9 @@ public class MigrateLedgerCommand implements Command {
                                 FormatPrint.formatPrint(migrateLedgers, title);
                                 continue;
                             }
-                            throw new IllegalStateException(String.format("Migrate ledger failure, and try again later, topic=%s partition=%s", info.getTopic(), info.getPartition()));
+                            throw new CommandException(
+                                    String.format("Migrate ledger failure, and try again later, topic=%s partition=%s",
+                                            info.getTopic(), info.getPartition()));
                         } catch (Exception e) {
                             System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), e.getMessage());
                             retry(client, info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
@@ -106,7 +107,7 @@ public class MigrateLedgerCommand implements Command {
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s-%s", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getMessage());
-            throw new RuntimeException(t);
+            throw new CommandException("Execution migrate ledger command[ml] failed", t);
         }
     }
 

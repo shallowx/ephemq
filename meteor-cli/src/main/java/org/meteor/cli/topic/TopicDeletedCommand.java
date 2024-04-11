@@ -7,18 +7,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.CommandException;
 import org.meteor.cli.core.FormatPrint;
-import org.meteor.cli.core.TextTable;
 import org.meteor.client.ClientChannel;
 import org.meteor.client.internal.Client;
 import org.meteor.common.message.PartitionInfo;
-import org.meteor.common.message.TopicConfig;
 import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.TopicMetadata;
@@ -121,7 +119,7 @@ public class TopicDeletedCommand implements Command {
         } catch (Exception e) {
             System.out.printf("%s [%s] ERROR %S - delete topic[%s] from cluster failure \n",
                     newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
-            throw new RuntimeException(e);
+            throw new CommandException("Execution delete topic command[dt] failed", e);
         }
     }
 
