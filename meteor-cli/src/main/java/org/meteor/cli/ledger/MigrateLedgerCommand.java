@@ -19,7 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.meteor.cli.core.Command;
 import org.meteor.cli.core.CommandException;
 import org.meteor.cli.core.FormatPrint;
-import org.meteor.client.internal.Client;
+import org.meteor.client.core.Client;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
 

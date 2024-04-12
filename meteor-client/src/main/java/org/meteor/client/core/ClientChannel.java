@@ -1,4 +1,4 @@
-package org.meteor.client;
+package org.meteor.client.core;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -13,7 +13,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.annotation.Nonnull;
-import org.meteor.client.internal.ClientConfig;
 import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.invoke.GenericInvokedFeedback;
 import org.meteor.remote.invoke.InvokedFeedback;

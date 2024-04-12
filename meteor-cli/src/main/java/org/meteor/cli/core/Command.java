@@ -1,12 +1,11 @@
 package org.meteor.cli.core;
 
 import com.google.gson.Gson;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.meteor.client.internal.Client;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.meteor.client.core.Client;
 
 public interface Command {
     Gson gson = new Gson();

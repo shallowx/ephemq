@@ -1,10 +1,10 @@
 package org.meteor.example.client;
 
 import io.netty.buffer.ByteBuf;
-import org.meteor.client.ClientChannel;
-import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientConfig;
-import org.meteor.client.internal.CombineListener;
+import org.meteor.client.core.Client;
+import org.meteor.client.core.ClientChannel;
+import org.meteor.client.core.ClientConfig;
+import org.meteor.client.core.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.client.MessagePushSignal;

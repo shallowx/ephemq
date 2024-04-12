@@ -2,7 +2,7 @@ package org.meteor.proxy.support;
 
 import java.util.List;
 import java.util.Map;
-import org.meteor.client.ClientChannel;
+import org.meteor.client.core.ClientChannel;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.support.TopicCoordinator;
 

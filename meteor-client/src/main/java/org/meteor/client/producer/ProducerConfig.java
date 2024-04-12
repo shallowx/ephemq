@@ -1,6 +1,6 @@
 package org.meteor.client.producer;
 
-import org.meteor.client.internal.ClientConfig;
+import org.meteor.client.core.ClientConfig;
 
 public class ProducerConfig {
     private ClientConfig clientConfig = new ClientConfig();

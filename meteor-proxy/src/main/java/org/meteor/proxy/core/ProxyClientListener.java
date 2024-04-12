@@ -1,4 +1,4 @@
-package org.meteor.proxy.internal;
+package org.meteor.proxy.core;
 
 import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
 import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
@@ -25,11 +25,11 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.meteor.client.ClientChannel;
-import org.meteor.client.internal.Client;
-import org.meteor.client.internal.CombineListener;
-import org.meteor.client.internal.MessageLedger;
-import org.meteor.client.internal.MessageRouter;
+import org.meteor.client.core.Client;
+import org.meteor.client.core.ClientChannel;
+import org.meteor.client.core.CombineListener;
+import org.meteor.client.core.MessageLedger;
+import org.meteor.client.core.MessageRouter;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.ledger.Log;

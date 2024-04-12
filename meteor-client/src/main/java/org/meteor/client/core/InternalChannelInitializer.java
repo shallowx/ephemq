@@ -1,4 +1,4 @@
-package org.meteor.client.internal;
+package org.meteor.client.core;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -10,7 +10,6 @@ import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import java.net.SocketAddress;
 import java.util.concurrent.ConcurrentMap;
-import org.meteor.client.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessageDecoder;

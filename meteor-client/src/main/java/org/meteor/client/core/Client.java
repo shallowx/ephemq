@@ -1,4 +1,4 @@
-package org.meteor.client.internal;
+package org.meteor.client.core;
 
 import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
 import io.micrometer.core.instrument.Gauge;
@@ -41,7 +41,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.meteor.client.ClientChannel;
 import org.meteor.client.exception.MeteorClientException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;

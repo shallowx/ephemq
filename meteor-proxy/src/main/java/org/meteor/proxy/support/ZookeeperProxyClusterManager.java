@@ -8,8 +8,8 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
-import org.meteor.proxy.internal.ProxyConfig;
-import org.meteor.proxy.internal.ProxyServerConfig;
+import org.meteor.proxy.core.ProxyConfig;
+import org.meteor.proxy.core.ProxyServerConfig;
 import org.meteor.support.ZookeeperClusterManager;
 
 class ZookeeperProxyClusterManager extends ZookeeperClusterManager

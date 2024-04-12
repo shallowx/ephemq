@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.meteor.client.internal.ClientConfig;
+import org.meteor.client.core.ClientConfig;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.support.DefaultMeteorManager;

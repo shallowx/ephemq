@@ -4,7 +4,7 @@ package org.meteor.support;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import java.util.List;
-import org.meteor.client.internal.Client;
+import org.meteor.client.core.Client;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.APIListener;
 import org.meteor.listener.MetricsListener;

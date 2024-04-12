@@ -1,17 +1,16 @@
 package org.meteor.consumer;
 
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.meteor.client.consumer.Consumer;
 import org.meteor.client.consumer.ConsumerConfig;
 import org.meteor.client.consumer.DefaultConsumer;
-import org.meteor.client.internal.ClientConfig;
+import org.meteor.client.core.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
-
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class ConsumerTest {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTest.class);

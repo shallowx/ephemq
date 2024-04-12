@@ -1,7 +1,7 @@
 package org.meteor.client.consumer;
 
 import io.netty.util.NettyRuntime;
-import org.meteor.client.internal.ClientConfig;
+import org.meteor.client.core.ClientConfig;
 
 public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();

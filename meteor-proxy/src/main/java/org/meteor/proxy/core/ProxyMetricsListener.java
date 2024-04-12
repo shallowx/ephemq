@@ -1,4 +1,4 @@
-package org.meteor.proxy.internal;
+package org.meteor.proxy.core;
 
 import java.util.Properties;
 import org.meteor.config.CommonConfig;

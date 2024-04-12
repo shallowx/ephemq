@@ -11,8 +11,8 @@ import io.netty.util.internal.StringUtil;
 import java.net.SocketAddress;
 import java.util.concurrent.Semaphore;
 import javax.annotation.Nonnull;
-import org.meteor.client.ClientChannel;
-import org.meteor.client.internal.ClientConfig;
+import org.meteor.client.core.ClientChannel;
+import org.meteor.client.core.ClientConfig;
 import org.meteor.config.CommonConfig;
 import org.meteor.support.Manager;
 

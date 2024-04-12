@@ -1,4 +1,4 @@
-package org.meteor.client.internal;
+package org.meteor.client.core;
 
 import io.netty.util.concurrent.Future;
 import java.util.HashMap;
@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import org.meteor.client.ClientChannel;
 import org.meteor.client.exception.ClientRefreshException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;

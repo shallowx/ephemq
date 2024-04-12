@@ -1,6 +1,14 @@
 package org.meteor.cli;
 
-import org.apache.commons.cli.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.meteor.cli.cluster.ClusterListCommand;
 import org.meteor.cli.core.Command;
 import org.meteor.cli.ledger.MigrateLedgerCommand;
@@ -8,14 +16,9 @@ import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.topic.TopicCreatedCommand;
 import org.meteor.cli.topic.TopicDeletedCommand;
 import org.meteor.cli.topic.TopicListCommand;
-import org.meteor.client.internal.Client;
-import org.meteor.client.internal.ClientConfig;
-import org.meteor.client.internal.CombineListener;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.meteor.client.core.Client;
+import org.meteor.client.core.ClientConfig;
+import org.meteor.client.core.CombineListener;
 
 public class MeteorCli {
     private static final List<Command> commands = new ArrayList<>();

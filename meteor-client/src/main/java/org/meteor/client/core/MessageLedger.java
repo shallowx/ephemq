@@ -1,4 +1,4 @@
-package org.meteor.client.internal;
+package org.meteor.client.core;
 
 import java.net.SocketAddress;
 import java.util.List;

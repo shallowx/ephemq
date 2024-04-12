@@ -9,15 +9,15 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 import org.apache.curator.framework.CuratorFramework;
-import org.meteor.client.ClientChannel;
+import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.MeteorProxy;
-import org.meteor.proxy.internal.ProxyConfig;
-import org.meteor.proxy.internal.ProxyLog;
+import org.meteor.proxy.core.ProxyConfig;
+import org.meteor.proxy.core.ProxyLog;
 import org.meteor.support.Manager;
 
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {

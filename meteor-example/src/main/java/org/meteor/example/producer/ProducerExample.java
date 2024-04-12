@@ -1,7 +1,13 @@
 package org.meteor.example.producer;
 
 import io.netty.buffer.ByteBuf;
-import org.meteor.client.internal.ClientConfig;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.meteor.client.core.ClientConfig;
 import org.meteor.client.producer.DefaultProducer;
 import org.meteor.client.producer.Producer;
 import org.meteor.client.producer.ProducerConfig;
@@ -10,13 +16,6 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
 import org.meteor.remote.util.ByteBufUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class ProducerExample {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerExample.class);

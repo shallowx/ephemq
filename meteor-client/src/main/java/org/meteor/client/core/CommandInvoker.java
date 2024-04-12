@@ -1,4 +1,4 @@
-package org.meteor.client;
+package org.meteor.client.core;
 
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;

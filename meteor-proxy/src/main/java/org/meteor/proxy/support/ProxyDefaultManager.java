@@ -5,7 +5,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.DefaultClusterListener;
-import org.meteor.proxy.internal.ProxyServerConfig;
+import org.meteor.proxy.core.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.support.DefaultConnectionArraySet;
 import org.meteor.support.DefaultMeteorManager;

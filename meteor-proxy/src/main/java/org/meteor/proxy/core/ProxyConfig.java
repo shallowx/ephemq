@@ -1,13 +1,11 @@
-package org.meteor.proxy.internal;
-
-import io.netty.util.NettyRuntime;
-import org.meteor.config.CommonConfig;
-import org.meteor.config.ZookeeperConfig;
-
-import java.util.Properties;
+package org.meteor.proxy.core;
 
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2String;
+import io.netty.util.NettyRuntime;
+import java.util.Properties;
+import org.meteor.config.CommonConfig;
+import org.meteor.config.ZookeeperConfig;
 
 public class ProxyConfig {
     private static final String PROXY_UPSTREAM_SERVERS = "proxy.upstream.servers";

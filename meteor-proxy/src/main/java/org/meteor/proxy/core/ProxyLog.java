@@ -1,11 +1,11 @@
-package org.meteor.proxy.internal;
+package org.meteor.proxy.core;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.concurrent.atomic.LongAdder;
-import org.meteor.client.ClientChannel;
+import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
