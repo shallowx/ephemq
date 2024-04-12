@@ -13,6 +13,11 @@ public class TopicPatternUtil {
         if (!TOPIC_PATTERN.matcher(topic).matches()) {
             throw new IllegalStateException(String.format("Topic[%s] is invalid", topic));
         }
+
+        if (topic.length() > 127) {
+            throw new IllegalStateException(
+                    String.format("Topic[%s] is too large, and its the max length is 127 bytes ", topic));
+        }
     }
 
     public static void validatePartition(int number) {
@@ -30,6 +35,10 @@ public class TopicPatternUtil {
     public static void validateQueue(String queue) {
         if (queue == null) {
             throw new NullPointerException("Topic queue cannot be empty");
+        }
+        if (queue.length() > 127) {
+            throw new IllegalStateException(
+                    String.format("Queue[%s] is too large, and its the max length is 127 bytes", queue));
         }
     }
 }
