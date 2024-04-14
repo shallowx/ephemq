@@ -624,13 +624,13 @@ public final class CancelSyncRequest extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CancelSyncRequest();
-    }
+  }
 
-    public static org.meteor.remote.proto.server.CancelSyncRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.server.CancelSyncRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<CancelSyncRequest>
+  private static final com.google.protobuf.Parser<CancelSyncRequest>
       PARSER = new com.google.protobuf.AbstractParser<CancelSyncRequest>() {
     @java.lang.Override
     public CancelSyncRequest parsePartialFrom(

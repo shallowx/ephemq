@@ -472,18 +472,18 @@ public final class QueryTopicInfoRequest extends
         private void ensureTopicNamesIsMutable() {
             if (!((bitField0_ & 0x00000001) != 0)) {
                 topicNames_ = new com.google.protobuf.LazyStringArrayList(topicNames_);
-                bitField0_ |= 0x00000001;
-            }
-        }
+        bitField0_ |= 0x00000001;
+       }
+    }
 
         /**
-     * <code>repeated string topic_names = 1;</code>
-         * @return A list containing the topicNames.
-     */
-    public com.google.protobuf.ProtocolStringList
-    getTopicNamesList() {
-        return topicNames_.getUnmodifiableView();
-    }
+         * <code>repeated string topic_names = 1;</code>
+     * @return A list containing the topicNames.
+         */
+        public com.google.protobuf.ProtocolStringList
+        getTopicNamesList() {
+            return topicNames_.getUnmodifiableView();
+        }
 
         /**
          * <code>repeated string topic_names = 1;</code>
@@ -612,12 +612,11 @@ public final class QueryTopicInfoRequest extends
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.QueryTopicInfoRequest)
     private static final org.meteor.remote.proto.server.QueryTopicInfoRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.QueryTopicInfoRequest();
+  }
 
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.QueryTopicInfoRequest();
-    }
-
-    public static org.meteor.remote.proto.server.QueryTopicInfoRequest getDefaultInstance() {
+  public static org.meteor.remote.proto.server.QueryTopicInfoRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 

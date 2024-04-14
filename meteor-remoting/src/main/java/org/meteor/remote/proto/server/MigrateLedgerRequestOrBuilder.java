@@ -38,10 +38,9 @@ public interface MigrateLedgerRequestOrBuilder extends
 
     /**
      * <code>string original = 3;</code>
-     *
      * @return The bytes for original.
-     */
-    com.google.protobuf.ByteString
+   */
+  com.google.protobuf.ByteString
       getOriginalBytes();
 
   /**

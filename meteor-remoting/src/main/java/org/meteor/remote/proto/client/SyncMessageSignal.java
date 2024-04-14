@@ -555,9 +555,9 @@ public final class SyncMessageSignal extends
     private static final com.google.protobuf.Parser<SyncMessageSignal>
             PARSER = new com.google.protobuf.AbstractParser<SyncMessageSignal>() {
         @java.lang.Override
-        public SyncMessageSignal parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+    public SyncMessageSignal parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {

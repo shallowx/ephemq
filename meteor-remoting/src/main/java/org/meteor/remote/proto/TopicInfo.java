@@ -907,13 +907,13 @@ public final class TopicInfo extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicInfo();
-    }
+  }
 
-    public static org.meteor.remote.proto.TopicInfo getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.TopicInfo getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<TopicInfo>
+  private static final com.google.protobuf.Parser<TopicInfo>
       PARSER = new com.google.protobuf.AbstractParser<TopicInfo>() {
     @java.lang.Override
     public TopicInfo parsePartialFrom(

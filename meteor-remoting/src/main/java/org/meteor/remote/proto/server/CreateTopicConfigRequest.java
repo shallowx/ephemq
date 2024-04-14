@@ -664,19 +664,17 @@ public final class CreateTopicConfigRequest extends
 
         /**
          * <code>bool allocate = 4;</code>
-         *
          * @return This builder for chaining.
          */
-        public Builder clearAllocate() {
-
-            allocate_ = false;
-            onChanged();
-            return this;
-        }
-
-        @java.lang.Override
-        public final Builder setUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
+    public Builder clearAllocate() {
+      
+      allocate_ = false;
+      onChanged();
+      return this;
+    }
+    @java.lang.Override
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.setUnknownFields(unknownFields);
     }
 

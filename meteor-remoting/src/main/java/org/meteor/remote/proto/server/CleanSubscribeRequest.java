@@ -625,13 +625,13 @@ public final class CleanSubscribeRequest extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CleanSubscribeRequest();
-    }
+  }
 
-    public static org.meteor.remote.proto.server.CleanSubscribeRequest getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.server.CleanSubscribeRequest getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<CleanSubscribeRequest>
+  private static final com.google.protobuf.Parser<CleanSubscribeRequest>
       PARSER = new com.google.protobuf.AbstractParser<CleanSubscribeRequest>() {
     @java.lang.Override
     public CleanSubscribeRequest parsePartialFrom(

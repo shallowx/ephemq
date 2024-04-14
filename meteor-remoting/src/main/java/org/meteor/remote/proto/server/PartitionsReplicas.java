@@ -313,10 +313,10 @@ public final class PartitionsReplicas extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.PartitionsReplicas)
-            org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
+      org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
     }
 
     @java.lang.Override
@@ -329,11 +329,11 @@ public final class PartitionsReplicas extends
     }
 
         // Construct using org.meteor.remote.proto.server.PartitionsReplicas.newBuilder()
-        private Builder() {
+    private Builder() {
 
-        }
+    }
 
-        private Builder(
+    private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
 
@@ -666,15 +666,14 @@ public final class PartitionsReplicas extends
             onChanged();
             return this;
         }
+    @java.lang.Override
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return super.setUnknownFields(unknownFields);
+    }
 
-        @java.lang.Override
-        public final Builder setUnknownFields(
-                final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-        }
-
-        @java.lang.Override
-        public final Builder mergeUnknownFields(
+    @java.lang.Override
+    public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.mergeUnknownFields(unknownFields);
     }

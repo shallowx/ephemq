@@ -380,16 +380,16 @@ public final class SyncResponse extends
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
             return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-        }
+    }
 
-        @java.lang.Override
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            org.meteor.remote.proto.server.SyncResponse.class,
-                            org.meteor.remote.proto.server.SyncResponse.Builder.class);
-        }
+    internalGetFieldAccessorTable() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        org.meteor.remote.proto.server.SyncResponse.class,
+                        org.meteor.remote.proto.server.SyncResponse.Builder.class);
+    }
 
         // Construct using org.meteor.remote.proto.server.SyncResponse.newBuilder()
         private Builder() {
@@ -400,37 +400,36 @@ public final class SyncResponse extends
                 com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             super(parent);
 
+    }
+    @java.lang.Override
+    public Builder clear() {
+      super.clear();
+        if (currentOffsetBuilder_ == null) {
+            currentOffset_ = null;
+      } else {
+        currentOffset_ = null;
+        currentOffsetBuilder_ = null;
         }
+        if (headOffsetBuilder_ == null) {
+            headOffset_ = null;
+      } else {
+        headOffset_ = null;
+        headOffsetBuilder_ = null;
+        }
+        if (tailOffsetBuilder_ == null) {
+            tailOffset_ = null;
+        } else {
+        tailOffset_ = null;
+        tailOffsetBuilder_ = null;
+      }
+      return this;
+    }
 
         @java.lang.Override
-        public Builder clear() {
-            super.clear();
-      if (currentOffsetBuilder_ == null) {
-        currentOffset_ = null;
-      } else {
-          currentOffset_ = null;
-          currentOffsetBuilder_ = null;
-      }
-      if (headOffsetBuilder_ == null) {
-        headOffset_ = null;
-      } else {
-          headOffset_ = null;
-          headOffsetBuilder_ = null;
-      }
-      if (tailOffsetBuilder_ == null) {
-        tailOffset_ = null;
-      } else {
-          tailOffset_ = null;
-          tailOffsetBuilder_ = null;
-      }
-            return this;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
-    }
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_SyncResponse_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.SyncResponse getDefaultInstanceForType() {
@@ -978,9 +977,9 @@ public final class SyncResponse extends
         private com.google.protobuf.SingleFieldBuilderV3<
                 org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder>
         getTailOffsetFieldBuilder() {
-            if (tailOffsetBuilder_ == null) {
-                tailOffsetBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                        org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder>(
+      if (tailOffsetBuilder_ == null) {
+        tailOffsetBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            org.meteor.remote.proto.MessageOffset, org.meteor.remote.proto.MessageOffset.Builder, org.meteor.remote.proto.MessageOffsetOrBuilder>(
                 getTailOffset(),
                 getParentForChildren(),
                 isClean());

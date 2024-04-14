@@ -609,14 +609,13 @@ public final class MessageId extends
 
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.MessageId)
-    }
+  }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageId)
-    private static final org.meteor.remote.proto.MessageId DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageId();
-    }
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.MessageId)
+  private static final org.meteor.remote.proto.MessageId DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.MessageId();
+  }
 
   public static org.meteor.remote.proto.MessageId getDefaultInstance() {
     return DEFAULT_INSTANCE;

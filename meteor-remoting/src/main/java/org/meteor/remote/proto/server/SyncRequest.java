@@ -722,19 +722,17 @@ public final class SyncRequest extends
 
         /**
          * <code>string topic = 4;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearTopic() {
-
-            topic_ = getDefaultInstance().getTopic();
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string topic = 4;</code>
-         * @param value The bytes for topic to set.
+     * @return This builder for chaining.
+     */
+    public Builder clearTopic() {
+      
+      topic_ = getDefaultInstance().getTopic();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 4;</code>
+     * @param value The bytes for topic to set.
      * @return This builder for chaining.
      */
     public Builder setTopicBytes(

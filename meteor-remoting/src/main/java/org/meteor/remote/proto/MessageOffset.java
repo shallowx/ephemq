@@ -555,9 +555,9 @@ public final class MessageOffset extends
     private static final com.google.protobuf.Parser<MessageOffset>
             PARSER = new com.google.protobuf.AbstractParser<MessageOffset>() {
         @java.lang.Override
-        public MessageOffset parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+    public MessageOffset parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {

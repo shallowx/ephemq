@@ -626,13 +626,13 @@ public final class MigrateLedgerResponse extends
 
     static {
         DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerResponse();
-    }
+  }
 
-    public static org.meteor.remote.proto.server.MigrateLedgerResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
+  public static org.meteor.remote.proto.server.MigrateLedgerResponse getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
 
-    private static final com.google.protobuf.Parser<MigrateLedgerResponse>
+  private static final com.google.protobuf.Parser<MigrateLedgerResponse>
       PARSER = new com.google.protobuf.AbstractParser<MigrateLedgerResponse>() {
     @java.lang.Override
     public MigrateLedgerResponse parsePartialFrom(

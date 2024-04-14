@@ -34,7 +34,7 @@ public interface ResetSubscribeRequestOrBuilder extends
      */
     com.google.protobuf.ByteString getMarkers();
 
-    /**
+  /**
    * <code>string topic = 5;</code>
    * @return The topic.
    */

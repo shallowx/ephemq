@@ -996,17 +996,16 @@ public final class MessageMetadata extends
 
         /**
          * <code>map&lt;string, string&gt; extras = 3;</code>
-         */
+     */
 
-        public Builder putAllExtras(
-                java.util.Map<java.lang.String, java.lang.String> values) {
-            internalGetMutableExtras().getMutableMap()
-                    .putAll(values);
-            return this;
-        }
-
-        @java.lang.Override
-        public final Builder setUnknownFields(
+    public Builder putAllExtras(
+        java.util.Map<java.lang.String, java.lang.String> values) {
+      internalGetMutableExtras().getMutableMap()
+          .putAll(values);
+      return this;
+    }
+    @java.lang.Override
+    public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.setUnknownFields(unknownFields);
     }

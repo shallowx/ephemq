@@ -562,8 +562,8 @@ public final class ClusterMetadata extends
         public ClusterMetadata parsePartialFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            Builder builder = newBuilder();
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      Builder builder = newBuilder();
       try {
         builder.mergeFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {

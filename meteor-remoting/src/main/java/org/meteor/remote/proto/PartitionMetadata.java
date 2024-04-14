@@ -1063,27 +1063,23 @@ public final class PartitionMetadata extends
          */
         public java.lang.String getReplicaNodeIds(int index) {
             return replicaNodeIds_.get(index);
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @param index The index of the value to return.
-         * @return The bytes of the replicaNodeIds at the given index.
-         */
-        public com.google.protobuf.ByteString
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the replicaNodeIds at the given index.
+     */
+    public com.google.protobuf.ByteString
         getReplicaNodeIdsBytes(int index) {
-            return replicaNodeIds_.getByteString(index);
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @param index The index to set the value at.
-         * @param value The replicaNodeIds to set.
-         * @return This builder for chaining.
-         */
-        public Builder setReplicaNodeIds(
+      return replicaNodeIds_.getByteString(index);
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param index The index to set the value at.
+     * @param value The replicaNodeIds to set.
+     * @return This builder for chaining.
+     */
+    public Builder setReplicaNodeIds(
         int index, java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
