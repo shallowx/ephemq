@@ -15,7 +15,7 @@ public class BookkeeperStorage extends AbstractStorage {
     }
 
     @Override
-    protected Storage doLoad(String topic, String queue) {
+    protected Storage doLoad(String topic, String queue, int ledger) {
         return Storage.EMPTY_STORAGE;
     }
 }

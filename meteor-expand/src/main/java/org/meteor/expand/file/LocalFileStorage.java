@@ -9,7 +9,7 @@ public class LocalFileStorage extends AbstractStorage {
 
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LocalFileStorage.class);
 
-    private static final String TAIL = "";
+    private static final String TAIL = "-91912932";
     private final long maxFileSize;
     private long currentFileSize;
 
@@ -27,7 +27,7 @@ public class LocalFileStorage extends AbstractStorage {
     }
 
     @Override
-    protected Storage doLoad(String topic, String queue) {
+    protected Storage doLoad(String topic, String queue, int ledger) {
         return Storage.EMPTY_STORAGE;
     }
 
