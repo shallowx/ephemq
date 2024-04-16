@@ -1,8 +1,12 @@
 package org.meteor.expand.file;
 
+import io.netty.util.concurrent.DefaultThreadFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.expand.api.AbstractStorage;
+import org.meteor.expand.core.LocalFileStorageConfig;
 import org.meteor.expand.core.Storage;
 
 public class LocalFileStorage extends AbstractStorage {
@@ -10,15 +14,20 @@ public class LocalFileStorage extends AbstractStorage {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LocalFileStorage.class);
 
     private static final String TAIL = "-91912932";
-    private final long maxFileSize;
-    private long currentFileSize;
+    private final int WARM_UP = 1024 * 4;
+    private final ExecutorService cleanExecutor =
+            Executors.newSingleThreadExecutor(new DefaultThreadFactory("local-storage-clean"));
+    private final LocalFileStorageConfig config;
 
-    public LocalFileStorage(long maxFileSize) {
-        this.maxFileSize = maxFileSize;
+    public LocalFileStorage(LocalFileStorageConfig config) {
+        this.config = config;
     }
 
     public void start() {
-        this.currentFileSize = 0;
+    }
+
+    private void createAndWarUp(byte total) {
+        
     }
 
     @Override
@@ -31,14 +40,10 @@ public class LocalFileStorage extends AbstractStorage {
         return Storage.EMPTY_STORAGE;
     }
 
-    private void write2Tail(long bytes) {
-        if (currentFileSize + bytes > maxFileSize) {
-            // TODO
-        }
-        currentFileSize += bytes;
-    }
 
     public void shutdownGracefully() {
-
+        if (!cleanExecutor.isShutdown() || !cleanExecutor.isTerminated()) {
+            cleanExecutor.shutdown();
+        }
     }
 }

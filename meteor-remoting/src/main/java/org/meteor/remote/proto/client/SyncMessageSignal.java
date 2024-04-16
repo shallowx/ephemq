@@ -550,11 +550,11 @@ public final class SyncMessageSignal extends
 
     public static org.meteor.remote.proto.client.SyncMessageSignal getDefaultInstance() {
         return DEFAULT_INSTANCE;
-    }
+  }
 
-    private static final com.google.protobuf.Parser<SyncMessageSignal>
-            PARSER = new com.google.protobuf.AbstractParser<SyncMessageSignal>() {
-        @java.lang.Override
+  private static final com.google.protobuf.Parser<SyncMessageSignal>
+      PARSER = new com.google.protobuf.AbstractParser<SyncMessageSignal>() {
+    @java.lang.Override
     public SyncMessageSignal parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

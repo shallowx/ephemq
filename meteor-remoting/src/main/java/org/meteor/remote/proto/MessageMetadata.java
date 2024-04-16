@@ -982,20 +982,17 @@ public final class MessageMetadata extends
         public Builder putExtras(
                 java.lang.String key,
                 java.lang.String value) {
-            if (key == null) {
-                throw new NullPointerException("map key");
-            }
-            if (value == null) {
-                throw new NullPointerException("map value");
-            }
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) {
+  throw new NullPointerException("map value");
+}
 
-            internalGetMutableExtras().getMutableMap()
-                    .put(key, value);
-            return this;
-        }
-
-        /**
-         * <code>map&lt;string, string&gt; extras = 3;</code>
+      internalGetMutableExtras().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, string&gt; extras = 3;</code>
      */
 
     public Builder putAllExtras(

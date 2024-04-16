@@ -614,10 +614,10 @@ public final class SendMessageResponse extends
 
 
         // @@protoc_insertion_point(builder_scope:meteor.protobuf.SendMessageResponse)
-    }
+  }
 
-    // @@protoc_insertion_point(class_scope:meteor.protobuf.SendMessageResponse)
-    private static final org.meteor.remote.proto.server.SendMessageResponse DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:meteor.protobuf.SendMessageResponse)
+  private static final org.meteor.remote.proto.server.SendMessageResponse DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new org.meteor.remote.proto.server.SendMessageResponse();
   }

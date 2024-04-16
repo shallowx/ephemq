@@ -1043,26 +1043,22 @@ public final class PartitionMetadata extends
          */
         public com.google.protobuf.ProtocolStringList
         getReplicaNodeIdsList() {
-            return replicaNodeIds_.getUnmodifiableView();
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @return The count of replicaNodeIds.
-         */
-        public int getReplicaNodeIdsCount() {
-            return replicaNodeIds_.size();
-        }
-
-        /**
-         * <code>repeated string replica_node_ids = 6;</code>
-         *
-         * @param index The index of the element to return.
-         * @return The replicaNodeIds at the given index.
-         */
-        public java.lang.String getReplicaNodeIds(int index) {
-            return replicaNodeIds_.get(index);
+      return replicaNodeIds_.getUnmodifiableView();
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @return The count of replicaNodeIds.
+     */
+    public int getReplicaNodeIdsCount() {
+      return replicaNodeIds_.size();
+    }
+    /**
+     * <code>repeated string replica_node_ids = 6;</code>
+     * @param index The index of the element to return.
+     * @return The replicaNodeIds at the given index.
+     */
+    public java.lang.String getReplicaNodeIds(int index) {
+      return replicaNodeIds_.get(index);
     }
     /**
      * <code>repeated string replica_node_ids = 6;</code>

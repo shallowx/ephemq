@@ -661,18 +661,16 @@ public final class TopicMetadata extends
             version_ = value;
             onChanged();
             return this;
-        }
-
-        /**
-         * <code>int32 version = 3;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearVersion() {
-
-            version_ = 0;
-            onChanged();
-            return this;
+    }
+    /**
+     * <code>int32 version = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      
+      version_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

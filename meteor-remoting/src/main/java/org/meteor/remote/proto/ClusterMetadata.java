@@ -560,8 +560,8 @@ public final class ClusterMetadata extends
             PARSER = new com.google.protobuf.AbstractParser<ClusterMetadata>() {
         @java.lang.Override
         public ClusterMetadata parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {

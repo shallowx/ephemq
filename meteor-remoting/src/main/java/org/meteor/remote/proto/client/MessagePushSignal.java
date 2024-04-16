@@ -656,19 +656,17 @@ public final class MessagePushSignal extends
         public Builder setIndex(long value) {
 
             index_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>int64 index = 4;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearIndex() {
-
-            index_ = 0L;
-            onChanged();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 index = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIndex() {
+      
+      index_ = 0L;
+      onChanged();
       return this;
     }
     @java.lang.Override

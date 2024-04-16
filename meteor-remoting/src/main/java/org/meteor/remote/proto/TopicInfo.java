@@ -903,10 +903,9 @@ public final class TopicInfo extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.TopicInfo)
-    private static final org.meteor.remote.proto.TopicInfo DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicInfo();
+  private static final org.meteor.remote.proto.TopicInfo DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.TopicInfo();
   }
 
   public static org.meteor.remote.proto.TopicInfo getDefaultInstance() {

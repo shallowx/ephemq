@@ -553,9 +553,9 @@ public final class SendMessageRequest extends
         return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<SendMessageRequest>
-            PARSER = new com.google.protobuf.AbstractParser<SendMessageRequest>() {
-        @java.lang.Override
+  private static final com.google.protobuf.Parser<SendMessageRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SendMessageRequest>() {
+    @java.lang.Override
     public SendMessageRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)

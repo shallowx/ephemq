@@ -620,10 +620,9 @@ public final class CancelSyncRequest extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.CancelSyncRequest)
-    private static final org.meteor.remote.proto.server.CancelSyncRequest DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CancelSyncRequest();
+  private static final org.meteor.remote.proto.server.CancelSyncRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CancelSyncRequest();
   }
 
   public static org.meteor.remote.proto.server.CancelSyncRequest getDefaultInstance() {

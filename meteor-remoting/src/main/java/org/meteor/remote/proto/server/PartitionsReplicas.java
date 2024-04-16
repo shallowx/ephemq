@@ -313,10 +313,10 @@ public final class PartitionsReplicas extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.PartitionsReplicas)
-      org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
+            org.meteor.remote.proto.server.PartitionsReplicasOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_PartitionsReplicas_descriptor;
     }
 
     @java.lang.Override
@@ -658,14 +658,14 @@ public final class PartitionsReplicas extends
         public Builder addReplicasBytes(
                 com.google.protobuf.ByteString value) {
             if (value == null) {
-                throw new NullPointerException();
-            }
-            checkByteStringIsUtf8(value);
-            ensureReplicasIsMutable();
-            replicas_.add(value);
-            onChanged();
-            return this;
-        }
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      ensureReplicasIsMutable();
+      replicas_.add(value);
+      onChanged();
+      return this;
+    }
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {

@@ -705,23 +705,21 @@ public final class SyncRequest extends
 
         /**
          * <code>string topic = 4;</code>
-         *
          * @param value The topic to set.
          * @return This builder for chaining.
-         */
-        public Builder setTopic(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            topic_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string topic = 4;</code>
+     */
+    public Builder setTopic(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      topic_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string topic = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearTopic() {

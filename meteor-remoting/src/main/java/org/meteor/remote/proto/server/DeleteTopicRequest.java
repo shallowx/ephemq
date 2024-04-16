@@ -562,8 +562,8 @@ public final class DeleteTopicRequest extends
             PARSER = new com.google.protobuf.AbstractParser<DeleteTopicRequest>() {
         @java.lang.Override
         public DeleteTopicRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {

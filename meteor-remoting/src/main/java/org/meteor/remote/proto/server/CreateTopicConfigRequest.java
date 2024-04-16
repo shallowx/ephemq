@@ -651,21 +651,19 @@ public final class CreateTopicConfigRequest extends
 
         /**
          * <code>bool allocate = 4;</code>
-         *
          * @param value The allocate to set.
          * @return This builder for chaining.
-         */
-        public Builder setAllocate(boolean value) {
-
-            allocate_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>bool allocate = 4;</code>
-         * @return This builder for chaining.
-         */
+     */
+    public Builder setAllocate(boolean value) {
+      
+      allocate_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool allocate = 4;</code>
+     * @return This builder for chaining.
+     */
     public Builder clearAllocate() {
       
       allocate_ = false;

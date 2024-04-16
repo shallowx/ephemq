@@ -412,10 +412,10 @@ public final class NodeMetadata extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.NodeMetadata)
-      org.meteor.remote.proto.NodeMetadataOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+            org.meteor.remote.proto.NodeMetadataOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
     }
 
     @java.lang.Override
@@ -431,30 +431,31 @@ public final class NodeMetadata extends
 
     }
 
-    private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      super(parent);
+        private Builder(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
 
-    }
-    @java.lang.Override
-    public Builder clear() {
-        super.clear();
-        clusterName_ = "";
-
-      id_ = "";
-
-      host_ = "";
-
-      port_ = 0;
-
-      return this;
-    }
+        }
 
         @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+    public Builder clear() {
+      super.clear();
+      clusterName_ = "";
+
+            id_ = "";
+
+            host_ = "";
+
+            port_ = 0;
+
+            return this;
         }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.MessageMetadataProto.internal_static_meteor_protobuf_NodeMetadata_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.NodeMetadata getDefaultInstanceForType() {
@@ -822,23 +823,21 @@ public final class NodeMetadata extends
 
         /**
          * <code>string host = 3;</code>
-         *
          * @param value The host to set.
-         * @return This builder for chaining.
-         */
-        public Builder setHost(
-                java.lang.String value) {
-            if (value == null) {
-                throw new NullPointerException();
-            }
-
-            host_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string host = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder setHost(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      host_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string host = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearHost() {

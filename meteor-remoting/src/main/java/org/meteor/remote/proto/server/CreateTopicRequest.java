@@ -383,10 +383,10 @@ public final class CreateTopicRequest extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CreateTopicRequest)
-      org.meteor.remote.proto.server.CreateTopicRequestOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+            org.meteor.remote.proto.server.CreateTopicRequestOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
     }
 
     @java.lang.Override
@@ -399,39 +399,38 @@ public final class CreateTopicRequest extends
     }
 
         // Construct using org.meteor.remote.proto.server.CreateTopicRequest.newBuilder()
-        private Builder() {
+    private Builder() {
 
-        }
+    }
 
-        private Builder(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
+    private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      super(parent);
 
-        }
+    }
+    @java.lang.Override
+    public Builder clear() {
+        super.clear();
+        topic_ = "";
 
-        @java.lang.Override
-        public Builder clear() {
-      super.clear();
-      topic_ = "";
+        partition_ = 0;
 
-      partition_ = 0;
+        replicas_ = 0;
 
-      replicas_ = 0;
-
-            if (configsBuilder_ == null) {
-                configs_ = null;
-            } else {
+      if (configsBuilder_ == null) {
         configs_ = null;
-        configsBuilder_ = null;
+      } else {
+          configs_ = null;
+          configsBuilder_ = null;
       }
-      return this;
-        }
+        return this;
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor
+    getDescriptorForType() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicRequest_descriptor;
+    }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicRequest getDefaultInstanceForType() {
@@ -857,13 +856,13 @@ public final class CreateTopicRequest extends
 
         /**
          * <code>.meteor.protobuf.CreateTopicConfigRequest configs = 4;</code>
-         */
-        public org.meteor.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder() {
-            if (configsBuilder_ != null) {
-                return configsBuilder_.getMessageOrBuilder();
-            } else {
-                return configs_ == null ?
-                        org.meteor.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
+     */
+    public org.meteor.remote.proto.server.CreateTopicConfigRequestOrBuilder getConfigsOrBuilder() {
+      if (configsBuilder_ != null) {
+        return configsBuilder_.getMessageOrBuilder();
+      } else {
+        return configs_ == null ?
+            org.meteor.remote.proto.server.CreateTopicConfigRequest.getDefaultInstance() : configs_;
       }
     }
     /**

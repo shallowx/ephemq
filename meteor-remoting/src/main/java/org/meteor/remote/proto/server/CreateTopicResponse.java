@@ -392,10 +392,10 @@ public final class CreateTopicResponse extends
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
             // @@protoc_insertion_point(builder_implements:meteor.protobuf.CreateTopicResponse)
-      org.meteor.remote.proto.server.CreateTopicResponseOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
+            org.meteor.remote.proto.server.CreateTopicResponseOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
     }
 
     @java.lang.Override
@@ -429,19 +429,19 @@ public final class CreateTopicResponse extends
 
             if (partitionsReplicasBuilder_ == null) {
                 partitionsReplicas_ = java.util.Collections.emptyList();
-      } else {
+            } else {
                 partitionsReplicas_ = null;
                 partitionsReplicasBuilder_.clear();
-            }
-            bitField0_ = (bitField0_ & ~0x00000001);
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
-        return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
-    }
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+            return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_CreateTopicResponse_descriptor;
+        }
 
         @java.lang.Override
         public org.meteor.remote.proto.server.CreateTopicResponse getDefaultInstanceForType() {
@@ -1034,13 +1034,12 @@ public final class CreateTopicResponse extends
                 int index) {
             return getPartitionsReplicasFieldBuilder().addBuilder(
                     index, org.meteor.remote.proto.server.PartitionsReplicas.getDefaultInstance());
-        }
-
-        /**
-         * <code>repeated .meteor.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
-         */
-        public java.util.List<org.meteor.remote.proto.server.PartitionsReplicas.Builder>
-        getPartitionsReplicasBuilderList() {
+    }
+    /**
+     * <code>repeated .meteor.protobuf.PartitionsReplicas partitionsReplicas = 4;</code>
+     */
+    public java.util.List<org.meteor.remote.proto.server.PartitionsReplicas.Builder> 
+         getPartitionsReplicasBuilderList() {
       return getPartitionsReplicasFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<

@@ -35,7 +35,7 @@ public interface NodeMetadataOrBuilder extends
      * @return The bytes for id.
      */
     com.google.protobuf.ByteString
-    getIdBytes();
+      getIdBytes();
 
   /**
    * <code>string host = 3;</code>

@@ -621,10 +621,9 @@ public final class CleanSubscribeRequest extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.CleanSubscribeRequest)
-    private static final org.meteor.remote.proto.server.CleanSubscribeRequest DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CleanSubscribeRequest();
+  private static final org.meteor.remote.proto.server.CleanSubscribeRequest DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.CleanSubscribeRequest();
   }
 
   public static org.meteor.remote.proto.server.CleanSubscribeRequest getDefaultInstance() {

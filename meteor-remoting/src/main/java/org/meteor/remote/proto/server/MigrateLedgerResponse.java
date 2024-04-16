@@ -622,10 +622,9 @@ public final class MigrateLedgerResponse extends
     }
 
     // @@protoc_insertion_point(class_scope:meteor.protobuf.MigrateLedgerResponse)
-    private static final org.meteor.remote.proto.server.MigrateLedgerResponse DEFAULT_INSTANCE;
-
-    static {
-        DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerResponse();
+  private static final org.meteor.remote.proto.server.MigrateLedgerResponse DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new org.meteor.remote.proto.server.MigrateLedgerResponse();
   }
 
   public static org.meteor.remote.proto.server.MigrateLedgerResponse getDefaultInstance() {

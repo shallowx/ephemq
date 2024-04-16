@@ -550,11 +550,11 @@ public final class MessageOffset extends
 
     public static org.meteor.remote.proto.MessageOffset getDefaultInstance() {
         return DEFAULT_INSTANCE;
-    }
+  }
 
-    private static final com.google.protobuf.Parser<MessageOffset>
-            PARSER = new com.google.protobuf.AbstractParser<MessageOffset>() {
-        @java.lang.Override
+  private static final com.google.protobuf.Parser<MessageOffset>
+      PARSER = new com.google.protobuf.AbstractParser<MessageOffset>() {
+    @java.lang.Override
     public MessageOffset parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
