@@ -234,6 +234,5 @@
         <module>meteor-distribution</module>
         <module>meteor-proxy</module>
         <module>meteor-example</module>
-      <module>meteor-expand</module>
     </modules>
 </project>
