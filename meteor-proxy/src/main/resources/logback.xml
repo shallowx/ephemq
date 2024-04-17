@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration debug="false">
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -14,7 +15,33 @@
         </encoder>
     </appender>
 
-    <appender name="AsyncSTDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/proxy/proxy.log</file>
+    <append>true</append>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/proxy/proxy.%i.log</fileNamePattern>
+      <minIdex>1</minIdex>
+      <maxIdex>10</maxIdex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+      <charest class="java.nio.charset.Charset">
+        UTF-8
+      </charest>
+    </encoder>
+  </appender>
+
+  <appender name="AsyncFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+    <discardingThreshold>0</discardingThreshold>
+    <queueSize>1024</queueSize>
+    <neverBlock>true</neverBlock>
+    <appender-ref ref="FileAppender"/>
+  </appender>
+
+  <appender name="AsyncSTDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>1024</queueSize>
         <neverBlock>true</neverBlock>
@@ -22,12 +49,11 @@
     </appender>
 
     <logger name="org.meteor" additvity="false" level="INFO">
-        <appender-ref ref="AsyncSTDOUT"/>
+      <appender-ref ref="AsyncFileAppender"/>
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="AsyncSTDOUT"/>
+      <appender-ref ref="AsyncFileAppender"/>
     </root>
 </configuration>
 
