@@ -8,9 +8,12 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
-class LoggerStartupListener extends ContextAwareBase implements LoggerContextListener, LifeCycle {
+public class LoggerStartupListener extends ContextAwareBase implements LoggerContextListener, LifeCycle {
     private static final String DEFAULT_LOG_DIR = "/tmp/meteor";
     private volatile boolean started = false;
+
+    public void LoggerStartupListener() {
+    }
 
     @Override
     public boolean isResetResistant() {
