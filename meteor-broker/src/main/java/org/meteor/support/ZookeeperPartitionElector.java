@@ -117,7 +117,7 @@ public final class ZookeeperPartitionElector {
                     topicAssignment.setEpoch(topicAssignment.getEpoch() + 1);
                     client.setData().forPath(path, JsonFeatureMapper.serialize(topicAssignment));
 
-                    Log log = coordinator.getLogCoordinator().getLog(topicAssignment.getLedgerId());
+                    Log log = coordinator.getLogHandler().getLog(topicAssignment.getLedgerId());
                     if (log != null) {
                         log.updateEpoch(topicAssignment.getEpoch());
                     }
@@ -191,8 +191,8 @@ public final class ZookeeperPartitionElector {
     }
 
     private void syncLeader(int ledger) throws Exception {
-        Log log = coordinator.getLogCoordinator().getLog(ledger);
-        Node leaderNode = coordinator.getClusterCoordinator().getClusterReadyNode(latch.getLeader().getId());
+        Log log = coordinator.getLogHandler().getLog(ledger);
+        Node leaderNode = coordinator.getClusterManager().getClusterReadyNode(latch.getLeader().getId());
         Client innerClient = coordinator.getInternalClient();
         ClientChannel channel =
                 innerClient.getActiveChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));

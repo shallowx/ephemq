@@ -76,24 +76,24 @@ import org.meteor.support.TopicCoordinator;
 public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
     protected final CommonConfig commonConfiguration;
-    protected final Manager coordinator;
+    protected final Manager manager;
     protected final EventExecutor commandExecutor;
     private final NetworkConfig networkConfiguration;
     protected EventExecutor serviceExecutor;
 
-    public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Manager coordinator) {
-        this.coordinator = coordinator;
+    public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Manager manager) {
+        this.manager = manager;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
-        this.commandExecutor = coordinator.getCommandHandleEventExecutorGroup().next();
+        this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();
     }
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         this.serviceExecutor = executor;
-        this.coordinator.getConnectionCoordinator().add(channel);
+        this.manager.getConnection().add(channel);
         channel.closeFuture().addListener(future -> {
-            for (Log log : coordinator.getLogCoordinator().getLedgerIdOfLogs().values()) {
+            for (Log log : manager.getLogHandler().getLedgerIdOfLogs().values()) {
                 log.cleanSubscribe(channel, ImmediateEventExecutor.INSTANCE.newPromise());
                 log.subscribeSynchronize(channel, ImmediateEventExecutor.INSTANCE.newPromise());
             }
@@ -163,7 +163,8 @@ public class ServiceProcessor implements Processor, Command.Server {
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
-            coordinator.getTopicCoordinator().getParticipantCoordinator().subscribeLedger(ledger, epoch, index, channel, promise);
+            manager.getTopicCoordinator().getParticipantCoordinator()
+                    .subscribeLedger(ledger, epoch, index, channel, promise);
         } catch (Exception e) {
             processFailed("process sync ledger failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time, false);
@@ -194,7 +195,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
 
-            coordinator.getTopicCoordinator().getParticipantCoordinator().unSubscribeLedger(ledger, channel, promise);
+            manager.getTopicCoordinator().getParticipantCoordinator().unSubscribeLedger(ledger, channel, promise);
         } catch (Exception e) {
             processFailed("process un-sync ledger failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time, false);
@@ -207,7 +208,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         try {
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
                     Map<String, Integer> partitions = topicCoordinator.calculatePartitions();
                     CalculatePartitionsResponse.Builder response = CalculatePartitionsResponse.newBuilder();
                     if (partitions != null) {
@@ -248,7 +249,7 @@ public class ServiceProcessor implements Processor, Command.Server {
 
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
                     TopicPartition topicPartition = new TopicPartition(topic, partition);
                     PartitionInfo partitionInfo = topicCoordinator.getPartitionInfo(topicPartition);
                     int ledger = partitionInfo.getLedger();
@@ -261,7 +262,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                             return;
                         }
 
-                        Node destNode = coordinator.getClusterCoordinator().getClusterReadyNode(destination);
+                        Node destNode = manager.getClusterManager().getClusterReadyNode(destination);
                         if (destNode == null) {
                             processFailed("Process migrate ledger failed", code, channel, feedback,
                                     RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
@@ -270,13 +271,13 @@ public class ServiceProcessor implements Processor, Command.Server {
                         }
 
                         InetSocketAddress destinationAddr = new InetSocketAddress(destNode.getHost(), destNode.getPort());
-                        Client innerClient = coordinator.getInternalClient();
+                        Client innerClient = manager.getInternalClient();
                         ClientChannel clientChannel = innerClient.getActiveChannel(destinationAddr);
                         Promise<MigrateLedgerResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
                         promise.addListener(future -> {
                             if (future.isSuccess()) {
                                 MigrateLedgerResponse response = (MigrateLedgerResponse) future.get();
-                                Log log = coordinator.getLogCoordinator().getLog(ledger);
+                                Log log = manager.getLogHandler().getLog(ledger);
                                 Promise<Void> migratePromise = ImmediateEventExecutor.INSTANCE.newPromise();
                                 if (feedback != null) {
                                     migratePromise.addListener(f -> {
@@ -356,7 +357,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
-            coordinator.getLogCoordinator().appendRecord(ledger, marker, data, promise);
+            manager.getLogHandler().appendRecord(ledger, marker, data, promise);
         } catch (Throwable t) {
             processFailed("Process send message failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
@@ -370,7 +371,8 @@ public class ServiceProcessor implements Processor, Command.Server {
             commandExecutor.execute(() -> {
                 try {
                     String clusterName = commonConfiguration.getClusterName();
-                    List<org.meteor.common.message.Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
+                    List<org.meteor.common.message.Node> clusterUpNodes =
+                            manager.getClusterManager().getClusterReadyNodes();
                     Map<String, NodeMetadata> nodeMetadataMap = clusterUpNodes.stream().collect(
                             Collectors.toMap(org.meteor.common.message.Node::getId, node ->
                                     NodeMetadata.newBuilder()
@@ -413,7 +415,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             ProtocolStringList topicNamesList = request.getTopicNamesList();
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
                     Set<String> topicNames = new HashSet<>();
                     if (topicNamesList.isEmpty()) {
                         topicNames.addAll(topicCoordinator.getAllTopics());
@@ -492,7 +494,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
-            coordinator.getLogCoordinator().resetSubscribe(ledger, epoch, index, channel, markers, promise);
+            manager.getLogHandler().resetSubscribe(ledger, epoch, index, channel, markers, promise);
         } catch (Throwable t) {
             processFailed("Process reset subscription failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
@@ -519,7 +521,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
-            coordinator.getLogCoordinator().alterSubscribe(channel, ledger, appendMarkers, deleteMarkers, promise);
+            manager.getLogHandler().alterSubscribe(channel, ledger, appendMarkers, deleteMarkers, promise);
         } catch (Throwable t) {
             processFailed("Process alter subscription failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
@@ -544,7 +546,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, false);
             });
-            coordinator.getLogCoordinator().cleanSubscribe(channel, ledger, promise);
+            manager.getLogHandler().cleanSubscribe(channel, ledger, promise);
         } catch (Throwable t) {
             processFailed("Process clean subscription failed", code, channel, feedback, t);
             recordCommand(code, bytes, System.nanoTime() - time, false);
@@ -565,7 +567,7 @@ public class ServiceProcessor implements Processor, Command.Server {
 
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
                     Map<String, Object> createResult = topicCoordinator.createTopic(topic, partition, replicas, topicConfig);
                     if (feedback != null) {
                         int topicId = (int) createResult.get(CorrelationIdConstants.TOPIC_ID);
@@ -607,7 +609,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             String topic = request.getTopic();
             commandExecutor.execute(() -> {
                 try {
-                    coordinator.getTopicCoordinator().deleteTopic(topic);
+                    manager.getTopicCoordinator().deleteTopic(topic);
                     if (feedback != null) {
                         DeleteTopicResponse response = DeleteTopicResponse.newBuilder().build();
                         feedback.success(proto2Buf(channel.alloc(), response));
@@ -625,7 +627,7 @@ public class ServiceProcessor implements Processor, Command.Server {
     }
 
     protected void recordCommand(int code, int bytes, long cost, boolean ret) {
-        for (APIListener listener : coordinator.getAPIListeners()) {
+        for (APIListener listener : manager.getAPIListeners()) {
             try {
                 listener.onCommand(code, bytes, cost, ret);
             } catch (Throwable t) {

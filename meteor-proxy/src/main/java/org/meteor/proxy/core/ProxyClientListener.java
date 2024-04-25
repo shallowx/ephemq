@@ -45,11 +45,10 @@ import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 
-
 public class ProxyClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
-    private final Manager coordinator;
+    private final Manager manager;
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyConfig proxyConfiguration;
     private Client client;
@@ -60,17 +59,17 @@ public class ProxyClientListener implements CombineListener {
         }
     };
 
-    public ProxyClientListener(ProxyConfig proxyConfiguration, Manager coordinator,
+    public ProxyClientListener(ProxyConfig proxyConfiguration, Manager manager,
                                LedgerSyncCoordinator syncCoordinator) {
         this.proxyConfiguration = proxyConfiguration;
-        this.coordinator = coordinator;
+        this.manager = manager;
         this.syncCoordinator = syncCoordinator;
-        EventExecutor taskExecutor = coordinator.getAuxEventExecutorGroup().next();
+        EventExecutor taskExecutor = manager.getAuxEventExecutorGroup().next();
         taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     private void checkSync() {
-        Map<Integer, Log> map = coordinator.getLogCoordinator().getLedgerIdOfLogs();
+        Map<Integer, Log> map = manager.getLogHandler().getLedgerIdOfLogs();
         if (map == null) {
             return;
         }
@@ -145,7 +144,7 @@ public class ProxyClientListener implements CombineListener {
             summary.record(count);
             Promise<Integer> promise = ImmediateEventExecutor.INSTANCE.newPromise();
             promise.addListener(f -> semaphore.release());
-            coordinator.getLogCoordinator().saveSyncData(channel.channel(), ledger, count, data, promise);
+            manager.getLogHandler().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);
@@ -195,7 +194,7 @@ public class ProxyClientListener implements CombineListener {
                             refreshFailed = true;
                             logger.error(e.getMessage(), e);
                         }
-                        ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) coordinator.getTopicCoordinator();
+                        ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) manager.getTopicCoordinator();
                         topicCoordinator.refreshTopicMetadata(Collections.singletonList(topic), channel);
                     }
                     resumeSync(channel, topic, ledger, refreshFailed);
@@ -212,7 +211,7 @@ public class ProxyClientListener implements CombineListener {
     }
 
     private void noticeTopicChanged(TopicChangedSignal signal) {
-        Set<Channel> channels = coordinator.getConnectionCoordinator().getReadyChannels();
+        Set<Channel> channels = manager.getConnection().getReadyChannels();
         if (channels == null || channels.isEmpty()) {
             return;
         }
@@ -258,7 +257,7 @@ public class ProxyClientListener implements CombineListener {
     }
 
     private void resumeChannelSync(ClientChannel channel) {
-        Collection<Log> logs = coordinator.getLogCoordinator().getLedgerIdOfLogs().values();
+        Collection<Log> logs = manager.getLogHandler().getLedgerIdOfLogs().values();
         Map<String, List<Log>> groupedLogs = logs.stream().filter(log -> channel == log.getSyncChannel()).collect(Collectors.groupingBy(Log::getTopic));
         if (groupedLogs.isEmpty()) {
             return;
@@ -309,7 +308,7 @@ public class ProxyClientListener implements CombineListener {
     }
 
     private EventExecutor fixedExecutor(String topic) {
-        List<EventExecutor> executors = coordinator.getAuxEventExecutors();
+        List<EventExecutor> executors = manager.getAuxEventExecutors();
         return executors.get((Objects.hash(topic) & 0x7fffffff) % executors.size());
     }
 

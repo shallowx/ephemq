@@ -28,7 +28,7 @@ public class ZookeeperClusterCoordinatorTest {
         properties.put("zookeeper.session.timeout.milliseconds", 30000);
         ServerConfig config = new ServerConfig(properties);
         DefaultMeteorManager defaultCoordinator = new DefaultMeteorManager(config);
-        coordinator = defaultCoordinator.getClusterCoordinator();
+        coordinator = defaultCoordinator.getClusterManager();
         coordinator.start();
         // only for unit test: wait to custer register node
         TimeUnit.SECONDS.sleep(5);

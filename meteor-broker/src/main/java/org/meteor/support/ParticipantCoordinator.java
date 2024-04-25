@@ -40,7 +40,7 @@ public class ParticipantCoordinator {
     }
 
     public void subscribeLedger(int ledger, int epoch, long index, Channel channel, Promise<SyncResponse> promise) {
-        Log log = coordinator.getLogCoordinator().getLog(ledger);
+        Log log = coordinator.getLogHandler().getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemotingException.of(
                     RemotingException.Failure.PROCESS_EXCEPTION, String.format("The ledger[%d] not found", ledger)));
@@ -84,7 +84,7 @@ public class ParticipantCoordinator {
         }
 
         try {
-            Log log = coordinator.getLogCoordinator().getLog(ledger);
+            Log log = coordinator.getLogHandler().getLog(ledger);
             if (log == null) {
                 promise.tryFailure(RemotingException.of(
                         RemotingException.Failure.PROCESS_EXCEPTION,
@@ -128,7 +128,7 @@ public class ParticipantCoordinator {
     }
 
     public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {
-        LogHandler logCoordinator = coordinator.getLogCoordinator();
+        LogHandler logCoordinator = coordinator.getLogHandler();
         Log log = logCoordinator.getLog(ledger);
         if (log == null) {
             promise.trySuccess(null);
@@ -142,7 +142,7 @@ public class ParticipantCoordinator {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
         try {
-            Log log = coordinator.getLogCoordinator().getLog(ledger);
+            Log log = coordinator.getLogHandler().getLog(ledger);
             if (log == null) {
                 promise.trySuccess(null);
                 return promise;

@@ -68,7 +68,7 @@ public class ProxyLog extends Log {
                     closePromise.addListener(future -> {
                         if (future.isSuccess()) {
                             promise.trySuccess((Boolean) future.get());
-                            for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
+                            for (TopicListener listener : manager.getTopicCoordinator().getTopicListener()) {
                                 listener.onPartitionDestroy(topicPartition, ledger);
                             }
                         } else {
@@ -87,7 +87,7 @@ public class ProxyLog extends Log {
         closePromise.addListener(f -> {
             if (f.isSuccess()) {
                 promise.trySuccess((Boolean) f.get());
-                for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
+                for (TopicListener listener : manager.getTopicCoordinator().getTopicListener()) {
                     listener.onPartitionDestroy(topicPartition, ledger);
                 }
             } else {

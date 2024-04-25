@@ -168,17 +168,17 @@ public class DefaultMeteorManager implements Manager {
     }
 
     @Override
-    public ClusterManager getClusterCoordinator() {
+    public ClusterManager getClusterManager() {
         return clusterCoordinator;
     }
 
     @Override
-    public LogHandler getLogCoordinator() {
+    public LogHandler getLogHandler() {
         return logCoordinator;
     }
 
     @Override
-    public Connection getConnectionCoordinator() {
+    public Connection getConnection() {
         return connectionCoordinator;
     }
 

@@ -44,7 +44,7 @@ public class InternalClientListener implements CombineListener {
                     }
                 }
             });
-            coordinator.getLogCoordinator().saveSyncData(channel.channel(), ledger, count, data, promise);
+            coordinator.getLogHandler().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);

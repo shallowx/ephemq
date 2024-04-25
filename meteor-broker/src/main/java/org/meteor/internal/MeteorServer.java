@@ -55,7 +55,7 @@ public class MeteorServer {
 
         coordinator.start();
         for (ServerListener listener : serverListeners) {
-            ClusterManager clusterCoordinator = coordinator.getClusterCoordinator();
+            ClusterManager clusterCoordinator = coordinator.getClusterManager();
             if (clusterCoordinator != null) {
                 Node thisNode = clusterCoordinator.getThisNode();
                 listener.onStartup(thisNode);
@@ -65,7 +65,7 @@ public class MeteorServer {
     }
 
     public void shutdown() throws Exception {
-        ClusterManager clusterCoordinator = coordinator.getClusterCoordinator();
+        ClusterManager clusterCoordinator = coordinator.getClusterManager();
         if (clusterCoordinator != null) {
             Node thisNode = clusterCoordinator.getThisNode();
             for (ServerListener listener : serverListeners) {

@@ -16,11 +16,11 @@ public interface Manager {
 
     TopicCoordinator getTopicCoordinator();
 
-    ClusterManager getClusterCoordinator();
+    ClusterManager getClusterManager();
 
-    LogHandler getLogCoordinator();
+    LogHandler getLogHandler();
 
-    Connection getConnectionCoordinator();
+    Connection getConnection();
 
     void addMetricsListener(MetricsListener listener);
 

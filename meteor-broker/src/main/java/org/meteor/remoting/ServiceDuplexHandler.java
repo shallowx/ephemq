@@ -10,17 +10,17 @@ import org.meteor.support.Manager;
 
 public class ServiceDuplexHandler extends ProcessDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceDuplexHandler.class);
-    private final Manager coordinator;
+    private final Manager manager;
 
-    public ServiceDuplexHandler(Manager coordinator, Processor processor) {
+    public ServiceDuplexHandler(Manager manager, Processor processor) {
         super(processor);
-        this.coordinator = coordinator;
+        this.manager = manager;
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        coordinator.getConnectionCoordinator().remove(channel);
+        manager.getConnection().remove(channel);
         super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
             logger.debug("Service duplex inactive channel, and local_address[{}] remote_address[{}]", channel.localAddress().toString(), channel.remoteAddress().toString());
@@ -30,7 +30,7 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        coordinator.getConnectionCoordinator().remove(channel);
+        manager.getConnection().remove(channel);
         ctx.close();
         if (logger.isDebugEnabled()) {
             logger.debug("Service duplex caught channel, and local address[{}] and remote address[{}]", channel.localAddress().toString(), channel.remoteAddress().toString());

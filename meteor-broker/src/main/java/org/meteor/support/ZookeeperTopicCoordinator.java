@@ -322,7 +322,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public Map<String, Object> createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
-        List<Node> clusterUpNodes = coordinator.getClusterCoordinator().getClusterReadyNodes();
+        List<Node> clusterUpNodes = coordinator.getClusterManager().getClusterReadyNodes();
         if (clusterUpNodes.size() < replicas) {
             throw new TopicException("The broker counts is not enough to assign replicas");
         }
@@ -412,7 +412,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public void initPartition(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) throws Exception {
-        LogHandler logCoordinator = coordinator.getLogCoordinator();
+        LogHandler logCoordinator = coordinator.getLogHandler();
         if (logCoordinator.contains(ledgerId)) {
             return;
         }
@@ -451,7 +451,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             int ledgerId = assignment.getLedgerId();
             assignment.setTransitionalLeader(null);
             client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
-            Log log = coordinator.getLogCoordinator().getLog(ledgerId);
+            Log log = coordinator.getLogHandler().getLog(ledgerId);
             participantCoordinator.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
@@ -529,7 +529,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     public void destroyTopicPartition(TopicPartition topicPartition, int ledgerId) throws Exception {
         ZookeeperPartitionElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
         partitionLeaderElector.shutdown();
-        coordinator.getLogCoordinator().destroyLog(ledgerId);
+        coordinator.getLogHandler().destroyLog(ledgerId);
         for (TopicListener topicListener : listeners) {
             topicListener.onPartitionDestroy(topicPartition, ledgerId);
         }

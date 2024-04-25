@@ -28,17 +28,17 @@ import org.meteor.support.Manager;
 public class InternalClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClient.class);
     private final CommonConfig configuration;
-    private final Manager coordinator;
+    private final Manager manager;
 
     public InternalClient(String name, ClientConfig clientConfig, CombineListener listener, CommonConfig configuration,
-                          Manager coordinator) {
+                          Manager manager) {
         super(name, clientConfig, listener);
         this.configuration = configuration;
-        this.coordinator = coordinator;
+        this.manager = manager;
     }
 
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
-        return new InternalClientChannel(clientConfig, channel, address, configuration, coordinator);
+        return new InternalClientChannel(clientConfig, channel, address, configuration, manager);
     }
 
     @Override

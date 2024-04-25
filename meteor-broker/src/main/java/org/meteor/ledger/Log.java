@@ -51,7 +51,7 @@ public class Log {
     protected final EventExecutor commandExecutor;
     protected final RecordDispatcher entryDispatcher;
     protected final List<LogListener> listeners;
-    protected final Manager coordinator;
+    protected final Manager manager;
     protected final Meter segmentCount;
     protected final Meter segmentBytes;
     protected final int forwardTimeout;
@@ -62,13 +62,13 @@ public class Log {
     protected Promise<SyncResponse> syncPromise;
     protected Promise<CancelSyncResponse> cancelSyncPromise;
 
-    public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager coordinator,
+    public Log(ServerConfig config, TopicPartition topicPartition, int ledger, int epoch, Manager manager,
                TopicConfig topicConfig) {
         this.topicPartition = topicPartition;
         this.ledger = ledger;
         this.topic = topicPartition.topic();
         this.forwardTimeout = config.getRecordDispatchConfig().getDispatchEntryFollowLimit();
-        this.commandExecutor = coordinator.getCommandHandleEventExecutorGroup().next();
+        this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();
         LedgerConfig ledgerConfig;
         if (topicConfig != null) {
             ledgerConfig = new LedgerConfig()
@@ -83,10 +83,10 @@ public class Log {
                     .segmentRetainMs(config.getSegmentConfig().getSegmentRetainTimeMilliseconds())
                     .alloc(false);
         }
-        this.storageExecutor = coordinator.getMessageStorageEventExecutorGroup().next();
+        this.storageExecutor = manager.getMessageStorageEventExecutorGroup().next();
         this.storage = new LedgerStorage(ledger, topicPartition.topic(), epoch, ledgerConfig, storageExecutor, new InnerTrigger());
-        this.coordinator = coordinator;
-        this.listeners = coordinator.getLogCoordinator().getLogListeners();
+        this.manager = manager;
+        this.listeners = manager.getLogHandler().getLogListeners();
         Tags tags = Tags.of(MetricsConstants.TOPIC_TAG, topicPartition.topic())
                 .and(MetricsConstants.PARTITION_TAG, String.valueOf(topicPartition.partition()))
                 .and(MetricsConstants.BROKER_TAG, config.getCommonConfig().getServerId())
@@ -97,8 +97,11 @@ public class Log {
         this.segmentBytes = Gauge.builder(MetricsConstants.LOG_SEGMENT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentBytes)
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
-        this.entryDispatcher = new RecordDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
-        this.chunkEntryDispatcher = new ChunkRecordDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(), coordinator.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
+        this.entryDispatcher = new RecordDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(),
+                manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
+        this.chunkEntryDispatcher =
+                new ChunkRecordDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(),
+                        manager.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
     public ClientChannel getSyncChannel() {
@@ -197,7 +200,7 @@ public class Log {
             } else {
                 syncOffset = currentOffset;
             }
-            TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+            TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
             topicCoordinator.getParticipantCoordinator().syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(), timeoutMs, syncPromise);
         } catch (Exception e) {
             syncPromise.tryFailure(e);
@@ -259,7 +262,7 @@ public class Log {
             return;
         }
         try {
-            TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+            TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
             topicCoordinator.getParticipantCoordinator().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
         } catch (Exception e) {
             unSyncPromise.tryFailure(e);
@@ -276,7 +279,7 @@ public class Log {
         migration = new Migration(ledger, destChannel);
         state.set(LogState.MIGRATING);
         try {
-            TopicCoordinator topicCoordinator = coordinator.getTopicCoordinator();
+            TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
             Promise<SyncResponse> syncResponsePromise = syncFromTarget(destChannel, new Offset(0, 0L), 30000);
             syncResponsePromise.addListener(future -> {
                 if (future.isSuccess()) {
