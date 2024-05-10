@@ -18,7 +18,6 @@
 
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
-      <bookkeeper.version>4.16.5</bookkeeper.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>17</maven.compiler.version>
         <maven.compiler.source>17</maven.compiler.source>

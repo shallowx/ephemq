@@ -19,43 +19,43 @@ public class ConsumerConfig {
         this.clientConfig = clientConfig;
     }
 
-    public int getControlTimeoutMilliseconds() {
+    public int getControlTimeoutMillis() {
         return controlTimeoutMilliseconds;
     }
 
-    public void setControlTimeoutMilliseconds(int controlTimeoutMilliseconds) {
+    public void setControlTimeoutMillis(int controlTimeoutMilliseconds) {
         this.controlTimeoutMilliseconds = controlTimeoutMilliseconds;
     }
 
-    public int getControlRetryDelayMilliseconds() {
+    public int getControlRetryDelayMillis() {
         return controlRetryDelayMilliseconds;
     }
 
-    public void setControlRetryDelayMilliseconds(int controlRetryDelayMilliseconds) {
+    public void setControlRetryDelayMillis(int controlRetryDelayMilliseconds) {
         this.controlRetryDelayMilliseconds = controlRetryDelayMilliseconds;
     }
 
-    public int getHandlerThreadLimit() {
+    public int getHandlerThreads() {
         return handlerThreadLimit;
     }
 
-    public void setHandlerThreadLimit(int handlerThreadLimit) {
+    public void setHandlerThreads(int handlerThreadLimit) {
         this.handlerThreadLimit = handlerThreadLimit;
     }
 
-    public int getHandlerShardLimit() {
+    public int getHandlerShards() {
         return handlerShardLimit;
     }
 
-    public void setHandlerShardLimit(int handlerShardLimit) {
+    public void setHandlerShards(int handlerShardLimit) {
         this.handlerShardLimit = handlerShardLimit;
     }
 
-    public int getHandlerPendingLimit() {
+    public int getHandlerPendings() {
         return handlerPendingLimit;
     }
 
-    public void setHandlerPendingLimit(int handlerPendingLimit) {
+    public void setHandlerPendings(int handlerPendingLimit) {
         this.handlerPendingLimit = handlerPendingLimit;
     }
 }

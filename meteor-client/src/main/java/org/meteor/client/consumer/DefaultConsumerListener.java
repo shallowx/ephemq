@@ -46,10 +46,10 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         this.consumer = (DefaultConsumer) consumer;
         this.consumerConfig = consumerConfig;
 
-        int shardCount = Math.max(consumerConfig.getHandlerThreadLimit(), consumerConfig.getHandlerShardLimit());
+        int shardCount = Math.max(consumerConfig.getHandlerThreads(), consumerConfig.getHandlerShards());
         this.handlers = new MessageHandler[shardCount];
-        int handlerPendingCount = consumerConfig.getHandlerPendingLimit();
-        this.group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreadLimit(), "consumer-message-group");
+        int handlerPendingCount = consumerConfig.getHandlerPendings();
+        this.group = NetworkUtil.newEventExecutorGroup(consumerConfig.getHandlerThreads(), "consumer-message-group");
         for (int i = 0; i < shardCount; i++) {
             Semaphore semaphore = new Semaphore(handlerPendingCount);
             MessageHandler messageHandler = new MessageHandler(String.valueOf(i), semaphore, group.next(), this.consumer.getSubscribeShips(), listener);
@@ -116,7 +116,7 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
                             }
 
                             obsoleteFutures.remove(k);
-                        }, consumerConfig.getControlRetryDelayMilliseconds(), TimeUnit.MILLISECONDS));
+                        }, consumerConfig.getControlRetryDelayMillis(), TimeUnit.MILLISECONDS));
             } catch (Throwable t) {
                 logger.error(t);
             }

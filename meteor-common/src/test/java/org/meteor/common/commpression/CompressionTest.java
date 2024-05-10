@@ -1,6 +1,5 @@
 package org.meteor.common.commpression;
 
-import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
