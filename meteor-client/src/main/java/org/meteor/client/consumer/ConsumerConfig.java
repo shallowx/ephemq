@@ -2,6 +2,7 @@ package org.meteor.client.consumer;
 
 import io.netty.util.NettyRuntime;
 import org.meteor.client.core.ClientConfig;
+import org.meteor.common.compression.CompressionType;
 
 public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();
@@ -10,6 +11,7 @@ public class ConsumerConfig {
     private int handlerThreadLimit = NettyRuntime.availableProcessors();
     private int handlerShardLimit = handlerThreadLimit * 10;
     private int handlerPendingLimit = 100;
+    private CompressionType compressionType;
 
     public ClientConfig getClientConfig() {
         return clientConfig;
@@ -19,43 +21,51 @@ public class ConsumerConfig {
         this.clientConfig = clientConfig;
     }
 
-    public int getControlTimeoutMillis() {
+    public int getControlTimeoutMilliseconds() {
         return controlTimeoutMilliseconds;
     }
 
-    public void setControlTimeoutMillis(int controlTimeoutMilliseconds) {
+    public void setControlTimeoutMilliseconds(int controlTimeoutMilliseconds) {
         this.controlTimeoutMilliseconds = controlTimeoutMilliseconds;
     }
 
-    public int getControlRetryDelayMillis() {
+    public int getControlRetryDelayMilliseconds() {
         return controlRetryDelayMilliseconds;
     }
 
-    public void setControlRetryDelayMillis(int controlRetryDelayMilliseconds) {
+    public void setControlRetryDelayMilliseconds(int controlRetryDelayMilliseconds) {
         this.controlRetryDelayMilliseconds = controlRetryDelayMilliseconds;
     }
 
-    public int getHandlerThreads() {
+    public int getHandlerThreadLimit() {
         return handlerThreadLimit;
     }
 
-    public void setHandlerThreads(int handlerThreadLimit) {
+    public void setHandlerThreadLimit(int handlerThreadLimit) {
         this.handlerThreadLimit = handlerThreadLimit;
     }
 
-    public int getHandlerShards() {
+    public int getHandlerShardLimit() {
         return handlerShardLimit;
     }
 
-    public void setHandlerShards(int handlerShardLimit) {
+    public void setHandlerShardLimit(int handlerShardLimit) {
         this.handlerShardLimit = handlerShardLimit;
     }
 
-    public int getHandlerPendings() {
+    public int getHandlerPendingLimit() {
         return handlerPendingLimit;
     }
 
-    public void setHandlerPendings(int handlerPendingLimit) {
+    public void setHandlerPendingLimit(int handlerPendingLimit) {
         this.handlerPendingLimit = handlerPendingLimit;
+    }
+
+    public CompressionType getCompressionType() {
+        return compressionType;
+    }
+
+    public void setCompressionType(CompressionType compressionType) {
+        this.compressionType = compressionType;
     }
 }

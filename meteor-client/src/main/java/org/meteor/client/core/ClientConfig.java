@@ -20,7 +20,6 @@ public class ClientConfig {
     private int createTopicTimeoutMilliseconds = 2000;
     private int deleteTopicTimeoutMilliseconds = 2000;
     private int calculatePartitionsTimeoutMilliseconds = 5000;
-
     private int migrateLedgerTimeoutMilliseconds = 5000;
 
     public int getMigrateLedgerTimeoutMilliseconds() {

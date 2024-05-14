@@ -145,7 +145,7 @@ public class DefaultProducer implements Producer {
         SendMessageRequest request = SendMessageRequest.newBuilder().setLedger(ledger.id()).setMarker(marker).build();
         MessageMetadata metadata = buildMetadata(topic, queue, extras);
         ClientChannel channel = getReadyChannel(leader, ledger.id());
-        channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message);
+        channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message, config.getCompressionType());
     }
 
     private ClientChannel getReadyChannel(SocketAddress address, int ledger) {
