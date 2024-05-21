@@ -4,31 +4,29 @@
 package org.meteor.remote.proto.client;
 
 public interface MessagePushSignalOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.MessagePushSignal)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.MessagePushSignal)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    int getLedger();
+  /**
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
+   */
+  int getLedger();
 
-    /**
-     * <code>int32 marker = 2;</code>
-     *
-     * @return The marker.
-     */
-    int getMarker();
+  /**
+   * <code>int32 marker = 2;</code>
+   * @return The marker.
+   */
+  int getMarker();
 
-    /**
-     * <code>int32 epoch = 3;</code>
-     * @return The epoch.
-     */
-    int getEpoch();
+  /**
+   * <code>int32 epoch = 3;</code>
+   * @return The epoch.
+   */
+  int getEpoch();
 
-    /**
-     * <code>int64 index = 4;</code>
+  /**
+   * <code>int64 index = 4;</code>
    * @return The index.
    */
   long getIndex();

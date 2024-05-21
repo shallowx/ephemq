@@ -4,71 +4,60 @@
 package org.meteor.remote.proto.client;
 
 public interface LedgerRetiredSignalOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.LedgerRetiredSignal)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.LedgerRetiredSignal)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-     *
-     * @return Whether the broker field is set.
-     */
-    boolean hasBroker();
+  /**
+   * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+   * @return Whether the broker field is set.
+   */
+  boolean hasBroker();
+  /**
+   * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+   * @return The broker.
+   */
+  org.meteor.remote.proto.NodeMetadata getBroker();
+  /**
+   * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
+   */
+  org.meteor.remote.proto.NodeMetadataOrBuilder getBrokerOrBuilder();
 
-    /**
-     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-     *
-     * @return The broker.
-     */
-    org.meteor.remote.proto.NodeMetadata getBroker();
+  /**
+   * <code>int32 ledger = 2;</code>
+   * @return The ledger.
+   */
+  int getLedger();
 
-    /**
-     * <code>.meteor.protobuf.NodeMetadata broker = 1;</code>
-     */
-    org.meteor.remote.proto.NodeMetadataOrBuilder getBrokerOrBuilder();
+  /**
+   * <code>string topic = 3;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 3;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 
-    /**
-     * <code>int32 ledger = 2;</code>
-     * @return The ledger.
-     */
-    int getLedger();
+  /**
+   * <code>int32 partition = 4;</code>
+   * @return The partition.
+   */
+  int getPartition();
 
-    /**
-     * <code>string topic = 3;</code>
-     *
-     * @return The topic.
-     */
-    java.lang.String getTopic();
-
-    /**
-     * <code>string topic = 3;</code>
-     *
-     * @return The bytes for topic.
-     */
-    com.google.protobuf.ByteString
-    getTopicBytes();
-
-    /**
-     * <code>int32 partition = 4;</code>
-     * @return The partition.
-     */
-    int getPartition();
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-     *
-     * @return Whether the heir field is set.
-     */
-    boolean hasHeir();
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-     *
-     * @return The heir.
-     */
-    org.meteor.remote.proto.NodeMetadata getHeir();
-
-    /**
-     * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
-     */
-    org.meteor.remote.proto.NodeMetadataOrBuilder getHeirOrBuilder();
+  /**
+   * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+   * @return Whether the heir field is set.
+   */
+  boolean hasHeir();
+  /**
+   * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+   * @return The heir.
+   */
+  org.meteor.remote.proto.NodeMetadata getHeir();
+  /**
+   * <code>.meteor.protobuf.NodeMetadata heir = 5;</code>
+   */
+  org.meteor.remote.proto.NodeMetadataOrBuilder getHeirOrBuilder();
 }

@@ -4,6 +4,6 @@
 package org.meteor.remote.proto.server;
 
 public interface ResetSubscribeResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.ResetSubscribeResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.ResetSubscribeResponse)
+    com.google.protobuf.MessageOrBuilder {
 }

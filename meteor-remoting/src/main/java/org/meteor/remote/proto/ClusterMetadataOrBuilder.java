@@ -4,21 +4,18 @@
 package org.meteor.remote.proto;
 
 public interface ClusterMetadataOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.ClusterMetadata)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.ClusterMetadata)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The name.
-     */
-    java.lang.String getName();
-
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The bytes for name.
-     */
-    com.google.protobuf.ByteString
-    getNameBytes();
+  /**
+   * <code>string name = 1;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

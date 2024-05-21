@@ -4,28 +4,24 @@
 package org.meteor.remote.proto.server;
 
 public interface CancelSyncRequestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.CancelSyncRequest)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.CancelSyncRequest)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    int getLedger();
+  /**
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
+   */
+  int getLedger();
 
-    /**
-     * <code>string topic = 2;</code>
-     *
-     * @return The topic.
-     */
-    java.lang.String getTopic();
-
-    /**
-     * <code>string topic = 2;</code>
-     *
-     * @return The bytes for topic.
-     */
-    com.google.protobuf.ByteString
-    getTopicBytes();
+  /**
+   * <code>string topic = 2;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 2;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 }

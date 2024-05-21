@@ -7,10 +7,10 @@ package org.meteor.remote.proto.server;
  * Protobuf type {@code meteor.protobuf.AlterSubscribeRequest}
  */
 public final class AlterSubscribeRequest extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:meteor.protobuf.AlterSubscribeRequest)
-        AlterSubscribeRequestOrBuilder {
-    private static final long serialVersionUID = 0L;
+    com.google.protobuf.GeneratedMessageV3 implements
+    // @@protoc_insertion_point(message_implements:meteor.protobuf.AlterSubscribeRequest)
+    AlterSubscribeRequestOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use AlterSubscribeRequest.newBuilder() to construct.
   private AlterSubscribeRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -24,7 +24,7 @@ public final class AlterSubscribeRequest extends
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
-          UnusedPrivateParameter unused) {
+      UnusedPrivateParameter unused) {
     return new AlterSubscribeRequest();
   }
 
@@ -34,17 +34,16 @@ public final class AlterSubscribeRequest extends
     return this.unknownFields;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
-  getDescriptor() {
+      getDescriptor() {
     return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_AlterSubscribeRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-  internalGetFieldAccessorTable() {
+      internalGetFieldAccessorTable() {
     return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_AlterSubscribeRequest_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                    org.meteor.remote.proto.server.AlterSubscribeRequest.class,
-                    org.meteor.remote.proto.server.AlterSubscribeRequest.Builder.class);
+        .ensureFieldAccessorsInitialized(
+            org.meteor.remote.proto.server.AlterSubscribeRequest.class, org.meteor.remote.proto.server.AlterSubscribeRequest.Builder.class);
   }
 
   public static final int LEDGER_FIELD_NUMBER = 1;
@@ -92,8 +91,8 @@ public final class AlterSubscribeRequest extends
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       topic_ = s;
       return s;
@@ -105,12 +104,12 @@ public final class AlterSubscribeRequest extends
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-  getTopicBytes() {
+      getTopicBytes() {
     java.lang.Object ref = topic_;
     if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
       topic_ = b;
       return b;
     } else {
@@ -122,12 +121,8 @@ public final class AlterSubscribeRequest extends
   @java.lang.Override
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
-          return true;
-      }
-      if (isInitialized == 0) {
-          return false;
-      }
+    if (isInitialized == 1) return true;
+    if (isInitialized == 0) return false;
 
     memoizedIsInitialized = 1;
     return true;
@@ -135,7 +130,7 @@ public final class AlterSubscribeRequest extends
 
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
-          throws java.io.IOException {
+                      throws java.io.IOException {
     if (ledger_ != 0) {
       output.writeInt32(1, ledger_);
     }
@@ -154,22 +149,20 @@ public final class AlterSubscribeRequest extends
   @java.lang.Override
   public int getSerializedSize() {
     int size = memoizedSize;
-      if (size != -1) {
-          return size;
-      }
+    if (size != -1) return size;
 
     size = 0;
     if (ledger_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-              .computeInt32Size(1, ledger_);
+        .computeInt32Size(1, ledger_);
     }
     if (!appendMarkers_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-              .computeBytesSize(2, appendMarkers_);
+        .computeBytesSize(2, appendMarkers_);
     }
     if (!deleteMarkers_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-              .computeBytesSize(3, deleteMarkers_);
+        .computeBytesSize(3, deleteMarkers_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, topic_);
@@ -182,33 +175,22 @@ public final class AlterSubscribeRequest extends
   @java.lang.Override
   public boolean equals(final java.lang.Object obj) {
     if (obj == this) {
-        return true;
+     return true;
     }
     if (!(obj instanceof org.meteor.remote.proto.server.AlterSubscribeRequest)) {
       return super.equals(obj);
     }
-      org.meteor.remote.proto.server.AlterSubscribeRequest other =
-              (org.meteor.remote.proto.server.AlterSubscribeRequest) obj;
+    org.meteor.remote.proto.server.AlterSubscribeRequest other = (org.meteor.remote.proto.server.AlterSubscribeRequest) obj;
 
-      if (getLedger()
-              != other.getLedger()) {
-          return false;
-      }
-      if (!getAppendMarkers()
-              .equals(other.getAppendMarkers())) {
-          return false;
-      }
-      if (!getDeleteMarkers()
-              .equals(other.getDeleteMarkers())) {
-          return false;
-      }
-      if (!getTopic()
-              .equals(other.getTopic())) {
-          return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) {
-          return false;
-      }
+    if (getLedger()
+        != other.getLedger()) return false;
+    if (!getAppendMarkers()
+        .equals(other.getAppendMarkers())) return false;
+    if (!getDeleteMarkers()
+        .equals(other.getDeleteMarkers())) return false;
+    if (!getTopic()
+        .equals(other.getTopic())) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -233,79 +215,77 @@ public final class AlterSubscribeRequest extends
   }
 
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          java.nio.ByteBuffer data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          java.nio.ByteBuffer data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ByteString data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+      com.google.protobuf.ByteString data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+      throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
+      byte[] data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
+      throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
+        .parseWithIOException(PARSER, input);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
+      throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
+        .parseDelimitedWithIOException(PARSER, input);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
+      com.google.protobuf.CodedInputStream input)
+      throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
+        .parseWithIOException(PARSER, input);
   }
   public static org.meteor.remote.proto.server.AlterSubscribeRequest parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
+        .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
   @java.lang.Override
-  public Builder newBuilderForType() {
-      return newBuilder();
-  }
+  public Builder newBuilderForType() { return newBuilder(); }
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
@@ -315,12 +295,12 @@ public final class AlterSubscribeRequest extends
   @java.lang.Override
   public Builder toBuilder() {
     return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+        ? new Builder() : new Builder().mergeFrom(this);
   }
 
   @java.lang.Override
   protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
     Builder builder = new Builder(parent);
     return builder;
   }
@@ -328,21 +308,20 @@ public final class AlterSubscribeRequest extends
    * Protobuf type {@code meteor.protobuf.AlterSubscribeRequest}
    */
   public static final class Builder extends
-          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:meteor.protobuf.AlterSubscribeRequest)
-          org.meteor.remote.proto.server.AlterSubscribeRequestOrBuilder {
+      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+      // @@protoc_insertion_point(builder_implements:meteor.protobuf.AlterSubscribeRequest)
+      org.meteor.remote.proto.server.AlterSubscribeRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_AlterSubscribeRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_AlterSubscribeRequest_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      org.meteor.remote.proto.server.AlterSubscribeRequest.class,
-                      org.meteor.remote.proto.server.AlterSubscribeRequest.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              org.meteor.remote.proto.server.AlterSubscribeRequest.class, org.meteor.remote.proto.server.AlterSubscribeRequest.Builder.class);
     }
 
     // Construct using org.meteor.remote.proto.server.AlterSubscribeRequest.newBuilder()
@@ -351,7 +330,7 @@ public final class AlterSubscribeRequest extends
     }
 
     private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
 
     }
@@ -371,7 +350,7 @@ public final class AlterSubscribeRequest extends
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
-    getDescriptorForType() {
+        getDescriptorForType() {
       return org.meteor.remote.proto.server.ServerProto.internal_static_meteor_protobuf_AlterSubscribeRequest_descriptor;
     }
 
@@ -391,8 +370,7 @@ public final class AlterSubscribeRequest extends
 
     @java.lang.Override
     public org.meteor.remote.proto.server.AlterSubscribeRequest buildPartial() {
-        org.meteor.remote.proto.server.AlterSubscribeRequest result =
-                new org.meteor.remote.proto.server.AlterSubscribeRequest(this);
+      org.meteor.remote.proto.server.AlterSubscribeRequest result = new org.meteor.remote.proto.server.AlterSubscribeRequest(this);
       result.ledger_ = ledger_;
       result.appendMarkers_ = appendMarkers_;
       result.deleteMarkers_ = deleteMarkers_;
@@ -407,36 +385,36 @@ public final class AlterSubscribeRequest extends
     }
     @java.lang.Override
     public Builder setField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
       return super.setField(field, value);
     }
     @java.lang.Override
     public Builder clearField(
-            com.google.protobuf.Descriptors.FieldDescriptor field) {
+        com.google.protobuf.Descriptors.FieldDescriptor field) {
       return super.clearField(field);
     }
     @java.lang.Override
     public Builder clearOneof(
-            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        com.google.protobuf.Descriptors.OneofDescriptor oneof) {
       return super.clearOneof(oneof);
     }
     @java.lang.Override
     public Builder setRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            int index, java.lang.Object value) {
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        int index, java.lang.Object value) {
       return super.setRepeatedField(field, index, value);
     }
     @java.lang.Override
     public Builder addRepeatedField(
-            com.google.protobuf.Descriptors.FieldDescriptor field,
-            java.lang.Object value) {
+        com.google.protobuf.Descriptors.FieldDescriptor field,
+        java.lang.Object value) {
       return super.addRepeatedField(field, value);
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof org.meteor.remote.proto.server.AlterSubscribeRequest) {
-          return mergeFrom((org.meteor.remote.proto.server.AlterSubscribeRequest) other);
+        return mergeFrom((org.meteor.remote.proto.server.AlterSubscribeRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
@@ -444,9 +422,7 @@ public final class AlterSubscribeRequest extends
     }
 
     public Builder mergeFrom(org.meteor.remote.proto.server.AlterSubscribeRequest other) {
-        if (other == org.meteor.remote.proto.server.AlterSubscribeRequest.getDefaultInstance()) {
-            return this;
-        }
+      if (other == org.meteor.remote.proto.server.AlterSubscribeRequest.getDefaultInstance()) return this;
       if (other.getLedger() != 0) {
         setLedger(other.getLedger());
       }
@@ -472,9 +448,9 @@ public final class AlterSubscribeRequest extends
 
     @java.lang.Override
     public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
@@ -522,7 +498,7 @@ public final class AlterSubscribeRequest extends
       return this;
     }
 
-      private int ledger_;
+    private int ledger_ ;
     /**
      * <code>int32 ledger = 1;</code>
      * @return The ledger.
@@ -537,8 +513,8 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder setLedger(int value) {
-
-        ledger_ = value;
+      
+      ledger_ = value;
       onChanged();
       return this;
     }
@@ -547,8 +523,8 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder clearLedger() {
-
-        ledger_ = 0;
+      
+      ledger_ = 0;
       onChanged();
       return this;
     }
@@ -569,8 +545,8 @@ public final class AlterSubscribeRequest extends
      */
     public Builder setAppendMarkers(com.google.protobuf.ByteString value) {
       if (value == null) {
-          throw new NullPointerException();
-      }
+    throw new NullPointerException();
+  }
   
       appendMarkers_ = value;
       onChanged();
@@ -581,8 +557,8 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder clearAppendMarkers() {
-
-        appendMarkers_ = getDefaultInstance().getAppendMarkers();
+      
+      appendMarkers_ = getDefaultInstance().getAppendMarkers();
       onChanged();
       return this;
     }
@@ -603,8 +579,8 @@ public final class AlterSubscribeRequest extends
      */
     public Builder setDeleteMarkers(com.google.protobuf.ByteString value) {
       if (value == null) {
-          throw new NullPointerException();
-      }
+    throw new NullPointerException();
+  }
   
       deleteMarkers_ = value;
       onChanged();
@@ -615,8 +591,8 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder clearDeleteMarkers() {
-
-        deleteMarkers_ = getDefaultInstance().getDeleteMarkers();
+      
+      deleteMarkers_ = getDefaultInstance().getDeleteMarkers();
       onChanged();
       return this;
     }
@@ -630,7 +606,7 @@ public final class AlterSubscribeRequest extends
       java.lang.Object ref = topic_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+            (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         topic_ = s;
         return s;
@@ -643,12 +619,12 @@ public final class AlterSubscribeRequest extends
      * @return The bytes for topic.
      */
     public com.google.protobuf.ByteString
-    getTopicBytes() {
+        getTopicBytes() {
       java.lang.Object ref = topic_;
       if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         topic_ = b;
         return b;
       } else {
@@ -661,10 +637,10 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder setTopic(
-            java.lang.String value) {
+        java.lang.String value) {
       if (value == null) {
-          throw new NullPointerException();
-      }
+    throw new NullPointerException();
+  }
   
       topic_ = value;
       onChanged();
@@ -675,8 +651,8 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder clearTopic() {
-
-        topic_ = getDefaultInstance().getTopic();
+      
+      topic_ = getDefaultInstance().getTopic();
       onChanged();
       return this;
     }
@@ -686,11 +662,11 @@ public final class AlterSubscribeRequest extends
      * @return This builder for chaining.
      */
     public Builder setTopicBytes(
-            com.google.protobuf.ByteString value) {
+        com.google.protobuf.ByteString value) {
       if (value == null) {
-          throw new NullPointerException();
-      }
-        checkByteStringIsUtf8(value);
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
       
       topic_ = value;
       onChanged();
@@ -698,13 +674,13 @@ public final class AlterSubscribeRequest extends
     }
     @java.lang.Override
     public final Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.setUnknownFields(unknownFields);
     }
 
     @java.lang.Override
     public final Builder mergeUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
       return super.mergeUnknownFields(unknownFields);
     }
 
@@ -723,12 +699,12 @@ public final class AlterSubscribeRequest extends
   }
 
   private static final com.google.protobuf.Parser<AlterSubscribeRequest>
-          PARSER = new com.google.protobuf.AbstractParser<AlterSubscribeRequest>() {
+      PARSER = new com.google.protobuf.AbstractParser<AlterSubscribeRequest>() {
     @java.lang.Override
     public AlterSubscribeRequest parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       Builder builder = newBuilder();
       try {
         builder.mergeFrom(input, extensionRegistry);
@@ -738,7 +714,7 @@ public final class AlterSubscribeRequest extends
         throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
+            .setUnfinishedMessage(builder.buildPartial());
       }
       return builder.buildPartial();
     }

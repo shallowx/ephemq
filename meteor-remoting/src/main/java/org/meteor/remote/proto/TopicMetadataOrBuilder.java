@@ -4,32 +4,29 @@
 package org.meteor.remote.proto;
 
 public interface TopicMetadataOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.TopicMetadata)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.TopicMetadata)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The name.
-     */
-    java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 
-    /**
-     * <code>string name = 1;</code>
-     *
-     * @return The bytes for name.
-     */
-    com.google.protobuf.ByteString
-    getNameBytes();
+  /**
+   * <code>int32 id = 2;</code>
+   * @return The id.
+   */
+  int getId();
 
-    /**
-     * <code>int32 id = 2;</code>
-     * @return The id.
-     */
-    int getId();
-
-    /**
-     * <code>int32 version = 3;</code>
+  /**
+   * <code>int32 version = 3;</code>
    * @return The version.
    */
   int getVersion();

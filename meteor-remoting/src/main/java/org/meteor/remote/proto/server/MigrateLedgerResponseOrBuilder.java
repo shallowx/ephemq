@@ -4,28 +4,24 @@
 package org.meteor.remote.proto.server;
 
 public interface MigrateLedgerResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.MigrateLedgerResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.MigrateLedgerResponse)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>bool success = 1;</code>
-     *
-     * @return The success.
-     */
-    boolean getSuccess();
+  /**
+   * <code>bool success = 1;</code>
+   * @return The success.
+   */
+  boolean getSuccess();
 
-    /**
-     * <code>string message = 2;</code>
-     *
-     * @return The message.
-     */
-    java.lang.String getMessage();
-
-    /**
-     * <code>string message = 2;</code>
-     *
-     * @return The bytes for message.
-     */
-    com.google.protobuf.ByteString
-    getMessageBytes();
+  /**
+   * <code>string message = 2;</code>
+   * @return The message.
+   */
+  java.lang.String getMessage();
+  /**
+   * <code>string message = 2;</code>
+   * @return The bytes for message.
+   */
+  com.google.protobuf.ByteString
+      getMessageBytes();
 }

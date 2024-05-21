@@ -4,25 +4,23 @@
 package org.meteor.remote.proto.server;
 
 public interface SendMessageResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.SendMessageResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.SendMessageResponse)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 ledger = 1;</code>
-     *
-     * @return The ledger.
-     */
-    int getLedger();
+  /**
+   * <code>int32 ledger = 1;</code>
+   * @return The ledger.
+   */
+  int getLedger();
 
-    /**
-     * <code>int32 epoch = 2;</code>
-     *
-     * @return The epoch.
-     */
-    int getEpoch();
+  /**
+   * <code>int32 epoch = 2;</code>
+   * @return The epoch.
+   */
+  int getEpoch();
 
-    /**
-     * <code>int64 index = 3;</code>
+  /**
+   * <code>int64 index = 3;</code>
    * @return The index.
    */
   long getIndex();

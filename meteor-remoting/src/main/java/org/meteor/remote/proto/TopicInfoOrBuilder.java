@@ -4,66 +4,57 @@
 package org.meteor.remote.proto;
 
 public interface TopicInfoOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.TopicInfo)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.TopicInfo)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
-     *
-     * @return Whether the topic field is set.
-     */
-    boolean hasTopic();
+  /**
+   * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
+   * @return Whether the topic field is set.
+   */
+  boolean hasTopic();
+  /**
+   * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
+   * @return The topic.
+   */
+  org.meteor.remote.proto.TopicMetadata getTopic();
+  /**
+   * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
+   */
+  org.meteor.remote.proto.TopicMetadataOrBuilder getTopicOrBuilder();
 
-    /**
-     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
-     *
-     * @return The topic.
-     */
-    org.meteor.remote.proto.TopicMetadata getTopic();
+  /**
+   * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
+  int getPartitionsCount();
+  /**
+   * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
+  boolean containsPartitions(
+      int key);
+  /**
+   * Use {@link #getPartitionsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
+  getPartitions();
+  /**
+   * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
+  java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
+  getPartitionsMap();
+  /**
+   * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
 
-    /**
-     * <code>.meteor.protobuf.TopicMetadata topic = 1;</code>
-     */
-    org.meteor.remote.proto.TopicMetadataOrBuilder getTopicOrBuilder();
+  /* nullable */
+org.meteor.remote.proto.PartitionMetadata getPartitionsOrDefault(
+      int key,
+      /* nullable */
+org.meteor.remote.proto.PartitionMetadata defaultValue);
+  /**
+   * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
+   */
 
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    int getPartitionsCount();
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    boolean containsPartitions(
-            int key);
-
-    /**
-     * Use {@link #getPartitionsMap()} instead.
-     */
-    @java.lang.Deprecated
-    java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
-    getPartitions();
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-    java.util.Map<java.lang.Integer, org.meteor.remote.proto.PartitionMetadata>
-    getPartitionsMap();
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-
-    /* nullable */
-    org.meteor.remote.proto.PartitionMetadata getPartitionsOrDefault(
-            int key,
-            /* nullable */
-            org.meteor.remote.proto.PartitionMetadata defaultValue);
-
-    /**
-     * <code>map&lt;int32, .meteor.protobuf.PartitionMetadata&gt; partitions = 2;</code>
-     */
-
-    org.meteor.remote.proto.PartitionMetadata getPartitionsOrThrow(
+  org.meteor.remote.proto.PartitionMetadata getPartitionsOrThrow(
       int key);
 }

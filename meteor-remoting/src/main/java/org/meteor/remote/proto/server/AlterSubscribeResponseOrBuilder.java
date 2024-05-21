@@ -4,6 +4,6 @@
 package org.meteor.remote.proto.server;
 
 public interface AlterSubscribeResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.AlterSubscribeResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.AlterSubscribeResponse)
+    com.google.protobuf.MessageOrBuilder {
 }

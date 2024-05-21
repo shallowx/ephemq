@@ -4,8 +4,8 @@
 package org.meteor.remote.proto.server;
 
 public interface SyncResponseOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncResponse)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.SyncResponse)
+    com.google.protobuf.MessageOrBuilder {
 
   /**
    * <code>.meteor.protobuf.MessageOffset currentOffset = 1;</code>

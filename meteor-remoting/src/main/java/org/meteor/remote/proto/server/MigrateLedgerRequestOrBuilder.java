@@ -4,40 +4,34 @@
 package org.meteor.remote.proto.server;
 
 public interface MigrateLedgerRequestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.MigrateLedgerRequest)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.MigrateLedgerRequest)
+    com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>int32 partition = 1;</code>
-     *
-     * @return The partition.
-     */
-    int getPartition();
+  /**
+   * <code>int32 partition = 1;</code>
+   * @return The partition.
+   */
+  int getPartition();
 
-    /**
-     * <code>string topic = 2;</code>
-     *
-     * @return The topic.
-     */
-    java.lang.String getTopic();
+  /**
+   * <code>string topic = 2;</code>
+   * @return The topic.
+   */
+  java.lang.String getTopic();
+  /**
+   * <code>string topic = 2;</code>
+   * @return The bytes for topic.
+   */
+  com.google.protobuf.ByteString
+      getTopicBytes();
 
-    /**
-     * <code>string topic = 2;</code>
-     *
-     * @return The bytes for topic.
-     */
-    com.google.protobuf.ByteString
-    getTopicBytes();
-
-    /**
-     * <code>string original = 3;</code>
-     *
-     * @return The original.
-     */
-    java.lang.String getOriginal();
-
-    /**
-     * <code>string original = 3;</code>
+  /**
+   * <code>string original = 3;</code>
+   * @return The original.
+   */
+  java.lang.String getOriginal();
+  /**
+   * <code>string original = 3;</code>
    * @return The bytes for original.
    */
   com.google.protobuf.ByteString

@@ -4,8 +4,8 @@
 package org.meteor.remote.proto.server;
 
 public interface AlterSubscribeRequestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:meteor.protobuf.AlterSubscribeRequest)
-        com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(interface_extends:meteor.protobuf.AlterSubscribeRequest)
+    com.google.protobuf.MessageOrBuilder {
 
   /**
    * <code>int32 ledger = 1;</code>
