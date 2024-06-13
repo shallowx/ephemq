@@ -1,4 +1,4 @@
-![Build project](https://github.com/shallowx/meteor/blob/main/docs/badge.svg)
+![Build project](https://github.com/shallowx/meteor/blob/master/docs/badge.svg)
 
 ## Meteor Project
 
