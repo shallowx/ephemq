@@ -20,8 +20,8 @@ public class DemoServerBootstrap {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerBootstrap.class);
 
     public static void main(String[] args) {
-        EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss");
-        EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker");
+        EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss", false);
+        EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker", false);
         EventExecutorGroup servicesGroup = NetworkUtil.newEventExecutorGroup(0, "demo-server-service");
 
         Processor processorAware = new DemoServerProcessor();

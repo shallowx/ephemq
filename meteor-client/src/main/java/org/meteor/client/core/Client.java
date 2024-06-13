@@ -1,6 +1,7 @@
 package org.meteor.client.core;
 
 import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
+import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -256,7 +257,8 @@ public class Client implements MeterBinder {
         }
 
         state = true;
-        workerGroup = NetworkUtil.newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(), "client-worker(" + name + ")");
+        workerGroup = newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(),
+                "client-worker(" + name + ")", false);
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
         builder.negativeTtl(30);

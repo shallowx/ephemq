@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import net.openhft.affinity.AffinityStrategies;
+import net.openhft.affinity.AffinityThreadFactory;
 import org.meteor.common.thread.FastEventExecutorGroup;
 import org.meteor.common.util.ObjectUtil;
 import org.meteor.remote.codec.MessagePacket;
@@ -87,8 +89,12 @@ public final class NetworkUtil {
         return InetSocketAddress.createUnresolved(host, port);
     }
 
-    public static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name) {
-        ThreadFactory f = new DefaultThreadFactory(name);
+    // https://netty.io/wiki/thread-affinity.html
+    public static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name, boolean isAffinity) {
+        ThreadFactory f = isAffinity
+                ? new AffinityThreadFactory(name, AffinityStrategies.DIFFERENT_CORE)
+                : new DefaultThreadFactory(name);
+
         return epoll && Epoll.isAvailable()
                 ? new EpollEventLoopGroup(threads, f)
                 : new NioEventLoopGroup(threads, f);

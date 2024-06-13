@@ -49,10 +49,16 @@
       <zstd.jni.version>1.5.6-2</zstd.jni.version>
       <lz4.java.version>1.8.0</lz4.java.version>
       <commons.text.version>1.11.0</commons.text.version>
+      <net.affinity.version>3.23.3</net.affinity.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+          <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>affinity</artifactId>
+            <version>${net.affinity.version}</version>
+          </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>meteor-bom</artifactId>

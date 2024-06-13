@@ -44,10 +44,11 @@ public class DefaultSocketServer {
     }
 
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor");
+        bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor", false);
         gauge(bossGroup, "acceptor");
 
-        workGroup = newEventLoopGroup(true, networkConfiguration.getNetworkThreadLimit(), "server-processor");
+        workGroup = newEventLoopGroup(true, networkConfiguration.getNetworkThreadLimit(), "server-processor",
+                commonConfiguration.isThreadAffinityEnabled());
         gauge(workGroup, "processor");
 
         ServerBootstrap bootstrap = new ServerBootstrap()

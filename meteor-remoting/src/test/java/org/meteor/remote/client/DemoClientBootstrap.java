@@ -32,7 +32,7 @@ public class DemoClientBootstrap {
     private static final Random RANDOM = new Random();
 
     public static void main(String[] args) {
-        EventLoopGroup group = NetworkUtil.newEventLoopGroup(true, 0, "demo-client");
+        EventLoopGroup group = NetworkUtil.newEventLoopGroup(true, 0, "demo-client", false);
         EventExecutorGroup serviceGroup = NetworkUtil.newEventExecutorGroup(0, "demo-client-service");
         DemoClientProcessor processor = new DemoClientProcessor();
 

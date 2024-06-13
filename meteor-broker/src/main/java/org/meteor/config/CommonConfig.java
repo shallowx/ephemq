@@ -1,10 +1,10 @@
 package org.meteor.config;
 
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Boolean;
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2String;
 import io.netty.util.NettyRuntime;
-
 import java.util.Properties;
-
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
 public class CommonConfig {
     private static final String SERVER_ID = "server.id";
@@ -16,10 +16,16 @@ public class CommonConfig {
     private static final String AUX_THREAD_LIMIT = "aux.thread.limit";
     private static final String COMMAND_HANDLE_THREAD_LIMIT = "command.handler.thread.limit";
     private static final String SOCKET_PREFER_EPOLL = "socket.prefer.epoll";
+    // https://netty.io/wiki/thread-affinity.html
+    private static final String THREAD_AFFINITY_ENABLED = "thread.affinity.enabled";
     private final Properties prop;
 
     public CommonConfig(Properties prop) {
         this.prop = prop;
+    }
+
+    public boolean isThreadAffinityEnabled() {
+        return object2Boolean(prop.getOrDefault(THREAD_AFFINITY_ENABLED, "false"));
     }
 
     public String getServerId() {

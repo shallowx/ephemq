@@ -39,6 +39,10 @@
             <groupId>org.jctools</groupId>
             <artifactId>jctools-core</artifactId>
         </dependency>
+      <dependency>
+        <groupId>net.openhft</groupId>
+        <artifactId>affinity</artifactId>
+      </dependency>
     </dependencies>
 
     <build>

@@ -62,6 +62,10 @@
             <artifactId>curator-test</artifactId>
             <version>${curator.test.version}</version>
         </dependency>
+      <dependency>
+        <groupId>net.openhft</groupId>
+        <artifactId>affinity</artifactId>
+      </dependency>
     </dependencies>
     <build>
         <finalName>meteor-broker-${project.version}</finalName>
