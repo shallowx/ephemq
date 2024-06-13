@@ -19,4 +19,4 @@ For the detailed information about building and developing Meteor, you require t
 * Latest stable [OpenJDK 21](https://adoptium.net/)
 * Latest stable [Apache Maven](https://maven.apache.org/)
 
-Note that this is build-time requirement. JDK 21 is enough to run your Meteor-based application.
+Note that this is build-time requirement. JDK-21 is enough to run your Meteor-based application.
