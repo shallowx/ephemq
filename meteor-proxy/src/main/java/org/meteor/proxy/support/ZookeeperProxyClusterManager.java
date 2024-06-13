@@ -12,8 +12,7 @@ import org.meteor.proxy.core.ProxyConfig;
 import org.meteor.proxy.core.ProxyServerConfig;
 import org.meteor.support.ZookeeperClusterManager;
 
-class ZookeeperProxyClusterManager extends ZookeeperClusterManager
-        implements ClusterListener, ProxyClusterManager {
+class ZookeeperProxyClusterManager extends ZookeeperClusterManager implements ClusterListener, ProxyClusterManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyClusterManager.class);
     private final ConsistentHashingRing hashingRing;
     private final ProxyConfig proxyConfiguration;

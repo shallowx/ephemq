@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.meteor.cli.MeteorCli</mainClass>
+                          <mainClass>org.meteor.cli.MeteorAdmin</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

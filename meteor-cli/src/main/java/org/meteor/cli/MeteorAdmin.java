@@ -20,7 +20,7 @@ import org.meteor.client.core.Client;
 import org.meteor.client.core.ClientConfig;
 import org.meteor.client.core.CombineListener;
 
-public class MeteorCli {
+public class MeteorAdmin {
     private static final List<Command> commands = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -43,7 +43,7 @@ public class MeteorCli {
                                 return;
                             }
                             System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
-                                    newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), args[1]);
+                                    newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[1]);
                         }
                     }
                 }
@@ -57,7 +57,7 @@ public class MeteorCli {
                         CommandLine cmdLine = parseCommandLine(cmdArgs, cmd.buildOptions(options));
                         if (cmdLine == null) {
                             System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
-                                    newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), args[0]);
+                                    newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
                             return;
                         }
 
@@ -82,13 +82,13 @@ public class MeteorCli {
                         }
                     } else {
                         System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
-                                newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), args[0]);
+                                newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
                     }
                 }
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] INFO %s - ERROR: %s\n",
-                    newDate(), Thread.currentThread().getName(), MeteorCli.class.getName(), t.getMessage());
+                    newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), t.getMessage());
             System.exit(-1);
         }
         System.exit(0);

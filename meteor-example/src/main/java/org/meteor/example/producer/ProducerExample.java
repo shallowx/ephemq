@@ -49,7 +49,7 @@ public class ProducerExample {
     public void sendOneway() throws Exception {
         CountDownLatch continueSendLatch = new CountDownLatch(2);
         for (int i = 0; i < 1; i++) {
-            new Thread(() -> {
+            Thread.ofVirtual().start(() -> {
                 String[] symbols = new String[]{EXAMPLE_TOPIC_QUEUE};
                 for (int j = 0; j < Integer.MAX_VALUE; j++) {
                     String symbol = symbols[j % symbols.length];

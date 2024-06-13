@@ -1,5 +1,7 @@
 package org.meteor.support;
 
+import static org.meteor.common.message.NodeState.DOWN;
+import static org.meteor.common.message.NodeState.UP;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,6 @@ import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 
 public class ZookeeperClusterManager implements ClusterManager {
-    private static final String UP = "UP";
-    private static final String DOWN = "DOWN";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     protected final List<ClusterListener> listeners = new ObjectArrayList<>();
     private final CommonConfig configuration;
