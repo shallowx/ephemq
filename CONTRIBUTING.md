@@ -25,15 +25,15 @@ Steps to reproduce:
 4. ...
 
 $ java -version
-java version "17.0.5"
-Java(TM) SE Runtime Environment (build 17.0.5+9-LTS-191)
-Java HotSpot(TM) 64-Bit Server VM (build 17.0.5+9-LTS-191, mixed mode, sharing)
+java version "21.0.3" 2024-04-16 LTS
+Java(TM) SE Runtime Environment (build 21.0.3+7-LTS-152)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.3+7-LTS-152, mixed mode, sharing)
 
 My system has IPv6 enabled.
 ```
 
 ## How to contribute your work
 
-Before submitting a pull request or push a commit
+Before submitting a pull request or push a commit, please read [our developer guide]()
 
 
