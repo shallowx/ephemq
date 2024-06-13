@@ -14,7 +14,10 @@ performance and reliability, trillion-level capacity and flexible scalability.
 
 ## How to build
 
-For the detailed information about building and developing Meteor, you require the following to build Meteor:
+For the detailed information about building and developing Meteor, please visit the [developer guide](). This page only
+gives very basic information.
+
+You require the following to build Meteor:
 
 * Latest stable [OpenJDK 21](https://adoptium.net/)
 * Latest stable [Apache Maven](https://maven.apache.org/)
