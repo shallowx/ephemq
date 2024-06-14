@@ -108,7 +108,9 @@ public class MigrateLedgerPlanCommand implements Command {
                     String finalOriginal = original;
                     int sum = topicInfos.values().stream().mapToInt(topicInfo ->
                             (int) topicInfo.getPartitionsMap().entrySet().stream()
-                                    .filter(entry -> entry.getValue().getReplicaNodeIdsList().contains(finalOriginal)).count()).sum();
+                                    .filter(
+                                            entry -> entry.getValue().getReplicaNodeIdsList().contains(finalOriginal)
+                                    ).count()).sum();
                     Scanner scanner = new Scanner(System.in);
                     limit = Math.min(Integer.parseInt(scanner.next()), sum);
                 }
@@ -125,7 +127,6 @@ public class MigrateLedgerPlanCommand implements Command {
                             if (current++ >= limit && !verify) {
                                 break;
                             }
-
                             List<String> replicaBrokers = replicas.stream().parallel().collect(Collectors.toList());
                             String destination = select(map, replicaBrokers);
                             infos.add(new MigrateLedger(partitionMetadata.getTopicName(), partitionMetadata.getId(), original, destination));
@@ -154,7 +155,7 @@ public class MigrateLedgerPlanCommand implements Command {
         List<Map.Entry<String, Integer>> list = new ArrayList<>(partitions.entrySet());
         Map.Entry<String, Integer> entries = list.stream().filter(entry -> !relicBrokers.contains(entry.getKey()))
                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
-                .toList().get(0);
+                .toList().getFirst();
         String broker = entries.getKey();
         partitions.put(broker, entries.getValue() + 1);
 

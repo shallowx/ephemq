@@ -68,8 +68,8 @@ import org.meteor.remote.proto.server.QueryTopicInfoResponse;
 import org.meteor.remote.util.NetworkUtil;
 
 public class Client implements MeterBinder {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Client.class);
+
     private final Map<SocketAddress, List<Future<ClientChannel>>> registerChannels = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Promise<ClientChannel>> ChannelOfPromise = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Future<MessageRouter>> routers = new ConcurrentHashMap<>();

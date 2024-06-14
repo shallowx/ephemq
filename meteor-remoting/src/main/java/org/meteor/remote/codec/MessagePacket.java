@@ -1,14 +1,12 @@
 package org.meteor.remote.codec;
 
+import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
-
 import javax.annotation.concurrent.Immutable;
-
-import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted {
@@ -23,6 +21,7 @@ public final class MessagePacket extends AbstractReferenceCounted {
             return new MessagePacket(handle);
         }
     };
+
     private final Recycler.Handle<MessagePacket> handle;
     private long feedback;
     private int command;

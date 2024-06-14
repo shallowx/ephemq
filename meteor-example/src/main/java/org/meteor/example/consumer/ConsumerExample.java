@@ -18,6 +18,13 @@ public class ConsumerExample {
     private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
     private final Consumer consumer;
 
+    public static void main(String[] args) throws Exception {
+        ConsumerExample example = new ConsumerExample();
+        example.subscribe();
+        example.cancelSubscribe();
+        example.clear();
+    }
+
     public ConsumerExample() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -41,13 +48,6 @@ public class ConsumerExample {
         });
         this.consumer = consumer;
         consumer.start();
-    }
-
-    public static void main(String[] args) throws Exception {
-        ConsumerExample example = new ConsumerExample();
-        example.subscribe();
-        example.cancelSubscribe();
-        example.clear();
     }
 
     public void subscribe() throws Exception {

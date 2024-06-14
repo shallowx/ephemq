@@ -12,7 +12,7 @@ public class LoggerStartupListener extends ContextAwareBase implements LoggerCon
     private static final String DEFAULT_LOG_DIR = "/tmp/meteor";
     private volatile boolean started = false;
 
-    public void LoggerStartupListener() {
+    public LoggerStartupListener() {
     }
 
     @Override

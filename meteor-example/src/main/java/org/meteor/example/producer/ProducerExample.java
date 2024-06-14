@@ -23,6 +23,14 @@ public class ProducerExample {
     private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
     private final Producer producer;
 
+
+    public static void main(String[] args) throws Exception {
+        ProducerExample example = new ProducerExample();
+        example.send();
+        example.sendAsync();
+        example.sendOneway();
+    }
+
     public ProducerExample() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.setBootstrapAddresses(new ArrayList<>() {
@@ -37,13 +45,6 @@ public class ProducerExample {
         Producer producer = new DefaultProducer("default-producer", producerConfig);
         producer.start();
         this.producer = producer;
-    }
-
-    public static void main(String[] args) throws Exception {
-        ProducerExample example = new ProducerExample();
-        example.send();
-        example.sendAsync();
-        example.sendOneway();
     }
 
     public void sendOneway() throws Exception {

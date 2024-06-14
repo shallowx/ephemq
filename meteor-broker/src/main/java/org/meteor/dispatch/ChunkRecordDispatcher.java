@@ -41,7 +41,7 @@ import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
 public class ChunkRecordDispatcher {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordDispatcher.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ChunkRecordDispatcher.class);
     private final int ledger;
     private final String topic;
     private final LedgerStorage storage;

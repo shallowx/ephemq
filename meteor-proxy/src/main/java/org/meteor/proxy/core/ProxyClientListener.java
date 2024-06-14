@@ -33,7 +33,6 @@ import org.meteor.client.core.MessageRouter;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.ledger.Log;
-import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.support.LedgerSyncCoordinator;
 import org.meteor.proxy.support.ProxyTopicCoordinator;
 import org.meteor.remote.codec.MessagePacket;
@@ -46,7 +45,9 @@ import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 
 public class ProxyClientListener implements CombineListener {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyClientListener.class);
+
     protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
     private final Manager manager;
     private final LedgerSyncCoordinator syncCoordinator;
@@ -116,11 +117,17 @@ public class ProxyClientListener implements CombineListener {
                 executor.execute(() -> {
                     try {
                         resumeSync(syncChannel, topic, ledger, false);
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        if (logger.isErrorEnabled()) {
+                            logger.error("Proxy can resume-sync partition replicas of topic[{}] ledger[{}]", topic,
+                                    ledger, e);
+                        }
                     }
                 });
             } catch (Exception e) {
-                logger.debug(e.getMessage(), e);
+                if (logger.isErrorEnabled()) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
     }
@@ -279,7 +286,7 @@ public class ProxyClientListener implements CombineListener {
                 }
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("Proxy resume sync topic[{}] failed", topic, e);
+                    logger.error("Proxy resume-sync topic[{}] failure", topic, e);
                 }
             }
         }
@@ -289,7 +296,7 @@ public class ProxyClientListener implements CombineListener {
         Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
             if (!f.isSuccess() && logger.isErrorEnabled()) {
-                logger.error("Proxy resume sync topic[{}] failed", topic, f.cause());
+                logger.error("Proxy resume-sync topic[{}] failure", topic, f.cause());
             }
         });
         try {
@@ -302,8 +309,8 @@ public class ProxyClientListener implements CombineListener {
             }
             syncCoordinator.resumeSync(channel, topic, ledger, promise);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             promise.tryFailure(e);
+            logger.error(e.getMessage(), e);
         }
     }
 

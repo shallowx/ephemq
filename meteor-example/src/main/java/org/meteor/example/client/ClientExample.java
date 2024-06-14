@@ -19,15 +19,15 @@ public class ClientExample {
     private static final String EXAMPLE_TOPIC = "example-topic";
     private final Client client;
 
-    public ClientExample() {
-        this.client = new Client("default-client", new ClientConfig(), new DefaultCombineListener());
-        ;
-    }
 
     public static void main(String[] args) throws Exception {
         ClientExample example = new ClientExample();
         example.createTopic();
         example.delTopic();
+    }
+
+    public ClientExample() {
+        this.client = new Client("default-client", new ClientConfig(), new DefaultCombineListener());
     }
 
     public void createTopic() throws Exception {

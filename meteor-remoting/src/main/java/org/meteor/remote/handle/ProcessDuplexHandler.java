@@ -62,15 +62,16 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof final MessagePacket packet) {
             try {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Read message packet[{}] form remote address[{}]", packet,
+                            switchAddress(ctx.channel()));
+                }
+
                 final int command = packet.command();
                 if (command > 0) {
                     processRequest(ctx, packet);
                 } else {
                     processResponse(ctx, packet);
-                }
-                // if you need to debug, can move this code to the top
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Read message packet[{}] form remote address[{}]", packet, switchAddress(ctx.channel()));
                 }
             } finally {
                 packet.release();
@@ -219,13 +220,12 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
                     remnantInvoker += holder.size();
                 }
 
-                if (!initializers.isEmpty()) {
-                    executor.schedule(this, 1, TimeUnit.SECONDS);
-                }
-
-                // if you need to debug, can move this code to the top
                 if (logger.isDebugEnabled()) {
                     logger.debug("Handle expired schedule task: PH[{}] PI[{}] RH[{}] RI[{}]", processHolder, processInvoker, remnantHolder, remnantInvoker);
+                }
+
+                if (!initializers.isEmpty()) {
+                    executor.schedule(this, 1, TimeUnit.SECONDS);
                 }
             }
         }, 1, TimeUnit.SECONDS);

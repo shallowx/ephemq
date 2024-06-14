@@ -25,6 +25,7 @@ import org.meteor.support.Manager;
 import org.meteor.thread.ShutdownHookThread;
 
 public class MeteorProxy {
+
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
     public static void main(String[] args) throws Exception {

@@ -3,13 +3,17 @@ package org.meteor.thread;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import io.netty.util.internal.ObjectUtil;
 import io.netty.util.internal.StringUtil;
-
-import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.Nonnull;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 
 class MeteorThreadFactory implements ThreadFactory {
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorThreadFactory.class);
+
     private static final AtomicInteger POOL_ID = new AtomicInteger();
     protected final ThreadGroup threadGroup;
     private final AtomicInteger nextId = new AtomicInteger();
@@ -85,7 +89,7 @@ class MeteorThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(@Nonnull Runnable r) {
-        Thread t = newThread(r, prefix + nextId.incrementAndGet());
+        Thread t = new FastThreadLocalThread(r, prefix + nextId.incrementAndGet());
         try {
             if (t.isDaemon() != daemon) {
                 t.setDaemon(daemon);
@@ -94,13 +98,11 @@ class MeteorThreadFactory implements ThreadFactory {
             if (t.getPriority() != priority) {
                 t.setPriority(priority);
             }
-        } catch (Exception ignored) {
-            // Doesn't matter even if failed to set.
+        } catch (Exception e) {
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return t;
-    }
-
-    protected Thread newThread(Runnable r, String name) {
-        return new FastThreadLocalThread(threadGroup, r, name);
     }
 }

@@ -1,6 +1,12 @@
 package org.meteor.remote.exception;
 
+import java.io.Serial;
+
 public final class RemotingException extends RuntimeException {
+
+    @Serial
+    private static final long serialVersionUID = 6926716840699621852L;
+
     private final int command;
 
     public RemotingException(int command, String error) {

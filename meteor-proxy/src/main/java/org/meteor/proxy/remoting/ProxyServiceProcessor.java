@@ -34,7 +34,6 @@ import org.meteor.common.message.TopicPartition;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
-import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.core.ProxyLog;
 import org.meteor.proxy.core.ProxyServerConfig;
 import org.meteor.proxy.support.LedgerSyncCoordinator;
@@ -63,7 +62,9 @@ import org.meteor.remoting.ServiceProcessor;
 import org.meteor.support.Manager;
 
 class ProxyServiceProcessor extends ServiceProcessor {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyServiceProcessor.class);
+
     private static final int MIN_REPLICA_LIMIT = 2;
     private final LedgerSyncCoordinator syncCoordinator;
     private final ProxyClusterManager proxyClusterManager;

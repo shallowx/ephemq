@@ -4,10 +4,14 @@ import io.netty.util.Recycler;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-
 import java.util.function.Consumer;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
 
 public final class GenericCallableSafeInitializer<V> implements CallableSafeInitializer<V> {
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(GenericCallableSafeInitializer.class);
+
     private final Long2ObjectMap<Holder> holders;
     private long requestId;
 
@@ -115,6 +119,9 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
         try {
             consumer.accept(feedback);
         } catch (Throwable cause) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Consume message failure", cause);
+            }
             feedback.failure(cause);
         }
     }
@@ -130,6 +137,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
                 return new Holder(handle);
             }
         };
+
         private final Recycler.Handle<Holder> handle;
         private long expires;
         private InvokedFeedback<?> feedback;

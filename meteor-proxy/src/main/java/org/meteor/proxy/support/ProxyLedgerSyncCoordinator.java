@@ -15,13 +15,14 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
-import org.meteor.proxy.MeteorProxy;
 import org.meteor.proxy.core.ProxyConfig;
 import org.meteor.proxy.core.ProxyLog;
 import org.meteor.support.Manager;
 
 final class ProxyLedgerSyncCoordinator extends LedgerSyncCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyLedgerSyncCoordinator.class);
+
     private final WeakHashMap<ProxyLog, Long> weakDispatchTotal = new WeakHashMap<>();
     private final ProxyConfig proxyConfiguration;
     private long commitTimeMillis = System.currentTimeMillis();

@@ -1,8 +1,7 @@
 package org.meteor.thread;
 
-import org.meteor.common.logging.InternalLogger;
-
 import java.util.concurrent.Callable;
+import org.meteor.common.logging.InternalLogger;
 
 public class ShutdownHookThread {
     private final InternalLogger logger;
@@ -16,7 +15,7 @@ public class ShutdownHookThread {
 
     public Thread newThread() {
         MeteorThreadFactory factory = new MeteorThreadFactory(getClass());
-        return factory.newThread(this::run, "Shutdown-hook-thread");
+        return factory.newThread(this::run);
     }
 
     public void run() {
@@ -27,7 +26,9 @@ public class ShutdownHookThread {
                 try {
                     callable.call();
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    if (logger.isErrorEnabled()) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
 
                 long consumingTime = System.currentTimeMillis() - begin;

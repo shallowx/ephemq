@@ -31,7 +31,7 @@ public class MeteorAdmin {
         try {
             initCommand();
             switch (args.length) {
-                case 0 -> printHelp();
+                case 0, 1 -> printHelp();
                 case 2 -> {
                     if (args[0].equals("help")) {
                         Command cmd = getCommand(args[1]);
@@ -42,12 +42,10 @@ public class MeteorAdmin {
                                 printCmdHelp("Smart admin" + cmd.name(), options);
                                 return;
                             }
-                            System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
-                                    newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[1]);
+                            System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n", newDate(),
+                                    Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[1]);
                         }
                     }
-                }
-                case 1 -> {
                 }
                 default -> {
                     Command cmd = getCommand(args[0]);
@@ -81,14 +79,14 @@ public class MeteorAdmin {
                             }
                         }
                     } else {
-                        System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n",
-                                newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
+                        System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n", newDate(),
+                                Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
                     }
                 }
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] INFO %s - ERROR: %s\n",
-                    newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), t.getMessage());
+            System.out.printf("%s [%s] INFO %s - ERROR: %s\n", newDate(), Thread.currentThread().getName(),
+                    MeteorAdmin.class.getName(), t.getMessage());
             System.exit(-1);
         }
         System.exit(0);
