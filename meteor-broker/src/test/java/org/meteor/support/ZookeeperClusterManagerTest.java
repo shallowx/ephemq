@@ -1,4 +1,4 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import java.util.List;
 import java.util.Properties;
@@ -10,12 +10,10 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.common.message.Node;
 import org.meteor.config.ServerConfig;
-import org.meteor.support.ClusterManager;
-import org.meteor.support.DefaultMeteorManager;
 
-public class ZookeeperClusterCoordinatorTest {
+public class ZookeeperClusterManagerTest {
     private TestingServer server;
-    private ClusterManager coordinator;
+    private ClusterManager clusterManager;
 
     @Before
     public void setUp() throws Exception {
@@ -27,16 +25,16 @@ public class ZookeeperClusterCoordinatorTest {
         properties.put("zookeeper.connection.timeout.milliseconds", 3000);
         properties.put("zookeeper.session.timeout.milliseconds", 30000);
         ServerConfig config = new ServerConfig(properties);
-        DefaultMeteorManager defaultCoordinator = new DefaultMeteorManager(config);
-        coordinator = defaultCoordinator.getClusterManager();
-        coordinator.start();
+        DefaultMeteorManager defaultMeteorManager = new DefaultMeteorManager(config);
+        clusterManager = defaultMeteorManager.getClusterManager();
+        clusterManager.start();
         // only for unit test: wait to custer register node
         TimeUnit.SECONDS.sleep(5);
     }
 
     @Test
     public void testGetReadyNode() throws Exception {
-        List<Node> clusterReadyNodes = coordinator.getClusterReadyNodes();
+        List<Node> clusterReadyNodes = clusterManager.getClusterReadyNodes();
         Assertions.assertNotNull(clusterReadyNodes);
         Assertions.assertEquals(clusterReadyNodes.size(), 1);
         Assertions.assertEquals(clusterReadyNodes.get(0).getCluster(), "default");
@@ -46,7 +44,7 @@ public class ZookeeperClusterCoordinatorTest {
 
     @Test
     public void testGetReadyNodes() throws Exception {
-        List<Node> clusterNodes = coordinator.getClusterNodes();
+        List<Node> clusterNodes = clusterManager.getClusterNodes();
         Assertions.assertNotNull(clusterNodes);
         Assertions.assertEquals(clusterNodes.size(), 1);
         Assertions.assertEquals(clusterNodes.get(0).getCluster(), "default");
@@ -56,7 +54,7 @@ public class ZookeeperClusterCoordinatorTest {
 
     @Test
     public void testGetThisNode() throws Exception {
-        Node thisNode = coordinator.getThisNode();
+        Node thisNode = clusterManager.getThisNode();
         Assertions.assertNotNull(thisNode);
         Assertions.assertEquals(thisNode.getCluster(), "default");
         Assertions.assertEquals(thisNode.getId(), "default");
@@ -65,7 +63,7 @@ public class ZookeeperClusterCoordinatorTest {
 
     @After
     public void shutdown() throws Exception {
-        coordinator.shutdown();
+        clusterManager.shutdown();
         server.close();
     }
 }

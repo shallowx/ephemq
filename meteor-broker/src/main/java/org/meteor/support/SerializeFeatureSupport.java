@@ -6,13 +6,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
-public class JsonFeatureMapper {
+public class SerializeFeatureSupport {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
     }
 
     public static byte[] serialize(Object o) throws JsonProcessingException {

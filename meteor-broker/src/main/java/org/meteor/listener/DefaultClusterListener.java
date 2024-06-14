@@ -18,11 +18,11 @@ import org.meteor.support.Manager;
 
 public class DefaultClusterListener implements ClusterListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultClusterListener.class);
-    private final Manager coordinator;
+    private final Manager manager;
     private final NetworkConfig config;
 
-    public DefaultClusterListener(Manager coordinator, NetworkConfig config) {
-        this.coordinator = coordinator;
+    public DefaultClusterListener(Manager manager, NetworkConfig config) {
+        this.manager = manager;
         this.config = config;
     }
 
@@ -57,8 +57,8 @@ public class DefaultClusterListener implements ClusterListener {
     }
 
     private void processServerOffline(Node node) {
-        Connection connectionCoordinator = coordinator.getConnection();
-        Set<Channel> channels = connectionCoordinator.getReadyChannels();
+        Connection connection = manager.getConnection();
+        Set<Channel> channels = connection.getReadyChannels();
         if (channels != null && !channels.isEmpty()) {
             for (Channel channel : channels) {
                 sendServerOfflineData(channel, node);

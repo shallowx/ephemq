@@ -19,7 +19,6 @@ public class ClientExample {
     private static final String EXAMPLE_TOPIC = "example-topic";
     private final Client client;
 
-
     public static void main(String[] args) throws Exception {
         ClientExample example = new ClientExample();
         example.createTopic();

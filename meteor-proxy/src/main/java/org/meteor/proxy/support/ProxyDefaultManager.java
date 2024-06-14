@@ -12,12 +12,12 @@ import org.meteor.support.DefaultMeteorManager;
 
 public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyManager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyManager.class);
-    private final LedgerSyncCoordinator syncCoordinator;
+    private final LedgerSyncSupport syncSupport;
     private volatile boolean state = false;
 
     public ProxyDefaultManager(ProxyServerConfig configuration) {
         super(configuration);
-        this.connectionCoordinator = new DefaultConnectionArraySet();
+        this.connection = new DefaultConnectionArraySet();
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");
         this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "proxy-dispatch");
@@ -27,18 +27,18 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
             this.auxEventExecutors.add(executor);
         }
 
-        this.syncCoordinator = new ProxyLedgerSyncCoordinator(configuration.getProxyConfiguration(), this);
-        this.topicCoordinator = new ZookeeperProxyTopicCoordinator(configuration.getProxyConfiguration(), this);
-        this.clusterCoordinator = new ZookeeperProxyClusterManager(configuration);
-        this.clusterCoordinator.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfig()));
-        this.logCoordinator = new LogHandler(configuration, this);
+        this.syncSupport = new ProxyLedgerSyncSupport(configuration.getProxyConfiguration(), this);
+        this.support = new ZookeeperProxyTopicHandleSupport(configuration.getProxyConfiguration(), this);
+        this.clusterManager = new ZookeeperProxyClusterManager(configuration);
+        this.clusterManager.addClusterListener(new DefaultClusterListener(this, configuration.getNetworkConfig()));
+        this.logHandler = new LogHandler(configuration, this);
     }
 
     @Override
     public void start() throws Exception {
         if (!isRunning()) {
             super.start();
-            this.syncCoordinator.start();
+            this.syncSupport.start();
             this.state = true;
         } else {
             // keep empty
@@ -50,18 +50,18 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
     }
 
     @Override
-    public LedgerSyncCoordinator getLedgerSyncCoordinator() {
-        return syncCoordinator;
+    public LedgerSyncSupport getLedgerSyncSupport() {
+        return syncSupport;
     }
 
     @Override
     public void shutdown() throws Exception {
         if (isRunning()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Proxy default coordinator is closing");
+                logger.debug("Proxy default support is closing");
             }
             super.shutdown();
-            this.syncCoordinator.shutDown();
+            this.syncSupport.shutDown();
         } else {
             // keep empty
         }

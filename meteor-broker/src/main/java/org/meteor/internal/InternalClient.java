@@ -23,22 +23,19 @@ import org.meteor.common.message.TopicConfig;
 import org.meteor.config.CommonConfig;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.DeleteTopicResponse;
-import org.meteor.support.Manager;
 
 public class InternalClient extends Client {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClient.class);
     private final CommonConfig configuration;
-    private final Manager manager;
 
-    public InternalClient(String name, ClientConfig clientConfig, CombineListener listener, CommonConfig configuration,
-                          Manager manager) {
+    public InternalClient(String name, ClientConfig clientConfig, CombineListener listener,
+                          CommonConfig configuration) {
         super(name, clientConfig, listener);
         this.configuration = configuration;
-        this.manager = manager;
     }
 
     protected ClientChannel createClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address) {
-        return new InternalClientChannel(clientConfig, channel, address, configuration, manager);
+        return new InternalClientChannel(clientConfig, channel, address, configuration);
     }
 
     @Override

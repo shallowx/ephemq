@@ -2,14 +2,13 @@ package org.meteor.dispatch;
 
 import io.netty.channel.Channel;
 import it.unimi.dsi.fastutil.ints.IntSet;
-
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-final class RecordSynchronization extends AbstractSynchronization<RecordHandler> {
+final class DefaultSynchronization extends AbstractSynchronization<DefaultHandler> {
     private final IntSet markers;
 
-    public RecordSynchronization(Channel channel, RecordHandler handler, IntSet markers) {
+    public DefaultSynchronization(Channel channel, DefaultHandler handler, IntSet markers) {
         super(channel, handler);
         this.markers = markers;
     }

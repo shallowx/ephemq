@@ -1,10 +1,9 @@
 package org.meteor.config;
 
 import io.netty.util.NettyRuntime;
+import java.util.Properties;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-
-import java.util.Properties;
 
 public class ConfigTest {
     @Test
@@ -40,12 +39,12 @@ public class ConfigTest {
         Assertions.assertNotEquals(networkConfig.getConnectionTimeoutMilliseconds(), 30000);
         Assertions.assertEquals(networkConfig.getConnectionTimeoutMilliseconds(), 100);
 
-        ChunkRecordDispatchConfig chunkRecordDispatchConfig = config.getChunkRecordDispatchConfig();
+        ChunkDispatchConfig chunkRecordDispatchConfig = config.getChunkRecordDispatchConfig();
         Assertions.assertNotNull(chunkRecordDispatchConfig);
         Assertions.assertNotEquals(chunkRecordDispatchConfig.getChunkDispatchEntryLoadLimit(), 50);
         Assertions.assertEquals(chunkRecordDispatchConfig.getChunkDispatchEntryLoadLimit(), 100);
 
-        RecordDispatchConfig recordDispatchConfig = config.getRecordDispatchConfig();
+        DefaultDispatchConfig recordDispatchConfig = config.getRecordDispatchConfig();
         Assertions.assertNotNull(recordDispatchConfig);
         Assertions.assertNotEquals(recordDispatchConfig.getDispatchEntryLoadLimit(), 50);
         Assertions.assertEquals(recordDispatchConfig.getDispatchEntryLoadLimit(), 100);

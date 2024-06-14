@@ -11,30 +11,18 @@ import org.meteor.listener.MetricsListener;
 
 public interface Manager {
     void start() throws Exception;
-
     void shutdown() throws Exception;
 
-    TopicCoordinator getTopicCoordinator();
-
+    TopicHandleSupport getTopicHandleSupport();
     ClusterManager getClusterManager();
-
     LogHandler getLogHandler();
-
     Connection getConnection();
-
     void addMetricsListener(MetricsListener listener);
-
     List<APIListener> getAPIListeners();
-
     EventExecutorGroup getCommandHandleEventExecutorGroup();
-
     EventExecutorGroup getMessageStorageEventExecutorGroup();
-
     EventExecutorGroup getMessageDispatchEventExecutorGroup();
-
     EventExecutorGroup getAuxEventExecutorGroup();
-
     List<EventExecutor> getAuxEventExecutors();
-
     Client getInternalClient();
 }

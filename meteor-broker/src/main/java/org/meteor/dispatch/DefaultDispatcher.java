@@ -34,8 +34,8 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
-import org.meteor.config.RecordDispatchConfig;
-import org.meteor.exception.DispatchException;
+import org.meteor.config.DefaultDispatchConfig;
+import org.meteor.exception.DefaultDispatchException;
 import org.meteor.ledger.LedgerCursor;
 import org.meteor.ledger.LedgerStorage;
 import org.meteor.remote.codec.MessagePacket;
@@ -44,8 +44,8 @@ import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
-public class RecordDispatcher {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(RecordDispatcher.class);
+public class DefaultDispatcher {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultDispatcher.class);
     private final int ledger;
     private final String topic;
     private final LedgerStorage storage;
@@ -56,13 +56,13 @@ public class RecordDispatcher {
     private final int loadLimit;
     private final IntConsumer counter;
     private final EventExecutor[] executors;
-    private final List<RecordHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
-    private final WeakHashMap<RecordHandler, Integer> weakHandlers = new WeakHashMap<>();
-    private final ConcurrentMap<Channel, RecordHandler> channelHandlers = new ConcurrentHashMap<>();
+    private final List<DefaultHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
+    private final WeakHashMap<DefaultHandler, Integer> weakHandlers = new WeakHashMap<>();
+    private final ConcurrentMap<Channel, DefaultHandler> channelHandlers = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    public RecordDispatcher(int ledger, String topic, LedgerStorage storage, RecordDispatchConfig config, EventExecutorGroup group,
-                            IntConsumer dispatchCounter) {
+    public DefaultDispatcher(int ledger, String topic, LedgerStorage storage, DefaultDispatchConfig config,
+                             EventExecutorGroup group, IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;
@@ -116,12 +116,13 @@ public class RecordDispatcher {
                 return;
             }
 
-            RecordHandler handler = allocateHandler(channel);
-            ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler.getSubscriptionChannels();
-            RecordSynchronization oldSubscription = channelSubscriptionMap.get(channel);
-            RecordSynchronization newSubscription = new RecordSynchronization(channel, handler, new IntOpenHashSet(wholeMarkers));
+            DefaultHandler handler = allocateHandler(channel);
+            ConcurrentMap<Channel, DefaultSynchronization> channelSubscriptionMap = handler.getSubscriptionChannels();
+            DefaultSynchronization oldSubscription = channelSubscriptionMap.get(channel);
+            DefaultSynchronization newSubscription =
+                    new DefaultSynchronization(channel, handler, new IntOpenHashSet(wholeMarkers));
             handler.getDispatchExecutor().execute(() -> {
-                Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
+                Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
                 if (oldSubscription != null) {
                     oldSubscription.getMarkers().forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, newSubscription));
                 }
@@ -144,7 +145,8 @@ public class RecordDispatcher {
 
                 newSubscription.setDispatchOffset(dispatchOffset);
                 if (dispatchOffset.before(handler.getFollowOffset())) {
-                    PursueTask<RecordSynchronization> task = new PursueTask<>(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
+                    PursueTask<DefaultSynchronization> task =
+                            new PursueTask<>(newSubscription, storage.cursor(dispatchOffset), dispatchOffset);
                     submitPursue(task);
                 } else {
                     newSubscription.setFollowed(true);
@@ -175,17 +177,20 @@ public class RecordDispatcher {
     private void doAlter(Channel channel, IntCollection appendMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
         try {
             checkActive();
-            RecordHandler handler = channelHandlers.get(channel);
-            ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getSubscriptionChannels();
-            RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
+            DefaultHandler handler = channelHandlers.get(channel);
+            ConcurrentMap<Channel, DefaultSynchronization> channelSubscriptionMap =
+                    handler == null ? null : handler.getSubscriptionChannels();
+            DefaultSynchronization subscription =
+                    channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
                 promise.tryFailure(
-                        new DispatchException(String.format("Channel<%s> alter is invalid", channel.toString())));
+                        new DefaultDispatchException(
+                                String.format("Channel<%s> alter is invalid", channel.toString())));
                 return;
             }
 
             handler.getDispatchExecutor().execute(() -> {
-                Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
+                Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
                 deleteMarkers.forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, subscription));
                 appendMarkers.forEach((int marker) -> attachMarker(markerSubscriptionMap, marker, subscription));
 
@@ -226,16 +231,18 @@ public class RecordDispatcher {
         try {
             checkActive();
 
-            RecordHandler handler = channelHandlers.get(channel);
-            ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getSubscriptionChannels();
-            RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
+            DefaultHandler handler = channelHandlers.get(channel);
+            ConcurrentMap<Channel, DefaultSynchronization> channelSubscriptionMap =
+                    handler == null ? null : handler.getSubscriptionChannels();
+            DefaultSynchronization subscription =
+                    channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
                 promise.trySuccess(false);
                 return;
             }
 
             handler.getDispatchExecutor().execute(() -> {
-                Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
+                Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
                 subscription.getMarkers().forEach((int marker) -> detachMarker(markerSubscriptionMap, marker, subscription));
                 if (markerSubscriptionMap.isEmpty()) {
                     dispatchHandlers.remove(handler);
@@ -252,7 +259,7 @@ public class RecordDispatcher {
         }
     }
 
-    private void touchDispatch(RecordHandler handler) {
+    private void touchDispatch(DefaultHandler handler) {
         if (handler.getTriggered().compareAndSet(false, true)) {
             try {
                 handler.getDispatchExecutor().execute(() -> doDispatch(handler));
@@ -264,14 +271,14 @@ public class RecordDispatcher {
         }
     }
 
-    private void doDispatch(RecordHandler handler) {
+    private void doDispatch(DefaultHandler handler) {
         LedgerCursor cursor = handler.getFollowCursor();
         if (cursor == null) {
             handler.getTriggered().set(false);
             return;
         }
 
-        Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
+        Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap = handler.getSubscriptionMarkers();
         Offset lastOffset = handler.getFollowOffset();
         int count = 0;
         try {
@@ -291,7 +298,7 @@ public class RecordDispatcher {
 
                     lastOffset = offset;
                     int marker = MessageUtil.getMarker(entry);
-                    Set<RecordSynchronization> subscriptions = markerSubscriptionMap.get(marker);
+                    Set<DefaultSynchronization> subscriptions = markerSubscriptionMap.get(marker);
                     if (subscriptions == null) {
                         if (runTimes > followLimit) {
                             break;
@@ -299,7 +306,7 @@ public class RecordDispatcher {
                         continue;
                     }
 
-                    for (RecordSynchronization subscription : subscriptions) {
+                    for (DefaultSynchronization subscription : subscriptions) {
                         if (!subscription.isFollowed()) {
                             continue;
                         }
@@ -322,7 +329,8 @@ public class RecordDispatcher {
                             channel.writeAndFlush(payload.retainedSlice(), channel.voidPromise());
                         } else {
                             subscription.setFollowed(false);
-                            PursueTask<RecordSynchronization> task = new PursueTask<>(subscription, cursor.copy(), offset);
+                            PursueTask<DefaultSynchronization> task =
+                                    new PursueTask<>(subscription, cursor.copy(), offset);
                             channel.writeAndFlush(payload.retainedSlice(), delayPursue(task));
                         }
                     }
@@ -365,7 +373,7 @@ public class RecordDispatcher {
         }
     }
 
-    private ChannelPromise delayPursue(PursueTask<RecordSynchronization> task) {
+    private ChannelPromise delayPursue(PursueTask<DefaultSynchronization> task) {
         ChannelPromise promise = task.getSubscription().getChannel().newPromise();
         promise.addListener((ChannelFutureListener) f -> {
             if (f.channel().isActive()) {
@@ -375,7 +383,7 @@ public class RecordDispatcher {
         return promise;
     }
 
-    private void submitPursue(PursueTask<RecordSynchronization> task) {
+    private void submitPursue(PursueTask<DefaultSynchronization> task) {
         try {
             channelExecutor(task.getSubscription().getChannel()).execute(() -> {
                 doPursue(task);
@@ -388,10 +396,10 @@ public class RecordDispatcher {
         }
     }
 
-    private void doPursue(PursueTask<RecordSynchronization> task) {
-        RecordSynchronization subscription = task.getSubscription();
+    private void doPursue(PursueTask<DefaultSynchronization> task) {
+        DefaultSynchronization subscription = task.getSubscription();
         Channel channel = subscription.getChannel();
-        AbstractHandler<RecordSynchronization, RecordHandler> handler = subscription.getHandler();
+        AbstractHandler<DefaultSynchronization, DefaultHandler> handler = subscription.getHandler();
 
         if (!channel.isActive() || subscription != handler.getSubscriptionChannels().get(channel)) {
             return;
@@ -476,8 +484,8 @@ public class RecordDispatcher {
         }
     }
 
-    private void submitFollow(PursueTask<RecordSynchronization> task) {
-        RecordSynchronization subscription = task.getSubscription();
+    private void submitFollow(PursueTask<DefaultSynchronization> task) {
+        DefaultSynchronization subscription = task.getSubscription();
         try {
             subscription.getHandler().getDispatchExecutor().execute(() -> {
                 subscription.setFollowed(true);
@@ -490,8 +498,8 @@ public class RecordDispatcher {
         }
     }
 
-    private void submitAlign(PursueTask<RecordSynchronization> task) {
-        RecordSynchronization subscription = task.getSubscription();
+    private void submitAlign(PursueTask<DefaultSynchronization> task) {
+        DefaultSynchronization subscription = task.getSubscription();
         try {
             subscription.getHandler().getDispatchExecutor().execute(() -> {
                 doAlign(task);
@@ -504,10 +512,10 @@ public class RecordDispatcher {
         }
     }
 
-    private void doAlign(PursueTask<RecordSynchronization> task) {
-        RecordSynchronization subscription = task.getSubscription();
+    private void doAlign(PursueTask<DefaultSynchronization> task) {
+        DefaultSynchronization subscription = task.getSubscription();
         Channel channel = subscription.getChannel();
-        AbstractHandler<RecordSynchronization, RecordHandler> handler = subscription.getHandler();
+        AbstractHandler<DefaultSynchronization, DefaultHandler> handler = subscription.getHandler();
 
         if (!channel.isActive() || subscription != handler.getSubscriptionChannels().get(channel)) {
             return;
@@ -623,7 +631,7 @@ public class RecordDispatcher {
             return buf;
         } catch (Throwable t) {
             ByteBufUtil.release(buf);
-            throw new DispatchException(
+            throw new DefaultDispatchException(
                     String.format("Build payload error, ledger[%d] topic[%s] offset[%s] length[%d]", ledger, t, offset,
                             entry.readableBytes()));
         }
@@ -633,15 +641,16 @@ public class RecordDispatcher {
         if (dispatchHandlers.isEmpty()) {
             return;
         }
-        for (RecordHandler handler : dispatchHandlers) {
+        for (DefaultHandler handler : dispatchHandlers) {
             if (handler.getFollowCursor() != null) {
                 touchDispatch(handler);
             }
         }
     }
 
-    private void detachMarker(Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap, int marker, RecordSynchronization subscription) {
-        Set<RecordSynchronization> subscriptions = markerSubscriptionMap.get(marker);
+    private void detachMarker(Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap, int marker,
+                              DefaultSynchronization subscription) {
+        Set<DefaultSynchronization> subscriptions = markerSubscriptionMap.get(marker);
         if (subscriptions != null) {
             subscriptions.remove(subscription);
             if (subscriptions.isEmpty()) {
@@ -650,13 +659,14 @@ public class RecordDispatcher {
         }
     }
 
-    private void attachMarker(Int2ObjectMap<Set<RecordSynchronization>> markerSubscriptionMap, int marker, RecordSynchronization subscription) {
+    private void attachMarker(Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap, int marker,
+                              DefaultSynchronization subscription) {
         markerSubscriptionMap.computeIfAbsent(marker, k -> new ObjectArraySet<>()).add(subscription);
     }
 
     private void checkActive() {
         if (!isActive()) {
-            throw new DispatchException("Dispatch handler is inactive");
+            throw new DefaultDispatchException("Dispatch handler is inactive");
         }
     }
 
@@ -674,9 +684,13 @@ public class RecordDispatcher {
                     executor.submit(() -> {
                         for (Channel channel : channelHandlers.keySet()) {
                             if (channelExecutor(channel).inEventLoop()) {
-                                AbstractHandler<RecordSynchronization, RecordHandler> handler = channelHandlers.get(channel);
-                                ConcurrentMap<Channel, RecordSynchronization> channelSubscriptionMap = handler == null ? null : handler.getSubscriptionChannels();
-                                RecordSynchronization subscription = channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
+                                AbstractHandler<DefaultSynchronization, DefaultHandler> handler =
+                                        channelHandlers.get(channel);
+                                ConcurrentMap<Channel, DefaultSynchronization> channelSubscriptionMap =
+                                        handler == null ? null : handler.getSubscriptionChannels();
+                                DefaultSynchronization
+                                        subscription =
+                                        channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
                                 if (subscription != null) {
                                     channelMarkers.put(channel, subscription.getMarkers());
                                 }
@@ -699,8 +713,8 @@ public class RecordDispatcher {
         return result;
     }
 
-    private RecordHandler allocateHandler(Channel channel) {
-        RecordHandler result = channelHandlers.get(channel);
+    private DefaultHandler allocateHandler(Channel channel) {
+        DefaultHandler result = channelHandlers.get(channel);
         if (result != null) {
             return result;
         }
@@ -708,12 +722,12 @@ public class RecordDispatcher {
         int middleLimit = loadLimit >> 1;
         synchronized (weakHandlers) {
             if (weakHandlers.isEmpty()) {
-                return RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+                return DefaultHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
-            Map<RecordHandler, Integer> selectHandlers = new HashMap<>();
+            Map<DefaultHandler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
-            for (RecordHandler handler : weakHandlers.keySet()) {
+            for (DefaultHandler handler : weakHandlers.keySet()) {
                 int channelCount = handler.getSubscriptionChannels().size();
                 if (channelCount >= loadLimit) {
                     continue;
@@ -728,18 +742,18 @@ public class RecordDispatcher {
             }
 
             if (selectHandlers.isEmpty() || randomBound == 0) {
-                return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+                return result != null ? result : DefaultHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
             int index = random.nextInt(randomBound);
             int count = 0;
-            for (Map.Entry<RecordHandler, Integer> entry : selectHandlers.entrySet()) {
+            for (Map.Entry<DefaultHandler, Integer> entry : selectHandlers.entrySet()) {
                 count += loadLimit - entry.getValue();
                 if (index < count) {
                     return entry.getKey();
                 }
             }
-            return result != null ? result : RecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+            return result != null ? result : DefaultHandler.INSTANCE.newHandler(weakHandlers, executors);
         }
     }
 }

@@ -71,7 +71,7 @@ import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
-import org.meteor.support.TopicCoordinator;
+import org.meteor.support.TopicHandleSupport;
 
 public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
@@ -79,7 +79,7 @@ public class ServiceProcessor implements Processor, Command.Server {
     protected final Manager manager;
     protected final EventExecutor commandExecutor;
     private final NetworkConfig networkConfiguration;
-    protected EventExecutor serviceExecutor;
+    protected EventExecutor executor;
 
     public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Manager manager) {
         this.manager = manager;
@@ -90,7 +90,7 @@ public class ServiceProcessor implements Processor, Command.Server {
 
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
-        this.serviceExecutor = executor;
+        this.executor = executor;
         this.manager.getConnection().add(channel);
         channel.closeFuture().addListener(future -> {
             for (Log log : manager.getLogHandler().getLedgerIdOfLogs().values()) {
@@ -147,7 +147,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             int epoch = request.getEpoch();
             long index = request.getIndex();
 
-            Promise<SyncResponse> promise = serviceExecutor.newPromise();
+            Promise<SyncResponse> promise = executor.newPromise();
             promise.addListener((GenericFutureListener<Future<SyncResponse>>) f -> {
                 if (f.isSuccess()) {
                     try {
@@ -156,17 +156,17 @@ public class ServiceProcessor implements Processor, Command.Server {
                             feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("process sync ledger[" + ledger + "] failed", code, channel, feedback, e);
+                        processFailed("Process sync ledger[" + ledger + "] failed", code, channel, feedback, e);
                     }
                 } else {
-                    processFailed("process sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
+                    processFailed("Process sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
-            manager.getTopicCoordinator().getParticipantCoordinator()
+            manager.getTopicHandleSupport().getParticipantSuooprt()
                     .subscribeLedger(ledger, epoch, index, channel, promise);
         } catch (Exception e) {
-            processFailed("process sync ledger failed", code, channel, feedback, e);
+            processFailed("Process sync ledger failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
 
@@ -178,7 +178,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         try {
             CancelSyncRequest request = readProto(data, CancelSyncRequest.parser());
             int ledger = request.getLedger();
-            Promise<Void> promise = serviceExecutor.newPromise();
+            Promise<Void> promise = executor.newPromise();
             promise.addListener(f -> {
                 if (f.isSuccess()) {
                     try {
@@ -187,17 +187,17 @@ public class ServiceProcessor implements Processor, Command.Server {
                             feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, feedback, e);
+                        processFailed("Process un-sync ledger[" + ledger + "] failed", code, channel, feedback, e);
                     }
                 } else {
-                    processFailed("process un-sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
+                    processFailed("Process un-sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
 
-            manager.getTopicCoordinator().getParticipantCoordinator().unSubscribeLedger(ledger, channel, promise);
+            manager.getTopicHandleSupport().getParticipantSuooprt().unSubscribeLedger(ledger, channel, promise);
         } catch (Exception e) {
-            processFailed("process un-sync ledger failed", code, channel, feedback, e);
+            processFailed("Process un-sync ledger failed", code, channel, feedback, e);
             recordCommand(code, bytes, System.nanoTime() - time, false);
         }
     }
@@ -208,8 +208,8 @@ public class ServiceProcessor implements Processor, Command.Server {
         try {
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
-                    Map<String, Integer> partitions = topicCoordinator.calculatePartitions();
+                    TopicHandleSupport support = manager.getTopicHandleSupport();
+                    Map<String, Integer> partitions = support.calculatePartitions();
                     CalculatePartitionsResponse.Builder response = CalculatePartitionsResponse.newBuilder();
                     if (partitions != null) {
                         response.putAllPartitions(partitions);
@@ -249,12 +249,12 @@ public class ServiceProcessor implements Processor, Command.Server {
 
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
+                    TopicHandleSupport support = manager.getTopicHandleSupport();
                     TopicPartition topicPartition = new TopicPartition(topic, partition);
-                    PartitionInfo partitionInfo = topicCoordinator.getPartitionInfo(topicPartition);
+                    PartitionInfo partitionInfo = support.getPartitionInfo(topicPartition);
                     int ledger = partitionInfo.getLedger();
                     if (commonConfiguration.getServerId().equals(original)) {
-                        if (!topicCoordinator.hasLeadership(ledger)) {
+                        if (!support.hasLeadership(ledger)) {
                             processFailed("Process migrate ledger failed", code, channel, feedback,
                                     RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
                                             String.format("The original broker does not have a leader role of %s",
@@ -304,7 +304,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                     }
 
                     if (commonConfiguration.getServerId().equals(destination)) {
-                        topicCoordinator.takeoverPartition(topicPartition);
+                        support.takeoverPartition(topicPartition);
                         MigrateLedgerResponse response = MigrateLedgerResponse.newBuilder().setSuccess(true).build();
                         if (feedback != null) {
                             feedback.success(proto2Buf(channel.alloc(), response));
@@ -335,7 +335,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             SendMessageRequest request = readProto(data, SendMessageRequest.parser());
             int ledger = request.getLedger();
             int marker = request.getMarker();
-            Promise<org.meteor.common.message.Offset> promise = serviceExecutor.newPromise();
+            Promise<org.meteor.common.message.Offset> promise = executor.newPromise();
             promise.addListener((GenericFutureListener<Future<org.meteor.common.message.Offset>>) f -> {
                 if (f.isSuccess()) {
                     try {
@@ -415,17 +415,17 @@ public class ServiceProcessor implements Processor, Command.Server {
             ProtocolStringList topicNamesList = request.getTopicNamesList();
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
+                    TopicHandleSupport support = manager.getTopicHandleSupport();
                     Set<String> topicNames = new HashSet<>();
                     if (topicNamesList.isEmpty()) {
-                        topicNames.addAll(topicCoordinator.getAllTopics());
+                        topicNames.addAll(support.getAllTopics());
                     } else {
                         topicNames.addAll(topicNamesList);
                     }
 
                     QueryTopicInfoResponse.Builder builder = QueryTopicInfoResponse.newBuilder();
                     for (String topicName : topicNames) {
-                        Set<PartitionInfo> partitionInfos = topicCoordinator.getTopicInfo(topicName);
+                        Set<PartitionInfo> partitionInfos = support.getTopicInfo(topicName);
                         if (partitionInfos == null || partitionInfos.isEmpty()) {
                             continue;
                         }
@@ -482,7 +482,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             int ledger = request.getLedger();
             int epoch = request.getEpoch();
             long index = request.getIndex();
-            Promise<Integer> promise = serviceExecutor.newPromise();
+            Promise<Integer> promise = executor.newPromise();
             promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
                 if (f.isSuccess()) {
                     if (feedback != null) {
@@ -509,7 +509,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             IntList appendMarkers = convertMarkers(request.getAppendMarkers());
             IntList deleteMarkers = convertMarkers(request.getDeleteMarkers());
             int ledger = request.getLedger();
-            Promise<Integer> promise = serviceExecutor.newPromise();
+            Promise<Integer> promise = executor.newPromise();
             promise.addListener((GenericFutureListener<Future<Integer>>) f -> {
                 if (f.isSuccess()) {
                     if (feedback != null) {
@@ -534,7 +534,7 @@ public class ServiceProcessor implements Processor, Command.Server {
         try {
             CleanSubscribeRequest request = readProto(data, CleanSubscribeRequest.parser());
             int ledger = request.getLedger();
-            Promise<Boolean> promise = serviceExecutor.newPromise();
+            Promise<Boolean> promise = executor.newPromise();
             promise.addListener((GenericFutureListener<Future<Boolean>>) f -> {
                 if (f.isSuccess()) {
                     if (feedback != null) {
@@ -567,8 +567,8 @@ public class ServiceProcessor implements Processor, Command.Server {
 
             commandExecutor.execute(() -> {
                 try {
-                    TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
-                    Map<String, Object> createResult = topicCoordinator.createTopic(topic, partition, replicas, topicConfig);
+                    TopicHandleSupport support = manager.getTopicHandleSupport();
+                    Map<String, Object> createResult = support.createTopic(topic, partition, replicas, topicConfig);
                     if (feedback != null) {
                         int topicId = (int) createResult.get(CorrelationIdConstants.TOPIC_ID);
                         @SuppressWarnings("unchecked")
@@ -609,7 +609,7 @@ public class ServiceProcessor implements Processor, Command.Server {
             String topic = request.getTopic();
             commandExecutor.execute(() -> {
                 try {
-                    manager.getTopicCoordinator().deleteTopic(topic);
+                    manager.getTopicHandleSupport().deleteTopic(topic);
                     if (feedback != null) {
                         DeleteTopicResponse response = DeleteTopicResponse.newBuilder().build();
                         feedback.success(proto2Buf(channel.alloc(), response));

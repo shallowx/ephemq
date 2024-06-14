@@ -20,27 +20,27 @@ import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncRequest;
 import org.meteor.remote.proto.server.SyncResponse;
 
-public class ParticipantCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ParticipantCoordinator.class);
-    private final Manager coordinator;
-    private EventExecutor fetchExecutor;
+public class ParticipantSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ParticipantSupport.class);
+    private final Manager manager;
+    private EventExecutor executor;
 
-    public ParticipantCoordinator(Manager coordinator) {
-        this.coordinator = coordinator;
+    public ParticipantSupport(Manager manager) {
+        this.manager = manager;
     }
 
     public void start() throws Exception {
-        fetchExecutor = new FastEventExecutor(new DefaultThreadFactory("replica_fetch"));
+        executor = new FastEventExecutor(new DefaultThreadFactory("replica_fetch"));
     }
 
     public void shutdown() throws Exception {
-        if (fetchExecutor != null) {
-            fetchExecutor.shutdownGracefully();
+        if (executor != null) {
+            executor.shutdownGracefully();
         }
     }
 
     public void subscribeLedger(int ledger, int epoch, long index, Channel channel, Promise<SyncResponse> promise) {
-        Log log = coordinator.getLogHandler().getLog(ledger);
+        Log log = manager.getLogHandler().getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemotingException.of(
                     RemotingException.Failure.PROCESS_EXCEPTION, String.format("The ledger[%d] not found", ledger)));
@@ -84,7 +84,7 @@ public class ParticipantCoordinator {
         }
 
         try {
-            Log log = coordinator.getLogHandler().getLog(ledger);
+            Log log = manager.getLogHandler().getLog(ledger);
             if (log == null) {
                 promise.tryFailure(RemotingException.of(
                         RemotingException.Failure.PROCESS_EXCEPTION,
@@ -128,8 +128,8 @@ public class ParticipantCoordinator {
     }
 
     public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {
-        LogHandler logCoordinator = coordinator.getLogHandler();
-        Log log = logCoordinator.getLog(ledger);
+        LogHandler handler = manager.getLogHandler();
+        Log log = handler.getLog(ledger);
         if (log == null) {
             promise.trySuccess(null);
             return;
@@ -142,7 +142,7 @@ public class ParticipantCoordinator {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
         try {
-            Log log = coordinator.getLogHandler().getLog(ledger);
+            Log log = manager.getLogHandler().getLog(ledger);
             if (log == null) {
                 promise.trySuccess(null);
                 return promise;

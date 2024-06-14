@@ -1,10 +1,9 @@
 package org.meteor.config;
 
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 import java.util.Properties;
 
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
-
-public class ChunkRecordDispatchConfig {
+public class ChunkDispatchConfig {
     private static final String CHUNK_DISPATCH_ENTRY_LOAD_LIMIT = "chunk.dispatch.entry.load.limit";
     private static final String CHUNK_DISPATCH_ENTRY_FOLLOW_LIMIT = "chunk.dispatch.entry.follow.limit";
     private static final String CHUNK_DISPATCH_ENTRY_PURSUE_LIMIT = "chunk.dispatch.entry.pursue.limit";
@@ -14,7 +13,7 @@ public class ChunkRecordDispatchConfig {
     private static final String CHUNK_SYNC_SEMAPHORE_LIMIT = "chunk.sync.semaphore.limit";
     private final Properties prop;
 
-    public ChunkRecordDispatchConfig(Properties prop) {
+    public ChunkDispatchConfig(Properties prop) {
         this.prop = prop;
     }
 

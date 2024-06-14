@@ -25,7 +25,6 @@ import org.meteor.support.Manager;
 import org.meteor.thread.ShutdownHookThread;
 
 public class MeteorProxy {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorProxy.class);
 
     public static void main(String[] args) throws Exception {
@@ -78,12 +77,14 @@ public class MeteorProxy {
     }
 
     private static MeteorProxyServer configureMeteorProxyServer(ProxyServerConfig configuration, Properties properties) {
-        Manager coordinator = new ProxyDefaultManager(configuration);
-        MetricsListener metricsListener = new ProxyMetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(), coordinator);
-        coordinator.addMetricsListener(metricsListener);
+        Manager manager = new ProxyDefaultManager(configuration);
+        MetricsListener metricsListener =
+                new ProxyMetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(),
+                        manager);
+        manager.addMetricsListener(metricsListener);
 
-        ProxySocketServer socketServer = new ProxySocketServer(configuration, coordinator);
-        MeteorProxyServer server = new MeteorProxyServer(socketServer, coordinator);
+        ProxySocketServer socketServer = new ProxySocketServer(configuration, manager);
+        MeteorProxyServer server = new MeteorProxyServer(socketServer, manager);
         server.addListener(metricsListener);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {

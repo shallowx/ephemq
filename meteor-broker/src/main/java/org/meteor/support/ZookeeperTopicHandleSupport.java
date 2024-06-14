@@ -45,14 +45,14 @@ import org.meteor.config.CommonConfig;
 import org.meteor.config.SegmentConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.config.ZookeeperConfig;
-import org.meteor.exception.TopicException;
+import org.meteor.exception.TopicHandleException;
 import org.meteor.internal.CorrelationIdConstants;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
 
-public class ZookeeperTopicCoordinator implements TopicCoordinator {
+public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
     protected static final String ALL_TOPIC_KEY = "ALL-TOPIC";
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClusterManager.class);
     private static final String TOPIC_PARTITION_REGEX = "^/brokers/topics/[\\w\\-#]+/partitions/\\d+$";
@@ -64,25 +64,25 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     protected SegmentConfig segmentConfiguration;
     protected CuratorFramework client;
     protected CuratorCache cache;
-    protected ParticipantCoordinator participantCoordinator;
+    protected ParticipantSupport participantSupport;
     protected DistributedAtomicInteger topicIdGenerator;
     protected DistributedAtomicInteger ledgerIdGenerator;
-    protected Manager coordinator;
+    protected Manager manager;
     protected LoadingCache<String, Set<PartitionInfo>> topicCache;
     protected LoadingCache<String, Set<String>> topicNamesCache;
     private ZookeeperConfig zookeeperConfiguration;
 
-    public ZookeeperTopicCoordinator() {
+    public ZookeeperTopicHandleSupport() {
         this.hashingRing = null;
     }
 
-    public ZookeeperTopicCoordinator(ServerConfig config, Manager coordinator, ConsistentHashingRing hashingRing) {
+    public ZookeeperTopicHandleSupport(ServerConfig config, Manager manager, ConsistentHashingRing hashingRing) {
         this.commonConfiguration = config.getCommonConfig();
         this.segmentConfiguration = config.getSegmentConfig();
         this.zookeeperConfiguration = config.getZookeeperConfig();
-        this.coordinator = coordinator;
+        this.manager = manager;
         this.hashingRing = hashingRing;
-        this.participantCoordinator = new ParticipantCoordinator(coordinator);
+        this.participantSupport = new ParticipantSupport(manager);
         this.client = ZookeeperClientFactory.getReadyClient(config.getZookeeperConfig(), commonConfiguration.getClusterName());
         this.topicIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.TOPIC_ID_COUNTER, new RetryOneTime(100));
         this.ledgerIdGenerator = new DistributedAtomicInteger(this.client, CorrelationIdConstants.LEDGER_ID_COUNTER, new RetryOneTime(100));
@@ -156,7 +156,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, partition);
                 Stat stat = new Stat();
                 bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-                TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
+                TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
                 String leader = assignment.getLeader();
                 Set<String> replicas = assignment.getReplicas();
                 int ledgerId = assignment.getLedgerId();
@@ -167,13 +167,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             }
             return partitionInfos;
         } catch (Exception e) {
-            throw new TopicException(String.format("Topic[%s] dose not exist", topic));
+            throw new TopicHandleException(String.format("Topic[%s] dose not exist", topic));
         }
     }
 
     @Override
     public void start() throws Exception {
-        participantCoordinator.start();
+        participantSupport.start();
         cache = CuratorCache.build(client, PathConstants.BROKERS_TOPICS);
         CuratorCacheListener listener = CuratorCacheListener.builder().forTreeCache(client, new TreeCacheListener() {
             final Pattern TOPIC_PARTITION = Pattern.compile(TOPIC_PARTITION_REGEX);
@@ -212,13 +212,14 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
                     int version = data.getStat().getVersion();
-                    TopicAssignment assignment = JsonFeatureMapper.deserialize(nodeData, TopicAssignment.class);
+                    TopicAssignment assignment = SerializeFeatureSupport.deserialize(nodeData, TopicAssignment.class);
                     assignment.setVersion(version);
 
                     Set<String> replicas = assignment.getReplicas();
                     byte[] oldNodeData = oldData.getData();
                     int oldVersion = oldData.getStat().getVersion();
-                    TopicAssignment oldAssignment = JsonFeatureMapper.deserialize(oldNodeData, TopicAssignment.class);
+                    TopicAssignment oldAssignment =
+                            SerializeFeatureSupport.deserialize(oldNodeData, TopicAssignment.class);
                     oldAssignment.setVersion(oldVersion);
 
                     TopicPartition topicPartition = new TopicPartition(assignment.getTopic(), assignment.getPartition());
@@ -275,7 +276,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
-                    TopicAssignment assignment = JsonFeatureMapper.deserialize(nodeData, TopicAssignment.class);
+                    TopicAssignment assignment = SerializeFeatureSupport.deserialize(nodeData, TopicAssignment.class);
                     String topic = assignment.getTopic();
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
@@ -302,7 +303,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
                 if (isTopicPartitionNode(path)) {
                     byte[] nodeData = data.getData();
-                    TopicAssignment assignment = JsonFeatureMapper.deserialize(nodeData, TopicAssignment.class);
+                    TopicAssignment assignment = SerializeFeatureSupport.deserialize(nodeData, TopicAssignment.class);
                     String topic = assignment.getTopic();
                     int partition = assignment.getPartition();
                     Set<String> replicas = assignment.getReplicas();
@@ -322,9 +323,9 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
 
     @Override
     public Map<String, Object> createTopic(String topic, int partitions, int replicas, TopicConfig topicConfig) throws Exception {
-        List<Node> clusterUpNodes = coordinator.getClusterManager().getClusterReadyNodes();
+        List<Node> clusterUpNodes = manager.getClusterManager().getClusterReadyNodes();
         if (clusterUpNodes.size() < replicas) {
-            throw new TopicException("The broker counts is not enough to assign replicas");
+            throw new TopicHandleException("The broker counts is not enough to assign replicas");
         }
 
         try {
@@ -356,7 +357,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
                 assignment.setReplicas(replicaNodes);
                 assignment.setConfig(topicConfig);
                 CuratorOp partitionOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT)
-                        .forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
+                        .forPath(partitionPath, SerializeFeatureSupport.serialize(assignment));
                 ops.add(partitionOp);
             }
 
@@ -371,7 +372,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             createResult.put(CorrelationIdConstants.PARTITION_REPLICAS, partitionReplicas);
             return createResult;
         } catch (KeeperException.NodeExistsException e) {
-            throw new TopicException(String.format("Topic[%s] already exists", topic));
+            throw new TopicHandleException(String.format("Topic[%s] already exists", topic));
         }
     }
 
@@ -394,34 +395,34 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         try {
             deleteBuilder.guaranteed().deletingChildrenIfNeeded().forPath(path);
         } catch (Exception e) {
-            throw new TopicException(String.format("Topic[%s] does not exist", topic));
+            throw new TopicHandleException(String.format("Topic[%s] does not exist", topic));
         }
     }
 
     private void initTopicPartitionAsync(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) {
-        List<EventExecutor> auxEventExecutors = coordinator.getAuxEventExecutors();
+        List<EventExecutor> auxEventExecutors = manager.getAuxEventExecutors();
         EventExecutor executor = auxEventExecutors.get((Objects.hashCode(topicPartition) & 0x7fffffff) % auxEventExecutors.size());
         executor.submit(() -> {
             try {
                 initPartition(topicPartition, ledgerId, epoch, topicConfig);
             } catch (Exception e) {
-                throw new TopicException(String.format("Async init ledger[%s] failed", ledgerId), e);
+                throw new TopicHandleException(String.format("Async init ledger[%s] failed", ledgerId), e);
             }
         });
     }
 
     @Override
     public void initPartition(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) throws Exception {
-        LogHandler logCoordinator = coordinator.getLogHandler();
-        if (logCoordinator.contains(ledgerId)) {
+        LogHandler handler = manager.getLogHandler();
+        if (handler.contains(ledgerId)) {
             return;
         }
 
-        Log log = logCoordinator.initLog(topicPartition, ledgerId, epoch, topicConfig);
+        Log log = handler.initLog(topicPartition, ledgerId, epoch, topicConfig);
         ZookeeperPartitionElector
                 partitionLeaderElector =
-                new ZookeeperPartitionElector(commonConfiguration, zookeeperConfiguration, topicPartition, coordinator,
-                        participantCoordinator, ledgerId);
+                new ZookeeperPartitionElector(commonConfiguration, zookeeperConfiguration, topicPartition, manager,
+                        participantSupport, ledgerId);
         partitionLeaderElector.elect();
         leaderElectorMap.put(ledgerId, partitionLeaderElector);
 
@@ -447,12 +448,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
+            TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
             int ledgerId = assignment.getLedgerId();
             assignment.setTransitionalLeader(null);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
-            Log log = coordinator.getLogHandler().getLog(ledgerId);
-            participantCoordinator.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
+            client.setData().withVersion(stat.getVersion())
+                    .forPath(partitionPath, SerializeFeatureSupport.serialize(assignment));
+            Log log = manager.getLogHandler().getLog(ledgerId);
+            participantSupport.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
         } catch (KeeperException.NoNodeException e) {
             throw new RuntimeException(String.format(
                     "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
@@ -468,15 +470,16 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
+            TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
             String leader = assignment.getLeader();
             assignment.setTransitionalLeader(leader);
             assignment.setLeader(heir);
             assignment.getReplicas().remove(leader);
             assignment.getReplicas().add(heir);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
+            client.setData().withVersion(stat.getVersion())
+                    .forPath(partitionPath, SerializeFeatureSupport.serialize(assignment));
         } catch (KeeperException.NoNodeException e) {
-            throw new TopicException(String.format(
+            throw new TopicHandleException(String.format(
                     "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
@@ -490,12 +493,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
             String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
-            TopicAssignment assignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
+            TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
             assignment.setEpoch(assignment.getEpoch() + 1);
-            client.setData().withVersion(stat.getVersion()).forPath(partitionPath, JsonFeatureMapper.serialize(assignment));
+            client.setData().withVersion(stat.getVersion())
+                    .forPath(partitionPath, SerializeFeatureSupport.serialize(assignment));
             initPartition(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
         } catch (KeeperException.NoNodeException e) {
-            throw new TopicException(String.format(
+            throw new TopicHandleException(String.format(
                     "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
@@ -514,13 +518,13 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     private void destroyTopicPartitionAsync(TopicPartition topicPartition, int ledgerId) throws Exception {
-        List<EventExecutor> auxEventExecutors = coordinator.getAuxEventExecutors();
+        List<EventExecutor> auxEventExecutors = manager.getAuxEventExecutors();
         EventExecutor executor = auxEventExecutors.get((Objects.hashCode(topicPartition) & 0x7fffffff) % auxEventExecutors.size());
         executor.submit(() -> {
             try {
                 destroyTopicPartition(topicPartition, ledgerId);
             } catch (Throwable t) {
-                throw new TopicException("Destroy partition failed", t);
+                throw new TopicHandleException("Destroy partition failed", t);
             }
         });
     }
@@ -529,7 +533,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     public void destroyTopicPartition(TopicPartition topicPartition, int ledgerId) throws Exception {
         ZookeeperPartitionElector partitionLeaderElector = leaderElectorMap.remove(ledgerId);
         partitionLeaderElector.shutdown();
-        coordinator.getLogHandler().destroyLog(ledgerId);
+        manager.getLogHandler().destroyLog(ledgerId);
         for (TopicListener topicListener : listeners) {
             topicListener.onPartitionDestroy(topicPartition, ledgerId);
         }
@@ -556,7 +560,7 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
         if (cache != null) {
             cache.close();
         }
-        participantCoordinator.shutdown();
+        participantSupport.shutdown();
         leaderElectorMap.clear();
     }
 
@@ -576,8 +580,8 @@ public class ZookeeperTopicCoordinator implements TopicCoordinator {
     }
 
     @Override
-    public ParticipantCoordinator getParticipantCoordinator() {
-        return participantCoordinator;
+    public ParticipantSupport getParticipantSuooprt() {
+        return participantSupport;
     }
 
     @Override

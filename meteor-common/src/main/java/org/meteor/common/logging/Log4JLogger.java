@@ -1,12 +1,10 @@
 package org.meteor.common.logging;
 
+import java.io.Serial;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import java.io.Serial;
-
 class Log4JLogger extends AbstractInternalLogger {
-
     static final String FQCN = Log4JLogger.class.getName();
     @Serial
     private static final long serialVersionUID = 2851357342488183058L;

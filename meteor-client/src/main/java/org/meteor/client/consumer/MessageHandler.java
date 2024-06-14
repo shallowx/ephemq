@@ -15,7 +15,7 @@ final class MessageHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MessageHandler.class);
     private final String id;
     private final Semaphore semaphore;
-    private final EventExecutor handleExecutor;
+    private final EventExecutor executor;
     private final Map<String, Map<String, Mode>> subscribeShips;
     private final MessageListener listener;
 
@@ -23,13 +23,13 @@ final class MessageHandler {
             Map<String, Mode>> subscribeShips, MessageListener listener) {
         this.id = id;
         this.semaphore = semaphore;
-        this.handleExecutor = executor;
+        this.executor = executor;
         this.subscribeShips = subscribeShips;
         this.listener = listener;
     }
 
     void handle(ClientChannel channel, int marker, MessageId messageId, ByteBuf data) {
-        if (handleExecutor.isShuttingDown()) {
+        if (executor.isShuttingDown()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Message handler[{}] executor is shutting down", id);
             }
@@ -38,7 +38,7 @@ final class MessageHandler {
         semaphore.acquireUninterruptibly();
         data.retain();
         try {
-            handleExecutor.execute(() -> doHandle(channel, marker, messageId, data));
+            executor.execute(() -> doHandle(channel, marker, messageId, data));
         } catch (Throwable t) {
             data.release();
             semaphore.release();

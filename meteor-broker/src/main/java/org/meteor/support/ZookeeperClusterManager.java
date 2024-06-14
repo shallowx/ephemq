@@ -122,7 +122,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
                     private void handleAdd(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = JsonFeatureMapper.deserialize(data.getData(), Node.class);
+                        Node node = SerializeFeatureSupport.deserialize(data.getData(), Node.class);
 
                         readyNodes.put(node.getId(), node);
                         for (ClusterListener listener : listeners) {
@@ -135,7 +135,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
                     private void handleRemove(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = JsonFeatureMapper.deserialize(data.getData(), Node.class);
+                        Node node = SerializeFeatureSupport.deserialize(data.getData(), Node.class);
 
                         readyNodes.remove(node.getId());
                         for (ClusterListener listener : listeners) {
@@ -148,7 +148,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
                     private void handlerUpdated(PathChildrenCacheEvent event) throws Exception {
                         ChildData data = event.getData();
-                        Node node = JsonFeatureMapper.deserialize(data.getData(), Node.class);
+                        Node node = SerializeFeatureSupport.deserialize(data.getData(), Node.class);
 
                         readyNodes.put(node.getId(), node);
                         if (DOWN.equals(node.getState())) {
@@ -174,7 +174,8 @@ public class ZookeeperClusterManager implements ClusterManager {
 
         try {
             createBuilder.creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL)
-                    .forPath(String.format(path, configuration.getServerId()), JsonFeatureMapper.serialize(thisNode));
+                    .forPath(String.format(path, configuration.getServerId()),
+                            SerializeFeatureSupport.serialize(thisNode));
             registered = true;
         } catch (KeeperException.NodeExistsException e) {
             throw new RuntimeException(String.format("Server id[%s] should be unique", configuration.getServerId()));
@@ -197,9 +198,9 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     private void updateNodeStateAndSleep(String path) throws Exception {
         byte[] bytes = client.getData().forPath(path);
-        Node downNode = JsonFeatureMapper.deserialize(bytes, Node.class);
+        Node downNode = SerializeFeatureSupport.deserialize(bytes, Node.class);
         downNode.setState(DOWN);
-        client.setData().forPath(path, JsonFeatureMapper.serialize(downNode));
+        client.setData().forPath(path, SerializeFeatureSupport.serialize(downNode));
 
         readyNodes.put(downNode.getId(), downNode);
         if (configuration.getShutdownMaxWaitTimeMilliseconds() > 0) {

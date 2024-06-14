@@ -3,6 +3,7 @@ package org.meteor.ledger;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
+import java.util.concurrent.CountDownLatch;
 import org.junit.Assert;
 import org.junit.Test;
 import org.meteor.common.logging.InternalLogger;
@@ -11,10 +12,7 @@ import org.meteor.common.message.Offset;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
 
-import java.util.concurrent.CountDownLatch;
-
 public class LedgerStorageTest {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorageTest.class);
 
     @Test

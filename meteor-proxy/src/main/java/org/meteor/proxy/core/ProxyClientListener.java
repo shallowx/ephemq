@@ -33,8 +33,8 @@ import org.meteor.client.core.MessageRouter;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.ledger.Log;
-import org.meteor.proxy.support.LedgerSyncCoordinator;
-import org.meteor.proxy.support.ProxyTopicCoordinator;
+import org.meteor.proxy.support.LedgerSyncSupport;
+import org.meteor.proxy.support.ProxyTopicHandleSupport;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
@@ -45,12 +45,10 @@ import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 
 public class ProxyClientListener implements CombineListener {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyClientListener.class);
-
-    protected final Map<Integer, DistributionSummary> chunkCountSummaries = new ConcurrentHashMap<>();
+    protected final Map<Integer, DistributionSummary> countSummaries = new ConcurrentHashMap<>();
     private final Manager manager;
-    private final LedgerSyncCoordinator syncCoordinator;
+    private final LedgerSyncSupport syncSupport;
     private final ProxyConfig proxyConfiguration;
     private Client client;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
@@ -61,10 +59,10 @@ public class ProxyClientListener implements CombineListener {
     };
 
     public ProxyClientListener(ProxyConfig proxyConfiguration, Manager manager,
-                               LedgerSyncCoordinator syncCoordinator) {
+                               LedgerSyncSupport syncSupport) {
         this.proxyConfiguration = proxyConfiguration;
         this.manager = manager;
-        this.syncCoordinator = syncCoordinator;
+        this.syncSupport = syncSupport;
         EventExecutor taskExecutor = manager.getAuxEventExecutorGroup().next();
         taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), TimeUnit.MILLISECONDS);
     }
@@ -139,9 +137,9 @@ public class ProxyClientListener implements CombineListener {
         try {
             int ledger = signal.getLedger();
             int count = signal.getCount();
-            DistributionSummary summary = chunkCountSummaries.get(ledger);
+            DistributionSummary summary = countSummaries.get(ledger);
             if (summary == null) {
-                summary = chunkCountSummaries.computeIfAbsent(ledger,
+                summary = countSummaries.computeIfAbsent(ledger,
                         s -> DistributionSummary.builder(PROXY_SYNC_CHUNK_COUNT_SUMMARY_NAME)
                                 .tags(Tags.of("ledger", String.valueOf(ledger))
                                         .and(BROKER_TAG, proxyConfiguration.getCommonConfiguration().getServerId())
@@ -201,8 +199,8 @@ public class ProxyClientListener implements CombineListener {
                             refreshFailed = true;
                             logger.error(e.getMessage(), e);
                         }
-                        ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) manager.getTopicCoordinator();
-                        topicCoordinator.refreshTopicMetadata(Collections.singletonList(topic), channel);
+                        ProxyTopicHandleSupport support = (ProxyTopicHandleSupport) manager.getTopicHandleSupport();
+                        support.refreshTopicMetadata(Collections.singletonList(topic), channel);
                     }
                     resumeSync(channel, topic, ledger, refreshFailed);
                     if (signal.getType() == TopicChangedSignal.Type.DELETE) {
@@ -307,7 +305,7 @@ public class ProxyClientListener implements CombineListener {
                     client.refreshRouter(topic, null);
                 }
             }
-            syncCoordinator.resumeSync(channel, topic, ledger, promise);
+            syncSupport.resumeSync(channel, topic, ledger, promise);
         } catch (Exception e) {
             promise.tryFailure(e);
             logger.error(e.getMessage(), e);

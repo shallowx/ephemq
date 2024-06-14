@@ -37,10 +37,11 @@ public class DefaultSocketServer {
     private EventLoopGroup workGroup;
     private ChannelFuture channelClosedFuture;
 
-    public DefaultSocketServer(ServerConfig serverConfiguration, Manager coordinator) {
+    public DefaultSocketServer(ServerConfig serverConfiguration, Manager manager) {
         this.commonConfiguration = serverConfiguration.getCommonConfig();
         this.networkConfiguration = serverConfiguration.getNetworkConfig();
-        this.serviceChannelInitializer = new ServiceChannelInitializer(commonConfiguration, networkConfiguration, coordinator);
+        this.serviceChannelInitializer =
+                new ServiceChannelInitializer(commonConfiguration, networkConfiguration, manager);
     }
 
     public void start() throws Exception {

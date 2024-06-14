@@ -43,11 +43,13 @@ public class Meteor {
         Properties properties = loadConfigurationProperties(args);
         ServerConfig configuration = new ServerConfig(properties);
 
-        Manager coordinator = new DefaultMeteorManager(configuration);
-        MetricsListener metricsListener = new MetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(), coordinator);
-        coordinator.addMetricsListener(metricsListener);
-        DefaultSocketServer socketServer = new DefaultSocketServer(configuration, coordinator);
-        return initializeServer(metricsListener, socketServer, coordinator);
+        Manager manager = new DefaultMeteorManager(configuration);
+        MetricsListener metricsListener =
+                new MetricsListener(properties, configuration.getCommonConfig(), configuration.getMetricsConfig(),
+                        manager);
+        manager.addMetricsListener(metricsListener);
+        DefaultSocketServer socketServer = new DefaultSocketServer(configuration, manager);
+        return initializeServer(metricsListener, socketServer, manager);
     }
 
     private static Properties loadConfigurationProperties(String... args) throws Exception {
@@ -76,8 +78,8 @@ public class Meteor {
     }
 
     private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer,
-                                                 Manager coordinator) {
-        MeteorServer server = new MeteorServer(socketServer, coordinator);
+                                                 Manager manager) {
+        MeteorServer server = new MeteorServer(socketServer, manager);
         server.addListener(listener);
         Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(logger, (Callable<?>) () -> {
             server.shutdown();

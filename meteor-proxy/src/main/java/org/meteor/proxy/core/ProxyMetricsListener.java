@@ -8,7 +8,7 @@ import org.meteor.support.Manager;
 
 public class ProxyMetricsListener extends MetricsListener {
     public ProxyMetricsListener(Properties properties, CommonConfig commonConfiguration,
-                                MetricsConfig metricsConfiguration, Manager coordinator) {
-        super(properties, commonConfiguration, metricsConfiguration, coordinator);
+                                MetricsConfig metricsConfiguration, Manager manager) {
+        super(properties, commonConfiguration, metricsConfiguration, manager);
     }
 }

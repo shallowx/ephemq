@@ -14,7 +14,7 @@ import org.meteor.support.Manager;
 
 public class InternalClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(InternalClientListener.class);
-    private final Manager coordinator;
+    private final Manager manager;
     private final int semaphore;
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
@@ -23,8 +23,8 @@ public class InternalClientListener implements CombineListener {
         }
     };
 
-    public InternalClientListener(Manager coordinator, int semaphore) {
-        this.coordinator = coordinator;
+    public InternalClientListener(Manager manager, int semaphore) {
+        this.manager = manager;
         this.semaphore = semaphore;
     }
 
@@ -44,7 +44,7 @@ public class InternalClientListener implements CombineListener {
                     }
                 }
             });
-            coordinator.getLogHandler().saveSyncData(channel.channel(), ledger, count, data, promise);
+            manager.getLogHandler().saveSyncData(channel.channel(), ledger, count, data, promise);
         } catch (Throwable t) {
             semaphore.release();
             logger.error(t.getMessage(), t);

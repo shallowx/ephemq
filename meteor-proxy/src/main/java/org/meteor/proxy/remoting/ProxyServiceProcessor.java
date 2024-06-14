@@ -36,10 +36,10 @@ import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
 import org.meteor.proxy.core.ProxyLog;
 import org.meteor.proxy.core.ProxyServerConfig;
-import org.meteor.proxy.support.LedgerSyncCoordinator;
+import org.meteor.proxy.support.LedgerSyncSupport;
 import org.meteor.proxy.support.ProxyClusterManager;
 import org.meteor.proxy.support.ProxyManager;
-import org.meteor.proxy.support.ProxyTopicCoordinator;
+import org.meteor.proxy.support.ProxyTopicHandleSupport;
 import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.proto.PartitionMetadata;
@@ -62,11 +62,9 @@ import org.meteor.remoting.ServiceProcessor;
 import org.meteor.support.Manager;
 
 class ProxyServiceProcessor extends ServiceProcessor {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyServiceProcessor.class);
-
     private static final int MIN_REPLICA_LIMIT = 2;
-    private final LedgerSyncCoordinator syncCoordinator;
+    private final LedgerSyncSupport syncSupport;
     private final ProxyClusterManager proxyClusterManager;
     private final int subscribeThreshold;
     private final ProxyServerConfig serverConfiguration;
@@ -74,10 +72,10 @@ class ProxyServiceProcessor extends ServiceProcessor {
     public ProxyServiceProcessor(ProxyServerConfig config, Manager manager) {
         super(config.getCommonConfig(), config.getNetworkConfig(), manager);
         if (manager instanceof ProxyManager) {
-            this.syncCoordinator = ((ProxyManager) manager).getLedgerSyncCoordinator();
+            this.syncSupport = ((ProxyManager) manager).getLedgerSyncSupport();
             this.proxyClusterManager = (ProxyClusterManager) manager.getClusterManager();
         } else {
-            this.syncCoordinator = null;
+            this.syncSupport = null;
             this.proxyClusterManager = null;
         }
         this.serverConfiguration = config;
@@ -151,9 +149,9 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     int epoch = request.getEpoch();
                     long index = request.getIndex();
                     String topic = request.getTopic();
-                    MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
+                    MessageLedger messageLedger = syncSupport.getMessageLedger(topic, ledger);
                     ProxyLog log = getLog(manager.getLogHandler(), ledger, messageLedger);
-                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
+                    ClientChannel syncChannel = syncSupport.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index, channel, promise);
                 } catch (Throwable t) {
                     processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, t);
@@ -166,8 +164,8 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
-    private ProxyLog getLog(LogHandler logCoordinator, int ledger, MessageLedger messageLedger) {
-        return (ProxyLog) logCoordinator.getOrInitLog(ledger, _ledger -> {
+    private ProxyLog getLog(LogHandler logHandler, int ledger, MessageLedger messageLedger) {
+        return (ProxyLog) logHandler.getOrInitLog(ledger, _ledger -> {
             TopicConfig topicConfig = new TopicConfig(
                     serverConfiguration.getSegmentConfig().getSegmentRollingSize(),
                     serverConfiguration.getSegmentConfig().getSegmentRetainLimit(),
@@ -176,7 +174,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
             );
             TopicPartition topicPartition = new TopicPartition(messageLedger.topic(), messageLedger.partition());
             Log log = new ProxyLog(serverConfiguration, topicPartition, ledger, 0, manager, topicConfig);
-            for (TopicListener listener : Objects.requireNonNull(manager.getTopicCoordinator().getTopicListener())) {
+            for (TopicListener listener : Objects.requireNonNull(manager.getTopicHandleSupport().getTopicListener())) {
                 listener.onPartitionInit(topicPartition, ledger);
             }
             log.start(null);
@@ -198,8 +196,8 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     }
 
                     QueryTopicInfoResponse.Builder newResponse = QueryTopicInfoResponse.newBuilder();
-                    ProxyTopicCoordinator topicCoordinator = (ProxyTopicCoordinator) manager.getTopicCoordinator();
-                    Map<String, TopicInfo> topicInfoMap = topicCoordinator.getTopicMetadata(request.getTopicNamesList());
+                    ProxyTopicHandleSupport support = (ProxyTopicHandleSupport) manager.getTopicHandleSupport();
+                    Map<String, TopicInfo> topicInfoMap = support.getTopicMetadata(request.getTopicNamesList());
                     Map<String, TopicInfo> newTopicInfoMap = new Object2ObjectOpenHashMap<>();
                     if (topicInfoMap != null && !topicInfoMap.isEmpty()) {
                         for (Map.Entry<String, TopicInfo> entry : topicInfoMap.entrySet()) {
@@ -396,8 +394,8 @@ class ProxyServiceProcessor extends ServiceProcessor {
                 }
                 recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
             });
-            LogHandler logCoordinator = manager.getLogHandler();
-            Log log = logCoordinator.getLog(ledger);
+            LogHandler logHandler = manager.getLogHandler();
+            Log log = logHandler.getLog(ledger);
             if (log == null) {
                 promise.trySuccess(null);
                 return;
@@ -434,9 +432,9 @@ class ProxyServiceProcessor extends ServiceProcessor {
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
-                    MessageLedger messageLedger = syncCoordinator.getMessageLedger(topic, ledger);
+                    MessageLedger messageLedger = syncSupport.getMessageLedger(topic, ledger);
                     ProxyLog log = getLog(manager.getLogHandler(), ledger, messageLedger);
-                    ClientChannel syncChannel = syncCoordinator.getSyncChannel(messageLedger);
+                    ClientChannel syncChannel = syncSupport.getSyncChannel(messageLedger);
                     log.syncAndResetSubscribe(syncChannel, epoch, index, channel, markers, promise);
                 } catch (Exception e) {
                     processFailed("Proxy process rest subscribe failed", command, channel, feedback, e);

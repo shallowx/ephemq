@@ -14,12 +14,10 @@ import org.meteor.client.core.ClientChannel;
 import org.meteor.client.core.ClientConfig;
 import org.meteor.client.core.CombineListener;
 import org.meteor.config.CommonConfig;
-import org.meteor.config.ServerConfig;
 import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
-import org.meteor.support.DefaultMeteorManager;
 
 public class InternalClientTest {
     private Channel embeddedChannel;
@@ -35,7 +33,7 @@ public class InternalClientTest {
         }});
         embeddedChannel = new EmbeddedChannel();
         clientChannel = new InternalClientChannel(clientConfig, embeddedChannel, new InetSocketAddress(9527),
-                new CommonConfig(new Properties()), new DefaultMeteorManager(new ServerConfig(new Properties())));
+                new CommonConfig(new Properties()));
 
         client = new InternalClient("test-internal-client", clientConfig, new CombineListener() {
             @Override
@@ -72,7 +70,7 @@ public class InternalClientTest {
             public void listenerCompleted() throws InterruptedException {
                 CombineListener.super.listenerCompleted();
             }
-        }, new CommonConfig(new Properties()), new DefaultMeteorManager());
+        }, new CommonConfig(new Properties()));
 
         client.start();
     }

@@ -1,14 +1,12 @@
 package org.meteor.common.logging;
 
-import org.meteor.common.util.ObjectUtil;
-import org.meteor.common.util.StringUtil;
-
 import java.io.ObjectStreamException;
 import java.io.Serial;
 import java.io.Serializable;
+import org.meteor.common.util.ObjectUtil;
+import org.meteor.common.util.StringUtil;
 
 public abstract class AbstractInternalLogger implements InternalLogger, Serializable {
-
     static final String EXCEPTION_MESSAGE = "Unexpected exception:";
     @Serial
     private static final long serialVersionUID = -6382972526573193470L;

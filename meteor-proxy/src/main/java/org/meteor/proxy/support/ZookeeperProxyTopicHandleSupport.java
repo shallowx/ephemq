@@ -19,21 +19,22 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.QueryTopicInfoRequest;
 import org.meteor.remote.proto.server.QueryTopicInfoResponse;
 import org.meteor.support.Manager;
-import org.meteor.support.ParticipantCoordinator;
-import org.meteor.support.ZookeeperTopicCoordinator;
+import org.meteor.support.ParticipantSupport;
+import org.meteor.support.ZookeeperTopicHandleSupport;
 
-class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implements ProxyTopicCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperProxyTopicCoordinator.class);
-    private final LedgerSyncCoordinator syncCoordinator;
+class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport implements ProxyTopicHandleSupport {
+    private static final InternalLogger logger =
+            InternalLoggerFactory.getLogger(ZookeeperProxyTopicHandleSupport.class);
+    private final LedgerSyncSupport syncSupport;
     private final ProxyConfig proxyConfiguration;
     private LoadingCache<String, TopicInfo> topicMetaLoadingCache;
 
-    public ZookeeperProxyTopicCoordinator(ProxyConfig config, Manager coordinator) {
+    public ZookeeperProxyTopicHandleSupport(ProxyConfig config, Manager manager) {
         super();
         this.proxyConfiguration = config;
-        this.coordinator = coordinator;
-        this.syncCoordinator = ((ProxyDefaultManager) coordinator).getLedgerSyncCoordinator();
-        this.participantCoordinator = new ParticipantCoordinator(coordinator);
+        this.manager = manager;
+        this.syncSupport = ((ProxyDefaultManager) manager).getLedgerSyncSupport();
+        this.participantSupport = new ParticipantSupport(manager);
     }
 
     @Override
@@ -43,7 +44,7 @@ class ZookeeperProxyTopicCoordinator extends ZookeeperTopicCoordinator implement
                     @Override
                     public @Nullable TopicInfo load(String key) throws Exception {
                         try {
-                            ClientChannel channel = syncCoordinator.getProxyClient().getActiveChannel(null);
+                            ClientChannel channel = syncSupport.getProxyClient().getActiveChannel(null);
                             Map<String, TopicInfo> topicInfos = getFromUpstream(Lists.newArrayList(key), channel);
                             return (topicInfos == null || topicInfos.isEmpty()) ? null : topicInfos.get(key);
                         } catch (Exception e) {

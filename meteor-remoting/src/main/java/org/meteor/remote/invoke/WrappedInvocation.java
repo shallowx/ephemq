@@ -17,7 +17,6 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
             return new WrappedInvocation(handle);
         }
     };
-
     private final Recycler.Handle<WrappedInvocation> handle;
     private int command;
     private ByteBuf data;

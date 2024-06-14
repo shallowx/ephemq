@@ -1,6 +1,5 @@
 package org.meteor.internal;
 
-import io.netty.util.concurrent.DefaultThreadFactory;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.io.Closeable;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -19,15 +19,17 @@ import org.meteor.support.Manager;
 
 public class MeteorServer {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorServer.class);
-    private static final ExecutorService socketServerExecutor = Executors.newSingleThreadExecutor(new DefaultThreadFactory("socket-server"));
+    private static final ExecutorService socketServerExecutor = Executors.newThreadPerTaskExecutor(
+            Thread.ofVirtual().name("socket-server").factory()
+    );
     private final List<ServerListener> serverListeners = new ObjectArrayList<>();
     private final CountDownLatch countDownLatch;
     private final DefaultSocketServer defaultSocketServer;
-    private final Manager coordinator;
+    private final Manager manager;
 
-    public MeteorServer(DefaultSocketServer defaultSocketServer, Manager coordinator) {
+    public MeteorServer(DefaultSocketServer defaultSocketServer, Manager manager) {
         this.defaultSocketServer = defaultSocketServer;
-        this.coordinator = coordinator;
+        this.manager = manager;
         this.countDownLatch = new CountDownLatch(1);
     }
 
@@ -53,11 +55,11 @@ public class MeteorServer {
         });
         startFuture.get();
 
-        coordinator.start();
+        manager.start();
         for (ServerListener listener : serverListeners) {
-            ClusterManager clusterCoordinator = coordinator.getClusterManager();
-            if (clusterCoordinator != null) {
-                Node thisNode = clusterCoordinator.getThisNode();
+            ClusterManager clusterManager = manager.getClusterManager();
+            if (clusterManager != null) {
+                Node thisNode = clusterManager.getThisNode();
                 listener.onStartup(thisNode);
             }
         }
@@ -65,9 +67,9 @@ public class MeteorServer {
     }
 
     public void shutdown() throws Exception {
-        ClusterManager clusterCoordinator = coordinator.getClusterManager();
-        if (clusterCoordinator != null) {
-            Node thisNode = clusterCoordinator.getThisNode();
+        ClusterManager clusterManager = manager.getClusterManager();
+        if (clusterManager != null) {
+            Node thisNode = clusterManager.getThisNode();
             for (ServerListener listener : serverListeners) {
                 listener.onShutdown(thisNode);
                 if (listener instanceof Closeable) {
@@ -75,10 +77,15 @@ public class MeteorServer {
                 }
             }
         }
-        coordinator.shutdown();
+        manager.shutdown();
         defaultSocketServer.shutdown();
         if (!socketServerExecutor.isTerminated() || !socketServerExecutor.isShutdown()) {
             socketServerExecutor.shutdown();
+            boolean shutdown = socketServerExecutor.awaitTermination(30, TimeUnit.SECONDS);
+            if (logger.isInfoEnabled()) {
+                logger.info(shutdown ? "All tasks was finished successfully" :
+                        "Some tasks might still be running after 30 seconds");
+            }
         }
     }
 }

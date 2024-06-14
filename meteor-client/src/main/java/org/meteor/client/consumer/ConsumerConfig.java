@@ -2,7 +2,6 @@ package org.meteor.client.consumer;
 
 import io.netty.util.NettyRuntime;
 import org.meteor.client.core.ClientConfig;
-import org.meteor.common.compression.CompressionType;
 
 public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();
@@ -11,7 +10,6 @@ public class ConsumerConfig {
     private int handlerThreadLimit = NettyRuntime.availableProcessors();
     private int handlerShardLimit = handlerThreadLimit * 10;
     private int handlerPendingLimit = 100;
-    private CompressionType compressionType;
 
     public ClientConfig getClientConfig() {
         return clientConfig;
@@ -59,13 +57,5 @@ public class ConsumerConfig {
 
     public void setHandlerPendingLimit(int handlerPendingLimit) {
         this.handlerPendingLimit = handlerPendingLimit;
-    }
-
-    public CompressionType getCompressionType() {
-        return compressionType;
-    }
-
-    public void setCompressionType(CompressionType compressionType) {
-        this.compressionType = compressionType;
     }
 }

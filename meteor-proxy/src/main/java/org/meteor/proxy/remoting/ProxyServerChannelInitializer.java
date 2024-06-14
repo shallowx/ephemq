@@ -15,8 +15,8 @@ import org.meteor.support.Manager;
 public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
     private final ProxyServerConfig serverConfiguration;
 
-    public ProxyServerChannelInitializer(ProxyServerConfig serverConfiguration, Manager coordinator) {
-        super(serverConfiguration.getCommonConfig(), serverConfiguration.getNetworkConfig(), coordinator);
+    public ProxyServerChannelInitializer(ProxyServerConfig serverConfiguration, Manager manager) {
+        super(serverConfiguration.getCommonConfig(), serverConfiguration.getNetworkConfig(), manager);
         this.serverConfiguration = serverConfiguration;
     }
 
@@ -31,6 +31,7 @@ public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
         pipeline.addLast("proxy-encoder", MessageEncoder.instance());
         pipeline.addLast("proxy-decoder", new MessageDecoder());
         pipeline.addLast("proxy-connect-handler", new HeartbeatDuplexHandler(0, 60000));
-        pipeline.addLast("proxy-processor-handler", new ServiceDuplexHandler(coordinator, new ProxyServiceProcessor(serverConfiguration, coordinator)));
+        pipeline.addLast("proxy-processor-handler", new ServiceDuplexHandler(
+                manager, new ProxyServiceProcessor(serverConfiguration, manager)));
     }
 }

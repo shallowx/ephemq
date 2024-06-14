@@ -2,7 +2,6 @@ package org.meteor.ledger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -24,19 +23,20 @@ import org.meteor.support.Manager;
 
 public class LogHandler {
     private final ServerConfig config;
-    private final Manager coordinator;
+    private final Manager manager;
     private final Map<Integer, Log> ledgerIdOfLogs = new ConcurrentHashMap<>();
     private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
-    private final ScheduledExecutorService scheduledExecutorOfCleanStorage;
+    private final ScheduledExecutorService cleanStorageScheduledExecutor;
 
-    public LogHandler(ServerConfig config, Manager coordinator) {
+    public LogHandler(ServerConfig config, Manager manager) {
         this.config = config;
-        this.coordinator = coordinator;
-        this.scheduledExecutorOfCleanStorage = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("storage-cleaner"));
+        this.manager = manager;
+        this.cleanStorageScheduledExecutor =
+                Executors.newScheduledThreadPool(1, Thread.ofVirtual().name("storage-cleaner").factory());
     }
 
     public void start() {
-        this.scheduledExecutorOfCleanStorage.scheduleAtFixedRate(() -> {
+        this.cleanStorageScheduledExecutor.scheduleAtFixedRate(() -> {
             for (Log log : ledgerIdOfLogs.values()) {
                 log.cleanStorage();
             }
@@ -46,8 +46,8 @@ public class LogHandler {
     public void appendRecord(int ledger, int marker, ByteBuf payload, Promise<Offset> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemotingException.of(
-                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
+            promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
+                    String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -75,7 +75,6 @@ public class LogHandler {
             promise.trySuccess(null);
             return;
         }
-
         log.cleanSubscribe(channel, promise);
     }
 
@@ -95,7 +94,7 @@ public class LogHandler {
     }
 
     public Log initLog(TopicPartition topicPartition, int ledgerId, int epoch, TopicConfig topicConfig) {
-        Log log = new Log(config, topicPartition, ledgerId, epoch, coordinator, topicConfig);
+        Log log = new Log(config, topicPartition, ledgerId, epoch, manager, topicConfig);
         this.ledgerIdOfLogs.putIfAbsent(ledgerId, log);
         for (LogListener listener : listeners) {
             listener.onInitLog(log);
@@ -139,8 +138,8 @@ public class LogHandler {
     public void saveSyncData(Channel channel, int ledger, int count, ByteBuf data, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemotingException.of(
-                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] not found", ledger)));
+            promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
+                    String.format("Ledger[%d] not found", ledger)));
             return;
         }
 

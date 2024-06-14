@@ -24,8 +24,8 @@ import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
-import org.meteor.dispatch.ChunkRecordDispatcher;
-import org.meteor.dispatch.RecordDispatcher;
+import org.meteor.dispatch.ChunkDispatcher;
+import org.meteor.dispatch.DefaultDispatcher;
 import org.meteor.listener.LogListener;
 import org.meteor.metrics.config.MetricsConstants;
 import org.meteor.remote.exception.RemotingException;
@@ -38,25 +38,24 @@ import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
-import org.meteor.support.TopicCoordinator;
+import org.meteor.support.TopicHandleSupport;
 
 public class Log {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Log.class);
-
     protected final TopicPartition topicPartition;
     protected final int ledger;
     protected final String topic;
     protected final LedgerStorage storage;
     protected final EventExecutor storageExecutor;
     protected final EventExecutor commandExecutor;
-    protected final RecordDispatcher entryDispatcher;
+    protected final DefaultDispatcher entryDispatcher;
     protected final List<LogListener> listeners;
     protected final Manager manager;
     protected final Meter segmentCount;
     protected final Meter segmentBytes;
     protected final int forwardTimeout;
     protected final AtomicReference<LogState> state = new AtomicReference<>(null);
-    protected ChunkRecordDispatcher chunkEntryDispatcher;
+    protected ChunkDispatcher chunkEntryDispatcher;
     protected Migration migration;
     protected ClientChannel syncChannel;
     protected Promise<SyncResponse> syncPromise;
@@ -97,10 +96,10 @@ public class Log {
         this.segmentBytes = Gauge.builder(MetricsConstants.LOG_SEGMENT_GAUGE_NAME, this.getStorage(), LedgerStorage::segmentBytes)
                 .baseUnit("bytes")
                 .tags(tags).register(Metrics.globalRegistry);
-        this.entryDispatcher = new RecordDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(),
+        this.entryDispatcher = new DefaultDispatcher(ledger, topic, storage, config.getRecordDispatchConfig(),
                 manager.getMessageDispatchEventExecutorGroup(), new InnerEntryDispatchCounter());
         this.chunkEntryDispatcher =
-                new ChunkRecordDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(),
+                new ChunkDispatcher(ledger, topic, storage, config.getChunkRecordDispatchConfig(),
                         manager.getMessageDispatchEventExecutorGroup(), new InnerEntryChunkDispatchCounter());
     }
 
@@ -200,8 +199,10 @@ public class Log {
             } else {
                 syncOffset = currentOffset;
             }
-            TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
-            topicCoordinator.getParticipantCoordinator().syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(), timeoutMs, syncPromise);
+            TopicHandleSupport support = manager.getTopicHandleSupport();
+            support.getParticipantSuooprt()
+                    .syncLeader(topicPartition, ledger, clientChannel, syncOffset.getEpoch(), syncOffset.getIndex(),
+                            timeoutMs, syncPromise);
         } catch (Exception e) {
             syncPromise.tryFailure(e);
             logger.error(e.getMessage(), e);
@@ -262,8 +263,8 @@ public class Log {
             return;
         }
         try {
-            TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
-            topicCoordinator.getParticipantCoordinator().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
+            TopicHandleSupport support = manager.getTopicHandleSupport();
+            support.getParticipantSuooprt().unSyncLedger(topicPartition, ledger, syncChannel, timeoutMs, unSyncPromise);
         } catch (Exception e) {
             unSyncPromise.tryFailure(e);
             logger.error(e.getMessage(), e);
@@ -279,20 +280,20 @@ public class Log {
         migration = new Migration(ledger, destChannel);
         state.set(LogState.MIGRATING);
         try {
-            TopicCoordinator topicCoordinator = manager.getTopicCoordinator();
+            TopicHandleSupport support = manager.getTopicHandleSupport();
             Promise<SyncResponse> syncResponsePromise = syncFromTarget(destChannel, new Offset(0, 0L), 30000);
             syncResponsePromise.addListener(future -> {
                 if (future.isSuccess()) {
                     commandExecutor.schedule(() -> {
                         try {
-                            topicCoordinator.handoverPartition(dest, topicPartition);
+                            support.handoverPartition(dest, topicPartition);
                         } catch (Exception ignored) {
 
                         }
                     }, 30, TimeUnit.SECONDS);
                     commandExecutor.schedule(() -> {
                         try {
-                            topicCoordinator.retirePartition(topicPartition);
+                            support.retirePartition(topicPartition);
                         } catch (Exception ignored) {
                         }
                     }, 60, TimeUnit.SECONDS);

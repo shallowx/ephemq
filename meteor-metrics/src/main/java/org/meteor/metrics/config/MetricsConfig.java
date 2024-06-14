@@ -1,15 +1,15 @@
 package org.meteor.metrics.config;
 
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Boolean;
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2String;
 import java.util.Properties;
-
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
 public class MetricsConfig {
     private static final String METRICS_ENABLED = "metrics.prometheus.enable";
     private static final String METRICS_SCRAPE_URL = "metrics.prometheus.url";
     private static final String METRICS_PORT = "metrics.prometheus.exposed.port";
     private static final String METRICS_ADDRESS = "metrics.prometheus.exposed.host";
-
     private final Properties props;
 
     private MetricsConfig(Properties props) {

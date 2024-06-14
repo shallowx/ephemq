@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.client.core.ClientConfig;
 import org.meteor.config.CommonConfig;
-import org.meteor.config.ServerConfig;
-import org.meteor.support.DefaultMeteorManager;
 
 public class InternalClientChannelTest {
     private Channel embeddedChannel;
@@ -23,7 +21,7 @@ public class InternalClientChannelTest {
     public void setUp() throws Exception {
         embeddedChannel = new EmbeddedChannel();
         clientChannel = new InternalClientChannel(new ClientConfig(), embeddedChannel, new InetSocketAddress(9527),
-                new CommonConfig(new Properties()), new DefaultMeteorManager(new ServerConfig(new Properties())));
+                new CommonConfig(new Properties()));
     }
 
     @Test

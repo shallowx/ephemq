@@ -14,7 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +38,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     private static final FastThreadLocal<Set<CallableSafeInitializer<ByteBuf>>> WHOLE_INVOKE_INITIALIZER = new FastThreadLocal<>() {
         @Override
         protected Set<CallableSafeInitializer<ByteBuf>> initialValue() throws Exception {
-            return new HashSet<>();
+            return new ObjectOpenHashSet<>();
         }
     };
     private final CallableSafeInitializer<ByteBuf> initializer = new GenericCallableSafeInitializer<>();

@@ -30,19 +30,19 @@ public final class ZookeeperPartitionElector {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperPartitionElector.class);
     private final CommonConfig configuration;
     private final TopicPartition topicPartition;
-    private final Manager coordinator;
-    private final ParticipantCoordinator participantCoordinator;
+    private final Manager manager;
+    private final ParticipantSupport participantSupport;
     private final int ledger;
     private final CuratorFramework client;
     private LeaderLatch latch;
 
     public ZookeeperPartitionElector(CommonConfig brokerConfiguration, ZookeeperConfig zookeeperConfiguration,
-                                     TopicPartition topicPartition, Manager coordinator,
-                                     ParticipantCoordinator participantCoordinator, int ledger) {
+                                     TopicPartition topicPartition, Manager manager,
+                                     ParticipantSupport participantSupport, int ledger) {
         this.configuration = brokerConfiguration;
         this.topicPartition = topicPartition;
-        this.coordinator = coordinator;
-        this.participantCoordinator = participantCoordinator;
+        this.manager = manager;
+        this.participantSupport = participantSupport;
         this.ledger = ledger;
         this.client = ZookeeperClientFactory.getReadyClient(zookeeperConfiguration, configuration.getClusterName());
     }
@@ -66,7 +66,7 @@ public final class ZookeeperPartitionElector {
                         }
                     }
 
-                    for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
+                    for (TopicListener listener : manager.getTopicHandleSupport().getTopicListener()) {
                         listener.onPartitionGetLeader(topicPartition);
                     }
                 });
@@ -80,7 +80,7 @@ public final class ZookeeperPartitionElector {
                 EventExecutor poolExecutor = getPoolExecutor(topicPartition);
                 poolExecutor.execute(() -> {
                     try {
-                        Promise<Void> promise = participantCoordinator.stopChunkDispatch(ledger, null);
+                        Promise<Void> promise = participantSupport.stopChunkDispatch(ledger, null);
                         if (promise.cause() != null) {
                             if (logger.isErrorEnabled()) {
                                 logger.error("Stop chunk dispatch failed", promise.cause());
@@ -92,7 +92,7 @@ public final class ZookeeperPartitionElector {
                             logger.error("Switch to follower failed", e);
                         }
                     }
-                    for (TopicListener listener : coordinator.getTopicCoordinator().getTopicListener()) {
+                    for (TopicListener listener : manager.getTopicHandleSupport().getTopicListener()) {
                         listener.onPartitionLostLeader(topicPartition);
                     }
                 });
@@ -112,12 +112,12 @@ public final class ZookeeperPartitionElector {
             poolExecutor.execute(() -> {
                 try {
                     byte[] bytes = client.getData().forPath(path);
-                    TopicAssignment topicAssignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
+                    TopicAssignment topicAssignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
                     topicAssignment.setLeader(configuration.getServerId());
                     topicAssignment.setEpoch(topicAssignment.getEpoch() + 1);
-                    client.setData().forPath(path, JsonFeatureMapper.serialize(topicAssignment));
+                    client.setData().forPath(path, SerializeFeatureSupport.serialize(topicAssignment));
 
-                    Log log = coordinator.getLogHandler().getLog(topicAssignment.getLedgerId());
+                    Log log = manager.getLogHandler().getLog(topicAssignment.getLedgerId());
                     if (log != null) {
                         log.updateEpoch(topicAssignment.getEpoch());
                     }
@@ -142,7 +142,7 @@ public final class ZookeeperPartitionElector {
     }
 
     private EventExecutor getPoolExecutor(TopicPartition topicPartition) {
-        List<EventExecutor> auxEventExecutors = coordinator.getAuxEventExecutors();
+        List<EventExecutor> auxEventExecutors = manager.getAuxEventExecutors();
         return auxEventExecutors.get((Objects.hashCode(topicPartition) & 0xfffffff7) & auxEventExecutors.size());
     }
 
@@ -162,7 +162,7 @@ public final class ZookeeperPartitionElector {
                                     topicPartition.partition())
                     );
 
-                    TopicAssignment topicAssignment = JsonFeatureMapper.deserialize(bytes, TopicAssignment.class);
+                    TopicAssignment topicAssignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
                     if (topicAssignment.getReplicas().contains(configuration.getServerId())) {
                         if (logger.isInfoEnabled()) {
                             logger.info("As the follower replica of topic-partition[{}] and ledger[{}]", topicPartition,
@@ -191,9 +191,9 @@ public final class ZookeeperPartitionElector {
     }
 
     private void syncLeader(int ledger) throws Exception {
-        Log log = coordinator.getLogHandler().getLog(ledger);
-        Node leaderNode = coordinator.getClusterManager().getClusterReadyNode(latch.getLeader().getId());
-        Client innerClient = coordinator.getInternalClient();
+        Log log = manager.getLogHandler().getLog(ledger);
+        Node leaderNode = manager.getClusterManager().getClusterReadyNode(latch.getLeader().getId());
+        Client innerClient = manager.getInternalClient();
         ClientChannel channel =
                 innerClient.getActiveChannel(new InetSocketAddress(leaderNode.getHost(), leaderNode.getPort()));
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);

@@ -15,14 +15,14 @@ import org.meteor.support.Manager;
 public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected final CommonConfig commonConfiguration;
     protected final NetworkConfig networkConfiguration;
-    protected final Manager coordinator;
+    protected final Manager manager;
     protected final StatisticsDuplexHandler statisticsDuplexHandler;
 
     public ServiceChannelInitializer(CommonConfig commonConfiguration, NetworkConfig networkConfiguration,
-                                     Manager coordinator) {
+                                     Manager manager) {
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
-        this.coordinator = coordinator;
+        this.manager = manager;
         this.statisticsDuplexHandler = new StatisticsDuplexHandler(commonConfiguration);
     }
 
@@ -37,6 +37,7 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new HeartbeatDuplexHandler(0, 60000));
-        pipeline.addLast("processor-handler", new ServiceDuplexHandler(coordinator, new ServiceProcessor(commonConfiguration, networkConfiguration, coordinator)));
+        pipeline.addLast("processor-handler", new ServiceDuplexHandler(
+                manager, new ServiceProcessor(commonConfiguration, networkConfiguration, manager)));
     }
 }

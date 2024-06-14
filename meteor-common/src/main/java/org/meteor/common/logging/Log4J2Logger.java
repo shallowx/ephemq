@@ -1,32 +1,23 @@
 package org.meteor.common.logging;
 
+import java.io.Serial;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 
-import java.io.Serial;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
-@SuppressWarnings("removal")
 class Log4J2Logger extends ExtendedLoggerWrapper implements InternalLogger {
     @Serial
     private static final long serialVersionUID = 5485418394879791397L;
-    private static final boolean VARARGS_ONLY;
+    private static boolean VARARGS_ONLY = false;
 
     static {
-        VARARGS_ONLY = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
-            try {
-                Logger.class.getMethod("debug", String.class, Object.class);
-                return false;
-            } catch (NoSuchMethodException ignore) {
-                return true;
-            } catch (SecurityException ignore) {
-                return false;
-            }
-        });
-
+        try {
+            Logger.class.getMethod("debug", String.class, Object.class);
+        } catch (NoSuchMethodException ignore) {
+            VARARGS_ONLY = true;
+        } catch (SecurityException ignore) {
+        }
     }
 
     Log4J2Logger(Logger logger) {

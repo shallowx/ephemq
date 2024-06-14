@@ -1,4 +1,4 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -16,14 +16,12 @@ import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.CorrelationIdConstants;
-import org.meteor.support.DefaultMeteorManager;
-import org.meteor.support.TopicCoordinator;
 
-public class ZookeeperTopicCoordinatorTest {
+public class ZookeeperTopicHandleSupportTest {
     private final String topic = "test";
     private final int partitions = 1;
     private final int replicas = 1;
-    private TopicCoordinator coordinator;
+    private TopicHandleSupport support;
     private TestingServer server;
 
     @Before
@@ -36,9 +34,9 @@ public class ZookeeperTopicCoordinatorTest {
         properties.put("zookeeper.connection.timeout.milliseconds", 3000);
         properties.put("zookeeper.session.timeout.milliseconds", 30000);
         ServerConfig config = new ServerConfig(properties);
-        DefaultMeteorManager defaultCoordinator = new DefaultMeteorManager(config);
-        defaultCoordinator.start();
-        coordinator = defaultCoordinator.getTopicCoordinator();
+        DefaultMeteorManager defaultMeteorManager = new DefaultMeteorManager(config);
+        defaultMeteorManager.start();
+        support = defaultMeteorManager.getTopicHandleSupport();
         //only fot unit test: wait to cluster register test node
         TimeUnit.SECONDS.sleep(5);
     }
@@ -66,12 +64,12 @@ public class ZookeeperTopicCoordinatorTest {
 
     @Test
     public void testCrateTopic() throws Exception {
-        Map<String, Object> results = coordinator.createTopic(topic, partitions, replicas, null);
+        Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
         Assertions.assertEquals(results.size(), 2);
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
-        Set<PartitionInfo> topicInfos = coordinator.getTopicInfo(topic);
+        Set<PartitionInfo> topicInfos = support.getTopicInfo(topic);
         Assertions.assertNotNull(topicInfos);
         Assertions.assertEquals(topicInfos.size(), 1);
         Iterator<PartitionInfo> iterator = topicInfos.iterator();
@@ -82,12 +80,12 @@ public class ZookeeperTopicCoordinatorTest {
 
     @Test
     public void testDeleteTopic() throws Exception {
-        Map<String, Object> results = coordinator.createTopic(topic, partitions, replicas, null);
+        Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
         Assertions.assertEquals(results.size(), 2);
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
-        Set<PartitionInfo> topicInfos = coordinator.getTopicInfo(topic);
+        Set<PartitionInfo> topicInfos = support.getTopicInfo(topic);
         Assertions.assertNotNull(topicInfos);
         Assertions.assertEquals(topicInfos.size(), 1);
         Iterator<PartitionInfo> iterator = topicInfos.iterator();
@@ -95,27 +93,27 @@ public class ZookeeperTopicCoordinatorTest {
         Assertions.assertEquals(partitionInfo.getTopicId(), results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertEquals(partitionInfo.getTopic(), topic);
 
-        coordinator.deleteTopic(topic);
-        Set<String> allTopics = coordinator.getAllTopics();
+        support.deleteTopic(topic);
+        Set<String> allTopics = support.getAllTopics();
         Assertions.assertNotNull(allTopics);
         Assertions.assertEquals(allTopics.size(), 0);
     }
 
     @Test
     public void testGetAllTopics() throws Exception {
-        Map<String, Object> results = coordinator.createTopic(topic, partitions, replicas, null);
+        Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
         Assertions.assertEquals(results.size(), 2);
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
-        Set<PartitionInfo> topicInfos = coordinator.getTopicInfo(topic);
+        Set<PartitionInfo> topicInfos = support.getTopicInfo(topic);
         Assertions.assertNotNull(topicInfos);
         Assertions.assertEquals(topicInfos.size(), 1);
         Iterator<PartitionInfo> iterator = topicInfos.iterator();
         PartitionInfo partitionInfo = iterator.next();
         Assertions.assertEquals(partitionInfo.getTopicId(), results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertEquals(partitionInfo.getTopic(), topic);
-        Set<String> allTopics = coordinator.getAllTopics();
+        Set<String> allTopics = support.getAllTopics();
         Assertions.assertNotNull(allTopics);
         Assertions.assertEquals(allTopics.size(), 1);
         String result = allTopics.iterator().next();
@@ -125,13 +123,13 @@ public class ZookeeperTopicCoordinatorTest {
 
     @Test
     public void testGetPartitionInfo() throws Exception {
-        Map<String, Object> results = coordinator.createTopic(topic, partitions, replicas, null);
+        Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
         Assertions.assertEquals(results.size(), 2);
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
         TopicPartition topicPartition = new TopicPartition(topic, 0);
-        PartitionInfo partitionInfo = coordinator.getPartitionInfo(topicPartition);
+        PartitionInfo partitionInfo = support.getPartitionInfo(topicPartition);
         Assertions.assertNotNull(partitionInfo);
         Assertions.assertEquals(partitionInfo.getTopicId(), results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertEquals(partitionInfo.getTopic(), topic);
@@ -139,7 +137,7 @@ public class ZookeeperTopicCoordinatorTest {
 
     @After
     public void tearDown() throws Exception {
-        coordinator.shutdown();
+        support.shutdown();
         server.close();
     }
 }

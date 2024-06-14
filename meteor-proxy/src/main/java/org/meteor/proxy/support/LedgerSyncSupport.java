@@ -25,15 +25,14 @@ import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.support.Manager;
 
-public abstract class LedgerSyncCoordinator {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncCoordinator.class);
-
+public abstract class LedgerSyncSupport {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSyncSupport.class);
     protected final ProxyConfig proxyConfig;
     protected final Manager manager;
     protected final Client proxyClient;
     protected final EventExecutor resumeSyncTaskExecutor;
 
-    public LedgerSyncCoordinator(ProxyConfig config, Manager manager) {
+    public LedgerSyncSupport(ProxyConfig config, Manager manager) {
         this.proxyConfig = config;
         this.manager = manager;
         ClientConfig clientConfig = new ClientConfig();
@@ -47,7 +46,7 @@ public abstract class LedgerSyncCoordinator {
         clientConfig.setConnectionPoolCapacity(config.getProxyClientPoolSize());
         ProxyClientListener listener = new ProxyClientListener(config, manager, this);
         this.proxyClient =
-                new InternalClient("proxy-client", clientConfig, listener, config.getCommonConfiguration(), manager);
+                new InternalClient("proxy-client", clientConfig, listener, config.getCommonConfiguration());
         listener.setClient(proxyClient);
         this.resumeSyncTaskExecutor = manager.getAuxEventExecutorGroup().next();
     }

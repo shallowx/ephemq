@@ -1,37 +1,36 @@
 package org.meteor.dispatch;
 
 import io.netty.util.concurrent.EventExecutor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-final class ChunkRecordHandler extends AbstractHandler<ChunkRecordSynchronization, ChunkRecordHandler> {
-    static final ChunkRecordHandler INSTANCE = new ChunkRecordHandler();
-    private final List<ChunkRecordSynchronization> synchronizations = new ArrayList<>();
+final class ChunkHandler extends AbstractHandler<ChunkSynchronization, ChunkHandler> {
+    static final ChunkHandler INSTANCE = new ChunkHandler();
+    private final List<ChunkSynchronization> synchronizations = new ArrayList<>();
 
-    public ChunkRecordHandler() {
+    public ChunkHandler() {
         super(null);
     }
 
-    public ChunkRecordHandler(EventExecutor executor) {
+    public ChunkHandler(EventExecutor executor) {
         super(executor);
     }
 
     @Override
-    int[] getCounts(EventExecutor[] executors, WeakHashMap<ChunkRecordHandler, Integer> handlers) {
+    int[] getCounts(EventExecutor[] executors, WeakHashMap<ChunkHandler, Integer> handlers) {
         int[] counts = new int[executors.length];
         handlers.values().forEach(i -> counts[i]++);
         return counts;
     }
 
     @Override
-    Function<EventExecutor, ChunkRecordHandler> apply() {
-        return ChunkRecordHandler::new;
+    Function<EventExecutor, ChunkHandler> apply() {
+        return ChunkHandler::new;
     }
 
-    public List<ChunkRecordSynchronization> getSynchronizations() {
+    public List<ChunkSynchronization> getSynchronizations() {
         return synchronizations;
     }
 

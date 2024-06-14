@@ -1,19 +1,18 @@
-package org.meteor.coordinator;
+package org.meteor.support;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Test;
-import org.meteor.support.JsonFeatureMapper;
 
-public class JsonFeatureMapperTest {
+public class SerializeFeatureSupportTest {
 
     @Test
     public void testSerialize() throws Exception {
         TestFeatureMapperObject o = new TestFeatureMapperObject(1, "localhost:8080");
-        byte[] bytes = JsonFeatureMapper.serialize(o);
+        byte[] bytes = SerializeFeatureSupport.serialize(o);
 
-        TestFeatureMapperObject obj = JsonFeatureMapper.deserialize(bytes, TestFeatureMapperObject.class);
+        TestFeatureMapperObject obj = SerializeFeatureSupport.deserialize(bytes, TestFeatureMapperObject.class);
         Assert.assertEquals(o, obj);
         Assert.assertEquals(o.id, obj.id);
         Assert.assertEquals(o.addr, obj.addr);
@@ -24,7 +23,7 @@ public class JsonFeatureMapperTest {
         byte[] data = "{\"addr\":\"localhost:8080\",\"id\":1}".getBytes();
         TypeReference<TestFeatureMapperObject> typeRef = new TypeReference<>() {
         };
-        TestFeatureMapperObject o = JsonFeatureMapper.deserialize(data, typeRef);
+        TestFeatureMapperObject o = SerializeFeatureSupport.deserialize(data, typeRef);
         Assert.assertEquals("localhost:8080", o.addr);
         Assert.assertEquals(1, o.id);
     }

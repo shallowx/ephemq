@@ -23,7 +23,6 @@ public class ProducerExample {
     private static final String EXAMPLE_TOPIC_QUEUE = "example-topic-queue";
     private final Producer producer;
 
-
     public static void main(String[] args) throws Exception {
         ProducerExample example = new ProducerExample();
         example.send();

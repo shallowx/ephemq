@@ -1,5 +1,6 @@
 package org.meteor.internal;
 
+import java.util.Properties;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.test.TestingServer;
@@ -10,10 +11,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.config.ZookeeperConfig;
 
-import java.util.Properties;
-
 public class ZookeeperClientFactoryTest {
-
     private TestingServer server;
 
     @Before

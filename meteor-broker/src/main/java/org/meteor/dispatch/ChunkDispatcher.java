@@ -29,7 +29,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
-import org.meteor.config.ChunkRecordDispatchConfig;
+import org.meteor.config.ChunkDispatchConfig;
 import org.meteor.exception.ChunkDispatchException;
 import org.meteor.ledger.ChunkRecord;
 import org.meteor.ledger.LedgerCursor;
@@ -40,8 +40,8 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
-public class ChunkRecordDispatcher {
-    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ChunkRecordDispatcher.class);
+public class ChunkDispatcher {
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(ChunkDispatcher.class);
     private final int ledger;
     private final String topic;
     private final LedgerStorage storage;
@@ -54,12 +54,13 @@ public class ChunkRecordDispatcher {
     private final int bytesLimit;
     private final IntConsumer counter;
     private final EventExecutor[] executors;
-    private final List<ChunkRecordHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
-    private final WeakHashMap<ChunkRecordHandler, Integer> weakHandlers = new WeakHashMap<>();
-    private final ConcurrentMap<Channel, ChunkRecordHandler> channelHandlers = new ConcurrentHashMap<>();
+    private final List<ChunkHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
+    private final WeakHashMap<ChunkHandler, Integer> weakHandlers = new WeakHashMap<>();
+    private final ConcurrentMap<Channel, ChunkHandler> channelHandlers = new ConcurrentHashMap<>();
     private final AtomicBoolean state = new AtomicBoolean(true);
 
-    public ChunkRecordDispatcher(int ledger, String topic, LedgerStorage storage, ChunkRecordDispatchConfig config, EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
+    public ChunkDispatcher(int ledger, String topic, LedgerStorage storage, ChunkDispatchConfig config,
+                           EventExecutorGroup executorGroup, IntConsumer dispatchCounter) {
         this.ledger = ledger;
         this.topic = topic;
         this.storage = storage;
@@ -110,20 +111,20 @@ public class ChunkRecordDispatcher {
             if (!state.get()) {
                 throw new IllegalStateException("Chunk dispatcher is inactive");
             }
-            ChunkRecordHandler handler = channelHandlers.get(channel);
+            ChunkHandler handler = channelHandlers.get(channel);
             if (handler == null) {
                 promise.trySuccess(null);
                 return;
             }
-            ConcurrentMap<Channel, ChunkRecordSynchronization> channelSynchronizationMap = handler.getSubscriptionChannels();
-            ChunkRecordSynchronization synchronization = channelSynchronizationMap.get(channel);
+            ConcurrentMap<Channel, ChunkSynchronization> channelSynchronizationMap = handler.getSubscriptionChannels();
+            ChunkSynchronization synchronization = channelSynchronizationMap.get(channel);
             if (synchronization == null) {
                 promise.trySuccess(null);
                 return;
             }
 
             handler.dispatchExecutor.execute(() -> {
-                List<ChunkRecordSynchronization> synchronizations = handler.getSynchronizations();
+                List<ChunkSynchronization> synchronizations = handler.getSynchronizations();
                 synchronizations.remove(synchronization);
                 if (synchronizations.isEmpty()) {
                     dispatchHandlers.remove(handler);
@@ -144,14 +145,14 @@ public class ChunkRecordDispatcher {
         if (dispatchHandlers.isEmpty()) {
             return;
         }
-        for (ChunkRecordHandler handler : dispatchHandlers) {
+        for (ChunkHandler handler : dispatchHandlers) {
             if (handler.followCursor != null) {
                 touchDispatch(handler);
             }
         }
     }
 
-    private void touchDispatch(ChunkRecordHandler handler) {
+    private void touchDispatch(ChunkHandler handler) {
         if (handler.triggered.compareAndSet(false, true)) {
             try {
                 handler.dispatchExecutor.execute(() -> doDispatch(handler));
@@ -163,14 +164,14 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void doDispatch(ChunkRecordHandler handler) {
+    private void doDispatch(ChunkHandler handler) {
         LedgerCursor cursor = handler.followCursor;
         if (cursor == null) {
             handler.triggered.set(false);
             return;
         }
 
-        List<ChunkRecordSynchronization> synchronizations = handler.getSynchronizations();
+        List<ChunkSynchronization> synchronizations = handler.getSynchronizations();
         Offset lastOffset = handler.followOffset;
         int count = 0;
         try {
@@ -195,7 +196,7 @@ public class ChunkRecordDispatcher {
                     }
 
                     lastOffset = endOffset;
-                    for (ChunkRecordSynchronization synchronization : synchronizations) {
+                    for (ChunkSynchronization synchronization : synchronizations) {
                         if (!synchronization.followed) {
                             continue;
                         }
@@ -217,7 +218,8 @@ public class ChunkRecordDispatcher {
                             channel.writeAndFlush(payload.retainedDuplicate(), channel.voidPromise());
                         } else {
                             synchronization.followed = true;
-                            PursueTask<ChunkRecordSynchronization> pursueTask = new PursueTask<>(synchronization, cursor.copy(), endOffset);
+                            PursueTask<ChunkSynchronization> pursueTask =
+                                    new PursueTask<>(synchronization, cursor.copy(), endOffset);
                             channel.writeAndFlush(payload.retainedDuplicate(), delayPursue(pursueTask));
                         }
                     }
@@ -288,7 +290,7 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private ChannelPromise delayPursue(PursueTask<ChunkRecordSynchronization> pursueTask) {
+    private ChannelPromise delayPursue(PursueTask<ChunkSynchronization> pursueTask) {
         ChannelPromise promise = pursueTask.getSubscription().channel.newPromise();
         promise.addListener((ChannelFutureListener) f -> {
             if (f.channel().isActive()) {
@@ -298,7 +300,7 @@ public class ChunkRecordDispatcher {
         return promise;
     }
 
-    private void submitPursue(PursueTask<ChunkRecordSynchronization> pursueTask) {
+    private void submitPursue(PursueTask<ChunkSynchronization> pursueTask) {
         try {
             channelExecutor(pursueTask.getSubscription().channel).execute(() -> doPursue(pursueTask));
         } catch (Exception e) {
@@ -306,10 +308,10 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void doPursue(PursueTask<ChunkRecordSynchronization> pursueTask) {
-        ChunkRecordSynchronization synchronization = pursueTask.getSubscription();
+    private void doPursue(PursueTask<ChunkSynchronization> pursueTask) {
+        ChunkSynchronization synchronization = pursueTask.getSubscription();
         Channel channel = synchronization.channel;
-        ChunkRecordHandler handler = synchronization.handler;
+        ChunkHandler handler = synchronization.handler;
         if (!channel.isActive() || synchronization != handler.getSubscriptionChannels().get(channel)) {
             return;
         }
@@ -387,7 +389,7 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void submitFollow(PursueTask<ChunkRecordSynchronization> pursueTask) {
+    private void submitFollow(PursueTask<ChunkSynchronization> pursueTask) {
         try {
             channelExecutor(pursueTask.getSubscription().channel).execute(() -> pursueTask.getSubscription().followed = true);
         } catch (Exception e) {
@@ -395,7 +397,7 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void submitAlign(PursueTask<ChunkRecordSynchronization> pursueTask) {
+    private void submitAlign(PursueTask<ChunkSynchronization> pursueTask) {
         try {
             pursueTask.getSubscription().handler.dispatchExecutor.execute(() -> doAlign(pursueTask));
         } catch (Exception e) {
@@ -403,10 +405,10 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private void doAlign(PursueTask<ChunkRecordSynchronization> pursueTask) {
-        ChunkRecordSynchronization synchronization = pursueTask.getSubscription();
+    private void doAlign(PursueTask<ChunkSynchronization> pursueTask) {
+        ChunkSynchronization synchronization = pursueTask.getSubscription();
         Channel channel = synchronization.channel;
-        ChunkRecordHandler handler = synchronization.handler;
+        ChunkHandler handler = synchronization.handler;
         if (!channel.isActive() || synchronization != handler.getSubscriptionChannels().get(channel)) {
             return;
         }
@@ -510,13 +512,13 @@ public class ChunkRecordDispatcher {
                 throw new ChunkDispatchException("Chunk dispatcher is inactive");
             }
 
-            ChunkRecordHandler handler = allocateHandler(channel);
-            ConcurrentMap<Channel, ChunkRecordSynchronization> channelSynchronizationMap = handler.getSubscriptionChannels();
-            ChunkRecordSynchronization oldSynchronization = channelSynchronizationMap.get(channel);
-            ChunkRecordSynchronization newSynchronization = new ChunkRecordSynchronization(channel, handler);
+            ChunkHandler handler = allocateHandler(channel);
+            ConcurrentMap<Channel, ChunkSynchronization> channelSynchronizationMap = handler.getSubscriptionChannels();
+            ChunkSynchronization oldSynchronization = channelSynchronizationMap.get(channel);
+            ChunkSynchronization newSynchronization = new ChunkSynchronization(channel, handler);
 
             handler.dispatchExecutor.execute(() -> {
-                List<ChunkRecordSynchronization> synchronizations = handler.getSynchronizations();
+                List<ChunkSynchronization> synchronizations = handler.getSynchronizations();
                 if (oldSynchronization != null) {
                     synchronizations.remove(oldSynchronization);
                 }
@@ -542,7 +544,8 @@ public class ChunkRecordDispatcher {
 
                 newSynchronization.dispatchOffset = dispatchOffset;
                 if (dispatchOffset.before(handler.followOffset)) {
-                    PursueTask<ChunkRecordSynchronization> task = new PursueTask<>(newSynchronization, storage.cursor(dispatchOffset), dispatchOffset);
+                    PursueTask<ChunkSynchronization> task =
+                            new PursueTask<>(newSynchronization, storage.cursor(dispatchOffset), dispatchOffset);
                     submitPursue(task);
                 } else {
                     newSynchronization.followed = true;
@@ -584,8 +587,8 @@ public class ChunkRecordDispatcher {
         }
     }
 
-    private ChunkRecordHandler allocateHandler(Channel channel) {
-        ChunkRecordHandler result = channelHandlers.get(channel);
+    private ChunkHandler allocateHandler(Channel channel) {
+        ChunkHandler result = channelHandlers.get(channel);
         if (result != null) {
             return result;
         }
@@ -593,12 +596,12 @@ public class ChunkRecordDispatcher {
         int middleLimit = loadLimit >> 1;
         synchronized (weakHandlers) {
             if (weakHandlers.isEmpty()) {
-                return ChunkRecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+                return ChunkHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
-            Map<ChunkRecordHandler, Integer> selectHandlers = new HashMap<>();
+            Map<ChunkHandler, Integer> selectHandlers = new HashMap<>();
             int randomBound = 0;
-            for (ChunkRecordHandler handler : weakHandlers.keySet()) {
+            for (ChunkHandler handler : weakHandlers.keySet()) {
                 int channelCount = handler.getSubscriptionChannels().size();
                 if (channelCount >= loadLimit) {
                     continue;
@@ -613,18 +616,18 @@ public class ChunkRecordDispatcher {
             }
 
             if (selectHandlers.isEmpty() || randomBound == 0) {
-                return result != null ? result : ChunkRecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+                return result != null ? result : ChunkHandler.INSTANCE.newHandler(weakHandlers, executors);
             }
 
             int index = random.nextInt(randomBound);
             int count = 0;
-            for (Map.Entry<ChunkRecordHandler, Integer> entry : selectHandlers.entrySet()) {
+            for (Map.Entry<ChunkHandler, Integer> entry : selectHandlers.entrySet()) {
                 count += loadLimit - entry.getValue();
                 if (index < count) {
                     return entry.getKey();
                 }
             }
-            return result != null ? result : ChunkRecordHandler.INSTANCE.newHandler(weakHandlers, executors);
+            return result != null ? result : ChunkHandler.INSTANCE.newHandler(weakHandlers, executors);
         }
     }
 }

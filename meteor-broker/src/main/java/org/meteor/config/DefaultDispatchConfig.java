@@ -1,10 +1,9 @@
 package org.meteor.config;
 
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
 import java.util.Properties;
 
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
-
-public class RecordDispatchConfig {
+public class DefaultDispatchConfig {
     private static final String DISPATCH_ENTRY_LOAD_LIMIT = "dispatch.entry.load.limit";
     private static final String DISPATCH_ENTRY_FOLLOW_LIMIT = "dispatch.entry.follow.limit";
     private static final String DISPATCH_ENTRY_PURSUE_LIMIT = "dispatch.entry.pursue.limit";
@@ -12,7 +11,7 @@ public class RecordDispatchConfig {
     private static final String DISPATCH_ENTRY_PURSUE_TIMEOUT_MILLISECONDS = "dispatch.entry.pursue.timeout.milliseconds";
     private final Properties prop;
 
-    public RecordDispatchConfig(Properties prop) {
+    public DefaultDispatchConfig(Properties prop) {
         this.prop = prop;
     }
 

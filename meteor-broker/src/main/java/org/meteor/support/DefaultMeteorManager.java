@@ -26,11 +26,11 @@ import org.meteor.remote.util.NetworkUtil;
 public class DefaultMeteorManager implements Manager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultMeteorManager.class);
     private final List<APIListener> apiListeners = new LinkedList<>();
-    protected LogHandler logCoordinator;
-    protected TopicCoordinator topicCoordinator;
-    protected ClusterManager clusterCoordinator;
+    protected LogHandler logHandler;
+    protected TopicHandleSupport support;
+    protected ClusterManager clusterManager;
     protected ServerConfig configuration;
-    protected Connection connectionCoordinator;
+    protected Connection connection;
     protected EventExecutorGroup handleGroup;
     protected EventExecutorGroup storageGroup;
     protected EventExecutorGroup dispatchGroup;
@@ -44,21 +44,21 @@ public class DefaultMeteorManager implements Manager {
 
     public DefaultMeteorManager(ServerConfig configuration) {
         this.configuration = configuration;
-        this.connectionCoordinator = new DefaultConnectionArraySet();
+        this.connection = new DefaultConnectionArraySet();
         this.syncGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "sync-group");
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "command-handle-group");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
         this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "dispatch-group");
 
         ConsistentHashingRing hashingRing = new ConsistentHashingRing();
-        clusterCoordinator = new ZookeeperClusterManager(configuration, hashingRing);
+        clusterManager = new ZookeeperClusterManager(configuration, hashingRing);
         ClusterListener clusterListener = new DefaultClusterListener(this, configuration.getNetworkConfig());
-        clusterCoordinator.addClusterListener(clusterListener);
+        clusterManager.addClusterListener(clusterListener);
 
-        logCoordinator = new LogHandler(configuration, this);
-        topicCoordinator = new ZookeeperTopicCoordinator(configuration, this, hashingRing);
+        logHandler = new LogHandler(configuration, this);
+        support = new ZookeeperTopicHandleSupport(configuration, this, hashingRing);
         TopicListener topicListener = new DefaultTopicListener(this, configuration.getCommonConfig(), configuration.getNetworkConfig());
-        topicCoordinator.addTopicListener(topicListener);
+        support.addTopicListener(topicListener);
 
         auxGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getAuxThreadLimit(), "aux-group");
         auxEventExecutors = new ArrayList<>(configuration.getCommonConfig().getAuxThreadLimit());
@@ -77,53 +77,55 @@ public class DefaultMeteorManager implements Manager {
         clientConfig.setSocketEpollPrefer(true);
         clientConfig.setSocketReceiveBufferSize(524288);
         clientConfig.setSocketSendBufferSize(524288);
-        internalClient = new InternalClient("internal-client", clientConfig, new InternalClientListener(this, configuration.getChunkRecordDispatchConfig().getChunkDispatchSyncSemaphore()), configuration.getCommonConfig(), this);
+        internalClient = new InternalClient("internal-client", clientConfig, new InternalClientListener(this,
+                configuration.getChunkRecordDispatchConfig().getChunkDispatchSyncSemaphore()),
+                configuration.getCommonConfig());
         internalClient.start();
 
-        if (clusterCoordinator != null) {
-            clusterCoordinator.start();
+        if (clusterManager != null) {
+            clusterManager.start();
             if (logger.isInfoEnabled()) {
-                logger.info("Cluster coordinator[{}] start successfully", clusterCoordinator.getThisNode().getCluster());
+                logger.info("Cluster manager[{}] start successfully", clusterManager.getThisNode().getCluster());
             }
 
         }
 
-        if (topicCoordinator != null) {
-            topicCoordinator.start();
+        if (support != null) {
+            support.start();
             if (logger.isInfoEnabled()) {
-                logger.info("Topic coordinator start successfully");
+                logger.info("Topic support start successfully");
             }
         }
 
-        if (logCoordinator != null) {
-            logCoordinator.start();
+        if (logHandler != null) {
+            logHandler.start();
             if (logger.isInfoEnabled()) {
-                logger.info("Ledger log coordinator start successfully");
+                logger.info("Ledger log handler start successfully");
             }
         }
     }
 
     @Override
     public void shutdown() throws Exception {
-        if (clusterCoordinator != null) {
+        if (clusterManager != null) {
             if (logger.isInfoEnabled()) {
-                logger.info("Cluster coordinator[{}] will shutdown", clusterCoordinator.getThisNode().getCluster());
+                logger.info("Cluster manager[{}] will shutdown", clusterManager.getThisNode().getCluster());
             }
 
-            clusterCoordinator.shutdown();
+            clusterManager.shutdown();
         }
-        if (topicCoordinator != null) {
+        if (support != null) {
             if (logger.isInfoEnabled()) {
-                logger.info("Topic coordinator will shutdown");
+                logger.info("Topic support will shutdown");
             }
 
-            topicCoordinator.shutdown();
+            support.shutdown();
         }
-        if (logCoordinator != null) {
+        if (logHandler != null) {
             if (logger.isInfoEnabled()) {
-                logger.info("Ledger log coordinator will shutdown");
+                logger.info("Ledger log handler will shutdown");
             }
-            logCoordinator.shutdown();
+            logHandler.shutdown();
         }
 
         if (handleGroup != null) {
@@ -163,33 +165,33 @@ public class DefaultMeteorManager implements Manager {
     }
 
     @Override
-    public TopicCoordinator getTopicCoordinator() {
-        return topicCoordinator;
+    public TopicHandleSupport getTopicHandleSupport() {
+        return support;
     }
 
     @Override
     public ClusterManager getClusterManager() {
-        return clusterCoordinator;
+        return clusterManager;
     }
 
     @Override
     public LogHandler getLogHandler() {
-        return logCoordinator;
+        return logHandler;
     }
 
     @Override
     public Connection getConnection() {
-        return connectionCoordinator;
+        return connection;
     }
 
     @Override
     public void addMetricsListener(MetricsListener listener) {
-        if (logCoordinator != null) {
-            logCoordinator.addLogListener(Collections.singletonList(listener));
+        if (logHandler != null) {
+            logHandler.addLogListener(Collections.singletonList(listener));
         }
 
-        if (topicCoordinator != null) {
-            topicCoordinator.addTopicListener(listener);
+        if (support != null) {
+            support.addTopicListener(listener);
         }
 
         apiListeners.add(listener);

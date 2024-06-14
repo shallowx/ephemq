@@ -9,9 +9,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 
 public final class GenericCallableSafeInitializer<V> implements CallableSafeInitializer<V> {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(GenericCallableSafeInitializer.class);
-
     private final Long2ObjectMap<Holder> holders;
     private long requestId;
 

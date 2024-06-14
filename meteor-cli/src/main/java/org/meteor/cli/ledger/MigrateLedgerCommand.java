@@ -2,7 +2,6 @@ package org.meteor.cli.ledger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import io.netty.util.concurrent.DefaultThreadFactory;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -24,7 +23,9 @@ import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
 
 public class MigrateLedgerCommand implements Command {
-    private static final ExecutorService retry = Executors.newSingleThreadExecutor(new DefaultThreadFactory("migrate-retry-thread"));
+    private static final ExecutorService retry = Executors.newThreadPerTaskExecutor(
+            Thread.ofVirtual().name("migrate-retry-thread").factory()
+    );
 
     @Override
     public String name() {

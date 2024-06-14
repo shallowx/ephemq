@@ -4,7 +4,6 @@ package org.meteor.common.logging;
 import java.util.logging.Logger;
 
 public class JdkLoggerFactory extends InternalLoggerFactory {
-
     public static final InternalLoggerFactory INSTANCE = new JdkLoggerFactory();
 
     @Override

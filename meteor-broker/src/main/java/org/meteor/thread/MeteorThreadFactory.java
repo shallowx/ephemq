@@ -11,9 +11,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 
 class MeteorThreadFactory implements ThreadFactory {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorThreadFactory.class);
-
     private static final AtomicInteger POOL_ID = new AtomicInteger();
     protected final ThreadGroup threadGroup;
     private final AtomicInteger nextId = new AtomicInteger();

@@ -60,7 +60,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MetricsListener.class);
     private final MeterRegistry registry = Metrics.globalRegistry;
     private final CommonConfig config;
-    private final Manager coordinator;
+    private final Manager manager;
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> topicPushCounters = new ConcurrentHashMap<>();
     private final Map<Integer, Counter> requestSuccesses = new ConcurrentHashMap<>();
@@ -81,9 +81,9 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     };
 
     public MetricsListener(Properties properties, CommonConfig config, MetricsConfig metricsConfiguration,
-                           Manager coordinator) {
+                           Manager manager) {
         this.config = config;
-        this.coordinator = coordinator;
+        this.manager = manager;
         this.metricsSample = metricsConfiguration.getMetricsSampleLimit();
         this.meterRegistrySetup = new MeteorPrometheusRegistry();
         this.meterRegistrySetup.setUp(properties);
@@ -258,7 +258,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         String serverId = config.getServerId();
 
         // storage metrics
-        for (EventExecutor executor : coordinator.getMessageStorageEventExecutorGroup()) {
+        for (EventExecutor executor : manager.getMessageStorageEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
@@ -275,7 +275,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
 
         // dispatch metrics
-        for (EventExecutor executor : coordinator.getMessageDispatchEventExecutorGroup()) {
+        for (EventExecutor executor : manager.getMessageDispatchEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)
@@ -292,7 +292,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
         }
 
         // command metrics
-        for (EventExecutor executor : coordinator.getCommandHandleEventExecutorGroup()) {
+        for (EventExecutor executor : manager.getCommandHandleEventExecutorGroup()) {
             try {
                 SingleThreadEventExecutor se = (SingleThreadEventExecutor) executor;
                 Gauge.builder(NETTY_PENDING_TASK_NAME, se, SingleThreadEventExecutor::pendingTasks)

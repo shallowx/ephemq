@@ -21,13 +21,13 @@ import org.meteor.support.Manager;
 
 public class DefaultTopicListener implements TopicListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultTopicListener.class);
-    private final Manager coordinator;
+    private final Manager manager;
     private final CommonConfig commonConfiguration;
     private final NetworkConfig networkConfiguration;
 
-    public DefaultTopicListener(Manager coordinator, CommonConfig commonConfiguration,
+    public DefaultTopicListener(Manager manager, CommonConfig commonConfiguration,
                                 NetworkConfig networkConfiguration) {
-        this.coordinator = coordinator;
+        this.manager = manager;
         this.commonConfiguration = commonConfiguration;
         this.networkConfiguration = networkConfiguration;
 
@@ -62,7 +62,7 @@ public class DefaultTopicListener implements TopicListener {
     @Override
     public void onPartitionChanged(TopicPartition topicPartition, TopicAssignment oldAssigment, TopicAssignment newAssigment) {
         try {
-            PartitionInfo partitionInfo = coordinator.getTopicCoordinator().getPartitionInfo(topicPartition);
+            PartitionInfo partitionInfo = manager.getTopicHandleSupport().getPartitionInfo(topicPartition);
             if (partitionInfo != null) {
                 if (partitionInfo.getReplicas().contains(commonConfiguration.getServerId())
                         && ((!Objects.equals(oldAssigment.getReplicas(), newAssigment.getReplicas())))
@@ -78,7 +78,7 @@ public class DefaultTopicListener implements TopicListener {
     }
 
     private void sendTopicChangedSignal(String topic, TopicChangedSignal.Type type) {
-        Set<Channel> channels = coordinator.getConnection().getReadyChannels();
+        Set<Channel> channels = manager.getConnection().getReadyChannels();
         if (channels == null || channels.isEmpty()) {
             return;
         }
@@ -99,7 +99,7 @@ public class DefaultTopicListener implements TopicListener {
     }
 
     private void sendPartitionChangedSignal(TopicPartition topicPartition, TopicAssignment assignment) {
-        Set<Channel> channels = coordinator.getConnection().getReadyChannels();
+        Set<Channel> channels = manager.getConnection().getReadyChannels();
         if (channels == null || channels.isEmpty()) {
             return;
         }
