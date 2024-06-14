@@ -21,5 +21,11 @@ You require the following to build Meteor:
 
 * Latest stable [OpenJDK 21](https://adoptium.net/)
 * Latest stable [Apache Maven](https://maven.apache.org/)
+* Latest stable [Apache Zookeeper](https://zookeeper.apache.org/)
 
 Note that this is build-time requirement. JDK-21 is enough to run your Meteor-based application.
+
+## Branches to look
+
+Development of all versions takes place in each branch whose name is identical to <majorVersion>.<minorVersion>. For
+example, the development of master resides in the branch 'master' respectively.
