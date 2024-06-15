@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.FastThreadLocal;
+import java.util.concurrent.TimeUnit;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.invoke.InvokedFeedback;
@@ -12,10 +13,7 @@ import org.meteor.remote.invoke.Processor;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
 
-import java.util.concurrent.TimeUnit;
-
 public class DemoServerProcessor implements Processor {
-
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerProcessor.class);
     private static final EventExecutorGroup executors = NetworkUtil.newEventExecutorGroup(1, "demo-buffer-group");
     private static final FastThreadLocal<ByteBuf> BUFFER = new FastThreadLocal<>();
@@ -73,7 +71,9 @@ public class DemoServerProcessor implements Processor {
     }
 
     private void pass(ByteBuf data) {
-        logger.warn("Readable bytes:{}", data.readableBytes());
+        if (logger.isWarnEnabled()) {
+            logger.warn("Readable bytes:{}", data.readableBytes());
+        }
         // not feedback
     }
 }

@@ -64,14 +64,18 @@ public class DemoClientBootstrap {
                         Channel channel = bootstrap.connect("127.0.0.1", 8888).sync().channel();
                         invoke(channel, Integer.MAX_VALUE, 1024, 1, 5000, 2, DemoClientBootstrap::invokeEchoOneway);
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        if (logger.isErrorEnabled()) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
                 }, "test-" + i);
                 threads[i].start();
             }
             new CountDownLatch(1).await();
         } catch (Exception e) {
-            logger.error(e);
+            if (logger.isErrorEnabled()) {
+                logger.error(e);
+            }
         } finally {
             group.shutdownGracefully();
             serviceGroup.shutdownGracefully();

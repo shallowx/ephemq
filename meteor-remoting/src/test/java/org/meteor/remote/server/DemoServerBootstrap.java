@@ -48,10 +48,14 @@ public class DemoServerBootstrap {
             });
 
             Channel channel = serverBootstrap.bind(8888).sync().channel();
-            logger.info("Demo start running, and listened at {}", 8888);
+            if (logger.isInfoEnabled()) {
+                logger.info("Demo start running, and listened at {}", 8888);
+            }
             channel.closeFuture().sync();
         } catch (Throwable t) {
-            logger.error("Demo started failed, {}", t);
+            if (logger.isErrorEnabled()) {
+                logger.error("Demo started failed, {}", t);
+            }
         } finally {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
