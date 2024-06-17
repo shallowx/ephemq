@@ -105,7 +105,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node{" +
+        return "(" +
                 "id='" + id + '\'' +
                 ", host='" + host + '\'' +
                 ", port=" + port +
@@ -114,6 +114,6 @@ public class Node {
                 ", state='" + state + '\'' +
                 ", auxData=" + auxData +
                 ", ledgerThroughput=" + ledgerThroughput +
-                '}';
+                ')';
     }
 }

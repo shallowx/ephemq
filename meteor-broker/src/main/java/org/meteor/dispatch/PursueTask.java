@@ -1,9 +1,8 @@
 package org.meteor.dispatch;
 
+import javax.annotation.concurrent.Immutable;
 import org.meteor.common.message.Offset;
 import org.meteor.ledger.LedgerCursor;
-
-import javax.annotation.concurrent.Immutable;
 
 @Immutable
 final class PursueTask<T> {
@@ -40,11 +39,11 @@ final class PursueTask<T> {
 
     @Override
     public String toString() {
-        return "PursueTask{" +
+        return "(" +
                 "subscription=" + subscription +
                 ", cursor=" + cursor +
                 ", pursueTimeMillis=" + pursueTimeMillis +
                 ", pursueOffset=" + pursueOffset +
-                '}';
+                ')';
     }
 }

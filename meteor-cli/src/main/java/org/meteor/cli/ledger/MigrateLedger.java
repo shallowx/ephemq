@@ -47,11 +47,11 @@ public class MigrateLedger {
 
     @Override
     public String toString() {
-        return "MigrateLedger{" +
+        return "(" +
                 "topic='" + topic + '\'' +
                 ", partition=" + partition +
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
-                '}';
+                ')';
     }
 }

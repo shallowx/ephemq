@@ -1,8 +1,8 @@
 package org.meteor.common.message;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.util.Objects;
 
 @Immutable
 public class Offset implements Comparable<Offset> {
@@ -57,9 +57,9 @@ public class Offset implements Comparable<Offset> {
 
     @Override
     public String toString() {
-        return "Offset{" +
+        return "(" +
                 "epoch=" + epoch +
                 ", index=" + index +
-                '}';
+                ')';
     }
 }

@@ -17,10 +17,10 @@ public record MessageId(int ledger, int epoch, long index) {
 
     @Override
     public String toString() {
-        return "MessageId{" +
+        return "(" +
                 "ledger=" + ledger +
                 ", epoch=" + epoch +
                 ", index=" + index +
-                '}';
+                ')';
     }
 }

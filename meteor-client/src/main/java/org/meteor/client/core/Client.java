@@ -95,7 +95,7 @@ public class Client implements MeterBinder {
         }
 
         if (size == 1) {
-            return bootstrapAddress.get(0);
+            return bootstrapAddress.getFirst();
         }
 
         return bootstrapAddress.get(ThreadLocalRandom.current().nextInt(size));

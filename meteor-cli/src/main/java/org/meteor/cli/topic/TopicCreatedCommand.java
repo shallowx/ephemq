@@ -189,13 +189,13 @@ public class TopicCreatedCommand implements Command {
 
         @Override
         public String toString() {
-            return "TopicCreatedCommand{" +
+            return "(" +
                     "topic='" + topic + '\'' +
                     ", partition=" + partition +
                     ", replicas=" + replicas +
                     ", config=" + config +
                     ", partitions=" + partitions +
-                    '}';
+                    ')';
         }
     }
 }

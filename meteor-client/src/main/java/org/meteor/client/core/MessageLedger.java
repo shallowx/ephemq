@@ -22,13 +22,13 @@ public record MessageLedger(int id, int version, SocketAddress leader, List<Sock
 
     @Override
     public String toString() {
-        return "MessageLedger{" +
+        return "(" +
                 "id=" + id +
                 ", version=" + version +
                 ", leader=" + leader +
                 ", participants=" + participants +
                 ", topic='" + topic + '\'' +
                 ", partition=" + partition +
-                '}';
+                ')';
     }
 }

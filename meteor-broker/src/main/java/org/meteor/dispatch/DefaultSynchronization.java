@@ -19,12 +19,12 @@ final class DefaultSynchronization extends AbstractSynchronization<DefaultHandle
 
     @Override
     public String toString() {
-        return "RecordSynchronization{" +
+        return "(" +
                 "markers=" + markers +
                 ", channel=" + channel +
                 ", handler=" + handler +
                 ", dispatchOffset=" + dispatchOffset +
                 ", followed=" + followed +
-                '}';
+                ')';
     }
 }

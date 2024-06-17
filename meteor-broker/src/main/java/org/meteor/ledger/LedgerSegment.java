@@ -1,15 +1,14 @@
 package org.meteor.ledger;
 
 import io.netty.buffer.ByteBuf;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Offset;
-
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
 
 public class LedgerSegment {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerSegment.class);
@@ -201,7 +200,7 @@ public class LedgerSegment {
             lastPosition = theBuffer.writerIndex();
             return;
         }
-        throw new IllegalStateException("segment is released");
+        throw new IllegalStateException("Segment is released");
     }
 
     public ChunkRecord readChunkRecord(int position, int bytesLimit) {

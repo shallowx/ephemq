@@ -96,4 +96,15 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
         super.touch();
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "handle=" + handle +
+                ", command=" + command +
+                ", data=" + data +
+                ", expired=" + expired +
+                ", feedback=" + feedback +
+                ')';
+    }
 }

@@ -190,14 +190,14 @@ public class TopicListCommand implements Command {
 
         @Override
         public String toString() {
-            return "TopicMetadata{" +
+            return "(" +
                     "topic='" + topic + '\'' +
                     ", partition=" + partition +
                     ", ledger=" + ledger +
                     ", epoch=" + epoch +
                     ", leader='" + leader + '\'' +
                     ", replicas=" + replicas +
-                    '}';
+                    ')';
         }
     }
 }
