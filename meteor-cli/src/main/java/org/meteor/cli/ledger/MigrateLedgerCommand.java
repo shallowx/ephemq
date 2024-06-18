@@ -29,7 +29,7 @@ public class MigrateLedgerCommand implements Command {
 
     @Override
     public String name() {
-        return "ml";
+        return "migrate";
     }
 
     @Override

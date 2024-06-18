@@ -30,7 +30,7 @@ import org.meteor.remote.util.NetworkUtil;
 public class ClusterListCommand implements Command {
     @Override
     public String name() {
-        return "clusters";
+        return "cluster-info";
     }
 
     @Override

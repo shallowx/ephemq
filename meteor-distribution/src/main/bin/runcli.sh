@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 base_dir=$(dirname $0)
 set -e
 
@@ -18,14 +17,9 @@ if [[ -z ${JAVA_EXE} ]]; then
     JAVA_EXE=java
 fi
 
-echo "JAVA_OPTS=${JAVA_OPTS}"
-echo "JAVA_HOME=${JAVA_HOME}"
-echo "JAVA_EXE=${JAVA_EXE}"
-
 for file in "$base_dir"/../libs/meteor-cli-*.jar
 do
   METEOR_JAR_FILE=${file}
 done
 
-echo "METEOR_JAR_FILE=${METEOR_JAR_FILE}"
 $JAVA_EXE -server ${JAVA_OPTS} -jar ${METEOR_JAR_FILE} "$@"

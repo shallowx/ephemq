@@ -36,7 +36,7 @@ public class MigrateLedgerPlanCommand implements Command {
 
     @Override
     public String name() {
-        return "mlp";
+        return "migrate-plan";
     }
 
     @Override

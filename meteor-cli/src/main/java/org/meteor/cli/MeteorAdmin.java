@@ -1,8 +1,8 @@
 package org.meteor.cli;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -11,6 +11,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.meteor.cli.cluster.ClusterListCommand;
 import org.meteor.cli.core.Command;
+import org.meteor.cli.core.MeteorHelpFormatter;
 import org.meteor.cli.ledger.MigrateLedgerCommand;
 import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.topic.TopicCreatedCommand;
@@ -39,7 +40,7 @@ public class MeteorAdmin {
                             Options options = buildOptions();
                             options = cmd.buildOptions(options);
                             if (options != null) {
-                                printCmdHelp("Smart admin" + cmd.name(), options);
+                                printCmdHelp("Smart admin " + cmd.name(), options);
                                 return;
                             }
                             System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n", newDate(),
@@ -110,14 +111,13 @@ public class MeteorAdmin {
     }
 
     private static String newDate() {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
-        return format.format(new Date());
+        return DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(LocalTime.now());
     }
 
     private static void printCmdHelp(String help, Options options) {
-        HelpFormatter hf = new HelpFormatter();
+        MeteorHelpFormatter hf = new MeteorHelpFormatter();
         hf.setWidth(110);
-        hf.printHelp(help, options, true);
+        hf.printHelp(help, options, false);
     }
 
     private static Options buildOptions() {

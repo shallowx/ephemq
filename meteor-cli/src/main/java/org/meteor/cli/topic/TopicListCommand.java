@@ -30,7 +30,7 @@ import org.meteor.remote.util.NetworkUtil;
 public class TopicListCommand implements Command {
     @Override
     public String name() {
-        return "topics";
+        return "topic-info";
     }
 
     @Override

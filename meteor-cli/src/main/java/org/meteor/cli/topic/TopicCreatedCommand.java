@@ -55,7 +55,7 @@ import org.meteor.remote.proto.server.PartitionsReplicas;
 public class TopicCreatedCommand implements Command {
     @Override
     public String name() {
-        return "ct";
+        return "topic-create";
     }
 
     @Override

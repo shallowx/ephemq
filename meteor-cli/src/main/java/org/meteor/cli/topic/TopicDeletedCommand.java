@@ -52,7 +52,7 @@ import org.meteor.remote.util.NetworkUtil;
 public class TopicDeletedCommand implements Command {
     @Override
     public String name() {
-        return "dt";
+        return "topic-delete";
     }
 
     @Override
