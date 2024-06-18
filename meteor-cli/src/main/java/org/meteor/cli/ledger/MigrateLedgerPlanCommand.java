@@ -1,5 +1,6 @@
 package org.meteor.cli.ledger;
 
+import com.google.gson.Gson;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
 import java.net.SocketAddress;
@@ -30,6 +31,9 @@ import org.meteor.remote.util.NetworkUtil;
 
 // keep print json to easy copy
 public class MigrateLedgerPlanCommand implements Command {
+
+    private static final Gson GSON = new Gson();
+
     @Override
     public String name() {
         return "mlp";
@@ -133,7 +137,8 @@ public class MigrateLedgerPlanCommand implements Command {
                         }
                     }
                 }
-                System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), gson.toJson(infos));
+                System.out.printf("%s [%s] INFO %s - %s \n", newDate(), Thread.currentThread().getName(),
+                        MigrateLedgerPlanCommand.class.getName(), GSON.toJson(infos));
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getCause().getMessage());
