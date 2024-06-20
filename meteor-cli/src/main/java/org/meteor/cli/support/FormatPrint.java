@@ -1,4 +1,4 @@
-package org.meteor.cli.core;
+package org.meteor.cli.support;
 
 import java.lang.reflect.Field;
 import java.util.List;

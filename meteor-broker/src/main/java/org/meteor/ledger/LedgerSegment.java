@@ -78,7 +78,7 @@ public class LedgerSegment {
                 theBuffer.writeInt(length);
             } catch (Throwable t) {
                 theBuffer.writerIndex(location);
-                throw new IllegalStateException(String.format("Segment write error, ledger=%s", ledger), t);
+                throw new IllegalStateException(String.format("Segment write in buffer error, ledger=%s", ledger), t);
             }
 
             lastOffset = offset;
@@ -200,7 +200,7 @@ public class LedgerSegment {
             lastPosition = theBuffer.writerIndex();
             return;
         }
-        throw new IllegalStateException("Segment is released");
+        throw new IllegalStateException("Segment was released");
     }
 
     public ChunkRecord readChunkRecord(int position, int bytesLimit) {

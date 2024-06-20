@@ -2,7 +2,7 @@ package prg.meteor.cli.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.meteor.cli.core.FormatPrint;
+import org.meteor.cli.support.FormatPrint;
 
 public class TextTableTest {
 

@@ -1,4 +1,4 @@
-package org.meteor.cli.core;
+package org.meteor.cli.support;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

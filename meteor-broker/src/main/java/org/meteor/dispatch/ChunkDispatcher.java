@@ -360,7 +360,7 @@ public class ChunkDispatcher {
                     }
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
+                        logger.error("Chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -374,7 +374,7 @@ public class ChunkDispatcher {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
+                logger.error("Chunk pursue failed, pursueTask[{}] lastOffset[{}]", pursueTask, lastOffset, e);
             }
         }
 

@@ -1,4 +1,4 @@
-package org.meteor.cli.core;
+package org.meteor.cli.support;
 
 import java.io.PrintWriter;
 import org.apache.commons.cli.HelpFormatter;

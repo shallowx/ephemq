@@ -62,7 +62,7 @@ public class LogHandler {
         Log log = getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemotingException.of(
-                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
+                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] not found", ledger)));
             return;
         }
 

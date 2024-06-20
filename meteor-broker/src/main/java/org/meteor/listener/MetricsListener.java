@@ -144,7 +144,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             }
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Metrics on command listener failed, code={}", code, t);
+                logger.error("Metrics command listener failed, code={}", code, t);
             }
         }
     }
@@ -198,7 +198,8 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             counter.increment(count);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Metrics on receive message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+                logger.error("Metrics receive message listener failed, topic={} ledger={} count={}", topic, ledger,
+                        count, t);
             }
         }
     }
@@ -221,7 +222,8 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             counter.increment(count);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Metrics on sync message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+                logger.error("Metrics sync message listener failed, topic={} ledger={} count={}", topic, ledger, count,
+                        t);
             }
         }
     }
@@ -243,7 +245,8 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
             counter.increment(count);
         } catch (Throwable t) {
             if (logger.isErrorEnabled()) {
-                logger.error("Metrics on push message listener failed, topic={} ledger={} count={}", topic, ledger, count, t);
+                logger.error("Metrics push message listener failed, topic={} ledger={} count={}", topic, ledger, count,
+                        t);
             }
         }
     }
