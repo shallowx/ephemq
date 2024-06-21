@@ -33,12 +33,6 @@ public class ParticipantSupport {
         executor = new FastEventExecutor(new DefaultThreadFactory("replica_fetch"));
     }
 
-    public void shutdown() throws Exception {
-        if (executor != null) {
-            executor.shutdownGracefully();
-        }
-    }
-
     public void subscribeLedger(int ledger, int epoch, long index, Channel channel, Promise<SyncResponse> promise) {
         Log log = manager.getLogHandler().getLog(ledger);
         if (log == null) {
@@ -68,7 +62,6 @@ public class ParticipantSupport {
                                 .setIndex(currentOffset.getIndex())
                                 .build())
                         .build();
-
                 promise.trySuccess(response);
             } else {
                 promise.tryFailure(future.cause());
@@ -82,7 +75,6 @@ public class ParticipantSupport {
         if (promise == null) {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
-
         try {
             Log log = manager.getLogHandler().getLog(ledger);
             if (log == null) {
@@ -112,7 +104,6 @@ public class ParticipantSupport {
         if (promise == null) {
             promise = ImmediateEventExecutor.INSTANCE.newPromise();
         }
-
         try {
             CancelSyncRequest request = CancelSyncRequest.newBuilder()
                     .setLedger(ledger)
@@ -124,7 +115,6 @@ public class ParticipantSupport {
             promise.tryFailure(e);
             logger.error(e.getLocalizedMessage(), e);
         }
-
     }
 
     public void unSubscribeLedger(int ledger, Channel channel, Promise<Void> promise) {
@@ -152,5 +142,12 @@ public class ParticipantSupport {
             promise.tryFailure(e);
         }
         return promise;
+    }
+
+
+    public void shutdown() throws Exception {
+        if (executor != null) {
+            executor.shutdownGracefully();
+        }
     }
 }

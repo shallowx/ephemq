@@ -62,7 +62,6 @@ public class DefaultSocketServer {
                 .childOption(ChannelOption.SO_SNDBUF, 65536)
                 .childOption(ChannelOption.SO_RCVBUF, 65536)
                 .childHandler(serviceChannelInitializer);
-
         if (networkConfiguration.isNetworkLogDebugEnabled()) {
             bootstrap.handler(new LoggingHandler(LogLevel.DEBUG));
         }
@@ -70,7 +69,6 @@ public class DefaultSocketServer {
         WriteBufferWaterMark mark = new WriteBufferWaterMark(networkConfiguration.getWriteBufferWaterMarker() >> 1,
                 networkConfiguration.getWriteBufferWaterMarker());
         bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, mark);
-
         ChannelFuture future = bootstrap.bind(commonConfiguration.getAdvertisedAddress(), commonConfiguration.getAdvertisedPort())
                 .addListener((ChannelFutureListener) f -> {
                     if (f.isSuccess()) {
@@ -85,7 +83,6 @@ public class DefaultSocketServer {
                 }).sync();
 
         channelClosedFuture = future.channel().closeFuture();
-
         int compatiblePort = commonConfiguration.getCompatiblePort();
         if (future.isSuccess() && compatiblePort >= 0 && compatiblePort != commonConfiguration.getAdvertisedPort()) {
             Channel compatibleChannel = bootstrap.bind(commonConfiguration.getAdvertisedAddress(), compatiblePort)

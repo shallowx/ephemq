@@ -19,6 +19,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public final class ConsistentHashingRing {
     private final NavigableMap<Integer, NavigableSet<String>> virtualNodes = new TreeMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock writeLock = lock.writeLock();
+    private final Lock readLock = lock.readLock();
     private final HashFunction function = Hashing.murmur3_32_fixed();
     private final int virtualNodeSize;
     private final Set<String> nodes = new HashSet<>();
@@ -32,7 +34,6 @@ public final class ConsistentHashingRing {
     }
 
     public void insertNode(String node) {
-        Lock writeLock = lock.writeLock();
         writeLock.lock();
         try {
             if (!nodes.add(node)) {
@@ -56,7 +57,6 @@ public final class ConsistentHashingRing {
     }
 
     public void deleteNode(String node) {
-        Lock writeLock = lock.writeLock();
         writeLock.lock();
         try {
             if (!nodes.remove(node)) {
@@ -79,7 +79,6 @@ public final class ConsistentHashingRing {
     }
 
     public Set<String> route2Nodes(String key, int size) {
-        Lock readLock = lock.readLock();
         readLock.lock();
         try {
             if (virtualNodes.isEmpty() || size < 1) {

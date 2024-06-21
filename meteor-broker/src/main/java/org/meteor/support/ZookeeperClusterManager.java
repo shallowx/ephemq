@@ -59,7 +59,6 @@ public class ZookeeperClusterManager implements ClusterManager {
                     if (stat != null) {
                         return;
                     }
-
                     registerNode(PathConstants.BROKERS_ID);
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {

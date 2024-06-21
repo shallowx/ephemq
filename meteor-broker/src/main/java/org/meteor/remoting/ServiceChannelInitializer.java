@@ -32,12 +32,11 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
         if (networkConfiguration.isNetworkLogDebugEnabled()) {
             pipeline.addLast("logging-handler", new LoggingHandler(LogLevel.DEBUG));
         }
-
         pipeline.addLast("statistics-handler", statisticsDuplexHandler);
         pipeline.addLast("encoder", MessageEncoder.instance());
         pipeline.addLast("decoder", new MessageDecoder());
         pipeline.addLast("connect-handler", new HeartbeatDuplexHandler(0, 60000));
-        pipeline.addLast("processor-handler", new ServiceDuplexHandler(
-                manager, new ServiceProcessor(commonConfiguration, networkConfiguration, manager)));
+        pipeline.addLast("processor-handler", new ServiceDuplexHandler(manager,
+                new ServiceProcessor(commonConfiguration, networkConfiguration, manager)));
     }
 }

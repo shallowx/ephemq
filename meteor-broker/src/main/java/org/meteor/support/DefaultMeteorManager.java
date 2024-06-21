@@ -71,7 +71,6 @@ public class DefaultMeteorManager implements Manager {
     public void start() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
         List<String> clusterNodeAddress = Collections.singletonList(configuration.getCommonConfig().getAdvertisedAddress() + ":" + configuration.getCommonConfig().getAdvertisedPort());
-
         clientConfig.setBootstrapAddresses(clusterNodeAddress);
         clientConfig.setChannelConnectionTimeoutMilliseconds(configuration.getNetworkConfig().getConnectionTimeoutMilliseconds());
         clientConfig.setSocketEpollPrefer(true);
