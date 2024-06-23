@@ -18,7 +18,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     private static final MessageEncoder ENCODER = new MessageEncoder();
 
     private MessageEncoder() {
-        throw new UnsupportedOperationException("MessageEncoder should not be instantiated");
+        throw new UnsupportedOperationException("MessageEncoder cannot support this instantiated");
     }
 
     public static MessageEncoder instance() {
