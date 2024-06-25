@@ -155,10 +155,10 @@ public class MeteorAdmin {
     }
 
     private static void printHelp() {
-        System.out.printf("The most commonly used commands are:%n");
+        System.out.printf("Common Commands:%n");
         for (Command cmd : commands) {
             System.out.printf(" %-20s %s%n", cmd.name(), cmd.description());
         }
-        System.out.printf("%n See 'smart admin help <command>' for more information on a specific command.%n");
+        System.out.printf("%n Run 'COMMAND --help' for more information on a command..%n");
     }
 }
