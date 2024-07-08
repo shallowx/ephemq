@@ -5,12 +5,22 @@
 Meteor is a distributed messaging and streaming platform developed based on memory storage, with low latency, high
 performance and reliability, trillion-level capacity and flexible scalability.
 
+## Performance
+
+- Better throughput, lower latency
+- Less resource consumption
+- Minimized unnecessary memory copy
+
 ## Links
 
 * [Web Site]()
 * [Downloads]()
 * [Documentation]()
 * [Official Discord server]()
+
+## Security
+
+- Complete SSL/TLS and StartTLS support
 
 ## How to build
 
