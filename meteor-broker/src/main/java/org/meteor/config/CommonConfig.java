@@ -49,7 +49,7 @@ public class CommonConfig {
     }
 
     public int getCompatiblePort() {
-        return object2Int(prop.getOrDefault(COMPATIBLE_PORT, -1));
+        return object2Int(prop.getOrDefault(COMPATIBLE_PORT, 8889));
     }
 
     public int getShutdownMaxWaitTimeMilliseconds() {
