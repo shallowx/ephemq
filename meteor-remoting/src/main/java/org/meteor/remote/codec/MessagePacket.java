@@ -2,6 +2,7 @@ package org.meteor.remote.codec;
 
 import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufConvertible;
 import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
@@ -9,7 +10,8 @@ import io.netty.util.ReferenceCounted;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public final class MessagePacket extends AbstractReferenceCounted {
+public final class MessagePacket extends AbstractReferenceCounted
+        implements Comparable<MessagePacket>, ByteBufConvertible {
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
     public static final byte HEADER_LENGTH = 16;
     public static final int MAX_FRAME_LENGTH = 4194316;
@@ -40,7 +42,6 @@ public final class MessagePacket extends AbstractReferenceCounted {
 
         return packet;
     }
-
 
     public long feedback() {
         return feedback;
@@ -96,5 +97,28 @@ public final class MessagePacket extends AbstractReferenceCounted {
                 ", command=" + command +
                 ", body=" + body +
                 ')';
+    }
+
+    @Override
+    public ByteBuf asByteBuf() {
+        ByteBuf byteBuf = Unpooled.directBuffer();
+        try {
+            byteBuf.writeLong(feedback);
+            byteBuf.writeInt(command);
+            byteBuf.writeBytes(body);
+            return byteBuf;
+        } catch (Exception e) {
+            if (byteBuf != null) {
+                byteBuf.release();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int compareTo(MessagePacket o) {
+        assert o != null;
+        int orb = o.body.readableBytes();
+        return Integer.compare(this.body.readableBytes() - orb, 0);
     }
 }
