@@ -48,7 +48,9 @@ public class LedgerSegment {
                     buf.release();
                 }
             } catch (InterruptedException e) {
-                break;
+                if (logger.isErrorEnabled()) {
+                    logger.error("Release direct buffer failed", e);
+                }
             }
         }
     }
