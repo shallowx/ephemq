@@ -6,7 +6,7 @@ import java.util.List;
 public class FormatPrint {
     public static void formatPrint(List<?> objects, String[] title) {
         if (objects == null || objects.isEmpty()) {
-            System.out.println("No objects found");
+            System.out.println("No format objects were found");
         } else {
             String[][] tables = new String[objects.size()][title.length];
             for (int i = 0; i < objects.size(); i++) {

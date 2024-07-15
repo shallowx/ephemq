@@ -116,7 +116,7 @@ public class TopicDeletedCommand implements Command {
             }
         } catch (Exception e) {
             System.out.printf("%s [%s] ERROR %S - delete topic[%s] from cluster failure \n",
-                    newDate(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
+                    currentTime(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
             throw new CommandException("Execution delete topic command[dt] failed", e);
         }
     }

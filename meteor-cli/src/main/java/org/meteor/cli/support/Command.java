@@ -12,7 +12,8 @@ public interface Command {
     String description();
     Options buildOptions(final Options options);
     void execute(final CommandLine commandLine, final Options options, Client client) throws Exception;
-    default String newDate() {
-        return DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(LocalTime.now(ZoneId.of("UTC+8")));
+
+    default String currentTime() {
+        return DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(LocalTime.now(ZoneId.of("UTC +08:00")));
     }
 }

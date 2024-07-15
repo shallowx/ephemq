@@ -81,7 +81,7 @@ public class TopicListCommand implements Command {
                     topicInfos = client.queryTopicInfos(clientChannel);
                 }
                 if (topicInfos == null || topicInfos.isEmpty()) {
-                    System.out.printf("%s [%s] INFO %s - Topic info is empty \n", newDate(),
+                    System.out.printf("%s [%s] INFO %s - Topic info is empty \n", currentTime(),
                             Thread.currentThread().getName(), TopicListCommand.class.getName());
                     return;
                 }
@@ -112,7 +112,7 @@ public class TopicListCommand implements Command {
                 formatPrint(topics);
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", newDate(), Thread.currentThread().getName(),
+            System.out.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
                     TopicListCommand.class.getName(), t.getMessage());
             throw new CommandException("Execution query topic infos command[topics] failed", t);
         }
