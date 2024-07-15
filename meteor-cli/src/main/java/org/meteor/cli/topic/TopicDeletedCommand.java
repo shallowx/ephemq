@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -111,9 +110,8 @@ public class TopicDeletedCommand implements Command {
                             ));
                         }
                     }
-                    TimeUnit.MILLISECONDS.sleep(1000);
-                    client.deleteTopic(topic);
                     formatPrint(infos);
+                    client.deleteTopic(topic);
                 }
             }
         } catch (Exception e) {

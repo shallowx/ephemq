@@ -1,6 +1,7 @@
 package org.meteor.cli.support;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -12,6 +13,6 @@ public interface Command {
     Options buildOptions(final Options options);
     void execute(final CommandLine commandLine, final Options options, Client client) throws Exception;
     default String newDate() {
-        return DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(LocalTime.now());
+        return DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(LocalTime.now(ZoneId.of("UTC+8")));
     }
 }
