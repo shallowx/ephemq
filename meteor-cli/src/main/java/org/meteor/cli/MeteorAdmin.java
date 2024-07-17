@@ -43,7 +43,7 @@ public class MeteorAdmin {
                                 printCmdHelp("Smart admin " + cmd.name(), options);
                                 return;
                             }
-                            System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n", newDate(),
+                            System.err.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n", newDate(),
                                     Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[1]);
                         }
                     }
