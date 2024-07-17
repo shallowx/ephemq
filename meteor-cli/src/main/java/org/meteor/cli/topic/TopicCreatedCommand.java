@@ -103,7 +103,7 @@ public class TopicCreatedCommand implements Command {
                 }
             }
         } catch (Exception e) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
+            System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
                     TopicCreatedCommand.class.getName(), e.getMessage());
             throw new CommandException("Execution create topic command[ct] failed", e);
         }

@@ -103,7 +103,7 @@ public class MigrateLedgerCommand implements Command {
                                     String.format("Migrate ledger failure, and try again later, topic=%s partition=%s",
                                             info.getTopic(), info.getPartition()));
                         } catch (Exception e) {
-                            System.out.printf("%s [%s] ERROR %s-%s", currentTime(), Thread.currentThread().getName(),
+                            System.err.printf("%s [%s] ERROR %s-%s", currentTime(), Thread.currentThread().getName(),
                                     MigrateLedgerPlanCommand.class.getName(), e.getMessage());
                             retry(client, info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
                         }

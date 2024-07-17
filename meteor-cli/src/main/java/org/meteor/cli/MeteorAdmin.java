@@ -55,7 +55,7 @@ public class MeteorAdmin {
                         Options options = buildOptions();
                         CommandLine cmdLine = parseCommandLine(cmdArgs, cmd.buildOptions(options));
                         if (cmdLine == null) {
-                            System.out.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
+                            System.err.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
                                     newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
                             return;
                         }
@@ -80,13 +80,13 @@ public class MeteorAdmin {
                             }
                         }
                     } else {
-                        System.out.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n", newDate(),
+                        System.err.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n", newDate(),
                                 Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
                     }
                 }
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] INFO %s - ERROR: %s\n", newDate(), Thread.currentThread().getName(),
+            System.err.printf("%s [%s] INFO %s - ERROR: %s\n", newDate(), Thread.currentThread().getName(),
                     MeteorAdmin.class.getName(), t.getMessage());
             System.exit(-1);
         }

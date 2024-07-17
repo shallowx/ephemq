@@ -112,7 +112,7 @@ public class TopicListCommand implements Command {
                 formatPrint(topics);
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
+            System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
                     TopicListCommand.class.getName(), t.getMessage());
             throw new CommandException("Execution query topic infos command[topics] failed", t);
         }

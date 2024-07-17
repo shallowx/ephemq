@@ -143,7 +143,7 @@ public class MigrateLedgerPlanCommand implements Command {
                         MigrateLedgerPlanCommand.class.getName(), GSON.toJson(infos));
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
+            System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
                     MigrateLedgerPlanCommand.class.getName(), t.getCause().getMessage());
             throw new CommandException("Execution migrate ledger plan command[mlp] failed", t);
         }

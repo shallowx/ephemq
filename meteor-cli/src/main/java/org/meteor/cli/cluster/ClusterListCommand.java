@@ -87,7 +87,7 @@ public class ClusterListCommand implements Command {
             }
             formatPrint(nodes);
         } catch (Exception e) {
-            System.out.printf("%s [%S] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
+            System.err.printf("%s [%S] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
                     ClusterListCommand.class.getName(), e.getMessage());
             throw new CommandException("Execute cluster command[clusters] error", e);
         }
