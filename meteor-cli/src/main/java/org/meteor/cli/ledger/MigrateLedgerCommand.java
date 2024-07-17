@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -117,6 +118,11 @@ public class MigrateLedgerCommand implements Command {
     }
 
     private void retry(Client client, String topic, int partition, String original, String destination) throws ExecutionException, InterruptedException {
+        System.out.printf(
+                "Migrate ledger[topic=%s partition=%d original-broker=%s destination-broker=%s] failed, and try again"
+                        + " after %d s, if you want to stop it, ant you can execute `Ctrl-C`",
+                topic, partition, original, destination, 30);
+        TimeUnit.SECONDS.sleep(30);
         Future<?> future = retry.submit(() -> {
             try {
                 client.migrateLedger(topic, partition, original, destination);
