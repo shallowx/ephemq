@@ -3,11 +3,11 @@ package org.meteor.cli.ledger;
 import com.google.gson.Gson;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -102,7 +102,7 @@ public class MigrateLedgerPlanCommand implements Command {
                             Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName());
                     return;
                 }
-                List<MigrateLedger> infos = new LinkedList<>();
+                List<MigrateLedger> infos = new ObjectArrayList<>();
                 Map<String, TopicInfo> topicInfos = client.queryTopicInfos(clientChannel);
                 if (topicInfos == null || topicInfos.isEmpty()) {
                     System.out.printf("%s [%s] WARN %s - topic does not exists \n", currentTime(),

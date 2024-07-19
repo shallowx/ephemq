@@ -3,8 +3,8 @@ package org.meteor.internal;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.net.InetSocketAddress;
-import java.util.LinkedList;
 import java.util.Properties;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class InternalClientTest {
     @Before
     public void setUp() throws Exception {
         clientConfig = new ClientConfig();
-        clientConfig.setBootstrapAddresses(new LinkedList<>() {{
+        clientConfig.setBootstrapAddresses(new ObjectArrayList<>() {{
             add("localhost:9527");
         }});
         embeddedChannel = new EmbeddedChannel();

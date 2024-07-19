@@ -2,9 +2,9 @@ package org.meteor.support;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import org.meteor.client.core.Client;
 import org.meteor.client.core.ClientConfig;
@@ -25,7 +25,7 @@ import org.meteor.remote.util.NetworkUtil;
 
 public class DefaultMeteorManager implements Manager {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultMeteorManager.class);
-    private final List<APIListener> apiListeners = new LinkedList<>();
+    private final List<APIListener> apiListeners = new ObjectArrayList<>();
     protected LogHandler logHandler;
     protected TopicHandleSupport support;
     protected ClusterManager clusterManager;

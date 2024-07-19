@@ -16,10 +16,10 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import io.netty.util.concurrent.RejectedExecutionHandlers;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import net.openhft.affinity.AffinityStrategies;
@@ -50,7 +50,7 @@ public final class NetworkUtil {
     public static List<SocketAddress> switchSocketAddress(Collection<? extends String> addresses) {
         final int size = addresses == null ? 0 : addresses.size();
         if (ObjectUtil.checkPositive(size, "bootstrap address") > 0) {
-            List<SocketAddress> socketAddresses = new LinkedList<>();
+            List<SocketAddress> socketAddresses = new ObjectArrayList<>();
             for (String address : addresses) {
                 SocketAddress socketAddress = switchSocketAddress(address);
                 if (null != socketAddress) {
