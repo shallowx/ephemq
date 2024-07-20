@@ -110,6 +110,9 @@ public class TopicListCommand implements Command {
                     topics = topics.stream().filter(t -> t.getPartition() == partition).toList();
                 }
                 formatPrint(topics);
+            } else {
+                throw new IllegalArgumentException(
+                        "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Throwable t) {
             System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),

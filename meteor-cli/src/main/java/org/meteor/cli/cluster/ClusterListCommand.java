@@ -53,12 +53,13 @@ public class ClusterListCommand implements Command {
 
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
+        List<Node> nodes = new ArrayList<>();
         try {
-            List<Node> nodes = new ArrayList<>();
             if (commandLine.hasOption('b')) {
                 String addr = commandLine.getOptionValue('b');
                 if (StringUtil.isNullOrEmpty(addr)) {
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException(
+                            "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
                 ClientChannel clientChannel = client.getActiveChannel(socketAddress);

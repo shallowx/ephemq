@@ -95,7 +95,9 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
                     consumer.touchChangedTask();
                 }
             } catch (Throwable t) {
-                logger.error(t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("The consumer on-topic-change failure", t);
+                }
             }
         }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
     }
@@ -119,7 +121,9 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
                             obsoleteFutures.remove(k);
                         }, consumerConfig.getControlRetryDelayMilliseconds(), TimeUnit.MILLISECONDS));
             } catch (Throwable t) {
-                logger.error(t);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Meteor on push-message failure", t);
+                }
             }
             return;
         }

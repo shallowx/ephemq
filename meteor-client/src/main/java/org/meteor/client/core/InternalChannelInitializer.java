@@ -104,6 +104,9 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                 channel.closeFuture().addListener((ChannelFutureListener) f -> listener.onChannelClosed(clientChannel));
                 listener.onChannelActive(clientChannel);
             } catch (Throwable t) {
+                if (logger.isErrorEnabled()) {
+                    logger.error(t);
+                }
                 channel.close();
             }
         }
@@ -126,7 +129,11 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                     }
                 }
             } catch (Throwable t) {
-                logger.error("Channel[{}] processor is error, code[{}] length[{}]", NetworkUtil.switchAddress(clientChannel.channel()), command, length);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Channel[{}] processor is error, code[{}] length[{}]",
+                            NetworkUtil.switchAddress(clientChannel.channel()), command, length);
+                }
+
                 if (feedback != null) {
                     feedback.failure(t);
                 }

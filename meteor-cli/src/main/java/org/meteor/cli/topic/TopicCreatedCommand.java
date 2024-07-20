@@ -99,8 +99,14 @@ public class TopicCreatedCommand implements Command {
                             CreateTopicResponse response = client.createTopic(topic, partition, replicas, config);
                             print(response, topic, partition, replicas, config);
                         }
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Meteor-cli illegal argument exception, [-e] args cannot be empty.");
                     }
                 }
+            } else {
+                throw new IllegalArgumentException(
+                        "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Exception e) {
             System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),

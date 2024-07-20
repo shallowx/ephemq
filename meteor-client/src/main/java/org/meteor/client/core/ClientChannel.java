@@ -36,6 +36,52 @@ public class ClientChannel implements MeterBinder {
         this.hashCode = Objects.hashCode(id);
     }
 
+
+    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback) {
+        int length = ByteBufUtil.bufLength(data);
+        try {
+            long time = System.currentTimeMillis();
+            if (semaphore.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
+                try {
+                    if (callback == null) {
+                        ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
+                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)),
+                                promise);
+                    } else {
+                        long expires = timeoutMs + time;
+                        InvokedFeedback<ByteBuf> feedback = new GenericInvokedFeedback<>((v, c) -> {
+                            semaphore.release();
+                            callback.onCompleted(v, c);
+                        });
+                        channel.writeAndFlush(
+                                WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback));
+                    }
+                } catch (Throwable t) {
+                    semaphore.release();
+                    throw t;
+                }
+            } else {
+                throw new TimeoutException("Client invoke semaphore acquire timeout" + timeoutMs + "ms");
+            }
+        } catch (Throwable t) {
+            RuntimeException cause = new RuntimeException(
+                    String.format("Channel invoke failed, address[%s] code[%d] length[%d]", address(), code, length), t
+            );
+            if (callback != null) {
+                callback.onCompleted(null, cause);
+            } else {
+                throw cause;
+            }
+        } finally {
+            ByteBufUtil.release(data);
+        }
+    }
+
+    @Override
+    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
+
+    }
+
     public String id() {
         return id;
     }
@@ -94,47 +140,4 @@ public class ClientChannel implements MeterBinder {
         return hashCode;
     }
 
-    public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback) {
-        int length = ByteBufUtil.bufLength(data);
-        try {
-            long time = System.currentTimeMillis();
-            if (semaphore.tryAcquire(timeoutMs, TimeUnit.MILLISECONDS)) {
-                try {
-                    if (callback == null) {
-                        ChannelPromise promise = channel.newPromise().addListener(f -> semaphore.release());
-                        channel.writeAndFlush(WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data)), promise);
-                    } else {
-                        long expires = timeoutMs + time;
-                        InvokedFeedback<ByteBuf> feedback = new GenericInvokedFeedback<>((v, c) -> {
-                            semaphore.release();
-                            callback.onCompleted(v, c);
-                        });
-                        channel.writeAndFlush(
-                                WrappedInvocation.newInvocation(code, ByteBufUtil.retainBuf(data), expires, feedback));
-                    }
-                } catch (Throwable t) {
-                    semaphore.release();
-                    throw t;
-                }
-            } else {
-                throw new TimeoutException("Client invoke semaphore acquire timeout" + timeoutMs + "ms");
-            }
-        } catch (Throwable t) {
-            RuntimeException cause = new RuntimeException(
-                    String.format("Channel invoke failed, address[%s] code[%d] length[%d]", address(), code, length), t
-            );
-            if (callback != null) {
-                callback.onCompleted(null, cause);
-            } else {
-                throw cause;
-            }
-        } finally {
-            ByteBufUtil.release(data);
-        }
-    }
-
-    @Override
-    public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-
-    }
 }

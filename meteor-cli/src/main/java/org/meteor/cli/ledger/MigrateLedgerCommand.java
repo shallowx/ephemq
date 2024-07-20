@@ -24,6 +24,9 @@ import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
 
 public class MigrateLedgerCommand implements Command {
+
+    private static final Gson gson = new Gson();
+
     private static final ExecutorService retry = Executors.newThreadPerTaskExecutor(
             Thread.ofVirtual().name("migrate-retry-thread").factory()
     );
@@ -79,7 +82,7 @@ public class MigrateLedgerCommand implements Command {
                 file = commandLine.getOptionValue('e');
                 if (!StringUtil.isNullOrEmpty(file)) {
                     String content = FileUtils.readFileToString(new File(file), StandardCharsets.UTF_8);
-                    Gson gson = new Gson();
+
                     List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {
                     }.getType());
                     if (infos == null || infos.isEmpty()) {
@@ -109,6 +112,8 @@ public class MigrateLedgerCommand implements Command {
                         }
                     }
                 }
+            } else {
+                throw new IllegalArgumentException("Meteor-cli illegal argument exception, [-e] args cannot be empty.");
             }
         } catch (Throwable t) {
             System.out.printf("%s [%s] ERROR %s-%s", currentTime(), Thread.currentThread().getName(),

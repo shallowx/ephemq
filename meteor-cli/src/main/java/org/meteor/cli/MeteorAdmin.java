@@ -3,7 +3,8 @@ package org.meteor.cli;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -22,7 +23,6 @@ import org.meteor.client.core.ClientConfig;
 import org.meteor.client.core.CombineListener;
 
 public class MeteorAdmin {
-    private static final List<Command> commands = new ArrayList<>();
 
     public static void main(String[] args) {
         main0(args);
@@ -40,7 +40,7 @@ public class MeteorAdmin {
                             Options options = buildOptions();
                             options = cmd.buildOptions(options);
                             if (options != null) {
-                                printCmdHelp("Smart admin " + cmd.name(), options);
+                                printCmdHelp("Meteor-cli admin " + cmd.name(), options);
                                 return;
                             }
                             System.err.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n", newDate(),
@@ -69,7 +69,7 @@ public class MeteorAdmin {
                                 }
                             });
 
-                            Client client = new Client("cmdLine-client", config, new CombineListener() {
+                            Client client = new Client("meteor-cli-client", config, new CombineListener() {
                             });
                             try {
                                 client.start();
@@ -129,6 +129,7 @@ public class MeteorAdmin {
         return options;
     }
 
+    private static final Map<String, Command> commands = new HashMap<>(8);
     private static void initCommand() {
         Command clientCmd = new TopicListCommand();
         Command clusterCmd = new ClusterListCommand();
@@ -137,26 +138,21 @@ public class MeteorAdmin {
         Command planCmd = new MigrateLedgerPlanCommand();
         Command migrateCmd = new MigrateLedgerCommand();
 
-        commands.add(clientCmd);
-        commands.add(clusterCmd);
-        commands.add(topicCreatedCmd);
-        commands.add(topicDeletedCmd);
-        commands.add(planCmd);
-        commands.add(migrateCmd);
+        commands.put(clientCmd.name(), clientCmd);
+        commands.put(clusterCmd.name(), clusterCmd);
+        commands.put(topicCreatedCmd.name(), topicCreatedCmd);
+        commands.put(topicDeletedCmd.name(), topicDeletedCmd);
+        commands.put(planCmd.name(), planCmd);
+        commands.put(migrateCmd.name(), migrateCmd);
     }
 
     private static Command getCommand(String name) {
-        for (Command cmd : commands) {
-            if (cmd.name().equals(name)) {
-                return cmd;
-            }
-        }
-        return null;
+        return commands.get(name);
     }
 
     private static void printHelp() {
         System.out.printf("Common Commands:%n");
-        for (Command cmd : commands) {
+        for (Command cmd : commands.values()) {
             System.out.printf(" %-20s %s%n", cmd.name(), cmd.description());
         }
         System.out.printf("%n Run 'COMMAND --help' for more information on a command..%n");
