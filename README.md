@@ -2,8 +2,8 @@
 
 ## Meteor Project
 
-Meteor is a distributed messaging and streaming platform developed based on memory storage, with low latency, high
-performance and reliability, trillion-level capacity and flexible scalability.
+Meteor is a distributed messaging and streaming platform developed based on direct memory, with low latency, high
+performance, high reliability, trillion-level capacity, flexible expansion and other features
 
 ## Performance
 
