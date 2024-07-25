@@ -51,7 +51,7 @@ class MeteorThreadFactory implements ThreadFactory {
         ObjectUtil.checkNotNull(poolName, "Meteor thread pool name cannot be empty");
         if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
             throw new IllegalArgumentException(
-                    "Thread priority is actually [ " + priority + "], but the expectation in [1, 10]");
+                    STR."Thread priority is actually [\{priority}], but the expectation in [1, 10]");
         }
 
         prefix = poolName + '-' + POOL_ID.incrementAndGet() + '-';
