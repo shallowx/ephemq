@@ -167,7 +167,7 @@ public class Log {
         LogState logState = state.get();
         if (!isAppendable(logState) && !isMigrating(logState)) {
             promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
-                    String.format("The log can't begin to sync data,the current state is %s", logState)));
+                    STR."The log can't begin to sync data,the current state is \{logState}"));
             return;
         }
 
@@ -325,9 +325,8 @@ public class Log {
     private void doAttachSynchronize(Channel channel, Offset initOffset, Promise<Void> promise) {
         LogState logState = state.get();
         if (!isActive(logState)) {
-            promise.tryFailure(RemotingException.of(Command.Failure.PROCESS_EXCEPTION, String.format(
-                    "Log %d is not active now, the current state is %s", ledger, state
-            )));
+            promise.tryFailure(RemotingException.of(Command.Failure.PROCESS_EXCEPTION,
+                    STR."Log[ledger:\{ledger}] is not active now, because of the current state is \{state}"));
             return;
         }
         chunkEntryDispatcher.attach(channel, initOffset, promise);
@@ -477,7 +476,7 @@ public class Log {
                 forwardAppendingTraffic(marker, payload, promise);
             } else if (isSynchronizing(logState)) {
                 promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
-                        String.format("The log %d can't accept appending record, current state is %s", ledger, logState)));
+                        STR."Log[ledger:\{ledger}] can't accept appending record, because of the current state is \{logState}"));
             } else {
                 storage.appendRecord(marker, payload, promise);
             }
@@ -636,7 +635,7 @@ public class Log {
                 if (future.isSuccess()) {
                     int appends = future.getNow();
                     if (logger.isWarnEnabled() && appends < count) {
-                        logger.warn("Chunk append missed topic={} ledger={} exceptCount={} appendCount={}",
+                        logger.warn("[:: topic:{}, ledger:{}, exceptCount:{}, appendCount:{}]Chunk append missed",
                                 topicPartition.topic(), ledger, count, appends, future.cause());
                     }
                 }

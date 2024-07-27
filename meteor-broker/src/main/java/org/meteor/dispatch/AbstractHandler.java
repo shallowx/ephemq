@@ -2,14 +2,13 @@ package org.meteor.dispatch;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
-import org.meteor.common.message.Offset;
-import org.meteor.ledger.LedgerCursor;
-
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import org.meteor.common.message.Offset;
+import org.meteor.ledger.LedgerCursor;
 
 abstract class AbstractHandler<E, T> {
     protected final ConcurrentMap<Channel, E> subscriptionChannels = new ConcurrentHashMap<>();
@@ -41,7 +40,7 @@ abstract class AbstractHandler<E, T> {
     private int index(int[] countArray) {
         int index = 0;
         if (countArray[index] > 0) {
-            for (int i = 1; i < countArray.length; i++) {
+            for (int i = 1, length = countArray.length; i < length; i++) {
                 int v = countArray[i];
                 if (v == 0) {
                     index = i;

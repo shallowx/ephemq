@@ -36,14 +36,7 @@ final class ChunkHandler extends AbstractHandler<ChunkSynchronization, ChunkHand
 
     @Override
     public String toString() {
-        return "(" +
-                "synchronizations=" + synchronizations +
-                ", subscriptionChannels=" + subscriptionChannels +
-                ", triggered=" + triggered +
-                ", dispatchExecutor=" + dispatchExecutor +
-                ", followOffset=" + followOffset +
-                ", followCursor=" + followCursor +
-                ')';
+        return STR."(synchronizations=\{synchronizations}, subscriptionChannels=\{subscriptionChannels}, triggered=\{triggered}, dispatchExecutor=\{dispatchExecutor}, followOffset=\{followOffset}, followCursor=\{followCursor})";
     }
 }
 

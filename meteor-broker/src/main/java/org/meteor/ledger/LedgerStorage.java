@@ -8,12 +8,11 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LedgerStorage {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorage.class);
@@ -187,7 +186,8 @@ public class LedgerStorage {
                 trigger.onRelease(ledger, oldHead, newHead);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
-                    logger.warn("Trigger on release failed, and topic={} old_offset={} new_offset={}", topic, oldHead, newHead);
+                    logger.warn("[:: topic:{}, old_offset:{}, new_offset:{}]Trigger on release failed", topic, oldHead,
+                            newHead);
                 }
             }
         }
@@ -257,7 +257,7 @@ public class LedgerStorage {
 
     private void checkActive() {
         if (!isActive()) {
-            throw new IllegalStateException(String.format("Ledger storage is inactive, ledger=%d", ledger));
+            throw new IllegalStateException(STR."Ledger[\{ledger}] storage is inactive");
         }
     }
 
@@ -327,8 +327,10 @@ public class LedgerStorage {
             int location = buf.readerIndex();
             final Offset startOffset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
             if (logger.isDebugEnabled() && !MessageUtil.isContinuous(lastOffset, startOffset)) {
-                logger.debug("Received append chunk message from {} is discontinuous, ledger={} topic={} lastOffset={} startOffset={}",
-                        channel, ledger, topic, lastOffset, startOffset);
+                logger.debug(
+                        "[:: ledger:{}, topic:{}, lastOffset:{}, startOffset:{}]Received append chunk message from {}"
+                                + " is discontinuous",
+                        ledger, topic, lastOffset, startOffset, channel);
             }
             if (!startOffset.after(lastOffset)) {
                 for (int i = 0; i < count; i++) {
@@ -337,7 +339,7 @@ public class LedgerStorage {
                     final Offset offset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
                     if (!offset.after(lastOffset)) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Ignore duplicate message, offset={} lastOffset={}", offset, lastOffset);
+                            logger.debug("[:: offset:{}, lastOffset:{}]Ignore duplicate message", offset, lastOffset);
                         }
                         buf.skipBytes(bytes);
                         continue;
