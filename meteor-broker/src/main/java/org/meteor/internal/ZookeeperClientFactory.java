@@ -1,5 +1,7 @@
 package org.meteor.internal;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.state.SessionConnectionStateErrorPolicy;
@@ -7,9 +9,6 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ZookeeperConfig;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ZookeeperClientFactory {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClientFactory.class);
@@ -19,11 +18,11 @@ public class ZookeeperClientFactory {
         return readyClients.computeIfAbsent(clusterName, namespace -> {
             String url = config.getZookeeperUrl();
             if (url == null) {
-                throw new IllegalStateException("Zookeeper address not found");
+                throw new IllegalStateException("Zookeeper cluster address not found");
             }
 
             if (logger.isInfoEnabled()) {
-                logger.info("Using url[{}] as zookeeper address", url);
+                logger.info(STR."Using url[\{url}] as zookeeper address");
             }
             CuratorFramework client = CuratorFrameworkFactory.builder()
                     .connectString(url)

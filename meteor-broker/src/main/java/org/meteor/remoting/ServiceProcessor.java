@@ -120,7 +120,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 default -> {
                     if (feedback != null) {
                         feedback.failure(RemotingException.of(RemotingException.Failure.UNSUPPORTED_EXCEPTION,
-                                "Command[" + code + "] unsupported, length=" + length));
+                                STR."Command[\{code}] unsupported, length=\{length}"));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel[{}] command[{}] unsupported, length={}", code, NetworkUtil.switchAddress(channel), length);
@@ -156,10 +156,10 @@ public class ServiceProcessor implements Processor, Command.Server {
                             feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("Process sync ledger[" + ledger + "] failed", code, channel, feedback, e);
+                        processFailed(STR."Process sync ledger[\{ledger}] failed", code, channel, feedback, e);
                     }
                 } else {
-                    processFailed("Process sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
+                    processFailed(STR."Process sync ledger[\{ledger}] failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });

@@ -3,6 +3,7 @@ package org.meteor.support;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicConfig;
@@ -25,7 +26,8 @@ public interface TopicHandleSupport {
     PartitionInfo getPartitionInfo(TopicPartition topicPartition) throws Exception;
     @Nullable
     Set<PartitionInfo> getTopicInfo(String topic);
-    @Nullable
+
+    @Nonnull
     List<TopicListener> getTopicListener();
     void addTopicListener(TopicListener listener);
 

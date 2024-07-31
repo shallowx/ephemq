@@ -65,7 +65,6 @@ public final class ZookeeperPartitionElector {
                                     e);
                         }
                     }
-
                     for (TopicListener listener : manager.getTopicHandleSupport().getTopicListener()) {
                         listener.onPartitionGetLeader(topicPartition);
                     }
@@ -101,7 +100,6 @@ public final class ZookeeperPartitionElector {
                 }
             }
         });
-
         latch.start();
         trySyncLeader();
     }

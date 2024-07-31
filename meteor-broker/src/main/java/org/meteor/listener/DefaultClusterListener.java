@@ -44,7 +44,7 @@ public class DefaultClusterListener implements ClusterListener {
     @Override
     public void onNodeDown(Node node) {
         if (logger.isInfoEnabled()) {
-            logger.info("Node[{}] become down state", node);
+            logger.info("Node[{}] becomes down state", node);
         }
     }
 
@@ -75,7 +75,7 @@ public class DefaultClusterListener implements ClusterListener {
         } catch (Exception e) {
             ByteBufUtil.release(buf);
             if (logger.isErrorEnabled()) {
-                logger.error("Send server offline failed, channel[{}]", channel, e);
+                logger.error(STR."[:: channel:\{channel}]Send server offline failed,", e);
             }
         }
     }

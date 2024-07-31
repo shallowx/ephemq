@@ -569,6 +569,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
         return topicCache.get(topic);
     }
 
+    @Nonnull
     @Override
     public List<TopicListener> getTopicListener() {
         return listeners;

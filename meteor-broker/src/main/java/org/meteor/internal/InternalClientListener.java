@@ -40,7 +40,7 @@ public class InternalClientListener implements CombineListener {
                 semaphore.release();
                 if (!future.isSuccess()) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("Channel[{}] sync message error", channel.toString());
+                        logger.error(STR."Channel[\{channel.toString()}] sync message error");
                     }
                 }
             });

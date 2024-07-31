@@ -1,5 +1,8 @@
 package org.meteor.remoting;
 
+import static org.meteor.metrics.config.MetricsConstants.ACTIVE_CHANNEL_GAUGE_NAME;
+import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
+import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
@@ -7,13 +10,10 @@ import io.micrometer.core.instrument.Tags;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import java.util.concurrent.atomic.LongAdder;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;
-
-import java.util.concurrent.atomic.LongAdder;
-
-import static org.meteor.metrics.config.MetricsConstants.*;
 
 @ChannelHandler.Sharable
 public class StatisticsDuplexHandler extends ChannelDuplexHandler {
@@ -34,7 +34,8 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
         activeChannelCount.decrement();
         super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
-            logger.debug("Statistics duplex inactive channel, and local address[{}] and remote address[{}]", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
+            logger.debug("Statistics duplex inactive channel, and local address[{}], remote address[{}]",
+                    ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
         }
     }
 
@@ -43,7 +44,8 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
         activeChannelCount.increment();
         super.channelActive(ctx);
         if (logger.isDebugEnabled()) {
-            logger.debug("Statistics duplex active channel, and local address[{}] and remote address[{}]", ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
+            logger.debug("Statistics duplex active channel, and local address[{}], remote address[{}]",
+                    ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
         }
     }
 }
