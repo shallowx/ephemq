@@ -130,7 +130,7 @@ public class Client implements MeterBinder {
 
             address = bootstrapAddress();
             if (address == null) {
-                throw new IllegalArgumentException(String.format("Client[%s] Bootstrap address not found", name));
+                throw new IllegalArgumentException(STR."Client[\{name}] Bootstrap address not found");
             }
         }
 
@@ -191,7 +191,8 @@ public class Client implements MeterBinder {
         });
 
         channel.closeFuture().addListener(f -> {
-            assemblePromise.tryFailure(new IllegalArgumentException(String.format("Client[%s] channel[%s] is closed", name, channel)));
+            assemblePromise.tryFailure(
+                    new IllegalArgumentException(STR."Client[\{name}] channel[\{channel}] was closed"));
             ChannelOfPromise.remove(channel.id().asLongText());
         });
 
@@ -237,7 +238,7 @@ public class Client implements MeterBinder {
         }
 
         if (validChannels.size() == 1) {
-            return validChannels.get(0);
+            return validChannels.getFirst();
         }
 
         return validChannels.get(ThreadLocalRandom.current().nextInt(validChannels.size()));
@@ -257,7 +258,7 @@ public class Client implements MeterBinder {
 
         state = true;
         workerGroup = newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(),
-                "client-worker(" + name + ")", false);
+                STR."client-worker(\{name})", false);
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
         builder.negativeTtl(30);
@@ -282,7 +283,7 @@ public class Client implements MeterBinder {
             applyChannel(address);
         }
 
-        refreshMetadataExecutor = new DefaultEventExecutor(new DefaultThreadFactory("client(" + name + ")-task"));
+        refreshMetadataExecutor = new DefaultEventExecutor(new DefaultThreadFactory(STR."client(\{name})-task"));
         refreshMetadataExecutor.schedule(new RefreshMetadataTask(this, config), config.getMetadataRefreshPeriodMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
@@ -409,12 +410,12 @@ public class Client implements MeterBinder {
 
     private MessageRouter queryRouter(ClientChannel channel, String topic) throws Exception {
         if (!channel.isActive()) {
-            throw new IllegalStateException(String.format("Client[%s] channel[%s] is inactive", name, channel));
+            throw new IllegalStateException(STR."Client[\{name}] channel[\{channel}] is inactive");
         }
 
         ClusterInfo clusterInfo = queryClusterInfo(channel);
         if (clusterInfo == null) {
-            throw new IllegalStateException(String.format("Client[%s] that Cluster info not found", name));
+            throw new IllegalStateException(STR."Client[\{name}] that Cluster info not found");
         }
 
         TopicInfo topicInfo = queryTopicInfos(channel, topic).get(topic);
@@ -572,21 +573,27 @@ public class Client implements MeterBinder {
         Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
         NodeMetadata originalBroker = nodesMap.get(original);
         if (originalBroker == null) {
-            return response.setSuccess(false).setMessage(String.format("The client[%s] that original broker[%s] is not in cluster", name, original)).build();
+            return response.setSuccess(false)
+                    .setMessage(STR."The client[\{name}] that original broker[\{original}] is not in cluster").build();
         }
 
         if (!nodesMap.containsKey(destination)) {
-            return response.setSuccess(false).setMessage(String.format("The client[%s] that destination broker[%s] is not in cluster", name, original)).build();
+            return response.setSuccess(false)
+                    .setMessage(STR."The client[\{name}] that destination broker[\{original}] is not in cluster")
+                    .build();
         }
 
         Map<String, TopicInfo> topicInfos = queryTopicInfos(clientChannel, topic);
         if (topicInfos == null || topicInfos.isEmpty()) {
-            return response.setSuccess(false).setMessage(String.format("The client[%s] topic[%s] does not exist", name, original)).build();
+            return response.setSuccess(false).setMessage(STR."The client[\{name}] of topic[\{topic}] does not exist")
+                    .build();
         }
         TopicInfo topicInfo = topicInfos.get(topic);
         PartitionMetadata partitionMetadata = topicInfo.getPartitionsMap().get(partition);
         if (partitionMetadata == null) {
-            return response.setSuccess(false).setMessage(String.format("The client[%s] topic[%s] partition[%d] does not exist", name, original, partition)).build();
+            return response.setSuccess(false)
+                    .setMessage(STR."The client[\{name}] of topic[\{topic}] and partition[\{partition}] are not exist")
+                    .build();
         }
 
         clientChannel = getActiveChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));

@@ -171,7 +171,7 @@ public final class ZookeeperPartitionElector {
                 }
 
                 if (logger.isInfoEnabled()) {
-                    logger.info("The leader of ledger[{}] is ledger-id[{}]", ledger, leader.getId());
+                    logger.info(STR."The leader of the ledger[\{ledger}] is \{leader.getId()}");
                 }
             } catch (Exception e) {
                 try {
@@ -197,8 +197,10 @@ public final class ZookeeperPartitionElector {
         Promise<SyncResponse> promise = log.syncFromTarget(channel, new Offset(0, 0L), 3000);
         CompletableFuture<SyncResponse> f = new CompletableFuture<>();
         promise.addListener(future -> {
-            if (!future.isSuccess() && logger.isErrorEnabled()) {
-                logger.error("Failed to sync data as a follower", future.cause());
+            if (!future.isSuccess()) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to sync data as a follower", future.cause());
+                }
                 f.completeExceptionally(future.cause());
             } else {
                 f.complete((SyncResponse) future.getNow());

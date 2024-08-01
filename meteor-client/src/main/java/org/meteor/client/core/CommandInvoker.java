@@ -194,7 +194,7 @@ public class CommandInvoker {
             return ProtoBufUtil.proto2Buf(allocator, lite);
         } catch (Throwable t) {
             String type = lite == null ? null : lite.getClass().getSimpleName();
-            throw new RuntimeException("Assemble request data failed, type=" + type, t);
+            throw new RuntimeException(STR."Assemble request data failed, type=\{type}", t);
         }
     }
 
