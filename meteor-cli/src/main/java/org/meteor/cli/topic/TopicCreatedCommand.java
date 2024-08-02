@@ -109,8 +109,8 @@ public class TopicCreatedCommand implements Command {
                         "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Exception e) {
-            System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
-                    TopicCreatedCommand.class.getName(), e.getMessage());
+            System.err.println(STR."\{currentTime()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{TopicCreatedCommand.class.getName()} - \{e.getMessage()}");
             throw new CommandException("Execution create topic command[ct] failed", e);
         }
     }
@@ -195,13 +195,7 @@ public class TopicCreatedCommand implements Command {
 
         @Override
         public String toString() {
-            return "(" +
-                    "topic='" + topic + '\'' +
-                    ", partition=" + partition +
-                    ", replicas=" + replicas +
-                    ", config=" + config +
-                    ", partitions=" + partitions +
-                    ')';
+            return STR."(topic='\{topic}', partition=\{partition}, replicas=\{replicas}, config=\{config}, partitions=\{partitions})";
         }
     }
 }

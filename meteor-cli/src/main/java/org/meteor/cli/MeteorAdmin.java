@@ -40,11 +40,11 @@ public class MeteorAdmin {
                             Options options = buildOptions();
                             options = cmd.buildOptions(options);
                             if (options != null) {
-                                printCmdHelp("Meteor-cli admin " + cmd.name(), options);
+                                printCmdHelp(STR."Meteor-cli admin \{cmd.name()}", options);
                                 return;
                             }
-                            System.err.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n", newDate(),
-                                    Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[1]);
+                            System.err.println(STR."\{newDate()} [\{Thread.currentThread()
+                                    .getName()}] ERROR \{MeteorAdmin.class.getName()} - The command[:\{args[1]}] does not exists");
                         }
                     }
                 }
@@ -55,8 +55,8 @@ public class MeteorAdmin {
                         Options options = buildOptions();
                         CommandLine cmdLine = parseCommandLine(cmdArgs, cmd.buildOptions(options));
                         if (cmdLine == null) {
-                            System.err.printf("%s [%s] ERROR %s - The command does not exists, cname=%s \n",
-                                    newDate(), Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
+                            System.err.println(STR."\{newDate()} [\{Thread.currentThread()
+                                    .getName()}] ERROR \{MeteorAdmin.class.getName()} - The command[:\{args[0]}] does not exists");
                             return;
                         }
 
@@ -80,14 +80,14 @@ public class MeteorAdmin {
                             }
                         }
                     } else {
-                        System.err.printf("%s [%s] INFO %s - The command does not exists, cname=%s \n", newDate(),
-                                Thread.currentThread().getName(), MeteorAdmin.class.getName(), args[0]);
+                        System.err.println(STR."\{newDate()} [\{Thread.currentThread()
+                                .getName()}] INFO \{MeteorAdmin.class.getName()} - The command[:\{args[0]}] does not exists");
                     }
                 }
             }
         } catch (Throwable t) {
-            System.err.printf("%s [%s] INFO %s - ERROR: %s\n", newDate(), Thread.currentThread().getName(),
-                    MeteorAdmin.class.getName(), t.getMessage());
+            System.err.println(STR."\{newDate()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{MeteorAdmin.class.getName()} - \{t.getMessage()}");
             System.exit(-1);
         }
         System.exit(0);
@@ -121,7 +121,7 @@ public class MeteorAdmin {
     }
 
     private static Options buildOptions() {
-        Option option = new Option("h", "help", false, "Shows this help message");
+        Option option = new Option("h", "help", false, "Show this help message");
         option.setRequired(false);
         Options options = new Options();
         options.addOption(option);

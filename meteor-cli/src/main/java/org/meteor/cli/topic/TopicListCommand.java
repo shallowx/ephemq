@@ -81,8 +81,8 @@ public class TopicListCommand implements Command {
                     topicInfos = client.queryTopicInfos(clientChannel);
                 }
                 if (topicInfos == null || topicInfos.isEmpty()) {
-                    System.out.printf("%s [%s] INFO %s - Topic info is empty \n", currentTime(),
-                            Thread.currentThread().getName(), TopicListCommand.class.getName());
+                    System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
+                            .getName()}] INFO \{TopicListCommand.class.getName()} - Topic info is empty");
                     return;
                 }
 
@@ -115,8 +115,8 @@ public class TopicListCommand implements Command {
                         "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Throwable t) {
-            System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
-                    TopicListCommand.class.getName(), t.getMessage());
+            System.err.println(STR."\{currentTime()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{TopicListCommand.class.getName()} - \{t.getMessage()}");
             throw new CommandException("Execution query topic infos command[topics] failed", t);
         }
     }
@@ -193,14 +193,7 @@ public class TopicListCommand implements Command {
 
         @Override
         public String toString() {
-            return "(" +
-                    "topic='" + topic + '\'' +
-                    ", partition=" + partition +
-                    ", ledger=" + ledger +
-                    ", epoch=" + epoch +
-                    ", leader='" + leader + '\'' +
-                    ", replicas=" + replicas +
-                    ')';
+            return STR."(topic='\{topic}', partition=\{partition}, ledger=\{ledger}, epoch=\{epoch}, leader='\{leader}', replicas=\{replicas})";
         }
     }
 }

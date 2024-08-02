@@ -86,9 +86,8 @@ public class MigrateLedgerCommand implements Command {
                     List<MigrateLedger> infos = gson.fromJson(content, new TypeToken<List<MigrateLedger>>() {
                     }.getType());
                     if (infos == null || infos.isEmpty()) {
-                        System.out.printf(
-                                "%s [%s] INFO %s - Migrate ledger successfully, partition ledger doex not exists \n",
-                                currentTime(), Thread.currentThread().getName(), MigrateLedgerCommand.class.getName());
+                        System.out.printf(STR."\{currentTime()} [\{Thread.currentThread()
+                                .getName()}] INFO \{MigrateLedgerCommand.class.getName()} - Migrate ledger successfully, partition ledger doex not exists");
                         return;
                     }
 
@@ -103,11 +102,10 @@ public class MigrateLedgerCommand implements Command {
                                 continue;
                             }
                             throw new CommandException(
-                                    String.format("Migrate ledger failure, and try again later, topic=%s partition=%s",
-                                            info.getTopic(), info.getPartition()));
+                                    STR."[:: topic:\{info.getTopic()}, partition:\{info.getPartition()}]Migrate ledger failure, and try again later");
                         } catch (Exception e) {
-                            System.err.printf("%s [%s] ERROR %s-%s", currentTime(), Thread.currentThread().getName(),
-                                    MigrateLedgerPlanCommand.class.getName(), e.getMessage());
+                            System.err.println(STR."\{currentTime()} [\{Thread.currentThread()
+                                    .getName()}] ERROR \{MigrateLedgerPlanCommand.class.getName()} - \{e.getMessage()}");
                             retry(client, info.getTopic(), info.getPartition(), info.getFrom(), info.getTo());
                         }
                     }
@@ -116,24 +114,24 @@ public class MigrateLedgerCommand implements Command {
                 throw new IllegalArgumentException("Meteor-cli illegal argument exception, [-e] args cannot be empty.");
             }
         } catch (Throwable t) {
-            System.out.printf("%s [%s] ERROR %s-%s", currentTime(), Thread.currentThread().getName(),
-                    MigrateLedgerPlanCommand.class.getName(), t.getMessage());
-            throw new CommandException("Execution migrate ledger command[ml] failed", t);
+            System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{MigrateLedgerPlanCommand.class.getName()} - \{t.getMessage()}");
+            throw new CommandException("Execution migrate ledger command[:migrate] failed", t);
         }
     }
 
     private void retry(Client client, String topic, int partition, String original, String destination) throws ExecutionException, InterruptedException {
-        System.out.printf(
-                "Migrate ledger[topic=%s partition=%d original-broker=%s destination-broker=%s] failed, and try again"
-                        + " after %d s, if you want to stop it, ant you can execute `Ctrl-C`",
-                topic, partition, original, destination, 30);
+        System.out.println(
+                STR."Migrate ledger[topic:\{topic}, partition:\{partition}, original-broker:\{original}, destination-broker:\{destination}] failed, and try again"
+                        + STR." after 30 s, if you want to stop it, ant you can execute `Ctrl-C`");
         TimeUnit.SECONDS.sleep(30);
         Future<?> future = retry.submit(() -> {
             try {
                 client.migrateLedger(topic, partition, original, destination);
                 return CompletableFuture.completedFuture(true);
             } catch (Exception e) {
-                System.out.printf("Migrate ledger retry failure, and try again later, topic=%s partition=%s", topic, partition);
+                System.out.println(
+                        STR."[:: topic:\{topic}, partition:\{partition}]Migrate ledger retry failure, and try again later");
                 return CompletableFuture.completedFuture(false);
             }
         });

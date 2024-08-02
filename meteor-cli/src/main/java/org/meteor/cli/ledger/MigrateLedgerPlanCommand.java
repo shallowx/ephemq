@@ -98,15 +98,15 @@ public class MigrateLedgerPlanCommand implements Command {
                 }
 
                 if (ids.isEmpty()) {
-                    System.out.printf("%s [%s] WARN %s - cluster node does not exists \n", currentTime(),
-                            Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName());
+                    System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
+                            .getName()}] WARN \{MigrateLedgerPlanCommand.class.getName()} - cluster node does not exists");
                     return;
                 }
                 List<MigrateLedger> infos = new ObjectArrayList<>();
                 Map<String, TopicInfo> topicInfos = client.queryTopicInfos(clientChannel);
                 if (topicInfos == null || topicInfos.isEmpty()) {
-                    System.out.printf("%s [%s] WARN %s - topic does not exists \n", currentTime(),
-                            Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName());
+                    System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
+                            .getName()}] WARN \{MigrateLedgerPlanCommand.class.getName()} - topic does not exists");
                     return;
                 }
                 int limit = 0;
@@ -139,12 +139,12 @@ public class MigrateLedgerPlanCommand implements Command {
                         }
                     }
                 }
-                System.out.printf("%s [%s] INFO %s - %s \n", currentTime(), Thread.currentThread().getName(),
-                        MigrateLedgerPlanCommand.class.getName(), GSON.toJson(infos));
+                System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
+                        .getName()}] INFO \{MigrateLedgerPlanCommand.class.getName()} - \{GSON.toJson(infos)}");
             }
         } catch (Throwable t) {
-            System.err.printf("%s [%s] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
-                    MigrateLedgerPlanCommand.class.getName(), t.getCause().getMessage());
+            System.err.println(STR."\{currentTime()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{MigrateLedgerPlanCommand.class.getName()} - \{t.getMessage()}");
             throw new CommandException("Execution migrate ledger plan command[mlp] failed", t);
         }
     }

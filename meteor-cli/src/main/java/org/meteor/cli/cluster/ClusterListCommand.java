@@ -67,8 +67,8 @@ public class ClusterListCommand implements Command {
                 Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
                 List<NodeMetadata> metadata = new ArrayList<>(nodesMap.values());
 
-                System.out.printf("%s [%s] INFO %S - Print the cluster metadata options: \n",
-                        currentTime(), Thread.currentThread().getName(), ClusterListCommand.class.getName());
+                System.out.println(
+                        STR."\{currentTime()} [Thread.currentThread().getName()] INFO \{ClusterListCommand.class.getName()} - Print the cluster metadata options: ");
                 for (NodeMetadata nodeMetadata : metadata) {
                     nodes.add(
                             new Node(nodeMetadata.getId(),
@@ -88,8 +88,8 @@ public class ClusterListCommand implements Command {
             }
             formatPrint(nodes);
         } catch (Exception e) {
-            System.err.printf("%s [%S] ERROR %s - %s \n", currentTime(), Thread.currentThread().getName(),
-                    ClusterListCommand.class.getName(), e.getMessage());
+            System.err.println(
+                    STR."\{currentTime()} [Thread.currentThread().getName()] ERROR \{ClusterListCommand.class.getName()} - \{e.getMessage()}");
             throw new CommandException("Execute cluster command[clusters] error", e);
         }
     }

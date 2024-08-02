@@ -118,8 +118,8 @@ public class TopicDeletedCommand implements Command {
                         "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Exception e) {
-            System.err.printf("%s [%s] ERROR %S - delete topic[%s] from cluster failure \n",
-                    currentTime(), Thread.currentThread().getName(), TopicDeletedCommand.class.getName(), finalTopic);
+            System.err.println(STR." \{currentTime()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{TopicDeletedCommand.class.getName()} - delete topic[:\{finalTopic}] from cluster failure");
             throw new CommandException("Execution delete topic command[dt] failed", e);
         }
     }

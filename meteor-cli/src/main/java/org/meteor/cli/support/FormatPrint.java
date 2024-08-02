@@ -1,12 +1,16 @@
 package org.meteor.cli.support;
 
 import java.lang.reflect.Field;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class FormatPrint {
     public static void formatPrint(List<?> objects, String[] title) {
         if (objects == null || objects.isEmpty()) {
-            System.out.println("No format objects were found");
+            System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
+                    .getName()}] ERROR \{FormatPrint.class.getName()} - No format objects were found");
         } else {
             String[][] tables = new String[objects.size()][title.length];
             for (int i = 0; i < objects.size(); i++) {
@@ -23,5 +27,9 @@ public class FormatPrint {
             }
             System.out.println(new TextTable(title, tables));
         }
+    }
+
+    static String currentTime() {
+        return DateTimeFormatter.ofPattern("HH:mm:ss.SSS").format(LocalTime.now(ZoneId.of("UTC +08:00")));
     }
 }
