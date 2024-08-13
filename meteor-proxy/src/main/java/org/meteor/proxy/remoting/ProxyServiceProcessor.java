@@ -102,7 +102,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
                 default -> {
                     if (feedback != null) {
                         feedback.failure(RemotingException.of(RemotingException.Failure.UNSUPPORTED_EXCEPTION,
-                                "Proxy command[" + command + "] unsupported, length=" + length));
+                                STR."Proxy command[\{command}] unsupported, length=\{length}"));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Proxy command[{}] unsupported, channel={} length={} ", command, NetworkUtil.switchAddress(channel), length);
@@ -137,10 +137,12 @@ class ProxyServiceProcessor extends ServiceProcessor {
                                     feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                                 }
                             } catch (Throwable t) {
-                                processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, t);
+                                processFailed(STR."Proxy process sync ledger[\{request.getLedger()}] failed", command,
+                                        channel, feedback, t);
                             }
                         } else {
-                            processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, f.cause());
+                            processFailed(STR."Proxy process sync ledger[\{request.getLedger()}] failed", command,
+                                    channel, feedback, f.cause());
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
@@ -154,7 +156,8 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     ClientChannel syncChannel = syncSupport.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index, channel, promise);
                 } catch (Throwable t) {
-                    processFailed("Proxy process sync ledger[" + request.getLedger() + "] failed", command, channel, feedback, t);
+                    processFailed(STR."Proxy process sync ledger[\{request.getLedger()}] failed", command, channel,
+                            feedback, t);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
@@ -270,7 +273,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
         if (nodes.isEmpty()) {
             nodes.addAll(replicas.keySet());
         }
-        return nodes.size() == 1 ? nodes.get(0) : nodes.get(ThreadLocalRandom.current().nextInt(nodes.size()));
+        return nodes.size() == 1 ? nodes.getFirst() : nodes.get(ThreadLocalRandom.current().nextInt(nodes.size()));
     }
 
     private NavigableMap<String, Integer> calculateReplicas(Channel channel, String topic, int ledger) {
@@ -291,7 +294,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
 
         int replicaCount = Math.max(MIN_REPLICA_LIMIT, allThroughput / subscribeThreshold + 1);
-        String token = topic + "#" + ledger;
+        String token = STR."\{topic}#\{ledger}";
         NavigableMap<String, Integer> ledgerNodes = selectLedgerNodes(replicaCount, token, nodes);
         return selectChannelNodes(channel, token, ledgerNodes);
     }
@@ -310,10 +313,10 @@ class ProxyServiceProcessor extends ServiceProcessor {
             return nodes;
         }
         HashFunction function = Hashing.murmur3_32();
-        String baseToken = token + "#" + host;
+        String baseToken = STR."\{token}#\{host}";
         NavigableMap<Integer, NavigableSet<String>> hashMap = new TreeMap<>();
         for (String node : nodes.keySet()) {
-            String key = baseToken + "@" + node;
+            String key = STR."\{baseToken}@\{node}";
             int hash = function.hashUnencodedChars(key).asInt();
             hashMap.computeIfAbsent(hash, k -> new TreeSet<>()).add(node);
         }

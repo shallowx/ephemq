@@ -177,12 +177,16 @@ public class ZookeeperClusterManager implements ClusterManager {
                             SerializeFeatureSupport.serialize(thisNode));
             registered = true;
         } catch (KeeperException.NodeExistsException e) {
-            throw new RuntimeException(String.format("Server id[%s] should be unique", configuration.getServerId()));
+            throw new KeeperException.NodeExistsException(
+                    STR."Server id[\{configuration.getServerId()}] should be unique");
         }
     }
 
     protected void unregistered(String path) throws Exception {
         if (client == null || !registered) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Unregister node failed");
+            }
             return;
         }
 

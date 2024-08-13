@@ -32,11 +32,16 @@ class ZookeeperProxyClusterManager extends ZookeeperClusterManager implements Cl
                 try {
                     Stat stat = client.checkExists().forPath(String.format(ZookeeperProxyPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId()));
                     if (stat != null) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Zookeeper proxy cluster manager has been started.");
+                        }
                         return;
                     }
                     registerNode(ZookeeperProxyPathConstants.PROXIES_ID);
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    if (logger.isErrorEnabled()) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
             }
         };

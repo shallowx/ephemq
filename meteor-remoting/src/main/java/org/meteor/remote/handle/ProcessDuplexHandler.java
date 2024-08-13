@@ -234,7 +234,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         int count = initializer.releaseAll(c -> c.failure(
-                new RemotingTimeoutException(String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
+                new RemotingTimeoutException(STR."Channel[\{ctx.channel().toString()}] invoke timeout")));
         if (logger.isDebugEnabled()) {
             logger.debug("Release entire invoke, handle count[{}]", count);
         }

@@ -41,7 +41,7 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
             this.syncSupport.start();
             this.state = true;
         } else {
-            // keep empty
+            throw new ProxyException("ProxyDefaultManager is already started");
         }
     }
 
@@ -63,7 +63,9 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
             super.shutdown();
             this.syncSupport.shutDown();
         } else {
-            // keep empty
+            if (logger.isDebugEnabled()) {
+                logger.debug("Proxy default support is closed");
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 package org.meteor.common.util;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.Collection;
 import java.util.Map;
+import javax.naming.OperationNotSupportedException;
 
 public final class ObjectUtil {
 
@@ -38,7 +38,7 @@ public final class ObjectUtil {
 
     public static <T> T checkNotNullWithIAE(final T arg, final String paramName) throws IllegalArgumentException {
         if (arg == null) {
-            throw new IllegalArgumentException("Param '" + paramName + "' must not be null");
+            throw new IllegalArgumentException(STR."Param '\{paramName}' must not be null");
         }
         return arg;
     }
@@ -46,21 +46,21 @@ public final class ObjectUtil {
     public static <T> T checkNotNullArrayParam(T value, int index, String name) throws IllegalArgumentException {
         if (value == null) {
             throw new IllegalArgumentException(
-                    "Array index " + index + " of parameter '" + name + "' must not be null");
+                    STR."Array index \{index} of parameter '\{name}' must not be null");
         }
         return value;
     }
 
     public static int checkPositive(int i, String name) {
         if (i <= INT_ZERO) {
-            throw new IllegalArgumentException(name + " : " + i + " (expected: > 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{i} (expected: > 0)");
         }
         return i;
     }
 
     public static int checkNegative(int i, String name) {
         if (i >= INT_ZERO) {
-            throw new IllegalArgumentException(name + " : " + i + " (expected: < 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{i} (expected: < 0)");
         }
         return i;
     }
@@ -68,63 +68,63 @@ public final class ObjectUtil {
 
     public static long checkPositive(long l, String name) {
         if (l <= LONG_ZERO) {
-            throw new IllegalArgumentException(name + " : " + l + " (expected: > 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{l} (expected: > 0)");
         }
         return l;
     }
 
     public static double checkPositive(final double d, final String name) {
         if (d <= DOUBLE_ZERO) {
-            throw new IllegalArgumentException(name + " : " + d + " (expected: > 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{d} (expected: > 0)");
         }
         return d;
     }
 
     public static float checkPositive(final float f, final String name) {
         if (f <= FLOAT_ZERO) {
-            throw new IllegalArgumentException(name + " : " + f + " (expected: > 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{f} (expected: > 0)");
         }
         return f;
     }
 
     public static int checkPositiveOrZero(int i, String name) {
         if (i < INT_ZERO) {
-            throw new IllegalArgumentException(name + " : " + i + " (expected: >= 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{i} (expected: >= 0)");
         }
         return i;
     }
 
     public static long checkPositiveOrZero(long l, String name) {
         if (l < LONG_ZERO) {
-            throw new IllegalArgumentException(name + " : " + l + " (expected: >= 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{l} (expected: >= 0)");
         }
         return l;
     }
 
     public static double checkPositiveOrZero(final double d, final String name) {
         if (d < DOUBLE_ZERO) {
-            throw new IllegalArgumentException(name + " : " + d + " (expected: >= 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{d} (expected: >= 0)");
         }
         return d;
     }
 
     public static float checkPositiveOrZero(final float f, final String name) {
         if (f < FLOAT_ZERO) {
-            throw new IllegalArgumentException(name + " : " + f + " (expected: >= 0)");
+            throw new IllegalArgumentException(STR."\{name} : \{f} (expected: >= 0)");
         }
         return f;
     }
 
     public static int checkInRange(int i, int start, int end, String name) {
         if (i < start || i > end) {
-            throw new IllegalArgumentException(name + ": " + i + " (expected: " + start + "-" + end + ")");
+            throw new IllegalArgumentException(STR."\{name}: \{i} (expected: \{start}-\{end})");
         }
         return i;
     }
 
     public static long checkInRange(long l, long start, long end, String name) {
         if (l < start || l > end) {
-            throw new IllegalArgumentException(name + ": " + l + " (expected: " + start + "-" + end + ")");
+            throw new IllegalArgumentException(STR."\{name}: \{l} (expected: \{start}-\{end})");
         }
         return l;
     }
@@ -132,7 +132,7 @@ public final class ObjectUtil {
     public static <T> T[] checkNonEmpty(T[] array, String name) {
         //No String concatenation for check
         if (checkNotNull(array, name).length == 0) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return array;
     }
@@ -140,7 +140,7 @@ public final class ObjectUtil {
     public static byte[] checkNonEmpty(byte[] array, String name) {
         //No String concatenation for check
         if (checkNotNull(array, name).length == 0) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return array;
     }
@@ -148,35 +148,35 @@ public final class ObjectUtil {
     public static char[] checkNonEmpty(char[] array, String name) {
         //No String concatenation for check
         if (checkNotNull(array, name).length == 0) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return array;
     }
 
     public static <T extends Collection<?>> T checkNonEmpty(T collection, String name) {
         if (checkNotNull(collection, name).isEmpty()) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return collection;
     }
 
     public static String checkNonEmpty(final String value, final String name) {
         if (checkNotNull(value, name).isEmpty()) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return value;
     }
 
     public static <K, V, T extends Map<K, V>> T checkNonEmpty(T value, String name) {
         if (checkNotNull(value, name).isEmpty()) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return value;
     }
 
     public static CharSequence checkNonEmpty(final CharSequence value, final String name) {
         if (checkNotNull(value, name).isEmpty()) {
-            throw new IllegalArgumentException("Param[" + name + "] must not be empty");
+            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
         }
         return value;
     }

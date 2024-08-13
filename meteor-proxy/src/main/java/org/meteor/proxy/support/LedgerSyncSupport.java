@@ -78,7 +78,8 @@ public abstract class LedgerSyncSupport {
         MessageLedger messageLedger = getMessageLedger(topic, ledger);
         List<SocketAddress> addresses = messageLedger.participants();
         if (addresses == null || addresses.isEmpty()) {
-            IllegalStateException e = new IllegalStateException("No available participant's address for ledger[" + ledger + "]");
+            IllegalStateException e =
+                    new IllegalStateException(STR."No available participant's address for ledger[\{ledger}]");
             logger.error(e);
             ret.tryFailure(e);
             return ret;
@@ -134,11 +135,11 @@ public abstract class LedgerSyncSupport {
     public MessageLedger getMessageLedger(String topic, int ledger) {
         MessageRouter router = proxyClient.fetchRouter(topic);
         if (router == null) {
-            throw new IllegalStateException(String.format("The topic[%s] message router not found", topic));
+            throw new IllegalStateException(STR."The topic[\{topic}] message router not found");
         }
         MessageLedger messageLedger = router.ledger(ledger);
         if (messageLedger == null) {
-            throw new IllegalStateException(String.format("The topic[%s] message ledger[%d not found", topic, ledger));
+            throw new IllegalStateException(STR."The topic[\{topic}] message ledger[\{ledger}] not found");
         }
         return messageLedger;
     }
@@ -156,9 +157,8 @@ public abstract class LedgerSyncSupport {
     public ClientChannel getSyncChannel(MessageLedger messageLedger) {
         List<SocketAddress> addresses = messageLedger.participants();
         if (addresses == null || addresses.isEmpty()) {
-            throw new IllegalStateException(String.format(
-                    "No available participants that it's the topic[%s] and the ledger[%d]", messageLedger.topic(), messageLedger.id()
-            ));
+            throw new IllegalStateException(
+                    STR."No available participants that it's the topic[\{messageLedger.topic()}] and the ledger[\{messageLedger.id()}]");
         }
         int index = ThreadLocalRandom.current().nextInt(addresses.size());
         return proxyClient.getActiveChannel(addresses.get(index));

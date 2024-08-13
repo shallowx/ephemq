@@ -18,7 +18,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     private static final MessageEncoder ENCODER = new MessageEncoder();
 
     private MessageEncoder() {
-        throw new UnsupportedOperationException("MessageEncoder cannot support this instantiated");
+        throw new UnsupportedOperationException("Cannot support the operation");
     }
 
     public static MessageEncoder instance() {
@@ -54,8 +54,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
     private ByteBuf encodeHeader(ByteBufAllocator alloc, int command, long feedback, int contentLength) {
         if (contentLength > MessagePacket.MAX_BODY_LENGTH) {
             throw new RemotingEncoderException(
-                    "The message body[" + contentLength + "] bytes too long, limit[" + MessagePacket.MAX_BODY_LENGTH
-                            + "] bytes");
+                    STR."The message body[\{contentLength}] bytes too long, limit[\{MessagePacket.MAX_BODY_LENGTH}] bytes");
         }
 
         final ByteBuf header = alloc.ioBuffer(MessagePacket.HEADER_LENGTH);

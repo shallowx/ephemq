@@ -92,11 +92,7 @@ public final class MessagePacket extends AbstractReferenceCounted
 
     @Override
     public String toString() {
-        return "(" +
-                ", feedback=" + feedback +
-                ", command=" + command +
-                ", body=" + body +
-                ')';
+        return STR."(feedback=\{feedback}, command=\{command}, body=\{body})";
     }
 
     @Override

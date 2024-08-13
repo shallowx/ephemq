@@ -75,7 +75,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final byte magic = buf.getByte(buf.readerIndex());
                 if (magic != MessagePacket.MAGIC_NUMBER) {
-                    throw new RemotingDecoderException("Invalid magic number[" + magic + "]");
+                    throw new RemotingDecoderException(STR."Invalid magic number[\{magic}]");
                 }
 
                 state = READ_MESSAGE_LENGTH;
@@ -87,7 +87,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final int messageLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
                 if (messageLength < MessagePacket.HEADER_LENGTH) {
-                    throw new RemotingDecoderException("Invalid message length[" + messageLength + "]");
+                    throw new RemotingDecoderException(STR."Invalid message length[\{messageLength}]");
                 }
 
                 writeFrameBytes = messageLength;
@@ -106,7 +106,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 return MessagePacket.newPacket(feedback, command, body);
             }
             default: {
-                throw new RemotingDecoderException("Invalid decode state[" + state + "]");
+                throw new RemotingDecoderException(STR."Invalid decode state[\{state}]");
             }
         }
     }
