@@ -41,7 +41,7 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
             this.syncSupport.start();
             this.state = true;
         } else {
-            throw new ProxyException("ProxyDefaultManager is already started");
+            throw new MeterProxyException("ProxyDefaultManager is already started");
         }
     }
 

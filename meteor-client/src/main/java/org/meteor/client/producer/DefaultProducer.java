@@ -75,8 +75,8 @@ public class DefaultProducer implements Producer {
             return new MessageId(response.getLedger(), response.getEpoch(), response.getIndex());
         } catch (Throwable t) {
             throw new RemotingSendRequestException(
-                    String.format("Message send failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
-            );
+                    STR."Message send failed, topic[\{topic}] queue[\{queue}] length[\{ByteBufUtil.bufLength(
+                            message)}]", t);
         } finally {
             ByteBufUtil.release(message);
         }
@@ -102,8 +102,8 @@ public class DefaultProducer implements Producer {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), promise);
         } catch (Throwable t) {
             throw new RemotingSendRequestException(
-                    String.format("Message async send failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
-            );
+                    STR."Message send failed, topic[\{topic}] queue[\{queue}] length[\{ByteBufUtil.bufLength(
+                            message)}]", t);
         } finally {
             ByteBufUtil.release(message);
         }
@@ -115,8 +115,8 @@ public class DefaultProducer implements Producer {
             doSend(topic, queue, message, extras, config.getSendAsyncTimeoutMilliseconds(), null);
         } catch (Throwable t) {
             throw new RemotingSendRequestException(
-                    String.format("Message send oneway failed, topic[%s] queue[%s] length[%s]", topic, queue, ByteBufUtil.bufLength(message)), t
-            );
+                    STR."Message send oneway failed, topic[\{topic}] queue[\{queue}] length[\{ByteBufUtil.bufLength(
+                            message)}]", t);
         } finally {
             ByteBufUtil.release(message);
         }
@@ -128,24 +128,24 @@ public class DefaultProducer implements Producer {
 
         MessageRouter router = client.fetchRouter(topic);
         if (router == null) {
-            throw new IllegalStateException("Message router not found");
+            throw new IllegalStateException(STR."Message router[topic:\{topic}] not found");
         }
 
         MessageLedger ledger = router.routeLedger(queue);
         if (ledger == null) {
-            throw new IllegalStateException("Message ledger not found");
+            throw new IllegalStateException(STR."Message ledger[queue:\{queue}] not found");
         }
 
         SocketAddress leader = ledger.leader();
         if (leader == null) {
-            throw new IllegalStateException("Message leader not found");
+            throw new IllegalStateException(STR."Message leader[topic:\{topic},queue:\{queue}] not found");
         }
 
         int marker = router.routeMarker(queue);
         SendMessageRequest request = SendMessageRequest.newBuilder().setLedger(ledger.id()).setMarker(marker).build();
         MessageMetadata metadata = buildMetadata(topic, queue, extras);
         ClientChannel channel = getReadyChannel(leader, ledger.id());
-        channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message, config.getCompressionType());
+        channel.invoker().sendMessage(timeoutMs, promise, request, metadata, message);
     }
 
     private ClientChannel getReadyChannel(SocketAddress address, int ledger) {
@@ -155,7 +155,7 @@ public class DefaultProducer implements Producer {
         }
 
         if (address == null) {
-            throw new IllegalStateException("Channel address not found, ledger[" + ledger + "]");
+            throw new IllegalStateException(STR."Channel address not found, ledger[\{ledger}]");
         }
 
         synchronized (readyChannels) {

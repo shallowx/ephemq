@@ -71,10 +71,7 @@ public class SerializeFeatureSupportTest {
 
         @Override
         public String toString() {
-            return "{" +
-                    "id=" + id +
-                    ", addr='" + addr + '\'' +
-                    '}';
+            return STR."{id=\{id}, addr='\{addr}'}";
         }
     }
 }

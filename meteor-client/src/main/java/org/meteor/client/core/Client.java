@@ -107,11 +107,10 @@ public class Client implements MeterBinder {
         } catch (Throwable t) {
             if (address == null) {
                 throw new MeteorClientException(
-                        String.format("Client[%s] fetch random channel failed, socket address cannot be empty", name),
-                        t);
+                        STR."Client[\{name}] fetch random channel failed, socket address cannot be empty", t);
             }
-            throw new MeteorClientException(String.format(
-                    String.format("Client[%s] fetch random client channel failed, address[%s]", name, address)), t);
+            throw new MeteorClientException(
+                    STR."Client[\{name}] fetch random client channel failed, address[\{address}]", t);
         }
     }
 
@@ -346,11 +345,8 @@ public class Client implements MeterBinder {
             return applyRouter(topic, channel, true).get();
         } catch (Throwable t) {
             throw new RuntimeException(
-                    String.format(
-                            "Client[%s] fetch message router from given client channel[%s] failed, topic[%s]", name,
-                            channel == null ? null : channel.channel().remoteAddress(), topic
-                    ), t
-            );
+                    STR."Client[\{name}] fetch message router from given client channel[\{channel == null ? null :
+                            channel.channel().remoteAddress()}] failed, topic[\{topic}]", t);
         }
     }
 
@@ -362,11 +358,8 @@ public class Client implements MeterBinder {
             applyRouter(topic, channel, false).get();
         } catch (Throwable t) {
             throw new MeteorClientException(
-                    String.format(
-                            "Client[%s] refresh message router from given client channel[%s] failed, topic[%s]", name,
-                            channel == null ? null : channel.channel().remoteAddress(), topic
-                    ), t
-            );
+                    STR."Client[\{name}] fetch message router from given client channel[\{channel == null ? null :
+                            channel.channel().remoteAddress()}] failed, topic[\{topic}]", t);
         }
     }
 

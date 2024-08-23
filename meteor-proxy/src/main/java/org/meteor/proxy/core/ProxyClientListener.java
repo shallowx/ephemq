@@ -34,6 +34,7 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.support.LedgerSyncSupport;
+import org.meteor.proxy.support.MeterProxyException;
 import org.meteor.proxy.support.ProxyTopicHandleSupport;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.invoke.Command;
@@ -252,7 +253,8 @@ public class ProxyClientListener implements CombineListener {
             return buf;
         } catch (Exception e) {
             ByteBufUtil.release(buf);
-            throw new RuntimeException(String.format("Proxy build signal payload error, command[%d] signal[%s]", Command.Client.TOPIC_CHANGED, signal));
+            throw new MeterProxyException(
+                    STR."Proxy build signal payload error, command[\{Command.Client.TOPIC_CHANGED}] signal[\{signal}]");
         }
     }
 

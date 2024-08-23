@@ -124,7 +124,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                         if (feedback != null) {
                             feedback.failure(
                                     RemotingException.of(Command.Failure.COMMAND_EXCEPTION,
-                                            "code[" + command + "]" + " unsupported"));
+                                            STR."code[\{command}] unsupported"));
                         }
                     }
                 }

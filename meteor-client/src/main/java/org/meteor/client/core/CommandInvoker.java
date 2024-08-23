@@ -5,7 +5,6 @@ import com.google.protobuf.Parser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.concurrent.Promise;
-import org.meteor.common.compression.CompressionType;
 import org.meteor.remote.invoke.Callable;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.proto.MessageMetadata;
@@ -44,10 +43,10 @@ public class CommandInvoker {
     }
 
     public void sendMessage(int timeoutMs, Promise<SendMessageResponse> promise, SendMessageRequest request,
-                            MessageMetadata metadata, ByteBuf message, CompressionType compressionType) {
+                            MessageMetadata metadata, ByteBuf message) {
         try {
             Callable<ByteBuf> callback = assembleInvokeCallback(promise, SendMessageResponse.parser());
-            ByteBuf buf = assembleSendMessageData(channel.allocator(), request, metadata, message, compressionType);
+            ByteBuf buf = assembleSendMessageData(channel.allocator(), request, metadata, message);
             channel.invoke(Command.Server.SEND_MESSAGE, buf, timeoutMs, callback);
         } catch (Throwable t) {
             tryFailure(promise, t);
@@ -165,8 +164,7 @@ public class CommandInvoker {
     }
 
     private ByteBuf assembleSendMessageData(ByteBufAllocator allocator, SendMessageRequest request,
-                                            MessageMetadata metadata, ByteBuf message,
-                                            CompressionType compressionType) {
+                                            MessageMetadata metadata, ByteBuf message) {
         ByteBuf data = null;
         try {
             int length = ProtoBufUtil.protoLength(request) + ProtoBufUtil.protoLength(metadata) + ByteBufUtil.bufLength(message);
@@ -182,11 +180,6 @@ public class CommandInvoker {
             ByteBufUtil.release(data);
             throw new RuntimeException("Assemble send message failed");
         }
-    }
-
-    private boolean shouldCompress(ByteBuf buf) {
-        int length = ByteBufUtil.bufLength(buf);
-        return length > 4 * 1024 * 1024;
     }
 
     private ByteBuf assembleInvokeData(ByteBufAllocator allocator, MessageLite lite) {

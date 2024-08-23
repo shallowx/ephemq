@@ -65,7 +65,7 @@ public class DemoServerProcessor implements Processor {
         long delay = bytes < 8 ? 0 : data.readLong();
         executors.next().schedule(() -> {
             if (feedback != null) {
-                feedback.success(ByteBufUtil.string2Buf("Server wait " + data + " ms"));
+                feedback.success(ByteBufUtil.string2Buf(STR."Server wait \{data} ms"));
             }
         }, delay, TimeUnit.MILLISECONDS);
     }
