@@ -16,9 +16,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LogbackConfigurationTest {
+    /**
+     * The name of the SLF4J logger to be used for testing logback configuration.
+     */
     private static final String LOGGER = "Slf4jTestLogger";
+    /**
+     * Directory path to the test resources.
+     */
     private static final String DIR = "src/test/resources";
 
+    /**
+     * Initializes the logging configuration for the test.
+     * This method is executed before each test method to configure the logger using a specified logback configuration file.
+     *
+     * @throws Exception if an error occurs during the configuration of the logger
+     */
     @Before
     public void init() throws Exception {
         ILoggerFactory factory = LoggerFactory.getILoggerFactory();
@@ -33,6 +45,12 @@ public class LogbackConfigurationTest {
         configurator.doConfigure(resource);
     }
 
+    /**
+     * Tests the SLF4J logging functionality by creating log entries of various levels
+     * and asserting their presence in the log output.
+     *
+     * @throws Exception if an error occurs during the test execution
+     */
     @Test
     public void testSlf4j() throws Exception {
         Logger oldLogger = LoggerFactory.getLogger(LOGGER);
@@ -55,6 +73,12 @@ public class LogbackConfigurationTest {
         Assert.assertTrue(content.contains("DEBUG"));
     }
 
+    /**
+     * Reads the contents of the file located at "src/test/resources/logback-test.xml" into a string.
+     *
+     * @return the contents of the file as a string
+     * @throws IOException if an I/O error occurs reading from the file
+     */
     private String readFile() throws IOException {
         StringBuilder sb = new StringBuilder();
         FileInputStream in = new FileInputStream(DIR + "/logback-test.xml");
@@ -69,6 +93,9 @@ public class LogbackConfigurationTest {
         return sb.toString();
     }
 
+    /**
+     * Cleanup method executed after each test method.
+     */
     @After
     public void clear() {
         // do nothing

@@ -6,8 +6,20 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * Implements the Compressor interface using the Zstandard (ZSTD) compression algorithm.
+ * Provides methods to compress and decompress byte arrays with a specified compression level.
+ */
 public class ZstdCompressor implements Compressor {
 
+    /**
+     * Compresses the given byte array using the specified compression level with the Zstandard (ZSTD) algorithm.
+     *
+     * @param src   the byte array to be compressed
+     * @param level the compression level to be applied, where higher values typically indicate higher compression
+     * @return the compressed byte array
+     * @throws IOException if an I/O error occurs during compression
+     */
     @Override
     public byte[] compress(byte[] src, int level) throws IOException {
         byte[] result = src;
@@ -22,6 +34,14 @@ public class ZstdCompressor implements Compressor {
         return result;
     }
 
+    /**
+     * Decompresses the given byte array using the Zstandard (ZSTD) compression algorithm.
+     *
+     * @param src the byte array to be decompressed.
+     * @param level the compression level to be used for decompression.
+     * @return the decompressed byte array.
+     * @throws IOException if an I/O error occurs during decompression.
+     */
     @Override
     public byte[] decompress(byte[] src, int level) throws IOException {
         byte[] result = src;

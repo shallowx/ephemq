@@ -21,7 +21,11 @@ import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.PartitionsReplicas;
 
+
 /**
+ * The TopicCreatedCommand class implements the Command interface and is responsible for creating a topic
+ * in the broker cluster. This command uses various options and parameters to connect to the broker,
+ * read configurations from an explain file, and execute the topic creation process.
  * for example:
  *
  * +------------------+-----------+----------+----------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
@@ -53,16 +57,34 @@ import org.meteor.remote.proto.server.PartitionsReplicas;
  * +------------------+-----------+----------+-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
  */
 public class TopicCreatedCommand implements Command {
+    /**
+     * Returns the name of the command, which is "topic-create".
+     *
+     * @return the name of the command
+     */
     @Override
     public String name() {
         return "topic-create";
     }
 
+    /**
+     * Provides a brief description of the command, which involves
+     * creating a topic in the broker cluster.
+     *
+     * @return a string containing a short description of the command.
+     */
     @Override
     public String description() {
         return "Create topic to the broker cluster";
     }
 
+    /**
+     * Builds and returns a set of command line options by adding specific options
+     * required for the TopicCreatedCommand.
+     *
+     * @param options the initial set of command line options to be built upon
+     * @return the complete set of command line options specific to the command
+     */
     @Override
     public Options buildOptions(Options options) {
         Option brokerOpt =
@@ -77,6 +99,14 @@ public class TopicCreatedCommand implements Command {
         return options;
     }
 
+    /**
+     * Executes the command to create topics based on the provided command line options.
+     *
+     * @param commandLine The command line arguments parsed into options.
+     * @param options     The options available for this command.
+     * @param client      The client instance used to interact with the system to create topics.
+     * @throws Exception if an error occurs during the execution of the command.
+     */
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
@@ -115,6 +145,16 @@ public class TopicCreatedCommand implements Command {
         }
     }
 
+    /**
+     * Processes the given CreateTopicResponse and prints out the metadata for the created topic,
+     * including topic name, partition number, replica count, partitions information, and configuration.
+     *
+     * @param response the response object containing information about the created topic
+     * @param topic the name of the created topic
+     * @param partition the number of partitions for the created topic
+     * @param replica the number of replicas for the created topic
+     * @param config the configuration settings for the created topic
+     */
     private void print(CreateTopicResponse response, String topic, int partition, int replica, TopicConfig config) {
         TopicMetadata metadata = new TopicMetadata();
         metadata.topic = topic;
@@ -135,15 +175,44 @@ public class TopicCreatedCommand implements Command {
     }
 
     private static class TopicMetadata {
+        /**
+         * Represents the topic name associated with the metadata.
+         */
         private String topic;
+        /**
+         * Represents the partition index for the topic.
+         */
         private int partition;
+        /**
+         * Represents the number of replica nodes for a topic partition.
+         */
         private int replicas;
+        /**
+         * The configuration settings for a specific topic.
+         */
         private TopicConfig config;
+        /**
+         * A map that associates partition numbers with lists of replica assignments.
+         * The keys represent partition numbers, while the values are lists of replica strings.
+         */
         private Map<Integer, List<String>> partitions;
 
+        /**
+         * Default constructor for TopicMetadata.
+         * Initializes a new instance of the TopicMetadata class with default values.
+         */
         public TopicMetadata() {
         }
 
+        /**
+         * Constructor for TopicMetadata.
+         *
+         * @param topic       The name of the topic.
+         * @param partition   The partition number of the topic.
+         * @param replicas    The number of replicas for the topic.
+         * @param config      The configuration for the topic.
+         * @param partitions  A map of partition numbers to a list of their corresponding replicas.
+         */
         public TopicMetadata(String topic, int partition, int replicas, TopicConfig config,
                              Map<Integer, List<String>> partitions) {
             this.topic = topic;
@@ -153,46 +222,101 @@ public class TopicCreatedCommand implements Command {
             this.partitions = partitions;
         }
 
+        /**
+         * Retrieves the topic name.
+         *
+         * @return the name of the topic
+         */
         public String getTopic() {
             return topic;
         }
 
+        /**
+         * Sets the topic name.
+         *
+         * @param topic the name of the topic to set
+         */
         public void setTopic(String topic) {
             this.topic = topic;
         }
 
+        /**
+         * Retrieves the partition number of the topic.
+         *
+         * @return the partition number
+         */
         public int getPartition() {
             return partition;
         }
 
+        /**
+         * Sets the partition number for the topic.
+         *
+         * @param partition the partition number to set
+         */
         public void setPartition(int partition) {
             this.partition = partition;
         }
 
+        /**
+         * Retrieves the number of replicas for this topic partition.
+         *
+         * @return the number of replicas
+         */
         public int getReplicas() {
             return replicas;
         }
 
+        /**
+         * Sets the number of replicas for the topic.
+         *
+         * @param replicas the number of replicas to set
+         */
         public void setReplicas(int replicas) {
             this.replicas = replicas;
         }
 
+        /**
+         * Retrieves the configuration settings of the topic.
+         *
+         * @return the TopicConfig object containing the configuration settings of the topic.
+         */
         public TopicConfig getConfig() {
             return config;
         }
 
+        /**
+         * Sets the configuration for the topic.
+         *
+         * @param config the topic configuration to set
+         */
         public void setConfig(TopicConfig config) {
             this.config = config;
         }
 
+        /**
+         * Retrieves the partition information for the topic.
+         *
+         * @return a map where the keys are partition numbers and the values are lists of replica IDs.
+         */
         public Map<Integer, List<String>> getPartitions() {
             return partitions;
         }
 
+        /**
+         * Sets the partitions map for the topic metadata.
+         *
+         * @param partitions a map where the key is the partition number and the value is a list of strings representing the replicas for that partition
+         */
         public void setPartitions(Map<Integer, List<String>> partitions) {
             this.partitions = partitions;
         }
 
+        /**
+         * Returns a string representation of the TopicMetadata instance.
+         *
+         * @return a string containing the topic, partition, replicas, config, and partitions details
+         */
         @Override
         public String toString() {
             return STR."(topic='\{topic}', partition=\{partition}, replicas=\{replicas}, config=\{config}, partitions=\{partitions})";

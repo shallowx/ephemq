@@ -7,12 +7,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MessageFormatterTest {
 
+    /**
+     * Tests the MessageFormatter.format method with a null message pattern.
+     * Verifies that the method returns null when passed a null pattern and a non-null argument.
+     */
     @Test
     public void testNull() {
         String result = MessageFormatter.format(null, 1).getMessage();
         assertNull(result);
     }
 
+    /**
+     * Ensures that null parameters are handled properly by the MessageFormatter and do not cause errors.
+     * The method verifies various scenarios where null values are passed to the formatter, both as single
+     * values and within arrays, and asserts that the resulting messages are correctly formed.
+     */
     @Test
     public void nullParametersShouldBeHandledWithoutBarfing() {
         String result = MessageFormatter.format("Value is {}.", null).getMessage();
@@ -40,6 +49,23 @@ public class MessageFormatterTest {
         assertEquals("Val1 is null, val2 is null, val3 is 3", result);
     }
 
+    /**
+     * This method tests the behavior of the MessageFormatter by verifying that a single parameter
+     * is correctly handled within various message format templates. It checks the formatted output
+     * by asserting the expected results for different input scenarios, including:
+     * <p>
+     * - Basic substitution: replacing a placeholder with a given parameter.
+     * - Ignoring unmatched placeholders.
+     * - Handling placeholders at the beginning or end of the template string.
+     * - Ignoring templates without placeholders.
+     * - Handling mismatched or incorrect placeholder formats.
+     * - Escaping placeholders so they are not replaced.
+     * - Combining escaped and non-escaped placeholders.
+     * - Escaping the escape character itself.
+     * <p>
+     * It performs assertions to validate that the MessageFormatter formats the messages correctly
+     * according to the defined rules.
+     */
     @Test
     public void verifyOneParameterIsHandledCorrectly() {
         String result = MessageFormatter.format("Value is {}.", 3).getMessage();
@@ -77,6 +103,11 @@ public class MessageFormatterTest {
         assertEquals("File name is C:\\App folder.zip.", result);
     }
 
+    /**
+     * Tests the formatting functionalities of the MessageFormatter with two placeholders.
+     * This method verifies that the formatted messages correctly replace placeholders with provided parameters.
+     * The assertions check various formats and escaping scenarios.
+     */
     @Test
     public void testTwoParameters() {
         String result = MessageFormatter.format("Value {} is smaller than {}.", 1, 2).getMessage();
@@ -107,6 +138,15 @@ public class MessageFormatterTest {
         assertEquals("Value {} is smaller than 1", result);
     }
 
+    /**
+     * Tests the behavior of the MessageFormatter when an exception is thrown
+     * by the toString() method of an object.
+     *
+     * This test creates an anonymous object whose toString() method always throws
+     * an IllegalStateException. The method then formats a string using this object
+     * and verifies that the resulting message handles the exception properly by
+     * substituting the placeholder with "[FAILED toString()]".
+     */
     @Test
     public void testExceptionIn_toString() {
         Object o = new Object() {
@@ -119,6 +159,16 @@ public class MessageFormatterTest {
         assertEquals("Troublesome object [FAILED toString()]", result);
     }
 
+    /**
+     * Tests the behavior of the MessageFormatter.arrayFormat method when passed a null array of arguments.
+     *
+     * The test method verifies that when the argument array is null, the format string remains unchanged.
+     * It asserts that the returned message is the same as the original format strings provided, which
+     * include different numbers of placeholders.
+     *
+     * Asserts:
+     * - The result matches the original format string when the argument array is null.
+     */
     @Test
     public void testNullArray() {
         String msg0 = "msg0";
@@ -141,6 +191,17 @@ public class MessageFormatterTest {
         assertEquals(msg3, result);
     }
 
+    /**
+     * Tests the case when the parameters are supplied in a single array to the MessageFormatter.
+     * The method covers various scenarios such as:
+     *
+     * 1. Basic formatting with multiple placeholders.
+     * 2. Consecutive placeholders without delimiters.
+     * 3. Extra array elements ignored in formatting.
+     * 4. Format strings with unbalanced brackets.
+     *
+     * This ensures that MessageFormatter correctly handles array inputs for formatted message strings.
+     */
     // tests the case when the parameters are supplied in a single array
     @Test
     public void testArrayFormat() {
@@ -168,6 +229,16 @@ public class MessageFormatterTest {
         assertEquals("Val1=1, Val2={", result);
     }
 
+    /**
+     * Test the formatting of various array types using the MessageFormatter.
+     *
+     * This method will assert that the MessageFormatter correctly formats messages when provided
+     * with different array types such as Integer, byte, int, float, and double.
+     *
+     * The method accomplishes this by:
+     * 1. Creating specific arrays and formatting them with the MessageFormatter.
+     * 2. Asserting that the formatted output matches the expected string representations.
+     */
     @Test
     public void testArrayValues() {
         Integer[] p1 = {2, 3};
@@ -196,6 +267,21 @@ public class MessageFormatterTest {
         assertEquals("a[1.0, 2.0]", result);
     }
 
+    /**
+     * Test method for verifying the correct handling and formatting of multi-dimensional array values
+     * in the MessageFormatter class's arrayFormat method.
+     *
+     * This test checks the formatting of arrays with different data types and dimensions, including:
+     * - 1-dimensional and 2-dimensional Integer arrays
+     * - 2-dimensional int arrays
+     * - 2-dimensional float arrays
+     * - Multi-dimensional Object arrays
+     * - Nested 3-dimensional Object arrays
+     * - Combined Byte and Short arrays within an Object array
+     *
+     * The assertions validate that the formatted string output matches the expected string representation
+     * of the input multi-dimensional arrays.
+     */
     @Test
     public void testMultiDimensionalArrayValues() {
         Integer[] ia0 = {1, 2, 3};
@@ -227,6 +313,14 @@ public class MessageFormatterTest {
         assertEquals("[[0, 127, -128], [0, -32768, 32767]]{}[10, 20, 30]", result);
     }
 
+    /**
+     * Tests the handling of cyclic arrays by the MessageFormatter.
+     *
+     * Ensures that cyclic references within arrays are properly detected
+     * and represented in the output message string without causing infinite loops.
+     * The expected output for a cyclic array is a representation with "[[...]",
+     * indicating the cyclic nature of the array.
+     */
     @Test
     public void testCyclicArrays() {
         Object[] cyclicA = new Object[1];
@@ -242,6 +336,19 @@ public class MessageFormatterTest {
                 MessageFormatter.arrayFormat("{}{}", a).getMessage());
     }
 
+    /**
+     * Test method to validate the behavior of the MessageFormatter when formatting messages with arrays that include a Throwable instance.
+     *
+     * This method tests various scenarios where the message format and the length of the provided array differ. It ensures that the formatted message
+     * and the throwable, if present, are correctly extracted and compared against expected values.
+     *
+     * The method performs the following assertions:
+     * 1. Checks the formatted message and throwable extraction when the message template includes placeholders.
+     * 2. Verifies the behavior when message template placeholders match the length of the array exactly.
+     * 3. Assesses how the formatter deals with mismatched array length and placeholders in the template.
+     * 4. Tests the escape sequences in the message template.
+     * 5. Confirms that no throwable is associated if the Throwable appears as a formatted value.
+     */
     @Test
     public void testArrayThrowable() {
         FormattingTuple ft;

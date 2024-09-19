@@ -22,6 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class Log4JLoggerFactoryTest {
 
+    /**
+     * Tests the creation of a logger instance using the Log4JLoggerFactory.
+     * This test verifies that the created logger is an instance of Log4JLogger
+     * and that its name is set correctly to "foo".
+     */
     @Test
     public void testCreation() {
         InternalLogger logger = Log4JLoggerFactory.INSTANCE.newLogger("foo");

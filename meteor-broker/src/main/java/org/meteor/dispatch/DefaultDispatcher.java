@@ -44,23 +44,108 @@ import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
+/**
+ * DefaultDispatcher is responsible for managing the dispatch of events to various channels.
+ * It handles channel operations such as resetting offsets, altering markers, cleaning up resources,
+ * and managing the state of channel handlers.
+ */
 public class DefaultDispatcher {
+
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultDispatcher.class);
+    /**
+     * Represents the ledger identifier for the DefaultDispatcher.
+     */
     private final int ledger;
+    /**
+     * Represents the topic associated with the {@link DefaultDispatcher}.
+     * This variable holds the name of the topic for which the dispatcher is responsible.
+     * It is a final and immutable string, ensuring the topic name remains consistent
+     * throughout the lifecycle of the dispatcher instance.
+     */
     private final String topic;
+    /**
+     * The LedgerStorage instance used by the DefaultDispatcher to handle data
+     * storage and retrieval operations related to ledger entries and logs.
+     * This is a final variable, ensuring that the reference to the LedgerStorage
+     * instance cannot be changed once it is assigned.
+     */
     private final LedgerStorage storage;
+    /**
+     * The maximum number of entities a user can follow.
+     * This variable defines the cap on the number of follow relationships
+     * that can be established by a single user to other users or entities within
+     * the application.
+     */
     private final int followLimit;
+    /**
+     * The maximum number of attempts allowed for pursuing a specific operation or goal.
+     */
     private final int pursueLimit;
+    /**
+     * Specifies the maximum limit for alignment operations in the dispatcher.
+     * It dictates the threshold up to which the components will attempt to align
+     * their states or data before initiating further operations like follow or pursue.
+     */
     private final int alignLimit;
+    /**
+     * The duration, in milliseconds, before a pursue action times out.
+     * This value determines the maximum amount of time the system will
+     * spend on a pursue operation before considering it as failed or
+     * canceled.
+     */
     private final long pursueTimeoutMilliseconds;
+    /**
+     * Represents the maximum permissible load a system or component can handle.
+     * This value is used to ensure that operations do not exceed safe operational limits.
+     */
     private final int loadLimit;
+    /**
+     * A consumer that performs operations on an integer value.
+     * This final variable is meant to be set once and not modified thereafter.
+     * It consumes an integer input as part of its operation, which is defined by the implementation of the IntConsumer.
+     */
     private final IntConsumer counter;
+    /**
+     * Array of EventExecutor instances used for executing tasks associated with event handling.
+     * These executors are responsible for managing the concurrency aspects of events being dispatched
+     * within the DefaultDispatcher.
+     */
     private final EventExecutor[] executors;
+    /**
+     * A thread-safe list of DefaultHandler instances used within the DefaultDispatcher class
+     * to manage and dispatch events. The list is backed by a CopyOnWriteArrayList to ensure
+     * safe iteration and modification in concurrent environments.
+     */
     private final List<DefaultHandler> dispatchHandlers = new CopyOnWriteArrayList<>();
+    /**
+     * A map that holds `DefaultHandler` instances as keys with their respective integer values.
+     * This map uses weak references for its keys, so entries will be removed when the key is no longer in use.
+     * Typically used to keep track of dispatch handlers in a weakly referenced manner to prevent memory leaks.
+     */
     private final WeakHashMap<DefaultHandler, Integer> weakHandlers = new WeakHashMap<>();
+    /**
+     * A thread-safe map that associates a {@link Channel} with its corresponding {@link DefaultHandler}.
+     * This map is used to manage and track the handlers assigned to different channels within the {@link DefaultDispatcher}.
+     */
     private final ConcurrentMap<Channel, DefaultHandler> channelHandlers = new ConcurrentHashMap<>();
+    /**
+     * A thread-safe boolean flag indicating the current state.
+     * <p>
+     * This AtomicBoolean is initialized to {@code true} and can be used to manage
+     * concurrency or state changes across multiple threads safely.
+     */
     private final AtomicBoolean state = new AtomicBoolean(true);
 
+    /**
+     * Constructs a DefaultDispatcher with the specified parameters.
+     *
+     * @param ledger                     the ledger identifier
+     * @param topic                      the topic name
+     * @param storage                    the ledger storage instance
+     * @param config                     the default dispatch configuration
+     * @param group                      the event executor group
+     * @param dispatchCounter            the dispatch counter as an IntConsumer
+     */
     public DefaultDispatcher(int ledger, String topic, LedgerStorage storage, DefaultDispatchConfig config,
                              EventExecutorGroup group, IntConsumer dispatchCounter) {
         this.ledger = ledger;
@@ -79,14 +164,33 @@ public class DefaultDispatcher {
         this.executors = eventExecutors.toArray(new EventExecutor[0]);
     }
 
+    /**
+     * Returns the number of channel handlers currently managed by the dispatcher.
+     *
+     * @return the number of channel handlers.
+     */
     public int channelCount() {
         return channelHandlers.size();
     }
 
+    /**
+     * Returns the EventExecutor assigned to handle the specified channel.
+     *
+     * @param channel the channel for which to retrieve the executor
+     * @return the EventExecutor assigned to handle the specified channel
+     */
     private EventExecutor channelExecutor(Channel channel) {
         return executors[(channel.hashCode() & 0x7fffffff) % executors.length];
     }
 
+    /**
+     * Resets the state of a specified channel to the given offset and applies provided markers.
+     *
+     * @param channel the channel to reset.
+     * @param resetOffset the offset to reset the channel to.
+     * @param wholeMarkers the collection of markers to be applied to the reset state.
+     * @param promise the promise representing the outcome of the reset operation which on success carries the size of markers applied.
+     */
     public void reset(Channel channel, Offset resetOffset, IntCollection wholeMarkers, Promise<Integer> promise) {
         try {
             EventExecutor executor = channelExecutor(channel);
@@ -100,6 +204,14 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Resets the specified channel with the given reset offset and a collection of markers, and fulfills a promise upon completion.
+     *
+     * @param channel The channel to reset.
+     * @param resetOffset The offset to reset the channel to.
+     * @param wholeMarkers A collection of markers to be processed during the reset.
+     * @param promise The promise that will be fulfilled with the result of the reset operation.
+     */
     public void doReset(Channel channel, Offset resetOffset, IntCollection wholeMarkers, Promise<Integer> promise) {
         try {
             checkActive();
@@ -161,6 +273,14 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Alters the state of a given channel by appending and deleting marker sets.
+     *
+     * @param channel The channel whose state is to be altered.
+     * @param appendMarkers The markers to be appended to the channel.
+     * @param deleteMarkers The markers to be deleted from the channel.
+     * @param promise A promise to indicate the success or failure of the operation.
+     */
     public void alter(Channel channel, IntCollection appendMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
         try {
             EventExecutor executor = channelExecutor(channel);
@@ -174,6 +294,15 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Alters the subscription markers for the specified channel by adding and removing markers.
+     *
+     * @param channel        The channel whose subscription markers are to be altered.
+     * @param appendMarkers  A collection of markers to be added to the subscription.
+     * @param deleteMarkers  A collection of markers to be removed from the subscription.
+     * @param promise        A promise that will be completed when the operation finishes,
+     *                       indicating the number of markers remaining in the subscription.
+     */
     private void doAlter(Channel channel, IntCollection appendMarkers, IntCollection deleteMarkers, Promise<Integer> promise) {
         try {
             checkActive();
@@ -214,6 +343,14 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Cleans a specific channel by performing necessary clean-up operations.
+     * The operation is executed immediately if the current thread is in the event loop,
+     * otherwise it is submitted to be executed in the event loop.
+     *
+     * @param channel the channel to be cleaned
+     * @param promise the promise to be completed with the result of the clean operation
+     */
     public void clean(Channel channel, Promise<Boolean> promise) {
         try {
             EventExecutor executor = channelExecutor(channel);
@@ -227,6 +364,13 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Cleans up resources associated with the specified channel and completes the provided promise accordingly.
+     * This includes removing various markers and handlers linked to the channel.
+     *
+     * @param channel the Channel to be cleaned
+     * @param promise the Promise that will be completed with the result of the clean operation
+     */
     private void doClean(Channel channel, Promise<Boolean> promise) {
         try {
             checkActive();
@@ -259,6 +403,12 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Attempts to dispatch work to the specified handler. If the handler has not been triggered yet,
+     * it sets the triggered status and schedules the dispatch execution.
+     *
+     * @param handler The handler to which the dispatch work will be delegated.
+     */
     private void touchDispatch(DefaultHandler handler) {
         if (handler.getTriggered().compareAndSet(false, true)) {
             try {
@@ -271,6 +421,11 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Dispatches messages for the given handler by iterating through ledger entries.
+     *
+     * @param handler the handler for which dispatching should occur
+     */
     private void doDispatch(DefaultHandler handler) {
         LedgerCursor cursor = handler.getFollowCursor();
         if (cursor == null) {
@@ -361,6 +516,15 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Processes the given count by accepting it into a counter and handles any
+     * errors that occur during this process. Errors are logged if error logging
+     * is enabled.
+     *
+     * @param count the count value to be processed. If the count is greater than 0,
+     *              it will be accepted by the counter. Otherwise, no processing
+     *              occurs.
+     */
     private void compute(int count) {
         if (count > 0) {
             try {
@@ -373,6 +537,13 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Creates a {@link ChannelPromise} for the given {@link PursueTask} and sets up a listener that will
+     * submit the task for pursuit if the associated channel is active.
+     *
+     * @param task the pursue task containing the subscription and other relevant information.
+     * @return a ChannelPromise which will be completed once the task is either submitted for pursuit or fails.
+     */
     private ChannelPromise delayPursue(PursueTask<DefaultSynchronization> task) {
         ChannelPromise promise = task.getSubscription().getChannel().newPromise();
         promise.addListener((ChannelFutureListener) f -> {
@@ -383,6 +554,11 @@ public class DefaultDispatcher {
         return promise;
     }
 
+    /**
+     * Submits a pursue task to the appropriate channel executor.
+     *
+     * @param task the pursue task to be submitted, containing the subscription and cursor details.
+     */
     private void submitPursue(PursueTask<DefaultSynchronization> task) {
         try {
             channelExecutor(task.getSubscription().getChannel()).execute(() -> {
@@ -396,6 +572,11 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Executes a pursue task that continues processing from a specified offset.
+     *
+     * @param task The PursueTask containing the details of the subscription and cursor to process.
+     */
     private void doPursue(PursueTask<DefaultSynchronization> task) {
         DefaultSynchronization subscription = task.getSubscription();
         Channel channel = subscription.getChannel();
@@ -484,6 +665,13 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Submits a follow task for execution on the dispatch executor. If an exception occurs
+     * during the execution, the subscription is marked as followed regardless, and an error
+     * message is logged.
+     *
+     * @param task the pursue task that encapsulates the subscription and cursor information.
+     */
     private void submitFollow(PursueTask<DefaultSynchronization> task) {
         DefaultSynchronization subscription = task.getSubscription();
         try {
@@ -498,6 +686,14 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Submits a task for alignment. This method retrieves the associated subscription from the task
+     * and attempts to execute the alignment process on the dispatch executor associated with the
+     * subscription's handler. If an error occurs during this process, appropriate error handling
+     * is performed.
+     *
+     * @param task the task to be aligned, encapsulated in a {@link PursueTask} object.
+     */
     private void submitAlign(PursueTask<DefaultSynchronization> task) {
         DefaultSynchronization subscription = task.getSubscription();
         try {
@@ -512,6 +708,11 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Aligns the given pursue task by synchronizing it with the appropriate offsets and markers.
+     *
+     * @param task the pursue task to be aligned, which contains the subscription and cursor needed for alignment.
+     */
     private void doAlign(PursueTask<DefaultSynchronization> task) {
         DefaultSynchronization subscription = task.getSubscription();
         Channel channel = subscription.getChannel();
@@ -607,6 +808,17 @@ public class DefaultDispatcher {
         submitPursue(task);
     }
 
+    /**
+     * Creates a payload byte buffer by combining a message push signal and an existing entry buffer.
+     * The payload contains metadata and the actual data to be dispatched.
+     *
+     * @param marker An integer marker representing a specific state or position.
+     * @param offset The offset object containing epoch and index.
+     * @param entry The buffer containing the entry data.
+     * @param alloc The byte buffer allocator.
+     * @return A combined byte buffer ready for dispatch.
+     * @throws DefaultDispatchException if an error occurs during payload creation.
+     */
     private ByteBuf createPayload(int marker, Offset offset, ByteBuf entry, ByteBufAllocator alloc) {
         ByteBuf buf = null;
         try {
@@ -637,6 +849,11 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Dispatches events to registered handlers if there are any.
+     * For each handler in the dispatchHandlers list, if the handler has a follow cursor,
+     * it calls the touchDispatch method to handle the dispatch for that handler.
+     */
     public void dispatch() {
         if (dispatchHandlers.isEmpty()) {
             return;
@@ -648,6 +865,13 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Detaches a given subscription from a specific marker in the marker subscription map.
+     *
+     * @param markerSubscriptionMap the map that associates markers with their respective sets of subscriptions
+     * @param marker the marker from which the subscription will be detached
+     * @param subscription the subscription to detach from the specified marker
+     */
     private void detachMarker(Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap, int marker,
                               DefaultSynchronization subscription) {
         Set<DefaultSynchronization> subscriptions = markerSubscriptionMap.get(marker);
@@ -659,21 +883,51 @@ public class DefaultDispatcher {
         }
     }
 
+    /**
+     * Attaches a {@link DefaultSynchronization} subscription to a specified marker in the marker subscription map.
+     *
+     * @param markerSubscriptionMap the map holding sets of subscriptions for each marker
+     * @param marker the marker to which the subscription should be attached
+     * @param subscription the subscription to attach to the specified marker
+     */
     private void attachMarker(Int2ObjectMap<Set<DefaultSynchronization>> markerSubscriptionMap, int marker,
                               DefaultSynchronization subscription) {
         markerSubscriptionMap.computeIfAbsent(marker, k -> new ObjectArraySet<>()).add(subscription);
     }
 
+    /**
+     * Ensures that the dispatch handler is active before proceeding.
+     * <p>
+     * This method checks the current state of the dispatcher using the
+     * {@link #isActive()} method. If the dispatcher is not active, it throws
+     * a {@link DefaultDispatchException} to prevent further processing.
+     * </p>
+     *
+     * @throws DefaultDispatchException if the dispatcher is inactive
+     */
     private void checkActive() {
         if (!isActive()) {
             throw new DefaultDispatchException("Dispatch handler is inactive");
         }
     }
 
+    /**
+     * Checks if the dispatcher is currently active.
+     *
+     * @return {@code true} if the dispatcher is active, otherwise {@code false}
+     */
     public boolean isActive() {
         return state.get();
     }
 
+    /**
+     * Closes the dispatcher by cleaning up associated channels and their markers.
+     *
+     * @param promise A promise that will be fulfilled with a map of channels and their markers upon successful closure,
+     *                or with an exception if an error occurs.
+     * @return A Future representing the final outcome of the closure operation, containing the map of channels
+     *         and their markers if successful.
+     */
     public Future<Map<Channel, IntSet>> close(Promise<Map<Channel, IntSet>> promise) {
         Promise<Map<Channel, IntSet>> result = promise != null ? promise : ImmediateEventExecutor.INSTANCE.newPromise();
         if (state.compareAndSet(true, false)) {
@@ -713,6 +967,14 @@ public class DefaultDispatcher {
         return result;
     }
 
+    /**
+     * Allocates and returns a DefaultHandler instance for the specified channel.
+     * This method first checks if a handler is already assigned to the channel.
+     * If not, it tries to allocate a handler with a balanced load among weak handlers.
+     *
+     * @param channel the channel for which the DefaultHandler is to be allocated.
+     * @return DefaultHandler the allocated handler for the specified channel.
+     */
     private DefaultHandler allocateHandler(Channel channel) {
         DefaultHandler result = channelHandlers.get(channel);
         if (result != null) {

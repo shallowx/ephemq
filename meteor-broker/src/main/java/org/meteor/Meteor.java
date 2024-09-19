@@ -28,6 +28,12 @@ public class Meteor {
         start(createServer(args));
     }
 
+    /**
+     * Starts the provided MeteorServer instance and handles any exceptions that occur during startup.
+     * If an exception is caught and logging is enabled, logs an error message and terminates the JVM.
+     *
+     * @param server the MeteorServer instance to be started.
+     */
     private static void start(MeteorServer server) {
         try {
             server.start();
@@ -39,6 +45,15 @@ public class Meteor {
         }
     }
 
+    /**
+     * Creates a MeteorServer instance by loading configuration properties, setting up the server configuration,
+     * initializing the manager and metrics listener, and preparing the default socket server.
+     *
+     * @param args the command line arguments used to load configuration properties
+     * @return a newly initialized MeteorServer
+     * @throws Exception if an error occurs during the server creation process, including configuration loading,
+     *                   metric listener setup, or server initialization
+     */
     private static MeteorServer createServer(String... args) throws Exception {
         Properties properties = loadConfigurationProperties(args);
         ServerConfig configuration = new ServerConfig(properties);
@@ -52,6 +67,13 @@ public class Meteor {
         return initializeServer(metricsListener, socketServer, manager);
     }
 
+    /**
+     * Loads configuration properties from a specified properties file provided as a command line argument.
+     *
+     * @param args the command line arguments used to specify the configuration file path
+     * @return a Properties object containing the loaded configuration properties
+     * @throws Exception if there are issues with file access, parsing command line arguments, or loading properties
+     */
     private static Properties loadConfigurationProperties(String... args) throws Exception {
         Options options = constructCommandlineOptions();
         DefaultParser parser = new DefaultParser();
@@ -77,6 +99,14 @@ public class Meteor {
         return properties;
     }
 
+    /**
+     * Initializes and configures a MeteorServer instance.
+     *
+     * @param listener the MetricsListener to be added to the server for metric monitoring.
+     * @param socketServer the DefaultSocketServer to handle socket connections.
+     * @param manager the Manager responsible for managing server operations and services.
+     * @return an initialized MeteorServer instance ready for operation.
+     */
     private static MeteorServer initializeServer(MetricsListener listener, DefaultSocketServer socketServer,
                                                  Manager manager) {
         MeteorServer server = new MeteorServer(socketServer, manager);
@@ -88,6 +118,12 @@ public class Meteor {
         return server;
     }
 
+    /**
+     * Constructs and configures command line options for the Meteor broker server.
+     * This method adds an option for specifying the config file, which is required for the server.
+     *
+     * @return an Options object containing the configured command line options
+     */
     private static Options constructCommandlineOptions() {
         Options options = new Options();
         Option option = new Option("c", "config-file", true, "Meteor broker server config file");

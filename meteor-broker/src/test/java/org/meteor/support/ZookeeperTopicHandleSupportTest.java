@@ -18,12 +18,44 @@ import org.meteor.config.ServerConfig;
 import org.meteor.internal.CorrelationIdConstants;
 
 public class ZookeeperTopicHandleSupportTest {
+    /**
+     * The name of the topic used in the test cases within ZookeeperTopicHandleSupportTest class.
+     * This is a static final string representing a predefined topic name "test".
+     */
     private final String topic = "test";
+    /**
+     * Represents the number of partitions in a topic used in Zookeeper-related tests.
+     */
     private final int partitions = 1;
+    /**
+     * The default number of replicas for a topic partition in the test scenario.
+     */
     private final int replicas = 1;
+    /**
+     * An instance of TopicHandleSupport that provides necessary methods and operations to manage and handle
+     * topics and their partitions within the ZookeeperTopicHandleSupportTest class.
+     * The support variable is a key component in facilitating topic creation, deletion, partition management,
+     * and other related operations within the test environment.
+     */
     private TopicHandleSupport support;
+    /**
+     * The `server` variable represents an instance of {@link TestingServer}.
+     * It is used to simulate a ZooKeeper server for testing purposes
+     * within the {@code ZookeeperTopicHandleSupportTest} class.
+     */
     private TestingServer server;
 
+    /**
+     * Sets up the testing environment before each test case is executed.
+     * <p>
+     * This method initializes a {@link TestingServer} instance to simulate a Zookeeper server
+     * and configures the server properties needed for testing. The method then initializes
+     * the {@link DefaultMeteorManager} with the configured properties and starts it,
+     * allowing test cases to interact with a mock topic handle support system.
+     *
+     * @throws Exception if any error occurs during the setup process, such as an issue with
+     *                   the TestingServer or the DefaultMeteorManager initialization.
+     */
     @Before
     public void setUp() throws Exception {
         server = new TestingServer();
@@ -41,6 +73,13 @@ public class ZookeeperTopicHandleSupportTest {
         TimeUnit.SECONDS.sleep(5);
     }
 
+    /**
+     * Tests the validity of various topic names against a predefined pattern.
+     * The pattern allows alphanumeric characters, underscores, dashes, and hash symbols.
+     * Any other characters should invalidate the topic name.
+     *
+     * @throws Exception if an unexpected error occurs during the pattern matching.
+     */
     @Test
     public void testTopicPattern() throws Exception {
         Pattern pattern = Pattern.compile("^[\\w\\-#]+$");
@@ -62,6 +101,15 @@ public class ZookeeperTopicHandleSupportTest {
         Assert.assertFalse(pattern.matcher("test 001").matches());
     }
 
+    /**
+     * Tests the creation of a topic in a Zookeeper-backed environment.
+     *
+     * This test verifies that a topic with specified partitions and replicas can be
+     * created successfully, and that the resulting metadata includes valid topic ID
+     * and partition replicas information.
+     *
+     * @throws Exception If an error occurs during topic creation or fetching topic information.
+     */
     @Test
     public void testCrateTopic() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
@@ -78,6 +126,18 @@ public class ZookeeperTopicHandleSupportTest {
         Assertions.assertEquals(partitionInfo.getTopic(), topic);
     }
 
+    /**
+     * Tests the deletion of a Kafka topic.
+     *
+     * This method validates the following sequence:
+     * 1. Creates a new topic using specified configurations.
+     * 2. Verifies the creation by checking the returned topic details.
+     * 3. Confirms the existence of the topic via partition information.
+     * 4. Deletes the topic.
+     * 5. Validates that the topic is successfully deleted by verifying the absence of the topic.
+     *
+     * @throws Exception if an error occurs during the topic creation, retrieval, or deletion process.
+     */
     @Test
     public void testDeleteTopic() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
@@ -99,6 +159,16 @@ public class ZookeeperTopicHandleSupportTest {
         Assertions.assertEquals(allTopics.size(), 0);
     }
 
+    /**
+     * Tests the functionality of retrieving all topics in the system.
+     *
+     * This test validates that:
+     * 1. A topic can be successfully created with the specified configurations.
+     * 2. The topic information, including topic ID and partition replicas, is correctly stored.
+     * 3. The topic retrieval method returns accurate information regarding existing topics.
+     *
+     * @throws Exception if there is an error during topic creation or retrieval.
+     */
     @Test
     public void testGetAllTopics() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
@@ -121,6 +191,18 @@ public class ZookeeperTopicHandleSupportTest {
         Assertions.assertEquals(result, topic);
     }
 
+    /**
+     * Tests the retrieval of partition information for a specified topic.
+     *
+     * This method validates that the partition information obtained from
+     * a topic matches the expected results. It first creates a topic with
+     * specific partitions and replicas, and then retrieves and checks the
+     * partition info to ensure correctness. Assertions are used to confirm
+     * that the size of the result map, and the presence and correctness of
+     * the topic ID and partition replicas are as expected.
+     *
+     * @throws Exception if an error occurs during the topic creation or partition information retrieval.
+     */
     @Test
     public void testGetPartitionInfo() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
@@ -135,6 +217,12 @@ public class ZookeeperTopicHandleSupportTest {
         Assertions.assertEquals(partitionInfo.getTopic(), topic);
     }
 
+    /**
+     * Tears down the test environment after each test case is executed.
+     * This method ensures that resources such as the support and server are properly closed and cleaned up.
+     *
+     * @throws Exception if any error occurs during the shutdown of support or closing of the server.
+     */
     @After
     public void tearDown() throws Exception {
         support.shutdown();

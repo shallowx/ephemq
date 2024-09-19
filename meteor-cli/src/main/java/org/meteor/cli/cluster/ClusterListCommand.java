@@ -18,8 +18,11 @@ import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
+
 /**
- * for example:
+ * ClusterListCommand is a concrete implementation of the Command interface.
+ * It provides functionality to retrieve and display information about nodes in a broker cluster.
+ *
  *
  * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
  * | id     | host      | port | registrationTimestamp | cluster | state | auxData | ledgerThroughput |
@@ -28,16 +31,32 @@ import org.meteor.remote.util.NetworkUtil;
  * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
  */
 public class ClusterListCommand implements Command {
+    /**
+     * Returns the name of the command related to cluster information retrieval.
+     *
+     * @return a string representing the command name.
+     */
     @Override
     public String name() {
         return "cluster-info";
     }
 
+    /**
+     * Provides a description of the cluster node information retrieval command.
+     *
+     * @return a string describing the action of fetching cluster node information from the broker cluster.
+     */
     @Override
     public String description() {
         return "Get cluster node info form broker cluster";
     }
 
+    /**
+     * Builds and adds the necessary options for the command.
+     *
+     * @param options The current set of command options.
+     * @return The updated set of options with broker and cluster options added.
+     */
     @Override
     public Options buildOptions(Options options) {
         Option brokerOpt =
@@ -51,6 +70,9 @@ public class ClusterListCommand implements Command {
         return options;
     }
 
+    /**
+     *
+     */
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         List<Node> nodes = new ArrayList<>();
@@ -94,6 +116,11 @@ public class ClusterListCommand implements Command {
         }
     }
 
+    /**
+     * Formats and prints the details of the provided list of nodes.
+     *
+     * @param nodes the list of nodes to be formatted and printed.
+     */
     private void formatPrint(List<Node> nodes) {
         String[] title =
                 {"id", "host", "port", "registrationTimestamp", "cluster", "state", "auxData", "ledgerThroughput"};

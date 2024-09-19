@@ -7,6 +7,17 @@ import org.junit.Test;
 
 public class SerializeFeatureSupportTest {
 
+    /**
+     * Tests the serialization and deserialization of a TestFeatureMapperObject.
+     * <p>
+     * This test case creates a TestFeatureMapperObject instance, serializes it
+     * into a byte array using SerializeFeatureSupport, and then deserializes
+     * this byte array back into a TestFeatureMapperObject instance. It asserts
+     * that the original and deserialized objects are equal, and that their
+     * individual fields match.
+     *
+     * @throws Exception if any serialization or deserialization error occurs
+     */
     @Test
     public void testSerialize() throws Exception {
         TestFeatureMapperObject o = new TestFeatureMapperObject(1, "localhost:8080");
@@ -18,6 +29,12 @@ public class SerializeFeatureSupportTest {
         Assert.assertEquals(o.addr, obj.addr);
     }
 
+    /**
+     * Tests the deserialization of a JSON byte array to a TestFeatureMapperObject
+     * using the SerializeFeatureSupport class.
+     *
+     * @throws Exception if an error occurs during deserialization
+     */
     @Test
     public void testTestDeserialize() throws Exception {
         byte[] data = "{\"addr\":\"localhost:8080\",\"id\":1}".getBytes();

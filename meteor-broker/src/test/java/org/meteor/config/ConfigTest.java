@@ -6,6 +6,25 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 public class ConfigTest {
+    /**
+     * Tests the configuration settings loaded into a ServerConfig instance.
+     * <p>
+     * This method initializes a Properties object with specific configuration
+     * keys and values, then creates a ServerConfig instance using these properties.
+     * Assertions are used to verify that various configuration settings
+     * within the ServerConfig object are correctly initialized and
+     * deviate from their potential default values.
+     * <p>
+     * Key configuration aspects tested include:
+     * - CommonConfig for general server settings.
+     * - MessageConfig for message synchronization limits.
+     * - MetricsConfig for metrics sampling limits.
+     * - NetworkConfig for connection timeout settings.
+     * - ChunkDispatchConfig for chunk dispatch entry limits.
+     * - DefaultDispatchConfig for general dispatch entry limits.
+     * - SegmentConfig for segment rolling sizes.
+     * - ZookeeperConfig for Zookeeper connection URL.
+     */
     @Test
     public void testConfig() {
         Properties properties = new Properties();

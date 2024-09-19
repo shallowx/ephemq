@@ -73,14 +73,54 @@ import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 import org.meteor.support.TopicHandleSupport;
 
+/**
+ * ServiceProcessor is responsible for handling various service-related commands
+ * and processing them accordingly. It manages channel activities and command
+ * executions using an internal manager and executor.
+ */
 public class ServiceProcessor implements Processor, Command.Server {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ServiceProcessor.class);
+    /**
+     * Holds the common configuration settings required by the ServiceProcessor.
+     * This variable is initialized during the construction of a ServiceProcessor
+     * instance and is used internally by various processing methods to ensure
+     * operations conform to the given configuration parameters.
+     */
     protected final CommonConfig commonConfiguration;
+    /**
+     * The manager responsible for handling various operations within the service
+     * processor.
+     * <p>
+     * It manages the lifecycle of service components, such as starting
+     * and shutting down services, handling connections, managing topics,
+     * cluster operations, and logging. It also supports events and metrics
+     * listeners management, and provides executor groups for different
+     * types of event handling.
+     */
     protected final Manager manager;
+    /**
+     * Manages the execution of commands for the service processor.
+     * This executor handles tasks related to command processing in a concurrent environment.
+     */
     protected final EventExecutor commandExecutor;
+    /**
+     * Holds the network configuration settings for the service processor.
+     * This configuration is used to manage various aspects such as connection timeouts,
+     * buffer sizes, and thread limits for network operations.
+     */
     private final NetworkConfig networkConfiguration;
+    /**
+     *
+     */
     protected EventExecutor executor;
 
+    /**
+     * Constructs a ServiceProcessor instance using the provided configurations and manager.
+     *
+     * @param commonConfiguration the common configuration settings to be used by this service processor
+     * @param networkConfiguration the network configuration settings to be used by this service processor
+     * @param manager the manager responsible for handling command execution events
+     */
     public ServiceProcessor(CommonConfig commonConfiguration, NetworkConfig networkConfiguration, Manager manager) {
         this.manager = manager;
         this.commonConfiguration = commonConfiguration;
@@ -88,6 +128,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         this.commandExecutor = manager.getCommandHandleEventExecutorGroup().next();
     }
 
+    /**
+     * Invoked when a channel becomes active. This method sets the executor,
+     * adds the channel to the connection manager, and sets up listeners for
+     * the channel close event to handle log subscriptions.
+     *
+     * @param channel  the active channel
+     * @param executor the executor to be used for asynchronous event handling
+     */
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         this.executor = executor;
@@ -100,6 +148,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         });
     }
 
+    /**
+     * Processes the given command received from a network channel.
+     *
+     * @param channel  the network channel through which the command was received
+     * @param code     the code identifying the command type
+     * @param data     the data buffer containing the command payload
+     * @param feedback a callback interface for providing a response or handling errors
+     */
     @Override
     public void process(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         int length = data.readableBytes();
@@ -138,6 +194,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes synchronization ledger requests and handles the response feedback.
+     *
+     * @param channel the Netty channel through which the request was received
+     * @param code the operation code associated with the request
+     * @param data the ByteBuf containing the serialized request data
+     * @param feedback the InvokedFeedback instance to handle success or failure responses
+     */
     protected void processSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -172,6 +236,14 @@ public class ServiceProcessor implements Processor, Command.Server {
 
     }
 
+    /**
+     * Processes the request to unsync a ledger.
+     *
+     * @param channel The communication channel.
+     * @param code The operation code indicating the type of request.
+     * @param data The data associated with the request.
+     * @param feedback The feedback mechanism to communicate the result of the operation.
+     */
     protected void processUnSyncLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -202,6 +274,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the calculation of partitions and sends the result back through the provided feedback channel.
+     *
+     * @param channel The channel through which the request is being executed.
+     * @param code An integer code representing the command.
+     * @param data The input data buffer containing necessary information for processing.
+     * @param feedback The feedback mechanism to report success or failure of processing.
+     */
     protected void processCalculatePartitions(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -230,6 +310,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the migration of a ledger from an original broker to a destination broker.
+     *
+     * @param channel the channel through which the migration request is received
+     * @param code a unique code representing the type of request
+     * @param data the byte buffer containing the data of the migration request
+     * @param feedback feedback callback to send the result of the migration process
+     */
     protected void processMigrateLedger(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -328,6 +416,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the send message request, appending the record to the log, and handling the response feedback.
+     *
+     * @param channel  the channel through which the message is sent
+     * @param code     the code representing the message type or command
+     * @param data     the data buffer containing the message payload
+     * @param feedback the feedback mechanism to handle the success or failure of the processing
+     */
     protected void processSendMessage(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -364,6 +460,15 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the query for cluster information, retrieves data about the cluster nodes,
+     * constructs the cluster metadata, and sends a response back to the requester.
+     *
+     * @param channel the communication channel through which the request was received and through which the response will be sent.
+     * @param code the specific command code identifying the type of request being processed.
+     * @param data the ByteBuf containing the request data.
+     * @param feedback the callback mechanism to send the response or error back to the requester.
+     */
     protected void processQueryClusterInfo(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -407,6 +512,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes query topic information requests received on the specified channel.
+     *
+     * @param channel the channel from which the request was received
+     * @param code a unique code identifying the type of request
+     * @param data a ByteBuf containing the serialized request data
+     * @param feedback feedback mechanism to send the processed response
+     */
     protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -473,6 +586,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes a reset subscription request received over a REST channel.
+     *
+     * @param channel The channel through which the request was received.
+     * @param code The operation code for identifying the type of request.
+     * @param data The data buffer containing the serialized request.
+     * @param feedback The feedback mechanism for sending responses back to the invoker.
+     */
     protected void processRestSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -501,6 +622,15 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the alteration of a subscription by handling the provided data
+     * and using the manager to alter the subscription details.
+     *
+     * @param channel  the channel through which data is being communicated
+     * @param code     the operation code indicating the specific command to process
+     * @param data     the data buffer containing the information needed for processing
+     * @param feedback the feedback mechanism to communicate success or failure
+     */
     protected void processAlterSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -528,6 +658,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Process the clean subscription request.
+     *
+     * @param channel The Netty channel through which the request was received.
+     * @param code The command code associated with the request.
+     * @param data The ByteBuf containing the request data.
+     * @param feedback The feedback object used to send a response back to the client.
+     */
     protected void processCleanSubscription(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -553,6 +691,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the creation of a topic in the given channel.
+     *
+     * @param channel The channel through which the request is received and response is sent.
+     * @param code The code representing the operation being performed.
+     * @param data Buffer containing the serialized CreateTopicRequest message.
+     * @param feedback The feedback object used to send the result back to the client.
+     */
     protected void processCreateTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -601,6 +747,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes the request to delete a topic and provides feedback.
+     *
+     * @param channel  the channel through which the request is received
+     * @param code     the operation code of the request
+     * @param data     the data buffer containing the delete topic request
+     * @param feedback the callback used to send the response back to the caller
+     */
     protected void processDeleteTopic(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();
@@ -626,6 +780,14 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Records the execution of a command by notifying all registered API listeners with the details of the command execution.
+     *
+     * @param code The code identifying the command that was executed.
+     * @param bytes The number of bytes processed during the execution of the command.
+     * @param cost The time taken to execute the command, measured in nanoseconds.
+     * @param ret The result of the command's execution; true if successful, false otherwise.
+     */
     protected void recordCommand(int code, int bytes, long cost, boolean ret) {
         for (APIListener listener : manager.getAPIListeners()) {
             try {
@@ -638,6 +800,15 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Processes a failure event by logging an error and invoking the failure callback on the provided feedback object.
+     *
+     * @param err      the error message associated with the failure
+     * @param code     the command code that was being processed when the failure occurred
+     * @param channel  the network channel where the failure occurred
+     * @param feedback a callback object used to signify the failure
+     * @param throwable the exception that caused the failure
+     */
     protected void processFailed(String err, int code, Channel channel, InvokedFeedback<ByteBuf> feedback, Throwable throwable) {
         if (feedback != null) {
             feedback.failure(throwable);
@@ -647,6 +818,13 @@ public class ServiceProcessor implements Processor, Command.Server {
         }
     }
 
+    /**
+     * Converts ByteString markers into an IntList.
+     *
+     * @param markers the ByteString containing the markers to be converted
+     * @return an IntList containing the converted markers
+     * @throws Exception if any errors occur during conversion
+     */
     protected IntList convertMarkers(ByteString markers) throws Exception {
         CodedInputStream stream = markers.newCodedInput();
         IntList markerList = new IntArrayList(markers.size() / 4);

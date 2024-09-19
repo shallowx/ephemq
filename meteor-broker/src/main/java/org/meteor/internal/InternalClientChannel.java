@@ -15,15 +15,40 @@ import org.meteor.client.core.ClientChannel;
 import org.meteor.client.core.ClientConfig;
 import org.meteor.config.CommonConfig;
 
+/**
+ * InternalClientChannel extends the ClientChannel class and provides additional configuration
+ * through the CommonConfig object. It is designed for internal use within the system and
+ * includes additional metadata for monitoring and metrics.
+ */
 public class InternalClientChannel extends ClientChannel {
+    /**
+     * Provides the configuration settings for the InternalClientChannel.
+     * The configuration is encapsulated within an instance of the CommonConfig class,
+     * which manages various server configuration parameters.
+     */
     private final CommonConfig configuration;
 
+    /**
+     * Constructs an instance of InternalClientChannel.
+     *
+     * @param clientConfig  The configuration for the client, specifying various parameters such as timeouts and buffer sizes.
+     * @param channel       The Netty channel used for communication.
+     * @param address       The socket address the channel is bound to.
+     * @param configuration Additional common configuration that provides more metadata and settings for the channel.
+     */
     public InternalClientChannel(ClientConfig clientConfig, Channel channel, SocketAddress address,
                                  CommonConfig configuration) {
         super(clientConfig, channel, address);
         this.configuration = configuration;
     }
 
+    /**
+     * Binds the current InternalClientChannel instance to the provided MeterRegistry
+     * for metrics monitoring. This method creates and registers a Gauge to track
+     * the available permits of the semaphore associated with this channel.
+     *
+     * @param meterRegistry the MeterRegistry instance to bind the metrics to
+     */
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         Gauge.builder(CHANNEL_SEMAPHORE, semaphore, Semaphore::availablePermits)

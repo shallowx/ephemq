@@ -6,7 +6,19 @@ import java.io.IOException;
 import net.jpountz.lz4.LZ4FrameInputStream;
 import net.jpountz.lz4.LZ4FrameOutputStream;
 
+/**
+ * The Lz4Compressor class implements the Compressor interface, providing compression
+ * and decompression methods using the LZ4 compression algorithm.
+ */
 public class Lz4Compressor implements Compressor {
+    /**
+     * Compresses the given byte array using the specified compression level.
+     *
+     * @param src   the byte array to be compressed
+     * @param level the compression level to be applied, where higher values typically indicate higher compression
+     * @return the compressed byte array
+     * @throws IOException if an I/O error occurs during compression
+     */
     @Override
     public byte[] compress(byte[] src, int level) throws IOException {
         byte[] result = src;
@@ -21,6 +33,14 @@ public class Lz4Compressor implements Compressor {
         return result;
     }
 
+    /**
+     * Decompresses the given byte array using a specific compression algorithm and level.
+     *
+     * @param src the byte array to be decompressed
+     * @param level the compression level to be used for decompression
+     * @return the decompressed byte array
+     * @throws IOException if an I/O error occurs during decompression
+     */
     @Override
     public byte[] decompress(byte[] src, int level) throws IOException {
         byte[] result = src;

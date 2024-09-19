@@ -29,21 +29,45 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.CalculatePartitionsResponse;
 import org.meteor.remote.util.NetworkUtil;
 
-// keep print json to easy copy
+/**
+ * A command to create a migration plan from a broker cluster. This command
+ * identifies the partitions that need to be migrated and the target brokers.
+ */
 public class MigrateLedgerPlanCommand implements Command {
 
+    /**
+     * A static final instance of the Gson class used for converting Java objects to JSON and vice versa.
+     * <p>
+     * This variable is used within the MigrateLedgerPlanCommand class to facilitate JSON parsing and serialization.
+     */
     private static final Gson GSON = new Gson();
 
+    /**
+     * Returns the name of the command.
+     *
+     * @return the name of the command, which is "migrate-plan".
+     */
     @Override
     public String name() {
         return "migrate-plan";
     }
 
+    /**
+     * Provides a description of the MigrateLedgerPlanCommand command.
+     *
+     * @return A string indicating the purpose of the MigrateLedgerPlanCommand.
+     */
     @Override
     public String description() {
         return "Create migrate plan from the broker cluster";
     }
 
+    /**
+     * Builds and configures command line options for the MigrateLedgerPlanCommand.
+     *
+     * @param options the initial Options object to which new options are added
+     * @return the modified Options object with the new options added
+     */
     @Override
     public Options buildOptions(Options options) {
         Option brokerOpt =
@@ -63,6 +87,8 @@ public class MigrateLedgerPlanCommand implements Command {
         return options;
     }
 
+    /**
+     * Executes the*/
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
@@ -149,6 +175,14 @@ public class MigrateLedgerPlanCommand implements Command {
         }
     }
 
+    /**
+     * Modifies the partition map by retaining only the partitions whose keys are present
+     * in the provided list of ids. Any ids not present in the partition map are added
+     * to the map with a value of 0.
+     *
+     * @param partitions the map of broker identifiers to partition counts
+     * @param ids the list of broker identifiers to be retained in the partitions map
+     */
     private void compareTo(Map<String, Integer> partitions, List<String> ids) {
         Set<String> brokers = partitions.keySet();
         brokers.removeIf(broker -> !ids.contains(broker));
@@ -159,6 +193,10 @@ public class MigrateLedgerPlanCommand implements Command {
         }
     }
 
+    /**
+     * Selects the next broker for migration, given the current partition distributions and a list of brokers to exclude.
+     *
+     */
     private String select(Map<String, Integer> partitions, List<String> relicBrokers) {
         List<Map.Entry<String, Integer>> list = new ArrayList<>(partitions.entrySet());
         Map.Entry<String, Integer> entries = list.stream().filter(entry -> !relicBrokers.contains(entry.getKey()))

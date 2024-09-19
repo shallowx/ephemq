@@ -13,6 +13,14 @@ import static org.mockito.Mockito.*;
 
 public class Slf4JLoggerFactoryTest {
 
+    /**
+     * Tests the creation of an SLF4J logger through the Slf4JLoggerFactory.
+     * <p>
+     * This method verifies that the Slf4JLoggerFactory correctly creates an instance of
+     * InternalLogger, ensuring the logger is either an instance of Slf4JLogger or
+     * LocationAwareSlf4JLogger. Additionally, it checks the name of the logger to ensure
+     * it matches the input name "foo".
+     */
     @Test
     public void testCreation() {
         Slf4JLoggerFactory factory = new Slf4JLoggerFactory(true);
@@ -21,6 +29,18 @@ public class Slf4JLoggerFactoryTest {
         assertEquals("foo", logger.name());
     }
 
+    /**
+     * Tests the creation and functionality of the logger instance within the Slf4JLoggerFactory.
+     * Specifically, it verifies that the factory correctly wraps a given logger and that the
+     * resulting InternalLogger instance is of type Slf4JLogger. Furthermore, it checks that the
+     * name of the logger is accurately retrieved.
+     *
+     * Test actions:
+     * 1. Mocks a Logger instance and sets its behavior for getName() method.
+     * 2. Wraps the mocked Logger using Slf4JLoggerFactory.
+     * 3. Asserts that the wrapped Logger instance is of type Slf4JLogger.
+     * 4. Asserts that the name of the wrapped logger is correctly set.
+     */
     @Test
     public void testCreationLogger() {
         Logger logger = mock(Logger.class);
@@ -30,6 +50,12 @@ public class Slf4JLoggerFactoryTest {
         assertEquals("testlogger", internalLogger.name());
     }
 
+    /**
+     * Tests the creation of a location-aware logger.
+     * This method verifies that a mock instance of LocationAwareLogger can be successfully wrapped
+     * by Slf4JLoggerFactory and that the resulting internal logger is of type LocationAwareSlf4JLogger.
+     * The test also ensures that the logger name is correctly set to "testlogger".
+     */
     @Test
     public void testCreationLocationAwareLogger() {
         Logger logger = mock(LocationAwareLogger.class);
@@ -39,6 +65,17 @@ public class Slf4JLoggerFactoryTest {
         assertEquals("testlogger", internalLogger.name());
     }
 
+    /**
+     * Tests the formatMessage functionality of the InternalLogger wrapped by Slf4JLoggerFactory.
+     * This test verifies that the correct logging messages are formatted and captured at various logging levels,
+     * including DEBUG, ERROR, INFO, TRACE, and WARN.
+     *
+     * The test initializes a mock LocationAwareLogger and configures it to return true for all log level enabled checks.
+     * The logger name is set to "testlogger". It then verifies that the logger captures correctly formatted messages
+     * for different log levels and different numbers of message arguments.
+     *
+     * The captured log messages are compared with expected values ensuring correct formatting and parameter substitution.
+     */
     @Test
     public void testFormatMessage() {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

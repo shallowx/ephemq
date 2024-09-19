@@ -22,6 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class JdkLoggerFactoryTest {
 
+    /**
+     * Tests the creation of a new logger using the JdkLoggerFactory.
+     * <p>
+     * This method ensures that the logger instance created is of type JdkLogger and
+     * that the logger's name is correctly set to "foo".
+     */
     @Test
     public void testCreation() {
         InternalLogger logger = JdkLoggerFactory.INSTANCE.newLogger("foo");

@@ -23,24 +23,58 @@ import org.meteor.client.core.Client;
 import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.MigrateLedgerResponse;
 
+/**
+ * The MigrateLedgerCommand class implements the Command interface and is used to migrate
+ * a ledger from one broker to another within a broker cluster.
+ */
 public class MigrateLedgerCommand implements Command {
 
+    /**
+     * Gson instance used for JSON serialization and deserialization
+     * within the MigrateLedgerCommand class.
+     * <p>
+     * This instance is declared as a static and final field
+     * to ensure that the same Gson object is shared across all
+     * instances of the class, providing a consistent and
+     * thread-safe way to handle JSON operations.
+     */
     private static final Gson gson = new Gson();
 
+    /**
+     * An ExecutorService instance that's used to handle retry operations in virtual threads.
+     * This executor service creates new threads with the naming pattern "migrate-retry-thread".
+     */
     private static final ExecutorService retry = Executors.newThreadPerTaskExecutor(
             Thread.ofVirtual().name("migrate-retry-thread").factory()
     );
 
+    /**
+     * Returns the name of the command.
+     *
+     * @return the name of the command, which is "migrate"
+     */
     @Override
     public String name() {
         return "migrate";
     }
 
+    /**
+     * Provides a description of the migrate ledger command.
+     *
+     * @return a brief description of what the migrate ledger command does, specifically
+     *         stating that it is utilized to migrate any broker to another broker.
+     */
     @Override
     public String description() {
         return "The migrate ledger command is used to migrate any broker to other broker";
     }
 
+    /**
+     * Builds and adds the necessary command line options for the migration process.
+     *
+     * @param options The initial set of options to which new options will be added.
+     * @return The updated set of options with added migration-specific parameters.
+     */
     @Override
     public Options buildOptions(Options options) {
         Option bOpt = new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
@@ -74,6 +108,14 @@ public class MigrateLedgerCommand implements Command {
         return options;
     }
 
+    /**
+     * Executes the migrate ledger command.
+     *
+     * @param commandLine the command line arguments
+     * @param options additional options for the command
+     * @param client the client to interact with the ledger service
+     * @throws Exception if an error occurs during execution
+     */
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         try {
@@ -120,6 +162,19 @@ public class MigrateLedgerCommand implements Command {
         }
     }
 
+    /**
+     * Attempts to retry the migration of a ledger from an original broker to a destination broker for a given
+     * topic and partition if the initial migration attempt fails. The method waits for 30 seconds before
+     * each retry attempt. If a retry fails, it will recursively attempt again.
+     *
+     * @param client The client instance used to perform the ledger migration.
+     * @param topic The topic associated with the ledger to be migrated.
+     * @param partition The partition number of the ledger to be migrated.
+     * @param original The original broker from which the ledger is being migrated.
+     * @param destination The destination broker to which the ledger is being migrated.
+     * @throws ExecutionException If the migration task throws an exception.
+     * @throws InterruptedException If the current thread is interrupted while waiting.
+     */
     private void retry(Client client, String topic, int partition, String original, String destination) throws ExecutionException, InterruptedException {
         System.out.println(
                 STR."Migrate ledger[topic:\{topic}, partition:\{partition}, original-broker:\{original}, destination-broker:\{destination}] failed, and try again"

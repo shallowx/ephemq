@@ -21,7 +21,9 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.TopicMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
+
 /**
+ * Command implementation that handles the deletion of topics from the broker cluster.
  * for example:
  *
  * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
@@ -49,16 +51,32 @@ import org.meteor.remote.util.NetworkUtil;
  * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
  */
 public class TopicDeletedCommand implements Command {
+    /**
+     * Returns the name of the command.
+     *
+     * @return the name of the command
+     */
     @Override
     public String name() {
         return "topic-delete";
     }
 
+    /**
+     * Provides a brief description of the command.
+     *
+     * @return a string containing a short description of the command.
+     */
     @Override
     public String description() {
         return "Delete topic form the broker cluster";
     }
 
+    /**
+     * Builds and returns a set of command line options for the `TopicDeletedCommand`.
+     *
+     * @param options the initial set of command line options to be built upon
+     * @return the complete set of command line options including ones for broker and topic
+     */
     @Override
     public Options buildOptions(Options options) {
         Option brokerOpt =
@@ -72,6 +90,14 @@ public class TopicDeletedCommand implements Command {
         return options;
     }
 
+    /**
+     * Executes the command to delete a topic from the cluster.
+     *
+     * @param commandLine the command line options.
+     * @param options     the options for the command.
+     * @param client      the client to interact with the cluster.
+     * @throws Exception if execution fails.
+     */
     @Override
     public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
         String finalTopic = null;
@@ -124,6 +150,10 @@ public class TopicDeletedCommand implements Command {
         }
     }
 
+    /**
+     * Formats and prints details of the provided list of partition information objects.
+     *
+     * @*/
     private void formatPrint(List<PartitionInfo> infos) {
         String[] title =
                 {"topic", "partition", "ledger", "epoch", "leader", "replicas", "topicConfig", "version", "topicId"};

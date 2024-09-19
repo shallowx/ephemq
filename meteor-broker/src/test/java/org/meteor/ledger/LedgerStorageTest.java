@@ -15,6 +15,11 @@ import org.meteor.remote.util.NetworkUtil;
 public class LedgerStorageTest {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorageTest.class);
 
+    /**
+     * Test method for appending a record to the {@link LedgerStorage}.
+     *
+     * @throws Exception if any error occurs during the test execution.
+     */
     @Test
     public void testAppendRecord() throws Exception {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
@@ -42,6 +47,15 @@ public class LedgerStorageTest {
         storage.close(null);
     }
 
+    /**
+     * Tests the {@link LedgerStorage#segmentBytes()} method to verify that
+     * the segment size is correctly computed after appending a record.
+     * The test involves:
+     * 1. Initializing a new instance of {@code LedgerStorage}
+     * 2. Appending a sample record to the ledger
+     * 3. Asserting that the segment byte count is zero after appending the record
+     * 4. Releasing the byte buffer and closing the storage
+     */
     @Test
     public void testSegmentBytes() {
         LedgerStorage storage = new LedgerStorage(1, "test", 0, new LedgerConfig(),
