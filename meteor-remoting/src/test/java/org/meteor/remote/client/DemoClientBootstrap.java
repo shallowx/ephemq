@@ -26,11 +26,27 @@ import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.util.NetworkUtil;
 
+/**
+ * The DemoClientBootstrap class is responsible for bootstrapping a demo client.
+ * It sets up and configures the Netty Bootstrap, initializes the channel pipeline,
+ * and manages client connections to a predefined server.
+ * <p>
+ * The class also includes methods to invoke client tasks.
+ * The primary entry point to this class is the `main` method.
+ */
 @SuppressWarnings("all")
 public class DemoClientBootstrap {
     public static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoClientBootstrap.class);
+    /**
+     * A shared instance of Random used for generating random numbers throughout the DemoClientBootstrap class.
+     */
     private static final Random RANDOM = new Random();
 
+    /**
+     * The entry point of the DemoClientBootstrap application.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         EventLoopGroup group = NetworkUtil.newEventLoopGroup(true, 0, "demo-client", false);
         EventExecutorGroup serviceGroup = NetworkUtil.newEventExecutorGroup(0, "demo-client-service");
@@ -82,6 +98,18 @@ public class DemoClientBootstrap {
         }
     }
 
+    /**
+     * Invokes multiple threads to handle data transfer through a specified channel.
+     *
+     * @param channel the netty channel through which data is transmitted.
+     * @param count the total number of invocations to be performed.
+     * @param length the length of the data content in bytes.
+     * @param nThread the number of threads to be utilized for invocation.
+     * @param size the size of the semaphore that controls concurrent invocations.
+     * @param timeout the timeout in milliseconds for each invocation.
+     * @param invoker the functional interface implementation that executes the invocation logic.
+     * @throws Exception if any exception occurs during invocation.
+     */
     private static void invoke(Channel channel, int count, int length, int nThread, int size, int timeout, Invoker invoker) throws Exception {
         byte[] metadata = "This is test metadata".getBytes(StandardCharsets.UTF_8);
         byte[] content = new byte[length];
@@ -128,6 +156,20 @@ public class DemoClientBootstrap {
         latch.wait();
     }
 
+    /**
+     * Invokes a one-way echo operation on the given channel with a specified timeout.
+     *
+     * The method attempts to acquire a permit from the semaphore within the given timeout.
+     * If acquired, it constructs a {@link WrappedInvocation} with the specified data and sends it over the channel.
+     * A {@link ChannelPromise} is used to handle the outcome of the operation, releasing the semaphore
+     * and logging success or failure information.
+     *
+     * @param semaphore the {@link Semaphore} to control concurrent access
+     * @param channel the {@link Channel} to send the invocation through
+     * @param timeout the timeout value in seconds for acquiring the semaphore
+     * @param data the {@link ByteBuf} containing the data to be sent with the invocation
+     * @throws Exception if an error occurs during the operation or if the timeout expires
+     */
     private static void invokeEchoOneway(Semaphore semaphore, Channel channel, int timeout, ByteBuf data) throws Exception {
         long now = System.currentTimeMillis();
         if (semaphore.tryAcquire(timeout, TimeUnit.SECONDS)) {
@@ -160,6 +202,16 @@ public class DemoClientBootstrap {
 
     @FunctionalInterface
     interface Invoker {
+        /**
+         * Invokes an operation on a given channel with a specified timeout and data buffer,
+         * controlling concurrent invocations using a semaphore.
+         *
+         * @param semaphore The Semaphore to control concurrent access.
+         * @param channel The Channel through which the invocation is executed.
+         * @param timeout The timeout in milliseconds for each invocation.
+         * @param data The ByteBuf containing the data to be sent with the invocation.
+         * @throws Exception If any exception occurs during the invocation.
+         */
         void invoke(Semaphore semaphore, Channel channel, int timeout, ByteBuf data) throws Exception;
     }
 }

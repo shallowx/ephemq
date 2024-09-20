@@ -14,11 +14,44 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+/**
+ * The `MeteorPrometheusRegistry` class implements the `MetricsRegistrySetUp` interface to
+ * set up and manage a Prometheus metrics registry. It initializes the Prometheus metrics
+ * environment and sets up an HTTP server for scraping metrics.
+ * <p>
+ * This class is responsible for:
+ * - Configuring the metrics registry from provided properties.
+ * - Starting an HTTP server to expose the Prometheus metrics endpoint.
+ * - Shutting down the HTTP server during cleanup.
+ */
 public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(MeteorPrometheusRegistry.class);
+    /**
+     * The `HttpServer` instance used to expose the Prometheus metrics endpoint.
+     * It creates an HTTP server to handle incoming HTTP requests for the
+     * Prometheus metrics scraping.
+     *
+     * Responsibilities include:
+     * - Creating and configuring an HTTP server bound to a specified address and port.
+     * - Defining a context for handling HTTP requests that scrape Prometheus metrics.
+     * - Starting the HTTP server in a separate thread to serve the metrics endpoint.
+     * - Shutting down the HTTP server during the cleanup process.
+     */
     private HttpServer server;
+    /**
+     * Holds the MeterRegistry instance used to record and manage application's metrics.
+     * The registry is configured based on the given properties and is integral for
+     * Prometheus metrics collection and scraping.
+     */
     private MeterRegistry registry;
 
+    /**
+     * Sets up the Prometheus metrics registry based on the provided properties.
+     * If metrics are enabled, it initializes the PrometheusMeterRegistry and
+     * exports the metrics via an HTTP server.
+     *
+     * @param props Properties object containing configuration settings for metrics.
+     */
     @Override
     public void setUp(Properties props) {
         MetricsConfig config = MetricsConfig.fromProps(props);
@@ -30,6 +63,11 @@ public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
         }
     }
 
+    /**
+     * Exports the Prometheus metrics via an HTTP server using the provided configuration.
+     *
+     * @param config The configuration object containing settings for the metrics address, port, and scrape URL.
+     */
     private void exportHttpServer(MetricsConfig config) {
         try {
             InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
@@ -57,6 +95,12 @@ public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
         }
     }
 
+    /**
+     * Shuts down the HTTP server used for exposing the Prometheus metrics endpoint.
+     * <p>
+     * This method stops the HTTP server if it is currently running, releasing any resources
+     * and ports that the server was using.
+     */
     @Override
     public void shutdown() {
         if (server != null) {

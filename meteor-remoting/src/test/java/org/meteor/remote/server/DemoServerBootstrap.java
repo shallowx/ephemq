@@ -16,9 +16,22 @@ import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.Processor;
 import org.meteor.remote.util.NetworkUtil;
 
+/**
+ * The DemoServerBootstrap class is responsible for initializing and starting
+ * a demo server using Netty framework. It configures the server's event loop
+ * groups, sets various channel options, and initializes the channel pipeline
+ * with handlers for packet encoding/decoding and processing.
+ */
 public class DemoServerBootstrap {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DemoServerBootstrap.class);
 
+    /**
+     * The main method is the entry point for the DemoServerBootstrap application.
+     * It initializes and starts a server using the Netty framework, configures event loop groups,
+     * sets channel options, and initializes the channel pipeline with necessary handlers.
+     *
+     * @param args Command-line arguments for the application (not used in this method).
+     */
     public static void main(String[] args) {
         EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss", false);
         EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker", false);

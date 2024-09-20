@@ -1,6 +1,6 @@
 package org.meteor.internal;
 
-import static org.meteor.client.util.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
+import static org.meteor.client.core.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
 import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
 import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
 import static org.meteor.metrics.config.MetricsConstants.ID;

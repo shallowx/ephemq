@@ -11,13 +11,51 @@ import javax.annotation.Nonnull;
 import static org.meteor.metrics.config.MetricsConstants.DIRECT_MEMORY_NAME;
 import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 
+/**
+ * A class that provides metrics for Netty's direct memory usage.
+ * <p>
+ * This class implements the {@code MeterBinder} interface to bind various gauges
+ * representing Netty's direct memory metrics to a {@code MeterRegistry}.
+ * <p>
+ * The gauges include:
+ * <ul>
+ *   <li>Used direct memory</li>
+ *   <li>Maximum direct memory</li>
+ *   <li>Java version</li>
+ * </ul>
+ * <p>
+ * These gauges are tagged with additional information provided at the time of instantiation.
+ */
 public class NettyMetrics implements MeterBinder {
+    /**
+     * The tags to be applied to the gauges representing Netty's direct memory metrics.
+     *
+     * These tags provide additional contextual information, ensuring that
+     * the metrics can be effectively grouped and filtered in the {@code MeterRegistry}.
+     */
     private final Iterable<Tag> tags;
 
+    /**
+     * Constructs a {@code NettyMetrics} instance with the specified tags.
+     *
+     * @param tags an iterable collection of tags to be associated with the Netty metrics
+     */
     public NettyMetrics(Iterable<Tag> tags) {
         this.tags = tags;
     }
 
+    /**
+     * Binds the netty direct memory metrics to the provided MeterRegistry.
+     *
+     * This method registers three gauges related to Netty's direct memory usage:
+     * - Used direct memory
+     * - Maximum direct memory
+     * - Java version information
+     *
+     * These metrics will be tagged with user-provided tags and a predefined type tag.
+     *
+     * @param meterRegistry the meter registry to which the metrics should be bound
+     */
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         Gauge.builder(DIRECT_MEMORY_NAME, PlatformDependent::usedDirectMemory)

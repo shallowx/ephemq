@@ -32,16 +32,71 @@ import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 
+/**
+ * DefaultConsumerListener is a final class that implements the CombineListener and MeterBinder interfaces.
+ * It acts as an event listener for consumer-related events and provides methods to handle different types of signals
+ * and messages for a consumer.
+ */
 final class DefaultConsumerListener implements CombineListener, MeterBinder {
+    /**
+     * Logger instance for the DefaultConsumerListener class.
+     * Utilizes InternalLogger to provide logging capabilities specific to this class.
+     */
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultConsumerListener.class);
+    /**
+     * Metric name for tracking the number of pending Netty tasks in the consumer.
+     * This constant is used to register and monitor a metric that keeps track of tasks
+     * that are pending execution within the Netty event loop for the consumer.
+     */
     private static final String METRICS_NETTY_PENDING_TASK_NAME = "consumer_netty_pending_task";
+    /**
+     * The consumer that handles inbound messages for the DefaultConsumerListener.
+     * This consumer is responsible for processing the messages received from clients.
+     */
     private final DefaultConsumer consumer;
+    /**
+     * Array of MessageHandler instances used to handle incoming messages
+     * within the DefaultConsumerListener context.
+     */
     private final MessageHandler[] handlers;
+    /**
+     * A mapping of integer markers to their respective {@link MessageHandler} instances.
+     * This map is used to retrieve the appropriate handler based on a given marker value
+     * within the context of a {@link DefaultConsumerListener}.
+     */
     private final IntObjectMap<MessageHandler> markerOfHandlers;
+    /**
+     * A configuration object for the consumer.
+     * <p>
+     * This immutable {@code ConsumerConfig} instance holds various settings that are used to configure
+     * parameters such as timeouts, retry delays, thread limits, and other consumer-specific settings.
+     * <p>
+     * It is provided to the {@code DefaultConsumerListener} during its instantiation to customize
+     * the behavior and capabilities of the consumer.
+     */
     private final ConsumerConfig consumerConfig;
+    /**
+     * An EventExecutorGroup instance used to manage a group of EventExecutor instances
+     * for handling asynchronous tasks related to the DefaultConsumerListener's operation.
+     */
     private final EventExecutorGroup group;
+    /**
+     * A concurrent hash map that holds futures marked as obsolete.
+     * The key is a String representing the unique identifier of the future task.
+     * The value is a Future<?> object representing the result of an asynchronous computation.
+     *
+     * This map is used to keep track of futures that are no longer needed,
+     * allowing for their eventual cancellation or cleanup.
+     */
     private final Map<String, Future<?>> obsoleteFutures = new ConcurrentHashMap<>();
 
+    /**
+     * Initializes a new instance of the DefaultConsumerListener class.
+     *
+     * @param consumer the consumer instance
+     * @param consumerConfig the configuration settings for the consumer
+     * @param listener the message listener for handling incoming messages
+     */
     public DefaultConsumerListener(Consumer consumer, ConsumerConfig consumerConfig, MessageListener listener) {
         this.consumer = (DefaultConsumer) consumer;
         this.consumerConfig = consumerConfig;
@@ -59,11 +114,23 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         this.markerOfHandlers = new IntObjectHashMap<>(shardCount);
     }
 
+    /**
+     * Callback method invoked when a channel is closed.
+     *
+     * @param channel the channel that has been closed
+     */
     @Override
     public void onChannelClosed(ClientChannel channel) {
         consumer.touchChangedTask();
     }
 
+    /**
+     * Handles the event when the topic of a client channel changes. This method checks if the consumer
+     * contains a router for the specified topic and refreshes the router if necessary.
+     *
+     * @param channel the client channel that triggered the topic change event
+     * @param signal the signal containing the information about the topic change
+     */
     @Override
     public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
         String topic = signal.getTopic();
@@ -102,6 +169,13 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         }, ThreadLocalRandom.current().nextInt(5000), TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Handles the reception of a push message from a client channel.
+     *
+     * @param channel the client channel through which the message was pushed
+     * @param signal the signal containing metadata about the pushed message
+     * @param data the actual message content in ByteBuf format
+     */
     @Override
     public void onPushMessage(ClientChannel channel, MessagePushSignal signal, ByteBuf data) {
         int ledger = signal.getLedger();
@@ -155,10 +229,25 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         }
     }
 
+    /**
+     * Retrieves the MessageHandler associated with the given marker. If no handler exists for the marker,
+     * a new handler is created based on the consistent hash of the marker and length and stored in the map.
+     *
+     * @param marker the unique identifier for the handler.
+     * @param length the length used for consistent hashing to determine the handler index.
+     * @return the MessageHandler associated with the specified marker.
+     */
     private MessageHandler getHandler(int marker, int length) {
         return markerOfHandlers.computeIfAbsent(marker, v -> handlers[consistentHash(marker, length)]);
     }
 
+    /**
+     * Computes a consistent hash value for the given input and bucket count.
+     *
+     * @param input the input value to be hashed
+     * @param buckets the number of buckets for the hash
+     * @return the computed hash value within the range of [0, buckets)
+     */
     private int consistentHash(int input, int buckets) {
         long state = input & 0xffffffffL;
         int candidate = 0;
@@ -173,11 +262,26 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         }
     }
 
+    /**
+     * Handles the event when a node goes offline.
+     *
+     * @param channel the client channel through which the node was connected
+     * @param signal  the signal containing information about the node offline event
+     */
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
         CombineListener.super.onNodeOffline(channel, signal);
     }
 
+    /**
+     * This method is called when the listener has completed its tasks, allowing for any necessary
+     * cleanup and resource deallocation. Specifically, it ensures that the event loop group,
+     * if present, is shut down gracefully. It then iterates through all event executors
+     * within the group, ensuring each one is terminated properly.
+     *
+     * @throws InterruptedException If the current thread is interrupted while waiting for
+     *                              the termination of event executors.
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void listenerCompleted() throws InterruptedException {
@@ -197,6 +301,11 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         }
     }
 
+    /**
+     * Binds the metrics of the consumer to the provided MeterRegistry.
+     *
+     * @param meterRegistry the registry to which the metrics should be bound
+     */
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         SingleThreadEventExecutor singleThreadEventExecutor = (SingleThreadEventExecutor) consumer.getExecutor();
@@ -210,6 +319,13 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
         }
     }
 
+    /**
+     * Registers metrics for a given single-thread event executor.
+     *
+     * @param type                   the type of the metrics to be registered
+     * @param meterRegistry          the registry where the metrics will be registered
+     * @param singleThreadEventExecutor the single-thread event executor whose metrics are to be monitored
+     */
     private void registerMetrics(String type, MeterRegistry meterRegistry, SingleThreadEventExecutor singleThreadEventExecutor) {
         Gauge.builder(METRICS_NETTY_PENDING_TASK_NAME, singleThreadEventExecutor, SingleThreadEventExecutor::pendingTasks)
                 .tag("type", type)

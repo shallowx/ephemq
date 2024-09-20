@@ -45,13 +45,49 @@ import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 
+/**
+ * ProxyClientListener is a listener class that handles events related to proxy clients.
+ * It implements the CombineListener interface to manage synchronization messages, channel closures,
+ * topic changes, and node offline signals.
+ */
 public class ProxyClientListener implements CombineListener {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyClientListener.class);
+    /**
+     * A map that holds distribution summaries for counts, keyed by integer identifiers.
+     * This map is thread-safe and allows concurrent access and modifications, utilizing
+     * a ConcurrentHashMap to ensure proper synchronization.
+     */
     protected final Map<Integer, DistributionSummary> countSummaries = new ConcurrentHashMap<>();
+    /**
+     * The manager instance responsible for handling various server components and their interactions within the ProxyClientListener.
+     * It is used to start up and shut down operations, and provides access to supporting components such as topic handles,
+     * cluster management, logging, connections, and event executors.
+     */
     private final Manager manager;
+    /**
+     * Handles synchronization support for ledger operations.
+     * <p>
+     * This object is used to facilitate ledger synchronization tasks such as
+     * syncing ledgers from upstream servers and managing associated processes.
+     */
     private final LedgerSyncSupport syncSupport;
+    /**
+     * Holds the configuration settings required for setting up and managing the proxy.
+     * It includes details such as upstream server information, thread limits,
+     * synchronization intervals, and timeout settings necessary for the proxy's operation.
+     */
     private final ProxyConfig proxyConfiguration;
+    /**
+     * Represents the client connected to the proxy.
+     * This client is used to communicate with the proxy server
+     * and handle various signals and messages during synchronization.
+     */
     private Client client;
+    /**
+     * A thread-local variable that holds a {@link Semaphore} instance for controlling access to
+     * proxy leader synchronization operations. Each thread accessing this variable will get its
+     * own {@link Semaphore} initialized with the value retrieved from the proxy configuration.
+     */
     private final FastThreadLocal<Semaphore> threadSemaphore = new FastThreadLocal<>() {
         @Override
         protected Semaphore initialValue() {
@@ -59,6 +95,13 @@ public class ProxyClientListener implements CombineListener {
         }
     };
 
+    /**
+     * Constructs a ProxyClientListener with the given configuration, manager, and sync support.
+     *
+     * @param proxyConfiguration the ProxyConfig object holding configuration properties for the proxy client.
+     * @param manager the Manager instance responsible for managing various server components and their interactions.
+     * @param syncSupport the LedgerSyncSupport instance providing support for ledger synchronization operations.
+     */
     public ProxyClientListener(ProxyConfig proxyConfiguration, Manager manager,
                                LedgerSyncSupport syncSupport) {
         this.proxyConfiguration = proxyConfiguration;
@@ -68,6 +111,25 @@ public class ProxyClientListener implements CombineListener {
         taskExecutor.scheduleWithFixedDelay(this::checkSync, proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), proxyConfiguration.getProxySyncCheckIntervalMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Checks the synchronization state of logs for various topics and ledgers.
+     * Iterates through all logs managed by the log handler and verifies if
+     * synchronization channels and message routers are properly configured
+     * and active. If any discrepancies are found, it attempts to resume
+     * synchronization through a designated executor.
+     *
+     * This method performs the following steps:
+     * 1. Retrieves the map of logs from the log handler.
+     * 2. Iterates through each log and checks for the presence and validity
+     *    of sync channels and message routers.
+     * 3. If the sync channel or message router is missing or invalid, logs
+     *    a debug message and continues to the next log.
+     * 4. If the message router and sync channel are valid, retrieves the
+     *    replicas participating in the ledger.
+     * 5. If the ledger participants are valid and the sync channel is
+     *    inactive or disconnected, attempts to resume synchronization
+     *    through an executor.
+     */
     private void checkSync() {
         Map<Integer, Log> map = manager.getLogHandler().getLedgerIdOfLogs();
         if (map == null) {
@@ -131,6 +193,14 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Handles synchronization messages received from client channels. Updates distribution summaries
+     * and saves synchronization data to the log handler, ensuring thread-safe operations using semaphores.
+     *
+     * @param channel the communication channel with the client
+     * @param signal the synchronization message signal containing ledger and count information
+     * @param data the binary data associated with the synchronization message
+     */
     @Override
     public void onSyncMessage(ClientChannel channel, SyncMessageSignal signal, ByteBuf data) {
         Semaphore semaphore = threadSemaphore.get();
@@ -157,6 +227,12 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Handles the event when a client channel is closed. If the client is still running,
+     * it resumes the synchronization of the given channel.
+     *
+     * @param channel the client channel that has been closed
+     */
     @Override
     public void onChannelClosed(ClientChannel channel) {
         if (!client.isRunning()) {
@@ -165,6 +241,15 @@ public class ProxyClientListener implements CombineListener {
         resumeChannelSync(channel);
     }
 
+    /**
+     * Handles the event when a topic change signal is received. The method checks
+     * whether the client is running, verifies the relevant topic, schedules an
+     * execution (with a random delay) to refresh the router and metadata if necessary,
+     * and resumes synchronization.
+     *
+     * @param channel the client channel where the signal was received
+     * @param signal  the topic change signal specifying details of the change
+     */
     @Override
     public void onTopicChanged(ClientChannel channel, TopicChangedSignal signal) {
         if (!client.isRunning()) {
@@ -216,6 +301,11 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Notifies all active channels that the topic has changed.
+     *
+     * @param signal the signal containing information about the topic change
+     */
     private void noticeTopicChanged(TopicChangedSignal signal) {
         Set<Channel> channels = manager.getConnection().getReadyChannels();
         if (channels == null || channels.isEmpty()) {
@@ -239,6 +329,14 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Constructs a payload for a TopicChangedSignal and writes it to a ByteBuf.
+     *
+     * @param alloc the ByteBufAllocator to allocate the buffer
+     * @param signal the TopicChangedSignal containing the data to be written
+     * @return a ByteBuf containing the constructed payload
+     * @throws MeterProxyException if an error occurs while building the payload
+     */
     private ByteBuf buildPayload(ByteBufAllocator alloc, TopicChangedSignal signal) {
         ByteBuf buf = null;
         try {
@@ -258,11 +356,24 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Handles the event when a node goes offline in the network. This method is
+     * called by the framework to notify the listener about the offline state of
+     * a node.
+     *
+     * @param channel the client channel through which the notification is received
+     * @param signal  the signal containing details about the node-offline event
+     */
     @Override
     public void onNodeOffline(ClientChannel channel, NodeOfflineSignal signal) {
         CombineListener.super.onNodeOffline(channel, signal);
     }
 
+    /**
+     * Resumes synchronization for the specified client channel.
+     *
+     * @param channel The client channel for which synchronization needs to be resumed.
+     */
     private void resumeChannelSync(ClientChannel channel) {
         Collection<Log> logs = manager.getLogHandler().getLedgerIdOfLogs().values();
         Map<String, List<Log>> groupedLogs = logs.stream().filter(log -> channel == log.getSyncChannel()).collect(Collectors.groupingBy(Log::getTopic));
@@ -292,6 +403,16 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Resumes synchronization for a given topic on a specified ledger.
+     * Optionally refreshes the client router based on the active state of the provided channel.
+     *
+     * @param channel        the ClientChannel object representing the client's connection channel.
+     * @param topic          the topic for which synchronization is to be resumed.
+     * @param ledger         the integer identifier of the ledger used in the synchronization process.
+     * @param refreshRouter  a boolean flag indicating whether to refresh the client router for the
+     *                       specified topic based on the channel's active state.
+     */
     private void resumeSync(ClientChannel channel, String topic, int ledger, boolean refreshRouter) {
         Promise<Void> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         promise.addListener(f -> {
@@ -314,11 +435,22 @@ public class ProxyClientListener implements CombineListener {
         }
     }
 
+    /**
+     * Selects a fixed {@link EventExecutor} based on the provided topic.
+     *
+     * @param topic the topic for which the executor is selected
+     * @return an {@link EventExecutor} instance selected from the auxiliary event executors list
+     */
     private EventExecutor fixedExecutor(String topic) {
         List<EventExecutor> executors = manager.getAuxEventExecutors();
         return executors.get((Objects.hash(topic) & 0x7fffffff) % executors.size());
     }
 
+    /**
+     * Sets the client for this ProxyClientListener.
+     *
+     * @param client the client to be set
+     */
     public void setClient(Client client) {
         this.client = client;
     }

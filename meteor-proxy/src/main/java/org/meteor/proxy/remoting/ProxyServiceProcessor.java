@@ -61,14 +61,87 @@ import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.remoting.ServiceProcessor;
 import org.meteor.support.Manager;
 
+/**
+ * ProxyServiceProcessor is responsible for handling various procedures related
+ * to proxy services, including activation, command processing, and subscription
+ * management.
+ * <p>
+ * Fields:
+ * - logger: Logger for logging activities.
+ * - MIN_REPLICA_LIMIT: Constant for minimum replica limit.
+ * - syncSupport: Synchronization support mechanism.
+ * - proxyClusterManager: Manager for the proxy cluster.
+ * - subscribeThreshold: Threshold value for subscriptions.
+ * - serverConfiguration: Configuration settings for the proxy server.
+ * <p>
+ * Methods:
+ * - ProxyServiceProcessor(ProxyServerConfig config, Manager manager): Constructor to
+ * initialize the processor with provided configuration and manager.
+ * - onActive(Channel channel, EventExecutor executor): Method triggered when a
+ * channel becomes active.
+ * - process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Processes incoming commands and data from the channel.
+ * - processSyncLedger(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Handles ledger synchronization commands.
+ * - getLog(LogHandler logHandler, int ledger, MessageLedger messageLedger):
+ * Retrieves the log based on the provided handler, ledger, and message ledger.
+ * - processQueryTopicInfos(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Processes queries for topic information.
+ * - selectLeader(NavigableMap<String, Integer> replicas):
+ * Selects a leader from the given replicas.
+ * - calculateReplicas(Channel channel, String topic, int ledger):
+ * Calculates the replicas for a specific topic and ledger.
+ * - selectChannelNodes(Channel channel, String token, NavigableMap<String, Integer> nodes):
+ * Selects channel nodes based on the provided token and nodes.
+ * - selectLedgerNodes(int replicaCount, String token, NavigableMap<String, Integer> nodes):
+ * Selects ledger nodes based on the replica count, token, and nodes.
+ * - processUnSyncLedger(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Processes unsynchronized ledger commands.
+ * - processRestSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Handles resetting of subscriptions.
+ * - processAlterSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Processes requests to alter subscriptions.
+ * - processCleanSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback):
+ * Handles cleaning of subscriptions.
+ */
 class ProxyServiceProcessor extends ServiceProcessor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProxyServiceProcessor.class);
+    /**
+     * The minimum number of replica servers required to maintain data consistency and availability for the proxy service.
+     */
     private static final int MIN_REPLICA_LIMIT = 2;
+    /**
+     * Provides support for ledger synchronization operations in the Proxy Service Processor.
+     * It is responsible for managing various aspects of ledger synchronization within the proxy service,
+     * such as resuming synchronization, handling desynchronization, and interacting with the proxy client.
+     * Its functions facilitate communication and syncing with upstream servers to ensure data consistency and availability.
+     */
     private final LedgerSyncSupport syncSupport;
+    /**
+     * Manages the cluster operations specific to proxy services.
+     * It is responsible for handling nodes arrangement and routing within the cluster.
+     */
     private final ProxyClusterManager proxyClusterManager;
+    /**
+     * The threshold value for triggering subscription-related actions.
+     * This variable is used to determine when certain operations related to
+     * subscriptions should be executed based on the threshold defined.
+     */
     private final int subscribeThreshold;
+    /**
+     * Represents the configuration settings for the proxy server used by the ProxyServiceProcessor.
+     * This specific configuration holds proxy-specific parameters that are initialized and accessed
+     * through the ProxyServerConfig class.
+     */
     private final ProxyServerConfig serverConfiguration;
 
+    /**
+     * Constructs a ProxyServiceProcessor instance with the specified configurations and manager.
+     *
+     * @param config the configuration for the proxy server, which includes common, network, and proxy-specific settings
+     * @param manager the manager responsible for handling various server components and interactions,
+     *                which may include a ProxyManager for additional proxy functionalities
+     */
     public ProxyServiceProcessor(ProxyServerConfig config, Manager manager) {
         super(config.getCommonConfig(), config.getNetworkConfig(), manager);
         if (manager instanceof ProxyManager) {
@@ -82,11 +155,26 @@ class ProxyServiceProcessor extends ServiceProcessor {
         this.subscribeThreshold = config.getProxyConfiguration().getProxyHeavyLoadSubscriberThreshold();
     }
 
+    /**
+     * Invoked when a channel becomes active.
+     * This method sets the executor for asynchronous event handling and adds the channel to the connection manager.
+     *
+     * @param channel  the active channel
+     * @param executor the executor to be used for asynchronous event handling
+     */
     @Override
     public void onActive(Channel channel, EventExecutor executor) {
         super.onActive(channel, executor);
     }
 
+    /**
+     * Processes a command received on the given channel with the provided data.
+     *
+     * @param channel The network channel through which the command was received.
+     * @param command The command identifier that specifies the type of processing to be performed.
+     * @param data The buffer containing the data associated with the command.
+     * @param feedback The feedback mechanism used to communicate the outcome or any errors encountered during processing.
+     */
     @Override
     public void process(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         final int length = data.readableBytes();
@@ -120,6 +208,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
+    /**
+     * Processes a synchronous ledger synchronization request.
+     *
+     * @param channel The communication channel through which the request was received and the response will be sent.
+     * @param command The command identifier that specifies the type of request being processed.
+     * @param data The data buffer containing the request payload.
+     * @param feedback The feedback object used to send success or failure responses back to the caller.
+     */
     @Override
     protected void processSyncLedger(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
@@ -167,6 +263,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
+    /**
+     * Retrieves or initializes a ProxyLog for the given ledger and message ledger.
+     *
+     * @param logHandler the log handler to retrieve or initialize the log
+     * @param ledger the ledger id for the log
+     * @param messageLedger the message ledger containing topic and partition information
+     * @return the initialized or retrieved ProxyLog instance
+     */
     private ProxyLog getLog(LogHandler logHandler, int ledger, MessageLedger messageLedger) {
         return (ProxyLog) logHandler.getOrInitLog(ledger, _ledger -> {
             TopicConfig topicConfig = new TopicConfig(
@@ -185,6 +289,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         });
     }
 
+    /**
+     * Processes the query for topic information.
+     *
+     * @param channel The channel through which the request is received.
+     * @param command The command identifier for the request.
+     * @param data The buffer containing the request data.
+     * @param feedback The feedback mechanism to send responses or errors.
+     */
     @Override
     protected void processQueryTopicInfos(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
@@ -252,6 +364,12 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
+    /**
+     * Selects a leader from the given replicas based on their throughput.
+     *
+     * @param replicas a NavigableMap where keys are node identifiers and values are their respective throughputs.
+     * @return the identifier of the selected leader node, or null if no leader can be selected.
+     */
     private String selectLeader(NavigableMap<String, Integer> replicas) {
         if (replicas.isEmpty()) {
             return null;
@@ -276,6 +394,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         return nodes.size() == 1 ? nodes.getFirst() : nodes.get(ThreadLocalRandom.current().nextInt(nodes.size()));
     }
 
+    /**
+     * Calculates the replica nodes for a given topic and ledger based on their throughput.
+     *
+     * @param channel The network channel associated with the request.
+     * @param topic The topic for which replicas are being calculated.
+     * @param ledger The ledger ID for which replicas are being calculated.
+     * @return A NavigableMap where the keys are node IDs and the values are their corresponding throughput.
+     */
     private NavigableMap<String, Integer> calculateReplicas(Channel channel, String topic, int ledger) {
         int allThroughput = 0;
         NavigableMap<String, Integer> nodes = new TreeMap<>();
@@ -299,6 +425,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         return selectChannelNodes(channel, token, ledgerNodes);
     }
 
+    /**
+     * Selects the channel nodes based on the given token and nodes map.
+     *
+     * @param channel the netty channel instance used to retrieve the remote address
+     * @param token the token used as a base for hashing the nodes
+     * @param nodes a navigable map of node IDs to their values
+     * @return a navigable map of selected node IDs to their values based on the hashing algorithm
+     */
     private NavigableMap<String, Integer> selectChannelNodes(Channel channel, String token, NavigableMap<String, Integer> nodes) {
         if (nodes.size() <= MIN_REPLICA_LIMIT) {
             return nodes;
@@ -344,6 +478,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         return channelNodes;
     }
 
+    /**
+     * Selects a specified number of ledger nodes based on the provided token and nodes.
+     *
+     * @param replicaCount The maximum number of ledger nodes to select.
+     * @param token The token used for routing nodes.
+     * @param nodes The available nodes with their corresponding throughput values.
+     * @return A map containing the selected ledger nodes and their throughput values.
+     */
     private NavigableMap<String, Integer> selectLedgerNodes(int replicaCount, String token, NavigableMap<String, Integer> nodes) {
         if (nodes.size() <= replicaCount) {
             return nodes;
@@ -374,6 +516,16 @@ class ProxyServiceProcessor extends ServiceProcessor {
         return selectNodes;
     }
 
+    /**
+     * Processes the un-syncing of a ledger. This method handles the cancellation
+     * request for ledger synchronization, performs the necessary cleanup, and sends
+     * the appropriate feedback.
+     *
+     * @param channel The channel through which the request was received.
+     * @param command The command indicating the type of request.
+     * @param data The data buffer containing the request details.
+     * @param feedback The feedback mechanism to send responses back to the client.
+     */
     @Override
     protected void processUnSyncLedger(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
@@ -410,6 +562,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
+    /**
+     * Processes the REST subscription command received from a client.
+     *
+     * @param channel The channel associated with the client request.
+     * @param command The command identifier for the REST subscription.
+     * @param data The data associated with the subscription request.
+     * @param feedback The feedback mechanism for responding to the request.
+     */
     @Override
     protected void processRestSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
@@ -450,6 +610,14 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
+    /**
+     * Processes the alter subscription command received over the specified channel.
+     *
+     * @param channel the channel through which the command is received
+     * @param command the command identifier for alter subscription
+     * @param data the data containing the AlterSubscribeRequest information
+     * @param feedback the feedback object to relay the response or failure status
+     */
     @Override
     protected void processAlterSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
@@ -490,6 +658,16 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
     }
 
+    /**
+     * Processes a clean subscription request sent to the proxy server, handling
+     * the provided command and data, and providing feedback on the operation's
+     * success or failure.
+     *
+     * @param channel the channel through which the request was received.
+     * @param command the command indicating the type of operation to be performed.
+     * @param data the data associated with the command containing the request details.
+     * @param feedback the feedback mechanism to communicate the result of the operation.
+     */
     @Override
     protected void processCleanSubscription(Channel channel, int command, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();

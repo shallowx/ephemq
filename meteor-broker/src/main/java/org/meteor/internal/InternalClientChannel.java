@@ -1,6 +1,6 @@
 package org.meteor.internal;
 
-import static org.meteor.client.util.MessageConstants.CHANNEL_SEMAPHORE;
+import static org.meteor.client.core.MessageConstants.CHANNEL_SEMAPHORE;
 import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
 import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
 import static org.meteor.metrics.config.MetricsConstants.ID;

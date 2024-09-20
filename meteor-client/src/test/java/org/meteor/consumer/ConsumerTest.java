@@ -12,9 +12,23 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
 
+/**
+ * A test suite for verifying the behavior of a message Consumer.
+ * This class uses a mocked Consumer to ensure proper subscription,
+ * message consuming, and cleanup actions are correctly performed.
+ */
 public class ConsumerTest {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTest.class);
 
+    /**
+     * Tests the subscription and reset functionality of the consumer.
+     * <p>
+     * This test initializes the client and consumer configurations,
+     * starts the consumer, subscribes to a test queue, and then waits
+     * for a specified duration before closing the consumer.
+     *
+     * @throws Exception if any error occurs during the test execution
+     */
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void testSubscribeOfReset() throws Exception {
@@ -47,6 +61,18 @@ public class ConsumerTest {
         consumer.close();
     }
 
+    /**
+     * Tests the clear functionality of a consumer in a messaging system.
+     *
+     * This method:
+     * 1. Configures the client and consumer with specific settings such as bootstrap addresses and connection pool capacity.
+     * 2. Initializes and starts a consumer that listens to a specific topic and queue.
+     * 3. Subscribes the consumer to a test queue.
+     * 4. Pauses execution for a while to let the consumer receive messages.
+     * 5. Clears the subscriptions for the consumer on the specified topic.
+     *
+     * @throws InterruptedException if the thread is interrupted while sleeping
+     */
     @Test
     public void testClear() throws InterruptedException {
         ClientConfig clientConfig = new ClientConfig();
@@ -77,6 +103,18 @@ public class ConsumerTest {
         consumer.clear("#test#default");
     }
 
+    /**
+     * Tests the functionality of message consumption with a default consumer configuration.
+     *
+     * This method performs the following actions:
+     * 1. Initializes a ClientConfig with specific bootstrap addresses and connection pool capacity.
+     * 2. Creates a ConsumerConfig with the initialized ClientConfig.
+     * 3. Instantiates and starts a DefaultConsumer, subscribing to given topics and queues.
+     * 4. Waits for a short period to allow message processing.
+     * 5. Cancels the subscription to the specified topics and queues.
+     *
+     * @throws InterruptedException if the current thread is interrupted while waiting.
+     */
     @Test
     public void testClean() throws InterruptedException {
         ClientConfig clientConfig = new ClientConfig();

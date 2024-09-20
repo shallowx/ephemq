@@ -22,13 +22,36 @@ import org.meteor.support.Manager;
 import org.meteor.support.ParticipantSupport;
 import org.meteor.support.ZookeeperTopicHandleSupport;
 
+/**
+ * ZookeeperProxyTopicHandleSupport is a class that extends ZookeeperTopicHandleSupport and implements
+ * ProxyTopicHandleSupport to provide topic handling capabilities with ZooKeeper integration in a proxy
+ * environment. This class is responsible for managing the metadata for topics, fetching topic information
+ * from upstream if necessary, and ensuring consistency of topic metadata.
+ */
 class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport implements ProxyTopicHandleSupport {
     private static final InternalLogger logger =
             InternalLoggerFactory.getLogger(ZookeeperProxyTopicHandleSupport.class);
+    /**
+     * Provides support functionality for Ledger synchronization within
+     * the context of Zookeeper proxy topic handling.
+     */
     private final LedgerSyncSupport syncSupport;
+    /**
+     * Holds the configuration settings for the proxy connection.
+     */
     private final ProxyConfig proxyConfiguration;
+    /**
+     * A cache holding the metadata information of topics, where keys are topic names and values are {@link TopicInfo} objects.
+     * The cache automatically loads data using a specified loading mechanism when a cache miss occurs.
+     */
     private LoadingCache<String, TopicInfo> topicMetaLoadingCache;
 
+    /**
+     * Constructs a new ZookeeperProxyTopicHandleSupport instance.
+     *
+     * @param config  the configuration for the proxy
+     * @param manager the manager responsible for handling the operations
+     */
     public ZookeeperProxyTopicHandleSupport(ProxyConfig config, Manager manager) {
         super();
         this.proxyConfiguration = config;
@@ -37,6 +60,14 @@ class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport imple
         this.participantSupport = new ParticipantSupport(manager);
     }
 
+    /**
+     * Initializes and starts the topic metadata loading cache.
+     * The cache is configured to refresh its entries every 30 seconds.
+     * The loading mechanism retrieves metadata for topics from the upstream
+     * source and handles exceptions that might occur during the process.
+     *
+     * @throws Exception if an error occurs while initializing the cache or loading topic metadata
+     */
     @Override
     public void start() throws Exception {
         this.topicMetaLoadingCache = Caffeine.newBuilder().refreshAfterWrite(30, TimeUnit.SECONDS)
@@ -57,6 +88,13 @@ class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport imple
                 });
     }
 
+    /**
+     * Requests topic information from an upstream service.
+     *
+     * @param topics a list of topic names for which information is requested
+     * @param channel the client channel used to communicate with the upstream service
+     * @return a map where the keys are topic names and the values are topic information; returns null if there is an error retrieving the information
+     */
     private Map<String, TopicInfo> getFromUpstream(List<String> topics, ClientChannel channel) {
         Promise<QueryTopicInfoResponse> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         QueryTopicInfoRequest.Builder builder = QueryTopicInfoRequest.newBuilder();
@@ -74,6 +112,12 @@ class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport imple
         }
     }
 
+    /**
+     * Retrieves metadata for a list of topics.
+     *
+     * @param topics a list of topic names for which metadata is to be fetched
+     * @return a map where keys are topic names and values are TopicInfo objects containing metadata
+     */
     @Override
     public Map<String, TopicInfo> getTopicMetadata(List<String> topics) {
         if (topics.isEmpty()) {
@@ -90,6 +134,13 @@ class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport imple
         return ret;
     }
 
+    /**
+     * Refreshes the metadata of the specified topics using information from the upstream.
+     * Updates the local cache with the new metadata.
+     *
+     * @param topics The list of topics for which metadata needs to be refreshed.
+     * @param channel The ClientChannel instance used to fetch the metadata from upstream.
+     */
     @Override
     public void refreshTopicMetadata(List<String> topics, ClientChannel channel) {
         Map<String, TopicInfo> topicInfos = getFromUpstream(topics, channel);
@@ -113,6 +164,11 @@ class ZookeeperProxyTopicHandleSupport extends ZookeeperTopicHandleSupport imple
         }
     }
 
+    /**
+     * Invalidates the metadata cache entry for a specific topic.
+     *
+     * @param topic the name of the topic whose metadata cache entry should be invalidated
+     */
     @Override
     public void invalidTopicMetadata(String topic) {
         topicMetaLoadingCache.invalidate(topic);

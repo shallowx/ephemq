@@ -16,9 +16,21 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
 import org.meteor.remote.util.ByteBufUtil;
 
+/**
+ * This class contains unit tests to verify the functionality of a producer in a messaging system.
+ * The tests cover various sending methods including synchronous, asynchronous, one-way, and
+ * sending with a timeout.
+ */
 public class ProducerTest {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ProducerTest.class);
 
+    /**
+     * Tests the continuous sending of messages by simulating a producer that sends messages
+     * to a specified queue in an infinite loop. The method configures the client and producer,
+     * starts a virtual thread to send messages, and logs the message IDs or errors encountered.
+     *
+     * @throws Exception if any error occurs during the message sending process
+     */
     @Test
     public void testContinueSend() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -68,6 +80,20 @@ public class ProducerTest {
         continueSendLatch.await();
     }
 
+    /**
+     * Tests asynchronous message sending function of a producer with a given configuration.
+     *
+     * @throws Exception if any error occurs during the test execution.
+     *                   <p>
+     *                   This method performs the following steps:
+     *                   1. Creates and configures a ClientConfig instance with a specific bootstrap address and connection pool capacity.
+     *                   2. Configures a ProducerConfig instance with the previously created ClientConfig.
+     *                   3. Initializes a CountDownLatch to synchronize operations.
+     *                   4. Starts a virtual thread to create and start a producer, sending messages asynchronously in a loop.
+     *                   5. Each message send operation provides a callback to handle success or error cases.
+     *                   6. Virtual thread sleeps for a short period and then closes the producer.
+     *                   7. Waits for all virtual threads to complete before finishing the test.
+     */
     @Test
     public void testContinueSendAsync() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -121,6 +147,13 @@ public class ProducerTest {
         continueSendLatch.await();
     }
 
+    /**
+     * Tests the functionality of continuously sending one-way messages
+     * using a {@link Producer} configured with a {@link ProducerConfig}.
+     *
+     * @throws Exception if an error occurs during message production or
+     *                   while waiting for message sending to complete.
+     */
     @Test
     public void testContinueSendOneway() throws Exception {
         ClientConfig clientConfig = new ClientConfig();
@@ -165,6 +198,11 @@ public class ProducerTest {
         continueSendLatch.await();
     }
 
+    /**
+     * Tests the functionality of sending messages with a timeout using the Producer.
+     *
+     * @throws InterruptedException if the current thread is interrupted while waiting
+     */
     @Test
     public void testSendWithTimeout() throws InterruptedException {
         ClientConfig clientConfig = new ClientConfig();
