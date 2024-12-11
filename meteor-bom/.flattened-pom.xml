@@ -7,8 +7,8 @@
   <artifactId>meteor-bom</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
-  <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/
-  </description>
+    <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/
+    </description>
   <url>http://nexus.sonatype.org/oss-repository-hosting.html/meteor-bom</url>
   <organization>
     <name>shallowx</name>
@@ -53,8 +53,8 @@
     <micrometer.version>1.10.5</micrometer.version>
     <flatten.version>1.2.7</flatten.version>
     <common.cli.version>1.5.0</common.cli.version>
-    <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
-    </sonatypeOssDistMgmtSnapshotsUrl>
+      <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
+      </sonatypeOssDistMgmtSnapshotsUrl>
     <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <micrometer.core.version>1.12.1</micrometer.core.version>
     <bom.helper.version>0.4.0</bom.helper.version>
