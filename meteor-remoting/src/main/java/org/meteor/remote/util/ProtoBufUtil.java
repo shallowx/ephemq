@@ -20,7 +20,7 @@ public class ProtoBufUtil {
      * The constructor is private to prevent instantiation and throws an AssertionError if called.
      */
     private ProtoBufUtil() {
-        throw new AssertionError("No org.meteor.remote.util.ProtoBufUtil instance for you");
+        throw new AssertionError("No org.meteor.remote.util.ProtoBufUtil instances for you");
     }
 
     /**

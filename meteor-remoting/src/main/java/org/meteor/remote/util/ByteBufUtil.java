@@ -19,7 +19,7 @@ public final class ByteBufUtil {
      * throws an AssertionError if called.
      */
     private ByteBufUtil() {
-        throw new AssertionError("No org.meteor.remote.util.ByteBufUtil instance for you");
+        throw new AssertionError("No org.meteor.remote.util.ByteBufUtil instances for you");
     }
 
     /**

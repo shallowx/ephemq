@@ -11,23 +11,20 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
-import io.netty.util.concurrent.RejectedExecutionHandlers;
+import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ThreadFactory;
 import net.openhft.affinity.AffinityStrategies;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.meteor.common.thread.FastEventExecutorGroup;
 import org.meteor.common.util.ObjectUtil;
 import org.meteor.remote.codec.MessagePacket;
 import org.meteor.remote.exception.RemotingException;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Utility class providing various network-related operations.
@@ -42,7 +39,7 @@ public final class NetworkUtil {
      * The constructor throws an AssertionError if called to prevent instantiation.
      */
     private NetworkUtil() {
-        throw new AssertionError("No org.meteor.remote.util.NetworkUtil instance for you");
+        throw new AssertionError("No org.meteor.remote.util.NetworkUtil instances for you");
     }
 
     /**
