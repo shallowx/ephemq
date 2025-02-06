@@ -1,11 +1,13 @@
 package org.meteor.proxy.core;
 
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2String;
 import io.netty.util.NettyRuntime;
-import java.util.Properties;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
+
+import java.util.Properties;
+
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2String;
 
 /**
  * The ProxyConfig class is responsible for managing and providing configuration
@@ -52,7 +54,7 @@ public class ProxyConfig {
     /**
      * The configuration property key for specifying the upstream servers
      * that the proxy will connect to.
-     *
+     * <p>
      * This key is used to retrieve a list or comma-separated string of
      * upstream server addresses that the proxy will use to forward requests.
      */
@@ -60,7 +62,7 @@ public class ProxyConfig {
     /**
      * Configuration property key for determining the threshold of heavy load for a subscriber
      * in the proxy server.
-     *
+     * <p>
      * This setting specifies a value which, when exceeded, indicates that the proxy server
      * is experiencing heavy load conditions for subscriber activities. It is used to apply
      * load management strategies and ensure optimal performance under high-load scenarios.
@@ -81,7 +83,7 @@ public class ProxyConfig {
     private static final String PROXY_CLIENT_POOL_SIZE = "proxy.client.pool.size";
     /**
      * Configuration property key for the initial delay in milliseconds before the ledger sync process starts.
-     *
+     * <p>
      * This setting defines the initial delay (in milliseconds) before starting the ledger synchronization
      * process. It can be used to stagger the start of the ledger sync to avoid overloading the system at startup.
      */
@@ -114,7 +116,7 @@ public class ProxyConfig {
     /**
      * String constant for configuring the delay in milliseconds before scheduling
      * a resume task for the proxy.
-     *
+     * <p>
      * This configuration setting is used to manage and control the scheduling delay
      * for resuming tasks in the proxy service.
      */
@@ -128,14 +130,14 @@ public class ProxyConfig {
     private static final String PROXY_SYNC_CHECK_INTERVAL_MILLISECONDS = "proxy.sync.check.interval.milliseconds";
     /**
      * Configuration property key for the delay in milliseconds before processing a topic change in the proxy.
-     *
+     * <p>
      * This variable defines the duration to wait before handling changes to topics, allowing for any
      * necessary initialization or synchronization processes to complete.
      */
     private static final String PROXY_TOPIC_CHANGE_DELAY_MILLISECONDS = "proxy.topic.change.delay.milliseconds";
     /**
      * Holds configuration properties for the ProxyConfig class.
-     *
+     * <p>
      * This property is a collection of key-value pairs that provide
      * the necessary configuration settings for the ProxyConfig.
      * Once initialized through the constructor, these properties
@@ -144,14 +146,14 @@ public class ProxyConfig {
     private final Properties prop;
     /**
      * Holds the common configuration parameters for the proxy server.
-     *
+     * <p>
      * This variable provides access to various configuration settings
      * that are shared across different components of the proxy server.
      */
     private final CommonConfig commonConfiguration;
     /**
      * Holds the configuration settings for connecting to the Zookeeper ensemble.
-     *
+     * <p>
      * This instance provides the necessary Zookeeper configuration parameters such as
      * the Zookeeper URL, connection retry settings, connection timeout, and session timeout.
      */

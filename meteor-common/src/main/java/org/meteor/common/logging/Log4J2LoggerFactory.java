@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 public final class Log4J2LoggerFactory extends InternalLoggerFactory {
     /**
      * Singleton instance of {@link InternalLoggerFactory} using Log4J2LoggerFactory.
-     *
+     * <p>
      * This provides a centralized access point for getting the single instance of
      * Log4J2LoggerFactory throughout the application.
      */

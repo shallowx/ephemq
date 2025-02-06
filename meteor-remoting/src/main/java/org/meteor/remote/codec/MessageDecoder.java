@@ -1,9 +1,5 @@
 package org.meteor.remote.codec;
 
-import static java.lang.Integer.MAX_VALUE;
-import static org.meteor.remote.codec.MessageDecoder.State.READ_MAGIC_NUMBER;
-import static org.meteor.remote.codec.MessageDecoder.State.READ_MESSAGE_COMPLETED;
-import static org.meteor.remote.codec.MessageDecoder.State.READ_MESSAGE_LENGTH;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
@@ -13,6 +9,9 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.exception.RemotingDecoderException;
 import org.meteor.remote.util.ByteBufUtil;
+
+import static java.lang.Integer.MAX_VALUE;
+import static org.meteor.remote.codec.MessageDecoder.State.*;
 
 /**
  * The {@code MessageDecoder} class is responsible for decoding inbound messages
@@ -41,7 +40,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     private State state = READ_MAGIC_NUMBER;
     /**
      * A buffer that holds parts of a message being decoded.
-     *
+     * <p>
      * This buffer is used to accumulate data until there's enough to decode a complete message.
      */
     private ByteBuf composite;
@@ -198,7 +197,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
     /**
      * Handles the completion of a read operation on a channel.
-     *
+     * <p>
      * This method is invoked when the current read operation on the channel has completed. It checks
      * whether the `composite` instance is of type `CompositeByteBuf`. If the buffer's component index
      * at the current reader index exceeds the `DISCARD_READ_BODY_THRESHOLD`, and if the buffer has only

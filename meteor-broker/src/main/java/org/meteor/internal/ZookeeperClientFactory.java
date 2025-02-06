@@ -1,7 +1,5 @@
 package org.meteor.internal;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.state.SessionConnectionStateErrorPolicy;
@@ -9,6 +7,9 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ZookeeperConfig;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Factory class for managing and providing CuratorFramework clients for Zookeeper clusters.
@@ -23,7 +24,7 @@ public class ZookeeperClientFactory {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ZookeeperClientFactory.class);
     /**
      * A map that holds instances of {@link CuratorFramework} clients keyed by cluster names.
-     *
+     * <p>
      * This map ensures that there is at most one CuratorFramework client instance per cluster name,
      * and is used to manage ready-to-use Zookeeper clients.
      */
@@ -63,7 +64,7 @@ public class ZookeeperClientFactory {
 
     /**
      * Closes all active instances of {@link CuratorFramework} clients managed by this factory.
-     *
+     * <p>
      * This method iterates through all entries in the {@code readyClients} map,
      * closes each {@link CuratorFramework} instance, and then clears the map.
      */

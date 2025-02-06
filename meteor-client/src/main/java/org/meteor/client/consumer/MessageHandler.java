@@ -2,14 +2,15 @@ package org.meteor.client.consumer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.EventExecutor;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
 import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.util.ProtoBufUtil;
+
+import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 /**
  * MessageHandler is responsible for handling messages received from a client channel.
@@ -53,12 +54,12 @@ final class MessageHandler {
     private final Map<String, Map<String, Mode>> subscribeShips;
     /**
      * The listener for message events.
-     *
+     * <p>
      * This listener will be invoked to handle specific messages
      * received from a client channel, passing details such as
      * the topic, queue, messageId, message data, and any additional
      * metadata.
-     *
+     * <p>
      * The listener's implementation of the onMessage method will
      * determine the actions taken for each message.
      */

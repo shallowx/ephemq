@@ -1,8 +1,5 @@
 package org.meteor.client;
 
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.meteor.client.core.Client;
 import org.meteor.client.core.ClientChannel;
@@ -11,6 +8,10 @@ import org.meteor.client.core.CombineListener;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.ClusterInfo;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The ClientTest class contains unit tests for the Client class.
@@ -52,7 +53,7 @@ public class ClientTest {
      * Tests the deletion of a topic using the Client API.
      *
      * @throws Exception if an error occurs during the test execution
-     *
+     * <p>
      * This method:
      * 1. Configures the client with a bootstrap server address.
      * 2. Initializes the client with the specified configuration and listener.

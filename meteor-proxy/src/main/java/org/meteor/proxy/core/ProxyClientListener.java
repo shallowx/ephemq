@@ -1,8 +1,5 @@
 package org.meteor.proxy.core;
 
-import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.PROXY_SYNC_CHUNK_COUNT_SUMMARY_NAME;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
@@ -13,23 +10,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.meteor.client.core.Client;
-import org.meteor.client.core.ClientChannel;
-import org.meteor.client.core.CombineListener;
-import org.meteor.client.core.MessageLedger;
-import org.meteor.client.core.MessageRouter;
+import org.meteor.client.core.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.ledger.Log;
@@ -44,6 +25,16 @@ import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
+
+import java.net.SocketAddress;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 /**
  * ProxyClientListener is a listener class that handles events related to proxy clients.
@@ -117,7 +108,7 @@ public class ProxyClientListener implements CombineListener {
      * synchronization channels and message routers are properly configured
      * and active. If any discrepancies are found, it attempts to resume
      * synchronization through a designated executor.
-     *
+     * <p>
      * This method performs the following steps:
      * 1. Retrieves the map of logs from the log handler.
      * 2. Iterates through each log and checks for the presence and validity

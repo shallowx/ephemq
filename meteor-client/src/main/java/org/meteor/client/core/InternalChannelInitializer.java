@@ -8,8 +8,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.net.SocketAddress;
-import java.util.concurrent.ConcurrentMap;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessageDecoder;
@@ -26,6 +24,9 @@ import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+
+import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * InternalChannelInitializer is a specialized subclass of ChannelInitializer.
@@ -184,7 +185,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
 
         /**
          * A client connection channel used within the internal service processor.
-         *
+         * <p>
          * This instance handles the interaction with the client channel
          * to process commands, manage state changes, and facilitate communication
          * between the client and server.

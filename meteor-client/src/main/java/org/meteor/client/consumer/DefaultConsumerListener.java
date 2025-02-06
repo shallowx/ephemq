@@ -10,14 +10,6 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.Nonnull;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.client.core.CombineListener;
 import org.meteor.client.core.MessageLedger;
@@ -31,6 +23,15 @@ import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
+
+import javax.annotation.Nonnull;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * DefaultConsumerListener is a final class that implements the CombineListener and MeterBinder interfaces.
@@ -84,7 +85,7 @@ final class DefaultConsumerListener implements CombineListener, MeterBinder {
      * A concurrent hash map that holds futures marked as obsolete.
      * The key is a String representing the unique identifier of the future task.
      * The value is a Future<?> object representing the result of an asynchronous computation.
-     *
+     * <p>
      * This map is used to keep track of futures that are no longer needed,
      * allowing for their eventual cancellation or cleanup.
      */

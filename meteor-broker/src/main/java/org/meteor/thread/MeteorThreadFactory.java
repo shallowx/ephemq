@@ -3,12 +3,13 @@ package org.meteor.thread;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import io.netty.util.internal.ObjectUtil;
 import io.netty.util.internal.StringUtil;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+
+import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Nonnull;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
 
 /**
  * A factory for creating threads with customized settings such as name prefix, daemon status,
@@ -48,7 +49,7 @@ class MeteorThreadFactory implements ThreadFactory {
      * Priority level assigned to the threads created by the MeteorThreadFactory.
      * It represents the thread priority from a range typically defined by
      * constants from the Thread class (e.g., Thread.MIN_PRIORITY to Thread.MAX_PRIORITY).
-     *
+     * <p>
      * This value is critical as it impacts the scheduling order of the threads
      * managed by the factory, ensuring certain threads can be more or less
      * responsive based on their assigned priority.

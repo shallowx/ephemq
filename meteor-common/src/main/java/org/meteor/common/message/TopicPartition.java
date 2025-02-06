@@ -34,9 +34,6 @@ public record TopicPartition(String topic, int partition) {
      */
     @Override
     public String toString() {
-        return "(" +
-                "topic='" + topic + '\'' +
-                ", partition=" + partition +
-                ')';
+        return STR."(topic='\{topic}', partition=\{partition})";
     }
 }

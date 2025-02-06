@@ -1,8 +1,9 @@
 package org.meteor.common.logging;
 
-import java.io.Serial;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import java.io.Serial;
 
 /**
  * Concrete implementation of the AbstractInternalLogger using Log4J.
@@ -33,7 +34,7 @@ class Log4JLogger extends AbstractInternalLogger {
     final transient Logger logger;
     /**
      * Indicates whether the logger instance is capable of handling trace level log messages.
-     *
+     * <p>
      * This field is used internally to check if trace level logging is supported by the underlying logger.
      */
     final boolean traceCapable;

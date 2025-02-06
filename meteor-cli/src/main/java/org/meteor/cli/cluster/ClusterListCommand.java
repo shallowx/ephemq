@@ -1,10 +1,6 @@
 package org.meteor.cli.cluster;
 
 import io.netty.util.internal.StringUtil;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -18,11 +14,16 @@ import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.NodeMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * ClusterListCommand is a concrete implementation of the Command interface.
  * It provides functionality to retrieve and display information about nodes in a broker cluster.
- *
+ * <p>
  *
  * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
  * | id     | host      | port | registrationTimestamp | cluster | state | auxData | ledgerThroughput |

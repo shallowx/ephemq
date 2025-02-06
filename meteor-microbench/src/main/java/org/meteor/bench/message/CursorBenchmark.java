@@ -64,10 +64,10 @@ public class CursorBenchmark {
      * Benchmarks the performance of the copy() operation on the LedgerCursor.
      * This method is designed to be used with JMH to measure throughput,
      * average time taken, sample time, or single-shot time for the cursor's copy operation.
-     *
+     * <p>
      * The cursor.copy() method creates a new LedgerCursor instance with the same storage,
      * segment, and position as the original cursor, effectively duplicating its state.
-     *
+     * <p>
      * The benchmark involves invoking the copy operation in various scenarios
      * to measure its performance characteristics under different conditions.
      */
@@ -80,13 +80,13 @@ public class CursorBenchmark {
      * Implements a benchmark test to measure the performance of the `hashNext` method.
      * This method checks whether there are more elements available in the ledger.
      * It is part of a suite of performance tests intended to evaluate different operations' efficiency.
-     *
+     * <p>
      * The method is annotated with {@link Benchmark} to signify that it is a performance benchmark test.
      * This method will be executed repeatedly, and the performance metrics will be recorded.
-     *
+     * <p>
      * Note that this method should only be invoked within a benchmarking context, typically managed
      * by a performance testing framework like JMH (Java Microbenchmark Harness).
-     *
+     * <p>
      * The performance metrics obtained from this method can help in identifying bottlenecks and
      * optimizing the `hashNext` implementation.
      */
@@ -120,11 +120,11 @@ public class CursorBenchmark {
      * Benchmarks the performance of seeking the cursor to the tail of the current ledger segment.
      * This method is part of the CursorBenchmark suite and is intended to be used with a benchmarking
      * framework to measure throughput and performance characteristics.
-     *
+     * <p>
      * This method utilizes the {@code seekToTail} functionality of the cursor to position it
      * at the last record of the ledger and is critical for evaluating scenarios where rapid
      * forward traversal of ledger segments is necessary.
-     *
+     * <p>
      * Implementing classes and frameworks should ensure that the environment is properly set up
      * and conditions are controlled to obtain accurate measurement results.
      */
@@ -274,7 +274,7 @@ public class CursorBenchmark {
 
         /**
          * Releases resources held by this LedgerSegmentCursorTest instance.
-         *
+         * <p>
          * This method is an override that calls the superclass's release method,
          * ensuring that any resources managed by the superclass are properly
          * released. Intended to be invoked when the LedgerSegmentCursorTest

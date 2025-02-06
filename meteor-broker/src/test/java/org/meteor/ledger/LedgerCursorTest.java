@@ -44,7 +44,7 @@ public class LedgerCursorTest {
     /**
      * This method tests the hasNext functionality of the LedgerCursor class. It ensures that when records
      * are written to a segment, the cursor correctly identifies the presence of subsequent records.
-     *
+     * <p>
      * The test performs the following actions:
      * 1. Initializes a LedgerStorage instance with appropriate configurations.
      * 2. Allocates a ByteBuf for writing test records.
@@ -109,7 +109,7 @@ public class LedgerCursorTest {
 
     /**
      * Tests the functionality of seeking to a specific offset in a ledger cursor.
-     *
+     * <p>
      * Sets up a LedgerStorage instance and writes several records to a segment.
      * Then, seeks to a specific offset within the segment using a LedgerCursor.
      * Asserts that the position of the cursor after seeking matches the expected offset.
@@ -143,7 +143,6 @@ public class LedgerCursorTest {
      * of the segment. The method verifies that the cursor's position is accurately
      * set to the last written record.
      *
-     * @throws Exception if any unexpected errors occur during the execution of the method.
      */
     @Test
     public void testSeekToTail() {
@@ -191,10 +190,10 @@ public class LedgerCursorTest {
     static class LedgerTriggerCursorTest implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int recordCount, Offset lasetOffset) {
-            Assert.assertEquals(ledgerId, 1);
-            Assert.assertEquals(recordCount, 1);
-            Assert.assertEquals(lasetOffset.getEpoch(), 0);
-            Assert.assertEquals(lasetOffset.getIndex(), 1);
+            Assert.assertEquals(1, ledgerId);
+            Assert.assertEquals(1, recordCount);
+            Assert.assertEquals(0, lasetOffset.getEpoch());
+            Assert.assertEquals(1, lasetOffset.getIndex());
         }
 
         @Override
@@ -323,7 +322,7 @@ public class LedgerCursorTest {
 
         /**
          * Releases resources held by this LedgerSegmentCursorTest instance.
-         *
+         * <p>
          * Overrides the release method in the superclass to ensure that
          * any resources or references held by this instance are properly
          * cleaned up when it is no longer needed.

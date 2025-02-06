@@ -5,13 +5,14 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.FastThreadLocal;
-import java.util.concurrent.TimeUnit;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.invoke.Processor;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * The DemoServerProcessor is responsible for handling specific commands received on a network channel.
@@ -63,7 +64,7 @@ public class DemoServerProcessor implements Processor {
             case 3 -> pass(data);
             default -> {
                 if (feedback != null) {
-                    feedback.failure(new UnsupportedOperationException("Code invalid-" + command));
+                    feedback.failure(new UnsupportedOperationException(STR."Code invalid-\{command}"));
                 }
             }
         }

@@ -1,7 +1,5 @@
 package org.meteor.client.core;
 
-import static org.meteor.client.core.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
-import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
@@ -16,56 +14,26 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import io.netty.util.concurrent.DefaultEventExecutor;
-import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
-import io.netty.util.concurrent.SucceededFuture;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import io.netty.util.concurrent.*;
 import org.meteor.client.exception.MeteorClientException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.util.TopicPatternUtil;
-import org.meteor.remote.proto.ClusterInfo;
-import org.meteor.remote.proto.NodeMetadata;
-import org.meteor.remote.proto.PartitionMetadata;
-import org.meteor.remote.proto.TopicInfo;
-import org.meteor.remote.proto.TopicMetadata;
-import org.meteor.remote.proto.server.CalculatePartitionsRequest;
-import org.meteor.remote.proto.server.CalculatePartitionsResponse;
-import org.meteor.remote.proto.server.CreateTopicConfigRequest;
-import org.meteor.remote.proto.server.CreateTopicRequest;
-import org.meteor.remote.proto.server.CreateTopicResponse;
-import org.meteor.remote.proto.server.DeleteTopicRequest;
-import org.meteor.remote.proto.server.DeleteTopicResponse;
-import org.meteor.remote.proto.server.MigrateLedgerRequest;
-import org.meteor.remote.proto.server.MigrateLedgerResponse;
-import org.meteor.remote.proto.server.QueryClusterInfoRequest;
-import org.meteor.remote.proto.server.QueryClusterResponse;
-import org.meteor.remote.proto.server.QueryTopicInfoRequest;
-import org.meteor.remote.proto.server.QueryTopicInfoResponse;
+import org.meteor.remote.proto.*;
+import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.NetworkUtil;
+
+import javax.annotation.Nonnull;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
+
+import static org.meteor.client.core.MessageConstants.CLIENT_NETTY_PENDING_TASK_NAME;
+import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
 
 /**
  * This class represents a client responsible for managing communication channels,
@@ -396,7 +364,7 @@ public class Client implements MeterBinder {
 
     /**
      * Starts the client by initializing and configuring the necessary resources.
-     *
+     * <p>
      * This method performs the following operations:
      * 1. Checks if the client is already running and logs a warning if so.
      * 2. Sets the client's state to running.
@@ -424,9 +392,9 @@ public class Client implements MeterBinder {
         builder.negativeTtl(30);
 
         if (config.isSocketEpollPrefer() && Epoll.isAvailable()) {
-            builder.channelType(EpollDatagramChannel.class);
+            builder.datagramChannelType(EpollDatagramChannel.class);
         } else {
-            builder.channelType(NioDatagramChannel.class);
+            builder.datagramChannelType(NioDatagramChannel.class);
         }
 
         builder.nameServerProvider(DefaultDnsServerAddressStreamProvider.INSTANCE);
@@ -449,13 +417,13 @@ public class Client implements MeterBinder {
 
     /**
      * Closes the client connection and frees up resources.
-     *
+     * <p>
      * This method performs a series of steps to gracefully shut down the client:
      * 1. Checks if the client is already running or not. If not running, logs a warning.
      * 2. Sets the client's state to inactive.
      * 3. Shuts down the metadata refreshing executor service gracefully.
      * 4. Waits for the metadata refreshing executor service and worker group to terminate.
-     *
+     * <p>
      * If an interruption occurs during the waiting process, it sets the interrupt status of the thread.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")

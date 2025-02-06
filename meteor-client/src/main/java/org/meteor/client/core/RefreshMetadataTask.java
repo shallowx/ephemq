@@ -1,16 +1,17 @@
 package org.meteor.client.core;
 
 import io.netty.util.concurrent.Future;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.meteor.client.exception.ClientRefreshException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.proto.ClusterInfo;
 import org.meteor.remote.proto.TopicInfo;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Task for refreshing metadata in the client periodically.
@@ -79,16 +80,16 @@ final class RefreshMetadataTask implements Runnable {
     /**
      * Refreshes the metadata for message routing by querying the cluster and topic information,
      * and updating the client's router cache accordingly.
-     *
+     * <p>
      * This method performs the following steps:
      * 1. Collects topics that require metadata refresh.
      * 2. Queries the cluster information.
      * 3. Fetches topic information for the collected topics.
      * 4. Builds new message routers for the topics based on the fetched information.
      * 5. Updates the client's router cache with the newly built routers.
-     *
+     * <p>
      * If the queried router information is empty, the method logs a debug message and exits.
-     *
+     * <p>
      * If an error occurs during the metadata refresh, it is logged as an error.
      */
     private void refreshMetadata() {

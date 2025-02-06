@@ -1,13 +1,15 @@
 package org.meteor.remote.handle;
 
 import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessagePacket;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * HeartbeatDuplexHandler is a ChannelDuplexHandler that handles heartbeat signals and idle timeout for a channel.
@@ -33,7 +35,7 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
     /**
      * A Future instance representing the completion of a task scheduled to
      * monitor or manage the idle state of a network connection.
-     *
+     * <p>
      * This future can be used to check whether the idle state task has completed,
      * to retrieve any result the task might have produced, or to check for any
      * exceptions thrown during the execution of the task.
@@ -111,7 +113,7 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
 
     /**
      * Handles the removal of the handler from the context.
-     *
+     * <p>
      * Cancels scheduled future tasks for the heartbeat and idle timeout
      * if they exist, and sets them to null.
      *

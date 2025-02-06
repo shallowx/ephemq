@@ -6,29 +6,11 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.netty.util.concurrent.EventExecutor;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.DeleteBuilder;
 import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.recipes.atomic.DistributedAtomicInteger;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -36,11 +18,7 @@ import org.apache.zookeeper.data.Stat;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Node;
-import org.meteor.common.message.PartitionInfo;
-import org.meteor.common.message.TopicAssignment;
-import org.meteor.common.message.TopicConfig;
-import org.meteor.common.message.TopicPartition;
+import org.meteor.common.message.*;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.SegmentConfig;
 import org.meteor.config.ServerConfig;
@@ -51,6 +29,14 @@ import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.TopicListener;
+
+import javax.annotation.Nonnull;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The ZookeeperTopicHandleSupport class provides methods for managing topics and
@@ -148,22 +134,22 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
     /**
      * The manager responsible for overseeing server components and their interactions
      * within the ZookeeperTopicHandleSupport context.
-     *
+     * <p>
      * This instance is crucial for managing the start and shutdown of operations, as well as
      * providing access to various support components needed for handling topics, clusters, and more.
      */
     protected Manager manager;
     /**
      * A protected cache that loads and stores sets of PartitionInfo objects for each topic.
-     *
+     * <p>
      * The topicCache is used to cache partition information retrieved from Zookeeper,
      * to reduce the number of direct requests made to the Zookeeper service. The cache
      * uses a LoadingCache, which allows values to be automatically loaded when they are
      * not present in the cache.
-     *
+     * <p>
      * Each entry in the cache is keyed by the topic name (String) and holds a set of PartitionInfo
      * objects, which provide detailed information about each partition of the topic.
-     *
+     * <p>
      * This cache helps in optimizing the performance of topic partition lookups within
      * the ZookeeperTopicHandleSupport class by minimizing frequent remote calls.
      */
@@ -172,14 +158,14 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
      * A protected cache that maps topic names to their respective sets of topic identifiers.
      * The cache is designed to lazily load and store sets of topic names upon request,
      * using a LoadingCache implementation.
-     *
+     * <p>
      * Used primarily to optimize the retrieval and storage of topic names within the
      * Zookeeper-based topic handling mechanism.
      */
     protected LoadingCache<String, Set<String>> topicNamesCache;
     /**
      * Configuration settings for connecting to and managing Zookeeper.
-     *
+     * <p>
      * This variable holds an instance of {@link ZookeeperConfig} which encapsulates
      * the necessary configurations needed to interact with Zookeeper.
      */
@@ -607,7 +593,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
 
     /**
      * Generates a unique topic identifier.
-     *
+     * <p>
      * This method uses the topicIdGenerator to increment and fetch a new
      * topic ID to ensure uniqueness across the topics managed by the
      * system.
@@ -874,7 +860,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
 
     /**
      * Shuts down the ZookeeperTopicHandleSupport instance and its associated resources.
-     *
+     * <p>
      * This method performs the following operations:
      * 1. If the cache is not null, it closes the cache to release any held resources.
      * 2. Calls the shutdown method on the participantSupport to ensure any associated tasks are completed or terminated.

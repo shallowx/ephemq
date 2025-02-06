@@ -30,7 +30,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Initializes the test environment before each test is executed.
-     *
+     * <p>
      * This method performs the following actions:
      * - Stores the current default logger factory.
      * - Mocks a new InternalLoggerFactory and InternalLogger.
@@ -50,11 +50,11 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Cleans up the test environment after each test execution.
-     *
+     * <p>
      * This method is annotated with @AfterEach, which means it is executed after each test method in the
      * `InternalLoggerFactoryTest` class. It performs cleanup activities to ensure that mock objects and
      * state changes do not affect subsequent tests.
-     *
+     * <p>
      * Specifically, this method:
      * 1. Resets the `mockLogger` to clear any interactions or state.
      * 2. Restores the `InternalLoggerFactory`'s default factory to its prior state using `oldLoggerFactory`.
@@ -68,7 +68,7 @@ public class InternalLoggerFactoryTest {
     /**
      * Test that verifies that setting the default factory of {@link InternalLoggerFactory} to null
      * triggers a {@link NullPointerException}.
-     *
+     * <p>
      * This method calls {@link InternalLoggerFactory#setDefaultFactory(InternalLoggerFactory)} with a null argument
      * and expects a {@link NullPointerException} to be thrown.
      */
@@ -128,12 +128,12 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests that the debug level logging is enabled.
-     *
+     * <p>
      * This method mocks a logger and sets it to return true when checking
      * if debug level logging is enabled. It then creates an InternalLogger
      * instance using the mocked logger and asserts that the debug level
      * logging is indeed enabled.
-     *
+     * <p>
      * The method verifies that the isDebugEnabled() method was called on
      * the mocked logger.
      */
@@ -148,10 +148,10 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests the isInfoEnabled method of InternalLogger.
-     *
+     * <p>
      * This test ensures that the InternalLogger correctly indicates
      * if the INFO logging level is enabled by delegating to the mock logger.
-     *
+     * <p>
      * Mocks the isInfoEnabled method to return true and verifies
      * that the method on the mock logger was called.
      */
@@ -166,7 +166,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests if the warn level logging is enabled for the logger.
-     *
+     * <p>
      * This method sets up a mock logger to return true when the
      * {@code isWarnEnabled} method is called. It uses the
      * {@code InternalLoggerFactory} to get a logger instance and
@@ -183,7 +183,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests if the error logging level is enabled.
-     *
+     * <p>
      * This test mocks the behavior of the logger to return true for the isErrorEnabled() method.
      * It then asserts that the InternalLogger instance's isErrorEnabled() method also returns true.
      * Finally, it verifies that the mocked isErrorEnabled() method was called.
@@ -199,7 +199,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests that the trace method in the InternalLogger logs the correct message.
-     *
+     * <p>
      * In this test, a logger is retrieved using the InternalLoggerFactory, and
      * a trace message is logged. The test verifies that the mock logger receives
      * the trace method call with the expected message.
@@ -214,10 +214,10 @@ public class InternalLoggerFactoryTest {
     /**
      * Tests logging a trace message with an accompanying exception using the InternalLogger.
      * This method verifies that the trace method is called with the correct parameters when an exception is provided.
-     *
+     * <p>
      * The logger instance is obtained from the InternalLoggerFactory with the logger name "mock".
      * The test ensures that the trace method of the mockLogger is invoked with the message "a" and the exception object e.
-     *
+     * <p>
      * It makes use of the JUnit annotation @Test to mark this method as a test case.
      */
     @Test
@@ -258,7 +258,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Validates that the `info` logging method of the `InternalLogger` is called correctly.
-     *
+     * <p>
      * This test ensures that when the `info` method is invoked on an `InternalLogger` instance,
      * the appropriate logging action is performed on the mock logger.
      */
@@ -271,9 +271,9 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests the info logging functionality when an exception is provided.
-     *
+     * <p>
      * This test ensures that the logger correctly logs an info message along with an exception.
-     *
+     * <p>
      * Steps:
      * 1. Retrieves an instance of InternalLogger.
      * 2. Invokes the logger's info method with a message and an exception.
@@ -288,7 +288,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests the warn logging functionality of the InternalLogger class.
-     *
+     * <p>
      * This method verifies that a warning message is correctly logged using the InternalLogger.
      * It uses a mock logger to ensure that the warn method is called with the expected message.
      */
@@ -301,7 +301,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests the `warn` method of the `InternalLogger` class with an exception.
-     *
+     * <p>
      * This test verifies that the `warn` method is correctly called with the specified
      * message and exception on the logger.
      */
@@ -314,7 +314,7 @@ public class InternalLoggerFactoryTest {
 
     /**
      * Tests the logging of an error message using the InternalLogger.
-     *
+     * <p>
      * This test verifies that when the error method of the InternalLogger is called
      * with a specific message, the corresponding method of the mockLogger is also called
      * with the same message.

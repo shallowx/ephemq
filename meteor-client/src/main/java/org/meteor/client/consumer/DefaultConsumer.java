@@ -3,42 +3,25 @@ package org.meteor.client.consumer;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.UnsafeByteOperations;
-import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import java.net.SocketAddress;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import org.meteor.client.core.Client;
-import org.meteor.client.core.ClientChannel;
-import org.meteor.client.core.CombineListener;
-import org.meteor.client.core.MessageLedger;
-import org.meteor.client.core.MessageRouter;
+import org.meteor.client.core.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.MessageId;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.common.util.TopicPatternUtil;
-import org.meteor.remote.proto.server.AlterSubscribeRequest;
-import org.meteor.remote.proto.server.AlterSubscribeResponse;
-import org.meteor.remote.proto.server.CleanSubscribeRequest;
-import org.meteor.remote.proto.server.CleanSubscribeResponse;
-import org.meteor.remote.proto.server.ResetSubscribeRequest;
-import org.meteor.remote.proto.server.ResetSubscribeResponse;
+import org.meteor.remote.proto.server.*;
+
+import java.net.SocketAddress;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The DefaultConsumer class is an implementation of the Consumer interface,
@@ -75,7 +58,7 @@ public class DefaultConsumer implements Consumer {
     /**
      * Holds the subscription state of the consumer where the key is the topic, the inner map key represents queue names associated
      * with that topic, and the inner map value denotes the subscription mode (REMAIN, APPEND, or DELETE).
-     *
+     * <p>
      * This data structure is used to manage and track the various subscriptions the consumer has registered and their respective
      * states across different topics and queues.
      */
@@ -90,37 +73,37 @@ public class DefaultConsumer implements Consumer {
      * A map that maintains ledger sequences using AtomicReferences of MessageIds.
      * The keys are ledger identifiers (integers), and the values are AtomicReferences pointing
      * to the most recent MessageId for that ledger.
-     *
+     * <p>
      * This structure is used to track the latest message processed in each ledger, enabling
      * efficient message handling and ensuring thread-safe updates.
      */
     private final Map<Integer, AtomicReference<MessageId>> ledgerSequences = new ConcurrentHashMap<>();
     /**
      * An AtomicBoolean that indicates whether a change task has been touched or modified.
-     *
+     * <p>
      * This variable is used to manage and track the state of change-related tasks within the consumer's operations.
      * It helps in synchronizing tasks that involve changes to subscriptions, ledgers, or any other configurations
      * managed by the consumer.
-     *
+     * <p>
      * The AtomicBoolean ensures thread-safe operations and provides a non-blocking mechanism to check and update the
      * task's state, making it suitable for concurrent environments.
-     *
+     * <p>
      * Initialized to false, indicating no changes have been made initially.
      */
     private final AtomicBoolean changeTaskTouched = new AtomicBoolean(false);
     /**
      * A map that stores the number of tokens available for each topic.
-     *
+     * <p>
      * The key is the topic's name, and the value is the number of tokens available for that topic.
      * This is used to manage flow control, ensuring that each topic manages its tokens independently.
      */
     private final Map<String, Long> topicTokens = new HashMap<>();
     /**
      * Stores the version information of different ledgers for various topics.
-     *
+     * <p>
      * The outer map's key is a topic name, and the inner map's key is an integer representing the ledger ID.
      * The inner map's value is an integer representing the version number of the corresponding ledger.
-     *
+     * <p>
      * This data structure allows tracking of which ledger versions have been processed or are currently being
      * processed for each topic. It facilitates efficient management and validation of message consumption
      * from multiple ledgers within various topics by keeping a precise and organized record of their versions.
@@ -128,7 +111,7 @@ public class DefaultConsumer implements Consumer {
     private final Map<String, Map<Integer, Integer>> topicLedgerVersions = new HashMap<>();
     /**
      * A mapping structure that holds marker information for topic ledgers.
-     *
+     * <p>
      * The outer map uses topic names as keys, and values are inner maps where
      * the keys represent ledger ID numbers and the values are mappings of
      * integer markers using an Int2IntMap. This structure is used to keep
@@ -140,7 +123,7 @@ public class DefaultConsumer implements Consumer {
      * This listener integrates various event-handling functionalities such as channel
      * active or closed events, message push signals, topic changes, node offline signals,
      * and synchronization messages.
-     *
+     * <p>
      * This field holds a reference to the CombineListener implementation which will handle
      * these specific types of events. The listener ensures that the consumer can react to
      * and manage different operational states and messages efficiently.
@@ -149,7 +132,7 @@ public class DefaultConsumer implements Consumer {
     /**
      * The executor responsible for executing tasks and callbacks associated
      * with the consumer's operations.
-     *
+     * <p>
      * This EventExecutor handles asynchronous tasks such as message
      * processing, subscription handling, and other internal operations
      * that require non-blocking execution. It ensures tasks are executed
@@ -210,10 +193,10 @@ public class DefaultConsumer implements Consumer {
      * Starts the consumer if it is not already running. This method is thread-safe and will ensure
      * that the consumer's state is updated, the client is started, and a scheduled task to handle
      * touch changes is initiated.
-     *
+     * <p>
      * If the consumer is already running, a warning will be logged indicating that the consumer
      * with the specified name is already started.
-     *
+     * <p>
      * The method performs the following steps:
      * 1. Checks if the consumer is already running.
      * 2. If running, logs a warning message.
@@ -364,12 +347,12 @@ public class DefaultConsumer implements Consumer {
 
     /**
      * Initiates the execution of a task to handle changes if certain conditions are met.
-     *
+     * <p>
      * This method ensures that the change task is not executed if the executor
      * is shutting down, or if the change task has already been touched.
      * If the executor is operational and the change task is not presently being handled,
      * it is marked as touched, and a new task is submitted to the executor for processing.
-     *
+     * <p>
      * In case of failure during task submission, the touched state is reset and an error
      * message is logged.
      */
@@ -390,12 +373,12 @@ public class DefaultConsumer implements Consumer {
 
     /**
      * Performs several tasks related to managing the state of subscriptions and message routing.
-     *
+     * <p>
      * This method resets the change task indicator, clears failed records, and processes
      * changed records for subscribed topics. For each topic, it either cleans up the
      * subscription or attempts to change or reset it based on various conditions. If there
      * are any failed records after processing, a retry task is scheduled.
-     *
+     * <p>
      * Sequence of operations:
      * 1. Resets the change task indicator.
      * 2. Clears failed records and extracts changed records.
@@ -1134,7 +1117,7 @@ public class DefaultConsumer implements Consumer {
 
     /**
      * Clears all failed records and returns the previous set of failed records.
-     *
+     * <p>
      * This method resets the failed records map to an empty state, effectively clearing all
      * previously stored failed records. The method is typically used in scenarios where
      * failed message processing records need to be reset, for instance, when retry operations
@@ -1242,7 +1225,7 @@ public class DefaultConsumer implements Consumer {
 
     /**
      * Retrieves the current subscription mappings for this consumer instance.
-     *
+     * <p>
      * This method provides access to the internal subscription structure
      * used by the consumer. The returned map contains topic names as keys
      * and nested maps as values. Each nested map has queue names as keys

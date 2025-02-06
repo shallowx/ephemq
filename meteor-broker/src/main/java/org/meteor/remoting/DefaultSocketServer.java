@@ -1,32 +1,26 @@
 package org.meteor.remoting;
 
-import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.NETTY_PENDING_TASK_NAME;
-import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
-import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
-import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.WriteBufferWaterMark;
+import io.netty.channel.*;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
-import java.net.SocketAddress;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.support.Manager;
+
+import java.net.SocketAddress;
+
+import static org.meteor.metrics.config.MetricsConstants.*;
+import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
+import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
 
 /**
  * DefaultSocketServer is responsible for initializing and starting a socket server using the provided configuration.
@@ -69,14 +63,14 @@ public class DefaultSocketServer {
     private EventLoopGroup bossGroup;
     /**
      * Represents the worker group for handling I/O operations.
-     *
+     * <p>
      * This is used in the context of a {@link DefaultSocketServer} to manage
      * the event loop for processing network events.
      */
     private EventLoopGroup workGroup;
     /**
      * A {@link ChannelFuture} that represents the asynchronous result of the closing of the service channel.
-     *
+     * <p>
      * This future is used to track the status of the channel closing operation and can be used to perform actions
      * once the channel is successfully closed or if it fails to close.
      */
@@ -99,7 +93,7 @@ public class DefaultSocketServer {
      * Starts the DefaultSocketServer by initializing thread groups and configuring the server.
      * This method sets up the necessary event loop groups for accepting and processing
      * network connections using Netty's `ServerBootstrap`.
-     *
+     * <p>
      * It also binds the server to the advertised address and port specified in the configuration.
      * If a compatible port is available and differs from the advertised port, the server
      * will listen on that port as well.
@@ -188,7 +182,7 @@ public class DefaultSocketServer {
      * Waits for the channel to close synchronously, blocking until the channel closure is complete.
      * This method helps ensure the orderly shutdown of the socket server by awaiting the closure
      * of the associated channel.
-     *
+     * <p>
      * Any interruption during the wait is caught and logged as an error.
      */
     public void awaitShutdown() {
@@ -203,7 +197,7 @@ public class DefaultSocketServer {
      * Shuts down the DefaultSocketServer and its associated resources gracefully.
      *
      * @throws Exception if an error occurs during the shutdown process.
-     *
+     * <p>
      * This method attempts to close the channel first, making sure all operations
      * are synchronized. It then gracefully shuts down the boss and worker groups,
      * ensuring all tasks are completed before termination. If any exceptions occur

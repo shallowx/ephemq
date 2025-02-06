@@ -1,8 +1,5 @@
 package org.meteor.consumer;
 
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.meteor.client.consumer.Consumer;
 import org.meteor.client.consumer.ConsumerConfig;
@@ -11,6 +8,10 @@ import org.meteor.client.core.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.util.ByteBufUtil;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A test suite for verifying the behavior of a message Consumer.
@@ -63,7 +64,7 @@ public class ConsumerTest {
 
     /**
      * Tests the clear functionality of a consumer in a messaging system.
-     *
+     * <p>
      * This method:
      * 1. Configures the client and consumer with specific settings such as bootstrap addresses and connection pool capacity.
      * 2. Initializes and starts a consumer that listens to a specific topic and queue.
@@ -105,7 +106,7 @@ public class ConsumerTest {
 
     /**
      * Tests the functionality of message consumption with a default consumer configuration.
-     *
+     * <p>
      * This method performs the following actions:
      * 1. Initializes a ClientConfig with specific bootstrap addresses and connection pool capacity.
      * 2. Creates a ConsumerConfig with the initialized ClientConfig.

@@ -49,7 +49,7 @@ public class ServerConfig {
     protected final DefaultDispatchConfig recordDispatchConfig;
     /**
      * Holds the configuration properties for connecting to a Zookeeper instance.
-     *
+     * <p>
      * This configuration object contains properties such as the Zookeeper URL,
      * connection retry sleep time, number of connection retries, connection timeout,
      * and session timeout, which are essential for establishing and maintaining a connection

@@ -8,11 +8,12 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.util.MessageUtil;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The LedgerStorage class handles the storage and management of ledger segments, allowing records to be appended
@@ -186,7 +187,7 @@ public class LedgerStorage {
 
     /**
      * Returns a LedgerCursor positioned at the given offset.
-     *
+     * <p>
      * If the offset is null, the cursor is positioned at the tail of the ledger.
      * Otherwise, the cursor is positioned at the specified offset in the head of the ledger.
      *
@@ -260,11 +261,11 @@ public class LedgerStorage {
 
     /**
      * Initiates the process of cleaning segments in the ledger storage.
-     *
+     * <p>
      * This method first checks if the execution is in the event loop. If so, it directly proceeds
      * with cleaning the segment by calling {@link #doCleanSegment()}. If not, it attempts to
      * execute the cleaning task in the event loop using the executor.
-     *
+     * <p>
      * The method is designed to handle potential exceptions silently that may occur during
      * the execution of tasks on the executor.
      */
@@ -281,13 +282,13 @@ public class LedgerStorage {
 
     /**
      * Cleans up old ledger segments that exceed the configured retention time.
-     *
+     * <p>
      * This method iterates through the ledger segments starting from the head and
      * removes segments that are older than the configured retention time defined
      * by {@code config.segmentRetainMs()}. The segments are removed by calling
      * {@code decreaseSegment()} method until a segment is found that is within the
      * retention time or there are no more segments left.
-     *
+     * <p>
      * If there are no segments to begin with (i.e., {@code segmentCount == 0}),
      * this method returns immediately.
      */
@@ -311,11 +312,11 @@ public class LedgerStorage {
 
     /**
      * Decreases the number of segments in the ledger by one.
-     *
+     * <p>
      * If there are no segments, the method returns immediately.
      * If the segment count is greater than one, the head segment is shifted to the next segment.
      * If there is only one segment, a new empty segment is created and assigned as both the head and tail.
-     *
+     * <p>
      * The segment count is then decremented, and the released segment is deallocated.
      * Finally, the triggerOnRelease method is invoked to perform any additional operations related to the segment release.
      */
@@ -459,7 +460,7 @@ public class LedgerStorage {
 
     /**
      * Updates the epoch to the specified new value.
-     *
+     * <p>
      * If the current thread is in the event loop, it directly updates the epoch.
      * Otherwise, it schedules the epoch update to be executed in the event loop.
      *
@@ -488,7 +489,7 @@ public class LedgerStorage {
     /**
      * Checks if the storage is active. If the storage is inactive, it throws an
      * IllegalStateException.
-     *
+     * <p>
      * This is a private method used internally to ensure that operations are
      * not performed on an inactive storage.
      *

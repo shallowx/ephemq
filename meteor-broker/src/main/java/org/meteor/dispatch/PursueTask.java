@@ -1,8 +1,9 @@
 package org.meteor.dispatch;
 
-import javax.annotation.concurrent.Immutable;
 import org.meteor.common.message.Offset;
 import org.meteor.ledger.LedgerCursor;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Represents a task that tracks the pursuit of a specific subscription in a ledger.
@@ -19,7 +20,6 @@ final class PursueTask<T> {
      * This subscription is the primary identifier used to resume
      * tasks from a specific point in the ledger.
      *
-     * @param <T> The type of the subscription.
      */
     private final T subscription;
     /**

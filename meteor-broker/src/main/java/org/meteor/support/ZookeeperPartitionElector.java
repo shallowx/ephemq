@@ -2,11 +2,6 @@ package org.meteor.support;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
@@ -25,6 +20,12 @@ import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.listener.TopicListener;
 import org.meteor.remote.proto.server.SyncResponse;
+
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The ZookeeperPartitionElector class handles the leader election for topic partitions using Zookeeper.
@@ -107,7 +108,7 @@ public final class ZookeeperPartitionElector {
      * This method uses a ZooKeeper-based LeaderLatch to manage the leadership for the topic partition.
      * When called, it sets up a leader latch listener to handle the events of becoming a leader
      * or losing the leadership.
-     *
+     * <p>
      * The process includes:
      * - Formatting the path for the topic partition in ZooKeeper.
      * - Initializing a LeaderLatch with the server ID and NOTIFY_LEADER close mode.

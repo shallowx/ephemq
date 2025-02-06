@@ -1,8 +1,9 @@
 package org.meteor.client.producer;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Map;
 import org.meteor.common.message.MessageId;
+
+import java.util.Map;
 
 /**
  * The Producer interface defines methods for starting the producer, sending messages
@@ -53,7 +54,7 @@ public interface Producer {
 
     /**
      * Sends a one-way message to the specified topic and queue.
-     *
+     * <p>
      * This method does not wait for any acknowledgment from the receiver and completes immediately after the message is sent.
      *
      * @param topic the topic to which the message is to be sent

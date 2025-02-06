@@ -1,11 +1,5 @@
 package org.meteor.support;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.Assert;
@@ -16,6 +10,13 @@ import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.CorrelationIdConstants;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class ZookeeperTopicHandleSupportTest {
     /**
@@ -103,7 +104,7 @@ public class ZookeeperTopicHandleSupportTest {
 
     /**
      * Tests the creation of a topic in a Zookeeper-backed environment.
-     *
+     * <p>
      * This test verifies that a topic with specified partitions and replicas can be
      * created successfully, and that the resulting metadata includes valid topic ID
      * and partition replicas information.
@@ -113,13 +114,13 @@ public class ZookeeperTopicHandleSupportTest {
     @Test
     public void testCrateTopic() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
-        Assertions.assertEquals(results.size(), 2);
+        Assertions.assertEquals(2, results.size());
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
         Set<PartitionInfo> topicInfos = support.getTopicInfo(topic);
         Assertions.assertNotNull(topicInfos);
-        Assertions.assertEquals(topicInfos.size(), 1);
+        Assertions.assertEquals(1, topicInfos.size());
         Iterator<PartitionInfo> iterator = topicInfos.iterator();
         PartitionInfo partitionInfo = iterator.next();
         Assertions.assertEquals(partitionInfo.getTopicId(), results.get(CorrelationIdConstants.TOPIC_ID));
@@ -128,7 +129,7 @@ public class ZookeeperTopicHandleSupportTest {
 
     /**
      * Tests the deletion of a Kafka topic.
-     *
+     * <p>
      * This method validates the following sequence:
      * 1. Creates a new topic using specified configurations.
      * 2. Verifies the creation by checking the returned topic details.
@@ -141,13 +142,13 @@ public class ZookeeperTopicHandleSupportTest {
     @Test
     public void testDeleteTopic() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
-        Assertions.assertEquals(results.size(), 2);
+        Assertions.assertEquals(2, results.size());
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
         Set<PartitionInfo> topicInfos = support.getTopicInfo(topic);
         Assertions.assertNotNull(topicInfos);
-        Assertions.assertEquals(topicInfos.size(), 1);
+        Assertions.assertEquals(1, topicInfos.size());
         Iterator<PartitionInfo> iterator = topicInfos.iterator();
         PartitionInfo partitionInfo = iterator.next();
         Assertions.assertEquals(partitionInfo.getTopicId(), results.get(CorrelationIdConstants.TOPIC_ID));
@@ -156,12 +157,12 @@ public class ZookeeperTopicHandleSupportTest {
         support.deleteTopic(topic);
         Set<String> allTopics = support.getAllTopics();
         Assertions.assertNotNull(allTopics);
-        Assertions.assertEquals(allTopics.size(), 0);
+        Assertions.assertEquals(0, allTopics.size());
     }
 
     /**
      * Tests the functionality of retrieving all topics in the system.
-     *
+     * <p>
      * This test validates that:
      * 1. A topic can be successfully created with the specified configurations.
      * 2. The topic information, including topic ID and partition replicas, is correctly stored.
@@ -172,20 +173,20 @@ public class ZookeeperTopicHandleSupportTest {
     @Test
     public void testGetAllTopics() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
-        Assertions.assertEquals(results.size(), 2);
+        Assertions.assertEquals(2, results.size());
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 
         Set<PartitionInfo> topicInfos = support.getTopicInfo(topic);
         Assertions.assertNotNull(topicInfos);
-        Assertions.assertEquals(topicInfos.size(), 1);
+        Assertions.assertEquals(1, topicInfos.size());
         Iterator<PartitionInfo> iterator = topicInfos.iterator();
         PartitionInfo partitionInfo = iterator.next();
         Assertions.assertEquals(partitionInfo.getTopicId(), results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertEquals(partitionInfo.getTopic(), topic);
         Set<String> allTopics = support.getAllTopics();
         Assertions.assertNotNull(allTopics);
-        Assertions.assertEquals(allTopics.size(), 1);
+        Assertions.assertEquals(1, allTopics.size());
         String result = allTopics.iterator().next();
         Assertions.assertNotNull(result);
         Assertions.assertEquals(result, topic);
@@ -193,7 +194,7 @@ public class ZookeeperTopicHandleSupportTest {
 
     /**
      * Tests the retrieval of partition information for a specified topic.
-     *
+     * <p>
      * This method validates that the partition information obtained from
      * a topic matches the expected results. It first creates a topic with
      * specific partitions and replicas, and then retrieves and checks the
@@ -206,7 +207,7 @@ public class ZookeeperTopicHandleSupportTest {
     @Test
     public void testGetPartitionInfo() throws Exception {
         Map<String, Object> results = support.createTopic(topic, partitions, replicas, null);
-        Assertions.assertEquals(results.size(), 2);
+        Assertions.assertEquals(2, results.size());
         Assertions.assertNotNull(results.get(CorrelationIdConstants.TOPIC_ID));
         Assertions.assertNotNull(results.get(CorrelationIdConstants.PARTITION_REPLICAS));
 

@@ -141,7 +141,7 @@ public class MessageFormatterTest {
     /**
      * Tests the behavior of the MessageFormatter when an exception is thrown
      * by the toString() method of an object.
-     *
+     * <p>
      * This test creates an anonymous object whose toString() method always throws
      * an IllegalStateException. The method then formats a string using this object
      * and verifies that the resulting message handles the exception properly by
@@ -161,11 +161,11 @@ public class MessageFormatterTest {
 
     /**
      * Tests the behavior of the MessageFormatter.arrayFormat method when passed a null array of arguments.
-     *
+     * <p>
      * The test method verifies that when the argument array is null, the format string remains unchanged.
      * It asserts that the returned message is the same as the original format strings provided, which
      * include different numbers of placeholders.
-     *
+     * <p>
      * Asserts:
      * - The result matches the original format string when the argument array is null.
      */
@@ -194,12 +194,12 @@ public class MessageFormatterTest {
     /**
      * Tests the case when the parameters are supplied in a single array to the MessageFormatter.
      * The method covers various scenarios such as:
-     *
+     * <p>
      * 1. Basic formatting with multiple placeholders.
      * 2. Consecutive placeholders without delimiters.
      * 3. Extra array elements ignored in formatting.
      * 4. Format strings with unbalanced brackets.
-     *
+     * <p>
      * This ensures that MessageFormatter correctly handles array inputs for formatted message strings.
      */
     // tests the case when the parameters are supplied in a single array
@@ -231,10 +231,10 @@ public class MessageFormatterTest {
 
     /**
      * Test the formatting of various array types using the MessageFormatter.
-     *
+     * <p>
      * This method will assert that the MessageFormatter correctly formats messages when provided
      * with different array types such as Integer, byte, int, float, and double.
-     *
+     * <p>
      * The method accomplishes this by:
      * 1. Creating specific arrays and formatting them with the MessageFormatter.
      * 2. Asserting that the formatted output matches the expected string representations.
@@ -270,7 +270,7 @@ public class MessageFormatterTest {
     /**
      * Test method for verifying the correct handling and formatting of multi-dimensional array values
      * in the MessageFormatter class's arrayFormat method.
-     *
+     * <p>
      * This test checks the formatting of arrays with different data types and dimensions, including:
      * - 1-dimensional and 2-dimensional Integer arrays
      * - 2-dimensional int arrays
@@ -278,9 +278,9 @@ public class MessageFormatterTest {
      * - Multi-dimensional Object arrays
      * - Nested 3-dimensional Object arrays
      * - Combined Byte and Short arrays within an Object array
-     *
+     * <p>
      * The assertions validate that the formatted string output matches the expected string representation
-     * of the input multi-dimensional arrays.
+     * of the input multidimensional arrays.
      */
     @Test
     public void testMultiDimensionalArrayValues() {
@@ -315,7 +315,7 @@ public class MessageFormatterTest {
 
     /**
      * Tests the handling of cyclic arrays by the MessageFormatter.
-     *
+     * <p>
      * Ensures that cyclic references within arrays are properly detected
      * and represented in the output message string without causing infinite loops.
      * The expected output for a cyclic array is a representation with "[[...]",
@@ -338,10 +338,10 @@ public class MessageFormatterTest {
 
     /**
      * Test method to validate the behavior of the MessageFormatter when formatting messages with arrays that include a Throwable instance.
-     *
+     * <p>
      * This method tests various scenarios where the message format and the length of the provided array differ. It ensures that the formatted message
      * and the throwable, if present, are correctly extracted and compared against expected values.
-     *
+     * <p>
      * The method performs the following assertions:
      * 1. Checks the formatted message and throwable extraction when the message template includes placeholders.
      * 2. Verifies the behavior when message template placeholders match the length of the array exactly.

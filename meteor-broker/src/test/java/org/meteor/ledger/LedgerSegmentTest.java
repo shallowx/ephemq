@@ -59,10 +59,10 @@ public class LedgerSegmentTest {
 
     /**
      * Tests the behavior of the method {@code lastOffset()} in the {@code InnerLedgerSegmentTest} class.
-     *
+     * <p>
      * This test ensures that after a record is written to the segment, the last offset reported by
      * {@code lastOffset()} matches the offset of the written record.
-     *
+     * <p>
      * The test steps are as follows:
      * 1. Creates an {@code Offset} instance with epoch 0 and index 0.
      * 2. Allocates a {@code ByteBuf} buffer using {@code allocateBuf()}.
@@ -157,10 +157,10 @@ public class LedgerSegmentTest {
 
     /**
      * Tests the functionality of the {@code isActive} method in the {@code InnerLedgerSegmentTest} class.
-     *
+     * <p>
      * The method verifies if a newly created {@code InnerLedgerSegmentTest} instance
      * with a specific {@code Offset} and buffer is active, and asserts that it is.
-     *
+     * <p>
      * Steps:
      * 1. Creates a new {@code Offset} instance with initial values.
      * 2. Allocates a buffer for the {@code InnerLedgerSegmentTest} instance.
@@ -186,7 +186,7 @@ public class LedgerSegmentTest {
      * and then verifies that the number of free bytes remaining in the buffer is as expected.
      * The test ensures that the {@code freeBytes()} method correctly returns the amount of
      * unused space in the buffer after a record has been written.
-     *
+     * <p>
      * The test performs the following steps:
      * 1. Initializes the offset and allocates an initial buffer.
      * 2. Creates an instance of {@code InnerLedgerSegmentTest} with the initial buffer.
@@ -215,7 +215,7 @@ public class LedgerSegmentTest {
     /**
      * Tests the usedBytes method of the InnerLedgerSegmentTest class to ensure it correctly returns the number
      * of bytes used in the segment. This test:
-     *
+     * <p>
      * 1. Initializes an offset and a byte buffer.
      * 2. Creates an InnerLedgerSegmentTest instance with the given buffer and offset.
      * 3. Writes a record into the segment.
@@ -267,12 +267,12 @@ public class LedgerSegmentTest {
     /**
      * Tests the {@code locate} method of the {@code InnerLedgerSegmentTest} class when a {@code null} offset is provided.
      * This test verifies that the method returns the base position of the segment when the offset is {@code null}.
-     *
+     * <p>
      * The method initializes an {@code Offset} object with an epoch and index both set to zero, allocates a buffer,
      * and creates an instance of {@code InnerLedgerSegmentTest} with the aforementioned offset and buffer.
      * It then calls the {@code locate} method with a {@code null} offset and checks if the returned value
      * matches the base position of the segment.
-     *
+     * <p>
      * It also ensures the allocated buffer is released after the test.
      */
     @Test
@@ -289,15 +289,15 @@ public class LedgerSegmentTest {
      * Unit test for the {@code locate} method in the {@code InnerLedgerSegmentTest} class.
      * This test verifies that the locate operation correctly identifies the base position
      * of a segment when provided with a non-null offset.
-     *
+     * <p>
      * <b>Setup:</b>
      * 1. Creates an {@code Offset} instance initialized to 0 epoch and 0 index.
      * 2. Allocates a {@code ByteBuf} buffer of default segment capacity.
      * 3. Initializes an {@code InnerLedgerSegmentTest} instance with the buffer and base offset.
-     *
+     * <p>
      * <b>Execution:</b>
      * Calls the {@code locate} method with an offset of epoch 0 and index 2.
-     *
+     * <p>
      * <b>Validation:</b>
      * Asserts that the located position returned by the {@code locate} method is equal to the base position of the segment.
      * Finally, releases the buffer to ensure there are no memory leaks.
@@ -451,7 +451,7 @@ public class LedgerSegmentTest {
 
         /**
          * Releases resources held by the InnerLedgerSegmentTest instance.
-         *
+         * <p>
          * This method invokes the release method from the parent class, LedgerSegment,
          * to ensure proper cleanup of resources such as memory and associated objects.
          * It is intended to be called when the InnerLedgerSegmentTest instance is no longer needed.

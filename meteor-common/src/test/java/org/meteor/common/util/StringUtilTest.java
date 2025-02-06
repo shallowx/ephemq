@@ -116,11 +116,11 @@ public class StringUtilTest {
 
     /**
      * Ensures that the `NEWLINE` constant is not null.
-     *
+     * <p>
      * This test verifies that the `NEWLINE` field is initialized and holds a non-null value.
      * The existence of a newline constant is essential for various string manipulations
      * and this test confirms its presence in the context where it's expected to be used.
-     *
+     * <p>
      * The test will fail if `NEWLINE` is null, indicating that the required constant is not properly set.
      */
     @Test
@@ -165,7 +165,7 @@ public class StringUtilTest {
 
     /**
      * Tests the `split` method of the `String` class.
-     *
+     * <p>
      * The method verifies that splitting the string "foo:bar" using the delimiter ":"
      * results in an array containing two elements: "foo" and "bar".
      */
@@ -176,7 +176,7 @@ public class StringUtilTest {
 
     /**
      * Tests the splitting of a string with a trailing delimiter.
-     *
+     * <p>
      * This method uses the `split` function on the string `"foo,bar,"` with `","` as the delimiter.
      * The expected result is an array containing the elements `"foo"` and `"bar"`.
      * The assertion verifies that the result of the split operation equals the expected array.
@@ -199,7 +199,7 @@ public class StringUtilTest {
     /**
      * Tests the splitting of a string with trailing delimiters using the dot (.) as separator.
      * This test case checks if the trailing delimiters are properly ignored.
-     *
+     * <p>
      * In this specific test, the input string "foo.bar.." is being split by the dot delimiter
      * resulting in the array ["foo", "bar"].
      */
@@ -222,9 +222,9 @@ public class StringUtilTest {
      * Tests the functionality of splitting a string with trailing delimiters.
      * The method verifies that a string with trailing spaces as delimiters
      * is split correctly into an array of strings, ignoring the trailing spaces.
-     *
+     * <p>
      * The test uses an assert statement to compare the result of the split with the expected output.
-     *
+     * <p>
      * Specifically, this test checks the behavior of splitting the string "foo bar  "
      * (with two trailing spaces) by the space delimiter, validating that the result is
      * an array containing "foo" and "bar" without any empty strings for the trailing spaces.
@@ -257,12 +257,12 @@ public class StringUtilTest {
     /**
      * Tests the behavior of the `splitMaxPart` method by asserting the results of
      * splitting a string using a delimiter with a limit on the number of parts.
-     *
+     * <p>
      * This method checks the correctness of string splitting when using a specified
      * limit. It covers two cases:
      * - Splitting the string "foo:bar:bar2" with a limit of 2 parts.
      * - Splitting the string "foo:bar:bar2" with a limit of 3 parts.
-     *
+     * <p>
      * The assertions verify that:
      * - When the limit is 2, the string is split into two parts: {"foo", "bar:bar2"}.
      * - When the limit is 3, the string is split into three parts: {"foo", "bar", "bar2"}.
@@ -276,7 +276,7 @@ public class StringUtilTest {
     /**
      * Tests the {@code substringAfter} method to ensure it correctly returns the portion of the
      * input string that follows the first occurrence of the specified delimiter.
-     *
+     * <p>
      * The test verifies that given the input string "foo:bar:bar2" and the delimiter ':',
      * the method should return "bar:bar2".
      */
@@ -288,10 +288,10 @@ public class StringUtilTest {
     /**
      * Tests the functionality of determining common suffixes of a given length
      * between two strings.
-     *
+     * <p>
      * The method utilizes multiple assertions to validate the behavior of common
      * suffix determination using both valid and invalid input conditions.
-     *
+     * <p>
      * The cases tested include:
      * - Negative length suffixes, which should never be common.
      * - Handling of null strings, which should not have a suffix.
@@ -331,11 +331,11 @@ public class StringUtilTest {
     /**
      * Tests the escapeCsv method to ensure it throws a NullPointerException
      * when passed a null value.
-     *
+     * <p>
      * This test verifies that the method under test correctly handles
      * null inputs by throwing the appropriate exception, which is
      * essential to ensure robustness in handling invalid or unexpected inputs.
-     *
+     * <p>
      * The method uses assertThrows to specify the expected NullPointerException,
      * ensuring that the escapeCsv method behaves as expected when encountering
      * a null input.
@@ -354,7 +354,7 @@ public class StringUtilTest {
 
     /**
      * Test method for verifying the behavior of the escapeCsv function with an empty CharSequence.
-     *
+     * <p>
      * This test ensures that the CSV escaping function correctly handles empty input values.
      * The test asserts that the function's behavior is as expected when provided with an empty input.
      */
@@ -379,10 +379,10 @@ public class StringUtilTest {
 
     /**
      * Tests the CSV escaping functionality for a string that is already quoted.
-     *
+     * <p>
      * This method validates that an already quoted string is handled correctly by the
      * escapeCsv method, ensuring that it does not alter or double-escape the input.
-     *
+     * <p>
      * The input value for this test is a quoted string ("something") and the expected
      * output is the same quoted string ("something").
      */
@@ -395,7 +395,7 @@ public class StringUtilTest {
 
     /**
      * Tests the escapeCsv method for a CharSequence that contains a quote character.
-     *
+     * <p>
      * This test verifies the correct escaping of quotes within a CSV string.
      * The input value contains a single quote, and the expected value
      * is the correctly escaped form of the input.
@@ -411,10 +411,10 @@ public class StringUtilTest {
      * Tests the CSV escaping functionality when the provided input contains a quote character in the middle.
      * Specifically, verifies that the input is correctly escaped by doubling the internal quote and enclosing
      * the entire sequence in quotes.
-     *
+     * <p>
      * The method uses a predefined input sequence `some text"and more text`, and expects it to be escaped as
      * `"some text""and more text"`.
-     *
+     * <p>
      * This ensures that the `escapeCsv` method correctly handles quotes embedded within the input string.
      */
     @Test
@@ -428,7 +428,7 @@ public class StringUtilTest {
      * Tests the CSV escaping functionality where the input string contains quotes in the middle
      * and is already quoted. This ensures that the escaping function correctly handles such cases
      * by doubling the internal quotes while maintaining the surrounding quotes.
-     *
+     * <p>
      * The source value: "some text"and more text"
      * Expected transformation: "some text""and more text"
      */
@@ -441,14 +441,14 @@ public class StringUtilTest {
 
     /**
      * Test method to verify the escaping of a CSV value that contains quoted words.
-     *
+     * <p>
      * The method tests the functionality of the `escapeCsv` method from the StringUtil class
      * with a given input that includes quotes. The expected outcome is the CSV formatted string
      * where quotes inside the string are properly escaped.
-     *
+     * <p>
      * The input is a CharSequence `value` which contains quoted content, and an
      * `expected` CharSequence which represents the correct escaped result.
-     *
+     * <p>
      * The test ensures that the escaping function works correctly by asserting
      * the equality of the expected result and the actual result generated by
      * the `escapeCsv` method.
@@ -462,7 +462,7 @@ public class StringUtilTest {
 
     /**
      * Tests the escaping of a CSV value that already contains an escaped quote.
-     *
+     * <p>
      * This method verifies that when the input string contains a double quote
      * that is already escaped, the escaping function does not alter it further.
      * It uses the escapeCsv method to perform the escaping and checks the result
@@ -502,7 +502,7 @@ public class StringUtilTest {
     /**
      * Tests the escaping of a CSV string that begins with a double quote
      * followed by a character using single quotes.
-     *
+     * <p>
      * The method checks if the value "\"f" is correctly escaped to "\"\"\"f\""
      * using the escapeCsv method.
      */
@@ -517,12 +517,12 @@ public class StringUtilTest {
      * Tests the behavior of the escapeCsv method when the input already contains an escaped quote.
      * In this test case, the input value has an already escaped quote, and we verify that
      * the escapeCsv method correctly escapes it again as needed.
-     *
+     * <p>
      * Input:
      *   - value: A CharSequence containing the string with an already escaped quote.
      *   - expected: The expected result after processing by escapeCsv, which is
      *     the input string with the additional necessary escape.
-     *
+     * <p>
      * The method asserts that the escapeCsv function produces the expected output.
      */
     @Test
@@ -534,7 +534,7 @@ public class StringUtilTest {
 
     /**
      * Tests the `escapeCsv` method with a quoted CSV string.
-     *
+     * <p>
      * The method verifies that the `escapeCsv` function can handle
      * a CSV value that is already enclosed in quotes correctly.
      * It passes the value "\"foo,goo\"" to the `escapeCsv` method
@@ -572,7 +572,7 @@ public class StringUtilTest {
 
     /**
      * Test to verify the correct escaping of a CSV value that contains multiple line feed characters.
-     *
+     * <p>
      * This test ensures that the escapeCsv method correctly handles and escapes a CharSequence that consists of multiple
      * line feed characters. The expected output should be properly quoted to maintain CSV format integrity.
      */
@@ -587,11 +587,11 @@ public class StringUtilTest {
      * Tests the `escapeCsv` method with a given input that contains both quoted
      * characters and line feed characters. The method ensures that the CSV
      * escaping function works correctly when handling these characters.
-     *
+     * <p>
      * The input value is a string containing a quote and a newline character.
      * The expected result is a properly escaped CSV string where the internal
      * quote is doubled, and the newline character is preserved.
-     *
+     * <p>
      * The `escapeCsv` method is called with the input value and the expected
      * result, ensuring that the actual output matches the expected CSV format.
      */
@@ -617,7 +617,7 @@ public class StringUtilTest {
      * Tests the escapeCsv method with a CSV string that contains a comma.
      * This test ensures that the escapeCsv method correctly wraps the input
      * string in quotes when a comma is present.
-     *
+     * <p>
      * It invokes the escapeCsv method with the given CharSequence value
      * containing a comma and asserts that the returned value matches the expected output.
      */
@@ -645,7 +645,7 @@ public class StringUtilTest {
      * Tests the {@code escapeCsv} method when a single carriage return character is provided.
      * The expected outcome is that the carriage return character will be properly escaped
      * by enclosing it in double quotes.
-     *
+     * <p>
      * This test verifies that the function correctly handles carriage return characters
      * by escaping them within CSV fields, ensuring the resultant string is as expected.
      */
@@ -679,7 +679,7 @@ public class StringUtilTest {
 
     /**
      * Tests the CSV escaping functionality specifically for input containing a quoted and carriage return character.
-     *
+     * <p>
      * This method creates a CharSequence with a quoted and carriage return character, and another CharSequence
      * that represents the expected output after escaping. It then calls the escapeCsv method to verify that the
      * escaping is performed correctly.
@@ -694,7 +694,7 @@ public class StringUtilTest {
     /**
      * Tests the escapeCsv method for a string that ends with a carriage return character.
      * This test ensures that the carriage return at the end of the string is correctly escaped within quotes.
-     *
+     * <p>
      * The test sets the input value to a CharSequence containing "testing\r" and the expected output to
      * a CharSequence containing "\"testing\r\"". It then calls the escapeCsv method with these parameters.
      * Asserts that the actual escaped value matches the expected escaped value.
@@ -710,10 +710,10 @@ public class StringUtilTest {
      * Tests the escaping of a CSV value that contains a Carriage Return and Line Feed (CRLF) character.
      * This method ensures that a given CharSequence value with CRLF characters is properly escaped
      * to meet CSV format standards.
-     *
+     * <p>
      * The test verifies that the escapeCsv method correctly escapes the CRLF characters by placing
      * them within quotes.
-     *
+     * <p>
      * The expected output for the given input value containing CRLF is: "\"\r\n\"".
      */
     @Test
@@ -727,7 +727,7 @@ public class StringUtilTest {
      * Test method for verifying the behavior of the `escapeCsv` method with the trimming option enabled.
      * This method checks various scenarios to ensure that the CSV escaping is performed correctly
      * while optional white space characters are trimmed when specified.
-     *
+     * <p>
      * The test cases include:
      * - Empty strings
      * - Strings with leading and trailing whitespaces
@@ -735,7 +735,7 @@ public class StringUtilTest {
      * - Strings containing commas
      * - Strings with embedded quotes
      * - Strings with newline characters
-     *
+     * <p>
      * The assertions verify that the `escapeCsv` method returns the expected results for each case.
      */
     @Test
@@ -760,7 +760,7 @@ public class StringUtilTest {
      * Tests the `StringUtil.escapeCsv` method to ensure it returns the same string object
      * when no changes are made to the input string. This method checks various cases
      * including strings with and without quotes, as well as strings with special characters.
-     *
+     * <p>
      * The method verifies the garbage-free property of the `escapeCsv` method by asserting
      * that the returned object is the same as the input object when expected.
      */
@@ -778,7 +778,7 @@ public class StringUtilTest {
 
     /**
      * Tests the unescapeCsv method for various input strings.
-     *
+     * <p>
      * The method verifies the correct unescaping of CSV-escaped strings,
      * checking different scenarios, such as empty strings, quoted strings,
      * and special characters like newlines and carriage returns.
@@ -800,11 +800,11 @@ public class StringUtilTest {
     /**
      * Tests the unescapeCsv method to ensure it throws an IllegalArgumentException
      * when given a single double quote character as input.
-     *
+     * <p>
      * The test is implemented using the assertThrows method to verify
      * that the appropriate exception is thrown during the execution
      * of the unescapeCsv method.
-     *
+     * <p>
      * This test is specifically designed to handle the edge case where
      * the input consists of an incomplete quoted string.
      */
@@ -820,7 +820,7 @@ public class StringUtilTest {
 
     /**
      * Test case for unescapeCsv method to verify behavior when the input contains an odd number of quotes.
-     *
+     * <p>
      * This test expects an IllegalArgumentException to be thrown when unescapeCsv is called with the input "\"\"\"".
      * It uses JUnit's assertThrows to check if the exception is properly thrown.
      */
@@ -838,11 +838,11 @@ public class StringUtilTest {
      * Tests the behavior of the unescapeCsv method when the input string contains
      * a carriage return (CR) character and is not quoted.
      * The expected outcome is that the method throws an IllegalArgumentException.
-     *
+     * <p>
      * This test is needed because a CR character in unquoted CSV data could indicate
      * an improperly formatted CSV string. The method being tested should validate the
      * input and raise an appropriate exception for invalid cases.
-     *
+     * <p>
      * The method uses JUnit's assertThrows to verify that an IllegalArgumentException
      * is indeed thrown when unescapeCsv is called with the input '\r'.
      */
@@ -859,8 +859,8 @@ public class StringUtilTest {
     /**
      * Tests the {@code unescapeCsv} method when a line feed character ("\n") is provided without quotes.
      * This method ensures that an IllegalArgumentException is thrown in this scenario.
-     *
-     * The test uses the {@link assertThrows} method which takes {@link IllegalArgumentException.class}
+     * <p>
+     * The test uses the method which takes {@link IllegalArgumentException}
      * as an argument to assert that this exception is thrown during the execution of the {@code unescapeCsv} method.
      *
      * @throws IllegalArgumentException if the input contains a line feed character without quotes
@@ -879,7 +879,7 @@ public class StringUtilTest {
      * Unit test method which verifies that unescaping a CSV string consisting
      * only of a comma without enclosing quotes results in an
      * IllegalArgumentException being thrown.
-     *
+     * <p>
      * The test uses JUnit's assertThrows to expect the IllegalArgumentException
      * when the method unescapeCsv is called with a single comma.
      */
@@ -914,7 +914,7 @@ public class StringUtilTest {
      * Tests various scenarios for unescaping CSV fields.
      * This method verifies that CSV fields are correctly unescaped, turning
      * the CSV formatted strings into their original list of fields.
-     *
+     * <p>
      * Asserts that:
      * - An empty string is unescaped to a list containing a single empty string.
      * - A comma results in a list with two empty strings.
@@ -961,13 +961,13 @@ public class StringUtilTest {
     }
 
     /**
-     * Unit test for unescaping CSV fields containing line feed characters without enclosing quotes.
+     * Unit test for uncapping CSV fields containing line feed characters without enclosing quotes.
      * The test ensures that an IllegalArgumentException is thrown when the input string contains a line feed character
      * without quotes.
-     *
+     * <p>
      * The method under test is unescapeCsvFields, which presumably handles unescaping CSV data. This specific test case
      * validates the behavior of the method when encountering a line feed character that is not properly quoted.
-     *
+     * <p>
      * The method asserts that calling unescapeCsvFields with an input of "a,\r" throws an IllegalArgumentException.
      */
     @Test
@@ -1012,14 +1012,14 @@ public class StringUtilTest {
     /**
      * Tests the behavior of the unescapeCsvFields method when encountering invalid CSV fields
      * containing quotes that are not properly escaped.
-     *
+     * <p>
      * This test asserts that an {@link IllegalArgumentException} is thrown when the
      * input CSV field contains a mismatched quote.
-     *
+     * <p>
      * The specific input that is tested is "a"b,a" which contains an unescaped quote
      * in the middle of the field, violating CSV format rules and triggering an exception.
-     *
-     * The method uses the {@link assertThrows} method to verify that
+     * <p>
+     * The method uses the method to verify that
      * {@link IllegalArgumentException} is thrown as expected.
      */
     @Test
@@ -1058,7 +1058,7 @@ public class StringUtilTest {
      * Tests the StringUtil.endsWith method.
      * This test verifies the behavior of the endsWith method with different input strings.
      * The method checks whether a string ends with a specified character.
-     *
+     * <p>
      * It includes the following cases:
      * - An empty string with a non-matching character.
      * - A single character string that matches the character.
@@ -1076,8 +1076,6 @@ public class StringUtilTest {
     }
 
     /**
-     * Tests the {@link StringUtil#trimOws(String)} method.
-     *
      * This method ensures that the StringUtil.trimOws function correctly trims
      * optional whitespace (OWS) from inputs while preserving other characters.
      * Various input cases are tested, including empty strings, strings with
@@ -1128,18 +1126,18 @@ public class StringUtilTest {
 
     /**
      * Tests the isNullOrEmpty method to ensure it correctly identifies null or empty strings.
-     *
+     * <p>
      * The method validates several string conditions:
      * - Null string
      * - Empty string
      * - String constant representing an empty string
      * - Strings composed of various whitespace characters (space, tab, newline)
      * - Non-empty strings containing characters
-     *
+     * <p>
      * The assertions are expected to behave as follows:
      * - True for null, empty, and an empty string constant.
      * - False for strings with whitespace or other characters, including newline.
-     *
+     * <p>
      * Method is annotated with @Test indicating it's a test case in a unit testing framework.
      */
     @Test
@@ -1156,10 +1154,10 @@ public class StringUtilTest {
 
     /**
      * Tests the `indexOfWhiteSpace` method with various input strings and starting indices.
-     *
+     * <p>
      * This test case validates several scenarios to ensure the method is correctly identifying the
      * index of whitespace characters within the string based on the starting index provided.
-     *
+     * <p>
      * It covers:
      * - Empty strings
      * - Single whitespace characters like space, newline, and tab
@@ -1183,7 +1181,7 @@ public class StringUtilTest {
 
     /**
      * Tests the method indexOfNonWhiteSpace which identifies the index of the first non-whitespace character in a string starting from a given offset.
-     *
+     * <p>
      * This test includes various cases:
      * - Empty string input.
      * - Strings with only whitespace characters.

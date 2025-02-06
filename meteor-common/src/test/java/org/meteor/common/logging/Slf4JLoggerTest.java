@@ -41,14 +41,14 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests whether the debug level is enabled for the logger.
-     *
+     * <p>
      * This method verifies that the `isDebugEnabled` method of a mocked `Logger` instance
      * returns `true` when called, and that the `getName` and `isDebugEnabled` methods
      * of the mock logger are invoked during the test.
-     *
+     * <p>
      * It instantiates an `InternalLogger` using the `Slf4JLogger` implementation
      * with the mocked `Logger` and asserts that `isDebugEnabled` returns `true`.
-     *
+     * <p>
      * Mocked methods verified:
      * - `getName` of `Logger` is called.
      * - `isDebugEnabled` of `Logger` is called.
@@ -69,11 +69,11 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the isInfoEnabled method of the InternalLogger class.
-     *
+     * <p>
      * This test ensures that when the underlying Logger instance's
      * isInfoEnabled method returns true, the InternalLogger instance
      * also reports that info logging is enabled.
-     *
+     * <p>
      * Two verifications are performed to ensure the mock interactions:
      * - The getName method of the mock Logger has been called.
      * - The isInfoEnabled method of the mock Logger has been called.
@@ -117,7 +117,7 @@ public class Slf4JLoggerTest {
      * to the underlying logger implementation. This test ensures that the Slf4JLogger
      * correctly returns true when the underlying logger indicates that error logging
      * is enabled.
-     *
+     * <p>
      * Steps:
      *  1. Create a mock Logger instance.
      *  2. Configure the mock Logger to return specific values for getName and isErrorEnabled.
@@ -141,15 +141,15 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the trace logging functionality of the Slf4JLogger class.
-     *
+     * <p>
      * This test verifies that the trace method on the internal logger correctly delegates
      * the trace call to the underlying SLF4J logger. It mocks the Logger class and
      * sets expectations to ensure that the trace message is logged as expected.
-     *
+     * <p>
      * Preconditions:
      * Mock Logger instance is created and configured to return "foo" as its name.
-     *
-     * Postconditions:
+     * <p>
+     * Post conditions:
      * The trace method logs the given message to the underlying SLF4J logger.
      * The getName method of the mocked Logger is called.
      */
@@ -168,16 +168,16 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the trace logging functionality with an exception in the Slf4JLogger class.
-     *
+     * <p>
      * This test verifies that when a trace message with an exception is logged,
      * the underlying logger's trace method is invoked with the correct parameters.
-     *
+     * <p>
      * The test sets up a mock Logger, configures it to return a specific name,
      * and then uses this mockLogger to create an instance of Slf4JLogger.
-     *
+     * <p>
      * The `trace` method of Slf4JLogger is called with a message and an exception,
      * and the test ensures that the mock Logger's `trace` method is called with the same arguments.
-     *
+     * <p>
      * It verifies two interactions with the mock logger:
      * 1. The logger's name is retrieved via `getName`.
      * 2. The `trace` method is called with the given message and exception.
@@ -197,7 +197,7 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the debug logging functionality of the {@code Slf4JLogger} class.
-     *
+     * <p>
      * This method sets up a mock {@code Logger} and assigns it to an {@code InternalLogger}
      * instance of type {@code Slf4JLogger}. It then invokes the {@code debug} method on the
      * {@code Slf4JLogger} with a test message and verifies that the appropriate methods
@@ -219,10 +219,10 @@ public class Slf4JLoggerTest {
     /**
      * Tests the debug logging functionality of the {@link Slf4JLogger} class
      * when an exception is being logged.
-     *
+     * <p>
      * This test verifies that the debug method on the underlying mock {@link Logger}
      * is called with the appropriate parameters, including the exception object.
-     *
+     * <p>
      * Steps performed in this test:
      * 1. Mock a {@link Logger} instance.
      * 2. Set up the mock to return a specific name when {@code getName()} is called.
@@ -264,7 +264,7 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the info logging functionality when an exception is provided.
-     *
+     * <p>
      * This test verifies that the `info` method of `Slf4JLogger` correctly
      * logs a message along with an exception. It ensures that the logger's
      * name is fetched and that the `info` method is called with the expected
@@ -285,11 +285,11 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the warn logging functionality of the Slf4JLogger.
-     *
+     * <p>
      * This test verifies that the warn method of the logger correctly logs a warning
      * message. It mocks a Logger instance, sets up the expected behavior, and checks
      * that the warning message is logged correctly.
-     *
+     * <p>
      * Steps involved:
      * 1. Create a mock Logger instance.
      * 2. Define the behavior of the mock to return a specific name when getName() is called.
@@ -314,21 +314,21 @@ public class Slf4JLoggerTest {
      * Tests the warn logging with an exception using the Slf4JLogger.
      * This method verifies that the logger's name is retrieved correctly
      * and that the warn level log along with an exception is correctly handled.
-     *
+     * <p>
      * The mocked Logger is used to simulate logging behavior.
-     *
+     * <p>
      * Uses the following methods from the Mockito library:
      * - mock(): to create a mock instance of the Logger.
      * - when(): to specify the behavior of the mock instance.
      * - verify(): to verify that specific methods on the mock instance were called.
-     *
-     * Preconditions:
+     * <p>
+     * Pre Conditions:
      * - The Logger's name should be set to "foo".
-     *
-     * Postconditions:
+     * <p>
+     * Post Conditions:
      * - The Logger's getName() method is called once.
      * - The Logger's warn() method is called with the specified message and exception.
-     *
+     * <p>
      * Dependencies:
      * - Mockito framework for mocking and verification.
      * - JUnit for the @Test annotation.
@@ -348,14 +348,14 @@ public class Slf4JLoggerTest {
 
     /**
      * Tests the error logging functionality of the Slf4JLogger class.
-     *
+     * <p>
      * The method verifies that the error message is correctly passed to the underlying logger.
      * It mocks the Logger interface, sets up expectations, and verifies interactions.
-     *
-     * Preconditions:
+     * <p>
+     * Pre Conditions:
      * - A mock Logger instance is created and its getName() method is stubbed to return "foo".
-     *
-     * Postconditions:
+     * <p>
+     * Post Conditions:
      * - The error message "a" is logged via the Slf4JLogger's error method.
      * - Interactions with the mock Logger are verified.
      */
@@ -375,7 +375,7 @@ public class Slf4JLoggerTest {
     /**
      * Verifies the behavior of the {@code error(String, Throwable)} method in the {@code Slf4JLogger} class
      * when an exception is passed as an argument.
-     *
+     * <p>
      * The method:
      * - Mocks a Logger instance.
      * - Sets up the mock to return a specific name.

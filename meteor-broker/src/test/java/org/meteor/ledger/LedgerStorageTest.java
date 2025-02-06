@@ -3,7 +3,6 @@ package org.meteor.ledger;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.util.concurrent.CountDownLatch;
 import org.junit.Assert;
 import org.junit.Test;
 import org.meteor.common.logging.InternalLogger;
@@ -11,6 +10,8 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.NetworkUtil;
+
+import java.util.concurrent.CountDownLatch;
 
 public class LedgerStorageTest {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(LedgerStorageTest.class);
@@ -31,8 +32,8 @@ public class LedgerStorageTest {
         promise.addListener(f -> {
             if (f.isSuccess()) {
                 Offset offset = (Offset) f.get();
-                Assert.assertEquals(offset.getEpoch(), 0);
-                Assert.assertEquals(offset.getIndex(), 1);
+                Assert.assertEquals(0, offset.getEpoch());
+                Assert.assertEquals(1, offset.getIndex());
             } else {
                 Throwable cause = f.cause();
                 Assert.assertNotNull(cause);
@@ -67,17 +68,17 @@ public class LedgerStorageTest {
 
         long bytes = storage.segmentBytes();
         message.release();
-        Assert.assertEquals(bytes, 0);
+        Assert.assertEquals(0, bytes);
         storage.close(null);
     }
 
     static class LedgerTriggerTest implements LedgerTrigger {
         @Override
         public void onAppend(int ledgerId, int recordCount, Offset lasetOffset) {
-            Assert.assertEquals(ledgerId, 1);
-            Assert.assertEquals(recordCount, 1);
-            Assert.assertEquals(lasetOffset.getEpoch(), 0);
-            Assert.assertEquals(lasetOffset.getIndex(), 1);
+            Assert.assertEquals(1, ledgerId);
+            Assert.assertEquals(1, recordCount);
+            Assert.assertEquals(0, lasetOffset.getEpoch());
+            Assert.assertEquals(1, lasetOffset.getIndex());
         }
 
         @Override

@@ -55,8 +55,8 @@ public interface TopicListener {
      * This method is called when there is a change in the partition assignment of a topic.
      *
      * @param topicPartition The topic partition whose assignment has changed.
-     * @param oldAssignment The previous assignment of the topic partition.
-     * @param newAssignment The new assignment of the topic partition.
+     * @param oldAssigment The previous assignment of the topic partition.
+     * @param newAssigment The new assignment of the topic partition.
      */
     void onPartitionChanged(TopicPartition topicPartition, TopicAssignment oldAssigment, TopicAssignment newAssigment);
 }

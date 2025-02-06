@@ -54,7 +54,7 @@ public class ObjectLiteralsTransformUtilTest {
     @Test
     public void testObject2String() {
         String serviceId = object2String(prop.get("serviceId"));
-        Assert.assertEquals(serviceId, "127.0.0.1");
+        Assert.assertEquals("127.0.0.1", serviceId);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ObjectLiteralsTransformUtilTest {
     @Test
     public void testObject2Int() {
         int port = object2Int(prop.get("port"));
-        Assert.assertEquals(port, 8080);
+        Assert.assertEquals(8080, port);
     }
 
     /**
@@ -76,12 +76,12 @@ public class ObjectLiteralsTransformUtilTest {
     @Test
     public void testObject2Double() {
         double sample = object2Double(prop.get("sample"));
-        Assert.assertEquals(sample, 0.9, 0.0001);
+        Assert.assertEquals(0.9, sample, 0.0001);
     }
 
     /**
      * Tests the object2Float method to ensure it correctly converts the property "sample" to a float.
-     *
+     * <p>
      * The method retrieves the "sample" property from the prop Properties object,
      * converts it to a float using object2Float, and asserts that the converted value
      * equals 0.9 within a tolerance of 0.0001.
@@ -91,7 +91,7 @@ public class ObjectLiteralsTransformUtilTest {
     @Test
     public void testObject2Float() {
         float sample = object2Float(prop.get("sample"));
-        Assert.assertEquals(sample, 0.9, 0.0001);
+        Assert.assertEquals(0.9, sample, 0.0001);
     }
 
     /**
@@ -102,7 +102,7 @@ public class ObjectLiteralsTransformUtilTest {
     @Test
     public void testObject2Long() {
         long segmentSize = object2Long(prop.get("segmentSize"));
-        Assert.assertEquals(segmentSize, 1024);
+        Assert.assertEquals(1024, segmentSize);
     }
 
     /**

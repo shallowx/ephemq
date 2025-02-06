@@ -7,9 +7,6 @@ import org.meteor.support.Manager;
 /**
  * ProxySocketServer extends DefaultSocketServer to provide proxy-specific functionality.
  * This class uses a customized channel initializer to handle proxy server configurations.
- *
- * @param serverConfiguration The configuration settings specific to the proxy server.
- * @param manager             The Manager instance responsible for managing server operations and tasks.
  */
 public class ProxySocketServer extends DefaultSocketServer {
     /**

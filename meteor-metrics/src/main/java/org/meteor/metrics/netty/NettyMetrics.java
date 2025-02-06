@@ -29,7 +29,7 @@ import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
 public class NettyMetrics implements MeterBinder {
     /**
      * The tags to be applied to the gauges representing Netty's direct memory metrics.
-     *
+     * <p>
      * These tags provide additional contextual information, ensuring that
      * the metrics can be effectively grouped and filtered in the {@code MeterRegistry}.
      */
@@ -46,12 +46,12 @@ public class NettyMetrics implements MeterBinder {
 
     /**
      * Binds the netty direct memory metrics to the provided MeterRegistry.
-     *
+     * <p>
      * This method registers three gauges related to Netty's direct memory usage:
      * - Used direct memory
      * - Maximum direct memory
      * - Java version information
-     *
+     * <p>
      * These metrics will be tagged with user-provided tags and a predefined type tag.
      *
      * @param meterRegistry the meter registry to which the metrics should be bound

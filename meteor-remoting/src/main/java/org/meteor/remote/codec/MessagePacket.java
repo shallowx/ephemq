@@ -1,13 +1,15 @@
 package org.meteor.remote.codec;
 
-import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufConvertible;
 import io.netty.buffer.Unpooled;
 import io.netty.util.AbstractReferenceCounted;
 import io.netty.util.Recycler;
 import io.netty.util.ReferenceCounted;
+
 import javax.annotation.concurrent.Immutable;
+
+import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 
 /**
  * This class represents a message packet with a specified feedback, command, and body.
@@ -49,9 +51,8 @@ public final class MessagePacket extends AbstractReferenceCounted
      * A recycler for instances of {@code MessagePacket}. It provides a mechanism to reuse
      * {@code MessagePacket} objects in order to enhance performance and reduce garbage
      * collection overhead.
-     *
-     * The recycler overrides the {@link Recycler#newObject(Recycler.Handle)}
-     * method to provide a new instance of {@code MessagePacket} when none are available
+     * <p>
+     * The recycler overrides the method to provide a new instance of {@code MessagePacket} when none are available
      * in the pool.
      */
     private static final Recycler<MessagePacket> RECYCLER = new Recycler<>() {
@@ -142,7 +143,7 @@ public final class MessagePacket extends AbstractReferenceCounted
 
     /**
      * Releases the resources held by this MessagePacket instance.
-     *
+     * <p>
      * If the body is non-null, it will be released and set to null.
      * The instance itself will then be returned to the recycler for reuse.
      */

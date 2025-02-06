@@ -26,7 +26,7 @@ final class Slf4JLogger extends AbstractInternalLogger {
      * This logger is specific to the Slf4JLogger class and
      * provides various logging functionalities like trace,
      * debug, info, warn, and error.
-     *
+     * <p>
      * This instance is marked as transient, meaning it
      * will not be serialized when the Slf4JLogger object
      * is converted into a byte stream.

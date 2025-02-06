@@ -1,6 +1,5 @@
 package org.meteor.internal;
 
-import java.util.Properties;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.test.TestingServer;
@@ -10,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.config.ZookeeperConfig;
+
+import java.util.Properties;
 
 public class ZookeeperClientFactoryTest {
     /**
@@ -54,12 +55,12 @@ public class ZookeeperClientFactoryTest {
 
         CuratorOp curatorOp = readyClient.transactionOp().create().withMode(CreateMode.EPHEMERAL).forPath("/test/cluster");
         Assertions.assertNotNull(curatorOp);
-        Assertions.assertEquals(curatorOp.getTypeAndPath().getForPath(), "/test/cluster");
+        Assertions.assertEquals("/test/cluster", curatorOp.getTypeAndPath().getForPath());
     }
 
     /**
      * Shuts down the TestingServer instance after each test.
-     *
+     * <p>
      * This method is annotated with @After which indicates that it is a teardown method
      * to be executed after each test in the test class. It ensures that the TestingServer
      * is properly closed and resources are released.

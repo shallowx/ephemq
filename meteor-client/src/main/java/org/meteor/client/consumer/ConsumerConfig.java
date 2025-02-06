@@ -12,7 +12,7 @@ import org.meteor.client.core.ClientConfig;
 public class ConsumerConfig {
     /**
      * Holds the configuration settings for the client.
-     *
+     * <p>
      * This object contains various configurations such as socket settings,
      * connection timeouts, worker thread limits, and more. It is used by
      * the consumer to communicate with backend services.
@@ -20,15 +20,15 @@ public class ConsumerConfig {
     private ClientConfig clientConfig = new ClientConfig();
     /**
      * The timeout duration in milliseconds for control operations.
-     *
+     * <p>
      * This variable specifies the maximum amount of time the consumer will wait
      * for control operations to complete. If the operation does not complete within
-     * this time frame, it will timeout and potentially trigger a retry or an error handling mechanism.
+     * this time frame, it will time out and potentially trigger a retry or an error handling mechanism.
      */
     private int controlTimeoutMilliseconds = 5000;
     /**
      * Delay in milliseconds before retrying a control operation if it fails.
-     *
+     * <p>
      * This variable specifies the time to wait before attempting to retry
      * a control operation that has encountered an error or failure. The default
      * delay is set to 2000 milliseconds (2 seconds).
@@ -46,7 +46,7 @@ public class ConsumerConfig {
     private int handlerShardLimit = handlerThreadLimit * 10;
     /**
      * The maximum number of pending tasks that a handler can have at any given time.
-     *
+     * <p>
      * This setting is used to control the number of tasks that can be queued up for
      * processing by the handler threads. If the limit is reached, new tasks may be
      * delayed or rejected until some of the current tasks are processed.

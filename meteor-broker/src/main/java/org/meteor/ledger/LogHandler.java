@@ -6,13 +6,6 @@ import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
@@ -20,6 +13,14 @@ import org.meteor.config.ServerConfig;
 import org.meteor.listener.LogListener;
 import org.meteor.remote.exception.RemotingException;
 import org.meteor.support.Manager;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * Handles operations related to logs, including appending records, managing subscriptions,
@@ -36,11 +37,11 @@ public class LogHandler {
     /**
      * The manager instance responsible for coordinating various subsystems
      * within the LogHandler.
-     *
+     * <p>
      * This variable holds an implementation of the Manager interface, providing
      * methods to manage topics, clusters, connections, and executors, as well as
      * system-wide metrics and listeners.
-     *
+     * <p>
      * It is initialized during the construction of the LogHandler and plays a
      * crucial role in the functionality provided by LogHandler, such as handling
      * logs, initializing configurations, managing connections, and more.
@@ -53,7 +54,7 @@ public class LogHandler {
     private final Map<Integer, Log> ledgerIdOfLogs = new ConcurrentHashMap<>();
     /**
      * A list of LogListener objects that are registered to receive log events.
-     *
+     * <p>
      * This list contains all the listeners that will be notified about various log-related events,
      * such as log initialization, message reception, synchronization, and message pushing.
      * The registered listeners must implement the LogListener interface.
@@ -61,7 +62,7 @@ public class LogHandler {
     private final ObjectList<LogListener> listeners = new ObjectArrayList<>();
     /**
      * Singleton executor service for scheduling storage cleanup tasks.
-     *
+     * <p>
      * This executor is used to perform periodic cleanup operations on the storage system. It allows
      * for scheduled tasks to be executed in the background, ensuring that the storage system remains
      * efficient and free of unnecessary data without manual intervention.
@@ -88,7 +89,7 @@ public class LogHandler {
 
     /**
      * Starts the scheduled task to clean storage for all logs in the system.
-     *
+     * <p>
      * This method schedules a fixed-rate task that iterates through all
      * the logs in the `ledgerIdOfLogs` map and invokes their `cleanStorage`
      * method every 30 seconds, with an initial delay of 5 seconds.

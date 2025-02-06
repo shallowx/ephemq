@@ -1,10 +1,10 @@
 package org.meteor.config;
 
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Boolean;
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2Int;
-import static org.meteor.common.util.ObjectLiteralsTransformUtil.object2String;
 import io.netty.util.NettyRuntime;
+
 import java.util.Properties;
+
+import static org.meteor.common.util.ObjectLiteralsTransformUtil.*;
 
 /**
  * The CommonConfig class provides a unified configuration management for server settings.
@@ -65,7 +65,7 @@ public class CommonConfig {
     private static final String THREAD_AFFINITY_ENABLED = "thread.affinity.enabled";
     /**
      * Configuration properties for the CommonConfig class.
-     *
+     * <p>
      * This variable holds a set of key-value pairs that provide the necessary
      * configuration for the CommonConfig class. These properties are immutable
      * after being set through the constructor, ensuring consistent configuration
@@ -103,7 +103,7 @@ public class CommonConfig {
 
     /**
      * Checks if the socket should prefer using Epoll.
-     *
+     * <p>
      * This method retrieves the value associated with the
      * SOCKET_PREFER_EPOLL property from the configuration.
      * If the property is not explicitly set, it defaults to true.

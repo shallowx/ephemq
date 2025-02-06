@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
 import it.unimi.dsi.fastutil.ints.IntList;
-import java.util.concurrent.atomic.LongAdder;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -19,6 +18,8 @@ import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.support.Manager;
+
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * This class represents a proxy log used to manage and synchronize the logging
@@ -360,7 +361,7 @@ public class ProxyLog extends Log {
 
     /**
      * Updates the last subscribe time to the current system time in milliseconds.
-     *
+     * <p>
      * This method sets the field {@code lastSubscribeTimeMillis} to the value
      * returned by {@link System#currentTimeMillis()}. It is typically called when
      * a subscribe operation is performed to record the timestamp of the last subscription event.

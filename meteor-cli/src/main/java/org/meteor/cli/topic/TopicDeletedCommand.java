@@ -2,11 +2,6 @@ package org.meteor.cli.topic;
 
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -21,11 +16,17 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.TopicMetadata;
 import org.meteor.remote.util.NetworkUtil;
 
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Command implementation that handles the deletion of topics from the broker cluster.
  * for example:
- *
+ * <p>
  * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
  * | topic            | partition | ledger | epoch | leader | replicas | topicConfig | version | topicId |
  * +------------------+-----------+--------+-------+--------+----------+-------------+---------+---------+
@@ -153,7 +154,7 @@ public class TopicDeletedCommand implements Command {
     /**
      * Formats and prints details of the provided list of partition information objects.
      *
-     * @*/
+     */
     private void formatPrint(List<PartitionInfo> infos) {
         String[] title =
                 {"topic", "partition", "ledger", "epoch", "leader", "replicas", "topicConfig", "version", "topicId"};

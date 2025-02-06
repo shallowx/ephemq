@@ -57,7 +57,7 @@ public class MapBenchmark {
      * A concurrent map implementation backed by a skip list, providing
      * scalable and thread-safe operations for retrieving and updating
      * mappings from integers to objects.
-     *
+     * <p>
      * Used in benchmark tests to measure performance characteristics
      * compared to other map implementations.
      */
@@ -70,14 +70,14 @@ public class MapBenchmark {
 
     /**
      * Initializes multiple map implementations with 1000 key-value pairs each for benchmarking purposes.
-     *
+     * <p>
      * This method populates the following maps:
      * - hashMap
      * - treeMap
      * - concurrentHashMap
      * - concurrentSkipListMap
      * - int2ObjectArrayMap
-     *
+     * <p>
      * Each map is loaded with 1000 entries, where the keys are integers from 0 to 999 and the values are new instances of Object.
      * This setup is intended to provide a consistent state for subsequent benchmark tests.
      */
@@ -151,7 +151,7 @@ public class MapBenchmark {
 
     /**
      * Benchmarks the performance of the "int2ObjectArrayMap".
-     *
+     * <p>
      * Iterates through the map, consuming each entry using the provided blackhole.
      *
      * @param blackhole the Blackhole used to consume the object and prevent compiler optimizations.

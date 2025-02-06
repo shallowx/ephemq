@@ -1,8 +1,5 @@
 package org.meteor.remoting;
 
-import static org.meteor.metrics.config.MetricsConstants.ACTIVE_CHANNEL_GAUGE_NAME;
-import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
@@ -10,10 +7,14 @@ import io.micrometer.core.instrument.Tags;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import java.util.concurrent.atomic.LongAdder;
+import io.netty.channel.ChannelInboundHandler;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.CommonConfig;
+
+import java.util.concurrent.atomic.LongAdder;
+
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 /**
  * A ChannelDuplexHandler that keeps track of active channels and logs channel activation and deactivation events.

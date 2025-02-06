@@ -2,12 +2,6 @@ package org.meteor.cli.topic;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -21,13 +15,20 @@ import org.meteor.common.util.StringUtil;
 import org.meteor.remote.proto.server.CreateTopicResponse;
 import org.meteor.remote.proto.server.PartitionsReplicas;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 /**
  * The TopicCreatedCommand class implements the Command interface and is responsible for creating a topic
  * in the broker cluster. This command uses various options and parameters to connect to the broker,
  * read configurations from an explain file, and execute the topic creation process.
  * for example:
- *
+ * <p>
  * +------------------+-----------+----------+----------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
  * | topic            | partition | replicas | partitions
  *                          | config

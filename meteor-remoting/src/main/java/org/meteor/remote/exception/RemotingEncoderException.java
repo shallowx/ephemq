@@ -15,7 +15,7 @@ public class RemotingEncoderException extends RuntimeException {
 
     /**
      * Constructs a new {@code RemotingEncoderException} with no detail message or cause.
-     *
+     * <p>
      * This constructor is useful for creating a default instance of the exception,
      * which may be subsequently initialized with a more specific message or cause.
      */

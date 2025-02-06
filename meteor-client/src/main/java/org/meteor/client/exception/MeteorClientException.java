@@ -15,7 +15,7 @@ public class MeteorClientException extends RuntimeException {
      * Defines a unique identifier for this Serializable class to verify that
      * the sender and receiver of a serialized object maintain serialization
      * compatibility.
-     *
+     * <p>
      * This identifier is used during the deserialization process to ensure
      * that a class definition is compatible with the serialized object.
      */

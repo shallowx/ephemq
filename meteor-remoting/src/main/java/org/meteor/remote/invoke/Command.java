@@ -122,7 +122,7 @@ public interface Command {
         int COMMAND_EXCEPTION = -4;
         /**
          * Represents a process-related error condition.
-         *
+         * <p>
          * This constant is used within the context of failure handling to denote
          * exceptions that occur specifically during a processing operation.
          * A value of -5 indicates that the exception is related to the process

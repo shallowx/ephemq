@@ -1,33 +1,7 @@
 package org.meteor.listener;
 
-import static org.meteor.metrics.config.MetricsConstants.API_RESPONSE_TIME_NAME;
-import static org.meteor.metrics.config.MetricsConstants.BROKER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.CLUSTER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.ID;
-import static org.meteor.metrics.config.MetricsConstants.LEDGER_TAG;
-import static org.meteor.metrics.config.MetricsConstants.NAME;
-import static org.meteor.metrics.config.MetricsConstants.NETTY_PENDING_TASK_NAME;
-import static org.meteor.metrics.config.MetricsConstants.REQUEST_SIZE_SUMMARY_NAME;
-import static org.meteor.metrics.config.MetricsConstants.REQUEST_STATE_COUNTER_NAME;
-import static org.meteor.metrics.config.MetricsConstants.RESULT_TAG;
-import static org.meteor.metrics.config.MetricsConstants.TOPIC_MSG_PUSH_COUNTER_NAME;
-import static org.meteor.metrics.config.MetricsConstants.TOPIC_MSG_RECEIVE_COUNTER_NAME;
-import static org.meteor.metrics.config.MetricsConstants.TOPIC_PARTITION_COUNT_GAUGE_NAME;
-import static org.meteor.metrics.config.MetricsConstants.TOPIC_PARTITION_LEADER_COUNT_GAUGE_NAME;
-import static org.meteor.metrics.config.MetricsConstants.TOPIC_TAG;
-import static org.meteor.metrics.config.MetricsConstants.TYPE_TAG;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.DistributionSummary;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Tags;
-import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmCompilationMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
+import io.micrometer.core.instrument.*;
+import io.micrometer.core.instrument.binder.jvm.*;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
@@ -35,12 +9,6 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.netty.util.internal.StringUtil;
-import java.time.Duration;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
@@ -55,6 +23,15 @@ import org.meteor.metrics.jvm.DefaultJVMInfoMetrics;
 import org.meteor.metrics.jvm.JmxMetricsRegistry;
 import org.meteor.metrics.netty.NettyMetrics;
 import org.meteor.support.Manager;
+
+import java.time.Duration;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.meteor.metrics.config.MetricsConstants.*;
 
 /**
  * MetricsListener is responsible for gathering and reporting various metrics
@@ -79,7 +56,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     /**
      * The manager responsible for handling various operations and services within the
      * MetricsListener class.
-     *
+     * <p>
      * This manager provides functionality such as starting and shutting down services,
      * handling topics, managing clusters, dealing with logs, establishing connections,
      * adding listeners, and providing executor groups for handling different types of events.
@@ -94,10 +71,10 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private final Map<Integer, Counter> topicReceiveCounters = new ConcurrentHashMap<>();
     /**
      * A concurrent map to store counters for tracking the number of push messages per topic.
-     *
+     * <p>
      * Each entry in the map associates a topic code with its corresponding {@link Counter} object.
      * This map ensures that updating the counters is thread-safe in a concurrent environment.
-     *
+     * <p>
      * The counters are used to monitor and measure push message activities for different topics,
      * providing a mechanism to collect metrics for push operations.
      */
@@ -131,13 +108,13 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
      * Each key is an integer representing a specific HTTP status code, and each value is a
      * {@link DistributionSummary} that records and summarizes the distribution of request times
      * for that status code.
-     *
+     * <p>
      * This map is thread-safe and supports concurrent access and modification.
      */
     private final Map<Integer, DistributionSummary> requestTimesSummary = new ConcurrentHashMap<>();
     /**
      * An atomic integer counter to keep track of the number of partitions.
-     *
+     * <p>
      * This variable is used within the MetricsListener to monitor
      * partition-related metrics and maintain concurrency safety.
      */
@@ -162,7 +139,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
     private final MetricsRegistrySetUp meterRegistrySetup;
     /**
      * An instance of JvmGcMetrics used for monitoring JVM garbage collection metrics.
-     *
+     * <p>
      * This variable holds an object that provides detailed metrics related to the JVM's garbage collection process.
      * It is part of the MetricsListener class, which is responsible for handling various metrics within the system.
      * The collected garbage collection metrics can be utilized for monitoring and analysis to ensure optimal performance.

@@ -4,9 +4,10 @@ import io.netty.util.Recycler;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import java.util.function.Consumer;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
+
+import java.util.function.Consumer;
 
 /**
  * A thread-safe initializer that manages callable initializers with expiration capabilities.
@@ -205,7 +206,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
         /**
          * A static final instance of the Recycler class for managing instances of the Holder class.
          * The Recycler helps in reusing Holder objects to reduce the overhead of object creation and garbage collection.
-         *
+         * <p>
          * The Recycler ensures that a new Holder object is created only if there are no recycled instances available.
          */
         private static final Recycler<Holder> RECYCLER = new Recycler<>() {
@@ -257,7 +258,7 @@ public final class GenericCallableSafeInitializer<V> implements CallableSafeInit
 
         /**
          * Recycles the internal resources of the Holder instance.
-         *
+         * <p>
          * This method is responsible for resetting the feedback property
          * to null and returning the current Holder instance back to the
          * recycler for reuse.

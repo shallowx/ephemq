@@ -32,7 +32,7 @@ public class JmxMetricsRegistry implements MetricsRegistrySetUp {
 
     /**
      * Shuts down the metrics registry.
-     *
+     * <p>
      * This method is responsible for releasing any resources associated with
      * the metrics registry. In this implementation, the shutdown method performs
      * no actions.

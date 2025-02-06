@@ -4,8 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.net.InetSocketAddress;
-import java.util.Properties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +16,9 @@ import org.meteor.remote.proto.client.MessagePushSignal;
 import org.meteor.remote.proto.client.NodeOfflineSignal;
 import org.meteor.remote.proto.client.SyncMessageSignal;
 import org.meteor.remote.proto.client.TopicChangedSignal;
+
+import java.net.InetSocketAddress;
+import java.util.Properties;
 
 public class InternalClientTest {
     /**
@@ -104,7 +105,7 @@ public class InternalClientTest {
      * Tests the functionality of creating a client channel through the internal client.
      *
      * @throws Exception if an error occurs during the creation of the client channel.
-     *
+     * <p>
      * The test performs the following assertions on the created ClientChannel:
      * - The channel object itself is not null.
      * - The channel's address is not null.
@@ -126,7 +127,7 @@ public class InternalClientTest {
 
     /**
      * Tears down the test environment by closing the channels and the client.
-     *
+     * <p>
      * This method is annotated with {@link After}, which means it runs after each test case.
      * It ensures that resources such as the embedded channel, client channel,
      * and client are properly closed and cleaned up after each test.

@@ -22,7 +22,7 @@ public interface MetricsRegistrySetUp {
 
     /**
      * Shuts down the metrics registry.
-     *
+     * <p>
      * This method is responsible for releasing any resources associated with
      * the metrics registry. It should be called to properly close and clean up
      * the registry when it is no longer needed.

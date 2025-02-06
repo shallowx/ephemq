@@ -2,17 +2,7 @@ package org.meteor.proxy.support;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.net.SocketAddress;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
-import org.meteor.client.core.Client;
-import org.meteor.client.core.ClientChannel;
-import org.meteor.client.core.ClientConfig;
-import org.meteor.client.core.MessageLedger;
-import org.meteor.client.core.MessageRouter;
+import org.meteor.client.core.*;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
@@ -24,6 +14,13 @@ import org.meteor.proxy.core.ProxyLog;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.support.Manager;
+
+import javax.annotation.Nonnull;
+import java.net.SocketAddress;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract base class for supporting ledger synchronization in a proxy environment.
@@ -253,7 +250,7 @@ public abstract class LedgerSyncSupport {
      * This method is used to initialize and begin the synchronization process for ledgers.
      * It ensures that the proxy client, which handles the actual synchronization logic,
      * is properly started and ready to operate.
-     *
+     * <p>
      * Note: This method does not perform any direct synchronization operations itself.
      * It delegates the responsibility to the proxyClient's start() method.
      */
@@ -263,7 +260,7 @@ public abstract class LedgerSyncSupport {
 
     /**
      * Shuts down the ledger synchronization support components gracefully.
-     *
+     * <p>
      * This method closes the proxy client connection and ensures that resources are released properly.
      */
     public void shutDown() {

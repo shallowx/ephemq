@@ -6,9 +6,6 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.client.core.CombineListener;
 import org.meteor.client.core.MessageLedger;
@@ -17,6 +14,10 @@ import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.thread.FastEventExecutor;
 import org.meteor.remote.proto.client.TopicChangedSignal;
+
+import javax.annotation.Nonnull;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The DefaultProducerListener class implements the CombineListener and MeterBinder interfaces
@@ -121,11 +122,11 @@ final class DefaultProducerListener implements CombineListener, MeterBinder {
     /**
      * Signals that the listener has completed its tasks and will shut down the
      * {@code refreshRouterExecutor} gracefully.
-     *
+     * <p>
      * This method initiates a graceful shutdown of the {@code refreshRouterExecutor}
      * and waits for it to terminate. If the thread is interrupted while waiting for
      * termination, the interruption status is set, and the exception is logged.
-     *
+     * <p>
      * Uses:
      * <ul>
      * <li>{@code refreshRouterExecutor.shutdownGracefully()} to initiate the shutdown.

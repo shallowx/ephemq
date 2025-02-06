@@ -1,9 +1,10 @@
 package org.meteor.config;
 
 import io.netty.util.NettyRuntime;
-import java.util.Properties;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+
+import java.util.Properties;
 
 public class ConfigTest {
     /**
@@ -40,42 +41,42 @@ public class ConfigTest {
         ServerConfig config = new ServerConfig(properties);
         CommonConfig commonConfig = config.getCommonConfig();
         Assertions.assertNotNull(commonConfig);
-        Assertions.assertEquals(commonConfig.getServerId(), "test-server-id");
-        Assertions.assertNotEquals(commonConfig.getServerId(), "default");
+        Assertions.assertEquals("test-server-id", commonConfig.getServerId());
+        Assertions.assertNotEquals("default", commonConfig.getServerId());
 
         MessageConfig messageConfig = config.getMessageConfig();
         Assertions.assertNotNull(messageConfig);
         Assertions.assertNotEquals(messageConfig.getMessageSyncThreadLimit(), NettyRuntime.availableProcessors());
-        Assertions.assertEquals(messageConfig.getMessageSyncThreadLimit(), 100);
+        Assertions.assertEquals(100, messageConfig.getMessageSyncThreadLimit());
 
         MetricsConfig metricsConfig = config.getMetricsConfig();
         Assertions.assertNotNull(metricsConfig);
-        Assertions.assertNotEquals(metricsConfig.getMetricsSampleLimit(), 100);
-        Assertions.assertEquals(metricsConfig.getMetricsSampleLimit(), 10);
+        Assertions.assertNotEquals(100, metricsConfig.getMetricsSampleLimit());
+        Assertions.assertEquals(10, metricsConfig.getMetricsSampleLimit());
 
         NetworkConfig networkConfig = config.getNetworkConfig();
         Assertions.assertNotNull(networkConfig);
-        Assertions.assertNotEquals(networkConfig.getConnectionTimeoutMilliseconds(), 30000);
-        Assertions.assertEquals(networkConfig.getConnectionTimeoutMilliseconds(), 100);
+        Assertions.assertNotEquals(30000, networkConfig.getConnectionTimeoutMilliseconds());
+        Assertions.assertEquals(100, networkConfig.getConnectionTimeoutMilliseconds());
 
         ChunkDispatchConfig chunkRecordDispatchConfig = config.getChunkRecordDispatchConfig();
         Assertions.assertNotNull(chunkRecordDispatchConfig);
-        Assertions.assertNotEquals(chunkRecordDispatchConfig.getChunkDispatchEntryLoadLimit(), 50);
-        Assertions.assertEquals(chunkRecordDispatchConfig.getChunkDispatchEntryLoadLimit(), 100);
+        Assertions.assertNotEquals(50, chunkRecordDispatchConfig.getChunkDispatchEntryLoadLimit());
+        Assertions.assertEquals(100, chunkRecordDispatchConfig.getChunkDispatchEntryLoadLimit());
 
         DefaultDispatchConfig recordDispatchConfig = config.getRecordDispatchConfig();
         Assertions.assertNotNull(recordDispatchConfig);
-        Assertions.assertNotEquals(recordDispatchConfig.getDispatchEntryLoadLimit(), 50);
-        Assertions.assertEquals(recordDispatchConfig.getDispatchEntryLoadLimit(), 100);
+        Assertions.assertNotEquals(50, recordDispatchConfig.getDispatchEntryLoadLimit());
+        Assertions.assertEquals(100, recordDispatchConfig.getDispatchEntryLoadLimit());
 
         SegmentConfig segmentConfig = config.getSegmentConfig();
         Assertions.assertNotNull(segmentConfig);
-        Assertions.assertNotEquals(segmentConfig.getSegmentRollingSize(), 4194304);
-        Assertions.assertEquals(segmentConfig.getSegmentRollingSize(), 100);
+        Assertions.assertNotEquals(4194304, segmentConfig.getSegmentRollingSize());
+        Assertions.assertEquals(100, segmentConfig.getSegmentRollingSize());
 
         ZookeeperConfig zookeeperConfig = config.getZookeeperConfig();
         Assertions.assertNotNull(zookeeperConfig);
-        Assertions.assertNotEquals(zookeeperConfig.getZookeeperUrl(), "localhost:2181");
-        Assertions.assertEquals(zookeeperConfig.getZookeeperUrl(), "0.0.0.0:9527");
+        Assertions.assertNotEquals("localhost:2181", zookeeperConfig.getZookeeperUrl());
+        Assertions.assertEquals("0.0.0.0:9527", zookeeperConfig.getZookeeperUrl());
     }
 }

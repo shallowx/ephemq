@@ -129,7 +129,7 @@ public class ObjectUtilTest {
     private static final long ZERO_LONG = 0;
     /**
      * A constant representing the double value zero.
-     *
+     * v
      * This variable is used as a standard reference to the numerical value zero in double-precision
      * floating point operations. It serves as an initial value or as a comparison benchmark in
      * various numerical tests and assertions.
@@ -152,7 +152,7 @@ public class ObjectUtilTest {
     private static final long POS_ONE_LONG = 1;
     /**
      * A constant representing the positive double value of 1.0.
-     *
+     * <p>
      * This constant is used in unit tests for object utility methods within the
      * ObjectUtilTest class. It helps to simplify and standardize the tests by
      * providing a predefined double value. This is particularly useful when
@@ -224,16 +224,16 @@ public class ObjectUtilTest {
             actualEx = e;
         }
         assertNotNull(actualEx, TEST_RESULT_NULLEX_OK);
-        assertTrue(actualEx instanceof NullPointerException, TEST_RESULT_EXTYPE_NOK);
+        assertInstanceOf(NullPointerException.class, actualEx, TEST_RESULT_EXTYPE_NOK);
     }
 
     /**
      * Validates the `checkNotNullWithIAE` method of the `ObjectUtil` class.
-     *
+     * <p>
      * The test first checks that no exception is thrown when a non-null object
      * and a non-null name are passed to the method. It asserts that the
      * exception is null.
-     *
+     * <p>
      * Then, it verifies that an `IllegalArgumentException` is thrown when a null
      * object and a null name are passed to the method. It asserts that the
      * exception is not null and that it is an instance of `IllegalArgumentException`.
@@ -255,20 +255,20 @@ public class ObjectUtilTest {
             actualEx = e;
         }
         assertNotNull(actualEx, TEST_RESULT_NULLEX_OK);
-        assertTrue(actualEx instanceof IllegalArgumentException, TEST_RESULT_EXTYPE_NOK);
+        assertInstanceOf(IllegalArgumentException.class, actualEx, TEST_RESULT_EXTYPE_NOK);
     }
 
     /**
      * Tests the `checkNotNullArrayParam` method in the `ObjectUtil` class.
-     *
+     * <p>
      * The method verifies that a specific element in an array is not null.
      * The test performs the following checks:
-     *
+     * <p>
      * 1. Verifies that no exception is thrown when a non-null element is passed.
      * 2. Verifies that an `IllegalArgumentException` is thrown when a null element is passed.
-     *
+     * <p>
      * Uses the following asserts:
-     *
+     * <p>
      * - `assertNull` to ensure no exception is thrown for a non-null element.
      * - `assertNotNull` to ensure an exception is thrown for a null element.
      * - `assertTrue` to check that the exception type is `IllegalArgumentException`.
@@ -290,17 +290,17 @@ public class ObjectUtilTest {
             actualEx = e;
         }
         assertNotNull(actualEx, TEST_RESULT_NULLEX_OK);
-        assertTrue(actualEx instanceof IllegalArgumentException, TEST_RESULT_EXTYPE_NOK);
+        assertInstanceOf(IllegalArgumentException.class, actualEx, TEST_RESULT_EXTYPE_NOK);
     }
 
     /**
      * Tests the checkPositive method of the ObjectUtil class with an integer and a string name.
      * This method performs the following tests:
-     *
+     * <p>
      * - Verifies that no exception is thrown when a positive integer is passed.
      * - Verifies that an IllegalArgumentException is thrown when zero is passed as an argument.
      * - Verifies that an IllegalArgumentException is thrown when a negative integer is passed as an argument.
-     *
+     * <p>
      * The method uses several named constants for the test values and assertion messages.
      */
     @Test
@@ -334,10 +334,10 @@ public class ObjectUtilTest {
 
     /**
      * Tests the ObjectUtil.checkPositive method with a long value and a string name.
-     *
+     * <p>
      * Ensures that the method does not throw an exception when provided with a positive long value.
      * Verifies that the method throws an IllegalArgumentException when provided with a zero or negative long value.
-     *
+     * <p>
      * Specifically, this test case performs the following checks:
      * 1. Asserts that no exception is thrown for a positive long value.
      * 2. Asserts that an IllegalArgumentException is thrown for a zero long value.
@@ -378,7 +378,7 @@ public class ObjectUtilTest {
      * 1. A positive double value, expecting no exception.
      * 2. A zero double value, expecting an IllegalArgumentException.
      * 3. A negative double value, expecting an IllegalArgumentException.
-     *
+     * <p>
      * The test assertions ensure that:
      * - No exception is thrown for positive values.
      * - An IllegalArgumentException is thrown for zero and negative values.
@@ -415,11 +415,11 @@ public class ObjectUtilTest {
 
     /**
      * Test method for {@link ObjectUtil#checkPositive(float, String)}.
-     *
+     * <p>
      * This test method verifies that the checkPositive method works correctly when passed positive, zero,
      * and negative float values. It ensures that no exception is thrown for positive values and that an
      * IllegalArgumentException is thrown for zero and negative values.
-     *
+     * <p>
      * The method conducts three checks:
      * 1. Ensures no exception is thrown when a positive float is passed.
      * 2. Ensures IllegalArgumentException is thrown when zero float is passed.
@@ -456,7 +456,7 @@ public class ObjectUtilTest {
 
     /**
      * Tests the checkPositiveOrZero method of ObjectUtil class with integer and string parameters.
-     *
+     * <p>
      * Validates that no exception is thrown when positive or zero integers are checked.
      * Expects an IllegalArgumentException when a negative integer is checked.
      * Uses JUnit assertions to verify if exceptions are thrown or not and checks the type of the exception.
@@ -491,16 +491,16 @@ public class ObjectUtilTest {
 
     /**
      * Tests the checkPositiveOrZero method from the ObjectUtil class with various long values.
-     *
+     * <p>
      * This test case verifies that the checkPositiveOrZero method:
      * - Does not throw an exception when a positive or zero long value is provided.
      * - Throws an IllegalArgumentException when a negative long value is provided.
-     *
+     * <p>
      * Test scenarios include:
      * - Positive long value (POS_ONE_LONG) with a name (NUM_POS_NAME)
      * - Zero long value (ZERO_LONG) with a name (NUM_ZERO_NAME)
      * - Negative long value (NEG_ONE_LONG) with a name (NUM_NEG_NAME)
-     *
+     * <p>
      * Assertions:
      * - For positive and zero values, no exception should be thrown.
      * - For negative values, an IllegalArgumentException should be thrown.
@@ -536,12 +536,12 @@ public class ObjectUtilTest {
 
     /**
      * Tests the checkPositiveOrZero method of ObjectUtil class with double values.
-     *
+     * <p>
      * This method validates the behavior of ObjectUtil.checkPositiveOrZero when
      * provided with different double values that are either positive, zero, or negative.
      * It verifies that no exception is thrown for positive and zero values, and an
      * IllegalArgumentException is thrown for negative values.
-     *
+     * <p>
      * This test performs the following checks:
      * 1. Passes a positive double value and expects no exception.
      * 2. Passes zero as a double value and expects no exception.
@@ -577,7 +577,7 @@ public class ObjectUtilTest {
 
     /**
      * Tests the {@code checkPositiveOrZero} method of {@code ObjectUtil} for different float values.
-     *
+     * <p>
      * This method verifies the following scenarios:
      * <ul>
      *   <li>When a positive float value is provided, no exception is thrown.</li>
@@ -587,9 +587,9 @@ public class ObjectUtilTest {
      *
      * Assertions used:
      * <ul>
-     *   <li>{@link #assertNull(Object, String)} to ensure no exception is thrown for positive or zero values.</li>
-     *   <li>{@link #assertNotNull(Object, String)} to ensure an exception is thrown for negative values.</li>
-     *   <li>{@link #assertTrue(boolean, String)} to check the type of exception thrown is {@link IllegalArgumentException}.</li>
+     *   <li> to ensure no exception is thrown for positive or zero values.</li>
+     *   <li> to ensure an exception is thrown for negative values.</li>
+     *   <li> to check the type of exception thrown is {@link IllegalArgumentException}.</li>
      * </ul>
      */
     @Test
@@ -622,12 +622,12 @@ public class ObjectUtilTest {
 
     /**
      * Tests the checkNonEmpty method of ObjectUtil for Object arrays.
-     *
+     * <p>
      * This method verifies three conditions:
      * 1. A NullPointerException is thrown when the object array passed is null.
      * 2. No exception is thrown when the object array passed is non-null and non-empty.
      * 3. An IllegalArgumentException is thrown when the object array passed is non-null but empty.
-     *
+     * <p>
      * The tests use predefined class constants: NULL_OBJECT, NULL_NAME, NON_NULL_FILLED_OBJECT_ARRAY,
      * NON_NULL_NAME, NON_NULL_EMPTY_OBJECT_ARRAY, NON_NULL_EMPTY_NAME, TEST_RESULT_NULLEX_OK,
      * TEST_RESULT_NULLEX_NOK, and TEST_RESULT_EXTYPE_NOK.
@@ -664,12 +664,12 @@ public class ObjectUtilTest {
 
     /**
      * Tests the {@code checkNonEmpty} method in {@code ObjectUtil} for byte array input and a string message.
-     *
+     * <p>
      * This test checks that the method correctly handles:
      * 1. A null byte array, expecting a {@code NullPointerException}.
      * 2. A non-null byte array with content, where no exception is expected.
      * 3. An empty byte array, expecting an {@code IllegalArgumentException}.
-     *
+     * <p>
      * Validates that the appropriate exceptions are thrown or not thrown as expected:
      * - Asserts {@code NullPointerException} for a null byte array.
      * - Asserts no exception for a non-empty byte array.
@@ -707,7 +707,7 @@ public class ObjectUtilTest {
 
     /**
      * Tests the method ObjectUtil.checkNonEmpty(char[], String).
-     *
+     * <p>
      * The test verifies the following scenarios:
      * 1. When the character array is null, a NullPointerException is thrown.
      * 2. When the character array is non-null and filled, no exception is thrown.
@@ -745,12 +745,12 @@ public class ObjectUtilTest {
 
     /**
      * Tests the checkNonEmpty method with various object arrays.
-     *
+     * <p>
      * This test method verifies the following scenarios for the checkNonEmpty function:
      * - A NullPointerException is thrown when a null object array is passed.
      * - No exception is thrown when a non-null object array with elements is passed.
      * - An IllegalArgumentException is thrown when a non-null empty object array is passed.
-     *
+     * <p>
      * Asserts:
      * - The thrown exception is not null for null object array.
      * - The thrown exception type is NullPointerException for null object array.
@@ -842,7 +842,7 @@ public class ObjectUtilTest {
     /**
      * Tests the {@code checkNonEmpty} method with various {@code CharSequence} inputs to ensure that
      * it correctly validates non-empty character sequences.
-     *
+     * <p>
      * Specifically, this test case:
      * <ul>
      *     <li>Validates that a {@code NullPointerException} is thrown when a null {@code CharSequence} is passed.</li>
@@ -893,9 +893,9 @@ public class ObjectUtilTest {
 
     /**
      * Tests the {@link ObjectUtil#checkNonEmptyAfterTrim(String, String)} method.
-     *
+     * <p>
      * This test verifies the following scenarios:
-     *
+     * <p>
      * 1. When the input String is null, a NullPointerException is thrown.
      * 2. When the input String is non-null and non-empty, no exception is thrown.
      * 3. When the input String is empty after trimming, an IllegalArgumentException is thrown.

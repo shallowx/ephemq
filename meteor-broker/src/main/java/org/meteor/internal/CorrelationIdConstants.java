@@ -30,7 +30,7 @@ public final class CorrelationIdConstants {
     /**
      * Represents the identifier used in the system to specify the replicas of partitions
      * within topics or ledgers.
-     *
+     * <p>
      * This constant is part of the {@code CorrelationIdConstants} class, which
      * provides a set of constants for managing topics and ledgers, especially
      * in Zookeeper-backed environments.

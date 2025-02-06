@@ -43,7 +43,7 @@ public class TopicAssignment {
     private TopicConfig config;
     /**
      * Represents the leader of the topic during transitional states.
-     *
+     * <p>
      * This value is used when the leadership of the topic is in the process
      * of being transferred or changed. It holds the identifier for the
      * transitional leader, which may not be the final permanent leader.
@@ -223,16 +223,6 @@ public class TopicAssignment {
      */
     @Override
     public String toString() {
-        return "(" +
-                "topic='" + topic + '\'' +
-                ", ledgerId=" + ledgerId +
-                ", epoch=" + epoch +
-                ", partition=" + partition +
-                ", replicas=" + replicas.toString() +
-                ", leader='" + leader + '\'' +
-                ", config=" + config +
-                ", transitionalLeader='" + transitionalLeader + '\'' +
-                ", version=" + version +
-                ')';
+        return STR."(topic='\{topic}', ledgerId=\{ledgerId}, epoch=\{epoch}, partition=\{partition}, replicas=\{replicas.toString()}, leader='\{leader}', config=\{config}, transitionalLeader='\{transitionalLeader}', version=\{version})";
     }
 }

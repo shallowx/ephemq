@@ -1,15 +1,6 @@
 package org.meteor.cli;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 import org.meteor.cli.cluster.ClusterListCommand;
 import org.meteor.cli.ledger.MigrateLedgerCommand;
 import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
@@ -21,6 +12,12 @@ import org.meteor.cli.topic.TopicListCommand;
 import org.meteor.client.core.Client;
 import org.meteor.client.core.ClientConfig;
 import org.meteor.client.core.CombineListener;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The MeteorAdmin class serves as the main entry point for the Meteor CLI application.
@@ -184,7 +181,7 @@ public class MeteorAdmin {
 
     /**
      * Initializes command objects and adds them to the commands map.
-     *
+     * <p>
      * This method creates instances of various command classes such as TopicListCommand,
      * ClusterListCommand, TopicCreatedCommand, TopicDeletedCommand, MigrateLedgerPlanCommand,
      * and MigrateLedgerCommand. These command objects are then added to a map called commands,

@@ -96,11 +96,11 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
     /**
      * Shuts down the ProxyDefaultManager instance, ensuring that all associated resources and
      * components are properly released.
-     *
+     * <p>
      * If the manager is currently running, it logs a debug message indicating that the shutdown
-     * process is starting, calls the superclass's shutdown method to handle the shutdown of core
+     * process is starting, calls the superclasses shutdown method to handle the shutdown of core
      * components, and then shuts down the ledger synchronization support.
-     *
+     * <p>
      * If the manager is already closed, it logs a debug message stating that the manager is
      * already closed.
      *

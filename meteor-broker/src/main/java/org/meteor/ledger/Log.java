@@ -6,17 +6,9 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -39,6 +31,11 @@ import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 import org.meteor.support.TopicHandleSupport;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This class represents a Log which handles various operations related to logging, synchronization,
@@ -537,7 +534,7 @@ public class Log {
 
     /**
      * Cleans the current storage segment in the log.
-     *
+     * <p>
      * This method triggers the cleaning process of the current storage segment
      * by invoking the cleanSegment method on the storage object.
      */
@@ -808,7 +805,7 @@ public class Log {
 
     /**
      * Handles the forwarding of appending traffic either to the local storage or to a remote migration channel.
-     *
+     * <p>
      * If the migration is not active, the data is appended to the local storage.
      * Otherwise, it forwards the data to a specified client channel along with handling the related promises and callbacks.
      *

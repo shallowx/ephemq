@@ -30,7 +30,7 @@ public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
      * The `HttpServer` instance used to expose the Prometheus metrics endpoint.
      * It creates an HTTP server to handle incoming HTTP requests for the
      * Prometheus metrics scraping.
-     *
+     * <p>
      * Responsibilities include:
      * - Creating and configuring an HTTP server bound to a specified address and port.
      * - Defining a context for handling HTTP requests that scrape Prometheus metrics.

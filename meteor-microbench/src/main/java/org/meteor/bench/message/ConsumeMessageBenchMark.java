@@ -106,7 +106,7 @@ public class ConsumeMessageBenchMark {
      * found or is set to DELETE, the method returns immediately without processing.
      * Otherwise, it invokes the onMessage method of the listener, passing the topic,
      * queue, messageId, message buffer, and any additional parameters.
-     *
+     * <p>
      * Annotated with @Benchmark, it is used for performance measurement.
      */
     @Benchmark

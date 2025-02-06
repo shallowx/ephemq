@@ -19,19 +19,19 @@ import java.util.Collections;
 public class NettyMetricsTests {
     /**
      * Represents the metric name for Netty's direct memory usage.
-     *
+     * <p>
      * This name is used as an identifier to register gauges for tracking
      * Netty's used and maximum direct memory in a MeterRegistry.
      */
     private static final String DIRECT_MEMORY_NAME = "direct_memory";
     /**
      * The tag identifier used for categorizing the type of Netty direct memory metrics.
-     *
+     * <p>
      * This tag is utilized within NettyMetrics to distinguish between different metrics such as:
      * - used direct memory
      * - maximum direct memory
      * - Java version
-     *
+     * <p>
      * By specifying this tag, the metrics can be effectively grouped and filtered in the MeterRegistry.
      */
     private static final String TYPE_TAG = "type";
@@ -39,7 +39,7 @@ public class NettyMetricsTests {
     /**
      * Tests the binding of NettyMetrics to a MeterRegistry and ensures that the metrics
      * for Netty's used and maximum direct memory are properly registered and reported.
-     *
+     * <p>
      * The test performs the following steps:
      * - Creates a new SimpleMeterRegistry.
      * - Instantiates NettyMetrics with an empty list of tags.

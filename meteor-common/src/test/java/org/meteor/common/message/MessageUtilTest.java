@@ -64,13 +64,13 @@ public class MessageUtilTest {
     public void testGetOffset() {
         Offset offset = MessageUtil.getOffset(message);
         Assert.assertNotNull(offset);
-        Assert.assertEquals(offset.getIndex(), 0);
-        Assert.assertEquals(offset.getEpoch(), 0);
+        Assert.assertEquals(0, offset.getIndex());
+        Assert.assertEquals(0, offset.getEpoch());
     }
 
     /**
      * Tests the {@link MessageUtil#getMarker(ByteBuf)} method.
-     *
+     * <p>
      * This method validates that the correct marker value is retrieved from the initial
      * part of the {@link ByteBuf} buffer. It compares the retrieved marker value to the
      * expected value of 1.
@@ -78,12 +78,12 @@ public class MessageUtilTest {
     @Test
     public void testGetMarker() {
         int marker = MessageUtil.getMarker(message);
-        Assert.assertEquals(marker, 1);
+        Assert.assertEquals(1, marker);
     }
 
     /**
      * Test method for {@link MessageUtil#getEpoch(ByteBuf)}.
-     *
+     * <p>
      * This test verifies that the epoch value extracted from the provided
      * ByteBuf is as expected. The expected value for the epoch in this test
      * scenario is 0.
@@ -102,21 +102,21 @@ public class MessageUtilTest {
     @Test
     public void testGetIndex() {
         int index = MessageUtil.getIndex(message);
-        Assert.assertEquals(index, 0);
+        Assert.assertEquals(0, index);
     }
 
     /**
      * Tests the `getPayload(ByteBuf)` method of the `MessageUtil` class to ensure it correctly
      * extracts the payload from the given message and verifies its content.
-     *
+     * <p>
      * The test retrieves the payload from a predefined message buffer, converts it to a UTF-8
      * encoded string, trims whitespace, and asserts that the payload is not null and has the
      * expected content.
-     *
+     * <p>
      * Preconditions:
      * - The message buffer contains the data "this is message util test data" followed by
      *   three null characters and a period.
-     *
+     * <p>
      * Assertions:
      * - The extracted payload string is not null.
      * - The extracted payload string matches the expected content: "this is message util test data\u0000\u0000\u0000.".
@@ -127,18 +127,18 @@ public class MessageUtilTest {
         int length = buf.readableBytes();
         String payload = buf.toString(buf.readerIndex(), length, StandardCharsets.UTF_8).trim();
         Assert.assertNotNull(payload);
-        Assert.assertEquals(payload, "this is message util test data\u0000\u0000\u0000.");
+        Assert.assertEquals("this is message util test data\u0000\u0000\u0000.", payload);
     }
 
     /**
      * Tests the {@link MessageUtil#isContinuous(Offset, Offset)} method to verify if two Offset instances are continuous.
      * Two offsets are considered continuous if they belong to the same epoch and the second offset's index
      * is exactly one more than the first offset's index, or if they belong to consecutive epochs and the second offset's index is 1.
-     *
+     * <p>
      * This test case uses two Offsets:
      * - Base Offset with epoch 0 and index 0.
      * - Next Offset with epoch 0 and index 1.
-     *
+     * <p>
      * The method is expected to return {@code true} for continuous offsets.
      */
     @Test

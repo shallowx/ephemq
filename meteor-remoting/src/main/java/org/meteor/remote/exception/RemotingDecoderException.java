@@ -1,5 +1,8 @@
 package org.meteor.remote.exception;
 
+import io.netty.buffer.ByteBuf;
+import org.meteor.remote.codec.MessagePacket;
+
 import java.io.Serial;
 
 /**

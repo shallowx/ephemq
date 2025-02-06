@@ -2,10 +2,6 @@ package org.meteor.cli.topic;
 
 import com.google.protobuf.ProtocolStringList;
 import io.netty.util.internal.StringUtil;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -18,12 +14,17 @@ import org.meteor.remote.proto.PartitionMetadata;
 import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.util.NetworkUtil;
 
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * TopicListCommand is a class that implements the Command interface,
  * allowing users to query and retrieve topic information from a broker cluster.
  * for example:
- *
+ * <p>
  * +---------------+-----------+--------+-------+--------+----------+
  * | topic         | partition | ledger | epoch | leader | replicas |
  * +---------------+-----------+--------+-------+--------+----------+

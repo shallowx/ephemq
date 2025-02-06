@@ -1,14 +1,15 @@
 package org.meteor.ledger;
 
 import io.netty.buffer.ByteBuf;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+import org.meteor.common.message.Offset;
+
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.meteor.common.logging.InternalLogger;
-import org.meteor.common.logging.InternalLoggerFactory;
-import org.meteor.common.message.Offset;
 
 /**
  * The LedgerSegment class manages a segment of ledger data backed by a ByteBuf.
@@ -77,11 +78,11 @@ public class LedgerSegment {
     /**
      * A volatile field that holds a reference to a {@link BufferHolder} instance,
      * enabling safe concurrent access and modifications.
-     *
+     * <p>
      * This field is used to manage the lifecycle and access of a buffer associated
      * with a ledger segment, providing mechanisms for buffer recycling
      * and proper resource cleanup.
-     *
+     * <p>
      * The usage of the {@code volatile} keyword ensures visibility of
      * changes to this field across threads, which is critical for
      * maintaining the consistency and integrity of the buffer's lifecycle
@@ -95,11 +96,11 @@ public class LedgerSegment {
     private volatile Offset lastOffset;
     /**
      * Represents the last position in the ledger segment.
-     *
+     * <p>
      * This variable holds the offset of the most recently written position
      * within the current ledger segment. It is used to track the end
      * of the ledger segment for writing and reading operations.
-     *
+     * <p>
      * The variable is declared as volatile to ensure visibility across threads,
      * preventing thread caching issues in concurrent environments.
      * It is updated as new records are written to the segment.
@@ -137,13 +138,13 @@ public class LedgerSegment {
      * Continuously attempts to recycle buffers by removing references from the buffer recycle queue,
      * retrieving the corresponding buffers from the buffer map, and releasing them to free resources.
      * This method runs in an infinite loop and handles interruptions by logging errors if enabled.
-     *
+     * <p>
      * The typical flow of this method is:
      * 1. Continuously poll the BUFFER_RECYCLE_QUEUE for references.
      * 2. For each reference obtained, attempt to remove the associated buffer from the BUFFERS map.
      * 3. If a buffer is found, release it to free its resources.
      * 4. If interrupted during the removal process, log an error if error logging is enabled.
-     *
+     * <p>
      * Note: This method is designed to run indefinitely as part of a dedicated thread for buffer
      * recycling. Ensure proper shutdown mechanisms are in place to handle the scenario where
      * this thread needs to be stopped gracefully.
@@ -348,7 +349,7 @@ public class LedgerSegment {
 
     /**
      * Releases resources held by the LedgerSegment instance.
-     *
+     * <p>
      * This method nullifies the reference to the phantomHolder,
      * freeing up memory and resources associated with it.
      * Intended to be invoked when the LedgerSegment is no longer

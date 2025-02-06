@@ -5,16 +5,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import io.netty.util.concurrent.Promise;
-import java.net.SocketAddress;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import org.meteor.client.core.Client;
-import org.meteor.client.core.ClientChannel;
-import org.meteor.client.core.CombineListener;
-import org.meteor.client.core.MessageLedger;
-import org.meteor.client.core.MessageRouter;
+import org.meteor.client.core.*;
 import org.meteor.client.exception.RemotingSendRequestException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -24,6 +15,12 @@ import org.meteor.remote.proto.MessageMetadata;
 import org.meteor.remote.proto.server.SendMessageRequest;
 import org.meteor.remote.proto.server.SendMessageResponse;
 import org.meteor.remote.util.ByteBufUtil;
+
+import java.net.SocketAddress;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * DefaultProducer is an implementation of the Producer interface. It provides methods
@@ -44,7 +41,7 @@ public class DefaultProducer implements Producer {
     private final String name;
     /**
      * Configuration settings for the Producer.
-     *
+     * <p>
      * This variable holds the configuration details necessary for the Producer to
      * function correctly. It includes settings for timeouts, compression, and other
      * client-specific configurations.
@@ -103,7 +100,7 @@ public class DefaultProducer implements Producer {
 
     /**
      * Starts the producer.
-     *
+     * <p>
      * This method first checks if the producer is already running. If it is, a warning message
      * is logged, and the method returns early to avoid restarting the producer. If the producer
      * is not running, it sets the state to running and starts the client.
@@ -358,7 +355,7 @@ public class DefaultProducer implements Producer {
 
     /**
      * Closes the producer and releases associated resources.
-     *
+     * <p>
      * This method performs several operations to gracefully shut down the producer:
      *
      * 1. Checks if the producer is currently running.

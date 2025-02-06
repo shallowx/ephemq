@@ -34,7 +34,7 @@ public class Slf4JLoggerFactoryTest {
      * Specifically, it verifies that the factory correctly wraps a given logger and that the
      * resulting InternalLogger instance is of type Slf4JLogger. Furthermore, it checks that the
      * name of the logger is accurately retrieved.
-     *
+     * <p>
      * Test actions:
      * 1. Mocks a Logger instance and sets its behavior for getName() method.
      * 2. Wraps the mocked Logger using Slf4JLoggerFactory.
@@ -69,11 +69,11 @@ public class Slf4JLoggerFactoryTest {
      * Tests the formatMessage functionality of the InternalLogger wrapped by Slf4JLoggerFactory.
      * This test verifies that the correct logging messages are formatted and captured at various logging levels,
      * including DEBUG, ERROR, INFO, TRACE, and WARN.
-     *
+     * <p>
      * The test initializes a mock LocationAwareLogger and configures it to return true for all log level enabled checks.
      * The logger name is set to "testlogger". It then verifies that the logger captures correctly formatted messages
      * for different log levels and different numbers of message arguments.
-     *
+     * <p>
      * The captured log messages are compared with expected values ensuring correct formatting and parameter substitution.
      */
     @Test

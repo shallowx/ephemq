@@ -29,7 +29,7 @@ public class Slf4JLoggerFactory extends InternalLoggerFactory {
     /**
      * Wraps a given SLF4J Logger instance into an InternalLogger instance.
      *
-     * @param tag the SLF4J Logger instance to be wrapped
+     * @param logger the SLF4J Logger instance to be wrapped
      * @return an InternalLogger instance that represents the wrapped logger
      */
     static InternalLogger wrapLogger(Logger logger) {

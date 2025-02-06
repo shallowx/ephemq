@@ -1,6 +1,5 @@
 package org.meteor.remote.codec;
 
-import static org.meteor.remote.util.ByteBufUtil.release;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandler;
@@ -11,6 +10,8 @@ import io.netty.util.concurrent.PromiseCombiner;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.exception.RemotingEncoderException;
+
+import static org.meteor.remote.util.ByteBufUtil.release;
 
 /**
  * MessageEncoder is a specialized ChannelOutboundHandlerAdapter used
@@ -32,7 +33,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
     /**
      * Private constructor to prevent instantiation of the MessageEncoder class.
-     *
+     * <p>
      * This constructor is intentionally defined to throw an UnsupportedOperationException
      * to indicate that instantiation of this class is not supported. The class is designed
      * to be used statically through the other provided methods.
@@ -114,7 +115,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
 
     /**
      * Writes the provided header and body {@link ByteBuf} to the {@link ChannelHandlerContext}.
-     *
+     * <p>
      * If the body is not readable, it will be released and only the header will be written.
      * If the promise is void, both the header and body will be written immediately.
      * Otherwise, a {@link PromiseCombiner} is used to ensure that both write operations

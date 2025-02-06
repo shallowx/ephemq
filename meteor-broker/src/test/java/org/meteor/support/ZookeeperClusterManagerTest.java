@@ -1,8 +1,5 @@
 package org.meteor.support;
 
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.Before;
@@ -10,6 +7,10 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.common.message.Node;
 import org.meteor.config.ServerConfig;
+
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class ZookeeperClusterManagerTest {
     /**
@@ -67,10 +68,10 @@ public class ZookeeperClusterManagerTest {
     public void testGetReadyNode() throws Exception {
         List<Node> clusterReadyNodes = clusterManager.getClusterReadyNodes();
         Assertions.assertNotNull(clusterReadyNodes);
-        Assertions.assertEquals(clusterReadyNodes.size(), 1);
-        Assertions.assertEquals(clusterReadyNodes.get(0).getCluster(), "default");
-        Assertions.assertEquals(clusterReadyNodes.get(0).getId(), "default");
-        Assertions.assertEquals(clusterReadyNodes.get(0).getState(), "UP");
+        Assertions.assertEquals(1, clusterReadyNodes.size());
+        Assertions.assertEquals("default", clusterReadyNodes.get(0).getCluster());
+        Assertions.assertEquals("default", clusterReadyNodes.get(0).getId());
+        Assertions.assertEquals("UP", clusterReadyNodes.get(0).getState());
     }
 
     /**
@@ -83,17 +84,17 @@ public class ZookeeperClusterManagerTest {
     public void testGetReadyNodes() throws Exception {
         List<Node> clusterNodes = clusterManager.getClusterNodes();
         Assertions.assertNotNull(clusterNodes);
-        Assertions.assertEquals(clusterNodes.size(), 1);
-        Assertions.assertEquals(clusterNodes.get(0).getCluster(), "default");
-        Assertions.assertEquals(clusterNodes.get(0).getId(), "default");
-        Assertions.assertEquals(clusterNodes.get(0).getState(), "UP");
+        Assertions.assertEquals(1, clusterNodes.size());
+        Assertions.assertEquals("default", clusterNodes.get(0).getCluster());
+        Assertions.assertEquals("default", clusterNodes.get(0).getId());
+        Assertions.assertEquals("UP", clusterNodes.get(0).getState());
     }
 
     /**
      * Tests the retrieval of the current node in the cluster.
      *
      * @throws Exception if there is an error during the test execution.
-     *
+     * <p>
      * This method retrieves the current node from the cluster using the ClusterManager.
      * It performs the following validations:
      * - The retrieved node is not null.
@@ -107,9 +108,9 @@ public class ZookeeperClusterManagerTest {
     public void testGetThisNode() throws Exception {
         Node thisNode = clusterManager.getThisNode();
         Assertions.assertNotNull(thisNode);
-        Assertions.assertEquals(thisNode.getCluster(), "default");
-        Assertions.assertEquals(thisNode.getId(), "default");
-        Assertions.assertEquals(thisNode.getState(), "UP");
+        Assertions.assertEquals("default", thisNode.getCluster());
+        Assertions.assertEquals("default", thisNode.getId());
+        Assertions.assertEquals("UP", thisNode.getState());
     }
 
     /**

@@ -1,8 +1,5 @@
 package org.meteor.common.commpression;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,6 +7,10 @@ import org.junit.Test;
 import org.meteor.common.compression.CompressionType;
 import org.meteor.common.compression.Compressor;
 import org.meteor.common.compression.CompressorFactory;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class CompressionTest {
     /**
@@ -72,9 +73,9 @@ public class CompressionTest {
      */
     @Test
     public void testCompressionZlib() throws IOException {
-        Assert.assertEquals(CompressionType.of("zlib"), CompressionType.ZLIB);
-        Assert.assertEquals(CompressionType.of("ZLiB"), CompressionType.ZLIB);
-        Assert.assertEquals(CompressionType.of("ZLIB"), CompressionType.ZLIB);
+        Assert.assertEquals(CompressionType.ZLIB, CompressionType.of("zlib"));
+        Assert.assertEquals(CompressionType.ZLIB, CompressionType.of("ZLiB"));
+        Assert.assertEquals(CompressionType.ZLIB, CompressionType.of("ZLIB"));
 
         int randomKB = 4096;
         Random random = new Random();
@@ -90,7 +91,7 @@ public class CompressionTest {
 
     /**
      * Tests the Zstandard (ZSTD) compression algorithm to ensure correct functionality.
-     *
+     * <p>
      * This test method performs the following actions:
      * 1. Validates that various string representations of the "zstd" compression type
      *    correctly map to the CompressionType.ZSTD enum constant.
@@ -103,9 +104,9 @@ public class CompressionTest {
      */
     @Test
     public void testCompressionZstd() throws IOException {
-        Assert.assertEquals(CompressionType.of("zstd"), CompressionType.ZSTD);
-        Assert.assertEquals(CompressionType.of("ZStd"), CompressionType.ZSTD);
-        Assert.assertEquals(CompressionType.of("ZSTD"), CompressionType.ZSTD);
+        Assert.assertEquals(CompressionType.ZSTD, CompressionType.of("zstd"));
+        Assert.assertEquals(CompressionType.ZSTD, CompressionType.of("ZStd"));
+        Assert.assertEquals(CompressionType.ZSTD, CompressionType.of("ZSTD"));
 
         int randomKB = 4096;
         Random random = new Random();
@@ -121,7 +122,7 @@ public class CompressionTest {
 
     /**
      * Tests the LZ4 compression and decompression process.
-     *
+     * <p>
      * This method verifies that the LZ4 compression algorithm can correctly compress
      * and decompress a randomly generated alphanumeric string. It asserts that the
      * size and content of the decompressed data matches the original uncompressed data.
@@ -130,7 +131,7 @@ public class CompressionTest {
      */
     @Test
     public void testCompressionLz4() throws IOException {
-        Assert.assertEquals(CompressionType.of("lz4"), CompressionType.LZ4);
+        Assert.assertEquals(CompressionType.LZ4, CompressionType.of("lz4"));
         int randomKB = 4096;
         Random random = new Random();
         for (int i = 0; i < 5; ++i) {

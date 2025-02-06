@@ -62,17 +62,17 @@ public class SegmentBenchmark {
     /**
      * A {@code ReferenceQueue} used to manage {@code BufferHolder} objects, enabling efficient
      * cleanup and recycling of buffers when they are no longer in use.
-     *
+     * <p>
      * This queue is monitored by a dedicated thread that processes references enqueued
      * into the {@code BUFFER_RECYCLE_QUEUE}. When a {@code BufferHolder} is enqueued
      * to this queue, it indicates that the associated buffer is ready for recycling,
      * and the corresponding {@code ByteBuf} will be released to free up resources.
-     *
+     * <p>
      * The {@code BUFFER_RECYCLE_QUEUE} works in conjunction with phantom references
      * to track the lifecycle of {@code BufferHolder} objects. When the JVM detects
      * that a {@code BufferHolder} is only softly reachable, the phantom reference
      * is cleared and added to this queue.
-     *
+     * <p>
      * This mechanism is crucial for managing buffer lifecycles and freeing up memory
      * resources in a timely manner, preventing potential memory leaks and ensuring
      * optimal performance in high-throughput scenarios.
@@ -108,11 +108,11 @@ public class SegmentBenchmark {
 
     /**
      * Recycles buffer objects that are no longer in use.
-     *
+     * <p>
      * Continuously removes references from the BUFFER_RECYCLE_QUEUE,
      * retrieves the corresponding ByteBuf from the buffers map,
      * and releases the ByteBuf if it is not null.
-     *
+     * <p>
      * Terminates the loop if InterruptedException is caught.
      */
     private static void recycleBuffer() {
@@ -143,15 +143,15 @@ public class SegmentBenchmark {
 
     /**
      * A benchmarking method that writes a record to a ByteBuf.
-     *
+     * <p>
      * In this method, the ByteBuf's writerIndex is saved prior to attempting
      * to write a record. If an exception is thrown during the write attempt,
      * the writerIndex is reset to its original value and an IllegalStateException
      * is thrown with information about the location of the error.
-     *
+     * <p>
      * The method also updates the lastOffset and lastPosition fields with the
      * current values of changeOffset and the ByteBuf writerIndex, respectively.
-     *
+     * <p>
      * Note: The body of the try block is intentionally left empty as it
      * pertains to a Netty unit test, which is outside the scope of this
      * performance benchmarking.
@@ -190,7 +190,7 @@ public class SegmentBenchmark {
      * This method is used for benchmarking purposes and includes necessary error handling to reset
      * the buffer's writer index in case of an exception. The implementation details related to actual
      * writing are intentionally omitted as they are outside the scope of the performance testing.
-     *
+     * <p>
      * Benchmarked under various controls to measure throughput, average time, sample time, and single-shot time.
      * In case of failure, it resets the buffer's writer index to its original location and throws an exception.
      *
@@ -212,12 +212,12 @@ public class SegmentBenchmark {
     /**
      * Reads and processes a chunk of records from a buffer until a certain byte limit or
      * record count is reached.
-     *
+     * <p>
      * This method uses the position set by the class field `lastPosition` to determine
      * the limit for reading. It reads an integer length from the buffer at each position
      * and calculates the total bytes to be processed, including an additional 8 bytes.
      * The process stops when the total bytes exceed 100 and at least one record has been read.
-     *
+     * <p>
      * Fields used:
      * - `lastPosition`: The upper limit for reading from the buffer.
      * - `theHolder`: Holds the buffer from which the records are read.
