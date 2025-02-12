@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto.client;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.MessagePushSignal}
  */
@@ -10,7 +12,8 @@ public final class MessagePushSignal extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.MessagePushSignal)
     MessagePushSignalOrBuilder {
-private static final long serialVersionUID = 0L;
+    @Serial
+    private static final long serialVersionUID = 0L;
   // Use MessagePushSignal.newBuilder() to construct.
   private MessagePushSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -385,8 +388,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.client.MessagePushSignal) {
-        return mergeFrom((org.meteor.remote.proto.client.MessagePushSignal)other);
+        if (other instanceof org.meteor.remote.proto.client.MessagePushSignal signal) {
+            return mergeFrom(signal);
       } else {
         super.mergeFrom(other);
         return this;

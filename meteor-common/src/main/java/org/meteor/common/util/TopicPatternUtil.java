@@ -33,12 +33,12 @@ public class TopicPatternUtil {
         }
 
         if (!TOPIC_PATTERN.matcher(topic).matches()) {
-            throw new IllegalStateException(String.format("Topic[%s] is invalid", topic));
+            throw new IllegalStateException("Topic[%s] is invalid".formatted(topic));
         }
 
         if (topic.length() > 127) {
             throw new IllegalStateException(
-                    String.format("Topic[%s] is too large, and its the max length is 127 bytes ", topic));
+                    "Topic[%s] is too large, and its the max length is 127 bytes ".formatted(topic));
         }
     }
 
@@ -51,7 +51,7 @@ public class TopicPatternUtil {
      */
     public static void validatePartition(int number) {
         if (number <= 0) {
-            throw new IllegalArgumentException(String.format("Partition limit[%d] should be > 0", number));
+            throw new IllegalArgumentException("Partition limit[%d] should be > 0".formatted(number));
         }
     }
 
@@ -63,7 +63,7 @@ public class TopicPatternUtil {
      */
     public static void validateLedgerReplica(int number) {
         if (number < 0) {
-            throw new IllegalArgumentException(String.format("Ledger replicas limit[%d] should be > 0", number));
+            throw new IllegalArgumentException("Ledger replicas limit[%d] should be > 0".formatted(number));
         }
     }
 
@@ -81,7 +81,7 @@ public class TopicPatternUtil {
         }
         if (queue.length() > 127) {
             throw new IllegalStateException(
-                    String.format("Queue[%s] is too large, and its the max length is 127 bytes", queue));
+                    "Queue[%s] is too large, and its the max length is 127 bytes".formatted(queue));
         }
     }
 }

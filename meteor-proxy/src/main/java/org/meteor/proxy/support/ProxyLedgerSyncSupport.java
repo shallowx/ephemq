@@ -97,7 +97,7 @@ final class ProxyLedgerSyncSupport extends LedgerSyncSupport {
         }
 
         CuratorFramework client = ZookeeperClientFactory.getReadyClient(proxyConfig.getZookeeperConfiguration(), proxyConfiguration.getCommonConfiguration().getClusterName());
-        String path = String.format(ZookeeperProxyPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId());
+        String path = ZookeeperProxyPathConstants.PROXIES_ID.formatted(proxyConfiguration.getCommonConfiguration().getServerId());
         byte[] bytes = client.getData().forPath(path);
         Node proxyNode = deserialize(bytes, Node.class);
         proxyNode.setLedgerThroughput(calculateLedgerThroughput());

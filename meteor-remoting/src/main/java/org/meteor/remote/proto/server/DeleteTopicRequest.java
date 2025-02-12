@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto.server;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.DeleteTopicRequest}
  */
@@ -10,7 +12,8 @@ public final class DeleteTopicRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.DeleteTopicRequest)
     DeleteTopicRequestOrBuilder {
-private static final long serialVersionUID = 0L;
+  @Serial
+  private static final long serialVersionUID = 0L;
   // Use DeleteTopicRequest.newBuilder() to construct.
   private DeleteTopicRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -53,8 +56,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public java.lang.String getTopic() {
     java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
+    if (ref instanceof java.lang.String string) {
+      return string;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -71,10 +74,10 @@ private static final long serialVersionUID = 0L;
   public com.google.protobuf.ByteString
       getTopicBytes() {
     java.lang.Object ref = topic_;
-    if (ref instanceof java.lang.String) {
+    if (ref instanceof java.lang.String string) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
+                  string);
       topic_ = b;
       return b;
     } else {
@@ -336,8 +339,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.server.DeleteTopicRequest) {
-        return mergeFrom((org.meteor.remote.proto.server.DeleteTopicRequest)other);
+      if (other instanceof org.meteor.remote.proto.server.DeleteTopicRequest request) {
+        return mergeFrom(request);
       } else {
         super.mergeFrom(other);
         return this;
@@ -421,10 +424,10 @@ private static final long serialVersionUID = 0L;
     public com.google.protobuf.ByteString
         getTopicBytes() {
       java.lang.Object ref = topic_;
-      if (ref instanceof String) {
+      if (ref instanceof String string) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                    string);
         topic_ = b;
         return b;
       } else {

@@ -35,14 +35,14 @@ public class ObjectLiteralsTransformUtil {
      * @return the integer value of the object
      */
     public static int object2Int(Object v) {
-        return (v instanceof String) ? Integer.parseInt((String) v) : (int) v;
+        return (v instanceof String s) ? Integer.parseInt(s) : (int) v;
     }
 
     /**
      *
      */
     public static long object2Long(Object v) {
-        return (v instanceof String) ? Long.parseLong((String) v) : (long) v;
+        return (v instanceof String s) ? Long.parseLong(s) : (long) v;
     }
 
     /**
@@ -53,7 +53,7 @@ public class ObjectLiteralsTransformUtil {
      * @return the double representation of the object
      */
     public static double object2Double(Object v) {
-        return (v instanceof String) ? Double.parseDouble((String) v) : (double) v;
+        return (v instanceof String s) ? Double.parseDouble(s) : (double) v;
     }
 
     /**
@@ -66,7 +66,7 @@ public class ObjectLiteralsTransformUtil {
      * @throws NumberFormatException if the object is a String that cannot be parsed as a float
      */
     public static float object2Float(Object v) {
-        return (v instanceof String) ? Float.parseFloat((String) v) : (float) v;
+        return (v instanceof String s) ? Float.parseFloat(s) : (float) v;
     }
 
     /**
@@ -78,6 +78,6 @@ public class ObjectLiteralsTransformUtil {
      * @return the boolean representation of the provided object
      */
     public static boolean object2Boolean(Object v) {
-        return (v instanceof String) ? Boolean.parseBoolean((String) v) : (boolean) v;
+        return (v instanceof String s) ? Boolean.parseBoolean(s) : (boolean) v;
     }
 }

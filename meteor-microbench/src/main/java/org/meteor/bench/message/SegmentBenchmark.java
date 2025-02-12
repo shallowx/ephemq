@@ -166,7 +166,7 @@ public class SegmentBenchmark {
             // keep empty, because this is about netty unittest, and not need included in the scope of performance testing
         } catch (Throwable t) {
             theBuffer.writerIndex(location);
-            throw new IllegalStateException(String.format("Segment write error, location:%d", location), t);
+            throw new IllegalStateException("Segment write error, location:%d".formatted(location), t);
         }
 
         lastOffset = changeOffset;

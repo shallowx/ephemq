@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto.server;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.ResetSubscribeResponse}
  */
@@ -10,7 +12,8 @@ public final class ResetSubscribeResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.ResetSubscribeResponse)
     ResetSubscribeResponseOrBuilder {
-private static final long serialVersionUID = 0L;
+    @Serial
+    private static final long serialVersionUID = 0L;
   // Use ResetSubscribeResponse.newBuilder() to construct.
   private ResetSubscribeResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -284,8 +287,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.server.ResetSubscribeResponse) {
-        return mergeFrom((org.meteor.remote.proto.server.ResetSubscribeResponse)other);
+        if (other instanceof org.meteor.remote.proto.server.ResetSubscribeResponse response) {
+            return mergeFrom(response);
       } else {
         super.mergeFrom(other);
         return this;

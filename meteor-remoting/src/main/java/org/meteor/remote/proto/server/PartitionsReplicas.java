@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto.server;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.PartitionsReplicas}
  */
@@ -10,7 +12,8 @@ public final class PartitionsReplicas extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.PartitionsReplicas)
     PartitionsReplicasOrBuilder {
-private static final long serialVersionUID = 0L;
+    @Serial
+    private static final long serialVersionUID = 0L;
   // Use PartitionsReplicas.newBuilder() to construct.
   private PartitionsReplicas(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -370,8 +373,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.server.PartitionsReplicas) {
-        return mergeFrom((org.meteor.remote.proto.server.PartitionsReplicas)other);
+        if (other instanceof org.meteor.remote.proto.server.PartitionsReplicas replicas) {
+            return mergeFrom(replicas);
       } else {
         super.mergeFrom(other);
         return this;

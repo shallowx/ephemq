@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.NodeMetadata}
  */
@@ -10,7 +12,8 @@ public final class NodeMetadata extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.NodeMetadata)
     NodeMetadataOrBuilder {
-private static final long serialVersionUID = 0L;
+    @Serial
+    private static final long serialVersionUID = 0L;
   // Use NodeMetadata.newBuilder() to construct.
   private NodeMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -55,8 +58,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public java.lang.String getClusterName() {
     java.lang.Object ref = clusterName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
+      if (ref instanceof java.lang.String string) {
+          return string;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -73,10 +76,10 @@ private static final long serialVersionUID = 0L;
   public com.google.protobuf.ByteString
       getClusterNameBytes() {
     java.lang.Object ref = clusterName_;
-    if (ref instanceof java.lang.String) {
+      if (ref instanceof java.lang.String string) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
+                  string);
       clusterName_ = b;
       return b;
     } else {
@@ -93,8 +96,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public java.lang.String getId() {
     java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
+      if (ref instanceof java.lang.String string) {
+          return string;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -111,10 +114,10 @@ private static final long serialVersionUID = 0L;
   public com.google.protobuf.ByteString
       getIdBytes() {
     java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
+      if (ref instanceof java.lang.String string) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
+                  string);
       id_ = b;
       return b;
     } else {
@@ -131,8 +134,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public java.lang.String getHost() {
     java.lang.Object ref = host_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
+      if (ref instanceof java.lang.String string) {
+          return string;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -149,10 +152,10 @@ private static final long serialVersionUID = 0L;
   public com.google.protobuf.ByteString
       getHostBytes() {
     java.lang.Object ref = host_;
-    if (ref instanceof java.lang.String) {
+      if (ref instanceof java.lang.String string) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
+                  string);
       host_ = b;
       return b;
     } else {
@@ -465,8 +468,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.NodeMetadata) {
-        return mergeFrom((org.meteor.remote.proto.NodeMetadata)other);
+        if (other instanceof org.meteor.remote.proto.NodeMetadata metadata) {
+            return mergeFrom(metadata);
       } else {
         super.mergeFrom(other);
         return this;
@@ -576,10 +579,10 @@ private static final long serialVersionUID = 0L;
     public com.google.protobuf.ByteString
         getClusterNameBytes() {
       java.lang.Object ref = clusterName_;
-      if (ref instanceof String) {
+        if (ref instanceof String string) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                    string);
         clusterName_ = b;
         return b;
       } else {
@@ -652,10 +655,10 @@ private static final long serialVersionUID = 0L;
     public com.google.protobuf.ByteString
         getIdBytes() {
       java.lang.Object ref = id_;
-      if (ref instanceof String) {
+        if (ref instanceof String string) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                    string);
         id_ = b;
         return b;
       } else {
@@ -728,10 +731,10 @@ private static final long serialVersionUID = 0L;
     public com.google.protobuf.ByteString
         getHostBytes() {
       java.lang.Object ref = host_;
-      if (ref instanceof String) {
+        if (ref instanceof String string) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                    string);
         host_ = b;
         return b;
       } else {

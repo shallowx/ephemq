@@ -126,8 +126,8 @@ public class MeteorServer {
             Node thisNode = clusterManager.getThisNode();
             for (ServerListener listener : serverListeners) {
                 listener.onShutdown(thisNode);
-                if (listener instanceof Closeable) {
-                    ((Closeable) listener).close();
+                if (listener instanceof Closeable closeable) {
+                    closeable.close();
                 }
             }
         }

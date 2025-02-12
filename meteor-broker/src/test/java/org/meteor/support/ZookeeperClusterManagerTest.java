@@ -69,9 +69,9 @@ public class ZookeeperClusterManagerTest {
         List<Node> clusterReadyNodes = clusterManager.getClusterReadyNodes();
         Assertions.assertNotNull(clusterReadyNodes);
         Assertions.assertEquals(1, clusterReadyNodes.size());
-        Assertions.assertEquals("default", clusterReadyNodes.get(0).getCluster());
-        Assertions.assertEquals("default", clusterReadyNodes.get(0).getId());
-        Assertions.assertEquals("UP", clusterReadyNodes.get(0).getState());
+        Assertions.assertEquals("default", clusterReadyNodes.getFirst().getCluster());
+        Assertions.assertEquals("default", clusterReadyNodes.getFirst().getId());
+        Assertions.assertEquals("UP", clusterReadyNodes.getFirst().getState());
     }
 
     /**
@@ -85,9 +85,9 @@ public class ZookeeperClusterManagerTest {
         List<Node> clusterNodes = clusterManager.getClusterNodes();
         Assertions.assertNotNull(clusterNodes);
         Assertions.assertEquals(1, clusterNodes.size());
-        Assertions.assertEquals("default", clusterNodes.get(0).getCluster());
-        Assertions.assertEquals("default", clusterNodes.get(0).getId());
-        Assertions.assertEquals("UP", clusterNodes.get(0).getState());
+        Assertions.assertEquals("default", clusterNodes.getFirst().getCluster());
+        Assertions.assertEquals("default", clusterNodes.getFirst().getId());
+        Assertions.assertEquals("UP", clusterNodes.getFirst().getState());
     }
 
     /**

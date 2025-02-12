@@ -314,7 +314,7 @@ public class DefaultDispatcher {
             if (subscription == null) {
                 promise.tryFailure(
                         new DefaultDispatchException(
-                                String.format("Channel<%s> alter is invalid", channel.toString())));
+                                "Channel<%s> alter is invalid".formatted(channel.toString())));
                 return;
             }
 
@@ -844,7 +844,7 @@ public class DefaultDispatcher {
         } catch (Throwable t) {
             ByteBufUtil.release(buf);
             throw new DefaultDispatchException(
-                    String.format("Build payload error, ledger[%d] topic[%s] offset[%s] length[%d]", ledger, t, offset,
+                    "Build payload error, ledger[%d] topic[%s] offset[%s] length[%d]".formatted(ledger, t, offset,
                             entry.readableBytes()));
         }
     }

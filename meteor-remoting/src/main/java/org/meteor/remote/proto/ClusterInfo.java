@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.ClusterInfo}
  */
@@ -10,7 +12,8 @@ public final class ClusterInfo extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.ClusterInfo)
     ClusterInfoOrBuilder {
-private static final long serialVersionUID = 0L;
+    @Serial
+    private static final long serialVersionUID = 0L;
   // Use ClusterInfo.newBuilder() to construct.
   private ClusterInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -478,8 +481,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.ClusterInfo) {
-        return mergeFrom((org.meteor.remote.proto.ClusterInfo)other);
+        if (other instanceof org.meteor.remote.proto.ClusterInfo info) {
+            return mergeFrom(info);
       } else {
         super.mergeFrom(other);
         return this;

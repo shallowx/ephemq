@@ -232,7 +232,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
      * .
      */
     private void refreshPartitionInfo(String topic, Stat stat, TopicAssignment assignment) {
-        String path = String.format(PathConstants.BROKER_TOPIC_ID, topic);
+        String path = PathConstants.BROKER_TOPIC_ID.formatted(topic);
         try {
             byte[] bytes = client.getData().forPath(path);
             int topicId = Integer.parseInt(new String(bytes, StandardCharsets.UTF_8));
@@ -267,8 +267,8 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
      * @throws Exception if an error occurs while interacting with Zookeeper.
      */
     private Set<PartitionInfo> getTopicInfoFromZookeeper(String topic) throws Exception {
-        String partitionsPath = String.format(PathConstants.BROKER_TOPIC_PARTITIONS, topic);
-        String topicIdPath = String.format(PathConstants.BROKER_TOPIC_ID, topic);
+        String partitionsPath = PathConstants.BROKER_TOPIC_PARTITIONS.formatted(topic);
+        String topicIdPath = PathConstants.BROKER_TOPIC_ID.formatted(topic);
         try {
             byte[] bytes = client.getData().forPath(topicIdPath);
             int topicId = Integer.parseInt(new String(bytes, StandardCharsets.UTF_8));
@@ -280,7 +280,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             Set<PartitionInfo> partitionInfos = new ObjectOpenHashSet<>();
             for (String nodeName : partitions) {
                 int partition = Integer.parseInt(nodeName);
-                String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, partition);
+                String partitionPath = PathConstants.BROKER_TOPIC_PARTITION.formatted(topic, partition);
                 Stat stat = new Stat();
                 bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
                 TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
@@ -294,7 +294,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             }
             return partitionInfos;
         } catch (Exception e) {
-            throw new TopicHandleException(String.format("Topic[%s] dose not exist", topic));
+            throw new TopicHandleException("Topic[%s] dose not exist".formatted(topic));
         }
     }
 
@@ -532,18 +532,18 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             Map<Integer, Set<String>> partitionReplicas = new HashMap<>(partitions);
             client.createContainers(PathConstants.BROKERS_TOPICS);
             List<CuratorOp> ops = new ArrayList<>(partitions + 3);
-            String topicsPath = String.format(PathConstants.BROKER_TOPIC, topic);
+            String topicsPath = PathConstants.BROKER_TOPIC.formatted(topic);
             CuratorOp topicOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT).forPath(topicsPath, null);
             ops.add(topicOp);
 
-            String partitionsPath = String.format(PathConstants.BROKER_TOPIC_PARTITIONS, topic);
+            String partitionsPath = PathConstants.BROKER_TOPIC_PARTITIONS.formatted(topic);
             CuratorOp partitionsOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT).forPath(partitionsPath, null);
             ops.add(partitionsOp);
 
             for (int i = 0; i < partitions; i++) {
                 Set<String> replicaNodes = assignParticipantsToNode(topic + "#" + i, replicas);
                 partitionReplicas.put(i, replicaNodes);
-                String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topic, i);
+                String partitionPath = PathConstants.BROKER_TOPIC_PARTITION.formatted(topic, i);
                 TopicAssignment assignment = new TopicAssignment();
                 assignment.setPartition(i);
                 assignment.setTopic(topic);
@@ -555,7 +555,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
                 ops.add(partitionOp);
             }
 
-            String topicIdPath = String.format(PathConstants.BROKER_TOPIC_ID, topic);
+            String topicIdPath = PathConstants.BROKER_TOPIC_ID.formatted(topic);
             int topicId = generateTopicId();
             CuratorOp topicIdOp = client.transactionOp().create().withMode(CreateMode.PERSISTENT)
                     .forPath(topicIdPath, String.valueOf(topicId).getBytes(StandardCharsets.UTF_8));
@@ -566,7 +566,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             createResult.put(CorrelationIdConstants.PARTITION_REPLICAS, partitionReplicas);
             return createResult;
         } catch (KeeperException.NodeExistsException e) {
-            throw new TopicHandleException(String.format("Topic[%s] already exists", topic));
+            throw new TopicHandleException("Topic[%s] already exists".formatted(topic));
         }
     }
 
@@ -614,11 +614,11 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
     @Override
     public void deleteTopic(String topic) throws Exception {
         DeleteBuilder deleteBuilder = client.delete();
-        String path = String.format(PathConstants.BROKER_TOPIC, topic);
+        String path = PathConstants.BROKER_TOPIC.formatted(topic);
         try {
             deleteBuilder.guaranteed().deletingChildrenIfNeeded().forPath(path);
         } catch (Exception e) {
-            throw new TopicHandleException(String.format("Topic[%s] does not exist", topic));
+            throw new TopicHandleException("Topic[%s] does not exist".formatted(topic));
         }
     }
 
@@ -637,7 +637,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             try {
                 initPartition(topicPartition, ledgerId, epoch, topicConfig);
             } catch (Exception e) {
-                throw new TopicHandleException(String.format("Async init ledger[%s] failed", ledgerId), e);
+                throw new TopicHandleException("Async init ledger[%s] failed".formatted(ledgerId), e);
             }
         });
     }
@@ -698,7 +698,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
     @Override
     public void retirePartition(TopicPartition topicPartition) throws Exception {
         try {
-            String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
+            String partitionPath = PathConstants.BROKER_TOPIC_PARTITION.formatted(topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
             TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
@@ -709,8 +709,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             Log log = manager.getLogHandler().getLog(ledgerId);
             participantSupport.unSyncLedger(topicPartition, ledgerId, log.getSyncChannel(), 30000, null);
         } catch (KeeperException.NoNodeException e) {
-            throw new RuntimeException(String.format(
-                    "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
+            throw new RuntimeException("Partition[topic=%s, partition=%d] does not exist".formatted(topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
             retirePartition(topicPartition);
@@ -727,7 +726,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
     @Override
     public void handoverPartition(String heir, TopicPartition topicPartition) throws Exception {
         try {
-            String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
+            String partitionPath = PathConstants.BROKER_TOPIC_PARTITION.formatted(topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
             TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
@@ -739,8 +738,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
             client.setData().withVersion(stat.getVersion())
                     .forPath(partitionPath, SerializeFeatureSupport.serialize(assignment));
         } catch (KeeperException.NoNodeException e) {
-            throw new TopicHandleException(String.format(
-                    "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
+            throw new TopicHandleException("Partition[topic=%s, partition=%d] does not exist".formatted(topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
             handoverPartition(heir, topicPartition);
@@ -759,7 +757,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
     @Override
     public void takeoverPartition(TopicPartition topicPartition) throws Exception {
         try {
-            String partitionPath = String.format(PathConstants.BROKER_TOPIC_PARTITION, topicPartition.topic(), topicPartition.partition());
+            String partitionPath = PathConstants.BROKER_TOPIC_PARTITION.formatted(topicPartition.topic(), topicPartition.partition());
             Stat stat = new Stat();
             byte[] bytes = client.getData().storingStatIn(stat).forPath(partitionPath);
             TopicAssignment assignment = SerializeFeatureSupport.deserialize(bytes, TopicAssignment.class);
@@ -768,8 +766,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
                     .forPath(partitionPath, SerializeFeatureSupport.serialize(assignment));
             initPartition(topicPartition, assignment.getLedgerId(), assignment.getEpoch(), assignment.getConfig());
         } catch (KeeperException.NoNodeException e) {
-            throw new TopicHandleException(String.format(
-                    "Partition[topic=%s, partition=%d] does not exist", topicPartition.topic(), topicPartition.partition()
+            throw new TopicHandleException("Partition[topic=%s, partition=%d] does not exist".formatted(topicPartition.topic(), topicPartition.partition()
             ));
         } catch (Exception e) {
             takeoverPartition(topicPartition);
@@ -934,7 +931,7 @@ public class ZookeeperTopicHandleSupport implements TopicHandleSupport {
         List<String> topics = client.getChildren().forPath(PathConstants.BROKERS_TOPICS);
         Map<String, Integer> result = new HashMap<>();
         for (String topic : topics) {
-            List<String> nodes = client.getChildren().forPath(String.format(PathConstants.BROKER_TOPIC, topic));
+            List<String> nodes = client.getChildren().forPath(PathConstants.BROKER_TOPIC.formatted(topic));
             result.put(topic, nodes.size() - 1);
         }
         return result;

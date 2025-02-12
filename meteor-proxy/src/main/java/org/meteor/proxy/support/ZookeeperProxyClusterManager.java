@@ -58,7 +58,7 @@ class ZookeeperProxyClusterManager extends ZookeeperClusterManager implements Cl
         connectionStateListener = (client, newState) -> {
             if (newState == ConnectionState.RECONNECTED) {
                 try {
-                    Stat stat = client.checkExists().forPath(String.format(ZookeeperProxyPathConstants.PROXIES_ID, proxyConfiguration.getCommonConfiguration().getServerId()));
+                    Stat stat = client.checkExists().forPath(ZookeeperProxyPathConstants.PROXIES_ID.formatted(proxyConfiguration.getCommonConfiguration().getServerId()));
                     if (stat != null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Zookeeper proxy cluster manager has been started.");

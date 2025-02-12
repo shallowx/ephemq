@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.TopicSegmentInfo}
  */
@@ -10,7 +12,8 @@ public final class TopicSegmentInfo extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.TopicSegmentInfo)
     TopicSegmentInfoOrBuilder {
-private static final long serialVersionUID = 0L;
+    @Serial
+    private static final long serialVersionUID = 0L;
   // Use TopicSegmentInfo.newBuilder() to construct.
   private TopicSegmentInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -385,8 +388,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.TopicSegmentInfo) {
-        return mergeFrom((org.meteor.remote.proto.TopicSegmentInfo)other);
+        if (other instanceof org.meteor.remote.proto.TopicSegmentInfo info) {
+            return mergeFrom(info);
       } else {
         super.mergeFrom(other);
         return this;

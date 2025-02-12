@@ -3,6 +3,8 @@
 
 package org.meteor.remote.proto.server;
 
+import java.io.Serial;
+
 /**
  * Protobuf type {@code meteor.protobuf.SyncResponse}
  */
@@ -10,7 +12,8 @@ public final class SyncResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.SyncResponse)
     SyncResponseOrBuilder {
-private static final long serialVersionUID = 0L;
+  @Serial
+  private static final long serialVersionUID = 0L;
   // Use SyncResponse.newBuilder() to construct.
   private SyncResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -443,8 +446,8 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.server.SyncResponse) {
-        return mergeFrom((org.meteor.remote.proto.server.SyncResponse)other);
+      if (other instanceof org.meteor.remote.proto.server.SyncResponse response) {
+        return mergeFrom(response);
       } else {
         super.mergeFrom(other);
         return this;

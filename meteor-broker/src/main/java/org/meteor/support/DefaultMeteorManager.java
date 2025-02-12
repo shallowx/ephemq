@@ -248,8 +248,8 @@ public class DefaultMeteorManager implements Manager {
         }
 
         for (APIListener apiListener : apiListeners) {
-            if (apiListener instanceof AutoCloseable) {
-                ((AutoCloseable) apiListener).close();
+            if (apiListener instanceof AutoCloseable closeable) {
+                closeable.close();
             }
             ZookeeperClientFactory.closeClient();
         }

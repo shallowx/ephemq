@@ -33,8 +33,8 @@ public class Slf4JLoggerFactory extends InternalLoggerFactory {
      * @return an InternalLogger instance that represents the wrapped logger
      */
     static InternalLogger wrapLogger(Logger logger) {
-        return logger instanceof LocationAwareLogger ?
-                new LocationAwareSlf4JLogger((LocationAwareLogger) logger) : new Slf4JLogger(logger);
+        return logger instanceof LocationAwareLogger lal ?
+                new LocationAwareSlf4JLogger(lal) : new Slf4JLogger(logger);
     }
 
     /**
