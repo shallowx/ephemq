@@ -1,26 +1,14 @@
 package org.meteor.remoting;
 
-import static org.meteor.remote.util.ProtoBufUtil.proto2Buf;
-import static org.meteor.remote.util.ProtoBufUtil.readProto;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.ProtocolStringList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.*;
 import io.netty.util.internal.StringUtil;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import java.net.InetSocketAddress;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.meteor.client.core.Client;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
@@ -38,40 +26,22 @@ import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.invoke.Command;
 import org.meteor.remote.invoke.InvokedFeedback;
 import org.meteor.remote.invoke.Processor;
-import org.meteor.remote.proto.ClusterInfo;
-import org.meteor.remote.proto.ClusterMetadata;
-import org.meteor.remote.proto.NodeMetadata;
-import org.meteor.remote.proto.PartitionMetadata;
-import org.meteor.remote.proto.TopicInfo;
-import org.meteor.remote.proto.TopicMetadata;
-import org.meteor.remote.proto.server.AlterSubscribeRequest;
-import org.meteor.remote.proto.server.AlterSubscribeResponse;
-import org.meteor.remote.proto.server.CalculatePartitionsResponse;
-import org.meteor.remote.proto.server.CancelSyncRequest;
-import org.meteor.remote.proto.server.CancelSyncResponse;
-import org.meteor.remote.proto.server.CleanSubscribeRequest;
-import org.meteor.remote.proto.server.CleanSubscribeResponse;
-import org.meteor.remote.proto.server.CreateTopicConfigRequest;
-import org.meteor.remote.proto.server.CreateTopicRequest;
-import org.meteor.remote.proto.server.CreateTopicResponse;
-import org.meteor.remote.proto.server.DeleteTopicRequest;
-import org.meteor.remote.proto.server.DeleteTopicResponse;
-import org.meteor.remote.proto.server.MigrateLedgerRequest;
-import org.meteor.remote.proto.server.MigrateLedgerResponse;
-import org.meteor.remote.proto.server.PartitionsReplicas;
-import org.meteor.remote.proto.server.QueryClusterResponse;
-import org.meteor.remote.proto.server.QueryTopicInfoRequest;
-import org.meteor.remote.proto.server.QueryTopicInfoResponse;
-import org.meteor.remote.proto.server.ResetSubscribeRequest;
-import org.meteor.remote.proto.server.ResetSubscribeResponse;
-import org.meteor.remote.proto.server.SendMessageRequest;
-import org.meteor.remote.proto.server.SendMessageResponse;
-import org.meteor.remote.proto.server.SyncRequest;
-import org.meteor.remote.proto.server.SyncResponse;
+import org.meteor.remote.proto.*;
+import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
 import org.meteor.support.TopicHandleSupport;
+
+import java.net.InetSocketAddress;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.meteor.remote.util.ProtoBufUtil.proto2Buf;
+import static org.meteor.remote.util.ProtoBufUtil.readProto;
 
 /**
  * ServiceProcessor is responsible for handling various service-related commands
@@ -259,10 +229,10 @@ public class ServiceProcessor implements Processor, Command.Server {
                             feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed("Process un-sync ledger[" + ledger + "] failed", code, channel, feedback, e);
+                        processFailed(STR."Process un-sync ledger[\{ledger}] failed", code, channel, feedback, e);
                     }
                 } else {
-                    processFailed("Process un-sync ledger[" + ledger + "] failed", code, channel, feedback, f.cause());
+                    processFailed(STR."Process un-sync ledger[\{ledger}] failed", code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
@@ -520,6 +490,7 @@ public class ServiceProcessor implements Processor, Command.Server {
      * @param data a ByteBuf containing the serialized request data
      * @param feedback feedback mechanism to send the processed response
      */
+    @SuppressWarnings("ConstantConditions")
     protected void processQueryTopicInfos(Channel channel, int code, ByteBuf data, InvokedFeedback<ByteBuf> feedback) {
         long time = System.nanoTime();
         int bytes = data.readableBytes();

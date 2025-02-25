@@ -261,7 +261,7 @@ public class ChunkDispatcher {
 
     /**
      * Dispatches chunk handlers for processing.
-     *
+     * <p>
      * This method iterates over the collection of `dispatchHandlers` and invokes the `touchDispatch`
      * method on each handler that has a non-null `followCursor`. If there are no handlers to process,
      * the method exits early.

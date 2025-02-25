@@ -1,21 +1,9 @@
 package org.meteor.support;
 
-import static org.meteor.common.message.NodeState.DOWN;
-import static org.meteor.common.message.NodeState.UP;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.CreateBuilder;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
+import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.state.ConnectionState;
@@ -30,6 +18,16 @@ import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.meteor.common.message.NodeState.DOWN;
+import static org.meteor.common.message.NodeState.UP;
 
 /**
  * Manages a cluster of nodes with Zookeeper for coordination. This class handles
@@ -374,7 +372,7 @@ public class ZookeeperClusterManager implements ClusterManager {
 
     /**
      * Shuts down the ZookeeperClusterManager and releases associated resources.
-     *
+     * <p>
      * This method performs the following actions:
      * - Closes the cache to release any resources it holds.
      * - Deletes the current node from the consistent hashing ring to update the cluster state.

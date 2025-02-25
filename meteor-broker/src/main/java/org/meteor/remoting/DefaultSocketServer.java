@@ -97,7 +97,7 @@ public class DefaultSocketServer {
      * It also binds the server to the advertised address and port specified in the configuration.
      * If a compatible port is available and differs from the advertised port, the server
      * will listen on that port as well.
-     *
+     * <p>
      * The method may throw an exception if the server fails to start.
      *
      * @throws Exception if there is an error during server startup

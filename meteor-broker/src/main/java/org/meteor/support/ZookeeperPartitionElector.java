@@ -176,7 +176,7 @@ public final class ZookeeperPartitionElector {
 
     /**
      * Updates the topic assignment for a specified path.
-     *
+     * <p>
      * This method retrieves the topic assignment data, updates the leader to
      * the current server, increments the epoch, and writes the updated data
      * back. If errors occur, it handles them by rescheduling the task.
@@ -233,7 +233,7 @@ public final class ZookeeperPartitionElector {
      * Attempts to synchronize the leader for the given topic partition by verifying the current leader
      * and scheduling retries if necessary. The method utilizes an executor to perform the
      *  task asynchronously.
-     *
+     * <p>
      * The leader election and synchronization process involves the following steps:
      * 1. Retrieve the leader participant from the latch.
      * 2. Check if the current node is the leader.
