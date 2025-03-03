@@ -43,6 +43,7 @@
     </snapshotRepository>
   </distributionManagement>
   <properties>
+      <maven.compiler.release>21</maven.compiler.release>
     <jmh.version>1.35</jmh.version>
     <guice.version>5.1.0</guice.version>
     <commons.logging.version>1.2</commons.logging.version>

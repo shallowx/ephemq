@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto.server;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.CreateTopicResponse}
  */
@@ -12,7 +10,6 @@ public final class CreateTopicResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.CreateTopicResponse)
     CreateTopicResponseOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use CreateTopicResponse.newBuilder() to construct.
   private CreateTopicResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -57,8 +54,8 @@ public final class CreateTopicResponse extends
   @java.lang.Override
   public java.lang.String getTopic() {
     java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String string) {
-          return string;
+      if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -75,10 +72,10 @@ public final class CreateTopicResponse extends
   public com.google.protobuf.ByteString
       getTopicBytes() {
     java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String string) {
+      if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  string);
+                  (java.lang.String) ref);
       topic_ = b;
       return b;
     } else {
@@ -460,8 +457,8 @@ public final class CreateTopicResponse extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.CreateTopicResponse response) {
-            return mergeFrom(response);
+        if (other instanceof org.meteor.remote.proto.server.CreateTopicResponse) {
+            return mergeFrom((org.meteor.remote.proto.server.CreateTopicResponse) other);
       } else {
         super.mergeFrom(other);
         return this;
@@ -601,10 +598,10 @@ public final class CreateTopicResponse extends
     public com.google.protobuf.ByteString
         getTopicBytes() {
       java.lang.Object ref = topic_;
-        if (ref instanceof String string) {
+        if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    string);
+                    (java.lang.String) ref);
         topic_ = b;
         return b;
       } else {

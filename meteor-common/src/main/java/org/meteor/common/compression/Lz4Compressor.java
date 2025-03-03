@@ -22,8 +22,7 @@ public class Lz4Compressor implements Compressor {
     @Override
     public byte[] compress(byte[] src, int level) throws IOException {
         byte[] result = src;
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(src.length);
-        try (byteArrayOutputStream) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(src.length);) {
             LZ4FrameOutputStream outputStream = new LZ4FrameOutputStream(byteArrayOutputStream);
             outputStream.write(src);
             outputStream.flush();

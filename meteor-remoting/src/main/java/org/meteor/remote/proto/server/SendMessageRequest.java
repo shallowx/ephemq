@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto.server;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.SendMessageRequest}
  */
@@ -12,8 +10,7 @@ public final class SendMessageRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.SendMessageRequest)
     SendMessageRequestOrBuilder {
-  @Serial
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
   // Use SendMessageRequest.newBuilder() to construct.
   private SendMessageRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -337,8 +334,8 @@ public final class SendMessageRequest extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof org.meteor.remote.proto.server.SendMessageRequest request) {
-        return mergeFrom(request);
+        if (other instanceof org.meteor.remote.proto.server.SendMessageRequest) {
+            return mergeFrom((org.meteor.remote.proto.server.SendMessageRequest) other);
       } else {
         super.mergeFrom(other);
         return this;

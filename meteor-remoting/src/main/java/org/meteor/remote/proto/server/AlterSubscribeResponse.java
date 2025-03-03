@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto.server;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.AlterSubscribeResponse}
  */
@@ -12,7 +10,6 @@ public final class AlterSubscribeResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.AlterSubscribeResponse)
     AlterSubscribeResponseOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use AlterSubscribeResponse.newBuilder() to construct.
   private AlterSubscribeResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -287,8 +284,8 @@ public final class AlterSubscribeResponse extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.AlterSubscribeResponse response) {
-            return mergeFrom(response);
+        if (other instanceof org.meteor.remote.proto.server.AlterSubscribeResponse) {
+            return mergeFrom((org.meteor.remote.proto.server.AlterSubscribeResponse) other);
       } else {
         super.mergeFrom(other);
         return this;

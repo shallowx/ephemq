@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto.server;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.MigrateLedgerResponse}
  */
@@ -12,7 +10,6 @@ public final class MigrateLedgerResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.MigrateLedgerResponse)
     MigrateLedgerResponseOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use MigrateLedgerResponse.newBuilder() to construct.
   private MigrateLedgerResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -67,8 +64,8 @@ public final class MigrateLedgerResponse extends
   @java.lang.Override
   public java.lang.String getMessage() {
     java.lang.Object ref = message_;
-      if (ref instanceof java.lang.String string) {
-          return string;
+      if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -85,10 +82,10 @@ public final class MigrateLedgerResponse extends
   public com.google.protobuf.ByteString
       getMessageBytes() {
     java.lang.Object ref = message_;
-      if (ref instanceof java.lang.String string) {
+      if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  string);
+                  (java.lang.String) ref);
       message_ = b;
       return b;
     } else {
@@ -365,8 +362,8 @@ public final class MigrateLedgerResponse extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.MigrateLedgerResponse response) {
-            return mergeFrom(response);
+        if (other instanceof org.meteor.remote.proto.server.MigrateLedgerResponse) {
+            return mergeFrom((org.meteor.remote.proto.server.MigrateLedgerResponse) other);
       } else {
         super.mergeFrom(other);
         return this;
@@ -489,10 +486,10 @@ public final class MigrateLedgerResponse extends
     public com.google.protobuf.ByteString
         getMessageBytes() {
       java.lang.Object ref = message_;
-        if (ref instanceof String string) {
+        if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    string);
+                    (java.lang.String) ref);
         message_ = b;
         return b;
       } else {

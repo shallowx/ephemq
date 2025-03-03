@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.MessageOffset}
  */
@@ -12,7 +10,6 @@ public final class MessageOffset extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.MessageOffset)
     MessageOffsetOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use MessageOffset.newBuilder() to construct.
   private MessageOffset(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -338,8 +335,8 @@ public final class MessageOffset extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.MessageOffset offset) {
-            return mergeFrom(offset);
+        if (other instanceof org.meteor.remote.proto.MessageOffset) {
+            return mergeFrom((org.meteor.remote.proto.MessageOffset) other);
       } else {
         super.mergeFrom(other);
         return this;

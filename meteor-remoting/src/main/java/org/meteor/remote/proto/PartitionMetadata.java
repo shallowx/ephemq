@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.PartitionMetadata}
  */
@@ -12,7 +10,6 @@ public final class PartitionMetadata extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.PartitionMetadata)
     PartitionMetadataOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use PartitionMetadata.newBuilder() to construct.
   private PartitionMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -58,8 +55,8 @@ public final class PartitionMetadata extends
   @java.lang.Override
   public java.lang.String getTopicName() {
     java.lang.Object ref = topicName_;
-      if (ref instanceof java.lang.String string) {
-          return string;
+      if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -76,10 +73,10 @@ public final class PartitionMetadata extends
   public com.google.protobuf.ByteString
       getTopicNameBytes() {
     java.lang.Object ref = topicName_;
-      if (ref instanceof java.lang.String string) {
+      if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  string);
+                  (java.lang.String) ref);
       topicName_ = b;
       return b;
     } else {
@@ -129,8 +126,8 @@ public final class PartitionMetadata extends
   @java.lang.Override
   public java.lang.String getLeaderNodeId() {
     java.lang.Object ref = leaderNodeId_;
-      if (ref instanceof java.lang.String string) {
-          return string;
+      if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -147,10 +144,10 @@ public final class PartitionMetadata extends
   public com.google.protobuf.ByteString
       getLeaderNodeIdBytes() {
     java.lang.Object ref = leaderNodeId_;
-      if (ref instanceof java.lang.String string) {
+      if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  string);
+                  (java.lang.String) ref);
       leaderNodeId_ = b;
       return b;
     } else {
@@ -552,8 +549,8 @@ public final class PartitionMetadata extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.PartitionMetadata metadata) {
-            return mergeFrom(metadata);
+        if (other instanceof org.meteor.remote.proto.PartitionMetadata) {
+            return mergeFrom((org.meteor.remote.proto.PartitionMetadata) other);
       } else {
         super.mergeFrom(other);
         return this;
@@ -695,10 +692,10 @@ public final class PartitionMetadata extends
     public com.google.protobuf.ByteString
         getTopicNameBytes() {
       java.lang.Object ref = topicName_;
-        if (ref instanceof String string) {
+        if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    string);
+                    (java.lang.String) ref);
         topicName_ = b;
         return b;
       } else {
@@ -864,10 +861,10 @@ public final class PartitionMetadata extends
     public com.google.protobuf.ByteString
         getLeaderNodeIdBytes() {
       java.lang.Object ref = leaderNodeId_;
-        if (ref instanceof String string) {
+        if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    string);
+                    (java.lang.String) ref);
         leaderNodeId_ = b;
         return b;
       } else {

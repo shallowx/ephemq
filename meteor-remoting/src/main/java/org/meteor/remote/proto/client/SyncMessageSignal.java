@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto.client;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.SyncMessageSignal}
  */
@@ -12,7 +10,6 @@ public final class SyncMessageSignal extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.SyncMessageSignal)
     SyncMessageSignalOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use SyncMessageSignal.newBuilder() to construct.
   private SyncMessageSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -337,8 +334,8 @@ public final class SyncMessageSignal extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.client.SyncMessageSignal signal) {
-            return mergeFrom(signal);
+        if (other instanceof org.meteor.remote.proto.client.SyncMessageSignal) {
+            return mergeFrom((org.meteor.remote.proto.client.SyncMessageSignal) other);
       } else {
         super.mergeFrom(other);
         return this;

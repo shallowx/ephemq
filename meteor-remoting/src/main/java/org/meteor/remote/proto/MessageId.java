@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.MessageId}
  */
@@ -12,7 +10,6 @@ public final class MessageId extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.MessageId)
     MessageIdOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use MessageId.newBuilder() to construct.
   private MessageId(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -362,8 +359,8 @@ public final class MessageId extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.MessageId id) {
-            return mergeFrom(id);
+        if (other instanceof org.meteor.remote.proto.MessageId) {
+            return mergeFrom((org.meteor.remote.proto.MessageId) other);
       } else {
         super.mergeFrom(other);
         return this;

@@ -200,16 +200,6 @@ public class PartitionInfo {
      */
     @Override
     public String toString() {
-        return "(" +
-                "topic='" + topic + '\'' +
-                ", topicId=" + topicId +
-                ", partition=" + partition +
-                ", ledger=" + ledger +
-                ", epoch=" + epoch +
-                ", leader='" + leader + '\'' +
-                ", replicas=" + replicas +
-                ", topicConfig=" + topicConfig +
-                ", version=" + version +
-                ')';
+        return STR."(topic='\{topic}', topicId=\{topicId}, partition=\{partition}, ledger=\{ledger}, epoch=\{epoch}, leader='\{leader}', replicas=\{replicas}, topicConfig=\{topicConfig}, version=\{version})";
     }
 }

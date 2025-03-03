@@ -357,7 +357,7 @@ public class DefaultProducer implements Producer {
      * Closes the producer and releases associated resources.
      * <p>
      * This method performs several operations to gracefully shut down the producer:
-     *
+     * <p>
      * 1. Checks if the producer is currently running.
      *    - If not running, logs a warning message and exits.
      * 2. Sets the producer's internal state to inactive.

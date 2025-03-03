@@ -3,8 +3,6 @@
 
 package org.meteor.remote.proto.server;
 
-import java.io.Serial;
-
 /**
  * Protobuf type {@code meteor.protobuf.QueryTopicInfoRequest}
  */
@@ -12,7 +10,6 @@ public final class QueryTopicInfoRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.QueryTopicInfoRequest)
     QueryTopicInfoRequestOrBuilder {
-    @Serial
     private static final long serialVersionUID = 0L;
   // Use QueryTopicInfoRequest.newBuilder() to construct.
   private QueryTopicInfoRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -348,8 +345,8 @@ public final class QueryTopicInfoRequest extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.QueryTopicInfoRequest request) {
-            return mergeFrom(request);
+        if (other instanceof org.meteor.remote.proto.server.QueryTopicInfoRequest) {
+            return mergeFrom((org.meteor.remote.proto.server.QueryTopicInfoRequest) other);
       } else {
         super.mergeFrom(other);
         return this;
