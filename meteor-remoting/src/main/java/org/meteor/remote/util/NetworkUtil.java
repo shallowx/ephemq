@@ -3,14 +3,18 @@ package org.meteor.remote.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollIoHandler;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.incubator.channel.uring.IOUringEventLoopGroup;
+import io.netty.incubator.channel.uring.IOUringServerSocketChannel;
+import io.netty.incubator.channel.uring.IOUringSocketChannel;
 import io.netty.util.concurrent.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.openhft.affinity.AffinityStrategies;
@@ -131,6 +135,18 @@ public final class NetworkUtil {
         return InetSocketAddress.createUnresolved(host, port);
     }
 
+    public static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name, boolean isAffinity, boolean isPreferIoUring) {
+        return isPreferIoUring
+                ? new IOUringEventLoopGroup(threads, newIoUringThreadFactory(name, isAffinity))
+                : newEventLoopGroup(epoll, threads, name, isAffinity);
+    }
+
+    private static ThreadFactory newIoUringThreadFactory(String name, boolean isAffinity) {
+        return isAffinity
+                ? new AffinityThreadFactory(name, AffinityStrategies.DIFFERENT_CORE)
+                : new DefaultThreadFactory(name);
+    }
+
     /**
      * Creates a new {@link EventLoopGroup} based on the specified parameters.
      *
@@ -140,19 +156,19 @@ public final class NetworkUtil {
      * @param name       The name prefix to use for the threads in the EventLoopGroup.
      * @param isAffinity Indicates whether thread affinity should be applied. If true,
      *                   an AffinityThreadFactory will be used; otherwise, a DefaultThreadFactory will be used.
-     *
      * @return A newly created {@link EventLoopGroup} configured based on the specified parameters.
      */
     // https://netty.io/wiki/thread-affinity.html
-    public static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name, boolean isAffinity) {
+    private static EventLoopGroup newEventLoopGroup(boolean epoll, int threads, String name, boolean isAffinity) {
         ThreadFactory f = isAffinity
                 ? new AffinityThreadFactory(name, AffinityStrategies.DIFFERENT_CORE)
                 : new DefaultThreadFactory(name);
 
         return epoll && Epoll.isAvailable()
-                ? new EpollEventLoopGroup(threads, f)
-                : new NioEventLoopGroup(threads, f);
+                ? new MultiThreadIoEventLoopGroup(threads, f, EpollIoHandler.newFactory())
+                : new MultiThreadIoEventLoopGroup(threads, f, NioIoHandler.newFactory());
     }
+
 
     /**
      * Creates a new EventExecutorGroup with a specified number of threads and a group name.
@@ -199,10 +215,18 @@ public final class NetworkUtil {
      * @return the class of the preferred {@link Channel}; either {@link EpollSocketChannel} if epoll is available and preferred,
      * or {@link NioSocketChannel} if epoll is not available or not preferred
      */
-    public static Class<? extends Channel> preferChannelClass(boolean epoll) {
+    private static Class<? extends Channel> preferChannelClass(boolean epoll) {
         return epoll && Epoll.isAvailable()
                 ? EpollSocketChannel.class
                 : NioSocketChannel.class;
+    }
+
+    public static Class<? extends Channel> preferIoUringChannelClass(boolean epoll, boolean preferIoUring) {
+        return preferIoUring ? IOUringSocketChannel.class : preferChannelClass(epoll);
+    }
+
+    public static Class<? extends ServerChannel> preferServerIoUringChannelClass(boolean epoll, boolean preferIoUring) {
+        return preferIoUring ? IOUringServerSocketChannel.class : preferServerChannelClass(epoll);
     }
 
     /**
@@ -212,7 +236,7 @@ public final class NetworkUtil {
      * @return The preferred ServerChannel class, either {@link EpollServerSocketChannel} if Epoll is available,
      * or {@link NioServerSocketChannel} otherwise.
      */
-    public static Class<? extends ServerChannel> preferServerChannelClass(boolean epoll) {
+    private static Class<? extends ServerChannel> preferServerChannelClass(boolean epoll) {
         return epoll && Epoll.isAvailable()
                 ? EpollServerSocketChannel.class
                 : NioServerSocketChannel.class;

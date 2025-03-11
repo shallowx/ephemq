@@ -20,7 +20,7 @@ import java.net.SocketAddress;
 
 import static org.meteor.metrics.config.MetricsConstants.*;
 import static org.meteor.remote.util.NetworkUtil.newEventLoopGroup;
-import static org.meteor.remote.util.NetworkUtil.preferServerChannelClass;
+import static org.meteor.remote.util.NetworkUtil.preferServerIoUringChannelClass;
 
 /**
  * DefaultSocketServer is responsible for initializing and starting a socket server using the provided configuration.
@@ -103,16 +103,16 @@ public class DefaultSocketServer {
      * @throws Exception if there is an error during server startup
      */
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor", false);
+        bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor", false, true);
         gauge(bossGroup, "acceptor");
 
         workGroup = newEventLoopGroup(true, networkConfiguration.getNetworkThreadLimit(), "server-processor",
-                commonConfiguration.isThreadAffinityEnabled());
+                commonConfiguration.isThreadAffinityEnabled(), true);
         gauge(workGroup, "processor");
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
-                .channel(preferServerChannelClass(commonConfiguration.isSocketPreferEpoll()))
+                .channel(preferServerIoUringChannelClass(commonConfiguration.isSocketPreferEpoll(), true))
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)

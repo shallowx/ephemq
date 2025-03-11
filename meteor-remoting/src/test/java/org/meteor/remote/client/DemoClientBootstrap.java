@@ -3,20 +3,9 @@ package org.meteor.remote.client;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.EventExecutorGroup;
-import java.nio.charset.StandardCharsets;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.remote.codec.MessageDecoder;
@@ -25,6 +14,14 @@ import org.meteor.remote.handle.HeartbeatDuplexHandler;
 import org.meteor.remote.handle.ProcessDuplexHandler;
 import org.meteor.remote.invoke.WrappedInvocation;
 import org.meteor.remote.util.NetworkUtil;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The DemoClientBootstrap class is responsible for bootstrapping a demo client.
@@ -48,14 +45,14 @@ public class DemoClientBootstrap {
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
-        EventLoopGroup group = NetworkUtil.newEventLoopGroup(true, 0, "demo-client", false);
+        EventLoopGroup group = NetworkUtil.newEventLoopGroup(true, 0, "demo-client", false, false);
         EventExecutorGroup serviceGroup = NetworkUtil.newEventExecutorGroup(0, "demo-client-service");
         DemoClientProcessor processor = new DemoClientProcessor();
 
         try {
             Bootstrap bootstrap = new Bootstrap()
                     .group(group)
-                    .channel(NetworkUtil.preferChannelClass(true))
+                    .channel(NetworkUtil.preferIoUringChannelClass(true, false))
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.SO_KEEPALIVE, false)

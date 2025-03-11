@@ -14,8 +14,8 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.RoundRobinDnsAddressResolverGroup;
-import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.*;
+import io.netty.util.concurrent.Future;
 import org.meteor.client.exception.MeteorClientException;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
@@ -373,7 +373,7 @@ public class Client implements MeterBinder {
      * 5. Sets up the client bootstrap with channel options and resolver.
      * 6. Applies channel settings for bootstrap addresses.
      * 7. Schedules a periodic metadata refresh task.
-     *
+     * <p>
      * This method is synchronized to ensure thread safety.
      */
     public synchronized void start() {
@@ -386,7 +386,7 @@ public class Client implements MeterBinder {
 
         state = true;
         workerGroup = newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(),
-                STR."client-worker(\{name})", false);
+                STR."client-worker(\{name})", false, config.isPreferIoUring());
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
         builder.negativeTtl(30);
@@ -400,7 +400,7 @@ public class Client implements MeterBinder {
         builder.nameServerProvider(DefaultDnsServerAddressStreamProvider.INSTANCE);
         bootstrap = new Bootstrap()
                 .group(workerGroup)
-                .channel(NetworkUtil.preferChannelClass(config.isSocketEpollPrefer()))
+                .channel(NetworkUtil.preferIoUringChannelClass(config.isSocketEpollPrefer(), config.isPreferIoUring()))
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, false)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getChannelConnectionTimeoutMilliseconds())

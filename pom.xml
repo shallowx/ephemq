@@ -26,7 +26,7 @@
         <maven.test.skip>false</maven.test.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <protobuf.version>3.21.8</protobuf.version>
-        <netty.version>4.1.118.Final</netty.version>
+        <netty.version>4.2.0.RC4</netty.version>
         <fastuyil.core.version>8.5.8</fastuyil.core.version>
         <caffine.version>3.1.1</caffine.version>
         <gson.version>2.9.0</gson.version>
@@ -50,11 +50,18 @@
         <lz4.java.version>1.8.0</lz4.java.version>
         <commons.text.version>1.11.0</commons.text.version>
         <net.affinity.version>3.23.3</net.affinity.version>
+        <io.uring.version>0.0.21.Final</io.uring.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-          <dependency>
+            <dependency>
+                <groupId>io.netty.incubator</groupId>
+                <artifactId>netty-incubator-transport-native-io_uring</artifactId>
+                <version>${io.uring.version}</version>
+                <classifier>linux-x86_64</classifier>
+            </dependency>
+            <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>affinity</artifactId>
             <version>${net.affinity.version}</version>

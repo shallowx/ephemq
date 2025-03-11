@@ -1,6 +1,7 @@
 package org.meteor.client.core;
 
 import io.netty.util.NettyRuntime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +101,15 @@ public class ClientConfig {
      * This setting ensures operations complete in a timely manner, preventing indefinite waits.
      */
     private int migrateLedgerTimeoutMilliseconds = 5000;
+    private boolean isPreferIoUring = false;
+
+    public boolean isPreferIoUring() {
+        return isPreferIoUring;
+    }
+
+    public void setPreferIoUring(boolean perferIoUring) {
+        this.isPreferIoUring = perferIoUring;
+    }
 
     /**
      * Retrieves the timeout duration, in milliseconds, for migrating a ledger.

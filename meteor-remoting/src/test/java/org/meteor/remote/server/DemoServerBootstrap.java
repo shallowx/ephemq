@@ -33,15 +33,15 @@ public class DemoServerBootstrap {
      * @param args Command-line arguments for the application (not used in this method).
      */
     public static void main(String[] args) {
-        EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss", false);
-        EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker", false);
+        EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss", false, false);
+        EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker", false, false);
         EventExecutorGroup servicesGroup = NetworkUtil.newEventExecutorGroup(0, "demo-server-service");
 
         Processor processorAware = new DemoServerProcessor();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap()
                     .group(boosGroup, workerGroup)
-                    .channel(NetworkUtil.preferServerChannelClass(true))
+                    .channel(NetworkUtil.preferServerIoUringChannelClass(true, false))
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .childOption(ChannelOption.TCP_NODELAY, true)
