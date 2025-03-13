@@ -55,6 +55,19 @@ public class CommonConfig {
      */
     private static final String SOCKET_PREFER_EPOLL = "socket.prefer.epoll";
     /**
+     * Specifies whether the system should prefer using the io_uring mechanism for socket handling.
+     * This configuration is often used to improve network performance on Linux-based systems
+     * by leveraging the io_uring I/O event notification facility.
+     */
+    private static final String SOCKET_PREFER_IO_URING = "socket.prefer.iouring";
+    /**
+     * Specifies whether the system should prefer using the affinity mechanism for socket handling.
+     * This configuration is often used to improve network performance on Linux-based systems
+     * by leveraging the affinity I/O event notification facility.
+     */
+    private static final String SOCKET_PREFER_AFFINITY = "socket.prefer.affinity";
+
+    /**
      * A configuration key that indicates whether thread affinity is enabled.
      * Thread affinity is a performance optimization where certain threads are
      * bound to specific CPUs, aiming to improve cache efficiency and reduce context switches.
@@ -112,6 +125,32 @@ public class CommonConfig {
      */
     public boolean isSocketPreferEpoll() {
         return object2Boolean(prop.getOrDefault(SOCKET_PREFER_EPOLL, true));
+    }
+
+    /**
+     * Checks if the socket should prefer using io_uring.
+     * <p>
+     * This method retrieves the value associated with the
+     * SOCKET_PREFER_IO_URING property from the configuration.
+     * If the property is not explicitly set, it defaults to true.
+     *
+     * @return true if socket should prefer using io_uring, false otherwise.
+     */
+    public boolean isSocketPreferIoUring() {
+        return object2Boolean(prop.getOrDefault(SOCKET_PREFER_IO_URING, false));
+    }
+
+    /**
+     * Checks if the socket should prefer using affinity.
+     * <p>
+     * This method retrieves the value associated with the
+     * SOCKET_PREFER_AFFINITY property from the configuration.
+     * If the property is not explicitly set, it defaults to true.
+     *
+     * @return true if socket should prefer using affinity, false otherwise.
+     */
+    public boolean isSocketPreferAffinity() {
+        return object2Boolean(prop.getOrDefault(SOCKET_PREFER_AFFINITY, false));
     }
 
     /**

@@ -103,16 +103,16 @@ public class DefaultSocketServer {
      * @throws Exception if there is an error during server startup
      */
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(true, networkConfiguration.getIoThreadLimit(), "server-acceptor", false, true);
+        bossGroup = newEventLoopGroup(commonConfiguration.isSocketPreferEpoll(), networkConfiguration.getIoThreadLimit(), "server-acceptor", commonConfiguration.isSocketPreferAffinity(), commonConfiguration.isSocketPreferIoUring());
         gauge(bossGroup, "acceptor");
 
-        workGroup = newEventLoopGroup(true, networkConfiguration.getNetworkThreadLimit(), "server-processor",
-                commonConfiguration.isThreadAffinityEnabled(), true);
+        workGroup = newEventLoopGroup(commonConfiguration.isSocketPreferEpoll(), networkConfiguration.getNetworkThreadLimit(), "server-processor",
+                commonConfiguration.isThreadAffinityEnabled(), commonConfiguration.isSocketPreferIoUring());
         gauge(workGroup, "processor");
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
-                .channel(preferServerIoUringChannelClass(commonConfiguration.isSocketPreferEpoll(), true))
+                .channel(preferServerIoUringChannelClass(commonConfiguration.isSocketPreferEpoll(), commonConfiguration.isSocketPreferIoUring()))
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
