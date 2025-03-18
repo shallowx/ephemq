@@ -1,6 +1,9 @@
 package org.meteor.support;
 
 import io.netty.channel.Channel;
+import org.meteor.common.logging.InternalLogger;
+import org.meteor.common.logging.InternalLoggerFactory;
+
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -8,7 +11,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * DefaultConnectionArraySet is an implementation of the Connection interface using a
  * thread-safe CopyOnWriteArraySet to manage the state of Channel objects.
  */
-public class DefaultConnectionArraySet implements Connection {
+public class DefaultConnectionContainer implements Connection {
+
+    private static final InternalLogger logger = InternalLoggerFactory.getLogger(DefaultConnectionContainer.class);
+
     /**
      * A thread-safe set of channels that are ready for communication. This set is
      * managed using a CopyOnWriteArraySet to ensure that it can be safely accessed
@@ -26,6 +32,9 @@ public class DefaultConnectionArraySet implements Connection {
     @Override
     public void add(Channel channel) {
         if (!channel.isActive()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Cannot add the channel {} to connection container", channel);
+            }
             return;
         }
         readyChannels.add(channel);

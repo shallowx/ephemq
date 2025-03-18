@@ -57,11 +57,11 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         activeChannelCount.decrement();
-        super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
             logger.debug("Statistics duplex inactive channel, and local address[{}], remote address[{}]",
                     ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
         }
+        super.channelInactive(ctx);
     }
 
     /**
@@ -75,10 +75,10 @@ public class StatisticsDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         activeChannelCount.increment();
-        super.channelActive(ctx);
         if (logger.isDebugEnabled()) {
             logger.debug("Statistics duplex active channel, and local address[{}], remote address[{}]",
                     ctx.channel().localAddress().toString(), ctx.channel().remoteAddress().toString());
         }
+        super.channelActive(ctx);
     }
 }

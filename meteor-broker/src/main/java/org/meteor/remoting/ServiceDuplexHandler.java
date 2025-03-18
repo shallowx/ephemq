@@ -42,12 +42,12 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        manager.getConnection().remove(channel);
-        super.channelInactive(ctx);
         if (logger.isDebugEnabled()) {
             logger.debug("Service duplex inactive channel, and local_address[{}], remote_address[{}]",
                     channel.localAddress().toString(), channel.remoteAddress().toString());
         }
+        manager.getConnection().remove(channel);
+        super.channelInactive(ctx);
     }
 
     /**
@@ -62,11 +62,11 @@ public class ServiceDuplexHandler extends ProcessDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        manager.getConnection().remove(channel);
-        ctx.close();
         if (logger.isDebugEnabled()) {
             logger.debug("Service duplex caught channel, and local address[{}], remote address[{}]",
                     channel.localAddress().toString(), channel.remoteAddress().toString());
         }
+        manager.getConnection().remove(channel);
+        ctx.close();
     }
 }

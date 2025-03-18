@@ -7,7 +7,7 @@ import org.meteor.ledger.LogHandler;
 import org.meteor.listener.DefaultClusterListener;
 import org.meteor.proxy.core.ProxyServerConfig;
 import org.meteor.remote.util.NetworkUtil;
-import org.meteor.support.DefaultConnectionArraySet;
+import org.meteor.support.DefaultConnectionContainer;
 import org.meteor.support.DefaultMeteorManager;
 
 /**
@@ -38,7 +38,7 @@ public class ProxyDefaultManager extends DefaultMeteorManager implements ProxyMa
      */
     public ProxyDefaultManager(ProxyServerConfig configuration) {
         super(configuration);
-        this.connection = new DefaultConnectionArraySet();
+        this.connection = new DefaultConnectionContainer();
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "proxy-handle");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "proxy-storage");
         this.dispatchGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageDispatchThreadLimit(), "proxy-dispatch");

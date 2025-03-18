@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
@@ -19,6 +20,10 @@ import java.text.SimpleDateFormat;
  */
 public class SerializeFeatureSupport {
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private SerializeFeatureSupport() throws IllegalAccessException {
+        throw new IllegalAccessException("SerializeFeatureSupport cannot be instantiated");
+    }
 
     static {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

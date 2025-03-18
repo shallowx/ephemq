@@ -3,9 +3,6 @@ package org.meteor.support;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorGroup;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import org.meteor.client.core.Client;
 import org.meteor.client.core.ClientConfig;
 import org.meteor.common.logging.InternalLogger;
@@ -15,13 +12,12 @@ import org.meteor.internal.InternalClient;
 import org.meteor.internal.InternalClientListener;
 import org.meteor.internal.ZookeeperClientFactory;
 import org.meteor.ledger.LogHandler;
-import org.meteor.listener.APIListener;
-import org.meteor.listener.ClusterListener;
-import org.meteor.listener.DefaultClusterListener;
-import org.meteor.listener.DefaultTopicListener;
-import org.meteor.listener.MetricsListener;
-import org.meteor.listener.TopicListener;
+import org.meteor.listener.*;
 import org.meteor.remote.util.NetworkUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * DefaultMeteorManager is a concrete implementation of the {@link Manager} interface.
@@ -122,7 +118,7 @@ public class DefaultMeteorManager implements Manager {
      */
     public DefaultMeteorManager(ServerConfig configuration) {
         this.configuration = configuration;
-        this.connection = new DefaultConnectionArraySet();
+        this.connection = new DefaultConnectionContainer();
         this.syncGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageSyncThreadLimit(), "sync-group");
         this.handleGroup = NetworkUtil.newEventExecutorGroup(configuration.getCommonConfig().getCommandHandleThreadLimit(), "command-handle-group");
         this.storageGroup = NetworkUtil.newEventExecutorGroup(configuration.getMessageConfig().getMessageStorageThreadLimit(), "storage-group");
