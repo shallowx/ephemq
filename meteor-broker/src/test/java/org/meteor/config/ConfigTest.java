@@ -28,21 +28,13 @@ public class ConfigTest {
      */
     @Test
     public void testConfig() {
-        Properties properties = new Properties();
-        properties.put("server.id", "test-server-id");
-        properties.put("message.sync.thread.limit", 100);
-        properties.put("metrics.sample.limit", 10);
-        properties.put("connection.timeout.milliseconds", 100);
-        properties.put("chunk.dispatch.entry.load.limit", 100);
-        properties.put("dispatch.entry.load.limit", 100);
-        properties.put("segment.rolling.size", 100);
-        properties.put("zookeeper.url", "0.0.0.0:9527");
-
-        ServerConfig config = new ServerConfig(properties);
+        ServerConfig config = getServerConfig();
         CommonConfig commonConfig = config.getCommonConfig();
         Assertions.assertNotNull(commonConfig);
         Assertions.assertEquals("test-server-id", commonConfig.getServerId());
-        Assertions.assertNotEquals("default", commonConfig.getServerId());
+        Assertions.assertEquals("test-cluster-name", commonConfig.getClusterName());
+        Assertions.assertEquals("127.0.0.1", commonConfig.getAdvertisedAddress());
+        Assertions.assertEquals(10000, commonConfig.getAdvertisedPort());
 
         MessageConfig messageConfig = config.getMessageConfig();
         Assertions.assertNotNull(messageConfig);
@@ -78,5 +70,23 @@ public class ConfigTest {
         Assertions.assertNotNull(zookeeperConfig);
         Assertions.assertNotEquals("localhost:2181", zookeeperConfig.getZookeeperUrl());
         Assertions.assertEquals("0.0.0.0:9527", zookeeperConfig.getZookeeperUrl());
+    }
+
+    private static ServerConfig getServerConfig() {
+        Properties properties = new Properties();
+        properties.put("server.id", "test-server-id");
+        properties.put("server.cluster.name", "test-cluster-name");
+        properties.put("server.advertised.address", "127.0.0.1");
+        properties.put("server.advertised.port", "10000");
+
+        properties.put("message.sync.thread.limit", 100);
+        properties.put("metrics.sample.limit", 10);
+        properties.put("connection.timeout.milliseconds", 100);
+        properties.put("chunk.dispatch.entry.load.limit", 100);
+        properties.put("dispatch.entry.load.limit", 100);
+        properties.put("segment.rolling.size", 100);
+        properties.put("zookeeper.url", "0.0.0.0:9527");
+
+        return new ServerConfig(properties);
     }
 }
