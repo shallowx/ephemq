@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.meteor</groupId>
   <artifactId>meteor-bom</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
-    <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/
-    </description>
+  <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/</description>
   <url>http://nexus.sonatype.org/oss-repository-hosting.html/meteor-bom</url>
   <organization>
     <name>shallowx</name>
@@ -24,7 +22,7 @@
   <scm>
     <connection>scm:git@github.com:shallowx/meteor.git</connection>
     <developerConnection>scm:git@github.com:shallowx/meteor.git</developerConnection>
-    <url>http://svn.sonatype.org/spice/tags/oss-parent-7/meteor-bom</url>
+    <url>http://svn.sonatype.org/spice/trunk/oss/oss-parent-9/meteor-bom</url>
   </scm>
   <issueManagement>
     <system>github</system>
@@ -43,7 +41,7 @@
     </snapshotRepository>
   </distributionManagement>
   <properties>
-      <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
     <jmh.version>1.35</jmh.version>
     <guice.version>5.1.0</guice.version>
     <commons.logging.version>1.2</commons.logging.version>
@@ -54,12 +52,12 @@
     <micrometer.version>1.10.5</micrometer.version>
     <flatten.version>1.2.7</flatten.version>
     <common.cli.version>1.5.0</common.cli.version>
-      <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
-      </sonatypeOssDistMgmtSnapshotsUrl>
+    <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/</sonatypeOssDistMgmtSnapshotsUrl>
     <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <micrometer.core.version>1.12.1</micrometer.core.version>
     <bom.helper.version>0.4.0</bom.helper.version>
     <mockito.core.version>5.2.0</mockito.core.version>
+    <arguments></arguments>
     <commons.io.version>2.11.0</commons.io.version>
     <curator.version>5.2.1</curator.version>
     <log4j.api.version>2.20.0</log4j.api.version>

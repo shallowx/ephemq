@@ -8,11 +8,11 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
 
     <groupId>org.meteor</groupId>
-    <artifactId>meteor</artifactId>
+    <artifactId>meteor-parent</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
@@ -25,7 +25,7 @@
         <java.version>21</java.version>
         <maven.test.skip>false</maven.test.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <protobuf.version>3.21.8</protobuf.version>
+        <protobuf.version>4.28.2</protobuf.version>
         <netty.version>4.2.0.Final</netty.version>
         <fastuyil.core.version>8.5.8</fastuyil.core.version>
         <caffine.version>3.1.1</caffine.version>
