@@ -32,6 +32,7 @@ You require the following to build Meteor:
 * Latest stable [OpenJDK 21](https://adoptium.net/)
 * Latest stable [Apache Maven](https://maven.apache.org/)
 * Latest stable [Apache Zookeeper](https://zookeeper.apache.org/)
+* run maven command line `./mvnw clean install -DskipTests -Dcheckstyle.skip=true -U`
 
 Note that this is build-time requirement. JDK-21 is enough to run your Meteor-based application.
 
