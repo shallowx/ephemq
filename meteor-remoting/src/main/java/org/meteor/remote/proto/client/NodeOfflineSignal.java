@@ -10,7 +10,7 @@ public final class NodeOfflineSignal extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.NodeOfflineSignal)
     NodeOfflineSignalOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use NodeOfflineSignal.newBuilder() to construct.
   private NodeOfflineSignal(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -337,8 +337,8 @@ public final class NodeOfflineSignal extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.client.NodeOfflineSignal) {
-            return mergeFrom((org.meteor.remote.proto.client.NodeOfflineSignal) other);
+      if (other instanceof org.meteor.remote.proto.client.NodeOfflineSignal) {
+        return mergeFrom((org.meteor.remote.proto.client.NodeOfflineSignal)other);
       } else {
         super.mergeFrom(other);
         return this;

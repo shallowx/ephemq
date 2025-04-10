@@ -10,7 +10,7 @@ public final class SendMessageResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.SendMessageResponse)
     SendMessageResponseOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use SendMessageResponse.newBuilder() to construct.
   private SendMessageResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -360,8 +360,8 @@ public final class SendMessageResponse extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.SendMessageResponse) {
-            return mergeFrom((org.meteor.remote.proto.server.SendMessageResponse) other);
+      if (other instanceof org.meteor.remote.proto.server.SendMessageResponse) {
+        return mergeFrom((org.meteor.remote.proto.server.SendMessageResponse)other);
       } else {
         super.mergeFrom(other);
         return this;

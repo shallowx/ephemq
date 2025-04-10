@@ -10,7 +10,7 @@ public final class NodeMetadata extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.NodeMetadata)
     NodeMetadataOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use NodeMetadata.newBuilder() to construct.
   private NodeMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -55,8 +55,8 @@ public final class NodeMetadata extends
   @java.lang.Override
   public java.lang.String getClusterName() {
     java.lang.Object ref = clusterName_;
-      if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -73,10 +73,10 @@ public final class NodeMetadata extends
   public com.google.protobuf.ByteString
       getClusterNameBytes() {
     java.lang.Object ref = clusterName_;
-      if (ref instanceof java.lang.String) {
+    if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+              (java.lang.String) ref);
       clusterName_ = b;
       return b;
     } else {
@@ -93,8 +93,8 @@ public final class NodeMetadata extends
   @java.lang.Override
   public java.lang.String getId() {
     java.lang.Object ref = id_;
-      if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -111,10 +111,10 @@ public final class NodeMetadata extends
   public com.google.protobuf.ByteString
       getIdBytes() {
     java.lang.Object ref = id_;
-      if (ref instanceof java.lang.String) {
+    if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+              (java.lang.String) ref);
       id_ = b;
       return b;
     } else {
@@ -131,8 +131,8 @@ public final class NodeMetadata extends
   @java.lang.Override
   public java.lang.String getHost() {
     java.lang.Object ref = host_;
-      if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
@@ -149,10 +149,10 @@ public final class NodeMetadata extends
   public com.google.protobuf.ByteString
       getHostBytes() {
     java.lang.Object ref = host_;
-      if (ref instanceof java.lang.String) {
+    if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+              (java.lang.String) ref);
       host_ = b;
       return b;
     } else {
@@ -465,8 +465,8 @@ public final class NodeMetadata extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.NodeMetadata) {
-            return mergeFrom((org.meteor.remote.proto.NodeMetadata) other);
+      if (other instanceof org.meteor.remote.proto.NodeMetadata) {
+        return mergeFrom((org.meteor.remote.proto.NodeMetadata)other);
       } else {
         super.mergeFrom(other);
         return this;
@@ -576,10 +576,10 @@ public final class NodeMetadata extends
     public com.google.protobuf.ByteString
         getClusterNameBytes() {
       java.lang.Object ref = clusterName_;
-        if (ref instanceof String) {
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
+                (java.lang.String) ref);
         clusterName_ = b;
         return b;
       } else {
@@ -652,10 +652,10 @@ public final class NodeMetadata extends
     public com.google.protobuf.ByteString
         getIdBytes() {
       java.lang.Object ref = id_;
-        if (ref instanceof String) {
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
+                (java.lang.String) ref);
         id_ = b;
         return b;
       } else {
@@ -728,10 +728,10 @@ public final class NodeMetadata extends
     public com.google.protobuf.ByteString
         getHostBytes() {
       java.lang.Object ref = host_;
-        if (ref instanceof String) {
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
+                (java.lang.String) ref);
         host_ = b;
         return b;
       } else {

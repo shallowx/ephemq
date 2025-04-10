@@ -10,7 +10,7 @@ public final class CreateTopicConfigRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.CreateTopicConfigRequest)
     CreateTopicConfigRequestOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use CreateTopicConfigRequest.newBuilder() to construct.
   private CreateTopicConfigRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -385,8 +385,8 @@ public final class CreateTopicConfigRequest extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.CreateTopicConfigRequest) {
-            return mergeFrom((org.meteor.remote.proto.server.CreateTopicConfigRequest) other);
+      if (other instanceof org.meteor.remote.proto.server.CreateTopicConfigRequest) {
+        return mergeFrom((org.meteor.remote.proto.server.CreateTopicConfigRequest)other);
       } else {
         super.mergeFrom(other);
         return this;

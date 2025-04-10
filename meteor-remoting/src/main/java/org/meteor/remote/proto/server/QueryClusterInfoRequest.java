@@ -10,7 +10,7 @@ public final class QueryClusterInfoRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.QueryClusterInfoRequest)
     QueryClusterInfoRequestOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use QueryClusterInfoRequest.newBuilder() to construct.
   private QueryClusterInfoRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -284,8 +284,8 @@ public final class QueryClusterInfoRequest extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.QueryClusterInfoRequest) {
-            return mergeFrom((org.meteor.remote.proto.server.QueryClusterInfoRequest) other);
+      if (other instanceof org.meteor.remote.proto.server.QueryClusterInfoRequest) {
+        return mergeFrom((org.meteor.remote.proto.server.QueryClusterInfoRequest)other);
       } else {
         super.mergeFrom(other);
         return this;

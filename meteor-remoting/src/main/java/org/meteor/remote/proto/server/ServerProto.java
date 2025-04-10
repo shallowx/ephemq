@@ -163,59 +163,59 @@ public final class ServerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-            "\n\014server.proto\022\017meteor.protobuf\032\014meteor." +
-                    "proto\"4\n\022SendMessageRequest\022\016\n\006ledger\030\001 " +
-                    "\001(\005\022\016\n\006marker\030\002 \001(\005\"C\n\023SendMessageRespon" +
-                    "se\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005ind" +
-                    "ex\030\003 \001(\003\"\031\n\027QueryClusterInfoRequest\"J\n\024Q" +
-                    "ueryClusterResponse\0222\n\014cluster_info\030\001 \001(" +
-                    "\0132\034.meteor.protobuf.ClusterInfo\",\n\025Query" +
-                    "TopicInfoRequest\022\023\n\013topic_names\030\001 \003(\t\"\265\001" +
-                    "\n\026QueryTopicInfoResponse\022L\n\013topic_infos\030" +
-                    "\001 \003(\01327.meteor.protobuf.QueryTopicInfoRe" +
-                    "sponse.TopicInfosEntry\032M\n\017TopicInfosEntr" +
-                    "y\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.meteor.p" +
-                    "rotobuf.TopicInfo:\0028\001\"e\n\025ResetSubscribeR" +
-                    "equest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n" +
-                    "\005index\030\003 \001(\003\022\017\n\007markers\030\004 \001(\014\022\r\n\005topic\030\005" +
-                    " \001(\t\"\030\n\026ResetSubscribeResponse\"f\n\025AlterS" +
-                    "ubscribeRequest\022\016\n\006ledger\030\001 \001(\005\022\026\n\016appen" +
-                    "d_markers\030\002 \001(\014\022\026\n\016delete_markers\030\003 \001(\014\022" +
-                    "\r\n\005topic\030\004 \001(\t\"\030\n\026AlterSubscribeResponse" +
-                    "\"6\n\025CleanSubscribeRequest\022\016\n\006ledger\030\001 \001(" +
-                    "\005\022\r\n\005topic\030\002 \001(\t\"\030\n\026CleanSubscribeRespon" +
-                    "se\"\204\001\n\022CreateTopicRequest\022\r\n\005topic\030\001 \001(\t" +
-                    "\022\021\n\tpartition\030\002 \001(\005\022\020\n\010replicas\030\003 \001(\005\022:\n" +
-                    "\007configs\030\004 \001(\0132).meteor.protobuf.CreateT" +
-                    "opicConfigRequest\"}\n\030CreateTopicConfigRe" +
-                    "quest\022\032\n\022segmentRollingSize\030\001 \001(\005\022\032\n\022seg" +
-                    "mentRetainCount\030\002 \001(\005\022\027\n\017segmentRetainMs" +
-                    "\030\003 \001(\005\022\020\n\010allocate\030\004 \001(\010\"\212\001\n\023CreateTopic" +
-                    "Response\022\r\n\005topic\030\001 \001(\t\022\022\n\npartitions\030\002 " +
-                    "\001(\005\022\017\n\007topicId\030\003 \001(\005\022?\n\022partitionsReplic" +
-                    "as\030\004 \003(\0132#.meteor.protobuf.PartitionsRep" +
-                    "licas\"9\n\022PartitionsReplicas\022\021\n\tpartition" +
-                    "\030\001 \001(\005\022\020\n\010replicas\030\002 \003(\t\"#\n\022DeleteTopicR" +
-                    "equest\022\r\n\005topic\030\001 \001(\t\"\025\n\023DeleteTopicResp" +
-                    "onse\"J\n\013SyncRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005e" +
-                    "poch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t" +
-                    "\"\255\001\n\014SyncResponse\0225\n\rcurrentOffset\030\001 \001(\013" +
-                    "2\036.meteor.protobuf.MessageOffset\0222\n\nhead" +
-                    "Offset\030\002 \001(\0132\036.meteor.protobuf.MessageOf" +
-                    "fset\0222\n\ntailOffset\030\003 \001(\0132\036.meteor.protob" +
-                    "uf.MessageOffset\"2\n\021CancelSyncRequest\022\016\n" +
-                    "\006ledger\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"\024\n\022CancelSy" +
-                    "ncResponse\"\034\n\032CalculatePartitionsRequest" +
-                    "\"\242\001\n\033CalculatePartitionsResponse\022P\n\npart" +
-                    "itions\030\001 \003(\0132<.meteor.protobuf.Calculate" +
-                    "PartitionsResponse.PartitionsEntry\0321\n\017Pa" +
-                    "rtitionsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
-                    "\005:\0028\001\"_\n\024MigrateLedgerRequest\022\021\n\tpartiti" +
-                    "on\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\022\020\n\010original\030\003 \001(" +
-                    "\t\022\023\n\013destination\030\004 \001(\t\"9\n\025MigrateLedgerR" +
-                    "esponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(" +
-                    "\tB/\n\036org.meteor.remote.proto.serverB\013Ser" +
-                    "verProtoP\001b\006proto3"
+      "\n\014server.proto\022\017meteor.protobuf\032\014meteor." +
+      "proto\"4\n\022SendMessageRequest\022\016\n\006ledger\030\001 " +
+      "\001(\005\022\016\n\006marker\030\002 \001(\005\"C\n\023SendMessageRespon" +
+      "se\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n\005ind" +
+      "ex\030\003 \001(\003\"\031\n\027QueryClusterInfoRequest\"J\n\024Q" +
+      "ueryClusterResponse\0222\n\014cluster_info\030\001 \001(" +
+      "\0132\034.meteor.protobuf.ClusterInfo\",\n\025Query" +
+      "TopicInfoRequest\022\023\n\013topic_names\030\001 \003(\t\"\265\001" +
+      "\n\026QueryTopicInfoResponse\022L\n\013topic_infos\030" +
+      "\001 \003(\01327.meteor.protobuf.QueryTopicInfoRe" +
+      "sponse.TopicInfosEntry\032M\n\017TopicInfosEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.meteor.p" +
+      "rotobuf.TopicInfo:\0028\001\"e\n\025ResetSubscribeR" +
+      "equest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005epoch\030\002 \001(\005\022\r\n" +
+      "\005index\030\003 \001(\003\022\017\n\007markers\030\004 \001(\014\022\r\n\005topic\030\005" +
+      " \001(\t\"\030\n\026ResetSubscribeResponse\"f\n\025AlterS" +
+      "ubscribeRequest\022\016\n\006ledger\030\001 \001(\005\022\026\n\016appen" +
+      "d_markers\030\002 \001(\014\022\026\n\016delete_markers\030\003 \001(\014\022" +
+      "\r\n\005topic\030\004 \001(\t\"\030\n\026AlterSubscribeResponse" +
+      "\"6\n\025CleanSubscribeRequest\022\016\n\006ledger\030\001 \001(" +
+      "\005\022\r\n\005topic\030\002 \001(\t\"\030\n\026CleanSubscribeRespon" +
+      "se\"\204\001\n\022CreateTopicRequest\022\r\n\005topic\030\001 \001(\t" +
+      "\022\021\n\tpartition\030\002 \001(\005\022\020\n\010replicas\030\003 \001(\005\022:\n" +
+      "\007configs\030\004 \001(\0132).meteor.protobuf.CreateT" +
+      "opicConfigRequest\"}\n\030CreateTopicConfigRe" +
+      "quest\022\032\n\022segmentRollingSize\030\001 \001(\005\022\032\n\022seg" +
+      "mentRetainCount\030\002 \001(\005\022\027\n\017segmentRetainMs" +
+      "\030\003 \001(\005\022\020\n\010allocate\030\004 \001(\010\"\212\001\n\023CreateTopic" +
+      "Response\022\r\n\005topic\030\001 \001(\t\022\022\n\npartitions\030\002 " +
+      "\001(\005\022\017\n\007topicId\030\003 \001(\005\022?\n\022partitionsReplic" +
+      "as\030\004 \003(\0132#.meteor.protobuf.PartitionsRep" +
+      "licas\"9\n\022PartitionsReplicas\022\021\n\tpartition" +
+      "\030\001 \001(\005\022\020\n\010replicas\030\002 \003(\t\"#\n\022DeleteTopicR" +
+      "equest\022\r\n\005topic\030\001 \001(\t\"\025\n\023DeleteTopicResp" +
+      "onse\"J\n\013SyncRequest\022\016\n\006ledger\030\001 \001(\005\022\r\n\005e" +
+      "poch\030\002 \001(\005\022\r\n\005index\030\003 \001(\003\022\r\n\005topic\030\004 \001(\t" +
+      "\"\255\001\n\014SyncResponse\0225\n\rcurrentOffset\030\001 \001(\013" +
+      "2\036.meteor.protobuf.MessageOffset\0222\n\nhead" +
+      "Offset\030\002 \001(\0132\036.meteor.protobuf.MessageOf" +
+      "fset\0222\n\ntailOffset\030\003 \001(\0132\036.meteor.protob" +
+      "uf.MessageOffset\"2\n\021CancelSyncRequest\022\016\n" +
+      "\006ledger\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\"\024\n\022CancelSy" +
+      "ncResponse\"\034\n\032CalculatePartitionsRequest" +
+      "\"\242\001\n\033CalculatePartitionsResponse\022P\n\npart" +
+      "itions\030\001 \003(\0132<.meteor.protobuf.Calculate" +
+      "PartitionsResponse.PartitionsEntry\0321\n\017Pa" +
+      "rtitionsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
+      "\005:\0028\001\"_\n\024MigrateLedgerRequest\022\021\n\tpartiti" +
+      "on\030\001 \001(\005\022\r\n\005topic\030\002 \001(\t\022\020\n\010original\030\003 \001(" +
+      "\t\022\023\n\013destination\030\004 \001(\t\"9\n\025MigrateLedgerR" +
+      "esponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(" +
+      "\tB/\n\036org.meteor.remote.proto.serverB\013Ser" +
+      "verProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -223,7 +223,7 @@ public final class ServerProto {
           org.meteor.remote.proto.MessageMetadataProto.getDescriptor(),
         });
     internal_static_meteor_protobuf_SendMessageRequest_descriptor =
-            getDescriptor().getMessageTypes().get(0);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_meteor_protobuf_SendMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_meteor_protobuf_SendMessageRequest_descriptor,
@@ -259,7 +259,7 @@ public final class ServerProto {
         internal_static_meteor_protobuf_QueryTopicInfoResponse_descriptor,
         new java.lang.String[] { "TopicInfos", });
     internal_static_meteor_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor =
-            internal_static_meteor_protobuf_QueryTopicInfoResponse_descriptor.getNestedTypes().get(0);
+      internal_static_meteor_protobuf_QueryTopicInfoResponse_descriptor.getNestedTypes().get(0);
     internal_static_meteor_protobuf_QueryTopicInfoResponse_TopicInfosEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_meteor_protobuf_QueryTopicInfoResponse_TopicInfosEntry_descriptor,
@@ -373,7 +373,7 @@ public final class ServerProto {
         internal_static_meteor_protobuf_CalculatePartitionsResponse_descriptor,
         new java.lang.String[] { "Partitions", });
     internal_static_meteor_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor =
-            internal_static_meteor_protobuf_CalculatePartitionsResponse_descriptor.getNestedTypes().get(0);
+      internal_static_meteor_protobuf_CalculatePartitionsResponse_descriptor.getNestedTypes().get(0);
     internal_static_meteor_protobuf_CalculatePartitionsResponse_PartitionsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_meteor_protobuf_CalculatePartitionsResponse_PartitionsEntry_descriptor,

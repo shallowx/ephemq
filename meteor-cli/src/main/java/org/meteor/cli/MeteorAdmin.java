@@ -5,7 +5,6 @@ import org.meteor.cli.cluster.ClusterListCommand;
 import org.meteor.cli.ledger.MigrateLedgerCommand;
 import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.support.Command;
-import org.meteor.cli.support.MeteorHelpFormatter;
 import org.meteor.cli.topic.TopicCreatedCommand;
 import org.meteor.cli.topic.TopicDeletedCommand;
 import org.meteor.cli.topic.TopicListCommand;

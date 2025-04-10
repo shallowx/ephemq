@@ -10,7 +10,7 @@ public final class CalculatePartitionsRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.CalculatePartitionsRequest)
     CalculatePartitionsRequestOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use CalculatePartitionsRequest.newBuilder() to construct.
   private CalculatePartitionsRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -284,8 +284,8 @@ public final class CalculatePartitionsRequest extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.CalculatePartitionsRequest) {
-            return mergeFrom((org.meteor.remote.proto.server.CalculatePartitionsRequest) other);
+      if (other instanceof org.meteor.remote.proto.server.CalculatePartitionsRequest) {
+        return mergeFrom((org.meteor.remote.proto.server.CalculatePartitionsRequest)other);
       } else {
         super.mergeFrom(other);
         return this;

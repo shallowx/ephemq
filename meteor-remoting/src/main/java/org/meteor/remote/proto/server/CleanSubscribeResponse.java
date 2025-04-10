@@ -10,7 +10,7 @@ public final class CleanSubscribeResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:meteor.protobuf.CleanSubscribeResponse)
     CleanSubscribeResponseOrBuilder {
-    private static final long serialVersionUID = 0L;
+private static final long serialVersionUID = 0L;
   // Use CleanSubscribeResponse.newBuilder() to construct.
   private CleanSubscribeResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -284,8 +284,8 @@ public final class CleanSubscribeResponse extends
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.meteor.remote.proto.server.CleanSubscribeResponse) {
-            return mergeFrom((org.meteor.remote.proto.server.CleanSubscribeResponse) other);
+      if (other instanceof org.meteor.remote.proto.server.CleanSubscribeResponse) {
+        return mergeFrom((org.meteor.remote.proto.server.CleanSubscribeResponse)other);
       } else {
         super.mergeFrom(other);
         return this;
