@@ -6,11 +6,11 @@ import org.apache.zookeeper.data.Stat;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
-import org.meteor.internal.ZookeeperClientFactory;
+import org.meteor.zookeeper.ZookeeperClientFactory;
 import org.meteor.listener.ClusterListener;
 import org.meteor.proxy.core.ProxyConfig;
 import org.meteor.proxy.core.ProxyServerConfig;
-import org.meteor.support.ZookeeperClusterManager;
+import org.meteor.zookeeper.ZookeeperClusterManager;
 
 /**
  * ZookeeperProxyClusterManager is a specialized cluster manager that manages

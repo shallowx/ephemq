@@ -1,4 +1,4 @@
-package org.meteor.support;
+package org.meteor.zookeeper;
 
 /**
  * This class defines a set of constants representing various paths used for broker and topic

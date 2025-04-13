@@ -1,4 +1,4 @@
-package org.meteor.support;
+package org.meteor.ledger;
 
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -11,14 +11,13 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.common.thread.FastEventExecutor;
-import org.meteor.ledger.Log;
-import org.meteor.ledger.LogHandler;
 import org.meteor.remote.exception.RemotingException;
 import org.meteor.remote.proto.MessageOffset;
 import org.meteor.remote.proto.server.CancelSyncRequest;
 import org.meteor.remote.proto.server.CancelSyncResponse;
 import org.meteor.remote.proto.server.SyncRequest;
 import org.meteor.remote.proto.server.SyncResponse;
+import org.meteor.support.Manager;
 
 /**
  * The ParticipantSupport class provides methods to manage participant subscriptions

@@ -22,7 +22,7 @@ import org.meteor.proxy.remoting.MeteorProxyServer;
 import org.meteor.proxy.remoting.ProxySocketServer;
 import org.meteor.proxy.support.ProxyDefaultManager;
 import org.meteor.support.Manager;
-import org.meteor.thread.ShutdownHookThread;
+import org.meteor.support.ShutdownHookThread;
 
 /**
  * The MeteorProxy class is responsible for starting and configuring the

@@ -1,4 +1,4 @@
-package org.meteor.internal;
+package org.meteor.zookeeper;
 
 /**
  * The {@code CorrelationIdConstants} class defines a set of constants used

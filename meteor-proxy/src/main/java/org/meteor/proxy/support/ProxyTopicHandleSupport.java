@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.meteor.client.core.ClientChannel;
 import org.meteor.remote.proto.TopicInfo;
-import org.meteor.support.TopicHandleSupport;
+import org.meteor.zookeeper.TopicHandleSupport;
 
 /**
  * Interface ProxyTopicHandleSupport extends TopicHandleSupport with additional

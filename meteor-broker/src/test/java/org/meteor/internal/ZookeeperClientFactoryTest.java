@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.meteor.config.ZookeeperConfig;
+import org.meteor.zookeeper.ZookeeperClientFactory;
 
 import java.util.Properties;
 

@@ -10,7 +10,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.config.ServerConfig;
 import org.meteor.internal.InternalClient;
 import org.meteor.internal.InternalClientListener;
-import org.meteor.internal.ZookeeperClientFactory;
+import org.meteor.zookeeper.*;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.*;
 import org.meteor.remote.util.NetworkUtil;

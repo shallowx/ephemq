@@ -19,8 +19,8 @@ import org.meteor.remote.proto.TopicInfo;
 import org.meteor.remote.proto.server.QueryTopicInfoRequest;
 import org.meteor.remote.proto.server.QueryTopicInfoResponse;
 import org.meteor.support.Manager;
-import org.meteor.support.ParticipantSupport;
-import org.meteor.support.ZookeeperTopicHandleSupport;
+import org.meteor.ledger.ParticipantSupport;
+import org.meteor.zookeeper.ZookeeperTopicHandleSupport;
 
 /**
  * ZookeeperProxyTopicHandleSupport is a class that extends ZookeeperTopicHandleSupport and implements

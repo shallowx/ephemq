@@ -13,7 +13,7 @@ import org.meteor.client.core.ClientChannel;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
-import org.meteor.internal.ZookeeperClientFactory;
+import org.meteor.zookeeper.ZookeeperClientFactory;
 import org.meteor.ledger.Log;
 import org.meteor.proxy.core.ProxyConfig;
 import org.meteor.proxy.core.ProxyLog;

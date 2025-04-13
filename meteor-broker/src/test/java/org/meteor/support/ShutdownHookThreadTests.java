@@ -1,4 +1,4 @@
-package org.meteor.thread;
+package org.meteor.support;
 
 
 public class ShutdownHookThreadTests {

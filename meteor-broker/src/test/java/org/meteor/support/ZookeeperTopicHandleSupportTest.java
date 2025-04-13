@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.ServerConfig;
-import org.meteor.internal.CorrelationIdConstants;
+import org.meteor.zookeeper.CorrelationIdConstants;
+import org.meteor.zookeeper.TopicHandleSupport;
 
 import java.util.Iterator;
 import java.util.Map;

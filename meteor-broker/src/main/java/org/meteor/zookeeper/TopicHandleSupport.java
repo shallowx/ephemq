@@ -1,4 +1,4 @@
-package org.meteor.support;
+package org.meteor.zookeeper;
 
 import java.util.List;
 import java.util.Map;
@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import org.meteor.common.message.PartitionInfo;
 import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
+import org.meteor.ledger.ParticipantSupport;
 import org.meteor.listener.TopicListener;
 
 /**

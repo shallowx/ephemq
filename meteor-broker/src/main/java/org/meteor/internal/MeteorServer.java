@@ -14,7 +14,7 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.listener.ServerListener;
 import org.meteor.remoting.DefaultSocketServer;
-import org.meteor.support.ClusterManager;
+import org.meteor.zookeeper.ClusterManager;
 import org.meteor.support.Manager;
 
 /**

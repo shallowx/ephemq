@@ -1,4 +1,4 @@
-package org.meteor.internal;
+package org.meteor.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;

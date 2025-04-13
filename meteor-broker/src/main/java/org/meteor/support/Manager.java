@@ -8,6 +8,8 @@ import org.meteor.client.core.Client;
 import org.meteor.ledger.LogHandler;
 import org.meteor.listener.APIListener;
 import org.meteor.listener.MetricsListener;
+import org.meteor.zookeeper.ClusterManager;
+import org.meteor.zookeeper.TopicHandleSupport;
 
 /**
  * The Manager interface represents a managerial contract for handling various server components and their interactions.

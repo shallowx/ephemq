@@ -1,4 +1,4 @@
-package org.meteor.support;
+package org.meteor.zookeeper;
 
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Promise;
@@ -16,7 +16,9 @@ import org.meteor.common.message.TopicAssignment;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ZookeeperConfig;
-import org.meteor.internal.ZookeeperClientFactory;
+import org.meteor.support.Manager;
+import org.meteor.ledger.ParticipantSupport;
+import org.meteor.support.SerializeFeatureSupport;
 import org.meteor.ledger.Log;
 import org.meteor.listener.TopicListener;
 import org.meteor.remote.proto.server.SyncResponse;

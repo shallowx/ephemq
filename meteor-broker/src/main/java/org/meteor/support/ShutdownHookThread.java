@@ -1,4 +1,4 @@
-package org.meteor.thread;
+package org.meteor.support;
 
 import java.util.concurrent.Callable;
 import org.meteor.common.logging.InternalLogger;

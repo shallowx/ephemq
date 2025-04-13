@@ -1,4 +1,4 @@
-package org.meteor.support;
+package org.meteor.zookeeper;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.curator.framework.CuratorFramework;
@@ -16,7 +16,8 @@ import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Node;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.ServerConfig;
-import org.meteor.internal.ZookeeperClientFactory;
+import org.meteor.support.ConsistentHashingRing;
+import org.meteor.support.SerializeFeatureSupport;
 import org.meteor.listener.ClusterListener;
 
 import java.util.ArrayList;

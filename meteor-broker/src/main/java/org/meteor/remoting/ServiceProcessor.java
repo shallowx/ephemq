@@ -19,7 +19,7 @@ import org.meteor.common.message.TopicConfig;
 import org.meteor.common.message.TopicPartition;
 import org.meteor.config.CommonConfig;
 import org.meteor.config.NetworkConfig;
-import org.meteor.internal.CorrelationIdConstants;
+import org.meteor.zookeeper.CorrelationIdConstants;
 import org.meteor.ledger.Log;
 import org.meteor.listener.APIListener;
 import org.meteor.remote.exception.RemotingException;
@@ -31,7 +31,7 @@ import org.meteor.remote.proto.server.*;
 import org.meteor.remote.util.NetworkUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
-import org.meteor.support.TopicHandleSupport;
+import org.meteor.zookeeper.TopicHandleSupport;
 
 import java.net.InetSocketAddress;
 import java.util.HashSet;

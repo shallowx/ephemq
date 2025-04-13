@@ -19,7 +19,7 @@ import org.meteor.listener.MetricsListener;
 import org.meteor.remoting.DefaultSocketServer;
 import org.meteor.support.DefaultMeteorManager;
 import org.meteor.support.Manager;
-import org.meteor.thread.ShutdownHookThread;
+import org.meteor.support.ShutdownHookThread;
 
 public class Meteor {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(Meteor.class);

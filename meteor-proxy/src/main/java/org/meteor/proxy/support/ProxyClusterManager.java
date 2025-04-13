@@ -1,7 +1,7 @@
 package org.meteor.proxy.support;
 
 import java.util.Set;
-import org.meteor.support.ClusterManager;
+import org.meteor.zookeeper.ClusterManager;
 
 /**
  * ProxyClusterManager extends the ClusterManager interface and provides additional

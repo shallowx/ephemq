@@ -30,7 +30,7 @@ import org.meteor.remote.proto.server.SyncResponse;
 import org.meteor.remote.util.ByteBufUtil;
 import org.meteor.remote.util.ProtoBufUtil;
 import org.meteor.support.Manager;
-import org.meteor.support.TopicHandleSupport;
+import org.meteor.zookeeper.TopicHandleSupport;
 
 import java.util.List;
 import java.util.Objects;
