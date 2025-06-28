@@ -46,7 +46,7 @@ public class ZookeeperClientFactory {
             }
 
             if (logger.isInfoEnabled()) {
-                logger.info(STR."Using url[\{url}] as zookeeper address");
+                logger.info("Using Zookeeper cluster address [{}]", url);
             }
             CuratorFramework client = CuratorFrameworkFactory.builder()
                     .connectString(url)

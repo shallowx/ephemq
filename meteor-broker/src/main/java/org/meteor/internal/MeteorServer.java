@@ -137,8 +137,7 @@ public class MeteorServer {
             socketServerExecutor.shutdown();
             boolean shutdown = socketServerExecutor.awaitTermination(30, TimeUnit.SECONDS);
             if (logger.isInfoEnabled()) {
-                logger.info(shutdown ? "All tasks was finished successfully" :
-                        "Some tasks might still be running after 30 seconds");
+                logger.info(shutdown ? "All tasks was finished successfully" : "Some tasks might still be running after 30 seconds");
             }
         }
     }

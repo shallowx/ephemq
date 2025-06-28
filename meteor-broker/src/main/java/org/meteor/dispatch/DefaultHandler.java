@@ -91,6 +91,6 @@ final class DefaultHandler extends AbstractHandler<DefaultSynchronization, Defau
      */
     @Override
     public String toString() {
-        return STR."(subscriptionMarkers=\{subscriptionMarkers}, subscriptionChannels=\{subscriptionChannels}, triggered=\{triggered}, dispatchExecutor=\{dispatchExecutor}, followOffset=\{followOffset}, followCursor=\{followCursor})";
+        return "DefaultHandler (subscriptionMarkers=%s, subscriptionChannels=%s, triggered=%s, dispatchExecutor=%s, followOffset=%s, followCursor=%s)".formatted(subscriptionMarkers, subscriptionChannels, triggered, dispatchExecutor, followOffset, followCursor);
     }
 }

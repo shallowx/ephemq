@@ -329,7 +329,7 @@ public class ChunkDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug("[:: handler:{}, baseOffset:{}, nextOffset:{}, runtimes:{}] - Chunk met discontinuous message", handler, lastOffset, startOffset, runTimes);
+                        logger.debug("Chunk met discontinuous message - [handler:{}, baseOffset:{}, nextOffset:{}, runtimes:{}]", handler, lastOffset, startOffset, runTimes);
                     }
 
                     lastOffset = endOffset;
@@ -362,7 +362,7 @@ public class ChunkDispatcher {
                     }
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("[:: handler:{}, lastOffset:{}] - Chunk dispatch failed", handler, lastOffset, e);
+                        logger.error("Chunk dispatch failed - [handler:{}, lastOffset:{}]", handler, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -375,7 +375,7 @@ public class ChunkDispatcher {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("[:: handler:{}, lastOffset:{}] - Chunk dispatch failed", handler, lastOffset, e);
+                logger.error("Chunk dispatch failed - [handler:{}, lastOffset:{}]", handler, lastOffset, e);
             }
         } finally {
             handler.triggered.set(false);
@@ -418,9 +418,7 @@ public class ChunkDispatcher {
             return buf;
         } catch (Exception e) {
             ByteBufUtil.release(buf);
-            throw new ChunkDispatchException(
-                    STR."[:: ledger:\{ledger}, topic:\{topic}, startOffset:\{startOffset}, ednOffset:\{endOffset}, length:\{chunk.data()
-                            .readableBytes()}] - Build payload error");
+            throw new ChunkDispatchException(String.format("Build payload error - [ledger: %d, topic: %s, startOffset: %s, ednOffset: %s, length: %s}]", ledger, topic, startOffset, endOffset, chunk.data().readableBytes()));
         }
     }
 
@@ -436,7 +434,7 @@ public class ChunkDispatcher {
                 counter.accept(count);
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("[:: ledger:{}, topic:{}] - Chunk count failed", ledger, topic, e);
+                    logger.error("Chunk count failed - [ledger:{}, topic:{}]", ledger, topic, e);
                 }
             }
         }
@@ -512,10 +510,7 @@ public class ChunkDispatcher {
                     }
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug(
-                                "[:: pursueTask:{}, baseOffset:{}, nextOffset:{}, runtimes:{}] - Chunk met "
-                                        + "discontinuous message",
-                                pursueTask, lastOffset, startOffset, runtimes);
+                        logger.debug("Chunk met discontinuous message - [pursueTask:{}, baseOffset:{}, nextOffset:{}, runtimes:{}]", pursueTask, lastOffset, startOffset, runtimes);
                     }
 
                     lastOffset = endOffset;
@@ -532,8 +527,7 @@ public class ChunkDispatcher {
                     }
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("[:: pursueTask:{}, lastOffset:{}] - Chunk pursue failed", pursueTask, lastOffset,
-                                e);
+                        logger.error("Chunk pursue failed - [pursueTask:{}, lastOffset:{}] ", pursueTask, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -547,7 +541,7 @@ public class ChunkDispatcher {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("[:: pursueTask:{}, lastOffset:{}] - Chunk pursue failed", pursueTask, lastOffset, e);
+                logger.error("Chunk pursue failed - [pursueTask:{}, lastOffset:{}] ", pursueTask, lastOffset, e);
             }
         }
 
@@ -630,11 +624,7 @@ public class ChunkDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug(
-                                "[:: pursueTask:{}, baseOffset:{}, nextOffset:{}, runtimes:{}] - Chunk met "
-                                        + "discontinuous message",
-                                pursueTask, lastOffset, startOffset, runtimes);
-                    }
+                        logger.debug("Chunk met discontinuous message - [pursueTask:{}, baseOffset:{}, nextOffset:{}, runtimes:{}]", pursueTask, lastOffset, startOffset, runtimes);                    }
                     if (startOffset.after(alignOffset)) {
                         synchronization.followed = true;
                         compute(count);
@@ -655,8 +645,7 @@ public class ChunkDispatcher {
                     }
                 } catch (Exception e) {
                     if (logger.isErrorEnabled()) {
-                        logger.error("[:: pursueTask:{}, lastOffset:{}] - Chunk align failed", pursueTask, lastOffset,
-                                e);
+                        logger.error("Chunk align failed - [pursueTask:{}, lastOffset:{}]", pursueTask, lastOffset, e);
                     }
                 } finally {
                     ByteBufUtil.release(chunk.data());
@@ -670,7 +659,7 @@ public class ChunkDispatcher {
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("[:: pursueTask:{}, lastOffset:{}] - Chunk align failed", pursueTask, lastOffset, e);
+                logger.error("Chunk align failed - [pursueTask:{}, lastOffset:{}]", pursueTask, lastOffset, e);
             }
         }
 

@@ -46,6 +46,6 @@ final class DefaultSynchronization extends AbstractSynchronization<DefaultHandle
      */
     @Override
     public String toString() {
-        return STR."(markers=\{markers}, channel=\{channel}, handler=\{handler}, dispatchOffset=\{dispatchOffset}, followed=\{followed})";
+        return "DefaultSynchronization (markers=%s, channel=%s, handler=%s, dispatchOffset=%s, followed=%s)".formatted(markers, channel, handler, dispatchOffset, followed);
     }
 }

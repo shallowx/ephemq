@@ -139,7 +139,7 @@ public class DefaultClusterListener implements ClusterListener {
         } catch (Exception e) {
             ByteBufUtil.release(buf);
             if (logger.isErrorEnabled()) {
-                logger.error(STR."[:: channel:\{channel}]Send server offline failed,", e);
+                logger.error("Send server offline failed - channel[{}]", channel, e);
             }
         }
     }

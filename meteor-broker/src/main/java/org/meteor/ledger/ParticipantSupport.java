@@ -70,7 +70,7 @@ public class ParticipantSupport {
         Log log = manager.getLogHandler().getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemotingException.of(
-                    RemotingException.Failure.PROCESS_EXCEPTION, STR."The ledger[\{ledger}] not found"));
+                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -123,7 +123,7 @@ public class ParticipantSupport {
             Log log = manager.getLogHandler().getLog(ledger);
             if (log == null) {
                 promise.tryFailure(RemotingException.of(
-                        RemotingException.Failure.PROCESS_EXCEPTION, STR."The ledger[\{ledger}] not found"));
+                        RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
                 return;
             }
             if (logger.isInfoEnabled()) {

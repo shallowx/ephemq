@@ -210,7 +210,7 @@ public class LedgerSegment {
                 theBuffer.writeInt(length);
             } catch (Throwable t) {
                 theBuffer.writerIndex(location);
-                throw new IllegalStateException(STR."[ledger:\{ledger}]Segment write in buffer error", t);
+                throw new IllegalStateException(String.format("Segment write in buffer error - ledger[%d]", ledger), t);
             }
 
             lastOffset = offset;
@@ -219,7 +219,7 @@ public class LedgerSegment {
             return;
         }
 
-        throw new IllegalStateException(STR."[ledger:\{ledger}]Segment was released");
+        throw new IllegalStateException(String.format("Segment was released - ledger[%d]", ledger));
     }
 
     /**
@@ -237,7 +237,7 @@ public class LedgerSegment {
         }
 
         if (logger.isWarnEnabled()) {
-            logger.warn("[ledger:{}]The record is empty", ledger);
+            logger.warn("The ledger[{}] record is empty", ledger);
         }
         return null;
     }

@@ -30,6 +30,6 @@ final class ChunkSynchronization extends AbstractSynchronization<ChunkHandler> {
      */
     @Override
     public String toString() {
-        return STR."(, channel=\{channel}, handler=\{handler}, dispatchOffset=\{dispatchOffset}, followed=\{followed})";
+        return "ChunkSynchronization (channel=%s, handler=%s, dispatchOffset=%s, followed=%s)".formatted(channel, handler, dispatchOffset, followed);
     }
 }

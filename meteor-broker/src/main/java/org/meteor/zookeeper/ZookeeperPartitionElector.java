@@ -245,10 +245,8 @@ public final class ZookeeperPartitionElector {
      * 6. If it's a part of the replica set, log the info and synchronize with the leader's state.
      * 7. Log the leader's ID after successful synchronization.
      * 8. In case of an exception, schedule a retry and log errors if retries fail.
-     *
      * This method is designed for internal use within the ZookeeperPartitionElector class.
      *
-     * @throws Exception if the synchronization process or data retrieval fails, an exception is caught and logged.
      */
     private void trySyncLeader() {
         EventExecutor poolExecutor = getPoolExecutor(topicPartition);

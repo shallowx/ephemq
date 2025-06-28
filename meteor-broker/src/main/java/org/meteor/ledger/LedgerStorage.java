@@ -353,8 +353,7 @@ public class LedgerStorage {
                 trigger.onRelease(ledger, oldHead, newHead);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
-                    logger.warn("[:: topic:{}, old_offset:{}, new_offset:{}]Trigger on release failed", topic, oldHead,
-                            newHead);
+                    logger.warn("Trigger on release failed - [topic:{}, old_offset:{}, new_offset:{}]", topic, oldHead, newHead);
                 }
             }
         }
@@ -497,7 +496,7 @@ public class LedgerStorage {
      */
     private void checkActive() {
         if (!isActive()) {
-            throw new IllegalStateException(STR."Ledger[\{ledger}] storage is inactive");
+            throw new IllegalStateException(String.format("storage is inactive - ledger[%sd)", ledger));
         }
     }
 
@@ -617,9 +616,7 @@ public class LedgerStorage {
             final Offset startOffset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
             if (logger.isDebugEnabled() && !MessageUtil.isContinuous(lastOffset, startOffset)) {
                 logger.debug(
-                        "[:: ledger:{}, topic:{}, lastOffset:{}, startOffset:{}]Received append chunk message from {}"
-                                + " is discontinuous",
-                        ledger, topic, lastOffset, startOffset, channel);
+                        "Received append chunk message from channel[{}] is discontinuous - [ledger:{}, topic:{}, lastOffset:{}, startOffset:{}]", channel, ledger, topic, lastOffset, startOffset);
             }
             if (!startOffset.after(lastOffset)) {
                 for (int i = 0; i < count; i++) {
@@ -628,7 +625,7 @@ public class LedgerStorage {
                     final Offset offset = new Offset(buf.getInt(location + 8), buf.getLong(location + 12));
                     if (!offset.after(lastOffset)) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("[:: offset:{}, lastOffset:{}]Ignore duplicate message", offset, lastOffset);
+                            logger.debug("Ignore duplicate message - [offset:{}, lastOffset:{}]", offset, lastOffset);
                         }
                         buf.skipBytes(bytes);
                         continue;

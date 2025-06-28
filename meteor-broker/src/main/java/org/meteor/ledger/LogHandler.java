@@ -138,7 +138,7 @@ public class LogHandler {
         Log log = getLog(ledger);
         if (log == null) {
             promise.tryFailure(RemotingException.of(
-                    RemotingException.Failure.PROCESS_EXCEPTION, STR."Ledger[\{ledger}] not found"));
+                    RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -174,8 +174,7 @@ public class LogHandler {
     public void resetSubscribe(int ledger, int epoch, long index, Channel channel, IntCollection markers, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemotingException.of(
-                    RemotingException.Failure.PROCESS_EXCEPTION, STR."Ledger[\{ledger}] not found"));
+            promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 
@@ -293,8 +292,7 @@ public class LogHandler {
     public void saveSyncData(Channel channel, int ledger, int count, ByteBuf data, Promise<Integer> promise) {
         Log log = getLog(ledger);
         if (log == null) {
-            promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
-                    STR."Ledger[\{ledger}] not found"));
+            promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION, String.format("Ledger[%d] ot found", ledger)));
             return;
         }
 

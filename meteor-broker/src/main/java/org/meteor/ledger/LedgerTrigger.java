@@ -16,7 +16,7 @@ public interface LedgerTrigger {
      * @param recordCount the number of records appended to the ledger.
      * @param lastOffset  the offset of the last appended record.
      */
-    void onAppend(int ledgerId, int recordCount, Offset lasetOffset);
+    void onAppend(int ledgerId, int recordCount, Offset lastOffset);
 
     /**
      * Invoked when a portion of the ledger is released.

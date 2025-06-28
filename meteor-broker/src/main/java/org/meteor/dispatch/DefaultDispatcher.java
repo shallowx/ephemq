@@ -313,8 +313,7 @@ public class DefaultDispatcher {
                     channelSubscriptionMap == null ? null : channelSubscriptionMap.get(channel);
             if (subscription == null) {
                 promise.tryFailure(
-                        new DefaultDispatchException(
-                                "Channel<%s> alter is invalid".formatted(channel.toString())));
+                        new DefaultDispatchException("Channel<%s> alter is invalid".formatted(channel.toString())));
                 return;
             }
 

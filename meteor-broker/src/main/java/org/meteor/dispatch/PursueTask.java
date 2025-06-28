@@ -106,6 +106,6 @@ final class PursueTask<T> {
      */
     @Override
     public String toString() {
-        return STR."(subscription=\{subscription}, cursor=\{cursor}, pursueTimeMillis=\{pursueTimeMillis}, pursueOffset=\{pursueOffset})";
+        return "PursueTask (subscription=%s, cursor=%s, pursueTimeMillis=%d, pursueOffset=%s)".formatted(subscription, cursor, pursueTimeMillis, pursueOffset);
     }
 }

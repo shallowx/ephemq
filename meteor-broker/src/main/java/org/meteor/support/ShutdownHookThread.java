@@ -74,7 +74,7 @@ public class ShutdownHookThread {
 
                 long consumingTime = System.currentTimeMillis() - begin;
                 if (logger.isInfoEnabled()) {
-                    logger.info(STR."Shutdown hook over, consumed time(ms)[\{consumingTime}]");
+                    logger.info("Shutdown hook over and consumed time(ms) {}",  consumingTime);
                 }
             }
         }

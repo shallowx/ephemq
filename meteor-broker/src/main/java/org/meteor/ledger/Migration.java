@@ -1,5 +1,6 @@
 package org.meteor.ledger;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.meteor.client.core.ClientChannel;
 
 /**
@@ -12,7 +13,8 @@ import org.meteor.client.core.ClientChannel;
 public record Migration(int ledger, ClientChannel channel) {
 
     @Override
+    @NonNull
     public String toString() {
-        return STR."(ledger=\{ledger}, channel=\{channel})";
+        return "Migration (ledger=%d, channel=%s)".formatted(ledger, channel);
     }
 }
