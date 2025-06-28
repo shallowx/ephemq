@@ -329,10 +329,7 @@ public class ChunkDispatcher {
 
                     Offset startOffset = chunk.getStartOffset();
                     if (!MessageUtil.isContinuous(lastOffset, startOffset) && logger.isDebugEnabled()) {
-                        logger.debug(
-                                "[:: handler:{}, baseOffset:{}, nextOffset:{}, runtimes:{}] - Chunk met discontinuous"
-                                        + " message",
-                                handler, lastOffset, startOffset, runTimes);
+                        logger.debug("[:: handler:{}, baseOffset:{}, nextOffset:{}, runtimes:{}] - Chunk met discontinuous message", handler, lastOffset, startOffset, runTimes);
                     }
 
                     lastOffset = endOffset;

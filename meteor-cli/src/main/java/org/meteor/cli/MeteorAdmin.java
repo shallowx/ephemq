@@ -153,7 +153,7 @@ public class MeteorAdmin {
      * @param options the command line options associated with the command
      */
     private static void printCmdHelp(String help, Options options) {
-        MeteorHelpFormatter hf = new MeteorHelpFormatter();
+        HelpFormatter hf = new HelpFormatter();
         hf.setWidth(110);
         hf.printHelp(help, options, false);
     }
