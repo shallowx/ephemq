@@ -5,6 +5,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.support.Command;
 import org.meteor.cli.support.CommandException;
 import org.meteor.cli.support.FormatPrint;
@@ -111,8 +112,7 @@ public class TopicListCommand implements Command {
                     topicInfos = client.queryTopicInfos(clientChannel);
                 }
                 if (topicInfos == null || topicInfos.isEmpty()) {
-                    System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
-                            .getName()}] INFO \{TopicListCommand.class.getName()} - Topic info is empty");
+                    System.out.printf("%s %s INFO %s - Topic info is empty", currentTime(), Thread.currentThread().getName(), TopicListCommand.class.getName());
                     return;
                 }
 
@@ -145,8 +145,7 @@ public class TopicListCommand implements Command {
                         "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Throwable t) {
-            System.err.println(STR."\{currentTime()} [\{Thread.currentThread()
-                    .getName()}] ERROR \{TopicListCommand.class.getName()} - \{t.getMessage()}");
+            System.out.printf("%s %s ERROR - %s - %s", currentTime(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), t.getMessage());
             throw new CommandException("Execution query topic infos command[topics] failed", t);
         }
     }
@@ -325,7 +324,7 @@ public class TopicListCommand implements Command {
          */
         @Override
         public String toString() {
-            return STR."(topic='\{topic}', partition=\{partition}, ledger=\{ledger}, epoch=\{epoch}, leader='\{leader}', replicas=\{replicas})";
+            return "TopicMetadata (topic='%s', partition=%d, ledger=%d, epoch=%d, leader='%s', replicas=%s)".formatted(topic, partition, ledger, epoch, leader, replicas);
         }
     }
 }

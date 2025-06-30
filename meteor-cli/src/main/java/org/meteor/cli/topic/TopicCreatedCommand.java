@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
+import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.support.Command;
 import org.meteor.cli.support.CommandException;
 import org.meteor.cli.support.FormatPrint;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
  * | test_topic_00001 | 10        | 1        |            | {0=[meteor], 1=[meteor], 2=[meteor], 3=[meteor], 4=[meteor],
  * 5=[meteor], 6=[meteor], 7=[meteor], 8=[meteor], 9=[meteor]} |
  * +------------------+-----------+----------+------------+--------------------------------------------------------------------------------------------------------------------------+
- *
+
  * +------------------+-----------+----------+-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+
  * | topic            | partition | replicas | partitions
  *                       | config
@@ -139,8 +140,7 @@ public class TopicCreatedCommand implements Command {
                         "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Exception e) {
-            System.err.println(STR."\{currentTime()} [\{Thread.currentThread()
-                    .getName()}] ERROR \{TopicCreatedCommand.class.getName()} - \{e.getMessage()}");
+            System.out.printf("%s %s ERROR - %s - %s", currentTime(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), e.getMessage());
             throw new CommandException("Execution create topic command[ct] failed", e);
         }
     }
@@ -319,7 +319,7 @@ public class TopicCreatedCommand implements Command {
          */
         @Override
         public String toString() {
-            return STR."(topic='\{topic}', partition=\{partition}, replicas=\{replicas}, config=\{config}, partitions=\{partitions})";
+            return "TopicMetadata (topic='%s', partition=%d, replicas=%d, config=%s, partitions=%s)".formatted(topic, partition, replicas, config, partitions);
         }
     }
 }

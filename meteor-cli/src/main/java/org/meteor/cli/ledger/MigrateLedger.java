@@ -119,6 +119,6 @@ public class MigrateLedger {
      */
     @Override
     public String toString() {
-        return STR."(topic='\{topic}', partition=\{partition}, from='\{from}', to='\{to}')";
+        return "MigrateLedger (topic='%s', partition=%d, from='%s', to='%s')".formatted(topic, partition, from, to);
     }
 }

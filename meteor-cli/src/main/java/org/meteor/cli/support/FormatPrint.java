@@ -1,5 +1,7 @@
 package org.meteor.cli.support;
 
+import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
+
 import java.lang.reflect.Field;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -21,8 +23,7 @@ public class FormatPrint {
      */
     public static void formatPrint(List<?> objects, String[] title) {
         if (objects == null || objects.isEmpty()) {
-            System.out.println(STR."\{currentTime()} [\{Thread.currentThread()
-                    .getName()}] ERROR \{FormatPrint.class.getName()} - No format objects were found");
+            System.out.printf("%s %s ERROR %s - No format objects were found", currentTime(), Thread.currentThread().getName(), FormatPrint.class.getName());
         } else {
             String[][] tables = new String[objects.size()][title.length];
             for (int i = 0; i < objects.size(); i++) {

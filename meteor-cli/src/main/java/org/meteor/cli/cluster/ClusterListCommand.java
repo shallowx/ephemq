@@ -82,7 +82,7 @@ public class ClusterListCommand implements Command {
                 String addr = commandLine.getOptionValue('b');
                 if (StringUtil.isNullOrEmpty(addr)) {
                     throw new IllegalArgumentException(
-                            "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
+                            "Meteor-cli illegal argument exception, broker-addr cannot be empty");
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
                 ClientChannel clientChannel = client.getActiveChannel(socketAddress);

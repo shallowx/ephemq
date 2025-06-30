@@ -5,6 +5,7 @@ import io.netty.util.internal.StringUtil;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.meteor.cli.ledger.MigrateLedgerPlanCommand;
 import org.meteor.cli.support.Command;
 import org.meteor.cli.support.CommandException;
 import org.meteor.cli.support.FormatPrint;
@@ -145,8 +146,7 @@ public class TopicDeletedCommand implements Command {
                         "Meteor-cli illegal argument exception, broker-addr cannot be empty.");
             }
         } catch (Exception e) {
-            System.err.println(STR." \{currentTime()} [\{Thread.currentThread()
-                    .getName()}] ERROR \{TopicDeletedCommand.class.getName()} - delete topic[:\{finalTopic}] from cluster failure");
+            System.out.printf("%s %s ERROR - %s - delete topic[%s] from cluster failure", currentTime(), Thread.currentThread().getName(), MigrateLedgerPlanCommand.class.getName(), finalTopic);
             throw new CommandException("Execution delete topic command[dt] failed", e);
         }
     }
@@ -156,8 +156,7 @@ public class TopicDeletedCommand implements Command {
      *
      */
     private void formatPrint(List<PartitionInfo> infos) {
-        String[] title =
-                {"topic", "partition", "ledger", "epoch", "leader", "replicas", "topicConfig", "version", "topicId"};
+        String[] title = {"topic", "partition", "ledger", "epoch", "leader", "replicas", "topicConfig", "version", "topicId"};
         FormatPrint.formatPrint(infos, title);
     }
 }
