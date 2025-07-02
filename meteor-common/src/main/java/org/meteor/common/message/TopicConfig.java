@@ -126,6 +126,6 @@ public class TopicConfig {
      */
     @Override
     public String toString() {
-        return STR."(segment_rolling_size=\{segmentRollingSize}, segment_retain_count=\{segmentRetainCount}, segment_retainMs=\{segmentRetainMs}, allocate=\{allocate})";
+        return "TopicConfig (segmentRollingSize=%d, segmentRetainCount=%d, segmentRetainMs=%d, allocate=%s)".formatted(segmentRollingSize, segmentRetainCount, segmentRetainMs, allocate);
     }
 }

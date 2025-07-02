@@ -71,7 +71,7 @@ public enum CompressionType {
             case "LZ4" -> CompressionType.LZ4;
             case "ZSTD" -> CompressionType.ZSTD;
             case "ZLIB" -> CompressionType.ZLIB;
-            default -> throw new RuntimeException(STR."Unsupported compress type name: \{type}");
+            default -> throw new RuntimeException(String.format("Unsupported compress type[%s] name", type));
         };
     }
 
@@ -88,7 +88,7 @@ public enum CompressionType {
             case 1 -> LZ4;
             case 2 -> ZSTD; // To be compatible for older versions without compression type
             case 0, 3 -> ZLIB;
-            default -> throw new RuntimeException(STR."Unknown compress type value: \{value}");
+            default -> throw new RuntimeException(String.format("Unknown compress type value[%s]", value));
         };
     }
 
@@ -106,7 +106,7 @@ public enum CompressionType {
             case 1 -> CompressionConstants.COMPRESSION_LZ4_TYPE;
             case 2 -> CompressionConstants.COMPRESSION_ZSTD_TYPE;
             case 3 -> CompressionConstants.COMPRESSION_ZLIB_TYPE;
-            default -> throw new RuntimeException(STR."Unsupported compress type flag: \{value}");
+            default -> throw new RuntimeException(String.format("Unsupported compress type flag: %s", value));
         };
     }
 }

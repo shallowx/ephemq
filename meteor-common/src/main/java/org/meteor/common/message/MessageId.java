@@ -1,5 +1,7 @@
 package org.meteor.common.message;
 
+import javax.annotation.Nonnull;
+
 /**
  * The MessageId class represents a unique identifier for a message within a system.
  * It consists of three components: ledger, epoch, and index.
@@ -37,7 +39,7 @@ public record MessageId(int ledger, int epoch, long index) {
      */
     @Override
     public int hashCode() {
-        return 31 * ((31 * ledger) + epoch) + (int) (index ^ (index >>> 32));
+        return 31 * ((31 * ledger) + epoch) + Long.hashCode(index);
     }
 
     /**
@@ -46,7 +48,8 @@ public record MessageId(int ledger, int epoch, long index) {
      * @return a string in the format "(ledger=ledger, epoch=epoch, index=index)"
      */
     @Override
+    @Nonnull
     public String toString() {
-        return STR."(ledger=\{ledger}, epoch=\{epoch}, index=\{index})";
+        return "MessageId (ledger=%d, epoch=%d, index=%d)".formatted(ledger, epoch, index);
     }
 }

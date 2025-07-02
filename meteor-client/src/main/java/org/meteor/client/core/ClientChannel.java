@@ -103,11 +103,10 @@ public class ClientChannel implements MeterBinder {
                     throw t;
                 }
             } else {
-                throw new TimeoutException(STR."Client invoke semaphore acquire timeout[\{timeoutMs}ms]");
+                throw new TimeoutException(String.format("Client invoke semaphore acquire timeout[%d ms]", timeoutMs));
             }
         } catch (Throwable t) {
-            RuntimeException cause = new RuntimeException(
-                    STR."Channel invoke failed, address[\{address}], code[\{code}] and length[\{length}]", t);
+            RuntimeException cause = new RuntimeException(String.format("Channel invoke failed, address[%s], code[%s] and length[%d]", address, code, length), t);
             if (callback != null) {
                 callback.onCompleted(null, cause);
             } else {
@@ -234,7 +233,7 @@ public class ClientChannel implements MeterBinder {
      */
     @Override
     public String toString() {
-        return STR."(address=\{address}, id='\{id}', channel=\{channel})";
+        return "ClientChannel (address=%s, invoker=%s, id='%s', channel=%s, semaphore=%s, hashCode=%d)".formatted(address, invoker, id, channel, semaphore, hashCode);
     }
 
     /**

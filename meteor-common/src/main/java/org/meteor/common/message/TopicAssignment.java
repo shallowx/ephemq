@@ -223,6 +223,6 @@ public class TopicAssignment {
      */
     @Override
     public String toString() {
-        return STR."(topic='\{topic}', ledgerId=\{ledgerId}, epoch=\{epoch}, partition=\{partition}, replicas=\{replicas.toString()}, leader='\{leader}', config=\{config}, transitionalLeader='\{transitionalLeader}', version=\{version})";
+        return "TopicAssignment (topic='%s', ledgerId=%d, epoch=%d, partition=%d, replicas=%s, leader='%s', config=%s, transitionalLeader='%s', version=%d)".formatted(topic, ledgerId, epoch, partition, replicas, leader, config, transitionalLeader, version);
     }
 }

@@ -89,7 +89,7 @@ public final class ObjectUtil {
      */
     public static <T> T checkNotNullWithIAE(final T arg, final String paramName) throws IllegalArgumentException {
         if (arg == null) {
-            throw new IllegalArgumentException(STR."Param '\{paramName}' must not be null");
+            throw new IllegalArgumentException(String.format("Param '%s' must not be null", paramName));
         }
         return arg;
     }
@@ -106,8 +106,7 @@ public final class ObjectUtil {
      */
     public static <T> T checkNotNullArrayParam(T value, int index, String name) throws IllegalArgumentException {
         if (value == null) {
-            throw new IllegalArgumentException(
-                    STR."Array index \{index} of parameter '\{name}' must not be null");
+            throw new IllegalArgumentException(String.format("Array index[%s] of parameter '%s' must not be null", index, name));
         }
         return value;
     }
@@ -117,7 +116,8 @@ public final class ObjectUtil {
      */
     public static int checkPositive(int i, String name) {
         if (i <= INT_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{i} (expected: > 0)");
+
+            throw new IllegalArgumentException(String.format("%s : %s (expected: > 0", name, i));
         }
         return i;
     }
@@ -132,7 +132,7 @@ public final class ObjectUtil {
      */
     public static int checkNegative(int i, String name) {
         if (i >= INT_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{i} (expected: < 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: < 0", name, i));
         }
         return i;
     }
@@ -148,7 +148,7 @@ public final class ObjectUtil {
      */
     public static long checkPositive(long l, String name) {
         if (l <= LONG_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{l} (expected: > 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: > 0", name, l));
         }
         return l;
     }
@@ -163,7 +163,7 @@ public final class ObjectUtil {
      */
     public static double checkPositive(final double d, final String name) {
         if (d <= DOUBLE_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{d} (expected: > 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: > 0", name, d));
         }
         return d;
     }
@@ -178,7 +178,7 @@ public final class ObjectUtil {
      */
     public static float checkPositive(final float f, final String name) {
         if (f <= FLOAT_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{f} (expected: > 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: > 0", name, f));
         }
         return f;
     }
@@ -193,7 +193,7 @@ public final class ObjectUtil {
      */
     public static int checkPositiveOrZero(int i, String name) {
         if (i < INT_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{i} (expected: >= 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: >= 0", name, i));
         }
         return i;
     }
@@ -209,7 +209,7 @@ public final class ObjectUtil {
      */
     public static long checkPositiveOrZero(long l, String name) {
         if (l < LONG_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{l} (expected: >= 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: >= 0", name, l));
         }
         return l;
     }
@@ -224,7 +224,7 @@ public final class ObjectUtil {
      */
     public static double checkPositiveOrZero(final double d, final String name) {
         if (d < DOUBLE_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{d} (expected: >= 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: >= 0", name, d));
         }
         return d;
     }
@@ -239,7 +239,7 @@ public final class ObjectUtil {
      */
     public static float checkPositiveOrZero(final float f, final String name) {
         if (f < FLOAT_ZERO) {
-            throw new IllegalArgumentException(STR."\{name} : \{f} (expected: >= 0)");
+            throw new IllegalArgumentException(String.format("%s : %s (expected: >= 0", name, f));
         }
         return f;
     }
@@ -256,7 +256,8 @@ public final class ObjectUtil {
      */
     public static int checkInRange(int i, int start, int end, String name) {
         if (i < start || i > end) {
-            throw new IllegalArgumentException(STR."\{name}: \{i} (expected: \{start}-\{end})");
+            throw new IllegalArgumentException(String.format("%s:%s (expected: %s - %s)", name, i, start, end));
+
         }
         return i;
     }
@@ -273,7 +274,7 @@ public final class ObjectUtil {
      */
     public static long checkInRange(long l, long start, long end, String name) {
         if (l < start || l > end) {
-            throw new IllegalArgumentException(STR."\{name}: \{l} (expected: \{start}-\{end})");
+            throw new IllegalArgumentException(String.format("%s:%s (expected: %s - %s)", name, l, start, end));
         }
         return l;
     }
@@ -289,7 +290,7 @@ public final class ObjectUtil {
     public static <T> T[] checkNonEmpty(T[] array, String name) {
         //No String concatenation for check
         if (checkNotNull(array, name).length == 0) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return array;
     }
@@ -300,7 +301,7 @@ public final class ObjectUtil {
     public static byte[] checkNonEmpty(byte[] array, String name) {
         //No String concatenation for check
         if (checkNotNull(array, name).length == 0) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return array;
     }
@@ -317,7 +318,7 @@ public final class ObjectUtil {
     public static char[] checkNonEmpty(char[] array, String name) {
         //No String concatenation for check
         if (checkNotNull(array, name).length == 0) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return array;
     }
@@ -333,7 +334,7 @@ public final class ObjectUtil {
      */
     public static <T extends Collection<?>> T checkNonEmpty(T collection, String name) {
         if (checkNotNull(collection, name).isEmpty()) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return collection;
     }
@@ -348,7 +349,7 @@ public final class ObjectUtil {
      */
     public static String checkNonEmpty(final String value, final String name) {
         if (checkNotNull(value, name).isEmpty()) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return value;
     }
@@ -367,7 +368,7 @@ public final class ObjectUtil {
      */
     public static <K, V, T extends Map<K, V>> T checkNonEmpty(T value, String name) {
         if (checkNotNull(value, name).isEmpty()) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return value;
     }
@@ -383,7 +384,7 @@ public final class ObjectUtil {
      */
     public static CharSequence checkNonEmpty(final CharSequence value, final String name) {
         if (checkNotNull(value, name).isEmpty()) {
-            throw new IllegalArgumentException(STR."Param[\{name}] must not be empty");
+            throw new IllegalArgumentException(String.format("Param[%s] must not be empty", name));
         }
         return value;
     }

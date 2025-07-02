@@ -168,11 +168,10 @@ public class Client implements MeterBinder {
             return applyChannel(address).get(config.getChannelConnectionTimeoutMilliseconds(), TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             if (address == null) {
-                throw new MeteorClientException(
-                        STR."Client[\{name}] fetch random channel failed, socket address cannot be empty", t);
+                throw new MeteorClientException(String.format("Client[%s] fetch random channel failed, socket address cannot be empty", name), t);
             }
             throw new MeteorClientException(
-                    STR."Client[\{name}] fetch random client channel failed, address[\{address}]", t);
+                    String.format("Client[%s] fetch random client channel failed and the address is %s", name, address), t);
         }
     }
 
@@ -206,7 +205,7 @@ public class Client implements MeterBinder {
 
             address = bootstrapAddress();
             if (address == null) {
-                throw new IllegalArgumentException(STR."Client[\{name}] Bootstrap address not found");
+                throw new IllegalArgumentException(String.format("Client[%s] Bootstrap address not found", name));
             }
         }
 
@@ -280,8 +279,7 @@ public class Client implements MeterBinder {
         });
 
         channel.closeFuture().addListener(f -> {
-            assemblePromise.tryFailure(
-                    new IllegalArgumentException(STR."Client[\{name}] channel[\{channel}] was closed"));
+            assemblePromise.tryFailure(new IllegalArgumentException(String.format("Client[%s] channel[%s] was closed", name, channel)));
             ChannelOfPromise.remove(channel.id().asLongText());
         });
 
@@ -386,7 +384,7 @@ public class Client implements MeterBinder {
 
         state = true;
         workerGroup = newEventLoopGroup(config.isSocketEpollPrefer(), config.getWorkerThreadLimit(),
-                STR."client-worker(\{name})", false, config.isPreferIoUring());
+                String.format("client-worker(%s)", name), false, config.isPreferIoUring());
         DnsNameResolverBuilder builder = new DnsNameResolverBuilder();
         builder.ttl(30, 300);
         builder.negativeTtl(30);
@@ -411,7 +409,7 @@ public class Client implements MeterBinder {
             applyChannel(address);
         }
 
-        refreshMetadataExecutor = new DefaultEventExecutor(new DefaultThreadFactory(STR."client(\{name})-task"));
+        refreshMetadataExecutor = new DefaultEventExecutor(new DefaultThreadFactory(String.format("client(%s)-task", name)));
         refreshMetadataExecutor.schedule(new RefreshMetadataTask(this, config), config.getMetadataRefreshPeriodMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
@@ -503,9 +501,8 @@ public class Client implements MeterBinder {
             channel = getActiveChannel(null);
             return applyRouter(topic, channel, true).get();
         } catch (Throwable t) {
-            throw new RuntimeException(
-                    STR."Client[\{name}] fetch message router from given client channel[\{channel == null ? null :
-                            channel.channel().remoteAddress()}] failed, topic[\{topic}]", t);
+            throw new RuntimeException(String.format("Client[%s] fetch topic[%s] message router from given client channel[%s] failed", name, topic,
+                    channel == null ? "NULL" : channel.channel().remoteAddress()), t);
         }
     }
 
@@ -524,9 +521,8 @@ public class Client implements MeterBinder {
             }
             applyRouter(topic, channel, false).get();
         } catch (Throwable t) {
-            throw new MeteorClientException(
-                    STR."Client[\{name}] fetch message router from given client channel[\{channel == null ? null :
-                            channel.channel().remoteAddress()}] failed, topic[\{topic}]", t);
+            throw new MeteorClientException(String.format("Client[%s] fetch topic[%s] message router from given client channel[%s] failed", name, topic,
+                    channel == null ? "NULL" : channel.channel().remoteAddress()), t);
         }
     }
 
@@ -593,12 +589,12 @@ public class Client implements MeterBinder {
      */
     private MessageRouter queryRouter(ClientChannel channel, String topic) throws Exception {
         if (!channel.isActive()) {
-            throw new IllegalStateException(STR."Client[\{name}] channel[\{channel}] is inactive");
+            throw new IllegalStateException(String.format("Client[%s] is not active", name));
         }
 
         ClusterInfo clusterInfo = queryClusterInfo(channel);
         if (clusterInfo == null) {
-            throw new IllegalStateException(STR."Client[\{name}] that Cluster info not found");
+            throw new IllegalStateException(String.format("Client[%s] that Cluster info not found", name));
         }
 
         TopicInfo topicInfo = queryTopicInfos(channel, topic).get(topic);
@@ -839,26 +835,24 @@ public class Client implements MeterBinder {
         NodeMetadata originalBroker = nodesMap.get(original);
         if (originalBroker == null) {
             return response.setSuccess(false)
-                    .setMessage(STR."The client[\{name}] that original broker[\{original}] is not in cluster").build();
+                    .setMessage(String.format("The client[%s] that original broker[%s] is not in cluster", name, original)).build();
         }
 
         if (!nodesMap.containsKey(destination)) {
             return response.setSuccess(false)
-                    .setMessage(STR."The client[\{name}] that destination broker[\{original}] is not in cluster")
+                    .setMessage(String.format("The client[%s] that original broker[%s] is not in cluster", name, original))
                     .build();
         }
 
         Map<String, TopicInfo> topicInfos = queryTopicInfos(clientChannel, topic);
         if (topicInfos == null || topicInfos.isEmpty()) {
-            return response.setSuccess(false).setMessage(STR."The client[\{name}] of topic[\{topic}] does not exist")
-                    .build();
+            return response.setSuccess(false).setMessage(String.format("The client[%s] of topic[%s] does not exist", name, topic)).build();
         }
         TopicInfo topicInfo = topicInfos.get(topic);
         PartitionMetadata partitionMetadata = topicInfo.getPartitionsMap().get(partition);
         if (partitionMetadata == null) {
             return response.setSuccess(false)
-                    .setMessage(STR."The client[\{name}] of topic[\{topic}] and partition[\{partition}] are not exist")
-                    .build();
+                    .setMessage(String.format("The client[%s] of topic[%s] and partition[%d] are not exist",  name, topic, partition)).build();
         }
 
         clientChannel = getActiveChannel(new InetSocketAddress(originalBroker.getHost(), originalBroker.getPort()));

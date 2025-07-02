@@ -254,6 +254,6 @@ public class Node {
      */
     @Override
     public String toString() {
-        return STR."(id='\{id}', host='\{host}', port=\{port}, registrationTimestamp=\{registrationTimestamp}, cluster='\{cluster}', state='\{state}', auxData=\{auxData}, ledgerThroughput=\{ledgerThroughput})";
+        return "Node (id='%s', host='%s', port=%d, registrationTimestamp=%d, cluster='%s', state='%s', auxData=%s, ledgerThroughput=%s)".formatted(id, host, port, registrationTimestamp, cluster, state, auxData, ledgerThroughput);
     }
 }

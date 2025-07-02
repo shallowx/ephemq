@@ -1,5 +1,6 @@
 package org.meteor.client.core;
 
+import javax.annotation.Nonnull;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +53,8 @@ public record MessageLedger(int id, int version, SocketAddress leader, List<Sock
      * @return a string that includes the id, version, leader, participants, topic, and partition of the ledger.
      */
     @Override
+    @Nonnull
     public String toString() {
-        return STR."(id=\{id}, version=\{version}, leader=\{leader}, participants=\{participants}, topic='\{topic}', partition=\{partition})";
+        return "MessageLedger (id=%d, version=%d, leader=%s, participants=%s, topic='%s', partition=%d)".formatted(id, version, leader, participants, topic, partition);
     }
 }

@@ -131,6 +131,6 @@ public class Offset implements Comparable<Offset> {
      */
     @Override
     public String toString() {
-        return STR."(epoch=\{epoch}, index=\{index})";
+        return "Offset (epoch=%d, index=%d)".formatted(epoch, index);
     }
 }
