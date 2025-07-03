@@ -16,12 +16,12 @@ public final class ZookeeperProxyPathConstants {
      * Constant representing the ZooKeeper path for proxy IDs.
      * This path is used to manage the IDs of proxy nodes within a ZooKeeper ensemble.
      */
-    public static final String PROXIES_IDS = STR."\{PROXIES}/ids";
+    public static final String PROXIES_IDS = PROXIES + "/ids";
     /**
      * This constant string represents the path in the ZooKeeper ensemble
      * that refers to a specific proxy ID. It is a formatted string where
      * the '%s' placeholder is intended to be replaced with the actual
      * proxy ID.
      */
-    public static final String PROXIES_ID = STR."\{PROXIES_IDS}/%s";
+    public static final String PROXIES_ID = PROXIES_IDS + "/%s";
 }

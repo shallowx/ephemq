@@ -127,7 +127,7 @@ public abstract class LedgerSyncSupport {
         List<SocketAddress> addresses = messageLedger.participants();
         if (addresses == null || addresses.isEmpty()) {
             IllegalStateException e =
-                    new IllegalStateException(STR."No available participant's address for ledger[\{ledger}]");
+                    new IllegalStateException(String.format("No available participant's address for ledger[%d]",  ledger));
             logger.error(e);
             ret.tryFailure(e);
             return ret;
@@ -191,11 +191,11 @@ public abstract class LedgerSyncSupport {
     public MessageLedger getMessageLedger(String topic, int ledger) {
         MessageRouter router = proxyClient.fetchRouter(topic);
         if (router == null) {
-            throw new IllegalStateException(STR."The topic[\{topic}] message router not found");
+            throw new IllegalStateException(String.format("The topic[%s] message router not found", topic));
         }
         MessageLedger messageLedger = router.ledger(ledger);
         if (messageLedger == null) {
-            throw new IllegalStateException(STR."The topic[\{topic}] message ledger[\{ledger}] not found");
+            throw new IllegalStateException(String.format("The topic[%s] message ledger[%d] not found", topic, ledger));
         }
         return messageLedger;
     }
@@ -230,7 +230,7 @@ public abstract class LedgerSyncSupport {
         List<SocketAddress> addresses = messageLedger.participants();
         if (addresses == null || addresses.isEmpty()) {
             throw new IllegalStateException(
-                    STR."No available participants that it's the topic[\{messageLedger.topic()}] and the ledger[\{messageLedger.id()}]");
+                    String.format("No available participants that it's the topic[%s] and the ledger[%s]", messageLedger.topic(), messageLedger.id()));
         }
         int index = ThreadLocalRandom.current().nextInt(addresses.size());
         return proxyClient.getActiveChannel(addresses.get(index));

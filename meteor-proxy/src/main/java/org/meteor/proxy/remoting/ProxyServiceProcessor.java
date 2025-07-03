@@ -190,7 +190,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
                 default -> {
                     if (feedback != null) {
                         feedback.failure(RemotingException.of(RemotingException.Failure.UNSUPPORTED_EXCEPTION,
-                                STR."Proxy command[\{command}] unsupported, length=\{length}"));
+                                String.format("Proxy command[%s] unsupported, length=%d", command, length)));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Proxy command[{}] unsupported, channel={} length={} ", command, NetworkUtil.switchAddress(channel), length);
@@ -233,12 +233,11 @@ class ProxyServiceProcessor extends ServiceProcessor {
                                     feedback.success(ProtoBufUtil.proto2Buf(channel.alloc(), response));
                                 }
                             } catch (Throwable t) {
-                                processFailed(STR."Proxy process sync ledger[\{request.getLedger()}] failed", command,
+                                processFailed(String.format("Proxy process sync ledger[%s] failed", request.getLedger()), command,
                                         channel, feedback, t);
                             }
                         } else {
-                            processFailed(STR."Proxy process sync ledger[\{request.getLedger()}] failed", command,
-                                    channel, feedback, f.cause());
+                            processFailed(String.format("Proxy process sync ledger[%s] failed", request.getLedger()), command, channel, feedback, f.cause());
                         }
                         recordCommand(command, bytes, System.nanoTime() - time, f.isSuccess());
                     });
@@ -252,8 +251,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
                     ClientChannel syncChannel = syncSupport.getSyncChannel(messageLedger);
                     log.syncAndChunkSubscribe(syncChannel, epoch, index, channel, promise);
                 } catch (Throwable t) {
-                    processFailed(STR."Proxy process sync ledger[\{request.getLedger()}] failed", command, channel,
-                            feedback, t);
+                    processFailed(String.format("Proxy process sync ledger[%d] failed", request.getLedger()), command, channel, feedback, t);
                     recordCommand(command, bytes, System.nanoTime() - time, false);
                 }
             });
@@ -420,7 +418,7 @@ class ProxyServiceProcessor extends ServiceProcessor {
         }
 
         int replicaCount = Math.max(MIN_REPLICA_LIMIT, allThroughput / subscribeThreshold + 1);
-        String token = STR."\{topic}#\{ledger}";
+        String token = topic + "#" + ledger;
         NavigableMap<String, Integer> ledgerNodes = selectLedgerNodes(replicaCount, token, nodes);
         return selectChannelNodes(channel, token, ledgerNodes);
     }
@@ -447,10 +445,10 @@ class ProxyServiceProcessor extends ServiceProcessor {
             return nodes;
         }
         HashFunction function = Hashing.murmur3_32();
-        String baseToken = STR."\{token}#\{host}";
+        String baseToken = token + "#" + host;
         NavigableMap<Integer, NavigableSet<String>> hashMap = new TreeMap<>();
         for (String node : nodes.keySet()) {
-            String key = STR."\{baseToken}@\{node}";
+            String key = baseToken + "#" + node;
             int hash = function.hashUnencodedChars(key).asInt();
             hashMap.computeIfAbsent(hash, k -> new TreeSet<>()).add(node);
         }

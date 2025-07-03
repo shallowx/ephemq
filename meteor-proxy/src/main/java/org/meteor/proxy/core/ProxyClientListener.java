@@ -342,8 +342,7 @@ public class ProxyClientListener implements CombineListener {
             return buf;
         } catch (Exception e) {
             ByteBufUtil.release(buf);
-            throw new MeterProxyException(
-                    STR."Proxy build signal payload error, command[\{Command.Client.TOPIC_CHANGED}] signal[\{signal}]");
+            throw new MeterProxyException(String.format("Proxy build signal payload error, command[%s] signal[%s]", Command.Client.TOPIC_CHANGED,  signal), e);
         }
     }
 
