@@ -212,7 +212,7 @@ public final class MessagePacket extends AbstractReferenceCounted
      */
     @Override
     public String toString() {
-        return STR."(feedback=\{feedback}, command=\{command}, body=\{body})";
+        return "MessagePacket (handle=%s, feedback=%d, command=%d, body=%s)".formatted(handle, feedback, command, body);
     }
 
     /**

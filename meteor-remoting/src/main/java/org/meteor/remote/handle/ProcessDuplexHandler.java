@@ -89,7 +89,6 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
 
     /**
      * Handles the activation of the channel.
-     *
      * When the channel becomes active, it triggers the processor's onActive method,
      * fires the channel active event, and logs a debug message if debug level logging is enabled.
      *
@@ -325,7 +324,7 @@ public class ProcessDuplexHandler extends ChannelDuplexHandler {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         int count = initializer.releaseAll(c -> c.failure(
-                new RemotingTimeoutException(STR."Channel[\{ctx.channel().toString()}] invoke timeout")));
+                new RemotingTimeoutException(String.format("Channel[%s] invoke timeout", ctx.channel().toString()))));
         if (logger.isDebugEnabled()) {
             logger.debug("Release entire invoke, handle count[{}]", count);
         }

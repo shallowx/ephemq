@@ -101,8 +101,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
      */
     private ByteBuf encodeHeader(ByteBufAllocator alloc, int command, long feedback, int contentLength) {
         if (contentLength > MessagePacket.MAX_BODY_LENGTH) {
-            throw new RemotingEncoderException(
-                    STR."The message body[\{contentLength}] bytes too long, limit[\{MessagePacket.MAX_BODY_LENGTH}] bytes");
+            throw new RemotingEncoderException(String.format("The message body[%d] bytes too long, limit[%d] bytes", contentLength, MessagePacket.MAX_BODY_LENGTH));
         }
 
         final ByteBuf header = alloc.ioBuffer(MessagePacket.HEADER_LENGTH);

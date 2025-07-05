@@ -35,7 +35,6 @@ public class DemoServerBootstrap {
     public static void main(String[] args) {
         EventLoopGroup boosGroup = NetworkUtil.newEventLoopGroup(true, 1, "demo-server-boss", false, false);
         EventLoopGroup workerGroup = NetworkUtil.newEventLoopGroup(true, 0, "demo-server-worker", false, false);
-        EventExecutorGroup servicesGroup = NetworkUtil.newEventExecutorGroup(0, "demo-server-service");
 
         Processor processorAware = new DemoServerProcessor();
         try {
@@ -53,10 +52,10 @@ public class DemoServerBootstrap {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) {
                     socketChannel.pipeline()
-                            .addLast(servicesGroup, "packet-encoder", MessageEncoder.instance())
-                            .addLast(servicesGroup, "paket-decoder", new MessageDecoder())
-                            .addLast(servicesGroup, "connect-handler", new HeartbeatDuplexHandler(0, 30000))
-                            .addLast(servicesGroup, "service-handler", new ProcessDuplexHandler(processorAware));
+                            .addLast("packet-encoder", MessageEncoder.instance())
+                            .addLast("paket-decoder", new MessageDecoder())
+                            .addLast("connect-handler", new HeartbeatDuplexHandler(0, 30000))
+                            .addLast("service-handler", new ProcessDuplexHandler(processorAware));
                 }
             });
 
@@ -72,7 +71,6 @@ public class DemoServerBootstrap {
         } finally {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
-            servicesGroup.shutdownGracefully();
         }
     }
 }

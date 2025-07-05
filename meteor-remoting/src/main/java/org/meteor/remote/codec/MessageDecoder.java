@@ -54,6 +54,10 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
      */
     private int writeFrameBytes;
 
+    enum State {
+        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
+    }
+
     /**
      * Creates a new CompositeByteBuf by adding the given ByteBuf component.
      *
@@ -131,7 +135,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final byte magic = buf.getByte(buf.readerIndex());
                 if (magic != MessagePacket.MAGIC_NUMBER) {
-                    throw new RemotingDecoderException(STR."Invalid magic number[\{magic}]");
+                    throw new RemotingDecoderException(String.format("Invalid magic number[%d]", magic));
                 }
 
                 state = READ_MESSAGE_LENGTH;
@@ -143,7 +147,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
 
                 final int messageLength = buf.getUnsignedMedium(buf.readerIndex() + 1);
                 if (messageLength < MessagePacket.HEADER_LENGTH) {
-                    throw new RemotingDecoderException(STR."Invalid message length[\{messageLength}]");
+                    throw new RemotingDecoderException(String.format("Invalid message length[%d]", messageLength));
                 }
 
                 writeFrameBytes = messageLength;
@@ -162,7 +166,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 return MessagePacket.newPacket(feedback, command, body);
             }
             default: {
-                throw new RemotingDecoderException(STR."Invalid decode state[\{state}]");
+                throw new RemotingDecoderException(String.format("Invalid state[%s]", state));
             }
         }
     }
@@ -256,9 +260,5 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 buf.release();
             }
         }
-    }
-
-    enum State {
-        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
     }
 }

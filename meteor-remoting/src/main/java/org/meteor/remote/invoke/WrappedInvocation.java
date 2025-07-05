@@ -229,6 +229,6 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
      */
     @Override
     public String toString() {
-        return STR."(handle=\{handle}, command=\{command}, data=\{data}, expired=\{expired}, feedback=\{feedback})";
+        return "WrappedInvocation (handle=%s, command=%d, data=%s, expired=%d, feedback=%s)".formatted(handle, command, data, expired, feedback);
     }
 }

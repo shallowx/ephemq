@@ -192,8 +192,7 @@ public class DemoClientBootstrap {
             });
             channel.writeAndFlush(awareInvocation, promise);
         } else {
-            throw new TimeoutException(STR."Client invoke echo oneway timeout, local_address: \{channel.localAddress()
-                    .toString()} remote_address: \{channel.remoteAddress().toString()}");
+            throw new TimeoutException(String.format("Client invoke echo oneway timeout, local_address:%s, remote_address: %s", channel.localAddress(), channel.remoteAddress()));
         }
     }
 
