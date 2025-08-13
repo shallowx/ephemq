@@ -12,7 +12,7 @@
     </parent>
 
     <groupId>org.meteor</groupId>
-    <artifactId>meteor-parent</artifactId>
+    <artifactId>meteor</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
