@@ -81,17 +81,14 @@ public class ClusterListCommand implements Command {
             if (commandLine.hasOption('b')) {
                 String addr = commandLine.getOptionValue('b');
                 if (StringUtil.isNullOrEmpty(addr)) {
-                    throw new IllegalArgumentException(
-                            "Meteor-cli illegal argument exception, broker-addr cannot be empty");
+                    throw new IllegalArgumentException("Meteor-cli illegal argument exception, broker-addr cannot be empty");
                 }
                 SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
                 ClientChannel clientChannel = client.getActiveChannel(socketAddress);
                 ClusterInfo clusterInfo = client.queryClusterInfo(clientChannel);
                 Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
                 List<NodeMetadata> metadata = new ArrayList<>(nodesMap.values());
-
-                System.out.println(
-                        STR."\{currentTime()} [Thread.currentThread().getName()] INFO \{ClusterListCommand.class.getName()} - Print the cluster metadata options: ");
+                System.out.printf("%s [Thread.currentThread().getName()] INFO %s - Print the cluster metadata options:%n", currentTime(), ClusterListCommand.class.getName());
                 for (NodeMetadata nodeMetadata : metadata) {
                     nodes.add(
                             new Node(nodeMetadata.getId(),
@@ -111,8 +108,7 @@ public class ClusterListCommand implements Command {
             }
             formatPrint(nodes);
         } catch (Exception e) {
-            System.err.println(
-                    STR."\{currentTime()} [Thread.currentThread().getName()] ERROR \{ClusterListCommand.class.getName()} - \{e.getMessage()}");
+            System.err.printf("%s [Thread.currentThread().getName()] ERROR %s%n", currentTime(), ClusterListCommand.class.getName());
             throw new CommandException("Execute cluster command[clusters] error", e);
         }
     }
@@ -123,8 +119,7 @@ public class ClusterListCommand implements Command {
      * @param nodes the list of nodes to be formatted and printed.
      */
     private void formatPrint(List<Node> nodes) {
-        String[] title =
-                {"id", "host", "port", "registrationTimestamp", "cluster", "state", "auxData", "ledgerThroughput"};
+        String[] title = {"id", "host", "port", "registrationTimestamp", "cluster", "state", "auxData", "ledgerThroughput"};
         FormatPrint.formatPrint(nodes, title);
     }
 }

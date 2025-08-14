@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import org.meteor.common.logging.InternalLogger;
 import org.meteor.common.logging.InternalLoggerFactory;
 import org.meteor.common.message.Offset;
+import org.meteor.remote.util.ByteBufUtil;
 
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
@@ -114,7 +115,7 @@ public class LedgerSegment {
     private volatile LedgerSegment next;
 
     static {
-        BUFFER_RECYCLE_THREAD = new Thread(LedgerSegment::recycleBuffer, "segment-recycle");
+        BUFFER_RECYCLE_THREAD = new Thread(LedgerSegment::releaseDirectBuf, "segment-release");
         BUFFER_RECYCLE_THREAD.setDaemon(true);
         BUFFER_RECYCLE_THREAD.start();
     }
@@ -149,13 +150,13 @@ public class LedgerSegment {
      * recycling. Ensure proper shutdown mechanisms are in place to handle the scenario where
      * this thread needs to be stopped gracefully.
      */
-    private static void recycleBuffer() {
+    private static void releaseDirectBuf() {
         while (true) {
             try {
                 Reference<?> reference = BUFFER_RECYCLE_QUEUE.remove();
-                ByteBuf buf = BUFFERS.remove(reference);
-                if (buf != null) {
-                    buf.release();
+                if (reference != null) {
+                    ByteBuf buf = BUFFERS.remove(reference);
+                    ByteBufUtil.release(buf);
                 }
             } catch (InterruptedException e) {
                 if (logger.isErrorEnabled()) {
@@ -449,6 +450,7 @@ public class LedgerSegment {
         return null;
     }
 
+    // create BufferHolder instance in heap, alloc buffer memory in direct and both for reduce gc
     private static class BufferHolder {
         ByteBuf buffer;
 
