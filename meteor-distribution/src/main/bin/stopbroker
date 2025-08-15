@@ -1,3 +1,4 @@
+#!/bin/bash
 base_dir=$(dirname $0)
 set -e
 
