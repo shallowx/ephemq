@@ -146,7 +146,7 @@ public class ServiceProcessor implements Processor, Command.Server {
                 default -> {
                     if (feedback != null) {
                         feedback.failure(RemotingException.of(RemotingException.Failure.UNSUPPORTED_EXCEPTION,
-                                STR."Command[\{code}] unsupported, length=\{length}"));
+                                String.format("Unsupported command[code=%s] and message length is %s", code, length)));
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Channel[{}] command[{}] unsupported, length={}", code, NetworkUtil.switchAddress(channel), length);
@@ -190,10 +190,10 @@ public class ServiceProcessor implements Processor, Command.Server {
                             feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed(STR."Process sync ledger[\{ledger}] failed", code, channel, feedback, e);
+                        processFailed(String.format("Process sync ledger[%s] is failure", ledger), code, channel, feedback, e);
                     }
                 } else {
-                    processFailed(STR."Process sync ledger[\{ledger}] failed", code, channel, feedback, f.cause());
+                    processFailed(String.format("Process sync ledger[%s] is failure", ledger), code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });
@@ -229,10 +229,10 @@ public class ServiceProcessor implements Processor, Command.Server {
                             feedback.success(proto2Buf(channel.alloc(), response));
                         }
                     } catch (Exception e) {
-                        processFailed(STR."Process un-sync ledger[\{ledger}] failed", code, channel, feedback, e);
+                        processFailed(String.format("Process un-sync ledger[%s] is failure", ledger), code, channel, feedback, e);
                     }
                 } else {
-                    processFailed(STR."Process un-sync ledger[\{ledger}] failed", code, channel, feedback, f.cause());
+                    processFailed(String.format("Process un-sync ledger[%s] is failure", ledger), code, channel, feedback, f.cause());
                 }
                 recordCommand(code, bytes, System.nanoTime() - time, f.isSuccess());
             });

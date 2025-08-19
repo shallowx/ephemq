@@ -275,7 +275,7 @@ public final class ZookeeperPartitionElector {
                 }
 
                 if (logger.isInfoEnabled()) {
-                    logger.info(STR."The leader of the ledger[\{ledger}] is \{leader.getId()}");
+                    logger.info(String.format("The leader of the ledger[%s] is %s", ledger, leader.getId()));
                 }
             } catch (Exception e) {
                 try {

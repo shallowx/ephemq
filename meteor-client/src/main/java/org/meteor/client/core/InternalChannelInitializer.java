@@ -242,9 +242,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
                     case Command.Client.SYNC_MESSAGE -> onSyncMessage(clientChannel, data, feedback);
                     default -> {
                         if (feedback != null) {
-                            feedback.failure(
-                                    RemotingException.of(Command.Failure.COMMAND_EXCEPTION,
-                                            STR."code[\{command}] unsupported"));
+                            feedback.failure(RemotingException.of(Command.Failure.COMMAND_EXCEPTION, String.format("Unsupported command[code: %s]", command)));
                         }
                     }
                 }

@@ -41,6 +41,6 @@ public class RemotingTimeoutException extends Exception {
      * @param cause the underlying cause of the exception.
      */
     public RemotingTimeoutException(String addr, long timeoutMillis, Throwable cause) {
-        super(STR."Wait response on the channel <\{addr}> timeout, \{timeoutMillis}(ms)", cause);
+        super(String.format("Wait response on the channel <%s> timeout, %s(ms)", addr, timeoutMillis), cause);
     }
 }

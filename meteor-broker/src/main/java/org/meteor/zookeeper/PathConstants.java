@@ -23,29 +23,29 @@ public final class PathConstants {
      * It combines the base path for brokers with the relative path for topics.
      * It is used to organize and retrieve information related to broker topics.
      */
-    public static final String BROKERS_TOPICS = STR."\{BROKERS}/topics";
+    public static final String BROKERS_TOPICS = BROKERS + "/topics";
     /**
      * Represents the path template for accessing a specific broker topic.
      * This constant is a format string where the topic name should be inserted.
      * It combines the base path for broker topics with a placeholder for the topic name.
      */
-    public static final String BROKER_TOPIC = STR."\{BROKERS_TOPICS}/%s";
+    public static final String BROKER_TOPIC = BROKERS_TOPICS + "/%s";
     /**
      * Path constant for identifying a specific broker topic's ID.
      * The path is constructed using the base broker topic path and appending "/id".
      */
-    public static final String BROKER_TOPIC_ID = STR."\{BROKER_TOPIC}/id";
+    public static final String BROKER_TOPIC_ID = BROKER_TOPIC + "/id";
     /**
      * Represents the path used to access the partitions of a specific broker topic.
      * It is constructed by appending "/partitions" to the BROKER_TOPIC path.
      */
-    public static final String BROKER_TOPIC_PARTITIONS = STR."\{BROKER_TOPIC}/partitions";
+    public static final String BROKER_TOPIC_PARTITIONS = BROKER_TOPIC + "/partitions";
     /**
      * Represents the path to a specific broker topic partition. The syntax of this constant
      * follows the format: "/brokers/topics/{topicName}/partitions/{partitionId}" where
      * the placeholder %d needs to be replaced with the specific partition ID.
      */
-    public static final String BROKER_TOPIC_PARTITION = STR."\{BROKER_TOPIC_PARTITIONS}/%d";
+    public static final String BROKER_TOPIC_PARTITION = BROKER_TOPIC_PARTITIONS + "/%d";
     /**
      * A constant representing the path to broker IDs.
      * This is used to fetch or manipulate broker IDs within the system.
@@ -56,5 +56,5 @@ public final class PathConstants {
      * This path is used in broker-related operations where a broker's unique identifier is required.
      * The placeholder "%s" should be replaced with the actual broker ID during runtime.
      */
-    public static final String BROKERS_ID = STR."\{BROKERS_IDS}/%s";
+    public static final String BROKERS_ID = BROKERS_IDS + "/%s";
 }

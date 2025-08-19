@@ -321,7 +321,8 @@ public class Log {
         LogState logState = state.get();
         if (!isAppendable(logState) && !isMigrating(logState)) {
             promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
-                    STR."The log can't begin to sync data,the current state is \{logState}"));
+                    String.format("The log can't begin to sync data,the current state is %s}", state)));
+
             return;
         }
 
@@ -511,8 +512,7 @@ public class Log {
     private void doAttachSynchronize(Channel channel, Offset initOffset, Promise<Void> promise) {
         LogState logState = state.get();
         if (!isActive(logState)) {
-            promise.tryFailure(RemotingException.of(Command.Failure.PROCESS_EXCEPTION,
-                    STR."Log[ledger:\{ledger}] is not active now, because of the current state is \{state}"));
+            promise.tryFailure(RemotingException.of(Command.Failure.PROCESS_EXCEPTION, String.format("Log[ledger:%s] is not active now, because of the current state is %s", ledger, logState)));
             return;
         }
         chunkEntryDispatcher.attach(channel, initOffset, promise);
@@ -791,7 +791,8 @@ public class Log {
                 forwardAppendingTraffic(marker, payload, promise);
             } else if (isSynchronizing(logState)) {
                 promise.tryFailure(RemotingException.of(RemotingException.Failure.PROCESS_EXCEPTION,
-                        STR."Log[ledger:\{ledger}] can't accept appending record, because of the current state is \{logState}"));
+                        String.format("Log[ledger:%s}] can't accept appending record, because of the current state is %s", ledger, logState)));
+
             } else {
                 storage.appendRecord(marker, payload, promise);
             }

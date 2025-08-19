@@ -64,7 +64,7 @@ public class DemoServerProcessor implements Processor {
             case 3 -> pass(data);
             default -> {
                 if (feedback != null) {
-                    feedback.failure(new UnsupportedOperationException(STR."Code invalid-\{command}"));
+                    feedback.failure(new UnsupportedOperationException(String.format("Code invalid-%s", command)));
                 }
             }
         }
@@ -112,7 +112,7 @@ public class DemoServerProcessor implements Processor {
         long delay = bytes < 8 ? 0 : data.readLong();
         executors.next().schedule(() -> {
             if (feedback != null) {
-                feedback.success(ByteBufUtil.string2Buf(STR."Server wait \{data} ms"));
+                feedback.success(ByteBufUtil.string2Buf(String.format("Server wait %s ms", data)));
             }
         }, delay, TimeUnit.MILLISECONDS);
     }
