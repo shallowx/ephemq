@@ -43,10 +43,11 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
      */
     private final Recycler.Handle<WrappedInvocation> handle;
     /**
-     * Represents the command identifier for a wrapped invocation.
-     * This integer value is used to specify the type of command being executed.
+     * Feedback mechanism for the {@link WrappedInvocation} class that manages the
+     * success or failure responses for an invocation. This is used to handle the
+     * result of operations executed within the class.
      */
-    private int command;
+    private InvokedFeedback<ByteBuf> feedback;
     /**
      * The data buffer associated with the current invocation.
      * This buffer contains the payload or message to be processed
@@ -63,11 +64,10 @@ public final class WrappedInvocation extends AbstractReferenceCounted {
      */
     private long expired;
     /**
-     * Feedback mechanism for the {@link WrappedInvocation} class that manages the
-     * success or failure responses for an invocation. This is used to handle the
-     * result of operations executed within the class.
+     * Represents the command identifier for a wrapped invocation.
+     * This integer value is used to specify the type of command being executed.
      */
-    private InvokedFeedback<ByteBuf> feedback;
+    private int command;
 
     /**
      * Constructs a new WrappedInvocation with the provided handle.

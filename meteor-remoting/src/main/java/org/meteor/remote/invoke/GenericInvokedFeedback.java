@@ -2,6 +2,10 @@ package org.meteor.remote.invoke;
 
 import io.netty.util.ReferenceCounted;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import static io.netty.util.ReferenceCountUtil.release;
@@ -15,8 +19,12 @@ import static org.meteor.common.util.ObjectUtil.checkNotNull;
  * @param <V> the type of the result passed to the callback upon successful completion
  */
 public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
-    @SuppressWarnings("rawtypes")
-    private static final AtomicIntegerFieldUpdater<GenericInvokedFeedback> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokedFeedback.class, "completed");
+    private static final VarHandle VALUE = MhUtil.findVarHandle(MethodHandles.lookup(), "completed", int.class);
+    /**
+     * A callable object that represents the callback to be invoked upon the completion of an operation.
+     * It is expected to handle both success and failure scenarios of the operation.
+     */
+    private final Callable<V> callback;
     /**
      * The initial expected state of the operation's completion status.
      * This value is used in conjunction with an AtomicIntegerFieldUpdater to ensure
@@ -28,11 +36,6 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
      * Used in comparison to atomic field updates for managing the state of completion.
      */
     private static final int UPDATE = 1;
-    /**
-     * A callable object that represents the callback to be invoked upon the completion of an operation.
-     * It is expected to handle both success and failure scenarios of the operation.
-     */
-    private final Callable<V> callback;
     /**
      * Represents the completion status of the operation.
      * <p>
@@ -73,7 +76,7 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     @Override
     public boolean success(V v) {
         try {
-            if (UPDATER.compareAndSet(this, EXPECT, UPDATE)) {
+            if (VALUE.compareAndSet(EXPECT, UPDATE)) {
                 onCompleted(v, null);
                 return true;
             }
@@ -94,7 +97,7 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     @Override
     public boolean failure(Throwable cause) {
         checkNotNull(cause, "Throwable cause must be not null");
-        if (UPDATER.compareAndSet(this, EXPECT, UPDATE)) {
+        if (VALUE.compareAndSet(EXPECT, UPDATE)) {
             onCompleted(null, cause);
             return true;
         }
@@ -110,6 +113,38 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     private void onCompleted(V v, Throwable cause) {
         if (null != callback) {
             callback.onCompleted(v, cause);
+        }
+    }
+
+    static class MhUtil {
+        private MhUtil() {}
+
+        public static VarHandle findVarHandle(MethodHandles.Lookup lookup,
+                                              String name,
+                                              Class<?> type) {
+            return findVarHandle(lookup, lookup.lookupClass(), name, type);
+        }
+
+        public static VarHandle findVarHandle(MethodHandles.Lookup lookup,
+                                              Class<?> recv,
+                                              String name,
+                                              Class<?> type) {
+            try {
+                return lookup.findVarHandle(recv, name, type);
+            } catch (ReflectiveOperationException e) {
+                throw new InternalError(e);
+            }
+        }
+
+        public static MethodHandle findVirtual(MethodHandles.Lookup lookup,
+                                               Class<?> refc,
+                                               String name,
+                                               MethodType type) {
+            try {
+                return lookup.findVirtual(refc, name, type);
+            } catch (ReflectiveOperationException e) {
+                throw new InternalError(e);
+            }
         }
     }
 }

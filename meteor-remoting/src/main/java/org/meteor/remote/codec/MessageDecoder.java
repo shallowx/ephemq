@@ -44,19 +44,11 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
      * This buffer is used to accumulate data until there's enough to decode a complete message.
      */
     private ByteBuf composite;
+    private int writeFrameBytes;
     /**
      * Indicates the validity of the current state or operation in the MessageDecoder.
      */
     private boolean isValid;
-    /**
-     * Holds the count of bytes that have been written for the current message frame.
-     * Used in the {@link MessageDecoder} class to manage and track the amount of data being processed.
-     */
-    private int writeFrameBytes;
-
-    enum State {
-        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
-    }
 
     /**
      * Creates a new CompositeByteBuf by adding the given ByteBuf component.
@@ -260,5 +252,13 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
                 buf.release();
             }
         }
+    }
+
+    /**
+     * Holds the count of bytes that have been written for the current message frame.
+     * Used in the {@link MessageDecoder} class to manage and track the amount of data being processed.
+     */
+    enum State {
+        READ_MAGIC_NUMBER, READ_MESSAGE_LENGTH, READ_MESSAGE_COMPLETED
     }
 }

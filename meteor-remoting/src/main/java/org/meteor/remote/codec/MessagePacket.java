@@ -26,11 +26,7 @@ import static org.meteor.remote.util.ByteBufUtil.defaultIfNull;
 @Immutable
 public final class MessagePacket extends AbstractReferenceCounted
         implements Comparable<MessagePacket>, ByteBufConvertible {
-    /**
-     * A constant representing a special value (0x2c) used within the MessagePacket class.
-     * It is typically employed in the protocol for identifying or processing packets.
-     */
-    public static final byte MAGIC_NUMBER = (byte) 0x2c;
+
     /**
      * Represents the length of the header for a MessagePacket.
      * The value is set to 16 bytes.
@@ -46,6 +42,11 @@ public final class MessagePacket extends AbstractReferenceCounted
      * maximum frame length.
      */
     public static final int MAX_BODY_LENGTH = MAX_FRAME_LENGTH - HEADER_LENGTH;
+    /**
+     * A constant representing a special value (0x2c) used within the MessagePacket class.
+     * It is typically employed in the protocol for identifying or processing packets.
+     */
+    public static final byte MAGIC_NUMBER = (byte) 0x2c;
 
     /**
      * A recycler for instances of {@code MessagePacket}. It provides a mechanism to reuse
@@ -73,6 +74,11 @@ public final class MessagePacket extends AbstractReferenceCounted
      */
     private final Recycler.Handle<MessagePacket> handle;
     /**
+     * The body of the message packet containing the payload data.
+     */
+    private ByteBuf body;
+
+    /**
      * A unique identifier provided in the packet for tracking or reference purposes.
      */
     private long feedback;
@@ -82,10 +88,6 @@ public final class MessagePacket extends AbstractReferenceCounted
      * of command being encapsulated within the packet.
      */
     private int command;
-    /**
-     * The body of the message packet containing the payload data.
-     */
-    private ByteBuf body;
 
     /**
      * Constructs a new MessagePacket with the specified {@link Recycler.Handle}.

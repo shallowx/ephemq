@@ -20,15 +20,6 @@ import java.util.concurrent.TimeUnit;
 public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(HeartbeatDuplexHandler.class);
     /**
-     * The interval, in milliseconds, at which heartbeat signals are sent.
-     * Used to maintain connection liveness and detect idle connections.
-     */
-    private final long heartPeriodMillis;
-    /**
-     * The maximum time in milliseconds that a connection can remain idle before being closed.
-     */
-    private final long idleTimeoutMillis;
-    /**
      * A Future task that manages the scheduled heartbeats to ensure the connection remains active.
      */
     private Future<?> heartFuture;
@@ -41,6 +32,15 @@ public final class HeartbeatDuplexHandler extends ChannelDuplexHandler {
      * exceptions thrown during the execution of the task.
      */
     private Future<?> idleFuture;
+    /**
+     * The interval, in milliseconds, at which heartbeat signals are sent.
+     * Used to maintain connection liveness and detect idle connections.
+     */
+    private final long heartPeriodMillis;
+    /**
+     * The maximum time in milliseconds that a connection can remain idle before being closed.
+     */
+    private final long idleTimeoutMillis;
     /**
      * Stores the timestamp of the last write operation in milliseconds.
      * This is used to track the last time data was written to the channel.
