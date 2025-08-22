@@ -76,7 +76,7 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     @Override
     public boolean success(V v) {
         try {
-            if (VALUE.compareAndSet(EXPECT, UPDATE)) {
+            if (VALUE.compareAndSet(this, EXPECT, UPDATE)) {
                 onCompleted(v, null);
                 return true;
             }
