@@ -103,7 +103,7 @@ public class DefaultSocketServer {
      * @throws Exception if there is an error during server startup
      */
     public void start() throws Exception {
-        bossGroup = newEventLoopGroup(commonConfiguration.isSocketPreferEpoll(), networkConfiguration.getIoThreadLimit(), "server-acceptor", commonConfiguration.isSocketPreferAffinity(), commonConfiguration.isSocketPreferIoUring());
+        bossGroup = newEventLoopGroup(commonConfiguration.isSocketPreferEpoll(), networkConfiguration.getIoThreadLimit(), "server-acceptor", false, commonConfiguration.isSocketPreferIoUring());
         gauge(bossGroup, "acceptor");
 
         workGroup = newEventLoopGroup(commonConfiguration.isSocketPreferEpoll(), networkConfiguration.getNetworkThreadLimit(), "server-processor",
