@@ -49,7 +49,7 @@
         <zstd.jni.version>1.5.6-2</zstd.jni.version>
         <lz4.java.version>1.8.0</lz4.java.version>
         <commons.text.version>1.11.0</commons.text.version>
-        <net.affinity.version>3.23.3</net.affinity.version>
+        <net.affinity.version>3.26.9</net.affinity.version>
         <io.uring.version>0.0.26.Final</io.uring.version>
         <tcnative.version>2.0.61.Final</tcnative.version>
         <flatten.version>1.2.7</flatten.version>
