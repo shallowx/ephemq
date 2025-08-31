@@ -38,7 +38,7 @@ public class MeteorAdmin {
      * Executes the core logic of the MeteorAdmin command-line tool.
      * Depending on the provided arguments, it initializes commands, prints help,
      * parses command-line arguments, and executes the intended commands.
-     *
+     * and '-b' use compatible port (@see {@code org.meteor.config.CommonConfig#getCompatiblePort})
      * @param args the command-line arguments passed to the program
      */
     private static void main0(String[] args) {
