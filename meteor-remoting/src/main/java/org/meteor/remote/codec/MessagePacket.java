@@ -3,9 +3,7 @@ package org.meteor.remote.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufConvertible;
 import io.netty.buffer.Unpooled;
-import io.netty.util.AbstractReferenceCounted;
-import io.netty.util.Recycler;
-import io.netty.util.ReferenceCounted;
+import io.netty.util.*;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -47,7 +45,8 @@ public final class MessagePacket extends AbstractReferenceCounted
      * It is typically employed in the protocol for identifying or processing packets.
      */
     public static final byte MAGIC_NUMBER = (byte) 0x2c;
-
+    private static final ResourceLeakDetector<MessagePacket> leakDetector;
+    private static ResourceLeakTracker<MessagePacket> tracker;
     /**
      * A recycler for instances of {@code MessagePacket}. It provides a mechanism to reuse
      * {@code MessagePacket} objects in order to enhance performance and reduce garbage
@@ -98,6 +97,10 @@ public final class MessagePacket extends AbstractReferenceCounted
         this.handle = handle;
     }
 
+    static {
+        leakDetector = ResourceLeakDetectorFactory.instance().newResourceLeakDetector(MessagePacket.class);
+    }
+
     /**
      * Creates a new instance of {@code MessagePacket} with the given feedback, command, and body.
      *
@@ -112,7 +115,7 @@ public final class MessagePacket extends AbstractReferenceCounted
         packet.feedback = feedback;
         packet.command = command;
         packet.body = defaultIfNull(body, Unpooled.EMPTY_BUFFER);
-
+        tracker = leakDetector.track(packet);
         return packet;
     }
 
@@ -155,6 +158,7 @@ public final class MessagePacket extends AbstractReferenceCounted
             body.release();
             body = null;
         }
+        tracker.close(this);
         handle.recycle(this);
     }
 
