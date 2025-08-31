@@ -2,9 +2,7 @@ package org.meteor.remote.invoke;
 
 import io.netty.util.ReferenceCounted;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
@@ -18,8 +16,9 @@ import static org.meteor.common.util.ObjectUtil.checkNotNull;
  *
  * @param <V> the type of the result passed to the callback upon successful completion
  */
+@SuppressWarnings("ALL")
 public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
-    private static final VarHandle VALUE = MhUtil.findVarHandle(MethodHandles.lookup(), "completed", int.class);
+    private static final AtomicIntegerFieldUpdater<GenericInvokedFeedback> UPDATER = AtomicIntegerFieldUpdater.newUpdater(GenericInvokedFeedback.class, "completed");
     /**
      * A callable object that represents the callback to be invoked upon the completion of an operation.
      * It is expected to handle both success and failure scenarios of the operation.
@@ -46,6 +45,7 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
      * The completion can be triggered by either a successful operation or a failure.
      */
     private volatile int completed;
+
 
     /**
      * Constructs a new GenericInvokedFeedback instance with the specified callback.
@@ -76,7 +76,7 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     @Override
     public boolean success(V v) {
         try {
-            if (VALUE.compareAndSet(this, EXPECT, UPDATE)) {
+            if (UPDATER.compareAndSet(this, EXPECT, UPDATE)) {
                 onCompleted(v, null);
                 return true;
             }
@@ -97,7 +97,7 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     @Override
     public boolean failure(Throwable cause) {
         checkNotNull(cause, "Throwable cause must be not null");
-        if (VALUE.compareAndSet(EXPECT, UPDATE)) {
+        if (UPDATER.compareAndSet(this, EXPECT, UPDATE)) {
             onCompleted(null, cause);
             return true;
         }
@@ -113,38 +113,6 @@ public final class GenericInvokedFeedback<V> implements InvokedFeedback<V> {
     private void onCompleted(V v, Throwable cause) {
         if (null != callback) {
             callback.onCompleted(v, cause);
-        }
-    }
-
-    static class MhUtil {
-        private MhUtil() {}
-
-        public static VarHandle findVarHandle(MethodHandles.Lookup lookup,
-                                              String name,
-                                              Class<?> type) {
-            return findVarHandle(lookup, lookup.lookupClass(), name, type);
-        }
-
-        public static VarHandle findVarHandle(MethodHandles.Lookup lookup,
-                                              Class<?> recv,
-                                              String name,
-                                              Class<?> type) {
-            try {
-                return lookup.findVarHandle(recv, name, type);
-            } catch (ReflectiveOperationException e) {
-                throw new InternalError(e);
-            }
-        }
-
-        public static MethodHandle findVirtual(MethodHandles.Lookup lookup,
-                                               Class<?> refc,
-                                               String name,
-                                               MethodType type) {
-            try {
-                return lookup.findVirtual(refc, name, type);
-            } catch (ReflectiveOperationException e) {
-                throw new InternalError(e);
-            }
         }
     }
 }

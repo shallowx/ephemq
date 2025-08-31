@@ -45,7 +45,7 @@ public class ProducerTest {
         producerConfig.setClientConfig(clientConfig);
         CountDownLatch continueSendLatch = new CountDownLatch(2);
         for (int i = 0; i < 1; i++) {
-            Thread.ofVirtual().start(() -> {
+            Thread.ofVirtual().unstarted(() -> {
                 Producer producer = new DefaultProducer("default", producerConfig);
                 producer.start();
 

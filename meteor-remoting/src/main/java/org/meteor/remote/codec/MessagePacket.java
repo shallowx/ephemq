@@ -158,7 +158,9 @@ public final class MessagePacket extends AbstractReferenceCounted
             body.release();
             body = null;
         }
-        tracker.close(this);
+        if (tracker != null) {
+            tracker.close(this);
+        }
         handle.recycle(this);
     }
 

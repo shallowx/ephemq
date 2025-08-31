@@ -25,7 +25,7 @@ public class InvokeTests {
 
     static class TestVolatile {
         private volatile int completed;
-        private static final VarHandle VALUE = GenericInvokedFeedback.MhUtil.findVarHandle(MethodHandles.lookup(), "completed", int.class);
+        private static final VarHandle VALUE = MhUtil.findVarHandle(MethodHandles.lookup(), "completed", int.class);
 
         public void set() {
             VALUE.compareAndSet(this, 0, 1);

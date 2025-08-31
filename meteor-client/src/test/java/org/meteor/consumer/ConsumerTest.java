@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * This class uses a mocked Consumer to ensure proper subscription,
  * message consuming, and cleanup actions are correctly performed.
  */
+@SuppressWarnings("ALL")
 public class ConsumerTest {
     private static final InternalLogger logger = InternalLoggerFactory.getLogger(ConsumerTest.class);
 

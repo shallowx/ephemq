@@ -42,7 +42,7 @@ public final class MessageEncoder extends ChannelOutboundHandlerAdapter {
      * instance of this class is not supported.
      */
     private MessageEncoder() {
-        throw new UnsupportedOperationException("Cannot support the operation");
+
     }
 
     /**
