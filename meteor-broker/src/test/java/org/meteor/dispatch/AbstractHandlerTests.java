@@ -48,7 +48,7 @@ public class AbstractHandlerTests {
 
         @Override
         Function<EventExecutor, String> apply() {
-            return _ -> "test";
+            return r -> "test";
         }
     }
 }

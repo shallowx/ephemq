@@ -8,7 +8,7 @@ if [[ -z ${CONFIG_FILE} ]]; then
 fi
 
 if [[ -z ${JAVA_OPTS} ]]; then
-  JAVA_OPTS="-XX:MinHeapSize=8g -XX:InitialHeapSize=8g -XX:MaxHeapSize=8g -XX:-UseLargePages -XX:+UseZGC -XX:+ZGenerational -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:MaxDirectMemorySize=32g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -Dio.netty.tryReflectionSetAccessible=true -XX:HeapDumpPath=/tmp/heapdump.hprof -Dio.netty.maxDirectMemory=-1 --add-exports java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --enable-preview"
+  JAVA_OPTS="-XX:MinHeapSize=8g -XX:InitialHeapSize=8g -XX:MaxHeapSize=8g -XX:-UseLargePages -XX:+UseZGC -XX:+ZGenerational -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai -XX:MaxDirectMemorySize=32g -XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -Dio.netty.tryReflectionSetAccessible=true -XX:HeapDumpPath=/tmp/heapdump.hprof -Dio.netty.maxDirectMemory=-1 --add-exports java.base/jdk.internal.misc=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED"
 fi
 
 if [[ -n ${JAVA_HOME} ]]; then
