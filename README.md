@@ -1,8 +1,8 @@
 ![Build project](https://github.com/shallowx/meteor/blob/master/docs/badge.svg)
 
-## Meteor Project
+## EphemMQ Project
 
-Meteor is a distributed messaging and streaming platform built on direct memory access. 
+EphemMQ is a distributed messaging and streaming platform built on direct memory access. 
 It offers low latency, high performance, high reliability, trillion-level throughput, and flexible scalability, making it ideal for demanding, large-scale systems.
 
 ## Performance
