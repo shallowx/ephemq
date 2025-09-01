@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package meteor.protobuf;
+import "ephemq.proto";
+
+option java_package = "org.ephemq.remote.proto.server";
+option java_outer_classname = "ServerProto";
+option java_multiple_files = true;
+
+message SendMessageRequest {
+  int32 ledger = 1;
+  int32 marker = 2;
+}
+
+message SendMessageResponse {
+  int32 ledger = 1;
+  int32 epoch = 2;
+  int64 index = 3;
+}
+
+message QueryClusterInfoRequest {}
+
+message QueryClusterResponse{
+  ClusterInfo cluster_info = 1;
+}
+
+message QueryTopicInfoRequest{
+  repeated string topic_names = 1;
+}
+message QueryTopicInfoResponse{
+  map<string, TopicInfo> topic_infos = 1;
+}
+
+message ResetSubscribeRequest {
+  int32 ledger = 1;
+  int32 epoch = 2;
+  int64 index = 3;
+  bytes markers = 4;
+  string topic = 5;
+}
+
+message ResetSubscribeResponse {
+}
+
+message AlterSubscribeRequest{
+  int32 ledger = 1;
+  bytes append_markers = 2;
+  bytes delete_markers = 3;
+  string topic = 4;
+}
+
+message AlterSubscribeResponse{}
+
+message CleanSubscribeRequest{
+  int32 ledger = 1;
+  string topic = 2;
+}
+
+message CleanSubscribeResponse{
+}
+
+message CreateTopicRequest{
+  string topic = 1;
+  int32 partition = 2;
+  int32 replicas = 3;
+  CreateTopicConfigRequest configs = 4;
+}
+
+message CreateTopicConfigRequest{
+  int32 segmentRollingSize = 1;
+  int32 segmentRetainCount = 2;
+  int32 segmentRetainMs = 3;
+  bool allocate = 4;
+}
+
+message CreateTopicResponse{
+  string topic = 1;
+  int32 partitions = 2;
+  int32 topicId = 3;
+  repeated PartitionsReplicas partitionsReplicas = 4;
+}
+
+message PartitionsReplicas {
+  int32 partition = 1;
+  repeated string replicas = 2;
+}
+
+message DeleteTopicRequest{
+  string topic = 1;
+}
+
+message DeleteTopicResponse{
+}
+
+message SyncRequest {
+  int32  ledger = 1;
+  int32 epoch = 2;
+  int64 index = 3;
+  string topic = 4;
+}
+
+message SyncResponse{
+  MessageOffset currentOffset = 1;
+  MessageOffset headOffset = 2;
+  MessageOffset tailOffset = 3;
+}
+
+message CancelSyncRequest{
+  int32 ledger = 1;
+  string topic = 2;
+}
+message CancelSyncResponse{}
+
+message CalculatePartitionsRequest{
+}
+
+message CalculatePartitionsResponse{
+  map<string, int32> partitions = 1;
+}
+
+message MigrateLedgerRequest{
+  int32 partition = 1;
+  string topic = 2;
+  string original = 3;
+  string destination = 4;
+}
+
+message MigrateLedgerResponse{
+  bool success = 1;
+  string message = 2;
+}

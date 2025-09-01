@@ -11,10 +11,11 @@
         <version>9</version>
     </parent>
 
-    <groupId>org.meteor</groupId>
-    <artifactId>meteor</artifactId>
+    <groupId>org.ephemq</groupId>
+    <artifactId>ephemq</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+    <name>ephemq</name>
 
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
@@ -189,52 +190,52 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-client</artifactId>
+                <artifactId>ephemq-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-broker</artifactId>
+                <artifactId>ephemq-broker</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-common</artifactId>
+                <artifactId>ephemq-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-remoting</artifactId>
+                <artifactId>ephemq-remoting</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-metrics</artifactId>
+                <artifactId>ephemq-metrics</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-proxy</artifactId>
+                <artifactId>ephemq-proxy</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-example</artifactId>
+                <artifactId>ephemq-example</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-microbench</artifactId>
+                <artifactId>ephemq-microbench</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-cli</artifactId>
+                <artifactId>ephemq-cli</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>meteor-distribution</artifactId>
+                <artifactId>ephemq-distribution</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -416,15 +417,15 @@
     </build>
 
     <modules>
-        <module>meteor-broker</module>
-        <module>meteor-client</module>
-        <module>meteor-remoting</module>
-        <module>meteor-common</module>
-        <module>meteor-metrics</module>
-        <module>meteor-cli</module>
-        <module>meteor-microbench</module>
-        <module>meteor-distribution</module>
-        <module>meteor-proxy</module>
-        <module>meteor-example</module>
+        <module>ephemq-broker</module>
+        <module>ephemq-client</module>
+        <module>ephemq-remoting</module>
+        <module>ephemq-common</module>
+        <module>ephemq-metrics</module>
+        <module>ephemq-cli</module>
+        <module>ephemq-microbench</module>
+        <module>ephemq-distribution</module>
+        <module>ephemq-proxy</module>
+        <module>ephemq-example</module>
     </modules>
 </project>

@@ -1,0 +1,125 @@
+package org.ephemq.cli.cluster;
+
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.ephemq.cli.support.Command;
+import org.ephemq.cli.support.CommandException;
+import org.ephemq.cli.support.FormatPrint;
+import org.ephemq.client.core.Client;
+import org.ephemq.client.core.ClientChannel;
+import org.ephemq.common.message.Node;
+import org.ephemq.remote.proto.ClusterInfo;
+import org.ephemq.remote.proto.NodeMetadata;
+import org.ephemq.remote.util.NetworkUtil;
+
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * ClusterListCommand is a concrete implementation of the Command interface.
+ * It provides functionality to retrieve and display information about nodes in a broker cluster.
+ * <p>
+ *
+ * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
+ * | id     | host      | port | registrationTimestamp | cluster | state | auxData | ledgerThroughput |
+ * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
+ * | ephemq | 127.0.0.1 | 9527 | 07:59:59.999          | ephemq  | UP    | {}      | {}               |
+ * +--------+-----------+------+-----------------------+---------+-------+---------+------------------+
+ */
+public class ClusterListCommand implements Command {
+    /**
+     * Returns the name of the command related to cluster information retrieval.
+     *
+     * @return a string representing the command name.
+     */
+    @Override
+    public String name() {
+        return "cluster-info";
+    }
+
+    /**
+     * Provides a description of the cluster node information retrieval command.
+     *
+     * @return a string describing the action of fetching cluster node information from the broker cluster.
+     */
+    @Override
+    public String description() {
+        return "Get cluster node info form broker cluster";
+    }
+
+    /**
+     * Builds and adds the necessary options for the command.
+     *
+     * @param options The current set of command options.
+     * @return The updated set of options with broker and cluster options added.
+     */
+    @Override
+    public Options buildOptions(Options options) {
+        Option brokerOpt =
+                new Option("b", "-broker", true, "The broker address that is can connect to the broker cluster");
+        brokerOpt.setRequired(true);
+        options.addOption(brokerOpt);
+
+        Option option = new Option("c", "-cluster", true, "The cluster name that is use to filter the cluster info");
+        option.setRequired(false);
+        options.addOption(option);
+        return options;
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void execute(CommandLine commandLine, Options options, Client client) throws Exception {
+        List<Node> nodes = new ArrayList<>();
+        try {
+            if (commandLine.hasOption('b')) {
+                String addr = commandLine.getOptionValue('b');
+                if (StringUtil.isNullOrEmpty(addr)) {
+                    throw new IllegalArgumentException("ephemq-cli illegal argument exception, broker-addr cannot be empty");
+                }
+                SocketAddress socketAddress = NetworkUtil.switchSocketAddress(addr);
+                ClientChannel clientChannel = client.getActiveChannel(socketAddress);
+                ClusterInfo clusterInfo = client.queryClusterInfo(clientChannel);
+                Map<String, NodeMetadata> nodesMap = clusterInfo.getNodesMap();
+                List<NodeMetadata> metadata = new ArrayList<>(nodesMap.values());
+                System.out.printf("%s [Thread.currentThread().getName()] INFO %s - Print the cluster metadata options:%n", currentTime(), ClusterListCommand.class.getName());
+                for (NodeMetadata nodeMetadata : metadata) {
+                    nodes.add(
+                            new Node(nodeMetadata.getId(),
+                                    nodeMetadata.getHost(),
+                                    nodeMetadata.getPort(),
+                                    -1,
+                                    nodeMetadata.getClusterName(), "UP")
+                    );
+                }
+            }
+
+            if (commandLine.hasOption('c')) {
+                String clusterName = commandLine.getOptionValue('c');
+                if (StringUtil.isNullOrEmpty(clusterName)) {
+                    nodes = nodes.stream().filter(n -> n.getCluster().equals(clusterName)).toList();
+                }
+            }
+            formatPrint(nodes);
+        } catch (Exception e) {
+            System.err.printf("%s [Thread.currentThread().getName()] ERROR %s%n", currentTime(), ClusterListCommand.class.getName());
+            throw new CommandException("Execute cluster command[clusters] error", e);
+        }
+    }
+
+    /**
+     * Formats and prints the details of the provided list of nodes.
+     *
+     * @param nodes the list of nodes to be formatted and printed.
+     */
+    private void formatPrint(List<Node> nodes) {
+        String[] title = {"id", "host", "port", "registrationTimestamp", "cluster", "state", "auxData", "ledgerThroughput"};
+        FormatPrint.formatPrint(nodes, title);
+    }
+}

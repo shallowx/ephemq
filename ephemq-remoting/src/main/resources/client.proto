@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package meteor.protobuf;
+import "ephemq.proto";
+
+option java_package = "org.ephemq.remote.proto.client";
+option java_outer_classname = "ClientProto";
+option java_multiple_files = true;
+
+message TopicChangedSignal {
+  Type type = 1;
+  string topic = 2;
+  int32 ledger = 3;
+  int32 ledger_version = 4;
+  enum Type {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 3;
+  }
+}
+
+message NodeOfflineSignal {
+  NodeMetadata node = 1;
+}
+
+message MessagePushSignal {
+  int32 ledger = 1;
+  int32 marker = 2;
+  int32 epoch = 3;
+  int64 index = 4;
+}
+
+message LedgerRetiredSignal {
+  NodeMetadata broker = 1;
+  int32 ledger = 2;
+  string topic = 3;
+  int32 partition = 4;
+  NodeMetadata heir = 5;
+}
+
+message SyncMessageSignal {
+  int32 ledger = 1;
+  int32 count = 2;
+}
