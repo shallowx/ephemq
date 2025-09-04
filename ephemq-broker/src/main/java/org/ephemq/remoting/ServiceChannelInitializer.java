@@ -75,7 +75,7 @@ public class ServiceChannelInitializer extends ChannelInitializer<SocketChannel>
         }
         pipeline.addLast("statistics-handler", statisticsDuplexHandler);
         pipeline.addLast("encoder", MessageEncoder.instance());
-        pipeline.addLast("decoder", new MessageDecoder());
+        pipeline.addLast("decoder", new MessageDecoder(commonConfiguration.getDiscardAfterReads()));
         pipeline.addLast("connect-handler", new HeartbeatDuplexHandler(0, 60000));
         pipeline.addLast("processor-handler", new ServiceDuplexHandler(manager,
                 new ServiceProcessor(commonConfiguration, networkConfiguration, manager)));

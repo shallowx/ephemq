@@ -52,7 +52,7 @@ public class DemoServerBootstrap {
                 protected void initChannel(SocketChannel socketChannel) {
                     socketChannel.pipeline()
                             .addLast("packet-encoder", MessageEncoder.instance())
-                            .addLast("paket-decoder", new MessageDecoder())
+                            .addLast("paket-decoder", new MessageDecoder(0))
                             .addLast("connect-handler", new HeartbeatDuplexHandler(0, 30000))
                             .addLast("service-handler", new ProcessDuplexHandler(processorAware));
                 }

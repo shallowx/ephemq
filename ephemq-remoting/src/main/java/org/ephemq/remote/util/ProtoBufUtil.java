@@ -1,11 +1,13 @@
 package org.ephemq.remote.util;
 
+import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
 import io.netty.buffer.*;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * Utility class for handling operations related to ProtoBuf serialization and deserialization
@@ -45,8 +47,17 @@ public class ProtoBufUtil {
      * @throws IOException if an I/O error occurs during serialization
      */
     public static void writeProto(ByteBuf buf, MessageLite lite) throws IOException {
-        buf.writeInt(lite.getSerializedSize());
-        lite.writeTo(new ByteBufOutputStream(buf));
+        int startIdx = buf.writerIndex();
+        int size = lite.getSerializedSize();
+        buf.writeInt(size);
+
+        ByteBuffer nioBuffer = buf.internalNioBuffer(buf.writerIndex(), size);
+        CodedOutputStream cos = CodedOutputStream.newInstance(nioBuffer);
+        lite.writeTo(cos);
+        buf.writerIndex(startIdx + 4 + size);
+
+//        buf.writeInt(lite.getSerializedSize());
+//        lite.writeTo(new ByteBufOutputStream(buf));
     }
 
     /**

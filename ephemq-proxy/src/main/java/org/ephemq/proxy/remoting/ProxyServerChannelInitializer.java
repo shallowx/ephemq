@@ -53,7 +53,7 @@ public class ProxyServerChannelInitializer extends ServiceChannelInitializer {
 
         pipeline.addLast("proxy-statistics-handler", statisticsDuplexHandler);
         pipeline.addLast("proxy-encoder", MessageEncoder.instance());
-        pipeline.addLast("proxy-decoder", new MessageDecoder());
+        pipeline.addLast("proxy-decoder", new MessageDecoder(commonConfiguration.getDiscardAfterReads()));
         pipeline.addLast("proxy-connect-handler", new HeartbeatDuplexHandler(0, 60000));
         pipeline.addLast("proxy-processor-handler", new ServiceDuplexHandler(
                 manager, new ProxyServiceProcessor(serverConfiguration, manager)));

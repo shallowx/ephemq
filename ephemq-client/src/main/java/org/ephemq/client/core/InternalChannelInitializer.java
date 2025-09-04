@@ -91,7 +91,7 @@ public class InternalChannelInitializer extends ChannelInitializer<SocketChannel
         ClientChannel clientChannel = createClientChannel(config, socketChannel, address);
         socketChannel.pipeline()
                 .addLast("packet-encoder", MessageEncoder.instance())
-                .addLast("packet-decoder", new MessageDecoder())
+                .addLast("packet-decoder", new MessageDecoder(config.getDiscardAfterReads()))
                 .addLast("connect-handler", new HeartbeatDuplexHandler(
                         config.getChannelKeepPeriodMilliseconds(), config.getChannelIdleTimeoutMilliseconds()
                 ))

@@ -5,3 +5,5 @@
 - local
   - ../mvnw clean install -DskipTests
   - ../mvnw assembly:single
+  
+- set JVM(ZGC) please see https://wiki.openjdk.org/display/zgc/Main

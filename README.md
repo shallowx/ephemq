@@ -5,6 +5,21 @@
 EphemMQ is a distributed messaging and streaming platform built on direct memory access. 
 It offers low latency, high performance, high reliability, trillion-level throughput, and flexible scalability, making it ideal for demanding, large-scale systems.
 
+## Building the Linux native transport
+
+- Debian/Ubuntu:
+```
+sudo apt-get install autoconf automake libtool make tar \
+gcc
+```
+- RHEL/CentOS/Fedora
+```
+
+sudo yum install autoconf automake libtool make tar \
+                 glibc-devel \
+                 libgcc.i686 glibc-devel.i686
+```
+
 ## Performance
 
 - Higher throughput and lower latency

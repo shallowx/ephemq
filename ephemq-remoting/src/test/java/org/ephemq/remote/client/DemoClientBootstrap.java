@@ -64,7 +64,7 @@ public class DemoClientBootstrap {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     socketChannel.pipeline()
                             .addLast("packet-encoder", MessageEncoder.instance())
-                            .addLast("paket-decoder", new MessageDecoder())
+                            .addLast("paket-decoder", new MessageDecoder(0))
                             .addLast("connect-handler", new HeartbeatDuplexHandler(20000, 30000))
                             .addLast("service-handler", new ProcessDuplexHandler(processor));
                 }

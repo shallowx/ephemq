@@ -49,16 +49,11 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
      * Indicates the validity of the current state or operation in the MessageDecoder.
      */
     private boolean isValid;
+    private int numReads;
+    private final int discardAfterReads;
 
-    /**
-     * Creates a new CompositeByteBuf by adding the given ByteBuf component.
-     *
-     * @param alloc The ByteBufAllocator used to allocate the new CompositeByteBuf.
-     * @param buf The ByteBuf to be added as a component to the CompositeByteBuf.
-     * @return A newly created CompositeByteBuf with the given ByteBuf as its component.
-     */
-    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
-        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
+    public MessageDecoder(int discardAfterReads) {
+        this.discardAfterReads = discardAfterReads;
     }
 
     /**
@@ -101,9 +96,9 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
             } finally {
                 ByteBufUtil.release(buf);
                 buf = composite;
-                if (null != buf && (!buf.isReadable() || isValid)) {
-                    composite = null;
+                if (buf != null && (!buf.isReadable() || isValid)) {
                     buf.release();
+                    composite = null;
                 }
             }
         } else {
@@ -173,7 +168,7 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
      */
     private ByteBuf allocComposite(ByteBufAllocator alloc, ByteBuf in) {
         final ByteBuf buf = composite;
-        if (null == buf) {
+        if (buf == null) {
             return composite = in;
         }
 
@@ -206,12 +201,26 @@ public final class MessageDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         if (composite instanceof final CompositeByteBuf buf) {
-            if (buf.toComponentIndex(buf.readerIndex()) > DISCARD_READ_BODY_THRESHOLD) {
-                composite = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
+            // ？
+            if (++numReads > discardAfterReads) {
+                if (buf.toComponentIndex(buf.readerIndex()) > DISCARD_READ_BODY_THRESHOLD) {
+                    composite = buf.refCnt() == 1 ? buf.discardReadComponents() : newComposite(ctx.alloc(), buf);
+                }
+                numReads = 0;
             }
         }
-
         ctx.fireChannelReadComplete();
+    }
+
+    /**
+     * Creates a new CompositeByteBuf by adding the given ByteBuf component.
+     *
+     * @param alloc The ByteBufAllocator used to allocate the new CompositeByteBuf.
+     * @param buf The ByteBuf to be added as a component to the CompositeByteBuf.
+     * @return A newly created CompositeByteBuf with the given ByteBuf as its component.
+     */
+    private static CompositeByteBuf newComposite(ByteBufAllocator alloc, ByteBuf buf) {
+        return alloc.compositeBuffer(MAX_VALUE).addFlattenedComponents(true, buf);
     }
 
     /**

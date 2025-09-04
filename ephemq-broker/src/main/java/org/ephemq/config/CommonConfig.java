@@ -76,7 +76,7 @@ public class CommonConfig {
      * <a href="https://netty.io/wiki/thread-affinity.html">...</a>
      */
     private static final String THREAD_AFFINITY_ENABLED = "thread.affinity.enabled";
-
+    private static final String DISCARD_AFTER_READS = "discard.after.reads";
     /**
      * Configuration properties for the CommonConfig class.
      * <p>
@@ -94,6 +94,10 @@ public class CommonConfig {
      */
     public CommonConfig(Properties prop) {
         this.prop = prop;
+    }
+
+    public int getDiscardAfterReads() {
+        return object2Int(prop.getOrDefault(DISCARD_AFTER_READS, 0));
     }
 
     /**

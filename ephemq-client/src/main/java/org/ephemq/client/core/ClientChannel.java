@@ -75,10 +75,6 @@ public class ClientChannel implements MeterBinder {
         this.hashCode = Objects.hashCode(id);
     }
 
-
-    /**
-     *
-     */
     public void invoke(int code, ByteBuf data, int timeoutMs, Callable<ByteBuf> callback) {
         int length = ByteBufUtil.bufLength(data);
         try {

@@ -102,9 +102,18 @@ public class ClientConfig {
      */
     private int migrateLedgerTimeoutMilliseconds = 5000;
     private boolean isPreferIoUring = false;
+    private int discardAfterReads = 0;
 
     public boolean isPreferIoUring() {
         return isPreferIoUring;
+    }
+
+    public int getDiscardAfterReads() {
+        return discardAfterReads;
+    }
+
+    public void setDiscardAfterReads(int discardAfterReads) {
+        this.discardAfterReads = discardAfterReads;
     }
 
     public void setPreferIoUring(boolean perferIoUring) {

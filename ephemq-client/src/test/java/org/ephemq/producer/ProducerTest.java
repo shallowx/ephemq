@@ -142,7 +142,7 @@ public class ProducerTest {
                 }
                 producer.close();
                 continueSendLatch.countDown();
-            }).start();
+            });
         }
         continueSendLatch.await();
     }
