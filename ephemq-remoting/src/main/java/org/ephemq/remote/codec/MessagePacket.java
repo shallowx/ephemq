@@ -158,6 +158,7 @@ public final class MessagePacket extends AbstractReferenceCounted
             body.release();
             body = null;
         }
+        // -Dio.netty.leakDetection.level=PARANOID
         if (tracker != null) {
             tracker.close(this);
         }
