@@ -265,7 +265,7 @@ public class MetricsListener implements APIListener, ServerListener, LogListener
                         .and(CLUSTER_TAG, config.getClusterName()))
                 .baseUnit(unit)
                 .distributionStatisticExpiry(Duration.ofSeconds(30))
-                .publishPercentiles(0.99, 0.999, 0.9)
+                .publishPercentiles(0.9, 0.99, 0.999, 0.9999)
                 .register(registry);
     }
 

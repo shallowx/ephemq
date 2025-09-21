@@ -58,7 +58,6 @@ public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
         if (config.isMetricsEnabled()) {
             this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
             Metrics.addRegistry(this.registry);
-
             exportHttpServer(config);
         }
     }
@@ -72,18 +71,24 @@ public class MeteorPrometheusRegistry implements MetricsRegistrySetUp {
         try {
             InetSocketAddress socketAddress = new InetSocketAddress(config.getMetricsAddress(), config.getMetricsPort());
             this.server = HttpServer.create(socketAddress, 0);
-
+            this.server.setExecutor(command -> Thread.ofVirtual().start(command));
             String url = config.getMetricsScrapeUrl();
+            if (!url.startsWith("/")) {
+                url = "/" + url;
+            }
+
             this.server.createContext(url, exchange -> {
                 String scrape = ((PrometheusMeterRegistry) this.registry).scrape();
-                exchange.sendResponseHeaders(HttpResponseStatus.OK.code(),
-                        scrape.getBytes(StandardCharsets.UTF_8).length);
-
+                exchange.getResponseHeaders().set("Content-Type", "text/plain; version=0.0.4; charset=utf-8");
+                exchange.sendResponseHeaders(HttpResponseStatus.OK.code(), scrape.getBytes(StandardCharsets.UTF_8).length);
                 try (OutputStream out = exchange.getResponseBody()) {
                     out.write(scrape.getBytes());
                 }
             });
-            new Thread(this.server::start).start();
+
+            Thread startThread = new Thread(this.server::start, "prometheus_httpServer_thread");
+            startThread.setDaemon(true);
+            startThread.start();
             if (logger.isInfoEnabled()) {
                 logger.info("Prometheus http server is listening at socket address[{}], and scrape url[{}]", socketAddress, url);
             }

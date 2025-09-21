@@ -63,7 +63,7 @@ public class MetricsConfig {
      * @return the configured scrape URL for Prometheus metrics
      */
     public String getMetricsScrapeUrl() {
-        return object2String(props.getOrDefault(METRICS_SCRAPE_URL, "/prometheus"));
+        return object2String(props.getOrDefault(METRICS_SCRAPE_URL, "/metrics"));
     }
 
     /**
